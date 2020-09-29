@@ -21,6 +21,9 @@ export const onlyProps = {props}
 export default {
     props,
     components: {
-        FormWrap: () => import('../FormWrap')
+        FormWrap: () => import('../FormWrap'),
+        HorizontalLayout: () => import('../Layouts/HorizontalLayout'),
+        VerticalLayout: () => import('../Layouts/VerticalLayout'),
+        Group: () => import('../Layouts/Group'),
     },
 }
