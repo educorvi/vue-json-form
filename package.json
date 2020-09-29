@@ -6,22 +6,26 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "doc": "jsdoc -d ./docs -P ./package.json -r -R ./README.md ./src"
+    "doc": "vuese gen && copyfiles README.md docs -E && git add docs"
   },
   "dependencies": {
     "bootstrap": "^4.5.2",
     "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
+    "json-pointer": "^0.6.1",
     "vue": "^2.6.12"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vuese/cli": "^2.14.0",
     "babel-eslint": "^10.1.0",
+    "copyfiles": "^2.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "jsdoc": "^3.6.6",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.2",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
@@ -42,5 +46,9 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "vuese": {
+    "outDir": "docs",
+    "title": "Vue JSON Form"
+  }
 }
