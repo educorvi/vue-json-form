@@ -1,5 +1,6 @@
 # vue_json_form
 
+Automaticly generates form json schema and json ui schema.
 ## Project setup
 ```
 npm install
@@ -20,5 +21,3 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

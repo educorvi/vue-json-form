@@ -1,18 +1,19 @@
 <template>
   <div id="app" class="container-fluid">
-      <Form :json="schema" :ui="uischema"></Form>
+      <form-wrap :json="schema" :ui="uischema"></form-wrap>
   </div>
 </template>
 
 <script>
 
-import Form from "@/components/Form";
 import schema from "../schema.json";
 import uischema from "../uischema.json";
+import FormWrap from "@/components/FormWrap";
 export default {
   name: 'App',
   components: {
-    Form
+    FormWrap
+
   },
   computed: {
     schema() {

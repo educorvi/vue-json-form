@@ -1,10 +1,20 @@
 <template>
-  <p>VL</p>
+  <div>
+    <p>VL</p>
+    <form-wrap v-for="(item, index) in ui.elements" :ui="item" :json="json" :key="ui.toString().length+'_'+index"></form-wrap>
+  </div>
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-components */
+
+import layoutMixin from "@/components/Layouts/layout";
 export default {
-  name: "VerticalLayout"
+  name: "VerticalLayout",
+  components: {
+    FormWrap: () => import('../FormWrap')
+  },
+  mixins: [layoutMixin]
 }
 </script>
 

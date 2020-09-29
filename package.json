@@ -48,6 +48,10 @@
     "not dead"
   ],
   "vuese": {
+    "include": [
+      "**/*.vue",
+      "**/*.js"
+    ],
     "outDir": "docs",
     "title": "Vue JSON Form"
   }
