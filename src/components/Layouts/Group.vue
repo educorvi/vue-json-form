@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body>
+  <b-card no-body class="mb-2">
     <b-card-header>
       <h5 class="m-0">{{ui.label}}</h5>
     </b-card-header>

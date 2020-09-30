@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>VL</p>
     <form-wrap v-for="(item, index) in ui.elements" :ui="item" :json="json" :key="ui.toString().length+'_'+index"></form-wrap>
   </div>
 </template>
