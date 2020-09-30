@@ -1,5 +1,5 @@
 <template>
-  <p>No Item found for type "{{json.type}}"</p>
+  <p>No Item found for type "{{item.type}}"</p>
 </template>
 
 <script>
