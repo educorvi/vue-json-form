@@ -1,7 +1,7 @@
 <template>
-  <b-form>
+  <b-form @submit="onSubmit">
     <FormWrap :json="json" :ui="ui"></FormWrap>
-    <b-button :variant="colorVariant || 'primary'">Send</b-button>
+    <b-button :variant="colorVariant || 'primary'" type="submit">Send</b-button>
   </b-form>
 </template>
 
@@ -19,7 +19,13 @@ export default {
       type: String,
       required: false
     }
-  }
+  },
+  methods: {
+    onSubmit(evt) {
+      evt.preventDefault();
+      console.log("send");
+    }
+  },
 }
 </script>
 
