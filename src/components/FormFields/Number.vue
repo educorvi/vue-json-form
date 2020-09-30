@@ -1,5 +1,5 @@
 <template>
-  <p>Number<span v-if="isInteger"> (Integer)</span></p>
+  <b-form-input type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))"></b-form-input>
 </template>
 
 <script>

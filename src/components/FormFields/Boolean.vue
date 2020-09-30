@@ -1,5 +1,5 @@
 <template>
-<b-checkbox>{{item.title || fallbackTitle}}</b-checkbox>
+<b-checkbox>{{title}}</b-checkbox>
 </template>
 
 <script>

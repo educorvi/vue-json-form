@@ -18,7 +18,10 @@ export default {
         item() {
             return pointer.get(this.json, this.jsonPath);
         },
-        fallbackTitle() {
+        title() {
+            return this.item.title || this.schemaName;
+        },
+        schemaName() {
             const path = pointer.parse(this.jsonPath);
             return path[path.length-1]
         }

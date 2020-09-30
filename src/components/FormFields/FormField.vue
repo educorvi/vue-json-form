@@ -1,5 +1,5 @@
 <template>
-  <component :is="type" :json="json" :ui="ui" :isInteger="json.type === 'integer'"/>
+  <component :is="type" :json="json" :ui="ui" :isInteger="item.type === 'integer'"/>
 </template>
 
 <script>
