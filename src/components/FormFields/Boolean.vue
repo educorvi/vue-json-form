@@ -1,13 +1,13 @@
 <template>
-<p>Boolean</p>
+<b-checkbox>{{item.title || fallbackTitle}}</b-checkbox>
 </template>
 
 <script>
-import {onlyProps} from "../Layouts/layoutMixin";
+import formFieldMixin from "./formFieldMixin";
 
 export default {
 name: "Boolean",
-  mixins: [onlyProps]
+  mixins: [formFieldMixin]
 }
 </script>
 

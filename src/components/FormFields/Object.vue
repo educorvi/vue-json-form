@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import {onlyProps} from "../Layouts/layoutMixin";
+import formFieldMixin from "./formFieldMixin";
 
 export default {
 name: "Object",
-  mixins: [onlyProps]
+  mixins: [formFieldMixin]
 }
 </script>
 

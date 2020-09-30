@@ -5,7 +5,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 
-import {onlyProps} from "../Layouts/layoutMixin";
+import formFieldMixin from "./formFieldMixin";
 import Array from "./Array";
 import Boolean from "./Boolean";
 import MultibleChoice from "./MultibleChoice";
@@ -19,14 +19,14 @@ import defaultField from "./defaultField";
 
 export default {
   name: "FormField",
-  mixins: [onlyProps],
+  mixins: [formFieldMixin],
   computed: {
     /**
      * Selects the right form field
      */
     type() {
-      const type = this.json.type;
-      const json = this.json;
+      const type = this.item.type;
+      const json = this.item;
 
       //Special Treatment for Enums
       if(json.enum !== undefined && type !== "array"){
