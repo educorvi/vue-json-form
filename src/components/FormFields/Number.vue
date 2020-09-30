@@ -1,5 +1,5 @@
 <template>
-  <p>Number<span v-if="integer"> (Integer)</span></p>
+  <p>Number<span v-if="isInteger"> (Integer)</span></p>
 </template>
 
 <script>
@@ -9,7 +9,7 @@ export default {
   name: "Number",
   mixins: [onlyProps],
   props: {
-    integer: {
+    isInteger: {
       type: Boolean
     }
   }
