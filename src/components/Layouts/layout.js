@@ -22,8 +22,8 @@ export default {
     props,
     components: {
         FormWrap: () => import('../FormWrap'),
-        HorizontalLayout: () => import('../Layouts/HorizontalLayout'),
-        VerticalLayout: () => import('../Layouts/VerticalLayout'),
-        Group: () => import('../Layouts/Group'),
+        HorizontalLayout: () => import('./HorizontalLayout'),
+        VerticalLayout: () => import('./VerticalLayout'),
+        Group: () => import('./Group'),
     },
 }

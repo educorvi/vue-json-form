@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import layout from "@/components/Layouts/layout";
+import layout from "./layout";
 
 export default {
   name: "HorizonzalLayout",

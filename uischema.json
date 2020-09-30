@@ -11,7 +11,7 @@
       "scope": "#/properties/name"
     },
     {
-      "type": "Group",
+      "type": "HorizontalLayout",
       "label": "Tolle Gruppe",
       "elements": [
         {

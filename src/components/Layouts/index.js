@@ -1,7 +1,7 @@
-import Control from "@/components/Layouts/Control";
-import Group from "@/components/Layouts/Group";
-import HorizontalLayout from "@/components/Layouts/HorizontalLayout";
-import VerticalLayout from "@/components/Layouts/VerticalLayout";
+import Control from "./Control";
+import Group from "./Group";
+import HorizontalLayout from "./HorizontalLayout";
+import VerticalLayout from "./VerticalLayout";
 
 export default {
     Control, Group, VerticalLayout, HorizontalLayout
