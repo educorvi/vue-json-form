@@ -1,5 +1,5 @@
 <template>
-  <b-form-input type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))"></b-form-input>
+  <b-form-input type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))" :required="required"></b-form-input>
 </template>
 
 <script>

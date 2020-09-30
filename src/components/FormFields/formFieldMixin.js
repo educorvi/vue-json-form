@@ -24,6 +24,9 @@ export default {
         schemaName() {
             const path = pointer.parse(this.jsonPath);
             return path[path.length-1]
+        },
+        required() {
+            return this.json.required.includes(this.schemaName)
         }
     },
 }
