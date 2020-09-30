@@ -1,12 +1,12 @@
 <template>
-  <p>Object</p>
+  <p>No Item found for type "{{json.type}}"</p>
 </template>
 
 <script>
 import {onlyProps} from "../Layouts/layoutMixin";
 
 export default {
-name: "Object",
+  name: "defaultField",
   mixins: [onlyProps]
 }
 </script>

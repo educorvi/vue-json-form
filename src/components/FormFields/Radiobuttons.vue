@@ -1,12 +1,12 @@
 <template>
-  <p>Object</p>
+<p>Radiobutton</p>
 </template>
 
 <script>
 import {onlyProps} from "../Layouts/layoutMixin";
 
 export default {
-name: "Object",
+  name: "Radiobuttons",
   mixins: [onlyProps]
 }
 </script>

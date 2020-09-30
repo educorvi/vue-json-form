@@ -1,13 +1,15 @@
 <template>
-  <p>{{schemaObject}}</p>
+  <FormField :json="schemaObject" :ui="ui"/>
 </template>
 
 <script>
 import layout from "./layoutMixin";
 import pointer from "json-pointer"
+import FormField from "@/components/FormFields/FormField";
 
 export default {
   name: "Control",
+  components: {FormField},
   mixins: [layout],
   computed: {
     schemaObject() {

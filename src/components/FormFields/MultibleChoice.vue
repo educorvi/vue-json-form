@@ -1,12 +1,12 @@
 <template>
-  <p>Object</p>
+<p>Multiple Choice</p>
 </template>
 
 <script>
 import {onlyProps} from "../Layouts/layoutMixin";
 
 export default {
-name: "Object",
+name: "MultibleChoice",
   mixins: [onlyProps]
 }
 </script>

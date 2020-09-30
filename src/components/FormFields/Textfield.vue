@@ -1,12 +1,12 @@
 <template>
-  <p>Object</p>
+<p>Textfield</p>
 </template>
 
 <script>
 import {onlyProps} from "../Layouts/layoutMixin";
 
 export default {
-name: "Object",
+  name: "Textfield",
   mixins: [onlyProps]
 }
 </script>
