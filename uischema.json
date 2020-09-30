@@ -20,6 +20,7 @@
         },
         {
           "type": "Control",
+          "rating": true,
           "scope": "#/properties/rating"
         }
       ]

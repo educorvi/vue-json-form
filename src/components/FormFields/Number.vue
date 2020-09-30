@@ -1,5 +1,6 @@
 <template>
-  <b-form-input type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))" :required="required"></b-form-input>
+  <b-form-input v-if="!ui.rating" type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))" :required="required"></b-form-input>
+  <b-form-rating v-else variant="warning" :stars="item.maximum || 5" :required="required" :name="title"></b-form-rating>
 </template>
 
 <script>

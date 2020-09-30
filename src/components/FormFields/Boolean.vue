@@ -1,12 +1,12 @@
 <template>
-<b-checkbox :name="title" :required="required">{{title}}</b-checkbox>
+  <b-checkbox :required="required" :name="title">{{ title }}</b-checkbox>
 </template>
 
 <script>
 import formFieldMixin from "./formFieldMixin";
 
 export default {
-name: "Boolean",
+  name: "Boolean",
   mixins: [formFieldMixin],
 }
 </script>

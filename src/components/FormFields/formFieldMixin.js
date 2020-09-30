@@ -19,11 +19,11 @@ export default {
             return pointer.get(this.json, this.jsonPath);
         },
         title() {
-            return this.item.title || this.schemaName;
+            return (this.item.title || this.schemaName).concat(this.required ? "*" : "");
         },
         schemaName() {
             const path = pointer.parse(this.jsonPath);
-            return path[path.length-1]
+            return path[path.length - 1]
         },
         required() {
             return this.json.required.includes(this.schemaName)
