@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import layout from "./layout";
+import layout from "./layoutMixin";
 
 export default {
   name: "Group",

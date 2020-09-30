@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import layout from "./layout";
+import layout from "./layoutMixin";
 import pointer from "json-pointer"
 
 export default {

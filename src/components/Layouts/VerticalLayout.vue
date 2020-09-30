@@ -7,7 +7,7 @@
 <script>
 /* eslint-disable vue/no-unused-components */
 
-import layoutMixin from "./layout";
+import layoutMixin from "./layoutMixin";
 export default {
   name: "VerticalLayout",
   components: {

@@ -6,7 +6,7 @@
 
 <script>
 import Layouts from "./Layouts"
-import {onlyProps} from "./Layouts/layout";
+import {onlyProps} from "./Layouts/layoutMixin";
 
 export default {
   name: "form-wrap",
