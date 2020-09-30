@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container-fluid">
-      <form-wrap :json="schema" :ui="uischema"></form-wrap>
+      <form-root :json="schema" :ui="uischema"></form-root>
   </div>
 </template>
 
@@ -8,12 +8,11 @@
 
 import schema from "../schema.json";
 import uischema from "../uischema.json";
-import FormWrap from "@/components/FormWrap";
+import FormRoot from "@/components/FormRoot";
 export default {
   name: 'App',
   components: {
-    FormWrap
-
+    FormRoot
   },
   computed: {
     schema() {
