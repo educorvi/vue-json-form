@@ -7,7 +7,7 @@
 <script>
 
 import schema from "../schema.json";
-import uischema from "../uischema.json";
+import uischema from "../ui.json";
 import FormRoot from "@/components/FormRoot";
 export default {
   name: 'App',

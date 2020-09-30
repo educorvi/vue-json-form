@@ -11,7 +11,7 @@
 <script>
 import FormWrap from "./FormWrap";
 import {onlyProps} from "./Layouts/layoutMixin";
-import schemadraft from "../json-schema_draft7.json";
+import schemadraft from "../schemas/json-schema_draft7.json";
 
 export default {
   name: "FormRoot",
