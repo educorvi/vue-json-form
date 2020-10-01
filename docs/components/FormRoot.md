@@ -5,9 +5,19 @@
 <!-- @vuese:FormRoot:props:start -->
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|ui|The form's UI-Schema|`Object` /  `Array`|`true`|-|
-|json|The form's JSON-Schema|`Object`|`true`|-|
+|colorVariant|Color Variant like defined in Bootstrap-Vue|`String`|`false`|-|
+|disableValidation|-|`Boolean`|`false`|-|
 
 <!-- @vuese:FormRoot:props:end -->
+
+
+## MixIns
+
+<!-- @vuese:FormRoot:mixIns:start -->
+|MixIn|
+|---|
+|onlyProps|
+
+<!-- @vuese:FormRoot:mixIns:end -->
 
 

@@ -5,7 +5,7 @@
 <!-- @vuese:Textarea:mixIns:start -->
 |MixIn|
 |---|
-|onlyProps|
+|formFieldMixin|
 
 <!-- @vuese:Textarea:mixIns:end -->
 
