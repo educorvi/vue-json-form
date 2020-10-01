@@ -1,12 +1,12 @@
 <template>
   <div>
-    <b-container fluid="true">
+    <div>
       <b-row>
         <b-col v-for="(item, index) in ui.elements" :key="ui.toString().length+'_'+index">
           <form-wrap :json="json" :ui="item"></form-wrap>
         </b-col>
       </b-row>
-    </b-container>
+    </div>
   </div>
 </template>
 
@@ -20,5 +20,7 @@ export default {
 </script>
 
 <style scoped>
-
+.col {
+  padding: 0;
+}
 </style>
