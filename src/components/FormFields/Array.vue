@@ -7,13 +7,16 @@
             <b-icon icon="x"/>
           </b-button>
           <template v-slot:prepend>
-            <b-button class="handle" variant="outline-secondary" disabled><b-icon-grip-vertical></b-icon-grip-vertical></b-button>
+            <b-button class="handle" disabled variant="outline-secondary">
+              <b-icon-grip-vertical></b-icon-grip-vertical>
+            </b-button>
           </template>
         </FormField>
-<!--        <hr v-if="index !== fieldData.length-1">-->
+        <!--        <hr v-if="index !== fieldData.length-1">-->
       </div>
     </draggable>
-    <b-button  class="w-100"  :disabled="fieldData.filter(o => o.value === null).length>0" variant="outline-primary" @click="addItem">
+    <b-button :disabled="fieldData.filter(o => o.value === null).length>0" class="w-100" variant="outline-primary"
+              @click="addItem">
       <b-icon-plus></b-icon-plus>
     </b-button>
   </div>
@@ -71,6 +74,7 @@ export default {
   border-left-style: solid;
   border-left-color: grey;
 }
+
 .handle {
 
 }

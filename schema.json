@@ -37,7 +37,8 @@
     "testArray": {
       "type": "array",
       "items": {
-        "type": "integer"
+        "type": "integer",
+        "enum": [42, 12, 69, 420]
       }
     }
   },

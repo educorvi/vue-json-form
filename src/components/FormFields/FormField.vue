@@ -45,6 +45,9 @@ export default {
         //TODO Radiobutton
         return Select;
       }
+      if (json.items?.enum !== undefined && type === "array") {
+        return MultibleChoice;
+      }
 
       switch (type) {
         case "boolean":

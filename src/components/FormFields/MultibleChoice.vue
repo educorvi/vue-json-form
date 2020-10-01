@@ -1,5 +1,9 @@
 <template>
-<p>Multiple Choice</p>
+  <b-form-checkbox-group
+      v-model="fieldData"
+      :options="options"
+      :name="schemaName"
+  />
 </template>
 
 <script>
@@ -7,7 +11,19 @@ import formFieldMixin from "./formFieldMixin";
 
 export default {
 name: "MultibleChoice",
-  mixins: [formFieldMixin]
+  mixins: [formFieldMixin],
+  computed: {
+    options() {
+      function getTextForItem(options, key){
+        if (options?.enumTitles) {
+          return options.enumTitles[key] || key;
+        }
+        return key;
+      }
+
+      return this.item.items.enum.map(key => {return {value: key, text: getTextForItem(this.ui.options, key)}})
+    }
+  },
 }
 </script>
 

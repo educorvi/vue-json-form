@@ -10,11 +10,14 @@ name: "Select",
   mixins: [formFieldMixin],
   computed: {
     options() {
-      function getTextForItem(key){
+      function getTextForItem(options, key){
+        if (options?.enumTitles) {
+          return options.enumTitles[key] || key;
+        }
         return key;
       }
 
-      return this.item.enum.map(key => {return {value: key, text: getTextForItem(key)}})
+      return this.item.enum.map(key => {return {value: key, text: getTextForItem(this.ui.options, key)}})
     }
   },
 }
