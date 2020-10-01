@@ -20,6 +20,11 @@
           "type": "boolean",
           "default": true
         },
+        "format": {
+          "description": "Format for string fields",
+          "type": "string",
+          "enum": ["time", "date", "date-time", "email", "password", "search", "url", "tel", "color"]
+        },
         "options": {
           "type": "object",
           "properties": {

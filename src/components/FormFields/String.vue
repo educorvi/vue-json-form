@@ -1,7 +1,7 @@
 <template>
   <b-form-textarea v-if="ui.options && ui.options.multi" v-model="fieldData"
                    :rows="typeof ui.options.multi === 'number' ? ui.options.multi : 3" :placeholder="ui.options ? ui.options.placeholder : ''"/>
-  <b-input v-model="fieldData" v-else-if="item.format !== 'date-time'" :type="item.format" :placeholder="ui.options ? ui.options.placeholder : ''"/>
+  <b-input v-model="fieldData" v-else-if="(ui.format || item.format) !== 'date-time'" :type="ui.format || item.format" :placeholder="ui.options ? ui.options.placeholder : ''"/>
   <date-time @changedData="loopUp" v-else :json="json" :ui="ui"/>
 </template>
 
