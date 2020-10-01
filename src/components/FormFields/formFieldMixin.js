@@ -13,7 +13,7 @@ export default {
     },
     computed: {
         jsonPath() {
-            return this.ui.scope.substring(1, this.ui.scope.length)
+            return this.ui.scope.replace(/#/g, "");
         },
         item() {
             return pointer.get(this.json, this.jsonPath);
