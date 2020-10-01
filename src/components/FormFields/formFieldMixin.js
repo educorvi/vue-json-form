@@ -36,10 +36,14 @@ export default {
     },
     methods: {
         loopUp(data) {
-            this.$emit("changedData", data)
+            this.fieldData = data;
+            // this.$emit("changedData", data)
         },
         send(data) {
             this.$emit("changedData", {key: this.schemaName, value: data})
+        },
+        hasSlot (name = 'default') {
+            return !!this.$slots[ name ] || !!this.$scopedSlots[ name ];
         }
     },
     watch: {

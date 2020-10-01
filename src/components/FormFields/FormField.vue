@@ -5,7 +5,7 @@
     <b-input-group class="w-100">
       <component @changedData="loopUp" :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required" :ui="ui"/>
-      <b-input-group-append>
+      <b-input-group-append v-if="hasSlot()">
         <slot></slot>
       </b-input-group-append>
     </b-input-group>

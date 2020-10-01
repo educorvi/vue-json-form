@@ -1,22 +1,39 @@
 <template>
-<div>
-  <b-row>
-    <b-col cols="6">
-      <b-input type="date"/>
-    </b-col>
-    <b-col cols="6">
-      <b-input type="time"/>
-    </b-col>
-  </b-row>
-</div>
+  <div>
+    <b-input-group>
+      <b-input v-model="date" type="date"/>
+      <b-input-group-append>
+        <b-input v-model="time" type="time" style="border-bottom-left-radius: 0; border-top-left-radius: 0"/>
+      </b-input-group-append>
+    </b-input-group>
+  </div>
 </template>
 
 <script>
 import formFieldMixin from "@/components/FormFields/formFieldMixin";
 
 export default {
-name: "DateTime",
-  mixins: [formFieldMixin]
+  name: "DateTime",
+  mixins: [formFieldMixin],
+  data() {
+    return {
+      date: null,
+      time: null
+    }
+  },
+  methods: {
+    set() {
+      this.fieldData = this.date + "T" + this.time;
+    }
+  },
+  watch: {
+    date() {
+      this.set();
+    },
+    time() {
+      this.set();
+    }
+  },
 }
 </script>
 

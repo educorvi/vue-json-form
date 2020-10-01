@@ -14,7 +14,7 @@
     },
     "due_date": {
       "type": "string",
-      "format": "date"
+      "format": "date-time"
     },
     "rating": {
       "title": "Rating",

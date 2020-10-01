@@ -1,6 +1,6 @@
 <template>
-  <b-form-input v-if="!ui.options || !ui.options.rating" type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))" :required="required" :placeholder="ui.options ? ui.options.placeholder : ''"></b-form-input>
-  <b-form-rating v-else variant="warning" :stars="item.maximum || 5" :required="required" :name="title"></b-form-rating>
+  <b-form-input v-model="fieldData" v-if="!ui.options || !ui.options.rating" type="number" :name="title" :step="isInteger ? 1 : (item.multipleOf || Math.pow(10, -10))" :required="required" :placeholder="ui.options ? ui.options.placeholder : ''"></b-form-input>
+  <b-form-rating v-model="fieldData" v-else variant="warning" :stars="item.maximum || 5" :required="required" :name="title"></b-form-rating>
 </template>
 
 <script>
