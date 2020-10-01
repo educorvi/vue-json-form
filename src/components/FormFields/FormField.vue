@@ -3,6 +3,9 @@
                 :description="item.description"
                 :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null" :label-for="schemaName">
     <b-input-group class="w-100">
+      <b-input-group-prepend v-if="hasSlot('prepend')">
+        <slot name="prepend"></slot>
+      </b-input-group-prepend>
       <component @changedData="loopUp" :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required" :ui="ui"/>
       <b-input-group-append v-if="hasSlot()">
