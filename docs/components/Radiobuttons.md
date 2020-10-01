@@ -5,7 +5,7 @@
 <!-- @vuese:Radiobuttons:mixIns:start -->
 |MixIn|
 |---|
-|onlyProps|
+|formFieldMixin|
 
 <!-- @vuese:Radiobuttons:mixIns:end -->
 

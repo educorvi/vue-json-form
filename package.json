@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "doc": "vuese gen && copyfiles README.md docs -E && git add docs"
+    "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs"
   },
   "dependencies": {
     "bootstrap": "^4.5.2",

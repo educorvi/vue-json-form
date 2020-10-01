@@ -5,7 +5,7 @@
 <!-- @vuese:MultibleChoice:mixIns:start -->
 |MixIn|
 |---|
-|onlyProps|
+|formFieldMixin|
 
 <!-- @vuese:MultibleChoice:mixIns:end -->
 

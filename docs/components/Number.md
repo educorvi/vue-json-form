@@ -5,7 +5,7 @@
 <!-- @vuese:Number:props:start -->
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|integer|-|`Boolean`|`false`|-|
+|isInteger|-|`Boolean`|`false`|-|
 
 <!-- @vuese:Number:props:end -->
 
@@ -15,7 +15,7 @@
 <!-- @vuese:Number:mixIns:start -->
 |MixIn|
 |---|
-|onlyProps|
+|formFieldMixin|
 
 <!-- @vuese:Number:mixIns:end -->
 
