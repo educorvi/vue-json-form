@@ -1,6 +1,15 @@
 <template>
-  <b-form-group :id="'formGroup_'+schemaName" :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null" :description="item.description" :label-for="schemaName">
-    <component :is="type" :json="json" :ui="ui" :isInteger="item.type === 'integer'" :id="schemaName" :placeholder="ui.options ? ui.options.placeholder : null" :name="title" :required="required"/>
+  <b-form-group :id="'formGroup_'+schemaName"
+                :description="item.description"
+                :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null" :label-for="schemaName">
+    <b-input-group class="w-100">
+      <component @changedData="loopUp" :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
+                 :required="required" :ui="ui"/>
+      <b-input-group-append>
+        <slot></slot>
+      </b-input-group-append>
+    </b-input-group>
+
   </b-form-group>
 </template>
 
@@ -13,7 +22,6 @@ import Boolean from "./Boolean";
 import MultibleChoice from "./MultibleChoice";
 import Number from "./Number";
 import Object from "./Object";
-import Radiobuttons from "./Radiobuttons";
 import Select from "./Select";
 import String from "./String";
 import defaultField from "./defaultField";
@@ -30,7 +38,7 @@ export default {
       const json = this.item;
 
       //Special Treatment for Enums
-      if(json.enum !== undefined && type !== "array"){
+      if (json.enum !== undefined && type !== "array") {
         //TODO Radiobutton
         return Select;
       }
@@ -52,8 +60,6 @@ export default {
         default:
           return defaultField;
       }
-
-
     }
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <FormField :json="json" :ui="ui"/>
+  <FormField :json="json" :ui="ui" :name="ui.scope"/>
 </template>
 
 <script>

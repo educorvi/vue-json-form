@@ -35,7 +35,8 @@
       "type": "Control",
       "scope": "#/properties/description",
       "options": {
-        "multi": true
+        "multi": true,
+        "placeholder": "Hier eine ganz ausführliche Beschreibung eingeben"
       }
     },
     {
@@ -58,6 +59,10 @@
           }
         }
       ]
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/testArray"
     }
   ]
 }

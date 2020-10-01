@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid pt-5" style="max-width: 800px">
+  <div id="app" class="container-fluid pt-5" style="max-width: 800px" v-if="schema && uischema">
       <form-root :json="schema" :ui="uischema"></form-root>
   </div>
 </template>
@@ -14,14 +14,16 @@ export default {
   components: {
     FormRoot
   },
-  computed: {
-    schema() {
-      return schema;
-    },
-    uischema() {
-      return uischema
+  data() {
+    return {
+      schema: null,
+      uischema: null
     }
   },
+  created() {
+    this.schema = schema;
+    this.uischema = uischema;
+  }
 }
 </script>
 

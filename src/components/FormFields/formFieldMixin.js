@@ -1,6 +1,11 @@
 import pointer from "json-pointer";
 
 export default {
+    data() {
+        return {
+            fieldData: null
+        }
+    },
     props: {
         //The form's UI-Schema
         ui: {
@@ -29,4 +34,20 @@ export default {
             return this.json.required.includes(this.schemaName)
         }
     },
+    methods: {
+        loopUp(data) {
+            this.$emit("changedData", data)
+        },
+        send(data) {
+            this.$emit("changedData", {key: this.schemaName, value: data})
+        }
+    },
+    watch: {
+        fieldData(newValue) {
+            this.send(newValue)
+        }
+    },
+    created() {
+        this.fieldData = this.item.default;
+    }
 }
