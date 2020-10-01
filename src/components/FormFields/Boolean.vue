@@ -1,5 +1,5 @@
 <template>
-  <b-checkbox :required="required" :name="title">{{ title }}</b-checkbox>
+  <b-checkbox :required="required" :name="title"><span v-if="ui.label || ui.label === undefined">{{ title }}</span></b-checkbox>
 </template>
 
 <script>

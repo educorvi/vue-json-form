@@ -18,7 +18,7 @@
         },
         "label": {
           "type": "boolean",
-          "default": false
+          "default": true
         },
         "options": {
           "type": "object",

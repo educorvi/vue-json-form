@@ -1,5 +1,5 @@
 <template>
-  <b-form-group :id="'formGroup_'+schemaName" :label="item.type !== 'boolean' ? title : null" :description="item.description" :label-for="schemaName">
+  <b-form-group :id="'formGroup_'+schemaName" :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null" :description="item.description" :label-for="schemaName">
     <component :is="type" :json="json" :ui="ui" :isInteger="item.type === 'integer'" :id="schemaName" :placeholder="item.placeholder"/>
   </b-form-group>
 </template>
