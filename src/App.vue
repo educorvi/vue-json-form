@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid pt-5">
+  <div id="app" class="container-fluid pt-5" style="max-width: 800px">
       <form-root :json="schema" :ui="uischema"></form-root>
   </div>
 </template>

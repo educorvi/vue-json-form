@@ -1,7 +1,7 @@
 <template>
   <b-form @submit="onSubmit" v-if="valid || disableValidation">
     <FormWrap :json="json" :ui="ui"></FormWrap>
-    <b-button :variant="colorVariant || 'primary'" type="submit">Send</b-button>
+    <b-button :variant="colorVariant || 'primary'" type="submit" class="float-right">Send</b-button>
   </b-form>
   <b-jumbotron v-else-if="validationResults" header="Error" bg-variant="danger" text-variant="white" lead="Validation of the form's schema failed with the following errors:">
     <b-card class="error_card mb-3" v-for="(error, index) in validationResults.errors" :key="error.stack+index" :header="error.property">"{{error.instance}}" {{error.message}}</b-card>
