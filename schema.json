@@ -10,7 +10,9 @@
       "type": "string"
     },
     "done": {
-      "type": "boolean"
+      "type": "boolean",
+      "title": "Toller Button",
+      "description": "Bitte drücken"
     },
     "due_date": {
       "type": "string",
