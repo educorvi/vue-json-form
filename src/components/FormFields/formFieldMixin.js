@@ -24,7 +24,16 @@ export default {
             return pointer.get(this.json, this.jsonPath);
         },
         title() {
-            return (this.item.title || this.schemaName).concat(this.required ? "*" : "");
+            function titleCase(string) {
+                let sentence = string.toLowerCase().split("_");
+                for (let i = 0; i < sentence.length; i++) {
+                    sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+                }
+
+                return sentence.join(" ");
+            }
+
+            return (this.item.title || titleCase(this.schemaName)).concat(this.required ? "*" : "");
         },
         schemaName() {
             const path = pointer.parse(this.jsonPath);
