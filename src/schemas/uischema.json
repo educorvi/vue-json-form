@@ -24,9 +24,16 @@
           "type": "object",
           "properties": {
             "multi": {
-              "type": "boolean",
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
               "default": false,
-              "description": "If set true, textarea will be shown instead of textfield"
+              "description": "If set true, textarea will be shown instead of textfield \n Alternatively can be set to the number of wanted lines"
             },
             "rating": {
               "type": "boolean",

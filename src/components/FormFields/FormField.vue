@@ -15,8 +15,7 @@ import Number from "./Number";
 import Object from "./Object";
 import Radiobuttons from "./Radiobuttons";
 import Select from "./Select";
-import Textarea from "./Textarea";
-import Textfield from "./Textfield";
+import String from "./String";
 import defaultField from "./defaultField";
 
 export default {
@@ -46,8 +45,7 @@ export default {
         case "object":
           return Object
         case "string":
-          //TODO Textarea
-          return Textfield;
+          return String;
         case "array":
           return (json.enum === undefined) ? Array : MultibleChoice;
 
