@@ -36,11 +36,16 @@ export default {
     },
     methods: {
         loopUp(data) {
-            this.fieldData = data;
-            // this.$emit("changedData", data)
+            // this.fieldData = data;
+            this.$emit("changedData", data)
         },
         send(data) {
-            this.$emit("changedData", {key: this.schemaName, value: data})
+            if (!this.isArray) {
+                this.$emit("changedData", {key: this.ui.scope, value: data});
+            } else {
+                this.$emit("changedData", {key: this.ui.scope, value: data.map(obj => obj.value)});
+            }
+
         },
         hasSlot (name = 'default') {
             return !!this.$slots[ name ] || !!this.$scopedSlots[ name ];

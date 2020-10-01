@@ -30,19 +30,23 @@ export default {
       };
     }
   },
+  data() {
+    return {
+      isArray: true
+    }
+  },
   methods: {
     addItem() {
       if(this.fieldData[this.fieldData.length-1]!==null) this.fieldData.push({value: null, gentime: new Date()});
     },
     deleteItem(i) {
       this.fieldData.splice(i, 1);
-      console.log("delete " + i)
     },
     dataChanged(index, item) {
-      console.log(index + ' Data: ' + JSON.stringify(item.value));
       const time = this.fieldData[index] ? this.fieldData[index].gentime : new Date();
       this.$set(this.fieldData, index, {value: item.value, gentime: time});
-    }
+    },
+
   },
   created() {
     this.fieldData = [];

@@ -4,7 +4,7 @@
       <h5 class="m-0">{{ui.label}}</h5>
     </b-card-header>
     <b-card-body>
-      <vertical-layout :json="json" :ui="{...ui, type: 'VerticalLayout'}"/>
+      <vertical-layout @changedData="loopUp" :json="json" :ui="{...ui, type: 'VerticalLayout'}"/>
     </b-card-body>
 
   </b-card>

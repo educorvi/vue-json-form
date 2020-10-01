@@ -1,6 +1,6 @@
 <template>
   <b-form v-if="valid || disableValidation" @submit="onSubmit">
-    <FormWrap :json="json" :ui="ui"></FormWrap>
+    <FormWrap @changedData="saveData" :json="json" :ui="ui"></FormWrap>
     <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">Send</b-button>
   </b-form>
   <b-jumbotron v-else-if="validationResults" bg-variant="danger" header="Error"
@@ -32,7 +32,8 @@ export default {
       validationResults: {
         schema: null,
         ui: null
-      }
+      },
+      data: {}
     }
   },
   computed: {
@@ -60,6 +61,9 @@ export default {
     validateJson(json, schema = schemadraft) {
       const validate = require('jsonschema').validate;
       return validate(json, schema);
+    },
+    saveData(data) {
+      this.$set(this.data, data.key, data.value)
     }
   },
   created() {

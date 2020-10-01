@@ -1,16 +1,16 @@
 <template>
   <div class="container-fluid">
-    <component :is="type" :ui="ui" :json="json"></component>
+    <component @changedData="loopUp" :is="type" :ui="ui" :json="json"></component>
   </div>
 </template>
 
 <script>
 import Layouts from "./Layouts"
-import {onlyProps} from "./Layouts/layoutMixin";
+import {onlyMethods, onlyProps} from "./Layouts/layoutMixin";
 
 export default {
   name: "form-wrap",
-  mixins: [onlyProps],
+  mixins: [onlyProps, onlyMethods],
   computed: {
     type() {
       return this.getComponentFromObject(this.ui);

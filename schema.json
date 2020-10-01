@@ -32,8 +32,7 @@
       ]
     },
     "recurrence_interval": {
-      "type": "integer",
-      "default": 2
+      "type": "integer"
     },
     "testArray": {
       "type": "array",
