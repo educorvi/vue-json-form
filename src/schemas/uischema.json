@@ -39,6 +39,10 @@
               "type": "boolean",
               "default": false,
               "description": "if set to true, numberfield will appear as star-rating-field"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "Will be shown as placeholder in form fields, if supported by field"
             }
           }
         },

@@ -9,7 +9,10 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/name"
+      "scope": "#/properties/name",
+      "options": {
+        "placeholder": "Voller Name"
+      }
     },
     {
       "type": "HorizontalLayout",
