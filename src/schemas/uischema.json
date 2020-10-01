@@ -43,6 +43,20 @@
             "placeholder": {
               "type": "string",
               "description": "Will be shown as placeholder in form fields, if supported by field"
+            },
+            "enumTitles": {
+              "type": "object",
+              "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1
+              },
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             }
           }
         },
