@@ -1,19 +1,21 @@
 <template>
   <div v-if="item.items && item.items.type" class="arrDiv w-100">
     <draggable v-model="fieldData" handle=".handle">
-      <div v-for="(item, index) in fieldData" :key="item.gentime.toLocaleString()">
-        <FormField :json="json" :name="schemaName+index" :ui="fakeUI" @changedData="dataChanged(index, $event)">
-          <b-button variant="outline-danger" @click="deleteItem(index)">
-            <b-icon icon="x"/>
-          </b-button>
-          <template v-slot:prepend>
-            <b-button class="handle" disabled variant="outline-secondary">
-              <b-icon-grip-vertical></b-icon-grip-vertical>
+      <transition-group name="arrayedit">
+        <div v-for="(item, index) in fieldData" :key="item.gentime.toLocaleString()">
+          <FormField :json="json" :name="schemaName+index" :ui="fakeUI" @changedData="dataChanged(index, $event)">
+            <b-button variant="outline-danger" @click="deleteItem(index)">
+              <b-icon icon="x"/>
             </b-button>
-          </template>
-        </FormField>
-        <!--        <hr v-if="index !== fieldData.length-1">-->
-      </div>
+            <template v-slot:prepend>
+              <b-button class="handle" disabled variant="outline-secondary">
+                <b-icon-grip-vertical></b-icon-grip-vertical>
+              </b-button>
+            </template>
+          </FormField>
+          <!--        <hr v-if="index !== fieldData.length-1">-->
+        </div>
+      </transition-group>
     </draggable>
     <b-button :disabled="fieldData.filter(o => o.value === null).length>0" class="w-100" variant="outline-primary"
               @click="addItem">
@@ -76,6 +78,18 @@ export default {
 }
 
 .handle {
+  //Do NOT delete!
+}
 
+.arrayedit {
+
+}
+
+.arrayedit-enter-active, .arrayedit-leave-active {
+  transition: all 0.4s;
+}
+.arrayedit-enter, .arrayedit-leave-to /* .arrayedit-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
