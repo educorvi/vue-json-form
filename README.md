@@ -1,6 +1,6 @@
 # vue_json_form
 
-Automaticly generates form json schema and json ui schema.
+Automaticly generates form from json schema and json ui schema.
 ## Project setup
 ```
 npm install
