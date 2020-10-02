@@ -1,6 +1,6 @@
 <template>
   <div class="embDiv">
-    <FormWrap :json="json" :ui="fakeUI"/>
+    <FormWrap :json="json" :ui="fakeUI" @changedData="collect"/>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import formFieldMixin from "./formFieldMixin";
 
 export default {
   name: "Object",
-  components: {FormWrap : () => import("../FormWrap")},
+  components: {FormWrap: () => import("../FormWrap")},
   mixins: [formFieldMixin],
   computed: {
     fakeUI() {
@@ -22,6 +22,15 @@ export default {
       }
 
       return {elements, type: "VerticalLayout"}
+    }
+  },
+  methods: {
+    collect(data) {
+      const s = data.key.split("/");
+      if (!this.fieldData) {
+        this.fieldData = {};
+      }
+      this.$set(this.fieldData, s[s.length - 1], data.value);
     }
   },
 }
