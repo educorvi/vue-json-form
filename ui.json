@@ -43,7 +43,10 @@
       "elements": [
         {
           "type": "Control",
-          "scope": "#/properties/recurrence"
+          "scope": "#/properties/recurrence",
+          "options": {
+            "radiobuttons": true
+          }
         },
         {
           "type": "Control",

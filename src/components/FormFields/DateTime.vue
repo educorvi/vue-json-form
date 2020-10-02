@@ -1,9 +1,9 @@
 <template>
   <div>
-    <b-input-group>
+    <b-input-group :name="title">
       <b-input v-model="date" type="date"/>
       <b-input-group-append>
-        <b-input v-model="time" type="time" style="border-bottom-left-radius: 0; border-top-left-radius: 0"/>
+        <b-input v-model="time" style="border-bottom-left-radius: 0; border-top-left-radius: 0" type="time"/>
       </b-input-group-append>
     </b-input-group>
   </div>

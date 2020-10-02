@@ -1,13 +1,15 @@
 <template>
   <b-form-group :id="'formGroup_'+schemaName"
                 :description="item.description"
-                :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null" :label-for="schemaName">
+                :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null"
+                :label-for="schemaName">
     <b-input-group class="w-100">
       <b-input-group-prepend v-if="hasSlot('prepend')">
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component @changedData="loopUp" :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
-                 :required="required" :ui="ui"/>
+      <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
+                 :required="required"
+                 :ui="ui" @changedData="loopUp"/>
       <b-input-group-append v-if="hasSlot()">
         <slot></slot>
       </b-input-group-append>
@@ -28,6 +30,7 @@ import Object from "./Object";
 import Select from "./Select";
 import String from "./String";
 import defaultField from "./defaultField";
+import Radiobuttons from "@/components/FormFields/Radiobuttons";
 
 export default {
   name: "FormField",
@@ -42,8 +45,11 @@ export default {
 
       //Special Treatment for Enums
       if (json.enum !== undefined && type !== "array") {
-        //TODO Radiobutton
-        return Select;
+        if (this.ui.options?.radiobuttons) {
+          return Radiobuttons;
+        } else {
+          return Select;
+        }
       }
       if (json.items?.enum !== undefined && type === "array") {
         return MultibleChoice;

@@ -56,8 +56,8 @@ export default {
             }
 
         },
-        hasSlot (name = 'default') {
-            return !!this.$slots[ name ] || !!this.$scopedSlots[ name ];
+        hasSlot(name = 'default') {
+            return !!this.$slots[name] || !!this.$scopedSlots[name];
         }
     },
     watch: {

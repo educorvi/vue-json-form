@@ -6,7 +6,7 @@
 import formFieldMixin from "./formFieldMixin";
 
 export default {
-name: "Object",
+  name: "Object",
   mixins: [formFieldMixin]
 }
 </script>

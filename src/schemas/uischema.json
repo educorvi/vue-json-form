@@ -62,6 +62,11 @@
                   "minLength": 1
                 }
               }
+            },
+            "radiobuttons": {
+              "type": "boolean",
+              "description": "If set to true, a group of radiobuttons will be shown instead of the select field",
+              "default": false
             }
           }
         },
