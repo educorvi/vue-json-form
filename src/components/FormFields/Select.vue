@@ -1,5 +1,5 @@
 <template>
-  <b-form-select v-model="fieldData" :name="title" :options="options"/>
+  <b-form-select ref="child" v-model="fieldData" :name="title" :options="options"/>
 </template>
 
 <script>

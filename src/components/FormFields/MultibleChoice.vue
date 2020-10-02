@@ -1,5 +1,6 @@
 <template>
   <b-form-checkbox-group
+      ref="child"
       v-model="fieldData"
       :name="title"
       :options="options"
