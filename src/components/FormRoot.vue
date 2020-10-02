@@ -1,7 +1,7 @@
 <template>
   <b-form v-if="valid || disableValidation" @submit="onSubmit">
     <FormWrap @changedData="saveData" :json="json" :ui="ui"></FormWrap>
-    <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">Send</b-button>
+    <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">{{sendText || 'Send'}}</b-button>
   </b-form>
   <b-jumbotron v-else-if="validationResults" bg-variant="danger" header="Error"
                lead="Validation of the form's schema failed with the following errors:"
@@ -46,11 +46,13 @@ export default {
   props: {
     //Color Variant like defined in Bootstrap-Vue
     colorVariant: {
-      type: String,
-      required: false
+      type: String
     },
     disableValidation: {
       type: Boolean
+    },
+    sendText: {
+      type: String
     }
   },
   methods: {

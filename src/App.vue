@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container-fluid pt-5 pb-5" style="max-width: 800px" v-if="schema && uischema">
-      <form-root :json="schema" :ui="uischema"></form-root>
+      <form-root :json="schema" :ui="uischema" send-text="Senden"></form-root>
   </div>
 </template>
 
