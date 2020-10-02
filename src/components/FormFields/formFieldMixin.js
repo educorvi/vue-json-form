@@ -64,11 +64,14 @@ export default {
             const ret = pointer.compile(split.slice(1, split.length - 2));
             return pointer.get(this.json, ret);
 
+        },
+        focus() {
+            this.$refs.child.focus();
         }
     },
     watch: {
         fieldData(newValue) {
-            this.send(newValue)
+            this.send(newValue);
         }
     },
     created() {
