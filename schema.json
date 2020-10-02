@@ -41,11 +41,27 @@
       "items": {
         "type": "string"
       }
+    },
+    "testObject": {
+      "type": "object",
+      "title": "Haustier",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gib mir einen tollen Namen"
+        },
+        "alter": {
+          "type": "integer"
+        },
+        "flauschig": {
+          "type": "boolean"
+        }
+      },
+      "required": ["name", "alter"]
     }
+
   },
   "required": [
-    "name",
-    "due_date",
     "done"
   ]
 }

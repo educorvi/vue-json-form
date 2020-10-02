@@ -40,7 +40,7 @@ export default {
             return path[path.length - 1]
         },
         required() {
-            return this.json.required.includes(this.schemaName)
+            return this.getGrandparent(this.jsonPath).required?.includes(this.schemaName)
         }
     },
     methods: {
@@ -58,6 +58,12 @@ export default {
         },
         hasSlot(name = 'default') {
             return !!this.$slots[name] || !!this.$scopedSlots[name];
+        },
+        getGrandparent(path) {
+            let split = path.split("/");
+            const ret = pointer.compile(split.slice(1, split.length - 2));
+            return pointer.get(this.json, ret);
+
         }
     },
     watch: {

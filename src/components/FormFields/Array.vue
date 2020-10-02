@@ -1,8 +1,8 @@
 <template>
-  <div v-if="item.items && item.items.type" class="arrDiv w-100">
+  <div v-if="item.items && item.items.type" class="embDiv w-100">
     <draggable v-model="fieldData" handle=".handle">
       <transition-group name="arrayedit">
-        <div v-for="(item, index) in fieldData" :key="item.gentime.toLocaleString()">
+        <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">
           <FormField :json="json" :name="schemaName+index" :ui="fakeUI" @changedData="dataChanged(index, $event)">
             <b-button variant="outline-danger" @click="deleteItem(index)">
               <b-icon icon="x"/>
@@ -13,7 +13,7 @@
               </b-button>
             </template>
           </FormField>
-          <!--        <hr v-if="index !== fieldData.length-1">-->
+          <hr v-if="index !== fieldData.length-1 && item.items.type === 'object'">
         </div>
       </transition-group>
     </draggable>
@@ -70,7 +70,7 @@ export default {
 <style lang="scss">
 @import "./src/styles";
 
-.arrDiv {
+.embDiv {
   margin-left: 10px;
   padding-left: 10px;
   border-left-style: solid;
@@ -88,7 +88,9 @@ export default {
 .arrayedit-enter-active, .arrayedit-leave-active {
   transition: all 0.4s;
 }
-.arrayedit-enter, .arrayedit-leave-to /* .arrayedit-leave-active below version 2.1.8 */ {
+
+.arrayedit-enter, .arrayedit-leave-to /* .arrayedit-leave-active below version 2.1.8 */
+{
   opacity: 0;
   transform: translateX(30px);
 }
