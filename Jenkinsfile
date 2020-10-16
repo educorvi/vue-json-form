@@ -31,6 +31,7 @@ pipeline {
         stage('Build NPM') {
           steps {
             sh 'npm run build:npm'
+            sh 'npm run zip'
           }
         }
 
@@ -50,4 +51,9 @@ pipeline {
     }
 
   }
+  post {
+        always {
+            archiveArtifacts 'dist.zip'
+        }
+    }
 }
