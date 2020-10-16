@@ -7,6 +7,7 @@
 |---|---|---|---|---|
 |colorVariant|Color Variant like defined in Bootstrap-Vue|`String`|`false`|-|
 |disableValidation|-|`Boolean`|`false`|-|
+|sendText|-|`String`|`false`|-|
 
 <!-- @vuese:FormRoot:props:end -->
 

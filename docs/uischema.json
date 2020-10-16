@@ -18,20 +18,55 @@
         },
         "label": {
           "type": "boolean",
-          "default": false
+          "default": true
+        },
+        "format": {
+          "description": "Format for string fields",
+          "type": "string",
+          "enum": ["time", "date", "date-time", "email", "password", "search", "url", "tel", "color"]
         },
         "options": {
           "type": "object",
           "properties": {
             "multi": {
-              "type": "boolean",
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
               "default": false,
-              "description": "If set true, textarea will be shown instead of textfield"
+              "description": "If set true, textarea will be shown instead of textfield \n Alternatively can be set to the number of wanted lines"
             },
             "rating": {
               "type": "boolean",
               "default": false,
               "description": "if set to true, numberfield will appear as star-rating-field"
+            },
+            "placeholder": {
+              "type": "string",
+              "description": "Will be shown as placeholder in form fields, if supported by field"
+            },
+            "enumTitles": {
+              "type": "object",
+              "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1
+              },
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "radiobuttons": {
+              "type": "boolean",
+              "description": "If set to true, a group of radiobuttons will be shown instead of the select field",
+              "default": false
             }
           }
         },

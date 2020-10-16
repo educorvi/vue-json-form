@@ -6,6 +6,7 @@
 |MixIn|
 |---|
 |onlyProps|
+|onlyMethods|
 
 <!-- @vuese:form-wrap:mixIns:end -->
 

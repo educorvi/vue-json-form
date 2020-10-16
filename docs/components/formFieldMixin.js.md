@@ -11,3 +11,23 @@
 <!-- @vuese:formFieldMixin.js:props:end -->
 
 
+## Events
+
+<!-- @vuese:formFieldMixin.js:events:start -->
+|Event Name|Description|Parameters|
+|---|---|---|
+|changedData|this.fieldData = data;|-|
+
+<!-- @vuese:formFieldMixin.js:events:end -->
+
+
+## Slots
+
+<!-- @vuese:formFieldMixin.js:slots:start -->
+|Name|Description|Default Slot Content|
+|---|---|---|
+|name|-|-|
+
+<!-- @vuese:formFieldMixin.js:slots:end -->
+
+
