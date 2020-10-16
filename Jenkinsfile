@@ -3,9 +3,7 @@ pipeline {
     docker {
       image 'node'
     }
-  }
-  environment {
-        HOME = '.'
+
   }
   stages {
     stage('Preparation') {
@@ -32,6 +30,7 @@ pipeline {
           steps {
             sh 'npm run build:npm'
             sh 'npm run zip'
+            archiveArtifacts 'dist.zip'
           }
         }
 
@@ -51,9 +50,7 @@ pipeline {
     }
 
   }
-  post {
-        always {
-            archiveArtifacts 'dist.zip'
-        }
-    }
+  environment {
+    HOME = '.'
+  }
 }
