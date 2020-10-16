@@ -21,16 +21,16 @@
 <script>
 /* eslint-disable no-unused-vars */
 
-import formFieldMixin from "./formFieldMixin";
-import Array from "./Array";
-import Boolean from "./Boolean";
-import MultibleChoice from "./MultibleChoice";
-import Number from "./Number";
-import Object from "./Object";
-import Select from "./Select";
-import String from "./String";
-import defaultField from "./defaultField";
-import Radiobuttons from "@/components/FormFields/Radiobuttons";
+import formFieldMixin from "./formFieldMixin.js";
+import Array from "./Array.vue";
+import Boolean from "./Boolean.vue";
+import MultibleChoice from "./MultibleChoice.vue";
+import Number from "./Number.vue";
+import Object from "./Object.vue";
+import Select from "./Select.vue";
+import String from "./String.vue";
+import defaultField from "./defaultField.vue";
+import Radiobuttons from "./Radiobuttons.vue";
 
 export default {
   name: "FormField",

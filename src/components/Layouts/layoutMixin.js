@@ -28,9 +28,9 @@ export default {
     props,
     methods,
     components: {
-        FormWrap: () => import('../FormWrap'),
-        HorizontalLayout: () => import('./HorizontalLayout'),
-        VerticalLayout: () => import('./VerticalLayout'),
-        Group: () => import('./Group'),
+        FormWrap: () => import('../FormWrap.vue'),
+        HorizontalLayout: () => import('./HorizontalLayout.vue'),
+        VerticalLayout: () => import('./VerticalLayout.vue'),
+        Group: () => import('./Group.vue'),
     },
 }

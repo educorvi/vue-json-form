@@ -7,11 +7,11 @@
 <script>
 /* eslint-disable vue/no-unused-components */
 
-import layoutMixin from "./layoutMixin";
+import layoutMixin from "./layoutMixin.js";
 export default {
   name: "VerticalLayout",
   components: {
-    FormWrap: () => import('../FormWrap')
+    FormWrap: () => import('../FormWrap.vue')
   },
   mixins: [layoutMixin]
 }

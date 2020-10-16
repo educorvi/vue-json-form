@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import FormWrap from "./FormWrap";
-import {onlyProps} from "./Layouts/layoutMixin";
+import FormWrap from "./FormWrap.vue";
+import {onlyProps} from "./Layouts/layoutMixin.js";
 import schemadraft from "../schemas/json-schema_draft7.json";
 import uischema from "../schemas/uischema.json"
 
@@ -83,7 +83,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .error_card {
   color: black;
 }

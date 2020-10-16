@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import formFieldMixin from "./formFieldMixin";
-import DateTime from "@/components/FormFields/DateTime";
+import formFieldMixin from "./formFieldMixin.js";
+import DateTime from "./DateTime.vue";
 
 export default {
   name: "String",

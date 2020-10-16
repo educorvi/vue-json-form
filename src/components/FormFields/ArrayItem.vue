@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import formFieldMixin from "./formFieldMixin";
+import formFieldMixin from "./formFieldMixin.js";
 
 export default {
   name: "ArrayItem",
   mixins: [formFieldMixin],
-  components: {FormField: () => import("./FormField")},
+  components: {FormField: () => import("./FormField.vue")},
   props: {
     index: {
       type: Number,
