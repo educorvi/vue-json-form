@@ -3,17 +3,7 @@
     <draggable v-model="fieldData" handle=".handle">
       <transition-group name="arrayedit">
         <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">
-          <FormField :json="json" :name="schemaName+index" :ui="fakeUI" @changedData="dataChanged(index, $event)">
-            <b-button variant="outline-danger" @click="deleteItem(index)">
-              <b-icon icon="x"/>
-            </b-button>
-            <template v-slot:prepend>
-              <b-button class="handle" disabled variant="outline-secondary">
-                <b-icon-grip-vertical></b-icon-grip-vertical>
-              </b-button>
-            </template>
-          </FormField>
-          <hr v-if="index !== fieldData.length-1 && item.items.type === 'object'">
+            <ArrayItem @changedData="dataChanged(index, $event)" @deleteItem="deleteItem(index)" :divider="index !== fieldData.length-1 && item.items.type === 'object'" :index="index" :json="json" :ui="fakeUI"/>
         </div>
       </transition-group>
     </draggable>
@@ -30,10 +20,11 @@
 <script>
 import formFieldMixin from "./formFieldMixin";
 import draggable from "vuedraggable"
+import ArrayItem from "@/components/FormFields/ArrayItem";
 
 export default {
   name: "Array",
-  components: {FormField: () => import('../FormFields/FormField'), draggable},
+  components: {ArrayItem, draggable},
   mixins: [formFieldMixin],
   computed: {
     fakeUI() {

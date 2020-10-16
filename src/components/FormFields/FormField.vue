@@ -9,7 +9,7 @@
       </b-input-group-prepend>
       <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
-                 :ui="ui" @changedData="loopUp"/>
+                 :ui="ui" @changedData="loopUp" ref="child"/>
       <b-input-group-append v-if="hasSlot()">
         <slot></slot>
       </b-input-group-append>

@@ -1,10 +1,10 @@
 <template>
-  <b-form-textarea v-if="ui.options && ui.options.multi" v-model="fieldData" :name="title"
+  <b-form-textarea ref="child" v-if="ui.options && ui.options.multi" v-model="fieldData" :name="title"
                    :placeholder="ui.options ? ui.options.placeholder : ''"
                    :rows="typeof ui.options.multi === 'number' ? ui.options.multi : 3"/>
-  <b-input v-else-if="(ui.format || item.format) !== 'date-time'" v-model="fieldData" :name="title"
+  <b-input ref="child" v-else-if="(ui.format || item.format) !== 'date-time'" v-model="fieldData" :name="title"
            :placeholder="ui.options ? ui.options.placeholder : ''" :type="ui.format || item.format"/>
-  <date-time v-else :json="json" :ui="ui" @changedData="loopUp"/>
+  <date-time ref="child" v-else :json="json" :ui="ui" @changedData="loopUp"/>
 </template>
 
 <script>
