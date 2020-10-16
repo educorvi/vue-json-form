@@ -1,7 +1,11 @@
 {
-  "name": "vue_json_form",
+  "name": "@educorvi/vue-json-form",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "main": "dist/vue-json-form.js",
+  "files": ["dist/*","src/components/*"],
+  "author": "Julian Pollinger",
+  "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
