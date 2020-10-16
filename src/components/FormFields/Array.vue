@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import formFieldMixin from "./formFieldMixin";
+import formFieldMixin from "./formFieldMixin.js";
 import draggable from "vuedraggable"
-import ArrayItem from "@/components/FormFields/ArrayItem";
+import ArrayItem from "./ArrayItem.vue";
 
 export default {
   name: "Array",

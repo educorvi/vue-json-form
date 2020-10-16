@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
+    "build:demo": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs"
   },
@@ -16,20 +17,25 @@
     "vuedraggable": "^2.24.1"
   },
   "devDependencies": {
-    "bootstrap": "^4.5.2",
-    "bootstrap-vue": "^2.17.3",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vuese/cli": "^2.14.0",
     "babel-eslint": "^10.1.0",
+    "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.17.3",
     "bootswatch": "^4.5.2",
     "copyfiles": "^2.3.0",
+    "css-loader": "^5.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^4.14.1",
-    "sass-loader": "^10.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "sass-loader": "^10.0.3",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue-loader": "^15.9.3",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-cli": "^4.0.0"
   },
   "eslintConfig": {
     "root": true,

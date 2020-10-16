@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import formFieldMixin from "@/components/FormFields/formFieldMixin";
+import formFieldMixin from "./formFieldMixin.js";
 
 export default {
   name: "DateTime",

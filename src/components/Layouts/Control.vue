@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import layout from "./layoutMixin";
-import FormField from "@/components/FormFields/FormField";
+import layout from "./layoutMixin.js";
+import FormField from "../FormFields/FormField.vue";
 
 export default {
   name: "Control",

@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import formFieldMixin from "./formFieldMixin";
+import formFieldMixin from "./formFieldMixin.js";
 
 export default {
   name: "Object",
-  components: {FormWrap: () => import("../FormWrap")},
+  components: {FormWrap: () => import("../FormWrap.vue")},
   mixins: [formFieldMixin],
   computed: {
     fakeUI() {
