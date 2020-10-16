@@ -53,10 +53,4 @@ pipeline {
   environment {
     HOME = '.'
   }
-  post {
-    always {
-      archiveArtifacts 'dist.zip'
-    }
-
-  }
 }
