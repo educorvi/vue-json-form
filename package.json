@@ -9,8 +9,6 @@
     "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs"
   },
   "dependencies": {
-    "bootstrap": "^4.5.2",
-    "bootstrap-vue": "^2.17.3",
     "core-js": "^3.6.5",
     "json-pointer": "^0.6.1",
     "jsonschema": "^1.2.7",
@@ -18,11 +16,14 @@
     "vuedraggable": "^2.24.1"
   },
   "devDependencies": {
+    "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.17.3",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vuese/cli": "^2.14.0",
     "babel-eslint": "^10.1.0",
+    "bootswatch": "^4.5.2",
     "copyfiles": "^2.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
