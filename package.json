@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": false,
   "main": "dist/vue-json-form.js",
-  "files": ["dist/*","src/components/*"],
+  "files": [
+    "dist/*",
+    "src/components/*"
+  ],
   "author": "Julian Pollinger",
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
@@ -11,12 +14,20 @@
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "build:demo": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs"
+    "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs",
+    "zip": "node zip.js",
+    "release": "dotenv release-it",
+    "clean": "del-cli dist*"
   },
   "dependencies": {
+    "@release-it/bumper": "^2.0.0",
+    "archiver": "^5.0.2",
     "core-js": "^3.6.5",
+    "del-cli": "^3.0.1",
+    "dotenv-cli": "^4.0.0",
     "json-pointer": "^0.6.1",
     "jsonschema": "^1.2.7",
+    "release-it": "^14.1.0",
     "vue": "^2.6.12",
     "vuedraggable": "^2.24.1"
   },
