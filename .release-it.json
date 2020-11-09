@@ -10,7 +10,8 @@
   "github": {
     "release": true,
     "assets": [
-      "./dist.zip"
+      "./dist.zip",
+      "./demoDist.zip"
     ]
   },
   "npm": {
@@ -23,7 +24,7 @@
     ],
     "after:bump": [
       "npm run doc",
-      "npm run build:npm",
+      "npm run build",
       "npm run zip"
     ],
     "after:release": [
