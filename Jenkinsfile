@@ -29,7 +29,7 @@ pipeline {
         stage('Build NPM') {
           steps {
             sh 'npm run build:npm'
-            sh 'npm run zip'
+            sh 'npm run zip:npm'
             archiveArtifacts 'dist.zip'
           }
         }
@@ -37,6 +37,8 @@ pipeline {
         stage('Build Demo') {
           steps {
             sh 'npm run build:demo'
+            sh 'npm run zip:demo'
+            archiveArtifacts 'demoDist.zip'
           }
         }
 

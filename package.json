@@ -11,13 +11,16 @@
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
-    "build:demo": "vue-cli-service build",
+    "build:demo": "vue-cli-service build --dest demoDist",
     "lint": "vue-cli-service lint",
     "doc": "vuese gen && copyfiles README.md docs -E && copyfiles ./src/schemas/uischema.json docs -E -f && git add docs",
-    "zip": "node zip.js",
+    "zip": "npm run zip:npm && npm run zip:demo",
+    "zip:npm": "node zip.js dist",
+    "zip:demo": "node zip.js demoDist --output demoDist.zip",
     "release": "dotenv release-it",
-    "clean": "del-cli dist*"
+    "clean": "del-cli dist* demoDist*"
   },
   "dependencies": {
     "@release-it/bumper": "^2.0.0",
