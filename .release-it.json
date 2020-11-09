@@ -31,5 +31,10 @@
       "npm run clean",
       "echo Successfully released ${name} v${version} to ${repo.repository}."
     ]
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": "README.md"
+    }
   }
 }
