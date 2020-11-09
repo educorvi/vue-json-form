@@ -1,6 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": false,
   "main": "dist/vue-json-form.js",
   "files": [
