@@ -22,7 +22,7 @@ export default {
         return key;
       }
 
-      return this.item.items.enum.map(key => {
+      return (this.item.items || this.item).enum.map(key => {
         return {value: key, text: getTextForItem(this.ui.options, key)}
       })
     }

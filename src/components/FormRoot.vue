@@ -60,7 +60,6 @@ export default {
           scope: "#/properties/"+formElement
         })
       }
-      console.log(this.validateJson(obj, uischema));
       return obj;
 
     }
@@ -107,7 +106,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .error_card {
   color: black !important;
   p {
