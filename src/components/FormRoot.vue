@@ -1,18 +1,24 @@
 <template>
   <b-form v-if="valid || disableValidation" @submit="onSubmit">
-    <FormWrap @changedData="saveData" :json="json" :ui="ui"></FormWrap>
-    <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">{{sendText || 'Send'}}</b-button>
+    <FormWrap @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
+    <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">{{ sendText || 'Send' }}</b-button>
   </b-form>
   <b-jumbotron v-else-if="validationResults" bg-variant="danger" header="Error"
                lead="Validation of the form's schema failed with the following errors:"
                text-variant="white">
     <h4 v-if="validationResults.schema.errors.length>0">JSON-Schema:</h4>
     <b-card v-for="(error, index) in validationResults.schema.errors" :key="error.stack+index" :header="error.property"
-            class="error_card mb-3">"{{ error.instance }}" <br><b>{{ error.message }}</b>
+            class="error_card mb-3">
+      <p>"{{ error.instance }}" <br>
+        <b>{{ error.message }}</b>
+      </p>
     </b-card>
     <h4 class="mt-4" v-if="validationResults.ui.errors.length>0">UI-Schema:</h4>
     <b-card v-for="(error, index) in validationResults.ui.errors" :key="error.stack+index" :header="error.property"
-            class="error_card mb-3">"{{ error.instance }}" <br><b>{{ error.message }}</b>
+            class="error_card mb-3">
+      <p>"{{ error.instance }}" <br>
+        <b>{{ error.message }}</b>
+      </p>
     </b-card>
   </b-jumbotron>
 </template>
@@ -40,6 +46,22 @@ export default {
     valid() {
       return ((this.validationResults.schema ? this.validationResults.schema.errors.length : 0)
           + (this.validationResults.ui ? this.validationResults.ui.errors.length : 0)) === 0;
+
+    },
+    generatedUI() {
+      const form = this.json;
+      const obj = {
+        type: "VerticalLayout",
+        elements: []
+      };
+      for (const formElement of Object.keys(form.properties)) {
+        obj.elements.push({
+          type: "Control",
+          scope: "#/properties/"+formElement
+        })
+      }
+      console.log(this.validateJson(obj, uischema));
+      return obj;
 
     }
   },
@@ -70,14 +92,16 @@ export default {
   },
   created() {
     this.validationResults.schema = this.validateJson(this.json);
-    this.validationResults.ui = this.validateJson(this.ui, uischema);
+    if (this.ui) {
+      this.validationResults.ui = this.validateJson(this.ui, uischema);
+    }
   },
   watch: {
     json(newValue) {
       this.validateJson(newValue);
     },
     ui(newValue) {
-      this.validateJson(newValue);
+      this.validateJson(newValue, uischema);
     }
   },
 }
@@ -86,5 +110,8 @@ export default {
 <style lang="scss" scoped>
 .error_card {
   color: black;
+  p {
+    color: black;
+  }
 }
 </style>
