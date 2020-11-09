@@ -109,9 +109,9 @@ export default {
 
 <style lang="scss" scoped>
 .error_card {
-  color: black;
+  color: black !important;
   p {
-    color: black;
+    color: black !important;
   }
 }
 </style>
