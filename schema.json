@@ -51,7 +51,9 @@
           "description": "Gib mir einen tollen Namen"
         },
         "alter": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
         },
         "flauschig": {
           "type": "boolean"
