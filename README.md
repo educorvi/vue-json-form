@@ -31,7 +31,7 @@ export default {
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
 |json|The form's JSON Schema|`Boolean`|`true`|-|
-|ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object &#124; Array`|`false`|-
+|ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
 |disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
 |onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 
