@@ -1,5 +1,7 @@
 # Number
 
+This is used to render number and rating fields
+
 ## Props
 
 <!-- @vuese:Number:props:start -->

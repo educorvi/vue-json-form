@@ -1,5 +1,7 @@
 # MultibleChoice
 
+This is used to render MultibleChoice entries with a checkbox-group
+
 ## MixIns
 
 <!-- @vuese:MultibleChoice:mixIns:start -->

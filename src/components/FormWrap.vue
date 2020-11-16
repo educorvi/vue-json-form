@@ -8,6 +8,10 @@
 import Layouts from "./Layouts"
 import {onlyMethods, onlyProps} from "./Layouts/layoutMixin.js";
 
+//@group Helper
+/**
+ * Decides, whether Control or Layout needs to be displayed
+ */
 export default {
   name: "form-wrap",
   mixins: [onlyProps, onlyMethods],

@@ -3,7 +3,9 @@
     <draggable v-model="fieldData" handle=".handle">
       <transition-group name="arrayedit">
         <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">
-            <ArrayItem @changedData="dataChanged(index, $event)" @deleteItem="deleteItem(index)" :divider="index !== fieldData.length-1 && item.items.type === 'object'" :index="index" :json="json" :ui="fakeUI"/>
+          <ArrayItem @changedData="dataChanged(index, $event)" @deleteItem="deleteItem(index)"
+                     :divider="index !== fieldData.length-1 && item.items.type === 'object'" :index="index" :json="json"
+                     :ui="fakeUI"/>
         </div>
       </transition-group>
     </draggable>
@@ -22,11 +24,16 @@ import formFieldMixin from "./formFieldMixin.js";
 import draggable from "vuedraggable"
 import ArrayItem from "./ArrayItem.vue";
 
+//@group FormFields
+/**
+ * This is used to Render Arrays
+ */
 export default {
   name: "Array",
   components: {ArrayItem, draggable},
   mixins: [formFieldMixin],
   computed: {
+    //Used to generate a fake UI-Scheme for the Arrayitems
     fakeUI() {
       return {
         label: false,
@@ -40,12 +47,27 @@ export default {
     }
   },
   methods: {
+
+    /**
+     * Add item to fieldData-Array
+     */
     addItem() {
       if (this.fieldData[this.fieldData.length - 1] !== null) this.fieldData.push({value: null, gentime: new Date()});
     },
+
+    /**
+     * Delete item from fieldData-Array
+     * @param i Index of the item
+     */
     deleteItem(i) {
       this.fieldData.splice(i, 1);
     },
+
+    /**
+     * Updates field Data on changes in ArrayItems
+     * @param index index of the item
+     * @param item new Item
+     */
     dataChanged(index, item) {
       const time = this.fieldData[index] ? this.fieldData[index].gentime : new Date();
       this.$set(this.fieldData, index, {value: item.value, gentime: time});

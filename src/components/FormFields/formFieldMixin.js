@@ -1,5 +1,6 @@
 import pointer from "json-pointer";
 
+//@group FormFields
 export default {
     data() {
         return {

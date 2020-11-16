@@ -5,6 +5,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render select dropdown (Selection of enum)
+ */
 export default {
   name: "Select",
   mixins: [formFieldMixin],

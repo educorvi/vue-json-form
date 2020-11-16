@@ -6,6 +6,7 @@
 import layout from "./layoutMixin.js";
 import FormField from "../FormFields/FormField.vue";
 
+//@group Layouts
 export default {
   name: "Control",
   components: {FormField},

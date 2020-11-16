@@ -12,6 +12,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render date-time-fields
+ */
 export default {
   name: "DateTime",
   mixins: [formFieldMixin],

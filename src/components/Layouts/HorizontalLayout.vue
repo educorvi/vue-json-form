@@ -13,6 +13,10 @@
 <script>
 import layout from "./layoutMixin.js";
 
+//@group Layouts
+/**
+ * Layout, that displays its elements horizontally
+ */
 export default {
   name: "HorizonzalLayout",
   mixins: [layout]

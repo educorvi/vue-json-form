@@ -5,6 +5,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is the fallback-field if no matching field is found
+ */
 export default {
   name: "defaultField",
   mixins: [formFieldMixin]

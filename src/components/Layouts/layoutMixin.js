@@ -15,13 +15,11 @@ const methods = {
     },
 }
 
-/**
- *Mixin that only uses the props
- */
 export const onlyProps = {props}
 export const onlyMethods = {methods}
+
+//@group Layouts
 /**
- * @vuese
  * Mixin for all layout components
  */
 export default {

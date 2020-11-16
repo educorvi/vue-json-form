@@ -1,7 +1,6 @@
 <template>
   <div id="app" class="container-fluid pt-5 pb-5" style="max-width: 800px" v-if="schema && uischema">
     <form-root :json="schema" :ui="uischema" :on-submit="submit">
-      <b-button type="submit" variant="primary" class="float-right">Senden</b-button>
     </form-root>
   </div>
 </template>

@@ -11,6 +11,10 @@
 import formFieldMixin from "./formFieldMixin.js";
 import DateTime from "./DateTime.vue";
 
+//@group FormFields
+/**
+ * This renders text-fields and text-areas
+ */
 export default {
   name: "String",
   components: {DateTime},

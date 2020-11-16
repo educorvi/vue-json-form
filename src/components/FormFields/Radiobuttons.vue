@@ -8,6 +8,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render Radiobutton Groups (Selection of enum)
+ */
 export default {
   name: "Radiobuttons",
   mixins: [formFieldMixin],

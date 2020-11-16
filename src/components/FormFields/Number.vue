@@ -9,6 +9,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render number and rating fields
+ */
 export default {
   name: "Number",
   mixins: [formFieldMixin],

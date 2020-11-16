@@ -1,5 +1,7 @@
 # form-wrap
 
+Decides, whether Control or Layout needs to be displayed
+
 ## MixIns
 
 <!-- @vuese:form-wrap:mixIns:start -->

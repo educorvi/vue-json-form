@@ -1,5 +1,7 @@
 # String
 
+This renders text-fields and text-areas
+
 ## MixIns
 
 <!-- @vuese:String:mixIns:start -->

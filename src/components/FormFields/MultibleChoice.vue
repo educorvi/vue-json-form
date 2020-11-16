@@ -10,6 +10,10 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render MultibleChoice entries with a checkbox-group
+ */
 export default {
   name: "MultibleChoice",
   mixins: [formFieldMixin],

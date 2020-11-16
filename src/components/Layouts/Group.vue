@@ -13,6 +13,10 @@
 <script>
 import layout from "./layoutMixin.js";
 
+//@group Layouts
+/**
+ * Layout, that groups multiple form-elements/-layouts in a visible group
+ */
 export default {
   name: "Group",
   mixins: [layout]

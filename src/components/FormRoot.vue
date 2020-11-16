@@ -1,7 +1,11 @@
 <template>
   <b-form v-if="valid || disableValidation" @submit="onSubmitMeth">
     <FormWrap @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
-    <slot></slot>
+<!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
+    <slot>
+<!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
+      <input type="submit" class="float-right btn btn-primary"/>
+    </slot>
   </b-form>
 
 
@@ -31,6 +35,10 @@ import {onlyProps} from "./Layouts/layoutMixin.js";
 import schemadraft from "../schemas/json-schema_draft7.json";
 import uischema from "../schemas/uischema.json"
 
+/**
+ * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
+ * When submitted (for example by slot with `type=submit` in the default slot), a call of the method passed in prop `onSubmit` will be triggered, passing the data as first argument
+ */
 export default {
   name: "FormRoot",
   components: {FormWrap},

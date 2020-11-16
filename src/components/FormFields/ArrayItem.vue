@@ -18,15 +18,21 @@
 <script>
 import formFieldMixin from "./formFieldMixin.js";
 
+//@group FormFields
+/**
+ * This is used to render items in an array
+ */
 export default {
   name: "ArrayItem",
   mixins: [formFieldMixin],
   components: {FormField: () => import("./FormField.vue")},
   props: {
+    //index in array
     index: {
       type: Number,
       required: true
     },
+    //Is this item supposed to have a divider (`<hr>`) at the end?
     divider: {
       type: Boolean
     }

@@ -6,8 +6,12 @@
 
 <script>
 /* eslint-disable vue/no-unused-components */
-
 import layoutMixin from "./layoutMixin.js";
+
+//@group Layouts
+/**
+ * Layout, that displays its elements horizontally
+ */
 export default {
   name: "VerticalLayout",
   components: {

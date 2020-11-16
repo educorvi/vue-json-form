@@ -5,12 +5,14 @@
                 :label-for="schemaName">
     <b-input-group class="w-100">
       <b-input-group-prepend v-if="hasSlot('prepend')">
+<!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
       <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child"/>
       <b-input-group-append v-if="hasSlot()">
+<!--        Content is appended to the input field-->
         <slot></slot>
       </b-input-group-append>
     </b-input-group>
@@ -32,6 +34,10 @@ import String from "./String.vue";
 import defaultField from "./defaultField.vue";
 import Radiobuttons from "./Radiobuttons.vue";
 
+//@group FormFields
+/**
+ * This is the main form-field, that is always referenced. It decides, which field needs to be rendered
+ */
 export default {
   name: "FormField",
   mixins: [formFieldMixin],

@@ -1,12 +1,14 @@
 # ArrayItem
 
+This is used to render items in an array
+
 ## Props
 
 <!-- @vuese:ArrayItem:props:start -->
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|index|-|`Number`|`true`|-|
-|divider|-|`Boolean`|`false`|-|
+|index|index in array|`Number`|`true`|-|
+|divider|Is this item supposed to have a divider (`<hr>`) at the end?|`Boolean`|`false`|-|
 
 <!-- @vuese:ArrayItem:props:end -->
 
