@@ -1,8 +1,10 @@
 <template>
-  <b-form v-if="valid || disableValidation" @submit="onSubmit">
+  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth">
     <FormWrap @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
-    <b-button :variant="colorVariant || 'primary'" class="float-right" type="submit">{{ sendText || 'Send' }}</b-button>
+    <slot></slot>
   </b-form>
+
+
   <b-jumbotron v-else-if="validationResults" bg-variant="danger" header="Error"
                lead="Validation of the form's schema failed with the following errors:"
                text-variant="white">
@@ -65,21 +67,21 @@ export default {
     }
   },
   props: {
-    //Color Variant like defined in Bootstrap-Vue
-    colorVariant: {
-      type: String
-    },
+    //Disables the validation of json-schema and ui-schema
     disableValidation: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
-    sendText: {
-      type: String
+    //Method that is called, when the Form is submitted. Passes the formdata as first Argument
+    onSubmit: {
+      type: Function,
+      required: true
     }
   },
   methods: {
-    onSubmit(evt) {
+    onSubmitMeth(evt) {
       evt.preventDefault();
-      console.log("send");
+      this.onSubmit(this.data);
     },
     validateJson(json, schema = schemadraft) {
       const validate = require('jsonschema').validate;
