@@ -9,7 +9,7 @@
 Install with `npm install @educorvi/vue-json-form`
 
 ### Use in VueJS-Component:  
-```
+``` vue
 <template>
   <json-form :json="form"/>
 </template>
@@ -39,7 +39,7 @@ export default {
 If you want to change the default submit button or add more buttons or other components to the bottom of the form, you can do so by overriding the default button and put your components in the default slot.  
 When doing that, it is important, that the button, that is supposed to submit the form, has `type=submit`.  
 Example:
-```
+``` vue
 <template>
   <json-form :json="form">
     <b-button type="submit" variant="primary">Far better submit button</b-button>
