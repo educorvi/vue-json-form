@@ -1,6 +1,9 @@
 <template>
-  <div v-if="show" class="container-fluid">
-    <component :is="type" :filledData="filledData" :json="json" :ui="ui" @changedData="loopUp"></component>
+  <div class="container-fluid">
+    <b-collapse :visible="show" @hidden="closed=true" @show="closed=false">
+      <component :is="type" v-if="show || !closed" :filledData="filledData" :json="json" :ui="ui"
+                 @changedData="loopUp"></component>
+    </b-collapse>
   </div>
 </template>
 
@@ -15,6 +18,11 @@ import {onlyMethods, onlyProps} from "./Layouts/layoutMixin.js";
 export default {
   name: "form-wrap",
   mixins: [onlyProps, onlyMethods],
+  data() {
+    return {
+      closed: true
+    }
+  },
   computed: {
     type() {
       return this.getComponentFromObject(this.ui);
@@ -66,6 +74,8 @@ export default {
           return Layouts.HorizontalLayout;
         case "HTML":
           return Layouts.htmlRenderer;
+        case "Divider":
+          return Layouts.Divider;
         default:
           return Layouts.VerticalLayout;
       }
