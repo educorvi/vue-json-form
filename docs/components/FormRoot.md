@@ -28,7 +28,7 @@ This is the Root Component and the interface to the "outside". Generates UI if n
 <!-- @vuese:FormRoot:mixIns:start -->
 |MixIn|
 |---|
-|onlyProps|
+|rootProps|
 
 <!-- @vuese:FormRoot:mixIns:end -->
 
