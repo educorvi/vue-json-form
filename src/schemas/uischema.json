@@ -156,7 +156,8 @@
           "type": "string",
           "enum": ["Divider"]
         }
-      }
+      },
+      "required": ["type"]
     },
     "layout": {
       "type": "object",
