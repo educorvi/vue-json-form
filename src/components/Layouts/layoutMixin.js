@@ -15,7 +15,17 @@ const methods = {
     },
 }
 
-export const onlyProps = {props}
+export const onlyProps = {
+    props: {
+        ...props,
+        //The current data of the form
+        filledData: {
+            type: Object,
+            required: false
+        }
+    }
+}
+export const rootProps = {props}
 export const onlyMethods = {methods}
 
 //@group Layouts
@@ -23,7 +33,7 @@ export const onlyMethods = {methods}
  * Mixin for all layout components
  */
 export default {
-    props,
+    ...onlyProps,
     methods,
     components: {
         FormWrap: () => import('../FormWrap.vue'),

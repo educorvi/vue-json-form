@@ -14,61 +14,92 @@
       }
     },
     {
-      "type": "HorizontalLayout",
-      "label": "Tolle Gruppe",
-      "elements": [
-        {
-          "type": "Control",
-          "scope": "#/properties/due_date"
-        },
-        {
-          "type": "Control",
-          "scope": "#/properties/rating",
-          "options": {
-            "rating": true
-          }
-        }
-      ]
-    },
-    {
       "type": "Control",
-      "scope": "#/properties/description",
+      "scope": "#/properties/tollheit",
       "options": {
-        "multi": true,
-        "placeholder": "Hier eine ganz ausführliche Beschreibung eingeben"
+        "radiobuttons": true,
+        "stacked": true
       }
     },
     {
-      "type": "HorizontalLayout",
+      "type": "Control",
+      "scope": "#/properties/group_selector"
+    },
+    {
+      "type": "Group",
+      "label": "Gruppe 1",
+      "showOn": {
+        "type": "EQUALS",
+        "scope": "#/properties/group_selector",
+        "referenceValue": "Gruppen"
+      },
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/recurrence",
-          "options": {
-            "radiobuttons": false
-          }
+          "type": "HorizontalLayout",
+          "label": "Tolle Gruppe",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/due_date"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/rating",
+              "options": {
+                "rating": true
+              }
+            }
+          ]
         },
         {
           "type": "Control",
-          "scope": "#/properties/recurrence_interval",
-          "rule": {
-            "effect": "HIDE",
-            "condition": {
-              "type": "LEAF",
-              "scope": "#/properties/recurrence",
-              "expectedValue": "Never"
-            }
+          "scope": "#/properties/description",
+          "options": {
+            "multi": true,
+            "placeholder": "Hier eine ganz ausführliche Beschreibung eingeben"
           }
         }
       ]
     },
     {
-      "type": "Control",
-      "scope": "#/properties/testArray"
+      "type": "Group",
+      "label": "Gruppe 2",
+      "showOn": {
+        "type": "EQUALS",
+        "scope": "#/properties/group_selector",
+        "referenceValue": "Gruppen"
+      },
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/recurrence",
+              "options": {
+                "radiobuttons": false
+              }
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/recurrence_interval"
+            }
+          ]
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/testArray"
+        }
+      ]
     },
     {
       "type": "Control",
-      "scope": "#/properties/testObject"
+      "scope": "#/properties/testObject",
+      "showOn": {
+        "type": "EQUALS",
+        "scope": "#/properties/group_selector",
+        "referenceValue": "Objekt"
+      }
     }
   ]
 }

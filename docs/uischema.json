@@ -70,7 +70,7 @@
             }
           }
         },
-        "rule": {
+        "showOn": {
           "type": "object"
         }
       },

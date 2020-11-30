@@ -14,6 +14,12 @@
       "title": "Toller Button",
       "description": "Bitte drücken"
     },
+    "group_selector": {
+      "title": "Sollen die Gruppen oder ein Objekt angezeigt werden?",
+      "type": "string",
+      "enum": ["Gruppen", "Objekt"],
+      "default": "Gruppen"
+    },
     "due_date": {
       "type": "string",
       "format": "date-time"
@@ -60,6 +66,17 @@
         }
       },
       "required": ["name", "alter"]
+    },
+    "tollheit": {
+      "type": "string",
+      "title": "Tollheit",
+      "enum": [
+        "Toll",
+        "Toller",
+        "Sehr Toll",
+        "Ultra Toll",
+        "Einhorn"
+      ]
     }
 
   },

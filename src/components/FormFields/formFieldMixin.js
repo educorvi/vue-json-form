@@ -15,7 +15,7 @@ export default {
         //The form's JSON-Schema
         json: {
             type: Object
-        }
+        },
     },
     computed: {
         jsonPath() {

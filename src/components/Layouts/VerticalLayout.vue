@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form-wrap @changedData="loopUp" v-for="(item, index) in ui.elements" :ui="item" :json="json" :key="ui.toString().length+'_'+index"></form-wrap>
+    <form-wrap @changedData="loopUp" v-for="(item, index) in ui.elements" :ui="item" :json="json" :key="ui.toString().length+'_'+index" :filledData="filledData"></form-wrap>
   </div>
 </template>
 

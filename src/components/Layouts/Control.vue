@@ -1,5 +1,5 @@
 <template>
-  <FormField @changedData="loopUp" :json="json" :ui="ui" :name="ui.scope"/>
+  <FormField @changedData="loopUp" :json="json" :ui="ui" :name="ui.scope" filled-data/>
 </template>
 
 <script>

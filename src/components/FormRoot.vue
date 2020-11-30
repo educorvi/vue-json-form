@@ -1,6 +1,6 @@
 <template>
   <b-form v-if="valid || disableValidation" @submit="onSubmitMeth">
-    <FormWrap @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
+    <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
 <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
     <slot>
 <!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
@@ -31,7 +31,7 @@
 
 <script>
 import FormWrap from "./FormWrap.vue";
-import {onlyProps} from "./Layouts/layoutMixin.js";
+import {rootProps} from "./Layouts/layoutMixin.js";
 import schemadraft from "../schemas/json-schema_draft7.json";
 import uischema from "../schemas/uischema.json"
 
@@ -42,7 +42,7 @@ import uischema from "../schemas/uischema.json"
 export default {
   name: "FormRoot",
   components: {FormWrap},
-  mixins: [onlyProps],
+  mixins: [rootProps],
   data() {
     return {
       validationResults: {

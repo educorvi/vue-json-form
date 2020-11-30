@@ -23,7 +23,17 @@
         "format": {
           "description": "Format for string fields",
           "type": "string",
-          "enum": ["time", "date", "date-time", "email", "password", "search", "url", "tel", "color"]
+          "enum": [
+            "time",
+            "date",
+            "date-time",
+            "email",
+            "password",
+            "search",
+            "url",
+            "tel",
+            "color"
+          ]
         },
         "options": {
           "type": "object",
@@ -70,8 +80,48 @@
             }
           }
         },
-        "rule": {
-          "type": "object"
+        "showOn": {
+          "type": "object",
+          "description": "Show field depending on value of other field",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "format": "json-pointer",
+              "description": "The field this field depends on"
+            },
+            "type": {
+              "type": "string",
+              "description": "Condition to be applied",
+              "enum": [
+                "EQUALS",
+                "NOT_EQUALS",
+                "GREATER",
+                "GREATER_OR_EQUAL",
+                "SMALLER_OR_EQUAL",
+                "SMALLER",
+                "LONGER"
+              ]
+            },
+            "referenceValue": {
+              "description": "The value the field from scope is compared against",
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "scope",
+            "referenceValue"
+          ]
         }
       },
       "required": [

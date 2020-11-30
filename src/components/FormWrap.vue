@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid">
-    <component @changedData="loopUp" :is="type" :ui="ui" :json="json"></component>
+  <div v-if="show" class="container-fluid">
+    <component :is="type" :filledData="filledData" :json="json" :ui="ui" @changedData="loopUp"></component>
   </div>
 </template>
 
@@ -18,6 +18,37 @@ export default {
   computed: {
     type() {
       return this.getComponentFromObject(this.ui);
+    },
+    show() {
+      function getFunction(string) {
+        switch (string) {
+          case "EQUALS":
+            return (a, b) => {
+              if(a === undefined) a = false;
+              return a === b
+            };
+          case "NOT_EQUALS":
+            return (a, b) => {
+              if(a === undefined) a = false;
+              return a !== b
+            };
+          case "GREATER":
+            return (a, b) => a > b;
+          case "GREATER_OR_EQUAL":
+            return (a, b) => a >= b;
+          case "SMALLER":
+            return (a, b) => a < b;
+          case "SMALLER_OR_EQUAL":
+            return (a, b) => a < b;
+          case "LONGER":
+            return (a, b) => (a||"").length > b;
+        }
+      }
+
+      if (!this.ui["showOn"] || !this.filledData) {
+        return true;
+      }
+      return getFunction(this.ui["showOn"].type)(this.filledData[this.ui["showOn"].scope],this.ui["showOn"]["referenceValue"]);
     }
   },
   methods: {
@@ -37,7 +68,7 @@ export default {
           return Layouts.VerticalLayout;
       }
     },
-  },
+  }
 };
 </script>
 

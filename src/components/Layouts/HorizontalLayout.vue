@@ -3,7 +3,7 @@
     <div>
       <b-row>
         <b-col v-for="(item, index) in ui.elements" :key="ui.toString().length+'_'+index">
-          <form-wrap @changedData="loopUp" :json="json" :ui="item"></form-wrap>
+          <form-wrap @changedData="loopUp" :json="json" :ui="item" :filledData="filledData"></form-wrap>
         </b-col>
       </b-row>
     </div>
