@@ -1,0 +1,260 @@
+{
+  "$schema": "../../schemas/uischema.json",
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/ort"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/dateTime"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/anlageverantwortlicher"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/arbeitsverantwortlicher",
+      "options": {
+        "multi": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/arbeitsausfuehrender"
+    },
+    {
+      "type": "Divider"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/zusaetzlicheAusruestung"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/spannungAnAnlage"
+    },
+    {
+      "type": "Divider"
+    },
+    {
+      "type": "HTML",
+      "htmlData": "<h2>Die fünf Sicherheitsregeln</h2>"
+    },
+    {
+      "type": "Group",
+      "label": "1. Freigeschaltet",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/freischaltungWie",
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ausloesestromS",
+          "options": {
+            "append": "A"
+          },
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWie",
+            "referenceValue": "NH-Sicherungen"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ausloesestromLa",
+          "options": {
+            "append": "A"
+          },
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWie",
+            "referenceValue": "NH-Lastschaltleiste"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ausloesestromLe",
+          "options": {
+            "append": "A"
+          },
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWie",
+            "referenceValue": "Leistungsschalter"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/freischaltungWo",
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/bezeichnungT",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWo",
+            "referenceValue": "Trafostation"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/bezeichnungU",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWo",
+            "referenceValue": "Umpannwerk/-anlage"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/bezeichnungK",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/freischaltungWo",
+            "referenceValue": "Kabelverteilerschrank"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "2. Gegen Wiedereinschalten gesichert",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/schloss"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/tuer"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/schild",
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "3. Spannungsfreiheit allpolig festgestellt an der Arbeitsstelle",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/spannungspruefer",
+          "options": {
+            "placeholder": "Hersteller/Typ"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "4. Geerdet und kurzgeschlossen",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/vorrichtung",
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/grund",
+          "showOn": {
+            "scope": "#/properties/vorrichtung",
+            "type": "EQUALS",
+            "referenceValue": "nicht geerdet und kurzgeschlossen"
+          },
+          "options": {
+            "multi": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "5. Benachbarte, unter Spannung stehende Teile abgedeckt",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/abdeckung",
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ada1",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/abdeckung",
+            "referenceValue": "teilweiser Berührungsschutz"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ada2",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/abdeckung",
+            "referenceValue": "vollständiger Berührungsschutz"
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/ka",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/abdeckung",
+            "referenceValue": "Abdeckung nicht notwendig"
+          },
+          "options": {
+            "radiobuttons": true,
+            "stacked": true
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/entfernung",
+          "showOn": {
+            "type": "EQUALS",
+            "scope": "#/properties/ka",
+            "referenceValue": "Entfernung zu den Teilen groß genug ist"
+          },
+          "options": {
+            "append": "m"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Divider"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/notiz",
+      "options": {
+        "multi": true
+      }
+    }
+  ]
+}

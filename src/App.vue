@@ -7,8 +7,8 @@
 
 <script>
 
-import schema from "../schema.json";
-import uischema from "../ui.json";
+import schema from "./exampleSchemas/showcase/schema.json";
+import uischema from "./exampleSchemas/showcase/ui.json";
 import FormRoot from "@/components/FormRoot";
 
 export default {

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "done": {
+      "type": "boolean",
+      "title": "Toller Button",
+      "description": "Bitte drücken"
+    },
+    "group_selector": {
+      "title": "Sollen die Gruppen oder ein Objekt angezeigt werden?",
+      "type": "string",
+      "enum": ["Gruppen", "Objekt"],
+      "default": "Gruppen"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rating": {
+      "title": "Rating",
+      "description": "Deine Meinung ist wichtig für uns",
+      "type": "integer",
+      "maximum": 5
+    },
+    "recurrence": {
+      "type": "array",
+      "enum": [
+        "Never",
+        "Daily",
+        "Weekly",
+        "Monthly"
+      ]
+    },
+    "recurrence_interval": {
+      "type": "integer"
+    },
+    "testArray": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "testObject": {
+      "type": "object",
+      "title": "Haustier",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gib mir einen tollen Namen"
+        },
+        "alter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "flauschig": {
+          "type": "boolean"
+        }
+      },
+      "required": ["name", "alter"]
+    },
+    "tollheit": {
+      "type": "string",
+      "title": "Tollheit",
+      "enum": [
+        "Toll",
+        "Toller",
+        "Sehr Toll",
+        "Ultra Toll",
+        "Einhorn"
+      ]
+    }
+
+  },
+  "required": [
+    "done"
+  ]
+}
