@@ -16,6 +16,10 @@ export default {
         json: {
             type: Object
         },
+        //Disables is-text on input append
+        noText: {
+            type: Boolean
+        }
     },
     computed: {
         jsonPath() {

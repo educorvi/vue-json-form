@@ -1,7 +1,7 @@
 <template>
   <div>
     <FormField ref="child" :json="json" :name="schemaName+index" :ui="ui"
-               @changedData="loopUp">
+               @changedData="loopUp" noText>
       <b-button variant="outline-danger" @click="$emit('deleteItem', index)">
         <b-icon icon="x"/>
       </b-button>

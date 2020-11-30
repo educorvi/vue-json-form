@@ -11,7 +11,7 @@
       <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child"/>
-      <b-input-group-append v-if="hasSlot()">
+      <b-input-group-append :is-text="!noText" v-if="hasSlot()">
 <!--        Content is appended to the input field-->
         <slot></slot>
       </b-input-group-append>

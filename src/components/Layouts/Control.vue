@@ -1,5 +1,5 @@
 <template>
-  <FormField @changedData="loopUp" :json="json" :ui="ui" :name="ui.scope" filled-data/>
+  <FormField @changedData="loopUp" :json="json" :ui="ui" :name="ui.scope" filled-data><span v-if="ui.options && ui.options.append">{{ui.options.append}}</span></FormField>
 </template>
 
 <script>

@@ -77,6 +77,13 @@
               "type": "boolean",
               "description": "If set to true, a group of radiobuttons will be shown instead of the select field",
               "default": false
+            },
+            "stacked": {
+              "type": "boolean",
+              "default": false
+            },
+            "append": {
+              "type": "string"
             }
           }
         },
