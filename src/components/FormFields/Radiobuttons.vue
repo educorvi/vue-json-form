@@ -3,7 +3,7 @@
       v-model="fieldData"
       :name="title"
       :options="options"
-      :stacked="this.ui.options.stacked"></b-form-radio-group>
+      :stacked="this.ui.options && this.ui.options.stacked"></b-form-radio-group>
 </template>
 
 <script>
