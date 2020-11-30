@@ -2,7 +2,8 @@
   <b-form-radio-group
       v-model="fieldData"
       :name="title"
-      :options="options"></b-form-radio-group>
+      :options="options"
+      :stacked="this.ui.options.stacked"></b-form-radio-group>
 </template>
 
 <script>

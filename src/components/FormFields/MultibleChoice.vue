@@ -4,6 +4,7 @@
       v-model="fieldData"
       :name="title"
       :options="options"
+      :stacked="this.ui.options.stacked"
   />
 </template>
 
