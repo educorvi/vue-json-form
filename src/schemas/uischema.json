@@ -129,6 +129,19 @@
         "scope"
       ]
     },
+    "html": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["HTML"]
+        },
+        "htmlData": {
+          "type": "string"
+        }
+      },
+      "required": ["htmlData"]
+    },
     "layout": {
       "type": "object",
       "properties": {
@@ -150,6 +163,9 @@
               },
               {
                 "$ref": "#/definitions/layout"
+              },
+              {
+                "$ref": "#/definitions/html"
               }
             ]
           }

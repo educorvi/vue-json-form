@@ -24,12 +24,12 @@ export default {
         switch (string) {
           case "EQUALS":
             return (a, b) => {
-              if(a === undefined) a = false;
+              if (a === undefined) a = false;
               return a === b
             };
           case "NOT_EQUALS":
             return (a, b) => {
-              if(a === undefined) a = false;
+              if (a === undefined) a = false;
               return a !== b
             };
           case "GREATER":
@@ -41,14 +41,14 @@ export default {
           case "SMALLER_OR_EQUAL":
             return (a, b) => a < b;
           case "LONGER":
-            return (a, b) => (a||"").length > b;
+            return (a, b) => (a || "").length > b;
         }
       }
 
       if (!this.ui["showOn"] || !this.filledData) {
         return true;
       }
-      return getFunction(this.ui["showOn"].type)(this.filledData[this.ui["showOn"].scope],this.ui["showOn"]["referenceValue"]);
+      return getFunction(this.ui["showOn"].type)(this.filledData[this.ui["showOn"].scope], this.ui["showOn"]["referenceValue"]);
     }
   },
   methods: {
@@ -64,6 +64,8 @@ export default {
           return Layouts.Group;
         case "HorizontalLayout":
           return Layouts.HorizontalLayout;
+        case "HTML":
+          return Layouts.htmlRenderer;
         default:
           return Layouts.VerticalLayout;
       }
