@@ -5,6 +5,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/issues)
 
 #### Automaticly generates form from json schema and json ui schema.
+- [Dokumentation](https://educorvi.github.io/vue_json_form/)
+- [Demo](https://educorvi.github.io/vue_json_form/demo/)
 ## Usage
 Install with `npm install @educorvi/vue-json-form`
 
