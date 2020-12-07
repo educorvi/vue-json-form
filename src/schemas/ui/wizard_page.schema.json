@@ -1,7 +1,7 @@
 {
   "title": "Wizard Page",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://educorvi.github.io/vue_json_form/schema/wizard_page.schema.json",
+  "$id": "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json",
   "type": "object",
   "properties": {
     "title": {
@@ -10,13 +10,13 @@
     "content": {
       "oneOf": [
         {
-          "$ref": "https://educorvi.github.io/vue_json_form/schema/control.schema.json"
+          "$ref": "https://educorvi.github.io/vue_json_form/schemas/control.schema.json"
         },
         {
-          "$ref": "https://educorvi.github.io/vue_json_form/schema/layout.schema.json"
+          "$ref": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json"
         },
         {
-          "$ref": "https://educorvi.github.io/vue_json_form/schema/html.schema.json"
+          "$ref": "https://educorvi.github.io/vue_json_form/schemas/html.schema.json"
         }
       ]
     }
