@@ -1,0 +1,37 @@
+{
+  "$id": "https://educorvi.github.io/vue_json_form/schemas/control.schema.json",
+  "type": "object",
+  "title": "Control",
+  "description": "Contains a form element, e. g. a text input",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "Control"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "description": "A json pointer referring to the form element in the forms json schema",
+      "format": "json-pointer"
+    },
+    "label": {
+      "type": "boolean",
+      "description": "Defines whether the fields label is activated",
+      "default": true
+    },
+    "format": {
+      "description": "Format for string fields",
+      "type": "string",
+      "enum": [
+        "time",
+        "date",
+        "date-time",
+        "email",
+        "password",
+        "search",
+        "url",
+        "tel",
+        "color"
+      ]
+    }
