@@ -10,5 +10,6 @@
       "enum": ["Divider"]
     }
   },
+  "additionalProperties": false,
   "required": ["type"]
 }

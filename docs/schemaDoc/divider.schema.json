@@ -1,0 +1,1 @@
+{"title":"Divider","$schema":"http://json-schema.org/draft-07/schema#","$id":"https://educorvi.github.io/vue_json_form/schemas/divider.schema.json","type":"object","description":"inserts a simple divider","properties":{"type":{"type":"string","enum":["Divider"]}},"additionalProperties":false,"required":["type"]}

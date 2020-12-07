@@ -1,5 +1,7 @@
 # Divider
 
+A divider for the form
+
 ## MixIns
 
 <!-- @vuese:Divider:mixIns:start -->

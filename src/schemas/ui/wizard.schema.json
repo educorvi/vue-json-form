@@ -22,7 +22,12 @@
       "items": {
         "$ref": "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json"
       }
+    },
+    "$schema": {
+      "type": "string",
+      "description": "May contain a link to the uischema"
     }
   },
+  "additionalProperties": false,
   "required": ["type", "pages"]
 }

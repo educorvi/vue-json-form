@@ -3,8 +3,6 @@
   "$id": "https://educorvi.github.io/vue_json_form/schemas/ui.schema.json",
   "title": "UI Schema",
   "description": "Schema for the UI Schema",
-
-
   "oneOf": [
     {"$ref": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json"},
     {"$ref": "https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json"}

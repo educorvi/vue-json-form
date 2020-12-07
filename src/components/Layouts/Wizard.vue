@@ -10,6 +10,10 @@
 <script>
 import layoutMixin from "./layoutMixin";
 
+/**
+ * Displays the form as a wizard with multiple pages
+ * @group Layouts
+ */
 export default {
   name: "Wizard",
   mixins: [layoutMixin],

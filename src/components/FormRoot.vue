@@ -33,7 +33,14 @@
 import FormWrap from "./FormWrap.vue";
 import {rootProps} from "./Layouts/layoutMixin.js";
 import schemadraft from "../schemas/json-schema_draft7.json";
-import uischema from "../schemas/uischema.json"
+import uischema from "../schemas/ui/ui.schema.json"
+import control from "../schemas/ui/control.schema.json"
+import html from "../schemas/ui/html.schema.json"
+import divider from "../schemas/ui/divider.schema.json"
+import layout from "../schemas/ui/layout.schema.json"
+import wizard from "../schemas/ui/wizard.schema.json"
+import wizardPage from "../schemas/ui/wizard_page.schema.json"
+import showOn from "../schemas/ui/show_on.schema.json"
 
 /**
  * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
@@ -95,6 +102,18 @@ export default {
       const validate = require('jsonschema').validate;
       return validate(json, schema);
     },
+    validateUI(ui) {
+      const Validator = require('jsonschema').Validator;
+      const v = new Validator();
+      v.addSchema(layout, "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json");
+      v.addSchema(control, "https://educorvi.github.io/vue_json_form/schemas/control.schema.json");
+      v.addSchema(html, "https://educorvi.github.io/vue_json_form/schemas/html.schema.json");
+      v.addSchema(divider, "https://educorvi.github.io/vue_json_form/schemas/divider.schema.json");
+      v.addSchema(wizard, "https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json");
+      v.addSchema(wizardPage, "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json");
+      v.addSchema(showOn, "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json");
+      return v.validate(ui, uischema)
+    },
     saveData(data) {
       this.$set(this.data, data.key, data.value)
     }
@@ -102,7 +121,7 @@ export default {
   created() {
     this.validationResults.schema = this.validateJson(this.json);
     if (this.ui) {
-      this.validationResults.ui = this.validateJson(this.ui, uischema);
+      this.validationResults.ui = this.validateUI(this.ui);
     }
   },
   watch: {
@@ -110,7 +129,7 @@ export default {
       this.validateJson(newValue);
     },
     ui(newValue) {
-      this.validateJson(newValue, uischema);
+      this.validateUI(newValue);
     }
   },
 }

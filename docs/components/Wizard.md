@@ -1,5 +1,7 @@
 # Wizard
 
+Displays the form as a wizard with multiple pages
+
 ## MixIns
 
 <!-- @vuese:Wizard:mixIns:start -->

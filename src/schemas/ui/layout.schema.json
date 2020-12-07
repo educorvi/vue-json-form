@@ -38,8 +38,19 @@
           }
         ]
       }
+    },
+    "showOn": {
+      "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
+    },
+    "label": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string",
+      "description": "May contain a link to the uischema"
     }
   },
+  "additionalProperties": false,
   "required": [
     "type",
     "elements"

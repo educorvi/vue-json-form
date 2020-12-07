@@ -1,5 +1,7 @@
 # htmlRenderer
 
+Renders html specified in the ui schema
+
 ## MixIns
 
 <!-- @vuese:htmlRenderer:mixIns:start -->

@@ -17,7 +17,7 @@
     "build:demo": "vue-cli-service build --dest demo",
     "lint": "vue-cli-service lint",
     "doc": "npm run doc:schema && npm run doc:components && git add --all",
-    "doc:schema": "npx @adobe/jsonschema2md -d src/schemas/ui -o docs/schemaDoc && copyfiles src/schemas/ui/* docs/schemas -E -f && copyfiles src/helper/docs/index.html docs/schemaDoc -E -f",
+    "doc:schema": "npx @adobe/jsonschema2md -d src/schemas/ui -o docs/schemaDoc -x docs/schemas && copyfiles src/helper/docs/index.html docs/schemaDoc -E -f",
     "doc:components": "vuese gen && copyfiles README.md docs -E && del-cli docs/demo && copyfiles ./demo/**/* docs/ && copyfiles ./demo/* docs/",
     "zip": "npm run zip:npm && npm run zip:demo",
     "zip:npm": "node zip.js dist",

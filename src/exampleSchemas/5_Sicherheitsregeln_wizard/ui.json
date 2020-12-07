@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schemas/uischema.json",
+  "$schema": "../../schemas/ui/ui.schema.json",
   "type": "Wizard",
   "pages": [
     {

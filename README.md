@@ -10,7 +10,7 @@
 ## Usage
 Install with `npm install @educorvi/vue-json-form`
 
-### Use in VueJS-Component:  
+### Use in VueJS-Component  
 ``` vue
 <template>
   <json-form :json="form"/>
