@@ -1,0 +1,17 @@
+{
+  "title": "HTML Renderer",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://educorvi.github.io/vue_json_form/schema/html.schema.json",
+  "type": "object",
+  "description": "Some HTML to be rendered in the form",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["HTML"]
+    },
+    "htmlData": {
+      "type": "string"
+    }
+  },
+  "required": ["htmlData"]
+}
