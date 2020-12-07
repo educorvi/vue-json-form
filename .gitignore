@@ -25,3 +25,5 @@ pnpm-debug.log*
 /.env
 /demoDist/
 /demoDist.zip
+/demo/
+/demo.zip

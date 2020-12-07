@@ -11,7 +11,7 @@
     "release": true,
     "assets": [
       "./dist.zip",
-      "./demoDist.zip"
+      "./demo.zip"
     ]
   },
   "npm": {
@@ -23,8 +23,8 @@
       "npm test"
     ],
     "after:bump": [
-      "npm run doc",
       "npm run build",
+      "npm run doc",
       "npm run zip"
     ],
     "after:release": [

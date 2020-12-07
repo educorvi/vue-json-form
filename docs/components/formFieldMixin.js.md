@@ -7,6 +7,7 @@
 |---|---|---|---|---|
 |ui|The form's UI-Schema|`Object` /  `Array`|`false`|-|
 |json|The form's JSON-Schema|`Object`|`false`|-|
+|noText|Disables is-text on input append|`Boolean`|`false`|-|
 
 <!-- @vuese:formFieldMixin.js:props:end -->
 

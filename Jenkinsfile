@@ -38,7 +38,7 @@ pipeline {
           steps {
             sh 'npm run build:demo'
             sh 'npm run zip:demo'
-            archiveArtifacts 'demoDist.zip'
+            archiveArtifacts 'demo.zip'
           }
         }
 
