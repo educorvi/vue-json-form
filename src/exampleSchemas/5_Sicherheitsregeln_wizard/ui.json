@@ -1,0 +1,284 @@
+{
+  "$schema": "../../schemas/uischema.json",
+  "type": "Wizard",
+  "pages": [
+    {
+      "title": "Allgemeines",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/ort"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/dateTime"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/anlageverantwortlicher"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/arbeitsverantwortlicher",
+            "options": {
+              "multi": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/arbeitsausfuehrender"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Zusätzliche Ausrüstung",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/zusaetzlicheAusruestung"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/spannungAnAnlage"
+          }
+        ]
+      }
+    },
+    {
+      "title": "Einleitung",
+      "content": {
+        "type": "HTML",
+        "htmlData": "<h3>5 Sicherheitsregeln</h3><br><p>Willkommen zu den \"5 Sicherheitsregeln\". Das hier ist eine Einleitungsseite. Auf den nächsten Seiten wirst du die 5 Fragen bearbeiten. Viel Spaß!</p>"
+      }
+    },
+    {
+      "title": "1. Freigeschaltet",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/freischaltungWie",
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ausloesestromS",
+            "options": {
+              "append": "A"
+            },
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWie",
+              "referenceValue": "NH-Sicherungen"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ausloesestromLa",
+            "options": {
+              "append": "A"
+            },
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWie",
+              "referenceValue": "NH-Lastschaltleiste"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ausloesestromLe",
+            "options": {
+              "append": "A"
+            },
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWie",
+              "referenceValue": "Leistungsschalter"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/freischaltungWo",
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/bezeichnungT",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWo",
+              "referenceValue": "Trafostation"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/bezeichnungU",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWo",
+              "referenceValue": "Umpannwerk/-anlage"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/bezeichnungK",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/freischaltungWo",
+              "referenceValue": "Kabelverteilerschrank"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "2. Gegen Wiedereinschalten gesichert",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/schloss"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/tuer"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/schild",
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "3. Spannungsfreiheit allpolig festgestellt an der Arbeitsstelle",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/spannungspruefer",
+            "options": {
+              "placeholder": "Hersteller/Typ"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "4. Geerdet und kurzgeschlossen",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/vorrichtung",
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/grund",
+            "showOn": {
+              "scope": "#/properties/vorrichtung",
+              "type": "EQUALS",
+              "referenceValue": "nicht geerdet und kurzgeschlossen"
+            },
+            "options": {
+              "multi": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "5. Benachbarte, unter Spannung stehende Teile abgedeckt",
+      "content": {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/abdeckung",
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ada1",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/abdeckung",
+              "referenceValue": "teilweiser Berührungsschutz"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ada2",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/abdeckung",
+              "referenceValue": "vollständiger Berührungsschutz"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/ka",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/abdeckung",
+              "referenceValue": "Abdeckung nicht notwendig"
+            },
+            "options": {
+              "radiobuttons": true,
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/entfernung",
+            "showOn": {
+              "type": "EQUALS",
+              "scope": "#/properties/ka",
+              "referenceValue": "Entfernung zu den Teilen groß genug ist"
+            },
+            "options": {
+              "append": "m"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "Abschließendes",
+      "content": {
+        "type": "Control",
+        "scope": "#/properties/notiz",
+        "options": {
+          "multi": true
+        }
+      }
+    }
+
+  ]
+}

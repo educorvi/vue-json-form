@@ -41,6 +41,8 @@ import Radiobuttons from "./Radiobuttons.vue";
 export default {
   name: "FormField",
   mixins: [formFieldMixin],
+  methods: {
+  },
   computed: {
     /**
      * Selects the right form field

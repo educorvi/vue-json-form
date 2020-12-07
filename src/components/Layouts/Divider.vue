@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {onlyProps} from "@/components/Layouts/layoutMixin";
+import {onlyProps} from "./layoutMixin";
 
 export default {
 name: "Divider",

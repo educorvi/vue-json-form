@@ -28,6 +28,7 @@
     "json-pointer": "^0.6.1",
     "jsonschema": "^1.2.7",
     "vue": "^2.6.12",
+    "vue-material": "^1.0.0-beta-15",
     "vuedraggable": "^2.24.1"
   },
   "devDependencies": {

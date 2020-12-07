@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "ort": {
+      "title": "Arbeitsstelle/Arbeitsort",
+      "type": "string"
+    },
+    "dateTime": {
+      "title": "Datum und Uhrzeit",
+      "type": "string",
+      "format": "date-time"
+    },
+    "anlageverantwortlicher": {
+      "title": "Person in der Rolle des Anlagenverantwortlichen",
+      "type": "string"
+    },
+    "arbeitsverantwortlicher": {
+      "title": "Person in der Rolle des Arbeitsverantwortlichen",
+      "type": "string"
+    },
+    "arbeitsausfuehrender": {
+      "title": "Arbeitsausführende Person",
+      "type": "string"
+    },
+    "zusaetzlicheAusruestung": {
+      "title": "Zusätzliche persönliche Schutzausrüstung",
+      "description": "Bei der ersten und fünften Sicherheitsregel",
+      "type": "array",
+      "enum": [
+        "gegen elektrischen Schlag",
+        "gegen Störlichtbogen"
+      ]
+    },
+    "spannungAnAnlage": {
+      "title": "Stehen andere Anlagenteile weiterhin unter Spannung, so dass der Arbeitsbereich z. B. mit Ketten oder Bändern gekennzeichnet oder abgegrenzt werden muss?",
+      "type": "boolean"
+    },
+    "freischaltungWie": {
+      "title": "Wie erfolgte die Freischaltung?",
+      "type": "string",
+      "enum": [
+        "NH-Sicherungen",
+        "NH-Lastschaltleiste",
+        "Leistungsschalter",
+        "Trafo außer Betrieb genommen",
+        "Netzersatzungsanlage außer Betrieb genommen"
+      ]
+    },
+    "ausloesestromS": {
+      "title": "Auslösestrom in Ampere",
+      "type": "number"
+    },
+    "ausloesestromLa": {
+      "title": "Auslösestrom in Ampere",
+      "type": "number"
+    },
+    "ausloesestromLe": {
+      "title": "Auslösestrom in Ampere",
+      "type": "number"
+    },
+    "freischaltungWo": {
+      "title": "Wo erfolgte die Freischaltung?",
+      "type": "string",
+      "enum": [
+        "Trafostation",
+        "Umpannwerk/-anlage",
+        "Kabelverteilerschrank"
+      ]
+    },
+    "bezeichnungT": {
+      "title": "Nr./Bezeichnung",
+      "type": "string"
+    },
+    "bezeichnungU": {
+      "title": "Nr./Bezeichnung",
+      "type": "string"
+    },
+    "bezeichnungK": {
+      "title": "Nr./Bezeichnung",
+      "type": "string"
+    },
+    "schloss": {
+      "title": "Wurde ein Vorhängeschloss am Schalter eingehängt und abgeschlossen?",
+      "type": "boolean"
+    },
+    "tuer": {
+      "title": "Wurde die Tür zum elektrischen Betriebsraum verschlossen?",
+      "type": "boolean"
+    },
+    "schild": {
+      "title": "Wurde ein Schild \"Schalten verboten\" zusätzlich angebracht?",
+      "type": "string",
+      "enum": [
+        "angehängt",
+        "geklebt",
+        "magnetisch",
+        "nein"
+      ]
+    },
+    "spannungspruefer": {
+      "title": "Zweipoliger Spannungsprüfer",
+      "type": "string"
+    },
+    "vorrichtung": {
+      "title": "Wo wurde die EuK-Vorrichtung eingebaut?",
+      "type": "string",
+      "enum": [
+        "in die NH-Sicherungsunterteile",
+        "unterspannungsseitig am Trafo",
+        "an der Sammelschiene",
+        "nicht geerdet und kurzgeschlossen"
+      ]
+    },
+    "grund": {
+      "type": "string"
+    },
+    "abdeckung": {
+      "type": "string",
+      "title": "Mit der Abdeckung soll erreicht werden",
+      "enum": [
+        "teilweiser Berührungsschutz",
+        "vollständiger Berührungsschutz",
+        "Abdeckung nicht notwendig"
+      ]
+    },
+    "ada1": {
+      "type": "array",
+      "title": "Art der Abdeckung",
+      "enum": [
+        "isolierende Formteile",
+        "isolierende Tücher"
+      ]
+    },
+    "ada2": {
+      "type": "array",
+      "title": "Art der Abdeckung",
+      "enum": [
+        "isolierende Formteile",
+        "isolierende Tücher"
+      ]
+    },
+    "ka": {
+      "type": "string",
+      "title": "Keine Abdeckung angebracht, weil",
+      "enum": ["keine unter Spannung stehenden Teile im Arbeitsbereich vorhanden sind", "Entfernung zu den Teilen groß genug ist"]
+    },
+    "entfernung":{
+      "type": "number",
+      "title": "Entfernung zu den Teilen"
+    },
+    "notiz": {
+      "type": "string"
+    }
+  },
+  "required": ["ort"]
+}

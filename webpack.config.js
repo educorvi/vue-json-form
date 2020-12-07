@@ -67,6 +67,7 @@ const commonConfig = {
         "bootstrap-vue": "bootstrap-vue",
         "json-pointer": "json-pointer",
         jsonschema: "jsonschema",
+        "vue-material": "vue-material",
         vuedraggable: "vuedraggable"
     }
 };

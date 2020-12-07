@@ -76,6 +76,8 @@ export default {
           return Layouts.htmlRenderer;
         case "Divider":
           return Layouts.Divider;
+        case "Wizard":
+          return Layouts.Wizard;
         default:
           return Layouts.VerticalLayout;
       }

@@ -5,6 +5,7 @@
   "definitions": {
     "control": {
       "type": "object",
+      "description": "Contains a form element, e. g. a text input",
       "properties": {
         "type": {
           "type": "string",
@@ -14,10 +15,12 @@
         },
         "scope": {
           "type": "string",
+          "description": "A json pointer referring to the form element in the forms json schema",
           "format": "json-pointer"
         },
         "label": {
           "type": "boolean",
+          "description": "Defines whether the fields label is activated",
           "default": true
         },
         "format": {
@@ -37,6 +40,7 @@
         },
         "options": {
           "type": "object",
+          "description": "Gives multiple options to configure the element",
           "properties": {
             "multi": {
               "anyOf": [
@@ -80,10 +84,12 @@
             },
             "stacked": {
               "type": "boolean",
+              "description": "Radiobutton-/Checkbox group will be stacked if set to true",
               "default": false
             },
             "append": {
-              "type": "string"
+              "type": "string",
+              "description": "Will be appended to field"
             }
           }
         },
@@ -138,6 +144,7 @@
     },
     "html": {
       "type": "object",
+      "description": "Some HTML to be rendered in the form",
       "properties": {
         "type": {
           "type": "string",
@@ -151,6 +158,7 @@
     },
     "divider": {
       "type": "object",
+      "description": "inserts a simple divider",
       "properties": {
         "type": {
           "type": "string",
@@ -161,6 +169,7 @@
     },
     "layout": {
       "type": "object",
+      "description": "The different Layouts",
       "properties": {
         "type": {
           "type": "string",
@@ -186,6 +195,9 @@
               },
               {
                 "$ref": "#/definitions/divider"
+              },
+              {
+                "$ref": "#/definitions/wizard"
               }
             ]
           }
@@ -195,7 +207,59 @@
         "type",
         "elements"
       ]
+    },
+    "wizard_page": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/control"
+            },
+            {
+              "$ref": "#/definitions/layout"
+            },
+            {
+              "$ref": "#/definitions/html"
+            }
+          ]
+        }
+      },
+      "required": ["title","content"]
+    },
+    "wizard": {
+      "type": "object",
+      "description": "A wizard that contains the form spread over multiple pages",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Wizard"]
+        },
+        "title": {
+          "type": "string",
+          "description": "The Wizards title"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "The Wizards subtitle"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/wizard_page"
+          }
+        }
+      },
+      "required": ["type", "pages"]
     }
   },
-  "$ref": "#/definitions/layout"
+
+
+  "anyOf": [
+    {"$ref": "#/definitions/layout"},
+    {"$ref": "#/definitions/wizard"}
+  ]
 }

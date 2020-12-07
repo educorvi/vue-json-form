@@ -1,14 +1,16 @@
 <template>
-  <div id="app" class="container-fluid pt-5 pb-5" style="max-width: 800px" v-if="schema && uischema">
-    <form-root :json="schema" :ui="uischema" :on-submit="submit">
+  <div id="app" class="container-fluid pt-5 pb-5" style="max-width: 800px">
+    <h5>Vue JSON Form Demo</h5>
+    <b-select :options="dropOptions" v-model="form"></b-select>
+    <hr>
+    <form-root :json="form.schema" :on-submit="submit" :ui="form.ui">
     </form-root>
   </div>
 </template>
 
 <script>
 
-import schema from "./exampleSchemas/showcase/schema.json";
-import uischema from "./exampleSchemas/showcase/ui.json";
+import forms from "./exampleSchemas"
 import FormRoot from "@/components/FormRoot";
 
 export default {
@@ -16,15 +18,20 @@ export default {
   components: {
     FormRoot
   },
+  computed: {
+    dropOptions() {
+      return Object.keys(forms).map(form => {
+        return {text: form, value: forms[form]}
+      });
+    }
+  },
   data() {
     return {
-      schema: null,
-      uischema: null
+      form: forms.Showcase
     }
   },
   created() {
-    this.schema = schema;
-    this.uischema = uischema;
+
   },
   methods: {
     submit(data) {
