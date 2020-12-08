@@ -47,7 +47,7 @@
     },
     "$schema": {
       "type": "string",
-      "description": "May contain a link to the uischema"
+      "description": "May contain a schema reference to the uischema"
     }
   },
   "additionalProperties": false,

@@ -4,7 +4,7 @@
 https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/multi
 ```
 
-If set true, textarea will be shown instead of textfield 
+If set true, textarea will be shown instead of textfield. 
  Alternatively can be set to the number of wanted lines
 
 

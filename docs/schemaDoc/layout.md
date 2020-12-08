@@ -109,7 +109,7 @@ Show field depending on value of other field
 
 ## $schema
 
-May contain a link to the uischema
+May contain a schema reference to the uischema
 
 
 `$schema`

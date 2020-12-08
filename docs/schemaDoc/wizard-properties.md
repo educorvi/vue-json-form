@@ -1,4 +1,4 @@
-# \[object Object] Schema
+# Untitled undefined type in Wizard Schema
 
 ```txt
 https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties

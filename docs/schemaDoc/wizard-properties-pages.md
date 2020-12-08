@@ -1,4 +1,4 @@
-# Untitled array in Wizard Schema
+# Pages Schema
 
 ```txt
 https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages

@@ -38,6 +38,7 @@
     },
     "options": {
       "type": "object",
+      "title": "Options",
       "description": "Gives multiple options to configure the element",
       "properties": {
         "multi": {
@@ -50,12 +51,12 @@
             }
           ],
           "default": false,
-          "description": "If set true, textarea will be shown instead of textfield \n Alternatively can be set to the number of wanted lines"
+          "description": "If set true, textarea will be shown instead of textfield. \n Alternatively can be set to the number of wanted lines"
         },
         "rating": {
           "type": "boolean",
           "default": false,
-          "description": "if set to true, numberfield will appear as star-rating-field"
+          "description": "If set to true, numberfield will appear as star-rating-field"
         },
         "placeholder": {
           "type": "string",
@@ -63,6 +64,7 @@
         },
         "enumTitles": {
           "type": "object",
+          "title": "Titles for enum",
           "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
           "propertyNames": {
             "type": "string",

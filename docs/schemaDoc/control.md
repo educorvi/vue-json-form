@@ -134,13 +134,13 @@ Gives multiple options to configure the element
 `options`
 
 -   is optional
--   Type: `object` ([Details](control-properties-options.md))
+-   Type: `object` ([Options](control-properties-options.md))
 -   cannot be null
 -   defined in: [Control](control-properties-options.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options")
 
 ### options Type
 
-`object` ([Details](control-properties-options.md))
+`object` ([Options](control-properties-options.md))
 
 ## showOn
 
