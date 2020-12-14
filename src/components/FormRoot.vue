@@ -131,8 +131,6 @@ export default {
     if (this.ui) {
       this.validationResults.ui = this.validateUI(this.ui);
     }
-  },
-  mounted() {
     this.id = '_' + Math.random().toString(36).substr(2, 9);
   },
   watch: {

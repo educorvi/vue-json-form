@@ -44,7 +44,7 @@ export default {
   methods: {
   },
   mounted() {
-    if (this.filledData[this.ui.scope] !== undefined) {
+    if (this.filledData && this.filledData[this.ui.scope] !== undefined) {
       this.$refs.child.fieldData = this.filledData[this.ui.scope];
     }
 
