@@ -19,7 +19,12 @@ export default {
         //Disables is-text on input append
         noText: {
             type: Boolean
-        }
+        },
+        //The current data of the form
+        filledData: {
+            type: Object,
+            required: false
+        },
     },
     computed: {
         jsonPath() {
@@ -54,10 +59,12 @@ export default {
             this.$emit("changedData", data)
         },
         send(data) {
-            if (!this.isArray) {
-                this.$emit("changedData", {key: this.ui.scope, value: data});
-            } else {
-                this.$emit("changedData", {key: this.ui.scope, value: data.map(obj => obj.value)});
+            if (data !== undefined) {
+                if (!this.isArray) {
+                    this.$emit("changedData", {key: this.ui.scope, value: data});
+                } else {
+                    this.$emit("changedData", {key: this.ui.scope, value: data.map(obj => obj.value)});
+                }
             }
 
         },

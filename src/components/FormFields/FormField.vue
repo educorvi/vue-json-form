@@ -8,7 +8,7 @@
 <!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
+      <component :is="type" :class="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child"/>
       <b-input-group-append :is-text="!noText" v-if="hasSlot()">
@@ -42,6 +42,12 @@ export default {
   name: "FormField",
   mixins: [formFieldMixin],
   methods: {
+  },
+  mounted() {
+    if (this.filledData[this.ui.scope] !== undefined) {
+      this.$refs.child.fieldData = this.filledData[this.ui.scope];
+    }
+
   },
   computed: {
     /**

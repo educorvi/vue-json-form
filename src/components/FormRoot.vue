@@ -1,9 +1,9 @@
 <template>
-  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth">
-    <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI"></FormWrap>
-<!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
+  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth" novalidate :id="id" :validated="checked">
+    <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI" :formID="id"></FormWrap>
+    <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
     <slot>
-<!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
+      <!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
       <input type="submit" class="float-right btn btn-primary"/>
     </slot>
   </b-form>
@@ -56,7 +56,9 @@ export default {
         schema: null,
         ui: null
       },
-      data: {}
+      data: {},
+      id: "",
+      checked: false
     }
   },
   computed: {
@@ -74,7 +76,7 @@ export default {
       for (const formElement of Object.keys(form.properties)) {
         obj.elements.push({
           type: "Control",
-          scope: "#/properties/"+formElement
+          scope: "#/properties/" + formElement
         })
       }
       return obj;
@@ -96,7 +98,13 @@ export default {
   methods: {
     onSubmitMeth(evt) {
       evt.preventDefault();
-      this.onSubmit(this.data);
+      const form = document.getElementById(this.id);
+      if (form.checkValidity()) {
+        this.onSubmit(this.data);
+      } else {
+        // this.checked = true;
+        form.reportValidity();
+      }
     },
     validateJson(json, schema = schemadraft) {
       const validate = require('jsonschema').validate;
@@ -124,6 +132,9 @@ export default {
       this.validationResults.ui = this.validateUI(this.ui);
     }
   },
+  mounted() {
+    this.id = '_' + Math.random().toString(36).substr(2, 9);
+  },
   watch: {
     json(newValue) {
       this.validateJson(newValue);
@@ -131,13 +142,14 @@ export default {
     ui(newValue) {
       this.validateUI(newValue);
     }
-  },
+  }
 }
 </script>
 
 <style lang="scss">
 .error_card {
   color: black !important;
+
   p {
     color: black !important;
   }
