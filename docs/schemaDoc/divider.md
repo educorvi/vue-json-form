@@ -17,9 +17,10 @@ inserts a simple divider
 
 # Divider Properties
 
-| Property      | Type     | Required | Nullable       | Defined by                                                                                                                         |
-| :------------ | -------- | -------- | -------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-| [type](#type) | `string` | Required | cannot be null | [Divider](divider-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/divider.schema.json#/properties/type") |
+| Property          | Type     | Required | Nullable       | Defined by                                                                                                                                      |
+| :---------------- | -------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [type](#type)     | `string` | Required | cannot be null | [Divider](divider-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/divider.schema.json#/properties/type")              |
+| [showOn](#showon) | `object` | Optional | cannot be null | [Divider](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
 
 ## type
 
@@ -44,3 +45,19 @@ inserts a simple divider
 | Value       | Explanation |
 | :---------- | ----------- |
 | `"Divider"` |             |
+
+## showOn
+
+Show field depending on value of other field
+
+
+`showOn`
+
+-   is optional
+-   Type: `object` ([ShowOn property](control-properties-showon-property.md))
+-   cannot be null
+-   defined in: [Divider](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn")
+
+### showOn Type
+
+`object` ([ShowOn property](control-properties-showon-property.md))

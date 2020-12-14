@@ -17,14 +17,13 @@ Contains a form element, e. g. a text input
 
 # Control Properties
 
-| Property            | Type      | Required | Nullable       | Defined by                                                                                                                                      |
-| :------------------ | --------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
-| [type](#type)       | `string`  | Required | cannot be null | [Control](control-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/type")              |
-| [scope](#scope)     | `string`  | Required | cannot be null | [Control](control-properties-scope.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/scope")            |
-| [label](#label)     | `boolean` | Optional | cannot be null | [Control](control-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/label")            |
-| [format](#format)   | `string`  | Optional | cannot be null | [Control](control-properties-format.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/format")          |
-| [options](#options) | `object`  | Optional | cannot be null | [Control](control-properties-options.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options")        |
-| [showOn](#showon)   | `object`  | Optional | cannot be null | [Control](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
+| Property            | Type     | Required | Nullable       | Defined by                                                                                                                                      |
+| :------------------ | -------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [type](#type)       | `string` | Required | cannot be null | [Control](control-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/type")              |
+| [scope](#scope)     | `string` | Required | cannot be null | [Control](control-properties-scope.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/scope")            |
+| [format](#format)   | `string` | Optional | cannot be null | [Control](control-properties-format.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/format")          |
+| [options](#options) | `object` | Optional | cannot be null | [Control](control-properties-options.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options")        |
+| [showOn](#showon)   | `object` | Optional | cannot be null | [Control](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
 
 ## type
 
@@ -69,30 +68,6 @@ A json pointer referring to the form element in the forms json schema
 ### scope Constraints
 
 **JSON Pointer**: the string must be a JSON Pointer, according to [RFC 6901, section 5](https://tools.ietf.org/html/rfc6901 "check the specification")
-
-## label
-
-Defines whether the fields label is activated
-
-
-`label`
-
--   is optional
--   Type: `boolean`
--   cannot be null
--   defined in: [Control](control-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/label")
-
-### label Type
-
-`boolean`
-
-### label Default Value
-
-The default value is:
-
-```json
-true
-```
 
 ## format
 

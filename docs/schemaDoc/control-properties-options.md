@@ -19,6 +19,7 @@ Gives multiple options to configure the element
 
 | Property                      | Type      | Required | Nullable       | Defined by                                                                                                                                                                                |
 | :---------------------------- | --------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [label](#label)               | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/label")                |
 | [multi](#multi)               | Merged    | Optional | cannot be null | [Control](control-properties-options-properties-multi.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/multi")                |
 | [rating](#rating)             | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-rating.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/rating")              |
 | [placeholder](#placeholder)   | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-placeholder.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/placeholder")    |
@@ -26,6 +27,30 @@ Gives multiple options to configure the element
 | [radiobuttons](#radiobuttons) | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-radiobuttons.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/radiobuttons")  |
 | [stacked](#stacked)           | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-stacked.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/stacked")            |
 | [append](#append)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-append.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/append")              |
+
+## label
+
+Defines whether the fields label is activated
+
+
+`label`
+
+-   is optional
+-   Type: `boolean`
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/label")
+
+### label Type
+
+`boolean`
+
+### label Default Value
+
+The default value is:
+
+```json
+true
+```
 
 ## multi
 

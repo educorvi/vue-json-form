@@ -17,11 +17,12 @@ A wizard that contains the form spread over multiple pages
 
 # Wizard Properties
 
-| Property           | Type     | Required | Nullable       | Defined by                                                                                                                           |
-| :----------------- | -------- | -------- | -------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| [type](#type)      | `string` | Required | cannot be null | [Wizard](wizard-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/type")      |
-| [pages](#pages)    | `array`  | Required | cannot be null | [Wizard](wizard-properties-pages.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages")    |
-| [$schema](#schema) | `string` | Optional | cannot be null | [Wizard](wizard-properties-schema.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/$schema") |
+| Property           | Type     | Required | Nullable       | Defined by                                                                                                                                     |
+| :----------------- | -------- | -------- | -------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| [type](#type)      | `string` | Required | cannot be null | [Wizard](wizard-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/type")                |
+| [pages](#pages)    | `array`  | Required | cannot be null | [Wizard](wizard-properties-pages.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages")              |
+| [$schema](#schema) | `string` | Optional | cannot be null | [Wizard](wizard-properties-schema.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/$schema")           |
+| [showOn](#showon)  | `object` | Optional | cannot be null | [Wizard](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
 
 ## type
 
@@ -78,3 +79,19 @@ May contain a schema reference to the uischema
 ### $schema Type
 
 `string`
+
+## showOn
+
+Show field depending on value of other field
+
+
+`showOn`
+
+-   is optional
+-   Type: `object` ([ShowOn property](control-properties-showon-property.md))
+-   cannot be null
+-   defined in: [Wizard](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn")
+
+### showOn Type
+
+`object` ([ShowOn property](control-properties-showon-property.md))

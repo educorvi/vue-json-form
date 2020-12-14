@@ -62,6 +62,39 @@ export default {
 </script>
 ```
 
+### About the Schemas
+#### JSON-schema
+The JSON-schema should conform to [http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#).
+More details on the json-schema can be found [here](https://json-schema.org/).
+
+#### UI-Schema
+The UI-schema should conform to [https://educorvi.github.io/vue_json_form/schemas/ui.schema.json](https://educorvi.github.io/vue_json_form/schemas/ui.schema.json).
+Your root object must be a [layout](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout) or a [wizard](https://educorvi.github.io/vue_json_form/schemaDoc/#/wizard).
+A layout can be of type `VerticalLayout`, `HorizontalLayout` or `Group` and needs to have an array of [elements](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout-properties-elements-layoutelement).
+
+The formfields are represented by elements with [Control](https://educorvi.github.io/vue_json_form/schemaDoc/#/control) objects. They must have a `scope` property, which has the form of a json-pointer and points to the element in the json-schema, that you want to display here.
+It can be customized with the [options](https://educorvi.github.io/vue_json_form/schemaDoc/#/control-properties-options) property.
+If your control object is for a string, you can set the format of the string with the [format](https://educorvi.github.io/vue_json_form/schemaDoc/#/control#format) property.
+
+Other possible elements are a [HTML renderer](https://educorvi.github.io/vue_json_form/schemaDoc/#/html) and a [divider](https://educorvi.github.io/vue_json_form/schemaDoc/#/divider).
+
+For all types (except wizard pages) it is possible, to define conditional rendering with the [showOn](https://educorvi.github.io/vue_json_form/schemaDoc/#/control-properties-showon-property) property.
+Use `scope` to specify a json pointer to the field the reference value should be compared against, `referenceValue` to specify the value and `type` to specify, what kind of comparison should be used. Possible are:
+
+| Value                | Explanation |
+| :------------------- | ----------- |
+| `"EQUALS"`           | If the field value and the referenceValue are equal            |
+| `"NOT_EQUALS"`       | If the field value and the referenceValue are not equal            |
+| `"GREATER"`          | If the field value is greater then the referenceValue             |
+| `"GREATER_OR_EQUAL"` | If the field value is greater or equal then the referenceValue               |
+| `"SMALLER_OR_EQUAL"` | If the field value is smaller or equal then the referenceValue            |
+| `"SMALLER"`          | If the field value is smaller then the referenceValue            |
+| `"LONGER"`           | Used for strings. If the length of the input in the field specified by `scope` is bigger than the value in `referenceValue`, field will be rendered            |
+
+#### Examples 
+For examples have a look in [this folder](https://github.com/educorvi/vue_json_form/tree/master/src/exampleSchemas). To see these examples rendered, open the [demo](https://educorvi.github.io/vue_json_form/demo/) and select the example you want to see from the dropdown menu. 
+
+
 ## Development
 ## Project setup
 ```

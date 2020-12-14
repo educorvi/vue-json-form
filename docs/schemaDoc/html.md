@@ -17,10 +17,11 @@ Some HTML to be rendered in the form
 
 # HTML Renderer Properties
 
-| Property              | Type     | Required | Nullable       | Defined by                                                                                                                                 |
-| :-------------------- | -------- | -------- | -------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| [type](#type)         | `string` | Optional | cannot be null | [HTML Renderer](html-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/html.schema.json#/properties/type")         |
-| [htmlData](#htmldata) | `string` | Required | cannot be null | [HTML Renderer](html-properties-htmldata.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/html.schema.json#/properties/htmlData") |
+| Property              | Type     | Required | Nullable       | Defined by                                                                                                                                            |
+| :-------------------- | -------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [type](#type)         | `string` | Optional | cannot be null | [HTML Renderer](html-properties-type.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/html.schema.json#/properties/type")                    |
+| [htmlData](#htmldata) | `string` | Required | cannot be null | [HTML Renderer](html-properties-htmldata.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/html.schema.json#/properties/htmlData")            |
+| [showOn](#showon)     | `object` | Optional | cannot be null | [HTML Renderer](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
 
 ## type
 
@@ -61,3 +62,19 @@ Some HTML to be rendered in the form
 ### htmlData Type
 
 `string`
+
+## showOn
+
+Show field depending on value of other field
+
+
+`showOn`
+
+-   is optional
+-   Type: `object` ([ShowOn property](control-properties-showon-property.md))
+-   cannot be null
+-   defined in: [HTML Renderer](control-properties-showon-property.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn")
+
+### showOn Type
+
+`object` ([ShowOn property](control-properties-showon-property.md))
