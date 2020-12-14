@@ -1,7 +1,7 @@
 <template>
   <md-steppers md-vertical :md-active-step.sync="step">
     <md-step v-for="(page, index) of ui.pages" :key="index+page.title" :md-label="page.title" :id="index+page.title" :md-done="done[index]">
-      <FormWrap :ui="page.content" :json="json"/>
+      <FormWrap @changedData="loopUp" :ui="page.content" :json="json" :filledData="filledData"/>
       <b-button variant="primary" class="float-right" @click="() => {step=steps[index+1]; done[index] = true}">Weiter</b-button>
     </md-step>
   </md-steppers>

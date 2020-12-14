@@ -6,6 +6,11 @@ const props = {
     //The form's JSON-Schema
     json: {
         type: Object
+    },
+    //The current data of the form
+    filledData: {
+        type: Object,
+        required: false
     }
 }
 
@@ -16,14 +21,7 @@ const methods = {
 }
 
 export const onlyProps = {
-    props: {
-        ...props,
-        //The current data of the form
-        filledData: {
-            type: Object,
-            required: false
-        }
-    }
+    props
 }
 export const rootProps = {props}
 export const onlyMethods = {methods}
@@ -33,7 +31,7 @@ export const onlyMethods = {methods}
  * Mixin for all layout components
  */
 export default {
-    ...onlyProps,
+    props,
     methods,
     components: {
         FormWrap: () => import('../FormWrap.vue'),
