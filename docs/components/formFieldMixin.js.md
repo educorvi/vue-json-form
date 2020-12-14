@@ -8,6 +8,8 @@
 |ui|The form's UI-Schema|`Object` /  `Array`|`false`|-|
 |json|The form's JSON-Schema|`Object`|`false`|-|
 |noText|Disables is-text on input append|`Boolean`|`false`|-|
+|filledData|The current data of the form|`Object`|`false`|-|
+|array|If Formfield is inside an Array, this probs specifys index|`Number`|`false`|-|
 
 <!-- @vuese:formFieldMixin.js:props:end -->
 
