@@ -1,6 +1,13 @@
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
+*::selection {
+  background: $primary !important;
+}
+*::-moz-selection {
+  background: $primary !important;
+}
+
 //@import "~bootswatch/dist/darkly/variables";
 //@import "~bootstrap/scss/bootstrap";
 //@import "~bootswatch/dist/darkly/bootswatch";
