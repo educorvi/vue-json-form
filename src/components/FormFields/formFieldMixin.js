@@ -25,6 +25,12 @@ export default {
             type: Object,
             required: false
         },
+        //If Formfield is inside an Array, this probs specifys index
+        array: {
+            type: Number,
+            required: false
+
+        }
     },
     computed: {
         jsonPath() {
