@@ -11,14 +11,14 @@
     },
     "done": {
       "type": "boolean",
-      "title": "Toller Button",
-      "description": "Bitte drücken"
+      "title": "Great Button",
+      "description": "Please press"
     },
     "group_selector": {
-      "title": "Sollen die Gruppen oder ein Objekt angezeigt werden?",
+      "title": "Groups or Object?",
       "type": "string",
-      "enum": ["Gruppen", "Objekt"],
-      "default": "Gruppen"
+      "enum": ["Groups", "Object"],
+      "default": "Groups"
     },
     "due_date": {
       "type": "string",
@@ -26,7 +26,7 @@
     },
     "rating": {
       "title": "Rating",
-      "description": "Deine Meinung ist wichtig für uns",
+      "description": "Please rate us",
       "type": "integer",
       "maximum": 5
     },
@@ -50,13 +50,13 @@
     },
     "testObject": {
       "type": "object",
-      "title": "Haustier",
+      "title": "Pet",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Gib mir einen tollen Namen"
+          "description": "Give me a name"
         },
-        "alter": {
+        "age": {
           "type": "integer",
           "minimum": 0,
           "maximum": 100
@@ -65,17 +65,15 @@
           "type": "boolean"
         }
       },
-      "required": ["name", "alter"]
+      "required": ["name", "age"]
     },
-    "tollheit": {
+    "fancyness": {
       "type": "string",
-      "title": "Tollheit",
       "enum": [
-        "Toll",
-        "Toller",
-        "Sehr Toll",
-        "Ultra Toll",
-        "Einhorn"
+        "fancy",
+        "fancier",
+        "fanciest",
+        "unicorn"
       ]
     }
 
@@ -83,6 +81,6 @@
   "required": [
     "done",
     "name",
-    "tollheit"
+    "fancyness"
   ]
 }

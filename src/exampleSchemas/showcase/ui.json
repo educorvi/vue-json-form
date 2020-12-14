@@ -10,12 +10,12 @@
       "type": "Control",
       "scope": "#/properties/name",
       "options": {
-        "placeholder": "Voller Name"
+        "placeholder": "Full Name"
       }
     },
     {
       "type": "Control",
-      "scope": "#/properties/tollheit",
+      "scope": "#/properties/fancyness",
       "options": {
         "radiobuttons": true,
         "stacked": true
@@ -27,16 +27,16 @@
     },
     {
       "type": "Group",
-      "label": "Gruppe 1",
+      "label": "Group 1",
       "showOn": {
         "type": "EQUALS",
         "scope": "#/properties/group_selector",
-        "referenceValue": "Gruppen"
+        "referenceValue": "Groups"
       },
       "elements": [
         {
           "type": "HorizontalLayout",
-          "label": "Tolle Gruppe",
+          "label": "Great Gruppe",
           "elements": [
             {
               "type": "Control",
@@ -56,18 +56,18 @@
           "scope": "#/properties/description",
           "options": {
             "multi": true,
-            "placeholder": "Hier eine ganz ausführliche Beschreibung eingeben"
+            "placeholder": "Enter a nice description"
           }
         }
       ]
     },
     {
       "type": "Group",
-      "label": "Gruppe 2",
+      "label": "Group 2",
       "showOn": {
         "type": "EQUALS",
         "scope": "#/properties/group_selector",
-        "referenceValue": "Gruppen"
+        "referenceValue": "Groups"
       },
       "elements": [
         {
@@ -98,8 +98,15 @@
       "showOn": {
         "type": "EQUALS",
         "scope": "#/properties/group_selector",
-        "referenceValue": "Objekt"
+        "referenceValue": "Object"
       }
+    },
+    {
+      "type": "Divider"
+    },
+    {
+      "type": "HTML",
+      "htmlData": "<div class='text-center'><p>It's also possible to add HTML-Code. This Way you can even embed a video in your form:</p><iframe width=\"315\" height=\"315\" src=\"https://www.youtube-nocookie.com/embed/CDrWcFGlyKg?start=36\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></div>"
     }
   ]
 }
