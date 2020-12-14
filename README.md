@@ -68,7 +68,7 @@ The JSON-schema should conform to [http://json-schema.org/draft-07/schema#](http
 More details on the json-schema can be found [here](https://json-schema.org/).
 
 #### UI-Schema
-The UI-schema should conform to [https://educorvi.github.io/vue_json_form/schemas/ui.schema.json](https://educorvi.github.io/vue_json_form/schemas/ui.schema.json).
+The UI-schema must conform to [https://educorvi.github.io/vue_json_form/schemas/ui.schema.json](https://educorvi.github.io/vue_json_form/schemas/ui.schema.json).
 Your root object must be a [layout](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout) or a [wizard](https://educorvi.github.io/vue_json_form/schemaDoc/#/wizard).
 A layout can be of type `VerticalLayout`, `HorizontalLayout` or `Group` and needs to have an array of [elements](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout-properties-elements-layoutelement).
 
