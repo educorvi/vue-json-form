@@ -1,7 +1,7 @@
 <template>
   <b-form-group :id="'formGroup_'+schemaName"
                 :description="item.description"
-                :label="item.type !== 'boolean' && (ui.label || ui.label === undefined) ? title : null"
+                :label="item.type !== 'boolean' && (ui.options === undefined || ui.options.label || ui.options.label === undefined) ? title : null"
                 :label-for="schemaName">
     <b-input-group class="w-100">
       <b-input-group-prepend v-if="hasSlot('prepend')">

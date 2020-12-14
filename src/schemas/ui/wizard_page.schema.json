@@ -1,6 +1,6 @@
 {
   "title": "Wizard Page",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "$id": "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json",
   "type": "object",
   "properties": {
