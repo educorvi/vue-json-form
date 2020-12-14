@@ -48,7 +48,7 @@ export default {
       let arrayData = this.ui.scope.split("/");
       arrayData.splice(arrayData.length - 1, 1);
       arrayData = "#" + arrayData.join("/");
-      if (this.filledData && (toFill = this.filledData[arrayData]) !== undefined&& arrayData.length>this.array) {
+      if (this.filledData && (toFill = this.filledData[arrayData]) !== undefined && arrayData.length > this.array) {
         this.$refs.child.fieldData = toFill[this.array];
       }
     } else if (this.filledData && (toFill = this.filledData[this.ui.scope]) !== undefined) {
