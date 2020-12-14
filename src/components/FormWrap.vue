@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <b-collapse :visible="show" @hidden="closed=true" @show="closed=false">
-      <component :is="type" v-if="show || !closed" :filledData="filledData" :json="json" :ui="ui"
+      <component :is="type" v-if="show || !closed" :filledData="filledData" :json="json" :ui="ui" :formID="formID"
                  @changedData="loopUp"></component>
     </b-collapse>
   </div>

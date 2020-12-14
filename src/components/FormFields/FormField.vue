@@ -5,14 +5,14 @@
                 :label-for="schemaName">
     <b-input-group class="w-100">
       <b-input-group-prepend v-if="hasSlot('prepend')">
-<!--        Content is prepended to the input field-->
+        <!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component :is="type" :id="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
+      <component :is="type" :class="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
-                 :ui="ui" @changedData="loopUp" ref="child"/>
+                 :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"/>
       <b-input-group-append :is-text="!noText" v-if="hasSlot()">
-<!--        Content is appended to the input field-->
+        <!--        Content is appended to the input field-->
         <slot></slot>
       </b-input-group-append>
     </b-input-group>
@@ -41,7 +41,19 @@ import Radiobuttons from "./Radiobuttons.vue";
 export default {
   name: "FormField",
   mixins: [formFieldMixin],
-  methods: {
+  methods: {},
+  mounted() {
+    let toFill;
+    if (this.array !== undefined) {
+      let arrayData = this.ui.scope.split("/");
+      arrayData.splice(arrayData.length - 1, 1);
+      arrayData = "#" + arrayData.join("/");
+      if (this.filledData && (toFill = this.filledData[arrayData]) !== undefined && arrayData.length > this.array) {
+        this.$refs.child.fieldData = toFill[this.array];
+      }
+    } else if (this.filledData && (toFill = this.filledData[this.ui.scope]) !== undefined) {
+      this.$refs.child.fieldData = toFill;
+    }
   },
   computed: {
     /**

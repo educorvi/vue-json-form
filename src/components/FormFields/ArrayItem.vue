@@ -1,7 +1,7 @@
 <template>
   <div>
-    <FormField ref="child" :json="json" :name="schemaName+index" :ui="ui"
-               @changedData="loopUp" noText>
+    <FormField ref="child" :json="json" :name="schemaName+index" :ui="ui" :array="index"
+               @changedData="loopUp" noText :filledData="filledData">
       <b-button variant="outline-danger" @click="$emit('deleteItem', index)">
         <b-icon icon="x"/>
       </b-button>
@@ -41,6 +41,9 @@ export default {
     //TODO First one doesnt Focus
     this.$refs.child?.focus();
   },
+  setChild(value) {
+    console.log(value)
+  }
 }
 </script>
 

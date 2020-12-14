@@ -1,8 +1,8 @@
 <template>
-  <md-steppers md-vertical :md-active-step.sync="step">
-    <md-step v-for="(page, index) of ui.pages" :key="index+page.title" :md-label="page.title" :id="index+page.title" :md-done="done[index]">
-      <FormWrap @changedData="loopUp" :ui="page.content" :json="json" :filledData="filledData"/>
-      <b-button variant="primary" class="float-right" @click="() => {step=steps[index+1]; done[index] = true}">Weiter</b-button>
+  <md-steppers md-vertical :md-active-step.sync="step" md-linear>
+    <md-step v-for="(page, index) of ui.pages" :key="index+page.title" :md-label="page.title" :id="index+page.title" :md-done="done[index]" :md-editable="index <= steps.indexOf(step)">
+      <FormWrap v-if="index === steps.indexOf(step)" @changedData="loopUp" :ui="page.content" :json="json" :filledData="filledData"/>
+      <b-button variant="primary" class="float-right" @click="next(index)">Weiter</b-button>
     </md-step>
   </md-steppers>
 </template>
@@ -31,19 +31,28 @@ export default {
   },
   components: {
   },
- mounted() {
+  methods: {
+    next(index){
+      if (document.getElementById(this.formID).reportValidity()) {
+        this.step=this.steps[index+1];
+        this.done[index] = true;
+      }
+    }
+  },
+  created() {
+    this.step = this.steps[0];
+  },
+  mounted() {
    this.color = getComputedStyle(document.documentElement).getPropertyValue('--primary');
    this.errorColor = getComputedStyle(document.documentElement).getPropertyValue('--danger');
  },
-  // watch: {
-  //   "ui.pages": {
-  //       handler: function (newValue){
-  //         this.done = Array(newValue.length).fill(false, 0, newValue.length - 1);
-  //       },
-  //     deep: true
-  //
-  //   }
-  // },
+  watch: {
+    step: function (newValue){
+      for (let i = this.steps.indexOf(newValue); i < this.done.length; i++) {
+        this.done[i] = false;
+      }
+    }
+  },
 }
 </script>
 

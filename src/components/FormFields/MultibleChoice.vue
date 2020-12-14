@@ -5,6 +5,7 @@
       :name="title"
       :options="options"
       :stacked="this.ui.options && this.ui.options.stacked"
+      :required="required"
   />
 </template>
 

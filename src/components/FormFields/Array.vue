@@ -5,7 +5,7 @@
         <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">
           <ArrayItem @changedData="dataChanged(index, $event)" @deleteItem="deleteItem(index)"
                      :divider="index !== fieldData.length-1 && item.items.type === 'object'" :index="index" :json="json"
-                     :ui="fakeUI"/>
+                     :ui="fakeUI" :ref="'child'+index" :filledData="filledData"/>
         </div>
       </transition-group>
     </draggable>
@@ -32,11 +32,16 @@ export default {
   name: "Array",
   components: {ArrayItem, draggable},
   mixins: [formFieldMixin],
+  props:{
+
+  },
   computed: {
     //Used to generate a fake UI-Scheme for the Arrayitems
     fakeUI() {
       return {
-        label: false,
+        options: {
+          label: false
+        },
         scope: this.jsonPath + "/items"
       };
     }
@@ -75,8 +80,18 @@ export default {
 
   },
   created() {
-    this.fieldData = [];
-  }
+    if (this.fieldData === undefined) {
+      this.fieldData = [];
+    }
+  },
+  watch: {
+    fieldData(newValue) {
+      this.send(newValue);
+      if (newValue !== undefined && newValue.length > 0 && !newValue[0].gentime) {
+        this.fieldData = this.fieldData.map(item => {return {value:item, gentime: Math.random().toString(36).substr(2, 9)}})
+      }
+    }
+  },
 }
 </script>
 

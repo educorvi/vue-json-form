@@ -1,6 +1,6 @@
 <template>
   <div class="embDiv">
-    <FormWrap :json="json" :ui="fakeUI" @changedData="collect"/>
+    <FormWrap :json="json" :ui="fakeUI" @changedData="collect" :filledData="filledData"/>
   </div>
 </template>
 
@@ -37,6 +37,7 @@ export default {
         this.fieldData = {};
       }
       this.$set(this.fieldData, s[s.length - 1], data.value);
+      this.loopUp(data);
     }
   },
 }

@@ -81,6 +81,8 @@
 
   },
   "required": [
-    "done"
+    "done",
+    "name",
+    "tollheit"
   ]
 }
