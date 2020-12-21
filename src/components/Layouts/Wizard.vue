@@ -2,7 +2,7 @@
   <md-steppers md-vertical :md-active-step.sync="step" md-linear>
     <md-step v-for="(page, index) of ui.pages" :key="index+page.title" :md-label="page.title" :id="index+page.title" :md-done="done[index]" :md-editable="index <= steps.indexOf(step)">
       <FormWrap v-if="index === steps.indexOf(step)" @changedData="loopUp" :ui="page.content" :json="json" :filledData="filledData"/>
-      <b-button variant="primary" class="float-right" @click="next(index)">Weiter</b-button>
+      <b-button variant="primary" class="float-right" @click="next(index)" v-if="!page.hideNext">{{page.nextText || "Next"}}</b-button>
     </md-step>
   </md-steppers>
 </template>

@@ -23,11 +23,14 @@ export default {
       return Object.keys(forms).map(form => {
         return {text: form, value: forms[form]}
       });
+    },
+    isWizardSelected() {
+      return this.form === forms["5 Sicherheitsregeln (Wizard)"];
     }
   },
   data() {
     return {
-      form: forms.Showcase
+      form: forms["5 Sicherheitsregeln (Wizard)"]
     }
   },
   created() {
@@ -37,7 +40,7 @@ export default {
     submit(data) {
       console.log(JSON.stringify(data));
     }
-  },
+  }
 }
 </script>
 

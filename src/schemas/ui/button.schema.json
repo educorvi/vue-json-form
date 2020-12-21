@@ -14,6 +14,16 @@
       "description": "Currently, only a submit button is supported",
       "type": "string",
       "enum": ["submit"]
+    },
+    "text": {
+      "type": "string",
+      "title": "Text",
+      "description": "The buttons text"
+    },
+    "variant": {
+      "type": "string",
+      "description": "The Bootstrap Variant of the button",
+      "default": "primary"
     }
   },
   "additionalProperties": false,

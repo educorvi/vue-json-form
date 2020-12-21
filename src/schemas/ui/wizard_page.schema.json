@@ -7,6 +7,17 @@
     "title": {
       "type": "string"
     },
+    "hideNext": {
+      "title": "Hide \"Next\" Button",
+      "description": "You can use this for example, if you want to use the last page for a submit button",
+      "type": "boolean"
+    },
+    "nextText": {
+      "title": "Text of the \"Next\" Button",
+      "description": "Changes the text of the next button",
+      "default": "Next",
+      "type": "string"
+    },
     "content": {
       "oneOf": [
         {

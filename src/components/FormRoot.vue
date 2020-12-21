@@ -3,8 +3,8 @@
     <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI" :formID="id"></FormWrap>
     <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
     <slot>
-      <!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
-      <input type="submit" class="float-right btn btn-primary"/>
+      <!--   Default Submit Button. Only rendered when no other submit button was specified in the form-->
+      <input v-if="!containsSubmitButton" type="submit" class="float-right btn btn-primary"/>
     </slot>
   </b-form>
 
@@ -81,7 +81,22 @@ export default {
         })
       }
       return obj;
+    },
+    containsSubmitButton() {
+      function searchInObject(obj) {
+        const keys = Object.keys(obj);
+        for (const key of keys) {
+          let item = obj[key];
+          if (typeof item === 'object') {
+            if(searchInObject(item)) return true;
+          } else if (typeof item === 'string' && key === "buttonType" && item === 'submit') {
+            return true;
+          }
+        }
+        return false;
+      }
 
+      return searchInObject(this.ui);
     }
   },
   props: {
