@@ -83,6 +83,10 @@
         "fanciest",
         "unicorn"
       ]
+    },
+    "tags": {
+      "title": "Tag this form",
+      "type": "array"
     }
 
   },

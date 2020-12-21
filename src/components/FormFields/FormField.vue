@@ -33,6 +33,7 @@ import Select from "./Select.vue";
 import String from "./String.vue";
 import defaultField from "./defaultField.vue";
 import Radiobuttons from "./Radiobuttons.vue";
+import Tags from "./Tags.vue";
 
 //@group FormFields
 /**
@@ -72,6 +73,10 @@ export default {
         }
       }
 
+      if (type === 'array' && this.ui.options?.tags?.enabled) {
+        return Tags;
+      }
+
       switch (type) {
         case "boolean":
           return Boolean;
@@ -80,7 +85,7 @@ export default {
         case "integer":
           return Number;
         case "object":
-          return Object
+          return Object;
         case "string":
           return String;
         case "array":

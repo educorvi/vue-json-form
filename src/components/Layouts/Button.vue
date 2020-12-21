@@ -7,7 +7,7 @@
 
 <script>
 import layoutMixin from "./layoutMixin";
-
+//@group Layouts
 export default {
   name: "Button",
   mixins: [layoutMixin]

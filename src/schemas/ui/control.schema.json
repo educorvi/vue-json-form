@@ -108,6 +108,21 @@
         "append": {
           "type": "string",
           "description": "Will be appended to field"
+        },
+        "tags": {
+          "type": "object",
+          "description": "Will be rendered as tags-Field",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "variant": {
+              "$ref": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json"
+            },
+            "pills": {
+              "type": "boolean"
+            }
+          }
         }
       }
     },
