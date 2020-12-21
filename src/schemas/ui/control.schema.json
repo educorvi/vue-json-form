@@ -62,6 +62,23 @@
           "type": "string",
           "description": "Will be shown as placeholder in form fields, if supported by field"
         },
+        "drop-placeholder": {
+          "type": "string",
+          "description": "Will be shown as placeholder in file upload field when file drag and drop"
+        },
+        "allowMultipleFiles": {
+          "type": "boolean",
+          "description": "Allows the upload of multiple files with fileupload"
+        },
+        "acceptedFileType": {
+          "type": "string",
+          "description": "The accepted File Types",
+          "examples": [
+            "image/*",
+            "image/jpeg, image/png, image/gif",
+            ".jpg, .png, .gif"
+          ]
+        },
         "enumTitles": {
           "type": "object",
           "title": "Titles for enum",

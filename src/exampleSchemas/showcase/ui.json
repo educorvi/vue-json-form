@@ -30,6 +30,13 @@
     },
     {
       "type": "Control",
+      "scope": "#/properties/fileupload",
+      "options": {
+        "acceptedFileType": "*"
+      }
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/group_selector",
       "options": {
         "buttons": "outline-primary",

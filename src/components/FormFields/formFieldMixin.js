@@ -96,6 +96,9 @@ export default {
         },
         focus() {
             this.$refs.child.focus();
+        },
+        getUIOption(key) {
+            return this.ui.options ? this.ui.options[key] : undefined
         }
     },
     watch: {

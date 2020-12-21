@@ -18,6 +18,10 @@
       "title": "Great Switch",
       "description": "Please press"
     },
+    "fileupload":{
+      "type": "string",
+      "format": "uri"
+    },
     "group_selector": {
       "title": "Groups or Object?",
       "type": "string",

@@ -34,6 +34,7 @@ import String from "./String.vue";
 import defaultField from "./defaultField.vue";
 import Radiobuttons from "./Radiobuttons.vue";
 import Tags from "./Tags.vue";
+import File from "./File";
 
 //@group FormFields
 /**
@@ -75,6 +76,10 @@ export default {
 
       if (type === 'array' && this.ui.options?.tags?.enabled) {
         return Tags;
+      }
+
+      if (type === 'string' && this.item.format === 'uri') {
+        return File;
       }
 
       switch (type) {
