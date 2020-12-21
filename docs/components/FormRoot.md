@@ -18,7 +18,7 @@ This is the Root Component and the interface to the "outside". Generates UI if n
 <!-- @vuese:FormRoot:slots:start -->
 |Name|Description|Default Slot Content|
 |---|---|---|
-|default|Slot inside the form below the generated content. Meant for Submit Button and similar additions|`<input type="submit" class="float-right btn btn-primary"/>`|
+|default|Slot inside the form below the generated content. Meant for Submit Button and similar additions|Default Submit Button. Only rendered when no other submit button was specified in the form|
 
 <!-- @vuese:FormRoot:slots:end -->
 

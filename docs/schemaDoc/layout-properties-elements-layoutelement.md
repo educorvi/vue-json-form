@@ -22,3 +22,4 @@ one (and only one) of
 -   [HTML Renderer](layout-properties-elements-layoutelement-oneof-html-renderer.md "check type definition")
 -   [Divider](layout-properties-elements-layoutelement-oneof-divider.md "check type definition")
 -   [Wizard](layout-properties-elements-layoutelement-oneof-wizard.md "check type definition")
+-   [Button](layout-properties-elements-layoutelement-oneof-button.md "check type definition")

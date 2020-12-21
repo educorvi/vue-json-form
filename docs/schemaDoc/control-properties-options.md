@@ -17,16 +17,22 @@ Gives multiple options to configure the element
 
 # Options Properties
 
-| Property                      | Type      | Required | Nullable       | Defined by                                                                                                                                                                                |
-| :---------------------------- | --------- | -------- | -------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [label](#label)               | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/label")                |
-| [multi](#multi)               | Merged    | Optional | cannot be null | [Control](control-properties-options-properties-multi.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/multi")                |
-| [rating](#rating)             | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-rating.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/rating")              |
-| [placeholder](#placeholder)   | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-placeholder.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/placeholder")    |
-| [enumTitles](#enumtitles)     | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-titles-for-enum.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/enumTitles") |
-| [radiobuttons](#radiobuttons) | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-radiobuttons.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/radiobuttons")  |
-| [stacked](#stacked)           | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-stacked.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/stacked")            |
-| [append](#append)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-append.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/append")              |
+| Property                                  | Type      | Required | Nullable       | Defined by                                                                                                                                                                                           |
+| :---------------------------------------- | --------- | -------- | -------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [label](#label)                           | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-label.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/label")                           |
+| [multi](#multi)                           | Merged    | Optional | cannot be null | [Control](control-properties-options-properties-multi.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/multi")                           |
+| [rating](#rating)                         | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-rating.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/rating")                         |
+| [placeholder](#placeholder)               | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-placeholder.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/placeholder")               |
+| [drop-placeholder](#drop-placeholder)     | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-drop-placeholder.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/drop-placeholder")     |
+| [allowMultipleFiles](#allowmultiplefiles) | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-allowmultiplefiles.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/allowMultipleFiles") |
+| [acceptedFileType](#acceptedfiletype)     | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-acceptedfiletype.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/acceptedFileType")     |
+| [enumTitles](#enumtitles)                 | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-titles-for-enum.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/enumTitles")            |
+| [radiobuttons](#radiobuttons)             | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-radiobuttons.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/radiobuttons")             |
+| [stacked](#stacked)                       | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-stacked.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/stacked")                       |
+| [buttons](#buttons)                       | Merged    | Optional | cannot be null | [Control](control-properties-options-properties-buttons.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/buttons")                       |
+| [switch](#switch)                         | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-switches.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/switch")                       |
+| [append](#append)                         | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-append.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/append")                         |
+| [tags](#tags)                             | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-tags.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags")                             |
 
 ## label
 
@@ -106,6 +112,68 @@ Will be shown as placeholder in form fields, if supported by field
 
 `string`
 
+## drop-placeholder
+
+Will be shown as placeholder in file upload field when file drag and drop
+
+
+`drop-placeholder`
+
+-   is optional
+-   Type: `string`
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-drop-placeholder.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/drop-placeholder")
+
+### drop-placeholder Type
+
+`string`
+
+## allowMultipleFiles
+
+Allows the upload of multiple files with fileupload
+
+
+`allowMultipleFiles`
+
+-   is optional
+-   Type: `boolean`
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-allowmultiplefiles.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/allowMultipleFiles")
+
+### allowMultipleFiles Type
+
+`boolean`
+
+## acceptedFileType
+
+The accepted File Types
+
+
+`acceptedFileType`
+
+-   is optional
+-   Type: `string`
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-acceptedfiletype.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/acceptedFileType")
+
+### acceptedFileType Type
+
+`string`
+
+### acceptedFileType Examples
+
+```json
+"image/*"
+```
+
+```json
+"image/jpeg, image/png, image/gif"
+```
+
+```json
+".jpg, .png, .gif"
+```
+
 ## enumTitles
 
 If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
@@ -154,6 +222,43 @@ Radiobutton-/Checkbox group will be stacked if set to true
 
 `boolean`
 
+## buttons
+
+Render fields that support it (Radiobuttons, Checkboxgroups) as Buttons
+
+
+`buttons`
+
+-   is optional
+-   Type: merged type ([Buttons](control-properties-options-properties-buttons.md))
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-buttons.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/buttons")
+
+### buttons Type
+
+merged type ([Buttons](control-properties-options-properties-buttons.md))
+
+one (and only one) of
+
+-   [Untitled boolean in Control](control-properties-options-properties-buttons-oneof-0.md "check type definition")
+-   [Bootstrap Button Variants](button-properties-bootstrap-button-variants.md "check type definition")
+
+## switch
+
+If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
+
+
+`switch`
+
+-   is optional
+-   Type: `boolean` ([Switch(es)](control-properties-options-properties-switches.md))
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-switches.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/switch")
+
+### switch Type
+
+`boolean` ([Switch(es)](control-properties-options-properties-switches.md))
+
 ## append
 
 Will be appended to field
@@ -169,3 +274,19 @@ Will be appended to field
 ### append Type
 
 `string`
+
+## tags
+
+Will be rendered as tags-Field
+
+
+`tags`
+
+-   is optional
+-   Type: `object` ([Details](control-properties-options-properties-tags.md))
+-   cannot be null
+-   defined in: [Control](control-properties-options-properties-tags.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags")
+
+### tags Type
+
+`object` ([Details](control-properties-options-properties-tags.md))

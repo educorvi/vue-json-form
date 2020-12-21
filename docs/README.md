@@ -8,7 +8,7 @@
 - [Documentation](https://educorvi.github.io/vue_json_form/)
 - [Demo](https://educorvi.github.io/vue_json_form/demo/)
 ## Usage
-Install with `npm install @educorvi/vue-json-form`
+Install with `npm install @educorvi/vue-json-form`. This Component need [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work.
 
 ### Use in VueJS-Component  
 ``` vue
@@ -63,14 +63,18 @@ export default {
 ```
 
 ### About the Schemas
-#### JSON-schema
-The JSON-schema should conform to [http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#).
+The form fields themselve are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a json pointer.
+[Examples](https://github.com/educorvi/vue_json_form/tree/master/src/exampleSchemas)
+#### JSON-Schema
+The JSON-Schema must be a valid JSON-Schema.
 More details on the json-schema can be found [here](https://json-schema.org/).
 
 #### UI-Schema
 The UI-schema must conform to [https://educorvi.github.io/vue_json_form/schemas/ui.schema.json](https://educorvi.github.io/vue_json_form/schemas/ui.schema.json).
 Your root object must be a [layout](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout) or a [wizard](https://educorvi.github.io/vue_json_form/schemaDoc/#/wizard).
 A layout can be of type `VerticalLayout`, `HorizontalLayout` or `Group` and needs to have an array of [elements](https://educorvi.github.io/vue_json_form/schemaDoc/#/layout-properties-elements-layoutelement).
+
+A wizard needs to have a pages property, which is an array. Each arrayitem needs to hav a title and a content array.
 
 The formfields are represented by elements with [Control](https://educorvi.github.io/vue_json_form/schemaDoc/#/control) objects. They must have a `scope` property, which has the form of a json-pointer and points to the element in the json-schema, that you want to display here.
 It can be customized with the [options](https://educorvi.github.io/vue_json_form/schemaDoc/#/control-properties-options) property.
