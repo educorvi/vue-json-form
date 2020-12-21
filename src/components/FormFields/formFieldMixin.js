@@ -65,6 +65,9 @@ export default {
             } else {
                 return undefined;
             }
+        },
+        switches() {
+            return this.ui.options?.switch;
         }
     },
     methods: {

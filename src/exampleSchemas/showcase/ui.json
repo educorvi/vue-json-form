@@ -4,7 +4,10 @@
   "elements": [
     {
       "type": "Control",
-      "scope": "#/properties/done"
+      "scope": "#/properties/done",
+      "options": {
+        "switch": true
+      }
     },
     {
       "type": "Control",

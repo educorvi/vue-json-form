@@ -100,6 +100,11 @@
             }
           ]
         },
+        "switch": {
+          "type": "boolean",
+          "title": "Switch(es)",
+          "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
+        },
         "append": {
           "type": "string",
           "description": "Will be appended to field"

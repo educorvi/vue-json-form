@@ -8,6 +8,7 @@
       :required="required"
       :buttons="!!(this.ui.options && this.ui.options.buttons)"
       :button-variant="variant"
+      :switches="!(this.ui.options && this.ui.options.buttons) && switches"
   />
 </template>
 
