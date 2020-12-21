@@ -78,6 +78,8 @@ export default {
           return Layouts.Divider;
         case "Wizard":
           return Layouts.Wizard;
+        case "Button":
+          return Layouts.Button;
         default:
           return Layouts.VerticalLayout;
       }

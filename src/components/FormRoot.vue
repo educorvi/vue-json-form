@@ -3,8 +3,8 @@
     <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI" :formID="id"></FormWrap>
     <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
     <slot>
-      <!--      `<input type="submit" class="float-right btn btn-primary"/>`-->
-      <input type="submit" class="float-right btn btn-primary"/>
+      <!--   Default Submit Button. Only rendered when no other submit button was specified in the form-->
+      <input v-if="!containsSubmitButton" type="submit" class="float-right btn btn-primary"/>
     </slot>
   </b-form>
 
@@ -41,6 +41,7 @@ import layout from "../schemas/ui/layout.schema.json"
 import wizard from "../schemas/ui/wizard.schema.json"
 import wizardPage from "../schemas/ui/wizard_page.schema.json"
 import showOn from "../schemas/ui/show_on.schema.json"
+import button from "../schemas/ui/button.schema.json"
 
 /**
  * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
@@ -80,7 +81,22 @@ export default {
         })
       }
       return obj;
+    },
+    containsSubmitButton() {
+      function searchInObject(obj) {
+        const keys = Object.keys(obj);
+        for (const key of keys) {
+          let item = obj[key];
+          if (typeof item === 'object') {
+            if(searchInObject(item)) return true;
+          } else if (typeof item === 'string' && key === "buttonType" && item === 'submit') {
+            return true;
+          }
+        }
+        return false;
+      }
 
+      return searchInObject(this.ui);
     }
   },
   props: {
@@ -120,6 +136,7 @@ export default {
       v.addSchema(wizard, "https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json");
       v.addSchema(wizardPage, "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json");
       v.addSchema(showOn, "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json");
+      v.addSchema(button, "https://educorvi.github.io/vue_json_form/schemas/button.schema.json");
       return v.validate(ui, uischema)
     },
     saveData(data) {

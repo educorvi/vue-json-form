@@ -65,8 +65,8 @@ export default {
 ### About the Schemas
 The form fields themselve are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a json pointer.
 [Examples](https://github.com/educorvi/vue_json_form/tree/master/src/exampleSchemas)
-#### JSON-schema
-The JSON-schema should conform to [http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#).
+#### JSON-Schema
+The JSON-Schema must be a valid JSON-Schema.
 More details on the json-schema can be found [here](https://json-schema.org/).
 
 #### UI-Schema

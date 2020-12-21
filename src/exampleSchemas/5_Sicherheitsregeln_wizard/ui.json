@@ -4,6 +4,7 @@
   "pages": [
     {
       "title": "Allgemeines",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -35,6 +36,7 @@
     },
     {
       "title": "Zusätzliche Ausrüstung",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -51,6 +53,7 @@
     },
     {
       "title": "Einleitung",
+      "nextText": "Weiter",
       "content": {
         "type": "HTML",
         "htmlData": "<h3>5 Sicherheitsregeln</h3><br><p>Willkommen zu den \"5 Sicherheitsregeln\". Das hier ist eine Einleitungsseite. Auf den nächsten Seiten wirst du die 5 Fragen bearbeiten. Viel Spaß!</p>"
@@ -58,6 +61,7 @@
     },
     {
       "title": "1. Freigeschaltet",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -145,6 +149,7 @@
     },
     {
       "title": "2. Gegen Wiedereinschalten gesichert",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -169,6 +174,7 @@
     },
     {
       "title": "3. Spannungsfreiheit allpolig festgestellt an der Arbeitsstelle",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -184,6 +190,7 @@
     },
     {
       "title": "4. Geerdet und kurzgeschlossen",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -212,6 +219,7 @@
     },
     {
       "title": "5. Benachbarte, unter Spannung stehende Teile abgedeckt",
+      "nextText": "Weiter",
       "content": {
         "type": "VerticalLayout",
         "elements": [
@@ -271,12 +279,22 @@
     },
     {
       "title": "Abschließendes",
+      "hideNext": true,
       "content": {
-        "type": "Control",
-        "scope": "#/properties/notiz",
-        "options": {
-          "multi": true
-        }
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/notiz",
+            "options": {
+              "multi": true
+            }
+          },
+          {
+            "type": "Button",
+            "buttonType": "submit"
+          }
+        ]
       }
     }
 

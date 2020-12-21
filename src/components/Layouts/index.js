@@ -5,7 +5,8 @@ import VerticalLayout from "./VerticalLayout.vue";
 import htmlRenderer from "./htmlRenderer.vue";
 import Divider from "./Divider.vue";
 import Wizard from "./Wizard.vue";
+import Button from "./Button.vue";
 
 export default {
-    Control, Group, VerticalLayout, HorizontalLayout, htmlRenderer, Divider, Wizard
+    Control, Group, VerticalLayout, HorizontalLayout, htmlRenderer, Divider, Wizard, Button
 }
