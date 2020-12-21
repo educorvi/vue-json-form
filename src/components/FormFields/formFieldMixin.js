@@ -57,6 +57,14 @@ export default {
         },
         required() {
             return this.getGrandparent(this.jsonPath).required?.includes(this.schemaName)
+        },
+        variant() {
+            const dat = this.ui.options ? this.ui.options.buttons : false;
+            if (typeof dat === 'string') {
+                return dat;
+            } else {
+                return undefined;
+            }
         }
     },
     methods: {

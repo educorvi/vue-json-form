@@ -3,7 +3,7 @@
     <h5>Vue JSON Form Demo</h5>
     <b-select :options="dropOptions" v-model="form"></b-select>
     <hr>
-    <form-root :json="form.schema" :on-submit="submit" :ui="form.ui">
+    <form-root :key="JSON.stringify(form)" :json="form.schema" :on-submit="submit" :ui="form.ui">
     </form-root>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      form: forms["5 Sicherheitsregeln (Wizard)"]
+      form: forms["Showcase"]
     }
   },
   created() {

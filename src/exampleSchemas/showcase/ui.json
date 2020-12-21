@@ -8,6 +8,10 @@
     },
     {
       "type": "Control",
+      "scope": "#/properties/gender"
+    },
+    {
+      "type": "Control",
       "scope": "#/properties/name",
       "options": {
         "placeholder": "Full Name"
@@ -23,7 +27,11 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/group_selector"
+      "scope": "#/properties/group_selector",
+      "options": {
+        "buttons": "outline-primary",
+        "label": false
+      }
     },
     {
       "type": "Group",
@@ -75,9 +83,8 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/recurrence",
+              "scope": "#/properties/weekday",
               "options": {
-                "radiobuttons": false
               }
             },
             {

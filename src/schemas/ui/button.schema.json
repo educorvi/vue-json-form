@@ -21,9 +21,7 @@
       "description": "The buttons text"
     },
     "variant": {
-      "type": "string",
-      "description": "The Bootstrap Variant of the button",
-      "default": "primary"
+      "$ref": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json"
     }
   },
   "additionalProperties": false,

@@ -6,12 +6,16 @@
       "type": "string",
       "minLength": 1
     },
+    "gender": {
+      "type": "string",
+      "enum": ["Male", "Female", "Divers"]
+    },
     "description": {
       "type": "string"
     },
     "done": {
       "type": "boolean",
-      "title": "Great Button",
+      "title": "Great Checkbox",
       "description": "Please press"
     },
     "group_selector": {
@@ -30,16 +34,20 @@
       "type": "integer",
       "maximum": 5
     },
-    "recurrence": {
+    "weekday": {
       "type": "array",
       "enum": [
-        "Never",
-        "Daily",
-        "Weekly",
-        "Monthly"
+       "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
       ]
     },
     "recurrence_interval": {
+      "title": "Week Interval",
       "type": "integer"
     },
     "testArray": {

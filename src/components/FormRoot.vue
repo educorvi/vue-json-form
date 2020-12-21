@@ -42,6 +42,7 @@ import wizard from "../schemas/ui/wizard.schema.json"
 import wizardPage from "../schemas/ui/wizard_page.schema.json"
 import showOn from "../schemas/ui/show_on.schema.json"
 import button from "../schemas/ui/button.schema.json"
+import variants from "../schemas/ui/variants.schema.json"
 
 /**
  * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
@@ -137,6 +138,7 @@ export default {
       v.addSchema(wizardPage, "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json");
       v.addSchema(showOn, "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json");
       v.addSchema(button, "https://educorvi.github.io/vue_json_form/schemas/button.schema.json");
+      v.addSchema(variants, "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json");
       return v.validate(ui, uischema)
     },
     saveData(data) {

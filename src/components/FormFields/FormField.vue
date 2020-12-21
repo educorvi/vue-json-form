@@ -65,14 +65,11 @@ export default {
 
       //Special Treatment for Enums
       if (json.enum !== undefined && type !== "array") {
-        if (this.ui.options?.radiobuttons) {
+        if (this.ui.options?.radiobuttons || this.ui.options?.buttons) {
           return Radiobuttons;
         } else {
           return Select;
         }
-      }
-      if (json.items?.enum !== undefined && type === "array") {
-        return MultibleChoice;
       }
 
       switch (type) {

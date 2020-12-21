@@ -6,6 +6,8 @@
       :options="options"
       :stacked="this.ui.options && this.ui.options.stacked"
       :required="required"
+      :buttons="!!(this.ui.options && this.ui.options.buttons)"
+      :button-variant="variant"
   />
 </template>
 

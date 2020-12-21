@@ -87,6 +87,19 @@
           "description": "Radiobutton-/Checkbox group will be stacked if set to true",
           "default": false
         },
+        "buttons": {
+          "title": "Buttons",
+          "description": "Render fields that support it (Radiobuttons, Checkboxgroups) as Buttons",
+          "oneOf": [
+            {
+              "type": "boolean",
+              "description": "set to true, if should be rendered as buttons"
+            },
+            {
+              "$ref": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json"
+            }
+          ]
+        },
         "append": {
           "type": "string",
           "description": "Will be appended to field"
