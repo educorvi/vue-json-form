@@ -34,7 +34,7 @@ import String from "./String.vue";
 import defaultField from "./defaultField.vue";
 import Radiobuttons from "./Radiobuttons.vue";
 import Tags from "./Tags.vue";
-import File from "./File";
+import File from "./File.vue";
 
 //@group FormFields
 /**
