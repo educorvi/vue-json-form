@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Bitte geben Sie Ihren vollen Namen ein"
+    },
+    "age": {
+      "type": "number",
+      "multipleOf": 1,
+      "minimum": 18
+    },
+    "pet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["cat", "dog", "hamster", "horse", "fish"]
+        },
+        "fluffy": {
+          "type": "boolean"
+        }
+      }
+    },
+    "nameOfFriends": {
+      "title": "Names of your favorite friends",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "daysOfWork": {
+      "title": "Days you work",
+      "type": "array",
+      "enum": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ]
+    },
+    "timeOfCompletion": {
+      "title": "Time of completion",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
