@@ -85,6 +85,9 @@ export default {
     },
     containsSubmitButton() {
       function searchInObject(obj) {
+        if (!obj) {
+          return false;
+        }
         const keys = Object.keys(obj);
         for (const key of keys) {
           let item = obj[key];
