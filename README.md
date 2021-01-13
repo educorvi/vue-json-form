@@ -8,7 +8,7 @@
 - [Documentation](https://educorvi.github.io/vue_json_form/)
 - [Demo](https://educorvi.github.io/vue_json_form/demo/)
 ## Usage
-Install with `npm install @educorvi/vue-json-form`. This Component need [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work.
+Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work.
 
 ### Use in VueJS-Component  
 ``` vue
