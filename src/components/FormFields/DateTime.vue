@@ -30,6 +30,13 @@ export default {
       this.fieldData = this.date + "T" + this.time;
     }
   },
+  mounted() {
+    if (this.fieldData) {
+      const s = this.fieldData.split("T");
+      this.date = s[0];
+      this.time = s[1];
+    }
+  },
   watch: {
     date() {
       this.set();
