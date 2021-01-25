@@ -6,9 +6,8 @@ https://educorvi.github.io/vue_json_form/schemas/variants.schema.json
 
 The Variants, that Bootstrap allows you to have
 
-
 | Abstract            | Extensible | Status         | Identifiable            | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                     |
-| :------------------ | ---------- | -------------- | ----------------------- | :---------------- | --------------------- | ------------------- | ------------------------------------------------------------------------------ |
+| :------------------ | :--------- | :------------- | :---------------------- | :---------------- | :-------------------- | :------------------ | :----------------------------------------------------------------------------- |
 | Can be instantiated | No         | Unknown status | Unknown identifiability | Forbidden         | Allowed               | none                | [variants.schema.json](../schemas/variants.schema.json "open original schema") |
 
 ## Bootstrap Button Variants Type
@@ -20,7 +19,7 @@ The Variants, that Bootstrap allows you to have
 **enum**: the value of this property must be equal to one of the following values:
 
 | Value                 | Explanation |
-| :-------------------- | ----------- |
+| :-------------------- | :---------- |
 | `"primary"`           |             |
 | `"secondary"`         |             |
 | `"success"`           |             |

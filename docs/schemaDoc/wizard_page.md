@@ -6,9 +6,8 @@ https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json
 
 
 
-
 | Abstract            | Extensible | Status         | Identifiable | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                           |
-| :------------------ | ---------- | -------------- | ------------ | :---------------- | --------------------- | ------------------- | ------------------------------------------------------------------------------------ |
+| :------------------ | :--------- | :------------- | :----------- | :---------------- | :-------------------- | :------------------ | :----------------------------------------------------------------------------------- |
 | Can be instantiated | No         | Unknown status | No           | Forbidden         | Forbidden             | none                | [wizard_page.schema.json](../schemas/wizard_page.schema.json "open original schema") |
 
 ## Wizard Page Type
@@ -17,24 +16,26 @@ https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json
 
 # Wizard Page Properties
 
-| Property              | Type      | Required | Nullable       | Defined by                                                                                                                                                            |
-| :-------------------- | --------- | -------- | -------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [title](#title)       | `string`  | Required | cannot be null | [Wizard Page](wizard_page-properties-title.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/title")                      |
-| [hideNext](#hidenext) | `boolean` | Optional | cannot be null | [Wizard Page](wizard_page-properties-hide-next-button.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/hideNext")        |
-| [nextText](#nexttext) | `string`  | Optional | cannot be null | [Wizard Page](wizard_page-properties-text-of-the-next-button.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/nextText") |
-| [content](#content)   | Merged    | Required | cannot be null | [Wizard Page](wizard_page-properties-content.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/content")                  |
+| Property              | Type      | Required | Nullable       | Defined by                                                                                                                                                       |
+| :-------------------- | :-------- | :------- | :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [title](#title)       | `string`  | Required | cannot be null | [Wizard Page](wizard_page-properties-title.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/title")                      |
+| [hideNext](#hidenext) | `boolean` | Optional | cannot be null | [Wizard Page](wizard_page-properties-hide-next-button.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/hideNext")        |
+| [nextText](#nexttext) | `string`  | Optional | cannot be null | [Wizard Page](wizard_page-properties-text-of-the-next-button.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/nextText") |
+| [content](#content)   | Merged    | Required | cannot be null | [Wizard Page](wizard_page-properties-content.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/content")                  |
 
 ## title
 
 
 
-
 `title`
 
--   is required
--   Type: `string`
--   cannot be null
--   defined in: [Wizard Page](wizard_page-properties-title.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/title")
+*   is required
+
+*   Type: `string`
+
+*   cannot be null
+
+*   defined in: [Wizard Page](wizard_page-properties-title.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/title")
 
 ### title Type
 
@@ -44,13 +45,15 @@ https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json
 
 You can use this for example, if you want to use the last page for a submit button
 
-
 `hideNext`
 
--   is optional
--   Type: `boolean` ([Hide "Next" Button](wizard_page-properties-hide-next-button.md))
--   cannot be null
--   defined in: [Wizard Page](wizard_page-properties-hide-next-button.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/hideNext")
+*   is optional
+
+*   Type: `boolean` ([Hide "Next" Button](wizard_page-properties-hide-next-button.md))
+
+*   cannot be null
+
+*   defined in: [Wizard Page](wizard_page-properties-hide-next-button.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/hideNext")
 
 ### hideNext Type
 
@@ -60,13 +63,15 @@ You can use this for example, if you want to use the last page for a submit butt
 
 Changes the text of the next button
 
-
 `nextText`
 
--   is optional
--   Type: `string` ([Text of the "Next" Button](wizard_page-properties-text-of-the-next-button.md))
--   cannot be null
--   defined in: [Wizard Page](wizard_page-properties-text-of-the-next-button.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/nextText")
+*   is optional
+
+*   Type: `string` ([Text of the "Next" Button](wizard_page-properties-text-of-the-next-button.md))
+
+*   cannot be null
+
+*   defined in: [Wizard Page](wizard_page-properties-text-of-the-next-button.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/nextText")
 
 ### nextText Type
 
@@ -84,13 +89,15 @@ The default value is:
 
 
 
-
 `content`
 
--   is required
--   Type: merged type ([Details](wizard_page-properties-content.md))
--   cannot be null
--   defined in: [Wizard Page](wizard_page-properties-content.md "https&#x3A;//educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/content")
+*   is required
+
+*   Type: merged type ([Details](wizard_page-properties-content.md))
+
+*   cannot be null
+
+*   defined in: [Wizard Page](wizard_page-properties-content.md "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/content")
 
 ### content Type
 
@@ -98,6 +105,8 @@ merged type ([Details](wizard_page-properties-content.md))
 
 one (and only one) of
 
--   [Control](layout-properties-elements-layoutelement-oneof-control.md "check type definition")
--   [Layout](layout-properties-elements-layoutelement-oneof-layout.md "check type definition")
--   [HTML Renderer](layout-properties-elements-layoutelement-oneof-html-renderer.md "check type definition")
+*   [Control](layout-properties-elements-layoutelement-oneof-control.md "check type definition")
+
+*   [Layout](layout-properties-elements-layoutelement-oneof-layout.md "check type definition")
+
+*   [HTML Renderer](layout-properties-elements-layoutelement-oneof-html-renderer.md "check type definition")
