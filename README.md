@@ -8,7 +8,36 @@
 - [Documentation](https://educorvi.github.io/vue_json_form/)
 - [Demo](https://educorvi.github.io/vue_json_form/demo/)
 ## Usage
-Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work.
+Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work. If you want to use the wizard, you also have to MdStepper and MdButton from [Vue Material](https://vuematerial.io/).  
+Your `main.js` file should look something like this:
+
+``` js
+import Vue from 'vue'
+import App from './App.vue'
+
+import { BootstrapVue, BIcon, BIconX, BIconPlus, BIconGripVertical } from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import { MdSteppers, MdButton } from "vue-material/dist/components"
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default.css'
+
+Vue.use(BootstrapVue);
+Vue.component("BIcon", BIcon);
+Vue.component("BIconX", BIconX);
+Vue.component("BIconPlus", BIconPlus);
+Vue.component("BIconGripVertical", BIconGripVertical);
+
+Vue.use(MdSteppers);
+Vue.use(MdButton);
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
+```
 
 ### Use in VueJS-Component  
 ``` vue
