@@ -1,12 +1,11 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "license": "MIT",
   "main": "dist/vue-json-form.js",
   "files": [
-    "dist/*",
-    "src/components/*"
+    "dist/*"
   ],
   "author": "Julian Pollinger",
   "repository": "https://github.com/educorvi/vue_json_form.git",
@@ -14,6 +13,7 @@
     "serve": "vue-cli-service serve",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
+    "analyze": "ANALYZE=true npm run build:demo",
     "build:demo": "vue-cli-service build --dest demo",
     "lint": "vue-cli-service lint",
     "doc": "npm run doc:schema && npm run doc:components && copyfiles src/helper/docs/docu.css -f docs -E && sed -i 's/docute.css\">/docute.css\"><link href=\"docu.css\" rel=\"stylesheet\">/g' ./docs/index.html && sed -i 's/sidebar/nav: [{title: \"Documentation of the ui schema\", link:\"https:\\/\\/educorvi.github.io\\/vue_json_form\\/schemaDoc\"}, {title: \"Repository\", link: \"https:\\/\\/github.com\\/educorvi\\/vue_json_form\"}], sidebar/g' ./docs/index.html && git add --all",
@@ -45,7 +45,7 @@
     "bootstrap-vue": "^2.21.1",
     "bootswatch": "^4.5.2",
     "copyfiles": "^2.3.0",
-    "css-loader": "^5.0.0",
+    "css-loader": "^5.0.1",
     "del-cli": "^3.0.1",
     "dotenv-cli": "^4.0.0",
     "eslint": "^6.7.2",
@@ -53,11 +53,13 @@
     "node-sass": "^5.0.0",
     "release-it": "^14.1.0",
     "sass-loader": "^10.1.1",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "vue-loader": "^15.9.3",
+    "vue-loader": "^15.9.6",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
-    "webpack-cli": "^4.0.0"
+    "webpack": "^5.19.0",
+    "webpack-bundle-analyzer": "^4.4.0",
+    "webpack-cli": "^4.4.0",
+    "webpack-merge": "^4.2.2"
   },
   "eslintConfig": {
     "root": true,

@@ -38,7 +38,6 @@ export default {
     }
   },
   mounted() {
-    //TODO First one doesnt Focus
     this.$refs.child?.focus();
   },
   setChild(value) {

@@ -95,7 +95,6 @@ export default {
           return String;
         case "array":
           return (json.enum === undefined) ? Array : MultibleChoice;
-
         default:
           return defaultField;
       }

@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Layouts from "./Layouts"
 import {onlyMethods, onlyProps} from "./Layouts/layoutMixin.js";
+import Layouts from "./Layouts"
 
 //@group Helper
 /**
