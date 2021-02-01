@@ -1,6 +1,8 @@
 <template>
-  <b-form-input ref="child" v-if="!ui.options || !ui.options.rating" v-model="fieldData" :name="title" :placeholder="ui.options ? ui.options.placeholder : ''"
+  <b-form-input ref="child" v-if="!ui.options || !ui.options.rating" v-model="fieldData" :name="title"
+                :placeholder="ui.options ? ui.options.placeholder : ''"
                 :required="required" :step="item.multipleOf || 1"
+                :id="schemaName"
                 type="number" :min="item.minimum" :max="item.maximum"></b-form-input>
   <b-form-rating ref="child" v-else v-model="fieldData" :name="title" :required="required" :stars="item.maximum || 5"
                  variant="warning"></b-form-rating>

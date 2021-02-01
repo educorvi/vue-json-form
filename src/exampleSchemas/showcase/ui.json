@@ -11,13 +11,14 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/gender"
+      "scope": "#/properties/title"
     },
     {
       "type": "Control",
       "scope": "#/properties/name",
       "options": {
-        "placeholder": "Full Name"
+        "placeholder": "Full Name",
+        "autocomplete": "name"
       }
     },
     {

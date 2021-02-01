@@ -8,9 +8,10 @@
         <!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component :is="type" :class="schemaName" :isInteger="item.type === 'integer'" :json="json" :name="title"
+      <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
-                 :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"/>
+                 :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"
+                 :autocomplete="(ui.options ||{}).autocomplete || 'on'"/>
       <b-input-group-append :is-text="!noText" v-if="hasSlot()">
         <!--        Content is appended to the input field-->
         <slot></slot>

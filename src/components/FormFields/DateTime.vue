@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-input-group :name="title">
+    <b-input-group :name="title" :id="schemaName">
       <b-input ref="child" v-model="date" type="date"/>
       <b-input-group-append>
         <b-input v-model="time" style="border-bottom-left-radius: 0; border-top-left-radius: 0" type="time"/>
