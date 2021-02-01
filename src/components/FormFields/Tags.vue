@@ -1,5 +1,7 @@
 <template>
-  <b-form-tags v-model="fieldData" ref="child" :required="required" :placeholder="ui.options ? ui.options.placeholder : ''" :tag-pills="ui.options.tags.pills" :tag-variant="ui.options.tags.variant" remove-on-delete></b-form-tags>
+  <b-form-tags :id="schemaName" v-model="fieldData" ref="child" :required="required"
+               :placeholder="ui.options ? ui.options.placeholder : ''" :tag-pills="ui.options.tags.pills"
+               :tag-variant="ui.options.tags.variant" remove-on-delete></b-form-tags>
 </template>
 
 <script>

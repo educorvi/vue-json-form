@@ -1,5 +1,6 @@
 <template>
   <b-form-checkbox-group
+      :id="schemaName"
       ref="child"
       v-model="fieldData"
       :name="title"

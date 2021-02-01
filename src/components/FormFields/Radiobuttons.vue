@@ -1,5 +1,6 @@
 <template>
   <b-form-radio-group
+      :id="schemaName"
       v-model="fieldData"
       :name="title"
       :options="options"

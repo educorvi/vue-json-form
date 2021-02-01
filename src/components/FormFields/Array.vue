@@ -1,5 +1,5 @@
 <template>
-  <div v-if="item.items && item.items.type" class="embDiv w-100">
+  <div v-if="item.items && item.items.type" class="embDiv w-100" :id="schemaName">
     <draggable v-model="fieldData" handle=".handle">
       <transition-group name="arrayedit">
         <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">
@@ -32,9 +32,7 @@ export default {
   name: "Array",
   components: {ArrayItem, draggable},
   mixins: [formFieldMixin],
-  props:{
-
-  },
+  props: {},
   computed: {
     //Used to generate a fake UI-Scheme for the Arrayitems
     fakeUI() {
@@ -88,7 +86,9 @@ export default {
     fieldData(newValue) {
       this.send(newValue);
       if (newValue !== undefined && newValue.length > 0 && !newValue[0].gentime) {
-        this.fieldData = this.fieldData.map(item => {return {value:item, gentime: Math.random().toString(36).substr(2, 9)}})
+        this.fieldData = this.fieldData.map(item => {
+          return {value: item, gentime: Math.random().toString(36).substr(2, 9)}
+        })
       }
     }
   },

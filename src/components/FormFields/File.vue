@@ -1,5 +1,7 @@
 <template>
-<b-form-file v-model="files" :required="required" :placeholder="getUIOption('placeholder')" :drop-placeholder="getUIOption('drop-placeholder')" :multiple="getUIOption('allowMultibleFiles')" :accept="getUIOption('acceptedFileType')"/>
+  <b-form-file :id="schemaName" v-model="files" :required="required" :placeholder="getUIOption('placeholder')"
+               :drop-placeholder="getUIOption('drop-placeholder')" :multiple="getUIOption('allowMultibleFiles')"
+               :accept="getUIOption('acceptedFileType')"/>
 </template>
 
 <script>
