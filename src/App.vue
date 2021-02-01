@@ -25,7 +25,7 @@ export default {
       });
     },
     isWizardSelected() {
-      return this.form === forms["5 Sicherheitsregeln (Wizard)"];
+      return this.form === forms["Showcase"];
     }
   },
   data() {
