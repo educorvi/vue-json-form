@@ -2,7 +2,6 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const { VueLoaderPlugin } = require('vue-loader')
 
 
@@ -17,6 +16,12 @@ const commonConfig = {
     ],
     module: {
         rules: [
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false
+                }
+            },
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
@@ -48,19 +53,7 @@ const commonConfig = {
         ]
     },
     optimization: {
-        minimizer: [
-            // we specify a custom UglifyJsPlugin here to get source maps in production
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                uglifyOptions: {
-                    compress: false,
-                    ecma: 6,
-                    mangle: true
-                },
-                sourceMap: false
-            })
-        ]
+        minimize: true
     },
     externals: {
         bootstrap: "bootstrap",
@@ -69,7 +62,8 @@ const commonConfig = {
         jsonschema: "jsonschema",
         "vue-material": "vue-material",
         vuedraggable: "vuedraggable"
-    }
+    },
+    mode: 'production'
 };
 
 module.exports = [

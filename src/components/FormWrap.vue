@@ -9,6 +9,7 @@
 
 <script>
 import {onlyMethods, onlyProps} from "./Layouts/layoutMixin.js";
+import Layouts from "./Layouts"
 
 //@group Helper
 /**
@@ -66,21 +67,21 @@ export default {
     getComponentFromObject(obj) {
       switch (obj.type) {
         case "Control":
-          return () => import("./Layouts/Control.vue");
+          return Layouts.Control;
         case "Group":
-          return () => import("./Layouts/Group.vue");
+          return Layouts.Group;
         case "HorizontalLayout":
-          return  () => import("./Layouts/HorizontalLayout.vue");
+          return Layouts.HorizontalLayout;
         case "HTML":
-          return  () => import("./Layouts/htmlRenderer.vue");
+          return Layouts.htmlRenderer;
         case "Divider":
-          return  () => import("./Layouts/Divider.vue");
+          return Layouts.Divider;
         case "Wizard":
-          return  () => import("./Layouts/Wizard.vue");
+          return Layouts.Wizard;
         case "Button":
-          return  () => import("./Layouts/Button.vue");
+          return Layouts.Button;
         default:
-          return  () => import("./Layouts/VerticalLayout.vue");
+          return Layouts.VerticalLayout;
       }
     },
   }
