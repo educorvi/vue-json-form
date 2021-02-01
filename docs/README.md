@@ -8,12 +8,41 @@
 - [Documentation](https://educorvi.github.io/vue_json_form/)
 - [Demo](https://educorvi.github.io/vue_json_form/demo/)
 ## Usage
-Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work.
+Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootstrap-Vue](https://bootstrap-vue.org/) installed to work. If you want to use the wizard, you also have to MdStepper and MdButton from [Vue Material](https://vuematerial.io/).  
+Your `main.js` file should look something like this:
+
+``` js
+import Vue from 'vue'
+import App from './App.vue'
+
+import { BootstrapVue, BIcon, BIconX, BIconPlus, BIconGripVertical } from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import { MdSteppers, MdButton } from "vue-material/dist/components"
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default.css'
+
+Vue.use(BootstrapVue);
+Vue.component("BIcon", BIcon);
+Vue.component("BIconX", BIconX);
+Vue.component("BIconPlus", BIconPlus);
+Vue.component("BIconGripVertical", BIconGripVertical);
+
+Vue.use(MdSteppers);
+Vue.use(MdButton);
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
+```
 
 ### Use in VueJS-Component  
 ``` vue
 <template>
-  <json-form :json="form"/>
+  <json-form :json="form" :on-submit="mySubmitMethod"/>
 </template>
 
 <script>
@@ -24,6 +53,11 @@ export default {
   components: {jsonForm},
   data: {
     form: ...
+  },
+  methods: {
+    mySubmitMethod(data){
+        doSomethingWith(data);
+    }
   }
 }
 </script>
@@ -33,9 +67,9 @@ export default {
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
 |json|The form's JSON Schema|`Boolean`|`true`|-|
+|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 |ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
 |disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
-|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 
 ### Other Options
 If you want to change the default submit button or add more buttons or other components to the bottom of the form, you can do so by overriding the default button and put your components in the default slot.  
