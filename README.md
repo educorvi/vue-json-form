@@ -13,7 +13,7 @@ Install with `npm install @educorvi/vue-json-form`. This Component needs [Bootst
 ### Use in VueJS-Component  
 ``` vue
 <template>
-  <json-form :json="form"/>
+  <json-form :json="form" :on-submit="mySubmitMethod"/>
 </template>
 
 <script>
@@ -24,6 +24,11 @@ export default {
   components: {jsonForm},
   data: {
     form: ...
+  },
+  methods: {
+    mySubmitMethod(data){
+        doSomethingWith(data);
+    }
   }
 }
 </script>
@@ -33,9 +38,9 @@ export default {
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
 |json|The form's JSON Schema|`Boolean`|`true`|-|
+|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 |ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
 |disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
-|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 
 ### Other Options
 If you want to change the default submit button or add more buttons or other components to the bottom of the form, you can do so by overriding the default button and put your components in the default slot.  
