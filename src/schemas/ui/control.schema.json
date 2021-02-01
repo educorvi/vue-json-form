@@ -140,6 +140,10 @@
               "type": "boolean"
             }
           }
+        },
+        "autocomplete": {
+          "type": "string",
+          "description": "Specifies what should be autocompleted by the browser. Possible values are listed here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values"
         }
       }
     },

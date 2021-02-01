@@ -4,7 +4,10 @@
   "elements": [
     {
       "type": "Control",
-      "scope": "#/properties/ort"
+      "scope": "#/properties/ort",
+      "options": {
+        "autocomplete": "postal-code"
+      }
     },
     {
       "type": "Control",
@@ -12,18 +15,25 @@
     },
     {
       "type": "Control",
-      "scope": "#/properties/anlageverantwortlicher"
+      "scope": "#/properties/anlageverantwortlicher",
+      "options": {
+        "autocomplete": "name"
+      }
     },
     {
       "type": "Control",
       "scope": "#/properties/arbeitsverantwortlicher",
       "options": {
-        "multi": true
+        "multi": true,
+        "autocomplete": "name"
       }
     },
     {
       "type": "Control",
-      "scope": "#/properties/arbeitsausfuehrender"
+      "scope": "#/properties/arbeitsausfuehrender",
+      "options": {
+        "autocomplete": "name"
+      }
     },
     {
       "type": "Divider"

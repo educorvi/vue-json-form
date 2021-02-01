@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      form: forms["Showcase"]
+      form: forms["5 Sicherheitsregeln"]
     }
   },
   created() {
