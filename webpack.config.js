@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader')
+const TerserPlugin = require("terser-webpack-plugin");
 
 
 const commonConfig = {
@@ -19,7 +20,7 @@ const commonConfig = {
             {
                 test: /\.m?js/,
                 resolve: {
-                    fullySpecified: false
+                    // fullySpecified: false
                 }
             },
             {
@@ -53,7 +54,8 @@ const commonConfig = {
         ]
     },
     optimization: {
-        minimize: true
+        minimize: true,
+        minimizer: [new TerserPlugin()],
     },
     externals: {
         bootstrap: "bootstrap",
