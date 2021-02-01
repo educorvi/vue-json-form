@@ -32,6 +32,7 @@ Gives multiple options to configure the element
 | [switch](#switch)                         | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-switches.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/switch")                       |
 | [append](#append)                         | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-append.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/append")                         |
 | [tags](#tags)                             | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-tags.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags")                             |
+| [autocomplete](#autocomplete)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-autocomplete.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/autocomplete")             |
 
 ## label
 
@@ -319,3 +320,21 @@ Will be rendered as tags-Field
 ### tags Type
 
 `object` ([Details](control-properties-options-properties-tags.md))
+
+## autocomplete
+
+Specifies what should be autocompleted by the browser. Possible values are listed here: <https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values>
+
+`autocomplete`
+
+*   is optional
+
+*   Type: `string`
+
+*   cannot be null
+
+*   defined in: [Control](control-properties-options-properties-autocomplete.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/autocomplete")
+
+### autocomplete Type
+
+`string`

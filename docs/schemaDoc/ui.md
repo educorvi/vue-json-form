@@ -14,7 +14,7 @@ Schema for the UI Schema
 
 merged type ([UI Schema](ui.md))
 
-one (and only one) of
+any of
 
 *   [Layout](layout-properties-elements-layoutelement-oneof-layout.md "check type definition")
 
