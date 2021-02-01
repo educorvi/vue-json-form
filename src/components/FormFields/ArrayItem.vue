@@ -3,7 +3,7 @@
     <FormField ref="child" :json="json" :name="schemaName+index" :ui="ui" :array="index"
                @changedData="loopUp" noText :filledData="filledData">
       <b-button variant="outline-danger" @click="$emit('deleteItem', index)">
-        <b-icon icon="x"/>
+        <b-icon-x/>
       </b-button>
       <template v-slot:prepend>
         <b-button class="handle" disabled variant="outline-secondary">
@@ -38,7 +38,6 @@ export default {
     }
   },
   mounted() {
-    //TODO First one doesnt Focus
     this.$refs.child?.focus();
   },
   setChild(value) {

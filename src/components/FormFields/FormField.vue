@@ -24,17 +24,17 @@
 /* eslint-disable no-unused-vars */
 
 import formFieldMixin from "./formFieldMixin.js";
-import Array from "./Array.vue";
-import Boolean from "./Boolean.vue";
-import MultibleChoice from "./MultibleChoice.vue";
-import Number from "./Number.vue";
-import Object from "./Object.vue";
-import Select from "./Select.vue";
-import String from "./String.vue";
-import defaultField from "./defaultField.vue";
-import Radiobuttons from "./Radiobuttons.vue";
-import Tags from "./Tags.vue";
-import File from "./File.vue";
+// import Array from "./Array.vue";
+// import Boolean from "./Boolean.vue";
+// import MultibleChoice from "./MultibleChoice.vue";
+// import Number from "./Number.vue";
+// import Object from "./Object.vue";
+// import Select from "./Select.vue";
+// import String from "./String.vue";
+// import defaultField from "./defaultField.vue";
+// import Radiobuttons from "./Radiobuttons.vue";
+// import Tags from "./Tags.vue";
+// import File from "./File.vue";
 
 //@group FormFields
 /**
@@ -68,36 +68,36 @@ export default {
       //Special Treatment for Enums
       if (json.enum !== undefined && type !== "array") {
         if (this.ui.options?.radiobuttons || this.ui.options?.buttons) {
-          return Radiobuttons;
+          return () => import("./Radiobuttons.vue");
         } else {
-          return Select;
+          return () => import("./Select.vue");
         }
       }
 
       if (type === 'array' && this.ui.options?.tags?.enabled) {
-        return Tags;
+        return () => import("./Tags.vue");
       }
 
       if (type === 'string' && this.item.format === 'uri') {
-        return File;
+        return () => import("./File.vue");
       }
 
       switch (type) {
         case "boolean":
-          return Boolean;
+          return () => import("./Boolean.vue");
         case "number":
-          return Number;
+          return () => import("./Number.vue");
         case "integer":
-          return Number;
+          return () => import("./Number.vue");
         case "object":
-          return Object;
+          return () => import("./Object.vue");
         case "string":
-          return String;
+          return () => import("./String.vue");
         case "array":
-          return (json.enum === undefined) ? Array : MultibleChoice;
+          return (json.enum === undefined) ? () => import("./Array.vue") : () => import("./MultibleChoice.vue");
 
         default:
-          return defaultField;
+          return () => import("./defaultField.vue");
       }
     }
   },
