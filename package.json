@@ -11,6 +11,7 @@
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "test:e2e": "npx cypress open",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
@@ -47,6 +48,7 @@
     "cache-loader": "^4.1.0",
     "copyfiles": "^2.3.0",
     "css-loader": "^5.0.0",
+    "cypress": "^6.4.0",
     "del-cli": "^3.0.1",
     "dotenv-cli": "^4.0.0",
     "eslint": "^6.7.2",
