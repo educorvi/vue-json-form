@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'node'
+      image 'cypress/base:10'
     }
 
   }
@@ -23,8 +23,12 @@ pipeline {
 
       }
     }
-
-    stage('Build & Test') {
+    stage('Test') {
+        steps {
+            sh 'npm test'
+        }
+    }
+    stage('Build') {
       parallel {
         stage('Build NPM') {
           steps {
@@ -52,6 +56,13 @@ pipeline {
     }
 
   }
+
+  post {
+      always {
+          junit 'test-results.xml'
+      }
+   }
+
   environment {
     HOME = '.'
   }

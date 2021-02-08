@@ -9,7 +9,7 @@
       <b-card title="Result">
         <vue-json-pretty v-if="!!formData" :data="formData"></vue-json-pretty>
       </b-card>
-      <b-card class="mt-2" title="Result raw">
+      <b-card class="mt-2" title="Result raw" v-show="false">
         <div id="result_raw">
           {{ JSON.stringify(formData)}}
         </div>
