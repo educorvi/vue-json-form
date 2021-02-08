@@ -5,6 +5,16 @@
     <hr>
     <form-root :key="JSON.stringify(form)" :json="form.schema" :on-submit="submit" :ui="form.ui">
     </form-root>
+    <b-collapse :visible="!!formData" style="margin-top: 80px">
+      <b-card title="Result">
+        <vue-json-pretty v-if="!!formData" :data="formData"></vue-json-pretty>
+      </b-card>
+      <b-card class="mt-2" title="Result raw">
+        <div id="result_raw">
+          {{ JSON.stringify(formData)}}
+        </div>
+      </b-card>
+    </b-collapse>
   </div>
 </template>
 
@@ -12,11 +22,14 @@
 
 import forms from "./exampleSchemas"
 import FormRoot from "@/components/FormRoot";
+import VueJsonPretty from "vue-json-pretty";
+import 'vue-json-pretty/lib/styles.css';
 
 export default {
   name: 'App',
   components: {
-    FormRoot
+    FormRoot,
+    VueJsonPretty
   },
   computed: {
     dropOptions() {
@@ -25,12 +38,13 @@ export default {
       });
     },
     isWizardSelected() {
-      return this.form === forms["Showcase"];
+      return this.form === forms["5 Sicherheitsregeln (Wizard)"];
     }
   },
   data() {
     return {
-      form: forms["5 Sicherheitsregeln"]
+      form: forms["Showcase"],
+      formData: null
     }
   },
   created() {
@@ -38,6 +52,7 @@ export default {
   },
   methods: {
     submit(data) {
+      this.formData = data;
       console.log(JSON.stringify(data));
     }
   }

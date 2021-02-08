@@ -63,7 +63,8 @@ const commonConfig = {
         "json-pointer": "json-pointer",
         jsonschema: "jsonschema",
         "vue-material": "vue-material",
-        vuedraggable: "vuedraggable"
+        vuedraggable: "vuedraggable",
+        "vue-json-pretty": "vue-json-pretty"
     },
     mode: 'production'
 };

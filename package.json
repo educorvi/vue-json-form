@@ -31,6 +31,7 @@
     "json-pointer": "^0.6.1",
     "jsonschema": "^1.2.7",
     "vue": "^2.6.12",
+    "vue-json-pretty": "^1.7.1",
     "vue-material": "^1.0.0-beta-15",
     "vuedraggable": "^2.24.1"
   },
@@ -52,6 +53,7 @@
     "del-cli": "^3.0.1",
     "dotenv-cli": "^4.0.0",
     "eslint": "^6.7.2",
+    "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^5.0.0",
     "release-it": "^14.1.0",
@@ -66,16 +68,21 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "cypress/globals": true
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "plugin:cypress/recommended"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {},
+    "plugins": [
+      "cypress"
+    ]
   },
   "browserslist": [
     "> 1%",
