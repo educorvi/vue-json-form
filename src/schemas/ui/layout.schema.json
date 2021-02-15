@@ -53,6 +53,21 @@
       "description": "May contain a schema reference to the uischema"
     }
   },
+  "examples": [
+    {
+      "type": "VerticalLayout",
+      "elements": [
+
+      ]
+    },
+    {
+      "type": "Group",
+      "label": "This is a group",
+      "elements": [
+
+      ]
+    }
+  ],
   "additionalProperties": false,
   "required": [
     "type",

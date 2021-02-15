@@ -14,7 +14,7 @@ Gives multiple options to configure the element
 
 `object` ([Options](control-properties-options.md))
 
-# Options Properties
+# options Properties
 
 | Property                                  | Type      | Required | Nullable       | Defined by                                                                                                                                                                                      |
 | :---------------------------------------- | :-------- | :------- | :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

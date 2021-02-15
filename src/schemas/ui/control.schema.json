@@ -151,6 +151,26 @@
       "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
     }
   },
+  "examples": [
+    {
+      "type": "Control",
+      "scope": "#/properties/objectInJsonSchema"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/field",
+      "showOn": {
+        "scope": "#/properties/referenceField",
+        "type": "EQUALS",
+        "referenceValue": "awesomeValue"
+      },
+      "options": {
+        "label": false,
+        "radiobuttons": true,
+        "stacked": true
+      }
+    }
+  ],
   "additionalProperties": false,
   "required": [
     "type",
