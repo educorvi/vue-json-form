@@ -4,16 +4,18 @@ const daten = {
     longText: "Das ist ein langer toller und\n mehrzeiliger Text\n\n Grüßle"
 }
 
-describe("Head", () => {
-    it("Everything's there and fill", () => {
-        cy.visit("/");
-        cy.contains("Great Switch").click();
+beforeEach(() => {
+    cy.visit("/");
+    cy.contains("Great Switch").click();
+    cy.get("#name").type(daten.name);
+    cy.get("#fancyness").first().click();
+});
+
+describe("Check if everything is there and v-models work", () => {
+    it("Headquestions", () => {
         cy.get("#title").select(daten.title);
-        cy.get("#name").type(daten.name);
-        cy.get("#fancyness").first().click();
         cy.get("#fileupload");
-    });
-    it('Check results', () => {
+        cy.get('[type="submit"]').first().click();
         cy.get('#result_raw').should((div) => {
             const res = JSON.parse(div.text());
             const {
@@ -29,11 +31,7 @@ describe("Head", () => {
 
         });
     });
-});
-
-describe('Groups', () => {
-    it('Everything\'s there and fill', () => {
-        cy.visit("/");
+    it('Groups', () => {
         cy.get("#due_date");
         //Select four Stars in Rating
         cy.get(':nth-child(4) > .b-rating-icon > .bi-star > g > path').click({force: true});
@@ -49,10 +47,8 @@ describe('Groups', () => {
         cy.get('#testArray > .btn-outline-primary').click();
         cy.get(':nth-child(2) > :nth-child(1) > #formGroup_items > :nth-child(1) > .input-group > #items').type('Eintrag 2');
         cy.get('#tags___input__').type('smart{enter}cool{enter}super{enter}');
-
         cy.get('[type="submit"]').first().click();
-    });
-    it('Check results', () => {
+
         cy.get('#result_raw').should((div) => {
             const res = JSON.parse(div.text());
             const {
@@ -74,30 +70,38 @@ describe('Groups', () => {
 
         });
     });
-});
 
-describe('Object', () => {
-    it('Everything\'s there and fill', () => {
-        cy.visit("/");
-        //
-    });
-    it('Check results', () => {
+    it("Object", () => {
+        cy.get('#group_selector > :nth-child(2) > span').click();
+        cy.get('#group_selector_BV_option_1').check();
+        cy.get('#petName').type('Richie');
+        cy.get('#age').type('13');
+        cy.get('#formGroup_flauschig > :nth-child(1) > .input-group > .custom-control > .custom-control-label > span').click();
+        cy.get('#flauschig').check();
+        cy.get('[type="submit"]').first().click();
+
         cy.get('#result_raw').should((div) => {
             const res = JSON.parse(div.text());
             const {
-                "#/properties/name": name,
-                "#/properties/title": title,
-                "#/properties/done": done,
-                "#/properties/fancyness": fancyness,
-                "#/properties/rating": rating,
-                "#/properties/weekday": weekday,
-                "#/properties/testArray": testArray,
-                "#/properties/due_date": due_date,
-                "#/properties/description": description,
-                "#/properties/recurrence_interval": recurrence_interval,
-                "#/properties/tags": tags,
+                "#/properties/group_selector": selector,
+                "#/properties/testObject/properties/petName": petName,
+                "#/properties/testObject/properties/age": petAge,
+                "#/properties/testObject/properties/flauschig": petFluffy,
+                "#/properties/testObject": pet
             } = res;
+
+            expect(selector).to.equal("Object");
+            expect(petName).to.equal("Richie");
+            expect(petAge).to.equal("13");
+            expect(petFluffy).to.equal(true);
+            expect(pet).to.deep.equal({
+                "petName": "Richie",
+                "age": "13",
+                "flauschig": true
+            });
+
 
         });
     });
 });
+
