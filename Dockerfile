@@ -1,3 +1,3 @@
-FROM node:14-alpine
+FROM cypress/base
 
-RUN apk add -U xvfb
+#RUN apk add -U xvfb
