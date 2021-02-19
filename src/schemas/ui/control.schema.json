@@ -144,6 +144,11 @@
         "autocomplete": {
           "type": "string",
           "description": "Specifies what should be autocompleted by the browser. Possible values are listed here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values"
+        },
+        "textAlign": {
+          "type": "string",
+          "enum": ["left", "right", "center", "start", "end"],
+          "description": "Set the text-align of input fields"
         }
       }
     },

@@ -27,3 +27,4 @@ pnpm-debug.log*
 /demoDist.zip
 /demo/
 /demo.zip
+/test-results.xml

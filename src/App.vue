@@ -25,12 +25,12 @@ export default {
       });
     },
     isWizardSelected() {
-      return this.form === forms["Showcase"];
+      return this.form === forms["Wizard"];
     }
   },
   data() {
     return {
-      form: forms["5 Sicherheitsregeln"]
+      form: forms["Showcase"]
     }
   },
   created() {
