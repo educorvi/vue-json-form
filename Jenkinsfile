@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'cypress/included'
+      image 'node'
     }
 
   }
@@ -25,6 +25,7 @@ pipeline {
     }
     stage('Test') {
         steps {
+            sh 'cypress install'
             sh 'npm test'
         }
     }
