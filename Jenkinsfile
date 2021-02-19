@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'cypress/base:10'
+      image 'cypress/included'
     }
 
   }
@@ -59,6 +59,8 @@ pipeline {
 
   post {
       always {
+          archiveArtifacts 'cypress/videos/*'
+          archiveArtifacts 'cypress/screenshots/*'
           junit 'test-results.xml'
       }
    }
