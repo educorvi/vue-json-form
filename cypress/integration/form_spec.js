@@ -5,7 +5,7 @@ const daten = {
 }
 
 beforeEach(() => {
-    cy.visit("/");
+    cy.visit("http://localhost:8080/");
     cy.contains("Great Switch").click();
     cy.get("#name").type(daten.name);
     cy.get("#fancyness").first().click();
