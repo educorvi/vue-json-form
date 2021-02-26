@@ -12,6 +12,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "cypress": "npx cypress open",
+    "cy:verify": "cypress verify",
     "test": "start-server-and-test serve 8080 'cypress run'",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
@@ -32,7 +33,6 @@
     "json-pointer": "^0.6.1",
     "jsonschema": "^1.2.7",
     "vue": "^2.6.12",
-    "vue-json-pretty": "^1.7.1",
     "vue-material": "^1.0.0-beta-15",
     "vuedraggable": "^2.24.1"
   },
@@ -61,6 +61,7 @@
     "sass-loader": "^10.1.1",
     "start-server-and-test": "^1.12.0",
     "terser-webpack-plugin": "^2.3.8",
+    "vue-json-pretty": "^1.7.1",
     "vue-loader": "^15.9.3",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",

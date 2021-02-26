@@ -11,6 +11,7 @@ pipeline {
         stage('Dependencies') {
           steps {
             sh 'npm ci'
+            sh 'npm run cy:verify'
           }
         }
 
@@ -25,7 +26,6 @@ pipeline {
     }
     stage('Test') {
         steps {
-            sh 'node_modules/.bin/cypress install'
             sh 'npm test'
         }
     }
