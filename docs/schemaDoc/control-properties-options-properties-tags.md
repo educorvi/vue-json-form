@@ -14,7 +14,7 @@ Will be rendered as tags-Field
 
 `object` ([Details](control-properties-options-properties-tags.md))
 
-# undefined Properties
+# tags Properties
 
 | Property            | Type      | Required | Nullable       | Defined by                                                                                                                                                                                                |
 | :------------------ | :-------- | :------- | :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

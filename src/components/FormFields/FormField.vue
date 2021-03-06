@@ -11,7 +11,8 @@
       <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"
-                 :autocomplete="(ui.options ||{}).autocomplete || 'on'"/>
+                 :autocomplete="(ui.options ||{}).autocomplete || 'on'"
+                  :style="cssStyle"/>
       <b-input-group-append :is-text="!noText" v-if="hasSlot()">
         <!--        Content is appended to the input field-->
         <slot></slot>
@@ -98,6 +99,13 @@ export default {
           return (json.enum === undefined) ? Array : MultibleChoice;
         default:
           return defaultField;
+      }
+    },
+    cssStyle() {
+      if (this.ui.options?.textAlign) {
+        return 'text-align: ' + this.ui.options?.textAlign;
+      } else {
+        return '';
       }
     }
   },

@@ -100,7 +100,10 @@
             },
             {
               "type": "Control",
-              "scope": "#/properties/recurrence_interval"
+              "scope": "#/properties/recurrence_interval",
+              "options": {
+                "textAlign": "right"
+              }
             }
           ]
         },

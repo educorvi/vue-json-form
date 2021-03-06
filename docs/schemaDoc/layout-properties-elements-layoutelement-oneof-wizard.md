@@ -14,7 +14,7 @@ A wizard that contains the form spread over multiple pages
 
 `object` ([Wizard](layout-properties-elements-layoutelement-oneof-wizard.md))
 
-# Wizard Properties
+# 4 Properties
 
 | Property           | Type     | Required | Nullable       | Defined by                                                                                                                                |
 | :----------------- | :------- | :------- | :------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |

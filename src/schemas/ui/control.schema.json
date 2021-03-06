@@ -144,6 +144,11 @@
         "autocomplete": {
           "type": "string",
           "description": "Specifies what should be autocompleted by the browser. Possible values are listed here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values"
+        },
+        "textAlign": {
+          "type": "string",
+          "enum": ["left", "right", "center", "start", "end"],
+          "description": "Set the text-align of input fields"
         }
       }
     },
@@ -151,6 +156,26 @@
       "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
     }
   },
+  "examples": [
+    {
+      "type": "Control",
+      "scope": "#/properties/objectInJsonSchema"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/field",
+      "showOn": {
+        "scope": "#/properties/referenceField",
+        "type": "EQUALS",
+        "referenceValue": "awesomeValue"
+      },
+      "options": {
+        "label": false,
+        "radiobuttons": true,
+        "stacked": true
+      }
+    }
+  ],
   "additionalProperties": false,
   "required": [
     "type",

@@ -14,7 +14,7 @@ Show field depending on value of other field
 
 `object` ([ShowOn property](control-properties-showon-property.md))
 
-# ShowOn property Properties
+# showOn Properties
 
 | Property                          | Type     | Required | Nullable       | Defined by                                                                                                                                                |
 | :-------------------------------- | :------- | :------- | :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -14,7 +14,7 @@ Gives multiple options to configure the element
 
 `object` ([Options](control-properties-options.md))
 
-# Options Properties
+# options Properties
 
 | Property                                  | Type      | Required | Nullable       | Defined by                                                                                                                                                                                      |
 | :---------------------------------------- | :-------- | :------- | :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -33,6 +33,7 @@ Gives multiple options to configure the element
 | [append](#append)                         | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-append.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/append")                         |
 | [tags](#tags)                             | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-tags.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags")                             |
 | [autocomplete](#autocomplete)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-autocomplete.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/autocomplete")             |
+| [textAlign](#textalign)                   | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-textalign.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/textAlign")                   |
 
 ## label
 
@@ -338,3 +339,33 @@ Specifies what should be autocompleted by the browser. Possible values are liste
 ### autocomplete Type
 
 `string`
+
+## textAlign
+
+Set the text-align of input fields
+
+`textAlign`
+
+*   is optional
+
+*   Type: `string`
+
+*   cannot be null
+
+*   defined in: [Control](control-properties-options-properties-textalign.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/textAlign")
+
+### textAlign Type
+
+`string`
+
+### textAlign Constraints
+
+**enum**: the value of this property must be equal to one of the following values:
+
+| Value      | Explanation |
+| :--------- | :---------- |
+| `"left"`   |             |
+| `"right"`  |             |
+| `"center"` |             |
+| `"start"`  |             |
+| `"end"`    |             |

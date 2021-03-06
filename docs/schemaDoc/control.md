@@ -14,6 +14,32 @@ Contains a form element, e. g. a text input
 
 `object` ([Control](control.md))
 
+## Control Examples
+
+```json
+{
+  "type": "Control",
+  "scope": "#/properties/objectInJsonSchema"
+}
+```
+
+```json
+{
+  "type": "Control",
+  "scope": "#/properties/field",
+  "showOn": {
+    "scope": "#/properties/referenceField",
+    "type": "EQUALS",
+    "referenceValue": "awesomeValue"
+  },
+  "options": {
+    "label": false,
+    "radiobuttons": true,
+    "stacked": true
+  }
+}
+```
+
 # Control Properties
 
 | Property            | Type     | Required | Nullable       | Defined by                                                                                                                                 |

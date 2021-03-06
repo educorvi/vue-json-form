@@ -14,7 +14,7 @@ If the text in a enums select field is supposed to differ from the keys, they ca
 
 `object` ([Titles for enum](control-properties-options-properties-titles-for-enum.md))
 
-# Titles for enum Properties
+# enumTitles Properties
 
 | Property | Type     | Required | Nullable       | Defined by                                                                                                                                                                                                                 |
 | :------- | :------- | :------- | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

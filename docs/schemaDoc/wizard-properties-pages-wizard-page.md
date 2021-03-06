@@ -14,7 +14,7 @@ https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/proper
 
 `object` ([Wizard Page](wizard-properties-pages-wizard-page.md))
 
-# Wizard Page Properties
+# items Properties
 
 | Property              | Type      | Required | Nullable       | Defined by                                                                                                                                                       |
 | :-------------------- | :-------- | :------- | :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |

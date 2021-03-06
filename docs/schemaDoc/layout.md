@@ -14,6 +14,23 @@ The different Layouts
 
 `object` ([Layout](layout.md))
 
+## Layout Examples
+
+```json
+{
+  "type": "VerticalLayout",
+  "elements": []
+}
+```
+
+```json
+{
+  "type": "Group",
+  "label": "This is a group",
+  "elements": []
+}
+```
+
 # Layout Properties
 
 | Property              | Type     | Required | Nullable       | Defined by                                                                                                                                |
