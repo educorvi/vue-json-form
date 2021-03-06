@@ -23,7 +23,7 @@ pipeline {
     }
     stage('Test') {
         steps {
-            sh 'sed -i.bak 's/smokeTestTimeout: 10000/smokeTestTimeout: 60000/' node_modules/cypress/lib/tasks/verify.js'
+            sh 'sed -i.bak \'s/smokeTestTimeout: 10000/smokeTestTimeout: 60000/\' node_modules/cypress/lib/tasks/verify.js'
             sh 'node_modules/.bin/cypress install'
             sh 'npm run cy:verify'
             sh 'npm test'
