@@ -28,3 +28,5 @@ pnpm-debug.log*
 /demo/
 /demo.zip
 /test-results.xml
+/cypress/videos/
+/cypress/screenshots/

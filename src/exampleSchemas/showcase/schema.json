@@ -64,7 +64,7 @@
       "type": "object",
       "title": "Pet",
       "properties": {
-        "name": {
+        "petName": {
           "type": "string",
           "description": "Give me a name"
         },
@@ -77,7 +77,7 @@
           "type": "boolean"
         }
       },
-      "required": ["name", "age"]
+      "required": ["petName", "age"]
     },
     "fancyness": {
       "type": "string",

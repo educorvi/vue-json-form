@@ -11,6 +11,9 @@
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "cypress": "npx cypress open",
+    "cy:verify": "cypress verify",
+    "test": "start-server-and-test serve 8080 'cypress run'",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
@@ -47,14 +50,18 @@
     "cache-loader": "^4.1.0",
     "copyfiles": "^2.3.0",
     "css-loader": "^5.0.0",
+    "cypress": "^6.4.0",
     "del-cli": "^3.0.1",
     "dotenv-cli": "^4.0.0",
     "eslint": "^6.7.2",
+    "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^5.0.0",
     "release-it": "^14.1.0",
     "sass-loader": "^10.1.1",
+    "start-server-and-test": "^1.12.0",
     "terser-webpack-plugin": "^2.3.8",
+    "vue-json-pretty": "^1.7.1",
     "vue-loader": "^15.9.3",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
@@ -64,16 +71,21 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "cypress/globals": true
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "plugin:cypress/recommended"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {},
+    "plugins": [
+      "cypress"
+    ]
   },
   "browserslist": [
     "> 1%",
