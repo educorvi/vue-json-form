@@ -5,7 +5,7 @@
                 :id="schemaName"
                 type="number" :min="item.minimum" :max="item.maximum" class="vjf_number"></b-form-input>
   <b-form-rating ref="child" v-else v-model="fieldData" :name="title" :required="required" :stars="item.maximum || 5"
-                 variant="warning" class="vjf_rating"></b-form-rating>
+                 variant="warning" class="vjf_rating" :id="schemaName"></b-form-rating>
 </template>
 
 <script>
