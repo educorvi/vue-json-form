@@ -1,13 +1,10 @@
 <template>
-  <div>
-    <div>
-      <b-row>
+      <b-row class="vjf_horizontal">
         <b-col v-for="(item, index) in ui.elements" :key="ui.toString().length+'_'+index">
-          <form-wrap @changedData="loopUp" :json="json" :ui="item" :filledData="filledData" :form-i-d="formID"></form-wrap>
+          <form-wrap @changedData="loopUp" :json="json" :ui="item" :filledData="filledData"
+                     :form-i-d="formID"></form-wrap>
         </b-col>
       </b-row>
-    </div>
-  </div>
 </template>
 
 <script>

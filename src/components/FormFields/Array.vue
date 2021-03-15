@@ -1,5 +1,5 @@
 <template>
-  <div v-if="item.items && item.items.type" class="embDiv w-100" :id="schemaName">
+  <div v-if="item.items && item.items.type" class="embDiv w-100 vjf_array" :id="schemaName">
     <draggable v-model="fieldData" handle=".handle">
       <transition-group name="arrayedit">
         <div v-for="(field, index) in fieldData" :key="field.gentime.toLocaleString()">

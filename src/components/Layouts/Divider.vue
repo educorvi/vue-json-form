@@ -1,5 +1,5 @@
 <template>
-<hr>
+<hr class="vjf_divider">
 </template>
 
 <script>

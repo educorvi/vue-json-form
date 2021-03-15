@@ -1,5 +1,6 @@
 <template>
-  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth" novalidate :id="id" :validated="checked">
+  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth" novalidate :id="id" :validated="checked"
+          class="vjf_root">
     <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI" :formID="id"></FormWrap>
     <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
     <slot>
@@ -92,7 +93,7 @@ export default {
         for (const key of keys) {
           let item = obj[key];
           if (typeof item === 'object') {
-            if(searchInObject(item)) return true;
+            if (searchInObject(item)) return true;
           } else if (typeof item === 'string' && key === "buttonType" && item === 'submit') {
             return true;
           }

@@ -1,5 +1,5 @@
 <template>
-  <span v-html="ui['htmlData']"></span>
+  <span v-html="ui['htmlData']" class="vjf_html"></span>
 </template>
 
 <script>

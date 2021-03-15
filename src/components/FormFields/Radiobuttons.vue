@@ -8,6 +8,7 @@
       :required="required"
       :buttons="!!(this.ui.options && this.ui.options.buttons)"
       :button-variant="variant"
+      class="vjf_radiobuttons"
   ></b-form-radio-group>
 </template>
 

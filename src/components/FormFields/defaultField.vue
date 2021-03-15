@@ -1,5 +1,5 @@
 <template>
-  <p>No Item found for type "{{ item.type }}"</p>
+  <p class="vjf_default">No Item found for type "{{ item.type }}"</p>
 </template>
 
 <script>

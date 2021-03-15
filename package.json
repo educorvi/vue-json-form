@@ -13,6 +13,7 @@
     "serve": "vue-cli-service serve",
     "cypress": "npx cypress open",
     "cy:verify": "cypress verify",
+    "cy:run": "cypress run",
     "test": "start-server-and-test serve 8080 'cypress run'",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",

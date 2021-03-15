@@ -1,5 +1,5 @@
 <template>
-  <b-form-select :id="schemaName" ref="child" v-model="fieldData" :name="title" :options="options"/>
+  <b-form-select :id="schemaName" ref="child" v-model="fieldData" :name="title" :options="options" class="vjf_select"/>
 </template>
 
 <script>

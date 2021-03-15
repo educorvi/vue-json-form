@@ -1,7 +1,7 @@
 <template>
   <b-form-file :id="schemaName" v-model="files" :required="required" :placeholder="getUIOption('placeholder')"
                :drop-placeholder="getUIOption('drop-placeholder')" :multiple="getUIOption('allowMultibleFiles')"
-               :accept="getUIOption('acceptedFileType')"/>
+               :accept="getUIOption('acceptedFileType')" class="vjf_file"/>
 </template>
 
 <script>

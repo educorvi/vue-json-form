@@ -1,6 +1,7 @@
 <template>
   <div class="embDiv">
-    <FormWrap :json="json" :ui="fakeUI" @changedData="collect" :filledData="filledData" :id="schemaName"/>
+    <FormWrap :json="json" :ui="fakeUI" @changedData="collect" :filledData="filledData" :id="schemaName"
+              class="vjf_object"/>
   </div>
 </template>
 

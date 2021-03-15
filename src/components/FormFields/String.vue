@@ -2,10 +2,11 @@
   <b-form-textarea ref="child" v-if="ui.options && ui.options.multi" v-model="fieldData" :name="title"
                    :placeholder="ui.options ? ui.options.placeholder : ''"
                    :rows="typeof ui.options.multi === 'number' ? ui.options.multi : 3"
-                   :id="schemaName"/>
+                   :id="schemaName" class="vjf_textarea"/>
   <b-input ref="child" v-else-if="(ui.format || item.format) !== 'date-time'" v-model="fieldData" :name="title"
-           :placeholder="ui.options ? ui.options.placeholder : ''" :type="ui.format || item.format" :id="schemaName"/>
-  <date-time ref="child" v-else :json="json" :ui="ui" @changedData="loopUp"/>
+           :placeholder="ui.options ? ui.options.placeholder : ''" :type="ui.format || item.format" :id="schemaName"
+           class="vjf_text"/>
+  <date-time ref="child" v-else :json="json" :ui="ui" @changedData="loopUp" class="vjf_datetime"/>
 </template>
 
 <script>
