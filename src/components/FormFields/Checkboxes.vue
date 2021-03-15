@@ -22,7 +22,7 @@ import formFieldMixin from "./formFieldMixin.js";
  * This is used to render MultibleChoice entries with a checkbox-group
  */
 export default {
-  name: "MultibleChoice",
+  name: "Checkboxes",
   mixins: [formFieldMixin],
   computed: {
     options() {

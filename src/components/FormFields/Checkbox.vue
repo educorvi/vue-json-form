@@ -13,7 +13,7 @@ import formFieldMixin from "./formFieldMixin.js";
  * This is used to render booleans in Form of a checkbox
  */
 export default {
-  name: "Boolean",
+  name: "Checkbox",
   mixins: [formFieldMixin],
 }
 </script>
