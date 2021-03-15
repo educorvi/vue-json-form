@@ -2,17 +2,17 @@
   <b-form-group :id="'formGroup_'+schemaName"
                 :description="item.description"
                 :label="item.type !== 'boolean' && (ui.options === undefined || ui.options.label || ui.options.label === undefined) ? title : null"
-                :label-for="schemaName">
+                :label-for="schemaName" class="vjf_formField">
     <b-input-group class="w-100">
       <b-input-group-prepend v-if="hasSlot('prepend')">
         <!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title" class="w-100"
+      <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title" :class="!(hasSlot() || hasSlot('prepend'))?'w-100':''"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"
                  :autocomplete="(ui.options ||{}).autocomplete || 'on'"
-                  :style="cssStyle"/>
+                 :style="cssStyle"/>
       <b-input-group-append :is-text="!noText" v-if="hasSlot()">
         <!--        Content is appended to the input field-->
         <slot></slot>
@@ -27,8 +27,8 @@
 
 import formFieldMixin from "./formFieldMixin.js";
 import Array from "./Array.vue";
-import Boolean from "./Boolean.vue";
-import MultibleChoice from "./MultibleChoice.vue";
+import Boolean from "./Checkbox.vue";
+import MultibleChoice from "./Checkboxes.vue";
 import Number from "./Number.vue";
 import Object from "./Object.vue";
 import Select from "./Select.vue";
