@@ -24,7 +24,6 @@
     ],
     "after:bump": [
       "npm run build",
-      "npm run doc",
       "npm run zip"
     ],
     "after:release": [
