@@ -8,7 +8,7 @@
         <!--        Content is prepended to the input field-->
         <slot name="prepend"></slot>
       </b-input-group-prepend>
-      <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title"
+      <component :is="type" :isInteger="item.type === 'integer'" :json="json" :name="title" class="w-100"
                  :required="required"
                  :ui="ui" @changedData="loopUp" ref="child" :filledData="filledData"
                  :autocomplete="(ui.options ||{}).autocomplete || 'on'"
