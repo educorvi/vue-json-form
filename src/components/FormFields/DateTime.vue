@@ -1,7 +1,6 @@
 <template>
   <div :name="title" :id="schemaName">
-    <b-input v-model="time" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0" type="time" :required="required"/>
-    <b-input ref="child" v-model="date" type="date" style="border-top-left-radius: 0; border-top-right-radius: 0" :required="required"/>
+    <b-input v-model="fieldData" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0" type="datetime-local" :required="required" :min="item.minimum" :max="item.maximum"/>
   </div>
 </template>
 
@@ -14,33 +13,7 @@ import formFieldMixin from "./formFieldMixin.js";
  */
 export default {
   name: "DateTime",
-  mixins: [formFieldMixin],
-  data() {
-    return {
-      date: null,
-      time: null
-    }
-  },
-  methods: {
-    set() {
-      this.fieldData = this.date + "T" + this.time;
-    }
-  },
-  mounted() {
-    if (this.fieldData) {
-      const s = this.fieldData.split("T");
-      this.date = s[0];
-      this.time = s[1];
-    }
-  },
-  watch: {
-    date() {
-      this.set();
-    },
-    time() {
-      this.set();
-    }
-  },
+  mixins: [formFieldMixin]
 }
 </script>
 
