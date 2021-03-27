@@ -1,6 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": false,
   "license": "MIT",
   "main": "dist/vue-json-form.js",
@@ -11,11 +11,10 @@
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "cypress": "start-server-and-test serve 8080 'cypress run'",
     "cy:verify": "cypress verify",
     "cy:open": "npx cypress open",
     "cy:run": "cypress run",
-    "test": "npm run cypress",
+    "test": "start-server-and-test serve 8080 cy:run",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
