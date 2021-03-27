@@ -60,7 +60,7 @@ describe("Check if everything is there and v-models work", () => {
                 "#/properties/recurrence_interval": recurrence_interval,
                 "#/properties/tags": tags,
             } = res;
-            expect(due_date).to.equal("2021-12-28T23:24");
+            expect(due_date).to.equal("2020-12-28T13:24");
             expect(rating).to.equal(4);
             expect(description).to.equal(daten.longText);
             expect(weekday).to.deep.equal(["Monday", "Wednesday", "Sunday"]);
