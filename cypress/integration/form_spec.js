@@ -35,7 +35,8 @@ describe("Check if everything is there and v-models work", () => {
         cy.get("#due_date");
         //Select four Stars in Rating
         cy.get('#rating :nth-child(4) > .b-rating-icon > .bi-star > g > path').click({force: true});
-        cy.get('#due_date [type="datetime-local"]').type('2021-12-28T23:24');
+        cy.get('#due_date [type="date"]').type('2020-12-28');
+        cy.get('#due_date [type="time"]').type('13:24');
         cy.get('#description').type(daten.longText);
         cy.get("#weekday_BV_option_0").check({force: true});
         cy.get("#weekday_BV_option_2").check({force: true});
