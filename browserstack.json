@@ -1,0 +1,24 @@
+{
+    "auth": {
+        "username": "neferin1"
+    },
+    "browsers": [
+        {
+            "browser": "chrome",
+            "os": "Windows 10",
+            "versions": [
+                "latest",
+                "latest-1"
+            ]
+        }
+    ],
+    "run_settings": {
+        "cypress_config_file": "./cypress.json",
+        "project_name": "Vue JSON Form",
+        "build_name": "testbuilt",
+        "parallels": "5"
+    },
+    "connection_settings": {
+        "local": true
+    }
+}
