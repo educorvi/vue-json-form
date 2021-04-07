@@ -51,6 +51,20 @@
     "$schema": {
       "type": "string",
       "description": "May contain a schema reference to the uischema"
+    },
+    "options": {
+      "description": "Additional Options",
+      "type": "object",
+      "properties": {
+        "cssClass": {
+          "type": "string",
+          "description": "The Layouts CSS classes",
+          "examples": [
+            "bg-primary",
+            "bg-info headerpart"
+          ]
+        }
+      }
     }
   },
   "examples": [
