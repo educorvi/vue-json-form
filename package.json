@@ -1,6 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "private": false,
   "license": "MIT",
   "main": "dist/vue-json-form.js",
@@ -15,7 +15,7 @@
     "cy:verify": "cypress verify",
     "cy:open": "npx cypress open",
     "cy:run": "cypress run",
-    "test": "start-server-and-test 'serve:test' 8088 cy:run",
+    "test": "start-server-and-test serve:test 8088 cy:run",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
