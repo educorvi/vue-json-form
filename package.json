@@ -11,10 +11,11 @@
   "repository": "https://github.com/educorvi/vue_json_form.git",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:test": "vue-cli-service serve --port 8088",
     "cy:verify": "cypress verify",
     "cy:open": "npx cypress open",
     "cy:run": "cypress run",
-    "test": "start-server-and-test serve 8080 cy:run",
+    "test": "start-server-and-test 'serve:test' 8088 cy:run",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
