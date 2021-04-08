@@ -40,6 +40,7 @@ The different Layouts
 | [showOn](#showon)     | `object` | Optional | cannot be null | [Layout](control-properties-showon-property.md "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json#/properties/showOn") |
 | [label](#label)       | `string` | Optional | cannot be null | [Layout](layout-properties-label.md "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/label")              |
 | [$schema](#schema)    | `string` | Optional | cannot be null | [Layout](layout-properties-schema.md "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/$schema")           |
+| [options](#options)   | `object` | Optional | cannot be null | [Layout](layout-properties-options.md "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/options")          |
 
 ## type
 
@@ -148,3 +149,21 @@ May contain a schema reference to the uischema
 ### $schema Type
 
 `string`
+
+## options
+
+Additional Options
+
+`options`
+
+*   is optional
+
+*   Type: `object` ([Details](layout-properties-options.md))
+
+*   cannot be null
+
+*   defined in: [Layout](layout-properties-options.md "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/options")
+
+### options Type
+
+`object` ([Details](layout-properties-options.md))

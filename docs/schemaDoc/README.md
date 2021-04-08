@@ -34,6 +34,8 @@
 
 *   [Untitled object in Control](./control-properties-options-properties-tags.md "Will be rendered as tags-Field") – `https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags`
 
+*   [Untitled object in Layout](./layout-properties-options.md "Additional Options") – `https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/options`
+
 *   [Wizard](./layout-properties-elements-layoutelement-oneof-wizard.md "A wizard that contains the form spread over multiple pages") – `https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/elements/items/oneOf/4`
 
 *   [Wizard Page](./wizard-properties-pages-wizard-page.md) – `https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json#/properties/pages/items`
