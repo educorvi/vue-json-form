@@ -5,8 +5,8 @@
     <hr>
     <form-root :key="JSON.stringify(form)" :json="form.schema" :on-submit="submit" :ui="form.ui">
     </form-root>
-    <b-collapse :visible="!!formData" style="margin-top: 80px">
-      <b-card title="Result">
+    <b-collapse :visible="!!formData" style="margin-top: 80px" @shown="shown()">
+      <b-card title="Result" id="result_beautified">
         <vue-json-pretty v-if="!!formData" :data="formData"></vue-json-pretty>
       </b-card>
       <b-card class="mt-2" title="Result raw" v-show="false">
@@ -51,8 +51,12 @@ export default {
 
   },
   methods: {
+    shown() {
+      document.getElementById('result_beautified').scrollIntoView({behavior: "smooth"})
+    },
     submit(data) {
       this.formData = data;
+      this.shown();
       console.log(JSON.stringify(data));
     }
   }
