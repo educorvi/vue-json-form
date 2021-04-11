@@ -15,7 +15,7 @@
     "cy:verify": "cypress verify",
     "cy:open": "npx cypress open",
     "cy:run": "cypress run",
-    "browserstack": "dotenv npx browserstack-cypress run --sync",
+    "browserstack": "dotenv npx browserstack-cypress-cli run --sync",
     "test": "start-server-and-test serve:test 8088 cy:run",
     "build": "npm run build:npm && npm run build:demo",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
