@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - name: "Install & Start;
+      - name: 'Install & Start'
         run: |
           npm ci
           npm run serve & npx wait-on http://localhost:8080
