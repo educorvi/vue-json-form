@@ -34,6 +34,7 @@ Gives multiple options to configure the element
 | [tags](#tags)                             | `object`  | Optional | cannot be null | [Control](control-properties-options-properties-tags.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/tags")                             |
 | [autocomplete](#autocomplete)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-autocomplete.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/autocomplete")             |
 | [textAlign](#textalign)                   | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-textalign.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/textAlign")                   |
+| [cssClass](#cssclass)                     | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-cssclass.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/cssClass")                     |
 
 ## label
 
@@ -369,3 +370,31 @@ Set the text-align of input fields
 | `"center"` |             |
 | `"start"`  |             |
 | `"end"`    |             |
+
+## cssClass
+
+The Controls CSS classes
+
+`cssClass`
+
+*   is optional
+
+*   Type: `string`
+
+*   cannot be null
+
+*   defined in: [Control](control-properties-options-properties-cssclass.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/cssClass")
+
+### cssClass Type
+
+`string`
+
+### cssClass Examples
+
+```json
+"bg-primary"
+```
+
+```json
+"bg-info specialpart"
+```

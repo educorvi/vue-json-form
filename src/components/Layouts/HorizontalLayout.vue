@@ -1,5 +1,5 @@
 <template>
-      <b-row class="vjf_horizontal">
+      <b-row :class="'vjf_horizontal '+customCss">
         <b-col v-for="(item, index) in ui.elements" :key="ui.toString().length+'_'+index">
           <form-wrap @changedData="loopUp" :json="json" :ui="item" :filledData="filledData"
                      :form-i-d="formID"></form-wrap>

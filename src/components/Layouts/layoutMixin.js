@@ -25,6 +25,12 @@ const methods = {
     },
 }
 
+const computed = {
+    customCss() {
+        return this.ui.options?.cssClass
+    }
+}
+
 export const onlyProps = {
     props
 }
@@ -38,6 +44,7 @@ export const onlyMethods = {methods}
 export default {
     props,
     methods,
+    computed,
     components: {
         FormWrap: () => import('../FormWrap.vue'),
         HorizontalLayout: () => import('./HorizontalLayout.vue'),
