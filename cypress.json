@@ -1,5 +1,4 @@
 {
-  "video": false,
-  "reporter": "junit",
-  "experimentalStudio": true
+  "experimentalStudio": true,
+  "videoCompression": false
 }

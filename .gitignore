@@ -30,3 +30,7 @@ pnpm-debug.log*
 /test-results.xml
 /cypress/videos/
 /cypress/screenshots/
+/setAccessKey.sh
+/local.log
+log
+results
