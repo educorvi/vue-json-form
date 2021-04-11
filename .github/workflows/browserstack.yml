@@ -1,0 +1,25 @@
+name: Browserstack tests
+on: [push]
+jobs:
+  browserstack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Start BrowserStackLocal Tunnel'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: start
+          local-logging-level: all-logs
+          local-identifier: random
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: "Install & Start;
+        run: |
+          npm ci
+          npm run serve & npx wait-on http://localhost:8080
+      - run: npm run browserstack
+      - name: 'Stop BrowserStackLocal'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: stop
