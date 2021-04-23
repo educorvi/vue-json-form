@@ -1,14 +1,9 @@
 <template>
-  <b-card no-body :class="'mb-2 vjf_group '+customCss">
-    <b-card-header>
-      <h5 class="m-0">{{ ui.label }}</h5>
-    </b-card-header>
-    <b-card-body>
-      <vertical-layout @changedData="loopUp" :json="json" :ui="{...ui, type: 'VerticalLayout'}" :filledData="filledData"
-                       :form-i-d="formID"/>
-    </b-card-body>
-
-  </b-card>
+  <fieldset :class="'mb-2 vjf_group '+customCss">
+    <legend class="m-0">{{ ui.label }}</legend>
+    <vertical-layout @changedData="loopUp" :json="json" :ui="{...ui, type: 'VerticalLayout'}" :filledData="filledData"
+                     :form-i-d="formID"/>
+  </fieldset>
 </template>
 
 <script>
