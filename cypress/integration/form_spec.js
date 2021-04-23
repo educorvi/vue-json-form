@@ -22,13 +22,16 @@ describe("Check if everything is there and v-models work", () => {
                 "#/properties/name": name,
                 "#/properties/title": title,
                 "#/properties/done": done,
-                "#/properties/fancyness": fancyness
+                "#/properties/fancyness": fancyness,
+                "#/properties/description": description,
             } = res;
             expect(name).to.equal(daten.name);
             expect(title).to.equal(daten.title);
             expect(done).to.be.true;
             expect(fancyness).to.equal("unicorn");
 
+            //check default value for description @TODO better tests for default values
+            expect(description).to.equal("This good text was set as default");
         });
     });
     it('Groups', () => {
@@ -37,7 +40,7 @@ describe("Check if everything is there and v-models work", () => {
         cy.get('#rating :nth-child(4) > .b-rating-icon > .bi-star > g > path').click({force: true});
         cy.get('#due_date [type="date"]').type('2020-12-28');
         cy.get('#due_date [type="time"]').type('13:24');
-        cy.get('#description').type(daten.longText);
+        cy.get('#description').clear().type(daten.longText);
         cy.get("#weekday_BV_option_0").check({force: true});
         cy.get("#weekday_BV_option_2").check({force: true});
         cy.get("#weekday_BV_option_6").check({force: true});

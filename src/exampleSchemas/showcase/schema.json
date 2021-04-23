@@ -11,7 +11,8 @@
       "enum": ["Mrs.", "Mr.", "Miss", "Ms.", "Dr."]
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "default": "This good text was set as default"
     },
     "done": {
       "type": "boolean",
