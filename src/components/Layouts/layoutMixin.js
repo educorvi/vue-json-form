@@ -27,7 +27,7 @@ const methods = {
 
 const computed = {
     customCss() {
-        return this.ui.options?.cssClass
+        return this.ui.options?.cssClass || ''
     }
 }
 
