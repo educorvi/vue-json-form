@@ -1,6 +1,6 @@
 <template>
   <b-form-file :id="schemaName" v-model="files" :required="required" :placeholder="getUIOption('placeholder')"
-               :drop-placeholder="getUIOption('drop-placeholder')" :multiple="getUIOption('allowMultibleFiles')"
+               :drop-placeholder="getUIOption('drop-placeholder')" :multiple="getUIOption('allowMultipleFiles')"
                :accept="getUIOption('acceptedFileType')" class="vjf_file"/>
 </template>
 
