@@ -65,12 +65,12 @@ export default {
 ```
 
 ### Props
-|Name|Description|Type|Required|Default|
-|---|---|---|---|---|
-|json|The form's JSON Schema|`Object`|`true`|-|
-|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
-|ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
-|disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
+| Name              | Description                                                                              | Type              | Required | Default |
+|-------------------|------------------------------------------------------------------------------------------|-------------------|----------|---------|
+| json              | The form's JSON Schema                                                                   | `Object`          | `true`   | -       |
+| onSubmit          | Method that is called, when the Form is submitted. Passes the formdata as first Argument | `Function`        | `true`   | -       |
+| ui                | The form's UI-Schema. If not specified, a default UI-Schema will be generated            | `Object or Array` | `false`  | -       |
+| disableValidation | Disables the validation of json-schema and ui-schema                                     | `Boolean`         | `false`  | false   |
 
 ### Other Options
 If you want to change the default submit button or add more buttons or other components to the bottom of the form, you can do so by overriding the default button and put your components in the default slot.  
@@ -96,6 +96,9 @@ export default {
 }
 </script>
 ```
+
+### Use as a Web Component
+Can be use as a webcomponent. The form data will be posted to a given endpoint. For an example see the file `webcomponent_test.html`.
 
 ### About the Schemas
 The form fields themselve are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a json pointer.
