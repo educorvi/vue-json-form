@@ -67,7 +67,7 @@ export default {
 ### Props
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|json|The form's JSON Schema|`Boolean`|`true`|-|
+|json|The form's JSON Schema|`Object`|`true`|-|
 |onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
 |ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
 |disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
