@@ -10,7 +10,7 @@
   </b-form>
 
 
-  <b-jumbotron v-else-if="validationResults" bg-variant="danger" header="Error"
+  <b-jumbotron v-else-if="validationResults && validationResults.schema && validationResults.ui" bg-variant="danger" header="Error"
                lead="Validation of the form's schema failed with the following errors:"
                text-variant="white">
     <h4 v-if="validationResults.schema.errors.length>0">JSON-Schema:</h4>

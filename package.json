@@ -29,7 +29,8 @@
     "zip:npm": "node zip.js dist",
     "zip:demo": "node zip.js demo --output demo.zip",
     "release": "dotenv release-it",
-    "clean": "del-cli dist* demoDist*"
+    "clean": "del-cli dist* demoDist*",
+    "uml": "tplant --input Hierarchy.ts --output Hierarchy.puml"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -77,6 +78,9 @@
       "node": true,
       "cypress/globals": true
     },
+    "ignorePatterns": [
+      "Hierarchy.ts"
+    ],
     "extends": [
       "plugin:vue/essential",
       "eslint:recommended",
