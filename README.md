@@ -98,7 +98,7 @@ export default {
 ```
 
 ### Use as a Web Component
-Can be use as a webcomponent. The form data will be posted to a given endpoint. Example:
+Can be used as a webcomponent. The form data will be posted to a given endpoint. Example:
 ```html
 <!DOCTYPE html>
 <html lang="en">
