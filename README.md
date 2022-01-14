@@ -98,7 +98,31 @@ export default {
 ```
 
 ### Use as a Web Component
-Can be use as a webcomponent. The form data will be posted to a given endpoint. For an example see the file `webcomponent_test.html`.
+Can be use as a webcomponent. The form data will be posted to a given endpoint. Example:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.css">
+</head>
+<body>
+<!-- post_url: Url to post the data to-->
+<!-- json: Your JSON Schema   -->
+<!-- ui: Your UI Schema       -->
+<vue-json-form
+        post_url='https://YourPostURL.com'
+        json='{...}'
+        ui='{...}'
+></vue-json-form>
+
+
+<script src="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.umd.min.js"></script>
+</body>
+</html>
+```
+A working example can be found in the file `webcomponent_example.html`.
 
 ### About the Schemas
 The form fields themselve are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a json pointer.
