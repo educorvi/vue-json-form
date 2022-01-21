@@ -1,6 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "private": false,
   "license": "MIT",
   "main": "dist/vue-json-form.js",
