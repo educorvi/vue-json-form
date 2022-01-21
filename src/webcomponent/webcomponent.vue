@@ -1,5 +1,7 @@
 <template>
-  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="onSubmit" :disableValidation="disable_validation"/>
+  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="onSubmit" :disableValidation="disable_validation">
+    <slot/>
+  </json-form>
 </template>
 
 <script>
@@ -17,11 +19,11 @@ export default {
       required: false
     },
     disable_validation: {
-      required:false,
+      required: false,
       default: false
     },
     post_url: {
-      required:true
+      required: true
     }
   },
   computed: {
@@ -31,8 +33,7 @@ export default {
     parsedUI() {
       if (this.ui) {
         return JSON.parse(this.ui);
-      }
-      else return undefined;
+      } else return undefined;
     }
   },
   methods: {
