@@ -108,10 +108,12 @@ Can be used as a webcomponent. The form data will be posted to a given endpoint.
     <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.css">
 </head>
 <body>
+<!-- use_x_www_form_urlencoded: Send data urlencoded instead of json-->
 <!-- post_url: Url to post the data to-->
 <!-- json: Your JSON Schema   -->
 <!-- ui: Your UI Schema       -->
 <vue-json-form
+        use_x_www_form_urlencoded="false"
         post_url='https://YourPostURL.com'
         json='{...}'
         ui='{...}'

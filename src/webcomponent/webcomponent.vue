@@ -7,6 +7,7 @@
 <script>
 import jsonForm from "@/components/FormRoot"
 import axios from "axios"
+import qs from "qs"
 
 export default {
   name: "vue_json_form",
@@ -24,6 +25,11 @@ export default {
     },
     post_url: {
       required: true
+    },
+    use_x_www_form_urlencoded: {
+      type: String,
+      required: false,
+      default: "false"
     }
   },
   computed: {
@@ -38,7 +44,11 @@ export default {
   },
   methods: {
     onSubmit(data) {
-      axios.post(this.post_url, data).catch(console.error)
+      if (this.use_x_www_form_urlencoded === "true") {
+        data = qs.stringify(data);
+      }
+      axios.post(this.post_url, data).catch(console.error);
+
     },
   }
 }
