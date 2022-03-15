@@ -6,9 +6,9 @@ https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties
 
 If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
 
-| Abstract            | Extensible | Status         | Identifiable            | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                    |
-| :------------------ | :--------- | :------------- | :---------------------- | :---------------- | :-------------------- | :------------------ | :---------------------------------------------------------------------------- |
-| Can be instantiated | No         | Unknown status | Unknown identifiability | Forbidden         | Allowed               | none                | [control.schema.json*](../schemas/control.schema.json "open original schema") |
+| Abstract            | Extensible | Status         | Identifiable            | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                     |
+| :------------------ | :--------- | :------------- | :---------------------- | :---------------- | :-------------------- | :------------------ | :----------------------------------------------------------------------------- |
+| Can be instantiated | No         | Unknown status | Unknown identifiability | Forbidden         | Allowed               | none                | [control.schema.json\*](../schemas/control.schema.json "open original schema") |
 
 ## enumTitles Type
 
@@ -34,10 +34,10 @@ If the text in a enums select field is supposed to differ from the keys, they ca
 
 *   defined in: [Control](control-properties-options-properties-titles-for-enum-patternproperties-.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/enumTitles/patternProperties/")
 
-###  Type
+### &#x20;Type
 
 `string`
 
-###  Constraints
+### &#x20;Constraints
 
 **minimum length**: the minimum number of characters for this string is: `1`

@@ -6,9 +6,9 @@ https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties
 
 Gives multiple options to configure the element
 
-| Abstract            | Extensible | Status         | Identifiable | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                    |
-| :------------------ | :--------- | :------------- | :----------- | :---------------- | :-------------------- | :------------------ | :---------------------------------------------------------------------------- |
-| Can be instantiated | No         | Unknown status | No           | Forbidden         | Allowed               | none                | [control.schema.json*](../schemas/control.schema.json "open original schema") |
+| Abstract            | Extensible | Status         | Identifiable | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                     |
+| :------------------ | :--------- | :------------- | :----------- | :---------------- | :-------------------- | :------------------ | :----------------------------------------------------------------------------- |
+| Can be instantiated | No         | Unknown status | No           | Forbidden         | Allowed               | none                | [control.schema.json\*](../schemas/control.schema.json "open original schema") |
 
 ## options Type
 
@@ -35,6 +35,7 @@ Gives multiple options to configure the element
 | [autocomplete](#autocomplete)             | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-autocomplete.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/autocomplete")             |
 | [textAlign](#textalign)                   | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-textalign.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/textAlign")                   |
 | [cssClass](#cssclass)                     | `string`  | Optional | cannot be null | [Control](control-properties-options-properties-cssclass.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/cssClass")                     |
+| [hidden](#hidden)                         | `boolean` | Optional | cannot be null | [Control](control-properties-options-properties-hidden.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/hidden")                         |
 
 ## label
 
@@ -398,3 +399,21 @@ The Controls CSS classes
 ```json
 "bg-info specialpart"
 ```
+
+## hidden
+
+Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
+
+`hidden`
+
+*   is optional
+
+*   Type: `boolean`
+
+*   cannot be null
+
+*   defined in: [Control](control-properties-options-properties-hidden.md "https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/hidden")
+
+### hidden Type
+
+`boolean`
