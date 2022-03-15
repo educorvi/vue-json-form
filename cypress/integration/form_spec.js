@@ -23,15 +23,31 @@ describe("Check if everything is there and v-models work", () => {
                 "#/properties/title": title,
                 "#/properties/done": done,
                 "#/properties/fancyness": fancyness,
-                "#/properties/description": description,
+                "#/properties/description": description
             } = res;
             expect(name).to.equal(daten.name);
             expect(title).to.equal(daten.title);
             expect(done).to.be.true;
             expect(fancyness).to.equal("unicorn");
 
-            //check default value for description @TODO better tests for default values
+            //check default value for description
             expect(description).to.equal("This good text was set as default");
+        });
+    });
+    it('Hidden Date/Time fields with default set to $now', () => {
+        cy.get('[type="submit"]').first().click();
+        cy.get('#result_raw').should((div) => {
+            const res = JSON.parse(div.text());
+            const {
+                "#/properties/hiddenDateTime": dateTime,
+                "#/properties/hiddenDate": date,
+                "#/properties/hiddenTime": time,
+
+            } = res;
+            const dtDate = new Date(dateTime);
+            const combDate = new Date(date + "T" + time);
+            expect(dtDate.getTime()).to.equal(combDate.getTime());
+            expect(new Date() - dtDate).to.be.lessThan(10000);
         });
     });
     it('Groups', () => {

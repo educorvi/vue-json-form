@@ -99,6 +99,9 @@ export default {
         },
         getUIOption(key) {
             return this.ui.options ? this.ui.options[key] : undefined
+        },
+        padToTwoDigits(number) {
+            return ("0" + number).slice(-2);
         }
     },
     watch: {

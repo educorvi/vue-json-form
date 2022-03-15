@@ -20,7 +20,18 @@ import DateTime from "./DateTime.vue";
 export default {
   name: "String",
   components: {DateTime},
-  mixins: [formFieldMixin]
+  mixins: [formFieldMixin],
+  mounted() {
+    if (this.fieldData === "$now") {
+      const now = new Date();
+      if (this.item.format === "date") {
+        this.fieldData = now.toISOString().split("T")[0];
+      }
+      if (this.item.format === "time") {
+        this.fieldData = `${this.padToTwoDigits(now.getHours())}:${this.padToTwoDigits(now.getMinutes())}`;
+      }
+    }
+  },
 }
 </script>
 

@@ -92,6 +92,21 @@
     "tags": {
       "title": "Tag this form",
       "type": "array"
+    },
+    "hiddenDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "default": "$now"
+    },
+    "hiddenDate": {
+      "type": "string",
+      "format": "date",
+      "default": "$now"
+    },
+    "hiddenTime": {
+      "type": "string",
+      "format": "time",
+      "default": "$now"
     }
 
   },

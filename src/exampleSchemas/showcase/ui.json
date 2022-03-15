@@ -138,6 +138,27 @@
           "variant": "primary"
         }
       }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/hiddenDateTime",
+      "options": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/hiddenDate",
+      "options": {
+        "hidden": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/hiddenTime",
+      "options": {
+        "hidden": true
+      }
     }
   ]
 }

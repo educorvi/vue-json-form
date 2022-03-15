@@ -1,16 +1,25 @@
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const plugins = [];
 if (process.env.ANALYZE === "true") {
-  plugins.push(new BundleAnalyzerPlugin({analyzerHost: "0.0.0.0"}));
+    plugins.push(new BundleAnalyzerPlugin({analyzerHost: "0.0.0.0"}));
 }
 
 
 module.exports = {
-  devServer: {
-    disableHostCheck: true
-  },
-  publicPath: '',
-  configureWebpack: {
-    plugins
-  }
+    devServer: {
+        disableHostCheck: true
+    },
+    publicPath: '',
+    configureWebpack: {
+        plugins
+    },
+    css: {
+        loaderOptions: {
+            sass: {
+                sassOptions: {
+                    quietDeps: true
+                }
+            }
+        }
+    }
 };
