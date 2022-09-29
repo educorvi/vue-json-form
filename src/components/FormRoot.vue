@@ -59,7 +59,9 @@ export default {
         schema: null,
         ui: null
       },
-      data: {},
+      data: {
+        ...this.filledData
+      },
       id: "",
       checked: false
     }

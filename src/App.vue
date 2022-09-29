@@ -3,7 +3,7 @@
     <h5>Vue JSON Form Demo</h5>
     <b-select :options="dropOptions" v-model="form"></b-select>
     <hr>
-    <form-root :key="JSON.stringify(form)" :json="form.schema" :on-submit="submit" :ui="form.ui">
+    <form-root :key="JSON.stringify(form)" :json="form.schema" :filledData="form.filledData" :on-submit="submit" :ui="form.ui">
     </form-root>
     <b-collapse :visible="!!formData" style="margin-top: 80px" @shown="shown()">
       <b-card title="Result" id="result_beautified">

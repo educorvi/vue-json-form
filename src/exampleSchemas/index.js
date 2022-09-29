@@ -12,7 +12,10 @@ import noUI from "./noUI.json"
 export default {
     Showcase: {
         ui: showCaseUI,
-        schema: showCaseJSON
+        schema: showCaseJSON,
+        filledData: {
+            "#/properties/teststring": "super"
+        }
     },
     "5 Sicherheitsregeln": {
         ui: fsUI,

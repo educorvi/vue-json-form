@@ -77,6 +77,10 @@
             "multi": true,
             "placeholder": "Enter a nice description"
           }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/teststring"
         }
       ]
     },
