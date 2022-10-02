@@ -47,7 +47,7 @@ describe("Check if everything is there and v-models work", () => {
             const dtDate = new Date(dateTime);
             const combDate = new Date(date + "T" + time);
             expect(dtDate.getTime()).to.equal(combDate.getTime());
-            expect(Math.abs(new Date() - dtDate)).to.be.lessThan(60000);
+            expect(Math.abs(new Date() - dtDate)).to.be.lessThan(80000);
         });
     });
     it('Groups', () => {
