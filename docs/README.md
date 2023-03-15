@@ -2,6 +2,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/releases/latest)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form)](https://www.npmjs.com/package/@educorvi/vue-json-form)
 [![End2End Tests](https://github.com/educorvi/vue_json_form/actions/workflows/cypress.yml/badge.svg)](https://github.com/educorvi/vue_json_form/actions/workflows/cypress.yml)
+[![Browserstack Tests](https://github.com/educorvi/vue_json_form/actions/workflows/browserstack.yml/badge.svg)](https://github.com/educorvi/vue_json_form/actions/workflows/browserstack.yml)
 [![GitHub issues](https://img.shields.io/github/issues/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/issues)
 
 #### Automaticly generates form from json schema and json ui schema.
@@ -64,12 +65,12 @@ export default {
 ```
 
 ### Props
-|Name|Description|Type|Required|Default|
-|---|---|---|---|---|
-|json|The form's JSON Schema|`Boolean`|`true`|-|
-|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
-|ui|The form's UI-Schema. If not specified, a default UI-Schema will be generated|`Object or Array`|`false`|-
-|disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
+| Name              | Description                                                                              | Type              | Required | Default |
+|-------------------|------------------------------------------------------------------------------------------|-------------------|----------|---------|
+| json              | The form's JSON Schema                                                                   | `Object`          | `true`   | -       |
+| onSubmit          | Method that is called, when the Form is submitted. Passes the formdata as first Argument | `Function`        | `true`   | -       |
+| ui                | The form's UI-Schema. If not specified, a default UI-Schema will be generated            | `Object or Array` | `false`  | -       |
+| disableValidation | Disables the validation of json-schema and ui-schema                                     | `Boolean`         | `false`  | false   |
 
 ### Other Options
 If you want to change the default submit button or add more buttons or other components to the bottom of the form, you can do so by overriding the default button and put your components in the default slot.  
@@ -95,6 +96,35 @@ export default {
 }
 </script>
 ```
+
+### Use as a Web Component
+Can be used as a webcomponent. The form data will be posted to a given endpoint. Example:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.css">
+</head>
+<body>
+<!-- use_x_www_form_urlencoded: Send data urlencoded instead of json-->
+<!-- post_url: Url to post the data to-->
+<!-- json: Your JSON Schema   -->
+<!-- ui: Your UI Schema       -->
+<vue-json-form
+        use_x_www_form_urlencoded="false"
+        post_url='https://YourPostURL.com'
+        json='{...}'
+        ui='{...}'
+></vue-json-form>
+
+
+<script src="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.umd.min.js"></script>
+</body>
+</html>
+```
+A working example can be found in the file `webcomponent_example.html`.
 
 ### About the Schemas
 The form fields themselve are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a json pointer.

@@ -40,8 +40,6 @@
 
 *   [Pages](./wizard-properties-pages.md) – `https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages`
 
-*   [Pages](./wizard-properties-pages.md) – `https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages`
-
 ## Version Note
 
 The schemas linked above follow the JSON Schema Spec version: `http://json-schema.org/draft-07/schema#`
