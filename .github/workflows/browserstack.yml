@@ -1,5 +1,5 @@
 name: Browserstack tests
-on: 
+on:
   release:
     types: [published]
   pull_request:
@@ -9,7 +9,7 @@ jobs:
   browserstack:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 'BrowserStack Env Setup'
         uses: 'browserstack/github-actions/setup-env@master'
         with:
@@ -21,9 +21,9 @@ jobs:
           local-testing: start
           local-logging-level: all-logs
           local-identifier: random
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - name: 'Install & Start'
         run: |
           npm ci
