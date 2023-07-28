@@ -17,7 +17,7 @@ jobs:
       with:
         registry-url: https://npm.pkg.github.com/
         scope: '@educorvi'
-        node-version: 16
+        node-version: 18
     - run: npm ci
     - run: npm run build
     - run: echo registry=https://npm.pkg.github.com/educorvi >> .npmrc
