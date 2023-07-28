@@ -18,7 +18,7 @@ const commonConfig = {
     module: {
         rules: [
             {
-                test: /\.m?js/,
+                test: /\.m?js$/,
                 resolve: {
                     // fullySpecified: false
                 }

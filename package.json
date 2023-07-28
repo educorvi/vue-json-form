@@ -17,7 +17,7 @@
     "cy:run": "cypress run",
     "browserstack": "dotenv npx browserstack-cypress-cli run --sync",
     "test": "start-server-and-test serve:test 8088 cy:run",
-    "build": "npm run build:npm && npm run build:demo && npm run build:webcomponent",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build:npm && npm run build:demo && npm run build:webcomponent",
     "build:npm": "rimraf ./dist && webpack --config ./webpack.config.js",
     "analyze": "ANALYZE=true npm run build:demo",
     "build:demo": "vue-cli-service build --dest demo",
@@ -34,11 +34,13 @@
     "uml": "tplant --input Hierarchy.ts --output Hierarchy.puml"
   },
   "dependencies": {
+    "ajv": "^8.11.0",
+    "ajv-formats": "^2.1.1",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "document-register-element": "^1.14.10",
     "json-pointer": "^0.6.1",
-    "jsonschema": "1.4.0",
+    "pretty-print-json": "^2.0.2",
     "qs": "^6.10.3",
     "vue": "^2.6.12",
     "vue-custom-element": "^3.3.0",

@@ -10,30 +10,29 @@
   </b-form>
 
 
-  <b-jumbotron v-else-if="validationResults && validationResults.schema && validationResults.ui" bg-variant="danger" header="Error"
+  <b-jumbotron v-else-if="validationResults && validationResults.schema && validationResults.ui" bg-variant="danger"
+               header="Error"
                lead="Validation of the form's schema failed with the following errors:"
                text-variant="white">
-    <h4 v-if="validationResults.schema.errors.length>0">JSON-Schema:</h4>
-    <b-card v-for="(error, index) in validationResults.schema.errors" :key="error.stack+index" :header="error.property"
+    <h4 v-if="validationResults.schema.length>0">JSON-Schema:</h4>
+    <b-card v-for="(error, index) in validationResults.schema" :key="index" :header="error.message"
             class="error_card mb-3">
-      <p>"{{ error.instance }}" <br>
-        <b>{{ error.message }}</b>
-      </p>
+      <span v-html="jsonToHtml(error)"/>
     </b-card>
-    <h4 class="mt-4" v-if="validationResults.ui.errors.length>0">UI-Schema:</h4>
-    <b-card v-for="(error, index) in validationResults.ui.errors" :key="error.stack+index" :header="error.property"
+    <h4 class="mt-4" v-if="validationResults.ui.length>0">UI-Schema:</h4>
+    <b-card v-for="(error, index) in validationResults.ui" :key="index" :header="error.message"
             class="error_card mb-3">
-      <p>"{{ error.instance }}" <br>
-        <b>{{ error.message }}</b>
-      </p>
+      <span v-html="jsonToHtml(error)"/>
     </b-card>
   </b-jumbotron>
 </template>
 
 <script>
 import FormWrap from "./FormWrap.vue";
+import Ajv from "ajv";
+// import addFormats from "ajv-formats"
 import {rootProps} from "./Layouts/layoutMixin.js";
-import schemadraft from "../schemas/json-schema_draft7.json";
+// import schemadraft from "../schemas/json-schema_draft7.json";
 import uischema from "../schemas/ui/ui.schema.json"
 import control from "../schemas/ui/control.schema.json"
 import html from "../schemas/ui/html.schema.json"
@@ -44,6 +43,7 @@ import wizardPage from "../schemas/ui/wizard_page.schema.json"
 import showOn from "../schemas/ui/show_on.schema.json"
 import button from "../schemas/ui/button.schema.json"
 import variants from "../schemas/ui/variants.schema.json"
+import {prettyPrintJson} from 'pretty-print-json';
 
 /**
  * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
@@ -54,10 +54,17 @@ export default {
   components: {FormWrap},
   mixins: [rootProps],
   data() {
+    const ui_ajv = new Ajv({
+      schemas: [uischema, control, html, divider, layout, wizard, wizardPage, showOn, button, variants],
+      strict: "log",
+      formats: {"json-pointer": true}
+    })
+    // addFormats(ui_ajv)
     return {
+      ui_schema_validate: ui_ajv.getSchema(uischema["$id"]),
       validationResults: {
-        schema: null,
-        ui: null
+        schema: [],
+        ui: []
       },
       data: {
         ...this.filledData
@@ -68,8 +75,8 @@ export default {
   },
   computed: {
     valid() {
-      return ((this.validationResults.schema ? this.validationResults.schema.errors.length : 0)
-          + (this.validationResults.ui ? this.validationResults.ui.errors.length : 0)) === 0;
+      return ((this.validationResults.schema ? this.validationResults.schema.length : 0)
+          + (this.validationResults.ui ? this.validationResults.ui.length : 0)) === 0;
 
     },
     generatedUI() {
@@ -129,34 +136,35 @@ export default {
         form.reportValidity();
       }
     },
-    validateJson(json, schema = schemadraft) {
-      const validate = require('jsonschema').validate;
-      return validate(json, schema);
+    validateJson(json) {
+      if (this.disableValidation) return;
+      const jajv = new Ajv();
+      // addFormats(jajv);
+      const valid = jajv.validateSchema(json)
+      if (!valid) {
+        this.validationResults.schema = jajv.errors
+      }
     },
     validateUI(ui) {
-      const Validator = require('jsonschema').Validator;
-      const v = new Validator();
-      v.addSchema(layout, "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json");
-      v.addSchema(control, "https://educorvi.github.io/vue_json_form/schemas/control.schema.json");
-      v.addSchema(html, "https://educorvi.github.io/vue_json_form/schemas/html.schema.json");
-      v.addSchema(divider, "https://educorvi.github.io/vue_json_form/schemas/divider.schema.json");
-      v.addSchema(wizard, "https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json");
-      v.addSchema(wizardPage, "https://educorvi.github.io/vue_json_form/schemas/wizard_page.schema.json");
-      v.addSchema(showOn, "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json");
-      v.addSchema(button, "https://educorvi.github.io/vue_json_form/schemas/button.schema.json");
-      v.addSchema(variants, "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json");
-      return v.validate(ui, uischema)
+      if (this.disableValidation) return;
+      const valid = this.ui_schema_validate(ui)
+      if (!valid) {
+        this.validationResults.ui = this.ui_schema_validate.errors
+      }
     },
     saveData(data) {
       this.$set(this.data, data.key, data.value)
-    }
+    },
+    jsonToHtml(json) {
+      return prettyPrintJson.toHtml(json);
+    },
   },
   created() {
-    this.validationResults.schema = this.validateJson(this.json);
+    this.validateJson(this.json);
     if (this.ui) {
-      this.validationResults.ui = this.validateUI(this.ui);
+      this.validateUI(this.ui);
     }
-    this.id = '_' + Math.random().toString(36).substr(2, 9);
+    this.id = '_' + Math.random().toString(36).substring(2, 12);
   },
   watch: {
     json(newValue) {
