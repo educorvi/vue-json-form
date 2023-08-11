@@ -114,25 +114,34 @@ export default {
     }
   },
   props: {
-    //Disables the validation of json-schema and ui-schema
+    /** Disables the validation of json-schema and ui-schema **/
     disableValidation: {
       type: Boolean,
       default: false
     },
-    //Method that is called, when the Form is submitted. Passes the formdata as first Argument
+    /** Method that is called, when the Form is submitted. Passes the formdata as first Argument **/
     onSubmit: {
       type: Function,
       required: true
+    },
+    /** do not prevent the default html form action **/
+    executeDefaultSubmitAction: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   methods: {
     onSubmitMeth(evt) {
-      evt.preventDefault();
       const form = document.getElementById(this.id);
       if (form.checkValidity()) {
+        if (!this.executeDefaultSubmitAction) {
+          evt.preventDefault();
+        }
         this.onSubmit(this.data);
       } else {
         // this.checked = true;
+        evt.preventDefault();
         form.reportValidity();
       }
     },

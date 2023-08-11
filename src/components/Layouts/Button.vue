@@ -1,11 +1,22 @@
 <template>
   <div>
     <!-- Uses automatic translation of the button provided by browser -->
-    <input type="submit" v-if="ui.buttonType==='submit' && !ui.text"
-           :class="`vjf_button float-right btn btn-${ui.variant || 'primary'}`"/>
-<!--    Uses text of ui schema-->
-    <b-button v-if="ui.buttonType==='submit' && ui.text" type="submit" :variant="ui.variant || 'primary'"
-              class="float-right vjf_button">{{ ui.text }}
+    <input :type="ui.buttonType" v-if="!ui.text"
+           :class="`vjf_button float-right btn btn-${ui.variant || 'primary'}`"
+           :formaction="ui.nativeSubmitSettings?.formaction"
+           :formmethod="ui.nativeSubmitSettings?.formmethod"
+           :formtarget="ui.nativeSubmitSettings?.formtarget"
+           :formenctype="ui.nativeSubmitSettings?.formenctype"
+    />
+    <!--    Uses text of ui schema-->
+    <b-button v-else :type="ui.buttonType" :variant="ui.variant || 'primary'"
+              class="float-right vjf_button"
+              :formaction="ui.nativeSubmitSettings?.formaction"
+              :formmethod="ui.nativeSubmitSettings?.formmethod"
+              :formtarget="ui.nativeSubmitSettings?.formtarget"
+              :formenctype="ui.nativeSubmitSettings?.formenctype"
+    >
+      {{ ui.text }}
     </b-button>
   </div>
 </template>
