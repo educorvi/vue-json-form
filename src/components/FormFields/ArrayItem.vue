@@ -1,6 +1,6 @@
 <template>
   <div class="vjf_arrayItem">
-    <FormField ref="child" :json="json" :name="schemaName+index" :ui="ui" :array="index"
+    <FormField ref="child" :json="json" :name="ui.scope" :ui="ui" :array="index"
                @changedData="loopUp" noText :filledData="filledData">
       <b-button variant="outline-danger" @click="$emit('deleteItem', index)">
         <b-icon-x/>

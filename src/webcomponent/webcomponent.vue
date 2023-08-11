@@ -1,5 +1,5 @@
 <template>
-  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="() =>{}" :disableValidation="disable_validation">
+  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="() =>{}" :disableValidation="disable_validation" :executeDefaultSubmitAction="true">
     <slot/>
   </json-form>
 </template>

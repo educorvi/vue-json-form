@@ -40,7 +40,7 @@ export default {
         options: {
           label: false
         },
-        scope: this.jsonPath + "/items"
+        scope: "#"+this.jsonPath + "/items"
       };
     }
   },

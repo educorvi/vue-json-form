@@ -3,7 +3,7 @@
       :id="schemaName"
       ref="child"
       v-model="fieldData"
-      :name="title"
+      :name="ui.scope"
       :options="options"
       :stacked="this.ui.options && this.ui.options.stacked"
       :required="required"
