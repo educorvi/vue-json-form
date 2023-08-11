@@ -39,6 +39,7 @@
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "document-register-element": "^1.14.10",
+    "flat": "^5.0.2",
     "json-pointer": "^0.6.1",
     "pretty-print-json": "^2.0.2",
     "qs": "^6.10.3",

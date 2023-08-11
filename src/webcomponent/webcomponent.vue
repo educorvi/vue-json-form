@@ -1,11 +1,12 @@
 <template>
-  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="() =>{}" :disableValidation="disable_validation">
+  <json-form :json="parsedJSON" :ui="parsedUI" :on-submit="onSubmit" :disableValidation="disable_validation">
     <slot/>
   </json-form>
 </template>
 
 <script>
 import jsonForm from "@/components/FormRoot"
+const flatten = require('flat')
 
 export default {
   name: "vue_json_form",
@@ -31,6 +32,11 @@ export default {
         return JSON.parse(this.ui);
       } else return undefined;
     }
+  },
+  methods: {
+    onSubmit(data, evt) {
+      console.log(flatten(data), evt)
+    },
   }
 }
 </script>

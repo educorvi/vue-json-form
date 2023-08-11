@@ -138,7 +138,7 @@ export default {
         if (!this.executeDefaultSubmitAction) {
           evt.preventDefault();
         }
-        this.onSubmit(this.data);
+        this.onSubmit(this.data, evt);
       } else {
         // this.checked = true;
         evt.preventDefault();
