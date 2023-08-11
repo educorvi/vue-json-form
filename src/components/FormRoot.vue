@@ -44,6 +44,7 @@ import showOn from "../schemas/ui/show_on.schema.json"
 import button from "../schemas/ui/button.schema.json"
 import variants from "../schemas/ui/variants.schema.json"
 import {prettyPrintJson} from 'pretty-print-json';
+import {BForm, BJumbotron, BCard} from "bootstrap-vue"
 
 /**
  * This is the Root Component and the interface to the "outside". Generates UI if necessary and renders form.
@@ -51,7 +52,7 @@ import {prettyPrintJson} from 'pretty-print-json';
  */
 export default {
   name: "FormRoot",
-  components: {FormWrap},
+  components: {FormWrap, BForm, BJumbotron, BCard},
   mixins: [rootProps],
   data() {
     const ui_ajv = new Ajv({

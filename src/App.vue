@@ -29,12 +29,14 @@ import importedForms from "./exampleSchemas"
 import FormRoot from "@/components/FormRoot";
 import VueJsonPretty from "vue-json-pretty";
 import 'vue-json-pretty/lib/styles.css';
+import {BFormSelect as BSelect, BInputGroup, BFormFile, BCollapse, BCard} from "bootstrap-vue";
 
 export default {
   name: 'App',
   components: {
     FormRoot,
-    VueJsonPretty
+    VueJsonPretty,
+    BSelect, BInputGroup, BFormFile, BCollapse, BCard
   },
   computed: {
     dropOptions() {
@@ -83,7 +85,7 @@ export default {
       const reader2 = new FileReader();
       reader2.readAsText(this.customUI);
       reader2.onload = evt => {
-        this.$set(this.forms["Custom"], "ui",  JSON.parse(evt.target.result.toString()))
+        this.$set(this.forms["Custom"], "ui", JSON.parse(evt.target.result.toString()))
       };
     }
   }
