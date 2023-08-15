@@ -118,7 +118,7 @@ Can be used as a webcomponent. The form data will be posted to a given endpoint.
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.css">
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form@^2/dist/webcomponent/dist.css">
 </head>
 <body>
 <!-- json: Your JSON Schema   -->
@@ -129,7 +129,7 @@ Can be used as a webcomponent. The form data will be posted to a given endpoint.
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent/dist.umd.min.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form/dist/webcomponent@^2/dist.umd.min.js"></script>
 </body>
 </html>
 ```
