@@ -32,5 +32,6 @@ pnpm-debug.log*
 /cypress/screenshots/
 /setAccessKey.sh
 /local.log
-log
+*.log
 results
+log
