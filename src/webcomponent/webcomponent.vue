@@ -6,8 +6,8 @@
 
 <script>
 import jsonForm from "@/components/FormRoot"
-import axios from "axios"
-import qs from "qs"
+
+const flatten = require('flat')
 
 export default {
   name: "vue_json_form",
@@ -22,14 +22,6 @@ export default {
     disable_validation: {
       required: false,
       default: false
-    },
-    post_url: {
-      required: true
-    },
-    use_x_www_form_urlencoded: {
-      type: String,
-      required: false,
-      default: "false"
     }
   },
   computed: {
@@ -43,13 +35,40 @@ export default {
     }
   },
   methods: {
-    onSubmit(data) {
-      if (this.use_x_www_form_urlencoded === "true") {
-        data = qs.stringify(data);
-      }
-      axios.post(this.post_url, data).catch(console.error);
+    onSubmit(data, evt) {
+      const fdata = flatten(data)
+
+      const {formMethod, formAction, formEnctype} = evt.submitter;
+
+      this.submitShadowForm(formAction, fdata, formMethod, formEnctype)
 
     },
+    /**
+     * sends a request to the specified url from a form
+     * @param {string} path the path to send the request to
+     * @param {object} params the data
+     * @param {string} [method=post] the method to use
+     * @param {string} [encoding=application/x-www-form-urlencoded] the encoding to use
+     */
+
+    submitShadowForm(path, params, method = 'post', encoding = 'application/x-www-form-urlencoded') {
+      const form = document.createElement('form');
+      form.method = method;
+      form.action = path;
+      form.encoding = encoding;
+
+      for (const key in params) {
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = key;
+        hiddenField.value = params[key];
+
+        form.appendChild(hiddenField);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
   }
 }
 </script>

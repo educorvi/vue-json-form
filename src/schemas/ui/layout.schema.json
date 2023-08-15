@@ -38,6 +38,9 @@
           },
           {
             "$ref": "https://educorvi.github.io/vue_json_form/schemas/button.schema.json"
+          },
+          {
+            "$ref": "https://educorvi.github.io/vue_json_form/schemas/buttongroup.schema.json"
           }
         ]
       }
