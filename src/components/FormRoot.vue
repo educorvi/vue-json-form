@@ -1,5 +1,5 @@
 <template>
-  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth" novalidate :id="id" :validated="checked"
+  <b-form v-if="valid || disableValidation" @submit="onSubmitMeth" @reset="resetForm" novalidate :id="id" :validated="checked"
           class="vjf_root">
     <FormWrap :filledData="data" @changedData="saveData" :json="json" :ui="ui || generatedUI" :formID="id"></FormWrap>
     <!--    Slot inside the form below the generated content. Meant for Submit Button and similar additions-->
@@ -43,6 +43,7 @@ import wizardPage from "../schemas/ui/wizard_page.schema.json"
 import showOn from "../schemas/ui/show_on.schema.json"
 import button from "../schemas/ui/button.schema.json"
 import variants from "../schemas/ui/variants.schema.json"
+import buttongroup from "../schemas/ui/buttongroup.schema.json"
 import {prettyPrintJson} from 'pretty-print-json';
 
 /**
@@ -55,7 +56,7 @@ export default {
   mixins: [rootProps],
   data() {
     const ui_ajv = new Ajv({
-      schemas: [uischema, control, html, divider, layout, wizard, wizardPage, showOn, button, variants],
+      schemas: [uischema, control, html, divider, layout, wizard, wizardPage, showOn, button, variants, buttongroup],
       strict: "log",
       formats: {"json-pointer": true}
     })
@@ -133,6 +134,12 @@ export default {
         this.onSubmit(this.data, evt);
       } else {
         form.reportValidity();
+      }
+    },
+    resetForm(evt) {
+      evt.preventDefault();
+      this.data = {
+        ...this.filledData
       }
     },
     validateJson(json) {

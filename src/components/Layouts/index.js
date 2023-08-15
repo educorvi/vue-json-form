@@ -6,7 +6,8 @@ import htmlRenderer from "./htmlRenderer.vue";
 import Divider from "./Divider.vue";
 import Wizard from "./Wizard.vue";
 import Button from "./Button.vue";
+import ButtonGroup from "@/components/Layouts/ButtonGroup.vue";
 
 export default {
-    Control, Group, VerticalLayout, HorizontalLayout, htmlRenderer, Divider, Wizard, Button
+    Control, Group, VerticalLayout, HorizontalLayout, htmlRenderer, Divider, Wizard, Button, ButtonGroup
 }

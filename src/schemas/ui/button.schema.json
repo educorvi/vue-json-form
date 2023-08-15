@@ -70,6 +70,7 @@
   "additionalProperties": false,
   "required": [
     "type",
-    "buttonType"
+    "buttonType",
+    "text"
   ]
 }

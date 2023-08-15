@@ -80,6 +80,8 @@ export default {
           return Layouts.Wizard;
         case "Button":
           return Layouts.Button;
+        case "Buttongroup":
+          return Layouts.ButtonGroup;
         default:
           return Layouts.VerticalLayout;
       }
