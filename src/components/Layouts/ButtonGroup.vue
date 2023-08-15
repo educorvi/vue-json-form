@@ -6,7 +6,7 @@
 
 <script>
 import layoutMixin from "./layoutMixin";
-import Button from "@/components/Layouts/Button.vue";
+import Button from "./Button.vue";
 //@group Layouts
 export default {
   name: "ButtonGroup",
