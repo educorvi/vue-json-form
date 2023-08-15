@@ -123,25 +123,15 @@ export default {
     onSubmit: {
       type: Function,
       required: true
-    },
-    /** do not prevent the default html form action **/
-    executeDefaultSubmitAction: {
-      type: Boolean,
-      required: false,
-      default: false
     }
   },
   methods: {
     onSubmitMeth(evt) {
+      evt.preventDefault();
       const form = document.getElementById(this.id);
       if (form.checkValidity()) {
-        if (!this.executeDefaultSubmitAction) {
-          evt.preventDefault();
-        }
         this.onSubmit(this.data, evt);
       } else {
-        // this.checked = true;
-        evt.preventDefault();
         form.reportValidity();
       }
     },
@@ -163,6 +153,7 @@ export default {
     },
     saveData(data) {
       this.$set(this.data, data.key, data.value)
+      this.$emit('changedData', this.data)
     },
     jsonToHtml(json) {
       return prettyPrintJson.toHtml(json);
