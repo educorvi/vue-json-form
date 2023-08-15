@@ -7,10 +7,20 @@ This is the Root Component and the interface to the "outside". Generates UI if n
 <!-- @vuese:FormRoot:props:start -->
 |Name|Description|Type|Required|Default|
 |---|---|---|---|---|
-|disableValidation|Disables the validation of json-schema and ui-schema|`Boolean`|`false`|false|
-|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument|`Function`|`true`|-|
+|disableValidation|Disables the validation of json-schema and ui-schema *|`Boolean`|`false`|false|
+|onSubmit|Method that is called, when the Form is submitted. Passes the formdata as first Argument *|`Function`|`true`|-|
 
 <!-- @vuese:FormRoot:props:end -->
+
+
+## Events
+
+<!-- @vuese:FormRoot:events:start -->
+|Event Name|Description|Parameters|
+|---|---|---|
+|changedData|-|-|
+
+<!-- @vuese:FormRoot:events:end -->
 
 
 ## Slots

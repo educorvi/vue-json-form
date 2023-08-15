@@ -6,6 +6,8 @@
 
 *   [Button](./button.md "Used to put a button into the form") – `https://educorvi.github.io/vue_json_form/schemas/button.schema.json`
 
+*   [Buttongroup](./buttongroup.md "Used to group buttons") – `https://educorvi.github.io/vue_json_form/schemas/buttongroup.schema.json`
+
 *   [Control](./control.md "Contains a form element, e") – `https://educorvi.github.io/vue_json_form/schemas/control.schema.json`
 
 *   [Divider](./divider.md "inserts a simple divider") – `https://educorvi.github.io/vue_json_form/schemas/divider.schema.json`
@@ -26,6 +28,8 @@
 
 ### Objects
 
+*   [Native Submit Settings](./button-properties-native-submit-settings.md "Settings if native form submit is used") – `https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/nativeSubmitSettings`
+
 *   [Options](./control-properties-options.md "Gives multiple options to configure the element") – `https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options`
 
 *   [Titles for enum](./control-properties-options-properties-titles-for-enum.md "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object") – `https://educorvi.github.io/vue_json_form/schemas/control.schema.json#/properties/options/properties/enumTitles`
@@ -39,6 +43,8 @@
 *   [Elements](./layout-properties-elements.md "The elements of the layout") – `https://educorvi.github.io/vue_json_form/schemas/layout.schema.json#/properties/elements`
 
 *   [Pages](./wizard-properties-pages.md) – `https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json#/properties/pages`
+
+*   [Untitled array in Buttongroup](./buttongroup-properties-buttons.md "The buttons in the button group") – `https://educorvi.github.io/vue_json_form/schemas/buttongroup.schema.json#/properties/buttons`
 
 ## Version Note
 

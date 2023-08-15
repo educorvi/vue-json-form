@@ -26,4 +26,6 @@ one (and only one) of
 
 *   [Wizard](layout-properties-elements-layoutelement-oneof-wizard.md "check type definition")
 
-*   [Button](layout-properties-elements-layoutelement-oneof-button.md "check type definition")
+*   [Button](buttongroup-properties-buttons-button.md "check type definition")
+
+*   [Buttongroup](layout-properties-elements-layoutelement-oneof-buttongroup.md "check type definition")

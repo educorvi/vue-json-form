@@ -8,8 +8,6 @@
 |json|-|—|`true`|-|
 |ui|-|—|`false`|-|
 |disable_validation|-|—|`false`|false|
-|post_url|-|—|`true`|-|
-|use_x_www_form_urlencoded|-|`String`|`false`|false|
 
 <!-- @vuese:vue_json_form:props:end -->
 

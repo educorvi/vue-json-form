@@ -4,7 +4,7 @@
 https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/buttonType
 ```
 
-Currently, only a submit button is supported
+Submit or Reset
 
 | Abstract            | Extensible | Status         | Identifiable            | Custom Properties | Additional Properties | Access Restrictions | Defined In                                                                   |
 | :------------------ | :--------- | :------------- | :---------------------- | :---------------- | :-------------------- | :------------------ | :--------------------------------------------------------------------------- |
@@ -21,3 +21,4 @@ Currently, only a submit button is supported
 | Value      | Explanation |
 | :--------- | :---------- |
 | `"submit"` |             |
+| `"reset"`  |             |

@@ -16,12 +16,13 @@ Used to put a button into the form
 
 # Button Properties
 
-| Property                  | Type     | Required | Nullable       | Defined by                                                                                                                                           |
-| :------------------------ | :------- | :------- | :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [type](#type)             | `string` | Required | cannot be null | [Button](button-properties-type.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/type")                           |
-| [buttonType](#buttontype) | `string` | Required | cannot be null | [Button](button-properties-the-buttons-type.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/buttonType")         |
-| [text](#text)             | `string` | Optional | cannot be null | [Button](button-properties-text.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/text")                           |
-| [variant](#variant)       | `string` | Optional | cannot be null | [Button](button-properties-bootstrap-button-variants.md "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json#/properties/variant") |
+| Property                                      | Type     | Required | Nullable       | Defined by                                                                                                                                                   |
+| :-------------------------------------------- | :------- | :------- | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [type](#type)                                 | `string` | Required | cannot be null | [Button](button-properties-type.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/type")                                   |
+| [buttonType](#buttontype)                     | `string` | Required | cannot be null | [Button](button-properties-the-buttons-type.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/buttonType")                 |
+| [text](#text)                                 | `string` | Required | cannot be null | [Button](button-properties-text.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/text")                                   |
+| [nativeSubmitSettings](#nativesubmitsettings) | `object` | Optional | cannot be null | [Button](button-properties-native-submit-settings.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/nativeSubmitSettings") |
+| [variant](#variant)                           | `string` | Optional | cannot be null | [Button](button-properties-bootstrap-button-variants.md "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json#/properties/variant")         |
 
 ## type
 
@@ -51,7 +52,7 @@ Used to put a button into the form
 
 ## buttonType
 
-Currently, only a submit button is supported
+Submit or Reset
 
 `buttonType`
 
@@ -74,6 +75,7 @@ Currently, only a submit button is supported
 | Value      | Explanation |
 | :--------- | :---------- |
 | `"submit"` |             |
+| `"reset"`  |             |
 
 ## text
 
@@ -81,7 +83,7 @@ The buttons text
 
 `text`
 
-*   is optional
+*   is required
 
 *   Type: `string` ([Text](button-properties-text.md))
 
@@ -92,6 +94,24 @@ The buttons text
 ### text Type
 
 `string` ([Text](button-properties-text.md))
+
+## nativeSubmitSettings
+
+Settings if native form submit is used
+
+`nativeSubmitSettings`
+
+*   is optional
+
+*   Type: `object` ([Native Submit Settings](button-properties-native-submit-settings.md))
+
+*   cannot be null
+
+*   defined in: [Button](button-properties-native-submit-settings.md "https://educorvi.github.io/vue_json_form/schemas/button.schema.json#/properties/nativeSubmitSettings")
+
+### nativeSubmitSettings Type
+
+`object` ([Native Submit Settings](button-properties-native-submit-settings.md))
 
 ## variant
 
