@@ -5,5 +5,12 @@
     "demo",
     "vue-json-form"
   ],
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "devDependencies": {
+    "husky": "^9.0.10"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "pre-commit": "yarn workspaces foreach run pre-commit"
+  }
 }

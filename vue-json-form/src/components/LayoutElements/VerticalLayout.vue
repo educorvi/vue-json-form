@@ -1,25 +1,30 @@
 <script setup lang="ts">
-import type {Layout} from "@/typings/ui-schema";
-import FormWrap from "@/components/FormWrap.vue";
-import {computedCssClass} from "@/components/LayoutElements/LayoutCommons";
+import type { Layout } from '@/typings/ui-schema'
+import FormWrap from '@/components/FormWrap.vue'
+import {
+    computedCssClass,
+    computedElementsWithUUID,
+} from '@/components/LayoutElements/LayoutCommons'
 
 const props = defineProps<{
-  /**
-   * The UI Schema of this Element
-   */
-  layoutElement: Layout;
+    /**
+     * The UI Schema of this Element
+     */
+    layoutElement: Layout
 }>()
 
-const cssClass = computedCssClass(props.layoutElement, "vjf_verticalLayout");
+const cssClass = computedCssClass(props.layoutElement, 'vjf_verticalLayout')
+const elementsWithUUID = computedElementsWithUUID(props.layoutElement)
 </script>
 
 <template>
-  <div :class="cssClass">
-    <form-wrap v-for="element in layoutElement.elements" :layout-element="element"/>
-  </div>
-
+    <div :class="cssClass">
+        <form-wrap
+            v-for="element in elementsWithUUID"
+            :layout-element="element"
+            :key="element.uuid"
+        />
+    </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

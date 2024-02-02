@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <hr />
+    <h1>Button</h1>
 </template>
 
 <style scoped></style>

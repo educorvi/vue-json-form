@@ -96,10 +96,7 @@
         },
         "additionalItems": { "$ref": "#" },
         "items": {
-            "anyOf": [
-                { "$ref": "#" },
-                { "$ref": "#/definitions/schemaArray" }
-            ],
+            "anyOf": [{ "$ref": "#" }, { "$ref": "#/definitions/schemaArray" }],
             "default": true
         },
         "maxItems": { "$ref": "#/definitions/nonNegativeInteger" },

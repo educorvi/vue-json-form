@@ -1,10 +1,5 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<template>
-Unknown Component
-</template>
+<template>Unknown Component</template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

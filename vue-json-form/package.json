@@ -9,11 +9,13 @@
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "pre-commit": "yarn run format && yarn run lint",
+    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
     "format": "prettier --write src/",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:jsonSchema": "json2ts -i src/schemas/json-schema_draft7.json -o src/typings/json-schema.d.ts",
-    "generateTypings:uiSchema": "cd src/schemas/ui/ && json2ts -i ui.schema.json -o ../../typings/ui-schema.d.ts"
+    "generateTypings:uiSchema": "cd src/schemas/ui/ && json2ts -i ui.schema.json -o ../../typings/ui-schema.d.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "json-schema-to-typescript": "^13.1.2",

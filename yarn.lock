@@ -3387,6 +3387,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"husky@npm:^9.0.10":
+  version: 9.0.10
+  resolution: "husky@npm:9.0.10"
+  bin:
+    husky: bin.mjs
+  checksum: 55f4b6db6706ff0bc181607d6a64f55310cbb18b4d7db2a5b85608c87a80abafc14ac3a8c4d0b44d6272f4a62d4c2d3d5491d6a13e2cc7ac4895309e5e5f0ec2
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.6.3, iconv-lite@npm:^0.6.2":
   version: 0.6.3
   resolution: "iconv-lite@npm:0.6.3"
@@ -6331,6 +6340,8 @@ __metadata:
 "vue-json-form@workspace:.":
   version: 0.0.0-use.local
   resolution: "vue-json-form@workspace:."
+  dependencies:
+    husky: ^9.0.10
   languageName: unknown
   linkType: soft
 
