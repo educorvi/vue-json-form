@@ -13,7 +13,7 @@
       "type": "string"
     },
     "showOn": {
-      "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
+      "$ref": "show_on.schema.json"
     }
   },
   "additionalProperties": false,

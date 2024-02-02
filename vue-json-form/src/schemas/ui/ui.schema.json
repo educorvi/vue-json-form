@@ -4,6 +4,6 @@
   "title": "UI Schema",
   "description": "Schema for the UI Schema",
   "anyOf": [
-    {"$ref": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json"}
+    {"$ref": "layout.schema.json"}
   ]
 }

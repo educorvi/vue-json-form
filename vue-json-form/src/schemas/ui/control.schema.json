@@ -104,19 +104,6 @@
           "description": "Radiobutton-/Checkbox group will be stacked if set to true",
           "default": false
         },
-        "buttons": {
-          "title": "Buttons",
-          "description": "Render fields that support it (Radiobuttons, Checkboxgroups) as Buttons",
-          "oneOf": [
-            {
-              "type": "boolean",
-              "description": "set to true, if should be rendered as buttons"
-            },
-            {
-              "$ref": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json"
-            }
-          ]
-        },
         "switch": {
           "type": "boolean",
           "title": "Switch(es)",
@@ -132,9 +119,6 @@
           "properties": {
             "enabled": {
               "type": "boolean"
-            },
-            "variant": {
-              "$ref": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json"
             },
             "pills": {
               "type": "boolean"
@@ -165,7 +149,7 @@
       }
     },
     "showOn": {
-      "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
+      "$ref": "show_on.schema.json"
     }
   },
   "examples": [

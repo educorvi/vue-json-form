@@ -3,15 +3,15 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json",
   "type": "object",
-  "description": "The different Layouts",
+  "description": "The different layouts",
   "properties": {
     "$id": {
       "type": "string",
-      "description": "The id of the layout"
+      "description": "The ID of the layout"
     },
     "$schema": {
       "type": "string",
-      "description": "May contain a schema reference to the uischema"
+      "description": "May contain a schema reference to the ui schema"
     },
     "type": {
       "type": "string",
@@ -27,45 +27,43 @@
       "type": "array",
       "default": [],
       "items": {
-        "title": "Layoutelement",
+        "title": "Layout element",
         "oneOf": [
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/control.schema.json"
+            "$ref": "control.schema.json"
           },
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json"
+            "$ref": "layout.schema.json"
           },
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/html.schema.json"
+            "$ref": "html.schema.json"
           },
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/divider.schema.json"
+            "$ref": "divider.schema.json"
           },
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/wizard.schema.json"
+            "$ref": "button.schema.json"
           },
           {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/button.schema.json"
-          },
-          {
-            "$ref": "https://educorvi.github.io/vue_json_form/schemas/buttongroup.schema.json"
+            "$ref": "buttongroup.schema.json"
           }
         ]
       }
     },
     "showOn": {
-      "$ref": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json"
+      "$ref": "show_on.schema.json"
     },
     "label": {
-      "type": "string"
+      "type": "string",
+      "description": "Adds a label for groups (only for type=Group)"
     },
     "options": {
-      "description": "Additional Options",
+      "description": "Additional options",
       "type": "object",
       "properties": {
         "cssClass": {
           "type": "string",
-          "description": "The Layouts CSS classes",
+          "description": "The layout's CSS classes",
           "examples": [
             "bg-primary",
             "bg-info headerpart"
@@ -78,14 +76,12 @@
     {
       "type": "VerticalLayout",
       "elements": [
-
       ]
     },
     {
       "type": "Group",
       "label": "This is a group",
       "elements": [
-
       ]
     }
   ],

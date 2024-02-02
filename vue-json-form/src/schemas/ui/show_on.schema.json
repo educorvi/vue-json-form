@@ -13,6 +13,7 @@
     "type": {
       "type": "string",
       "description": "Condition to be applied",
+      "title": "ShowOn function type",
       "enum": [
         "EQUALS",
         "NOT_EQUALS",

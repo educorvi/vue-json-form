@@ -1,39 +1,52 @@
 <template>
-<component></component>
+  <show-on-wrapper :visible="show">
+    <component :layoutElement="layoutElement"></component>
+  </show-on-wrapper>
+
 </template>
 
 <script setup lang="ts">
-import type {Layoutelement, UISchema} from "@/typings/ui-schema";
-import {computed, defineProps} from "vue";
+import type {LayoutElement, ShowOnFunctionType} from "@/typings/ui-schema";
+import {computed} from "vue";
 import type {Component} from "vue";
-import Layouts from "@/components/Layouts";
-import Buttons from "@/components/Buttons";
+import LayoutElements from "@/components/LayoutElements";
 import UnknownComponent from "@/components/UnknownComponent.vue";
+import type {Buttongroup, Button} from "@/typings/ui-schema";
+import Buttons from "@/components/Buttons";
+import {isDependentElement} from "@/components/LayoutElements/LayoutCommons";
+import {storeToRefs} from "pinia";
+import {useFormStructureStore} from "@/stores/formStructure";
+import ShowOnWrapper from "@/defaultRendering/showOnWrapper.vue";
+
+const {renderInterface} = storeToRefs(useFormStructureStore());
+
+const showOnWrapper: Component = computed(() => {
+  return renderInterface.value?.showOnWrapper || ShowOnWrapper;
+});
 
 
 const props = defineProps<{
   /**
-   * The UI Schema of the form
+   * The UI Schema of this Element
    */
-  uiSchema: UISchema | Layoutelement;
+  layoutElement: LayoutElement;
 }>()
 
-const component = computed<Component>(() => {
-  switch (props.uiSchema.type) {
+const component = computed<Component | undefined>(() => {
+  if (!props.layoutElement) return undefined;
+  switch (props.layoutElement.type) {
     case 'Control':
-      return Layouts.Control;
+      return LayoutElements.Control;
     case 'VerticalLayout':
-      return Layouts.VerticalLayout;
+      return LayoutElements.VerticalLayout;
     case 'HorizontalLayout':
-      return Layouts.HorizontalLayout;
+      return LayoutElements.HorizontalLayout;
     case 'Group':
-      return Layouts.Group;
+      return LayoutElements.Group;
     case 'HTML':
-      return Layouts.htmlRenderer;
+      return LayoutElements.htmlRenderer;
     case 'Divider':
-      return Layouts.Divider;
-    case 'Wizard':
-      return Layouts.Wizard;
+      return LayoutElements.Divider;
     case 'Button':
       return Buttons.vjfButton;
     case 'Buttongroup':
@@ -42,6 +55,38 @@ const component = computed<Component>(() => {
 
   return UnknownComponent
 });
+
+function getComparisonFunction(functionName: ShowOnFunctionType) {
+  switch (functionName) {
+    case "EQUALS":
+      return (a: any, b: any) => {
+        if (a === undefined) a = false;
+        return a == b
+      };
+    case "NOT_EQUALS":
+      return (a: any, b: any) => {
+        if (a === undefined) a = false;
+        return a != b
+      };
+    case "GREATER":
+      return (a: any, b: any) => a > b;
+    case "GREATER_OR_EQUAL":
+      return (a: any, b: any) => a >= b;
+    case "SMALLER":
+      return (a: any, b: any) => a < b;
+    case "SMALLER_OR_EQUAL":
+      return (a: any, b: any) => a < b;
+    case "LONGER":
+      return (a: any, b: any) => (a || "").length > b;
+  }
+}
+
+const show = computed(() => {
+  if (!isDependentElement(props.layoutElement)) {
+    return true;
+  }
+  return false;
+})
 </script>
 
 <style scoped>

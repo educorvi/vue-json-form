@@ -9,7 +9,7 @@
  * Schema for the UI Schema
  */
 export type UISchema = Layout;
-export type Layoutelement = Control | Layout | HTMLRenderer | Divider | Wizard | Button | Buttongroup;
+export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
  * Render fields that support it (Radiobuttons, Checkboxgroups) as Buttons
  */
@@ -39,14 +39,16 @@ export type BootstrapButtonVariants =
  */
 export type SwitchEs = boolean;
 /**
- * You can use this for example, if you want to use the last page for a submit button
+ * Condition to be applied
  */
-export type HideNextButton = boolean;
-/**
- * Changes the text of the next button
- */
-export type TextOfTheNextButton = string;
-export type Pages = WizardPage[];
+export type ShowOnFunctionType =
+  | "EQUALS"
+  | "NOT_EQUALS"
+  | "GREATER"
+  | "GREATER_OR_EQUAL"
+  | "SMALLER_OR_EQUAL"
+  | "SMALLER"
+  | "LONGER";
 /**
  * Submit or Reset
  */
@@ -58,26 +60,33 @@ export type Text = string;
 /**
  * The elements of the layout
  */
-export type Elements = Layoutelement[];
+export type Elements = LayoutElement[];
 
 /**
- * The different Layouts
+ * The different layouts
  */
 export interface Layout {
+  /**
+   * The ID of the layout
+   */
+  $id?: string;
+  /**
+   * May contain a schema reference to the ui schema
+   */
+  $schema?: string;
   type: "VerticalLayout" | "HorizontalLayout" | "Group";
   elements: Elements;
   showOn?: ShowOnProperty;
+  /**
+   * Adds a label for groups (only for type=Group)
+   */
   label?: string;
   /**
-   * May contain a schema reference to the uischema
-   */
-  $schema?: string;
-  /**
-   * Additional Options
+   * Additional options
    */
   options?: {
     /**
-     * The Layouts CSS classes
+     * The layout's CSS classes
      */
     cssClass?: string;
     [k: string]: unknown;
@@ -192,10 +201,7 @@ export interface ShowOnProperty {
    * The field this field depends on
    */
   scope: string;
-  /**
-   * Condition to be applied
-   */
-  type: "EQUALS" | "NOT_EQUALS" | "GREATER" | "GREATER_OR_EQUAL" | "SMALLER_OR_EQUAL" | "SMALLER" | "LONGER";
+  type: ShowOnFunctionType;
   /**
    * The value the field from scope is compared against
    */
@@ -215,24 +221,6 @@ export interface HTMLRenderer {
 export interface Divider {
   type: "Divider";
   showOn?: ShowOnProperty;
-}
-/**
- * A wizard that contains the form spread over multiple pages
- */
-export interface Wizard {
-  type: "Wizard";
-  pages: Pages;
-  /**
-   * May contain a schema reference to the uischema
-   */
-  $schema?: string;
-  showOn?: ShowOnProperty;
-}
-export interface WizardPage {
-  title: string;
-  hideNext?: HideNextButton;
-  nextText?: TextOfTheNextButton;
-  content: Control | Layout | HTMLRenderer;
 }
 /**
  * Used to put a button into the form

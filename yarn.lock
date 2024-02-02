@@ -12,6 +12,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apidevtools/json-schema-ref-parser@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.1.0"
+  dependencies:
+    "@jsdevtools/ono": ^7.1.3
+    "@types/json-schema": ^7.0.13
+    "@types/lodash.clonedeep": ^4.5.7
+    js-yaml: ^4.1.0
+    lodash.clonedeep: ^4.5.0
+  checksum: b2a9c0749e9c190cbbb24fbcec069203cc317a30a32ad731f1b99cf48aa279fa956fe6951e3adc964989e983e7ea4d24313aa806430a53c81ded855fc94e5170
+  languageName: node
+  linkType: hard
+
 "@babel/helper-string-parser@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/helper-string-parser@npm:7.22.5"
@@ -105,6 +118,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
+    "@apidevtools/json-schema-ref-parser": ^11.1.0
     "@rushstack/eslint-patch": ^1.3.2
     "@tsconfig/node18": ^18.2.0
     "@types/jsdom": ^21.1.1
@@ -114,13 +128,14 @@ __metadata:
     "@vue/eslint-config-typescript": ^11.0.3
     "@vue/test-utils": ^2.4.1
     "@vue/tsconfig": ^0.4.0
-    eslint: ^8.46.0
-    eslint-plugin-vue: ^9.16.1
+    eslint: ^8.56.0
+    eslint-config-prettier: ^9.1.0
+    eslint-plugin-vue: ^9.21.1
     jsdom: ^22.1.0
     json-schema-to-typescript: ^13.1.2
     npm-run-all: ^4.1.5
     pinia: ^2.1.6
-    prettier: ^3.0.0
+    prettier: ^3.2.4
     typescript: ~5.1.6
     vite: ^4.4.9
     vitest: ^0.34.2
@@ -301,9 +316,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "@eslint/eslintrc@npm:2.1.2"
+"@eslint/eslintrc@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@eslint/eslintrc@npm:2.1.4"
   dependencies:
     ajv: ^6.12.4
     debug: ^4.3.2
@@ -314,14 +329,14 @@ __metadata:
     js-yaml: ^4.1.0
     minimatch: ^3.1.2
     strip-json-comments: ^3.1.1
-  checksum: bc742a1e3b361f06fedb4afb6bf32cbd27171292ef7924f61c62f2aed73048367bcc7ac68f98c06d4245cd3fabc43270f844e3c1699936d4734b3ac5398814a7
+  checksum: 10957c7592b20ca0089262d8c2a8accbad14b4f6507e35416c32ee6b4dbf9cad67dfb77096bbd405405e9ada2b107f3797fe94362e1c55e0b09d6e90dd149127
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:^8.47.0":
-  version: 8.47.0
-  resolution: "@eslint/js@npm:8.47.0"
-  checksum: 0ef57fe27b6d4c305b33f3b2d2fee1ab397a619006f1d6f4ce5ee4746b8f03d11a4e098805a7d78601ca534cf72917d37f0ac19896c992a32e26299ecb9f9de1
+"@eslint/js@npm:8.56.0":
+  version: 8.56.0
+  resolution: "@eslint/js@npm:8.56.0"
+  checksum: 5804130574ef810207bdf321c265437814e7a26f4e6fac9b496de3206afd52f533e09ec002a3be06cd9adcc9da63e727f1883938e663c4e4751c007d5b58e539
   languageName: node
   linkType: hard
 
@@ -341,14 +356,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.11.10":
-  version: 0.11.10
-  resolution: "@humanwhocodes/config-array@npm:0.11.10"
+"@humanwhocodes/config-array@npm:^0.11.13":
+  version: 0.11.14
+  resolution: "@humanwhocodes/config-array@npm:0.11.14"
   dependencies:
-    "@humanwhocodes/object-schema": ^1.2.1
-    debug: ^4.1.1
+    "@humanwhocodes/object-schema": ^2.0.2
+    debug: ^4.3.1
     minimatch: ^3.0.5
-  checksum: 1b1302e2403d0e35bc43e66d67a2b36b0ad1119efc704b5faff68c41f791a052355b010fb2d27ef022670f550de24cd6d08d5ecf0821c16326b7dcd0ee5d5d8a
+  checksum: 861ccce9eaea5de19546653bccf75bf09fe878bc39c3aab00aeee2d2a0e654516adad38dd1098aab5e3af0145bbcbf3f309bdf4d964f8dab9dcd5834ae4c02f2
   languageName: node
   linkType: hard
 
@@ -359,10 +374,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@humanwhocodes/object-schema@npm:1.2.1"
-  checksum: a824a1ec31591231e4bad5787641f59e9633827d0a2eaae131a288d33c9ef0290bd16fda8da6f7c0fcb014147865d12118df10db57f27f41e20da92369fcb3f1
+"@humanwhocodes/object-schema@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@humanwhocodes/object-schema@npm:2.0.2"
+  checksum: 2fc11503361b5fb4f14714c700c02a3f4c7c93e9acd6b87a29f62c522d90470f364d6161b03d1cc618b979f2ae02aed1106fd29d302695d8927e2fc8165ba8ee
   languageName: node
   linkType: hard
 
@@ -555,7 +570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:^7.0.11, @types/json-schema@npm:^7.0.6":
+"@types/json-schema@npm:^7.0.11, @types/json-schema@npm:^7.0.13, @types/json-schema@npm:^7.0.6":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 97ed0cb44d4070aecea772b7b2e2ed971e10c81ec87dd4ecc160322ffa55ff330dace1793489540e3e318d90942064bb697cc0f8989391797792d919737b3b98
@@ -569,7 +584,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.182":
+"@types/lodash.clonedeep@npm:^4.5.7":
+  version: 4.5.9
+  resolution: "@types/lodash.clonedeep@npm:4.5.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: ef85512b7dce7a4f981a818ae44d11982907e1f26b5b26bedf0957c35e8591eb8e1d24fa31ca851d4b40e0a1ee88563853d762412691fe5f357e8335cead2325
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*, @types/lodash@npm:^4.14.182":
   version: 4.14.202
   resolution: "@types/lodash@npm:4.14.202"
   checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
@@ -766,6 +790,13 @@ __metadata:
     "@typescript-eslint/types": 5.62.0
     eslint-visitor-keys: ^3.3.0
   checksum: 976b05d103fe8335bef5c93ad3f76d781e3ce50329c0243ee0f00c0fcfb186c81df50e64bfdd34970148113f8ade90887f53e3c4938183afba830b4ba8e30a35
+  languageName: node
+  linkType: hard
+
+"@ungap/structured-clone@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@ungap/structured-clone@npm:1.2.0"
+  checksum: 4f656b7b4672f2ce6e272f2427d8b0824ed11546a601d8d5412b9d7704e83db38a8d9f402ecdf2b9063fc164af842ad0ec4a55819f621ed7e7ea4d1efcc74524
   languageName: node
   linkType: hard
 
@@ -1912,7 +1943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:4.3.4, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -2387,6 +2418,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-config-prettier@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "eslint-config-prettier@npm:9.1.0"
+  peerDependencies:
+    eslint: ">=7.0.0"
+  bin:
+    eslint-config-prettier: bin/cli.js
+  checksum: 9229b768c879f500ee54ca05925f31b0c0bafff3d9f5521f98ff05127356de78c81deb9365c86a5ec4efa990cb72b74df8612ae15965b14136044c73e1f6a907
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-prettier@npm:^5.0.0":
   version: 5.0.0
   resolution: "eslint-plugin-prettier@npm:5.0.0"
@@ -2406,20 +2448,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vue@npm:^9.16.1":
-  version: 9.17.0
-  resolution: "eslint-plugin-vue@npm:9.17.0"
+"eslint-plugin-vue@npm:^9.21.1":
+  version: 9.21.1
+  resolution: "eslint-plugin-vue@npm:9.21.1"
   dependencies:
     "@eslint-community/eslint-utils": ^4.4.0
     natural-compare: ^1.4.0
     nth-check: ^2.1.1
     postcss-selector-parser: ^6.0.13
     semver: ^7.5.4
-    vue-eslint-parser: ^9.3.1
+    vue-eslint-parser: ^9.4.2
     xml-name-validator: ^4.0.0
   peerDependencies:
     eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
-  checksum: 2ef53a03876f7c96828ad10dae7d1c4d87b51e348f58b16de3f2bedbbff9a3410eabfaf65e4890b0b7ae6d1e710c1c370998d5bc64d6ca3095a95713b3a4cf67
+  checksum: 3fe29a7062b7d88ad6232f1fc81ee45761aafea7454f6abdf38b41ed8ace01c068b1755b57af8e5530bc2f4db907959b53838604aced776bd13fbb0e575a17b0
   languageName: node
   linkType: hard
 
@@ -2450,17 +2492,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.46.0":
-  version: 8.47.0
-  resolution: "eslint@npm:8.47.0"
+"eslint@npm:^8.56.0":
+  version: 8.56.0
+  resolution: "eslint@npm:8.56.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
-    "@eslint/eslintrc": ^2.1.2
-    "@eslint/js": ^8.47.0
-    "@humanwhocodes/config-array": ^0.11.10
+    "@eslint/eslintrc": ^2.1.4
+    "@eslint/js": 8.56.0
+    "@humanwhocodes/config-array": ^0.11.13
     "@humanwhocodes/module-importer": ^1.0.1
     "@nodelib/fs.walk": ^1.2.8
+    "@ungap/structured-clone": ^1.2.0
     ajv: ^6.12.4
     chalk: ^4.0.0
     cross-spawn: ^7.0.2
@@ -2493,7 +2536,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 1988617f703eadc5c7540468d54dc8e5171cf2bb9483f6172799cd1ff54a9a5e4470f003784e8cef92687eaa14de37172732787040e67817581a20bcb9c15970
+  checksum: 883436d1e809b4a25d9eb03d42f584b84c408dbac28b0019f6ea07b5177940bf3cca86208f749a6a1e0039b63e085ee47aca1236c30721e91f0deef5cc5a5136
   languageName: node
   linkType: hard
 
@@ -3992,6 +4035,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.clonedeep@npm:4.5.0"
+  checksum: 92c46f094b064e876a23c97f57f81fbffd5d760bf2d8a1c61d85db6d1e488c66b0384c943abee4f6af7debf5ad4e4282e74ff83177c9e63d8ff081a4837c3489
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -4902,12 +4952,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.0":
-  version: 3.0.2
-  resolution: "prettier@npm:3.0.2"
+"prettier@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "prettier@npm:3.2.4"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 118b59ddb6c80abe2315ab6d0f4dd1b253be5cfdb20622fa5b65bb1573dcd362e6dd3dcf2711dd3ebfe64aecf7bdc75de8a69dc2422dcd35bdde7610586b677a
+  checksum: 6ec9385a836e0b9bac549e585101c086d1521c31d7b882d5c8bb7d7646da0693da5f31f4fff6dc080710e5e2d34c85e6fb2f8766876b3645c8be2f33b9c3d1a3
   languageName: node
   linkType: hard
 
@@ -6244,7 +6294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-eslint-parser@npm:^9.1.1, vue-eslint-parser@npm:^9.3.1":
+"vue-eslint-parser@npm:^9.1.1":
   version: 9.3.1
   resolution: "vue-eslint-parser@npm:9.3.1"
   dependencies:
@@ -6258,6 +6308,23 @@ __metadata:
   peerDependencies:
     eslint: ">=6.0.0"
   checksum: 6d1476b45fcc5b456a1e5c0f33ec695cf1d392ca6113250d5e3441e6cf3b2a0ec28a9455699363641dfb7c48358f215db07856c98385a31ace9bc58196f4156e
+  languageName: node
+  linkType: hard
+
+"vue-eslint-parser@npm:^9.4.2":
+  version: 9.4.2
+  resolution: "vue-eslint-parser@npm:9.4.2"
+  dependencies:
+    debug: ^4.3.4
+    eslint-scope: ^7.1.1
+    eslint-visitor-keys: ^3.3.0
+    espree: ^9.3.1
+    esquery: ^1.4.0
+    lodash: ^4.17.21
+    semver: ^7.3.6
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: 67f14c8ea19b578077a878864a5ec438ab4c597381923c9814fac39b3772da8654ac2a543467b5880607f694131f8ff34b87bd24c10bbc5f99fa2fcac49ff2e6
   languageName: node
   linkType: hard
 

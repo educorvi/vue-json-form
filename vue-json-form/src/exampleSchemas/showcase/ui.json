@@ -131,7 +131,7 @@
     },
     {
       "type": "HTML",
-      "htmlData": "<div class=\"text-center\"><p>It is also possible to add HTML-Code. This Way you can even embed a video in your form:</p><iframe width=\"315\" height=\"315\" src=\"https://www.youtube-nocookie.com/embed/CDrWcFGlyKg?start=36\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></div>"
+      "htmlData": "<div class=\"text-center\"><p>It is also possible to add HTML-Code. This way you can even embed a video in your form:</p><iframe width=\"315\" height=\"315\" src=\"https://www.youtube-nocookie.com/embed/CDrWcFGlyKg?start=36\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></div>"
     },
     {
       "type": "Control",
