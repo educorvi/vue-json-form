@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import type { Layout } from '@/typings/ui-schema'
-import {
-    computedCssClass,
-    computedElementsWithUUID,
-} from '@/components/LayoutElements/LayoutCommons'
-import FormWrap from '@/components/FormWrap.vue'
+import type { Layout } from '@/typings/ui-schema';
+import { computedElementsWithUUID } from '@/components/LayoutElements/LayoutCommons';
+import FormWrap from '@/components/FormWrap.vue';
+import { computedCssClass } from '@/computedProperties/css';
 
 const props = defineProps<{
     /**
      * The UI Schema of this Element
      */
-    layoutElement: Layout
-}>()
+    layoutElement: Layout;
+}>();
 
-const cssClass = computedCssClass(props.layoutElement, 'vjf_horizontalLayout')
-const elementsWithUUID = computedElementsWithUUID(props.layoutElement)
+const cssClass = computedCssClass(props.layoutElement, 'vjf_horizontalLayout');
+const elementsWithUUID = computedElementsWithUUID(props.layoutElement);
 </script>
 
 <template>

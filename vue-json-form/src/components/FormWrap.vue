@@ -1,93 +1,83 @@
 <template>
     <show-on-wrapper :visible="show">
-        <component
-            :is="layoutComponent"
-            :layoutElement="layoutElement"
-        ></component>
+        <component :is="layoutComponent" :layoutElement="layoutElement"></component>
     </show-on-wrapper>
 </template>
 
 <script setup lang="ts">
-import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema'
-import { computed } from 'vue'
-import type { Component } from 'vue'
-import LayoutElements from '@/components/LayoutElements'
-import UnknownComponent from '@/components/UnknownComponent.vue'
-import type { Buttongroup, Button } from '@/typings/ui-schema'
-import Buttons from '@/components/Buttons'
-import { isDependentElement } from '@/components/LayoutElements/LayoutCommons'
-import { storeToRefs } from 'pinia'
-import { useFormStructureStore } from '@/stores/formStructure'
-import ShowOnWrapper from '@/defaultRendering/showOnWrapper.vue'
+import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
+import { computed } from 'vue';
+import type { Component } from 'vue';
+import LayoutElements from '@/components/LayoutElements';
+import UnknownComponent from '@/components/UnknownComponent.vue';
+import Buttons from '@/components/Buttons';
+import { isDependentElement } from '@/components/LayoutElements/LayoutCommons';
+import { getComponent } from '@/defaultRendering/DefaultComponents';
 
-const { renderInterface } = storeToRefs(useFormStructureStore())
-
-const showOnWrapper: Component = computed(() => {
-    return renderInterface.value?.showOnWrapper || ShowOnWrapper
-})
+const showOnWrapper = getComponent('showOnWrapper');
 
 const props = defineProps<{
     /**
      * The UI Schema of this Element
      */
-    layoutElement: LayoutElement
-}>()
+    layoutElement: LayoutElement;
+}>();
 
 const layoutComponent = computed<Component | undefined>(() => {
-    if (!props.layoutElement) return undefined
+    if (!props.layoutElement) return undefined;
     switch (props.layoutElement.type) {
         case 'Control':
-            return LayoutElements.Control
+            return LayoutElements.Control;
         case 'VerticalLayout':
-            return LayoutElements.VerticalLayout
+            return LayoutElements.VerticalLayout;
         case 'HorizontalLayout':
-            return LayoutElements.HorizontalLayout
+            return LayoutElements.HorizontalLayout;
         case 'Group':
-            return LayoutElements.Group
+            return LayoutElements.Group;
         case 'HTML':
-            return LayoutElements.htmlRenderer
+            return LayoutElements.htmlRenderer;
         case 'Divider':
-            return LayoutElements.Divider
+            return LayoutElements.Divider;
         case 'Button':
-            return Buttons.vjfButton
+            return Buttons.vjfButton;
         case 'Buttongroup':
-            return Buttons.vjfButtonGroup
+            return Buttons.vjfButtonGroup;
     }
 
-    return UnknownComponent
-})
+    return UnknownComponent;
+});
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
     switch (functionName) {
         case 'EQUALS':
             return (a: any, b: any) => {
-                if (a === undefined) a = false
-                return a == b
-            }
+                if (a === undefined) a = false;
+                return a == b;
+            };
         case 'NOT_EQUALS':
             return (a: any, b: any) => {
-                if (a === undefined) a = false
-                return a != b
-            }
+                if (a === undefined) a = false;
+                return a != b;
+            };
         case 'GREATER':
-            return (a: any, b: any) => a > b
+            return (a: any, b: any) => a > b;
         case 'GREATER_OR_EQUAL':
-            return (a: any, b: any) => a >= b
+            return (a: any, b: any) => a >= b;
         case 'SMALLER':
-            return (a: any, b: any) => a < b
+            return (a: any, b: any) => a < b;
         case 'SMALLER_OR_EQUAL':
-            return (a: any, b: any) => a < b
+            return (a: any, b: any) => a < b;
         case 'LONGER':
-            return (a: any, b: any) => (a || '').length > b
+            return (a: any, b: any) => (a || '').length > b;
     }
 }
 
 const show = computed(() => {
     if (!isDependentElement(props.layoutElement)) {
-        return true
+        return true;
     }
-    return false
-})
+    return false;
+});
 </script>
 
 <style scoped></style>

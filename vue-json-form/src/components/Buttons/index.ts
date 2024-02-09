@@ -1,4 +1,4 @@
-import vjfButtonGroup from '@/components/Buttons/ButtonGroup.vue'
-import vjfButton from '@/components/Buttons/VJFButton.vue'
+import vjfButtonGroup from '@/components/Buttons/ButtonGroup.vue';
+import vjfButton from '@/components/Buttons/VJFButton.vue';
 
-export default { vjfButtonGroup, vjfButton }
+export default { vjfButtonGroup, vjfButton };

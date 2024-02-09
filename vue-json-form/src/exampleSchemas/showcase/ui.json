@@ -4,18 +4,18 @@
     "elements": [
         {
             "type": "Control",
-            "scope": "#/properties/done",
+            "scope": "/properties/done",
             "options": {
                 "switch": true
             }
         },
         {
             "type": "Control",
-            "scope": "#/properties/title"
+            "scope": "/properties/title"
         },
         {
             "type": "Control",
-            "scope": "#/properties/name",
+            "scope": "/properties/name",
             "options": {
                 "placeholder": "Full Name",
                 "autocomplete": "name"
@@ -23,7 +23,7 @@
         },
         {
             "type": "Control",
-            "scope": "#/properties/fancyness",
+            "scope": "/properties/fancyness",
             "options": {
                 "radiobuttons": true,
                 "stacked": true
@@ -31,14 +31,14 @@
         },
         {
             "type": "Control",
-            "scope": "#/properties/fileupload",
+            "scope": "/properties/fileupload",
             "options": {
                 "acceptedFileType": "*"
             }
         },
         {
             "type": "Control",
-            "scope": "#/properties/group_selector",
+            "scope": "/properties/group_selector",
             "options": {
                 "buttons": "outline-primary",
                 "label": false
@@ -49,7 +49,7 @@
             "label": "Group 1",
             "showOn": {
                 "type": "EQUALS",
-                "scope": "#/properties/group_selector",
+                "scope": "/properties/group_selector",
                 "referenceValue": "Groups"
             },
             "elements": [
@@ -59,11 +59,11 @@
                     "elements": [
                         {
                             "type": "Control",
-                            "scope": "#/properties/due_date"
+                            "scope": "/properties/due_date"
                         },
                         {
                             "type": "Control",
-                            "scope": "#/properties/rating",
+                            "scope": "/properties/rating",
                             "options": {
                                 "rating": true
                             }
@@ -72,7 +72,7 @@
                 },
                 {
                     "type": "Control",
-                    "scope": "#/properties/description",
+                    "scope": "/properties/description",
                     "options": {
                         "multi": true,
                         "placeholder": "Enter a nice description"
@@ -80,7 +80,7 @@
                 },
                 {
                     "type": "Control",
-                    "scope": "#/properties/teststring"
+                    "scope": "/properties/teststring"
                 }
             ]
         },
@@ -89,7 +89,7 @@
             "label": "Group 2",
             "showOn": {
                 "type": "EQUALS",
-                "scope": "#/properties/group_selector",
+                "scope": "/properties/group_selector",
                 "referenceValue": "Groups"
             },
             "elements": [
@@ -98,12 +98,12 @@
                     "elements": [
                         {
                             "type": "Control",
-                            "scope": "#/properties/weekday",
+                            "scope": "/properties/weekday",
                             "options": {}
                         },
                         {
                             "type": "Control",
-                            "scope": "#/properties/recurrence_interval",
+                            "scope": "/properties/recurrence_interval",
                             "options": {
                                 "textAlign": "right"
                             }
@@ -112,16 +112,16 @@
                 },
                 {
                     "type": "Control",
-                    "scope": "#/properties/testArray"
+                    "scope": "/properties/testArray"
                 }
             ]
         },
         {
             "type": "Control",
-            "scope": "#/properties/testObject",
+            "scope": "/properties/testObject",
             "showOn": {
                 "type": "EQUALS",
-                "scope": "#/properties/group_selector",
+                "scope": "/properties/group_selector",
                 "referenceValue": "Object"
             }
         },
@@ -134,7 +134,7 @@
         },
         {
             "type": "Control",
-            "scope": "#/properties/tags",
+            "scope": "/properties/tags",
             "options": {
                 "tags": {
                     "enabled": true,
@@ -144,21 +144,21 @@
         },
         {
             "type": "Control",
-            "scope": "#/properties/hiddenDateTime",
+            "scope": "/properties/hiddenDateTime",
             "options": {
                 "hidden": true
             }
         },
         {
             "type": "Control",
-            "scope": "#/properties/hiddenDate",
+            "scope": "/properties/hiddenDate",
             "options": {
                 "hidden": true
             }
         },
         {
             "type": "Control",
-            "scope": "#/properties/hiddenTime",
+            "scope": "/properties/hiddenTime",
             "options": {
                 "hidden": true
             }

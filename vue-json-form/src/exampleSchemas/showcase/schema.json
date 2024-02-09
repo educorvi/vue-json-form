@@ -44,15 +44,7 @@
         },
         "weekday": {
             "type": "array",
-            "enum": [
-                "Monday",
-                "Tuesday",
-                "Wednesday",
-                "Thursday",
-                "Friday",
-                "Saturday",
-                "Sunday"
-            ]
+            "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         },
         "recurrence_interval": {
             "title": "Week Interval",

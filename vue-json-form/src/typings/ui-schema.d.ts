@@ -8,18 +8,12 @@
 /**
  * Schema for the UI Schema
  */
-export type UISchema = Layout
-export type LayoutElement =
-    | Control
-    | Layout
-    | HTMLRenderer
-    | Divider
-    | Button
-    | Buttongroup
+export type UISchema = Layout;
+export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
  * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
  */
-export type SwitchEs = boolean
+export type SwitchEs = boolean;
 /**
  * Condition to be applied
  */
@@ -30,19 +24,19 @@ export type ShowOnFunctionType =
     | 'GREATER_OR_EQUAL'
     | 'SMALLER_OR_EQUAL'
     | 'SMALLER'
-    | 'LONGER'
+    | 'LONGER';
 /**
  * Submit or Reset
  */
-export type TheButtonsType = 'submit' | 'reset'
+export type TheButtonsType = 'submit' | 'reset';
 /**
  * The buttons text
  */
-export type Text = string
+export type Text = string;
 /**
  * The elements of the layout
  */
-export type Elements = LayoutElement[]
+export type Elements = LayoutElement[];
 
 /**
  * The different layouts
@@ -51,18 +45,18 @@ export interface Layout {
     /**
      * The ID of the layout
      */
-    $id?: string
+    $id?: string;
     /**
      * May contain a schema reference to the ui schema
      */
-    $schema?: string
-    type: 'VerticalLayout' | 'HorizontalLayout' | 'Group'
-    elements: Elements
-    showOn?: ShowOnProperty
+    $schema?: string;
+    type: 'VerticalLayout' | 'HorizontalLayout' | 'Group';
+    elements: Elements;
+    showOn?: ShowOnProperty;
     /**
      * Adds a label for groups (only for type=Group)
      */
-    label?: string
+    label?: string;
     /**
      * Additional options
      */
@@ -70,19 +64,19 @@ export interface Layout {
         /**
          * The layout's CSS classes
          */
-        cssClass?: string
-        [k: string]: unknown
-    }
+        cssClass?: string;
+        [k: string]: unknown;
+    };
 }
 /**
  * Contains a form element, e. g. a text input
  */
 export interface Control {
-    type: 'Control'
+    type: 'Control';
     /**
      * A json pointer referring to the form element in the forms json schema
      */
-    scope: string
+    scope: string;
     /**
      * Format for string fields
      */
@@ -95,9 +89,9 @@ export interface Control {
         | 'search'
         | 'url'
         | 'tel'
-        | 'color'
-    options?: Options
-    showOn?: ShowOnProperty
+        | 'color';
+    options?: Options;
+    showOn?: ShowOnProperty;
 }
 /**
  * Gives multiple options to configure the element
@@ -106,71 +100,71 @@ export interface Options {
     /**
      * Defines whether the fields label is activated
      */
-    label?: boolean
+    label?: boolean;
     /**
      * If set true, textarea will be shown instead of textfield.
      *  Alternatively can be set to the number of wanted lines
      */
-    multi?: boolean | number
+    multi?: boolean | number;
     /**
      * If set to true, numberfield will appear as star-rating-field
      */
-    rating?: boolean
+    rating?: boolean;
     /**
      * Will be shown as placeholder in form fields, if supported by field
      */
-    placeholder?: string
+    placeholder?: string;
     /**
      * Will be shown as placeholder in file upload field when file drag and drop
      */
-    'drop-placeholder'?: string
+    'drop-placeholder'?: string;
     /**
      * Allows the upload of multiple files with fileupload
      */
-    allowMultipleFiles?: boolean
+    allowMultipleFiles?: boolean;
     /**
      * The accepted File Types
      */
-    acceptedFileType?: string
-    enumTitles?: TitlesForEnum
+    acceptedFileType?: string;
+    enumTitles?: TitlesForEnum;
     /**
      * If set to true, a group of radiobuttons will be shown instead of the select field
      */
-    radiobuttons?: boolean
+    radiobuttons?: boolean;
     /**
      * Radiobutton-/Checkbox group will be stacked if set to true
      */
-    stacked?: boolean
-    switch?: SwitchEs
+    stacked?: boolean;
+    switch?: SwitchEs;
     /**
      * Will be appended to field
      */
-    append?: string
+    append?: string;
     /**
      * Will be rendered as tags-Field
      */
     tags?: {
-        enabled?: boolean
-        pills?: boolean
-        [k: string]: unknown
-    }
+        enabled?: boolean;
+        pills?: boolean;
+        [k: string]: unknown;
+    };
     /**
      * Specifies what should be autocompleted by the browser. Possible values are listed here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
      */
-    autocomplete?: string
+    autocomplete?: string;
     /**
      * Set the text-align of input fields
      */
-    textAlign?: 'left' | 'right' | 'center' | 'start' | 'end'
+    textAlign?: 'left' | 'right' | 'center' | 'start' | 'end';
     /**
      * The Controls CSS classes
      */
-    cssClass?: string
+    cssClass?: string;
     /**
      * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
      */
-    hidden?: boolean
-    [k: string]: unknown
+    hidden?: boolean;
+    [k: string]: unknown;
 }
 /**
  * If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
@@ -180,7 +174,7 @@ export interface TitlesForEnum {
      * This interface was referenced by `TitlesForEnum`'s JSON-Schema definition
      * via the `patternProperty` "".
      */
-    [k: string]: string
+    [k: string]: string;
 }
 /**
  * Show field depending on value of other field
@@ -189,36 +183,36 @@ export interface ShowOnProperty {
     /**
      * The field this field depends on
      */
-    scope: string
-    type: ShowOnFunctionType
+    scope: string;
+    type: ShowOnFunctionType;
     /**
      * The value the field from scope is compared against
      */
-    referenceValue: boolean | string | number
+    referenceValue: boolean | string | number;
 }
 /**
  * Some HTML to be rendered in the form
  */
 export interface HTMLRenderer {
-    type?: 'HTML'
-    htmlData: string
-    showOn?: ShowOnProperty
+    type?: 'HTML';
+    htmlData: string;
+    showOn?: ShowOnProperty;
 }
 /**
  * inserts a simple divider
  */
 export interface Divider {
-    type: 'Divider'
-    showOn?: ShowOnProperty
+    type: 'Divider';
+    showOn?: ShowOnProperty;
 }
 /**
  * Used to put a button into the form
  */
 export interface Button {
-    type: 'Button'
-    buttonType: TheButtonsType
-    text: Text
-    options?: Options1
+    type: 'Button';
+    buttonType: TheButtonsType;
+    text: Text;
+    options?: Options1;
 }
 /**
  * Options for the button
@@ -227,9 +221,9 @@ export interface Options1 {
     /**
      * The layout's CSS classes
      */
-    cssClass?: string
-    nativeSubmitOptions?: NativeSubmitSettings
-    [k: string]: unknown
+    cssClass?: string;
+    nativeSubmitOptions?: NativeSubmitSettings;
+    [k: string]: unknown;
 }
 /**
  * Settings if native form submit is used
@@ -238,37 +232,34 @@ export interface NativeSubmitSettings {
     /**
      * Specifies where to send the form-data when a form is submitted
      */
-    formaction?: string
+    formaction?: string;
     /**
      * Specifies how to send the form-data
      */
-    formmethod?: 'get' | 'post'
+    formmethod?: 'get' | 'post';
     /**
      * Specifies where to display the response after submitting the form
      */
-    formtarget?: '_blank' | '_self' | '_parent' | '_top'
+    formtarget?: '_blank' | '_self' | '_parent' | '_top';
     /**
      * Specifies how form-data should be encoded before sending it to a server
      */
-    formenctype?:
-        | 'application/x-www-form-urlencoded'
-        | 'multipart/form-data'
-        | 'text/plain'
-    [k: string]: unknown
+    formenctype?: 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
+    [k: string]: unknown;
 }
 /**
  * Used to group buttons
  */
 export interface Buttongroup {
-    type: 'Buttongroup'
+    type: 'Buttongroup';
     /**
      * The buttons in the button group
      *
      * @minItems 1
      */
-    buttons: [Button, ...Button[]]
+    buttons: [Button, ...Button[]];
     /**
      * Display the buttons vertical
      */
-    vertical?: boolean
+    vertical?: boolean;
 }

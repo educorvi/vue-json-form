@@ -71,11 +71,7 @@
                 "acceptedFileType": {
                     "type": "string",
                     "description": "The accepted File Types",
-                    "examples": [
-                        "image/*",
-                        "image/jpeg, image/png, image/gif",
-                        ".jpg, .png, .gif"
-                    ]
+                    "examples": ["image/*", "image/jpeg, image/png, image/gif", ".jpg, .png, .gif"]
                 },
                 "enumTitles": {
                     "type": "object",
@@ -150,13 +146,13 @@
     "examples": [
         {
             "type": "Control",
-            "scope": "#/properties/objectInJsonSchema"
+            "scope": "/properties/objectInJsonSchema"
         },
         {
             "type": "Control",
-            "scope": "#/properties/field",
+            "scope": "/properties/field",
             "showOn": {
-                "scope": "#/properties/referenceField",
+                "scope": "/properties/referenceField",
                 "type": "EQUALS",
                 "referenceValue": "awesomeValue"
             },

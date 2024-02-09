@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { HTMLRenderer } from '@/typings/ui-schema'
+import type { HTMLRenderer } from '@/typings/ui-schema';
 
 const props = defineProps<{
     /**
      * The UI Schema of this Element
      */
-    layoutElement: HTMLRenderer
-}>()
+    layoutElement: HTMLRenderer;
+}>();
 </script>
 
 <template>
