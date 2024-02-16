@@ -12,9 +12,8 @@ export function injectJsonData() {
     return { layoutElement, jsonElement };
 }
 
-export function computedGrandparentJsonPath() {
+export function computedGrandparentJsonPath(layout: Control) {
     return computed((): string | null => {
-        const layout = inject(layoutProviderKey);
         if (!layout) throw new Error('No layout found');
 
         let path = pointer.parse(layout.scope);
@@ -26,37 +25,36 @@ export function computedGrandparentJsonPath() {
     });
 }
 
-export function computedRequired() {
+export function computedRequired(layout: Control) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
-    const layout = inject(layoutProviderKey);
     return computed(() => {
-        const gp = computedGrandparentJsonPath();
-        if (!gp) {
+        const gp = computedGrandparentJsonPath(layout);
+        if (!gp || !jsonSchema.value || !layout) {
             return false;
         }
-        const required = pointer.get(jsonSchema.value, gp + '/required');
+        const required = pointer.get(jsonSchema.value, gp.value + '/required');
         if (!required) return false;
 
         return required.includes(layout?.scope.split('/').pop());
     });
 }
 
-export function computedLabel() {
-    function titleCase(string: string) {
-        const sentence = string.toLowerCase().split('_');
-        for (let i = 0; i < sentence.length; i++) {
-            sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
-        }
-
-        return sentence.join(' ');
+function titleCase(string: string) {
+    const sentence = string.toLowerCase().split('_');
+    for (let i = 0; i < sentence.length; i++) {
+        sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
     }
 
-    const layout = inject(layoutProviderKey);
+    return sentence.join(' ');
+}
+
+export function computedLabel(layout: Control) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
     return computed(() => {
+        if (!jsonSchema.value) return '';
         return (
-            pointer.get(jsonSchema, layout?.scope).title ||
+            pointer.get(jsonSchema.value, layout.scope).title ||
             titleCase(layout?.scope.split('/').pop() || '')
-        ).concat(computedRequired().value ? ' *' : '');
+        ).concat(computedRequired(layout).value ? '*' : '');
     });
 }

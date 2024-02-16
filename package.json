@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "demo",
-    "vue-json-form"
+    "vue-json-form",
+    "vue-json-form-bootstrap"
   ],
   "packageManager": "yarn@3.6.3",
   "devDependencies": {

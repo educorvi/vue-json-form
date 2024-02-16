@@ -8,10 +8,9 @@
 <script setup lang="ts">
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure';
+import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { computed, provide } from 'vue';
 import jsonPointer from 'json-pointer';
-import { getComponent } from '@/defaultRendering/DefaultComponents';
 import { layoutProviderKey, jsonElementProviderKey } from '@/components/ProviderKeys';
 import { computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
@@ -36,10 +35,10 @@ const jsonElement = computed(() =>
     jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope)
 );
 
-const label = computedLabel();
-
 provide(layoutProviderKey, props.layoutElement);
 provide(jsonElementProviderKey, jsonElement.value);
+
+const label = computedLabel(props.layoutElement);
 
 /**
  * The type of the control

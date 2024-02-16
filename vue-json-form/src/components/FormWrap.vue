@@ -12,7 +12,7 @@ import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
 import { isDependentElement } from '@/components/LayoutElements/LayoutCommons';
-import { getComponent } from '@/defaultRendering/DefaultComponents';
+import { getComponent } from '@/stores/formStructure';
 
 const showOnWrapper = getComponent('showOnWrapper');
 

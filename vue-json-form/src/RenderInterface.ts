@@ -1,44 +1,32 @@
-import type ShowOnWrapper from '@/defaultRendering/showOnWrapper.vue';
-import type ArrayControl from '@/defaultRendering/controls/Array/ArrayControl.vue';
-import type CheckboxControl from '@/defaultRendering/controls/CheckboxControl.vue';
-import type CheckboxGroupControl from '@/defaultRendering/controls/CheckboxGroupControl.vue';
-import type DateTimeControl from '@/defaultRendering/controls/DateTimeControl.vue';
-import type DefaultControl from '@/defaultRendering/controls/DefaultControl.vue';
-import type FileControl from '@/defaultRendering/controls/FileControl.vue';
-import type NumberControl from '@/defaultRendering/controls/NumberControl.vue';
-import type ObjectControl from '@/defaultRendering/controls/ObjectControl.vue';
-import type RadiobuttonControl from '@/defaultRendering/controls/RadiobuttonControl.vue';
-import type SelectControl from '@/defaultRendering/controls/SelectControl.vue';
-import type StringControl from '@/defaultRendering/controls/StringControl.vue';
-import type TagsControl from '@/defaultRendering/controls/TagsControl.vue';
+import type { Component } from 'vue';
 
 export interface RenderInterface {
     /**
      * Wrapper component for showOn
      */
-    showOnWrapper?: typeof ShowOnWrapper;
+    showOnWrapper?: Component;
 
-    ArrayControl?: typeof ArrayControl;
+    ArrayControl?: Component;
 
-    CheckboxControl?: typeof CheckboxControl;
+    CheckboxControl?: Component;
 
-    CheckboxGroupControl?: typeof CheckboxGroupControl;
+    CheckboxGroupControl?: Component;
 
-    DateTimeControl?: typeof DateTimeControl;
+    DateTimeControl?: Component;
 
-    DefaultControl?: typeof DefaultControl;
+    DefaultControl?: Component;
 
-    FileControl?: typeof FileControl;
+    FileControl?: Component;
 
-    NumberControl?: typeof NumberControl;
+    NumberControl?: Component;
 
-    ObjectControl?: typeof ObjectControl;
+    ObjectControl?: Component;
 
-    RadiobuttonControl?: typeof RadiobuttonControl;
+    RadiobuttonControl?: Component;
 
-    SelectControl?: typeof SelectControl;
+    SelectControl?: Component;
 
-    StringControl?: typeof StringControl;
+    StringControl?: Component;
 
-    TagsControl?: typeof TagsControl;
+    TagsControl?: Component;
 }

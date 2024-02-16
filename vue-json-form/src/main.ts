@@ -1,11 +1,20 @@
-import './assets/main.css';
+// import { createApp } from 'vue';
+// import { createPinia } from 'pinia';
+// import App from './App.vue';
+//
+// const app = createApp(App);
+//
+// app.use(createPinia());
+//
+// app.mount('#app');
 
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import App from './App.vue';
+import type { RenderInterface } from './RenderInterface';
+export type { RenderInterface };
 
-const app = createApp(App);
+export * from '@/renderings/default/DefaultComponents';
+export * from '@/renderings/bootstrap/BootstrapComponents';
 
-app.use(createPinia());
+import VueJsonForm from '@/components/FormRoot.vue';
+export { VueJsonForm };
 
-app.mount('#app');
+import './RenderInterface';

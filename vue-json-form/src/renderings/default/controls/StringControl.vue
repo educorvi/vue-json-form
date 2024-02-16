@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import DateTimeControl from '@/defaultRendering/controls/DateTimeControl.vue';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { inject } from 'vue';
-import { controlID, injectJsonData } from '@/CommonFunctions';
+import { injectJsonData } from '@/computedProperties/json';
+import { controlID } from '@/computedProperties/misc';
+import { defaultComponents } from '@/renderings/default/DefaultComponents';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement } = injectJsonData();
 const id = controlID(layoutElement);
+
+const DateTimeControl = defaultComponents.DateTimeControl;
 </script>
 
 <template>

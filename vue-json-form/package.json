@@ -2,6 +2,10 @@
   "name": "@educorvi/vue-json-form",
   "version": "0.0.0",
   "private": true,
+  "files": [
+    "dist"
+  ],
+  "types": "dist/vue-json-form.d.ts",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
@@ -17,6 +21,12 @@
     "generateTypings:uiSchema": "cd src/schemas/ui/ && json2ts -i ui.schema.json -o ../../typings/ui-schema.d.ts",
     "prepare": "husky"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/vue-json-form.js",
+      "require": "./dist/vue-json-form.umd.js"
+    }
+  },
   "dependencies": {
     "json-pointer": "^0.6.2",
     "json-schema-to-typescript": "^13.1.2",
@@ -30,7 +40,7 @@
     "@types/jsdom": "^21.1.1",
     "@types/json-pointer": "^1.0.34",
     "@types/node": "^18.17.5",
-    "@vitejs/plugin-vue": "^4.3.1",
+    "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.4.1",
@@ -43,6 +53,7 @@
     "prettier": "^3.2.4",
     "typescript": "~5.1.6",
     "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.7.2",
     "vitest": "^0.34.2",
     "vue-tsc": "^1.8.8"
   }
