@@ -39,4 +39,7 @@ export const defaultComponents: Required<RenderInterface> = {
     TagsControl: defineAsyncComponent(
         () => import('@/renderings/default/controls/TagsControl.vue')
     ),
+    FormFieldWrapper: defineAsyncComponent(
+        () => import('@/renderings/default/FormFieldWrapper.vue')
+    ),
 };

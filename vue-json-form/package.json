@@ -7,7 +7,7 @@
   ],
   "types": "dist/vue-json-form.d.ts",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite -c dev_app.vite.config.ts",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
@@ -28,6 +28,8 @@
     }
   },
   "dependencies": {
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue-next": "^0.16.6",
     "json-pointer": "^0.6.2",
     "json-schema-to-typescript": "^13.1.2",
     "pinia": "^2.1.6",

@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia';
-import type { Ref } from 'vue';
+import { type Ref, shallowRef } from 'vue';
 import { ref } from 'vue';
 import type { UISchema } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';

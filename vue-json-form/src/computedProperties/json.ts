@@ -4,10 +4,11 @@ import type { Control } from '@/typings/ui-schema';
 import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
+import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 export function injectJsonData() {
     const layoutElement = inject(layoutProviderKey) as Control;
-    const jsonElement = inject(jsonElementProviderKey) as Control;
+    const jsonElement = inject(jsonElementProviderKey) as CoreSchemaMetaSchema;
 
     return { layoutElement, jsonElement };
 }

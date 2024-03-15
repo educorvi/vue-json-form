@@ -29,4 +29,6 @@ export interface RenderInterface {
     StringControl?: Component;
 
     TagsControl?: Component;
+
+    FormFieldWrapper?: Component;
 }

@@ -6,8 +6,7 @@
 
 <script setup lang="ts">
 import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
-import { computed } from 'vue';
-import type { Component } from 'vue';
+import { computed, shallowRef, markRaw } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
@@ -23,9 +22,8 @@ const props = defineProps<{
     layoutElement: LayoutElement;
 }>();
 
-const layoutComponent = computed<Component | undefined>(() => {
-    if (!props.layoutElement) return undefined;
-    switch (props.layoutElement.type) {
+function getControlComponent(name: string | undefined) {
+    switch (name) {
         case 'Control':
             return LayoutElements.Control;
         case 'VerticalLayout':
@@ -42,10 +40,12 @@ const layoutComponent = computed<Component | undefined>(() => {
             return Buttons.vjfButton;
         case 'Buttongroup':
             return Buttons.vjfButtonGroup;
+        default:
+            return UnknownComponent;
     }
+}
 
-    return UnknownComponent;
-});
+const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -76,7 +76,7 @@ const show = computed(() => {
     if (!isDependentElement(props.layoutElement)) {
         return true;
     }
-    return false;
+    return true;
 });
 </script>
 

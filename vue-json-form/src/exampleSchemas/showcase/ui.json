@@ -98,8 +98,10 @@
                     "elements": [
                         {
                             "type": "Control",
-                            "scope": "/properties/weekday",
-                            "options": {}
+                            "scope": "/properties/weekdays",
+                            "options": {
+                                "stacked": false
+                            }
                         },
                         {
                             "type": "Control",

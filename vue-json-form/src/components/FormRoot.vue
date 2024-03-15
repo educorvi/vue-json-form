@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, provide } from 'vue';
+import { watch, onMounted, provide, shallowRef } from 'vue';
 import { useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';

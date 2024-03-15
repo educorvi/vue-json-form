@@ -1,7 +1,8 @@
 <template>
     <div :class="cssClass">
-        <label :for="control_id_string">{{ label }}</label>
-        <component :is="controlType" />
+        <component :is="FormFieldWrapper" :label="label" :label-for="control_id_string">
+            <component :is="controlType" />
+        </component>
     </div>
 </template>
 
@@ -15,8 +16,11 @@ import { layoutProviderKey, jsonElementProviderKey } from '@/components/Provider
 import { computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
+import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 const { jsonSchema } = storeToRefs(useFormStructureStore());
+
+const FormFieldWrapper = getComponent('FormFieldWrapper');
 
 const props = defineProps<{
     /**
@@ -31,8 +35,8 @@ let additionalHiddenClass = props.layoutElement.options?.hidden ? 'hiddenControl
 
 const cssClass = computedCssClass(props.layoutElement, 'vjf_control', additionalHiddenClass);
 
-const jsonElement = computed(() =>
-    jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope)
+const jsonElement = computed(
+    () => jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope) as CoreSchemaMetaSchema
 );
 
 provide(layoutProviderKey, props.layoutElement);
@@ -53,6 +57,13 @@ const controlType = computed(() => {
         } else {
             return getComponent('SelectControl');
         }
+    }
+
+    /**
+     * Display arrays with item enums as CheckboxGroup
+     */
+    if (jsonElement.value.items?.enum !== undefined && jsonElement.value.type === 'array') {
+        return getComponent('CheckboxGroupControl');
     }
 
     /**

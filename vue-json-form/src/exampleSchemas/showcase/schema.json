@@ -42,9 +42,20 @@
             "type": "integer",
             "maximum": 5
         },
-        "weekday": {
+        "weekdays": {
             "type": "array",
-            "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                ]
+            }
         },
         "recurrence_interval": {
             "title": "Week Interval",

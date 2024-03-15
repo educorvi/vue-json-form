@@ -36,4 +36,7 @@ export const bootstrapComponents: RenderInterface = {
     TagsControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/TagsControl.vue')
     ),
+    FormFieldWrapper: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/FormFieldWrapper.vue')
+    ),
 };
