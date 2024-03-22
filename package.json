@@ -8,10 +8,13 @@
   ],
   "packageManager": "yarn@3.6.3",
   "devDependencies": {
-    "husky": "^9.0.10"
+    "husky": "^9.0.10",
+    "typedoc": "^0.25.12",
+    "typescript": "^5.4.3"
   },
   "scripts": {
     "prepare": "husky",
-    "pre-commit": "yarn workspaces foreach run pre-commit"
+    "doc": "typedoc --out ./docs/ui-schema vue-json-form/src/typings/ui-schema.d.ts",
+    "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit"
   }
 }

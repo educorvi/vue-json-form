@@ -4,41 +4,57 @@
     "title": "ShowOn property",
     "type": "object",
     "description": "Show field depending on value of other field",
-    "properties": {
-        "scope": {
-            "type": "string",
-            "format": "json-pointer",
-            "description": "The field this field depends on"
-        },
-        "type": {
-            "type": "string",
-            "description": "Condition to be applied",
-            "title": "ShowOn function type",
-            "enum": [
-                "EQUALS",
-                "NOT_EQUALS",
-                "GREATER",
-                "GREATER_OR_EQUAL",
-                "SMALLER_OR_EQUAL",
-                "SMALLER",
-                "LONGER"
-            ]
-        },
-        "referenceValue": {
-            "description": "The value the field from scope is compared against",
-            "oneOf": [
-                {
-                    "type": "boolean"
+    "$defs": {
+        "legacyShowOn": {
+            "title": "Legacy ShowOn property",
+            "type": "object",
+            "description": "Legacy Variant of defining ShowOn property",
+            "properties": {
+                "scope": {
+                    "type": "string",
+                    "format": "json-pointer",
+                    "description": "The field this field depends on"
                 },
-                {
-                    "type": "string"
+                "type": {
+                    "type": "string",
+                    "description": "Condition to be applied",
+                    "title": "ShowOn function type",
+                    "enum": [
+                        "EQUALS",
+                        "NOT_EQUALS",
+                        "GREATER",
+                        "GREATER_OR_EQUAL",
+                        "SMALLER_OR_EQUAL",
+                        "SMALLER",
+                        "LONGER"
+                    ]
                 },
-                {
-                    "type": "number"
+                "referenceValue": {
+                    "description": "The value the field from scope is compared against",
+                    "oneOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
                 }
-            ]
+            },
+            "required": ["type", "scope", "referenceValue"],
+            "additionalProperties": false
         }
     },
-    "required": ["type", "scope", "referenceValue"],
-    "additionalProperties": false
+    "oneOf": [
+        {
+            "$ref": "#/$defs/legacyShowOn"
+        },
+        {
+            "description": "Rita Rule\nSee https://educorvi.github.io/rita/rita-core/docs/schema/#/rule",
+            "$ref": "https://raw.githubusercontent.com/educorvi/rita/main/rita-core/src/schema/rule.json"
+        }
+    ]
 }

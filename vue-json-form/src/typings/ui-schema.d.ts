@@ -11,9 +11,18 @@
 export type UISchema = Layout;
 export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
+ * Gives multiple options to configure the element
+ */
+export type Options = (TagsOptions | EnumOptions | FileUploadOptions | InputOptions) &
+    ControlFormattingOptions;
+/**
  * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
  */
-export type SwitchEs = boolean;
+export type Switches = boolean;
+/**
+ * Show field depending on value of other field
+ */
+export type ShowOnProperty = LegacyShowOnProperty | Rule;
 /**
  * Condition to be applied
  */
@@ -25,6 +34,21 @@ export type ShowOnFunctionType =
     | 'SMALLER_OR_EQUAL'
     | 'SMALLER'
     | 'LONGER';
+export type Formula = Operator | Atom | Plugin | Comparison | Quantifier;
+export type Operator = NonUnaryOperator | UnaryOperator;
+/**
+ * @minItems 2
+ */
+export type MultipleArguments = [Formula, Formula, ...Formula[]];
+/**
+ * @minItems 1
+ * @maxItems 1
+ */
+export type UnaryArguments = [Formula];
+/**
+ * This can either be an Atom that references an array in the data, or an array of rules
+ */
+export type DataArray = Formula[] | Atom;
 /**
  * Submit or Reset
  */
@@ -93,39 +117,18 @@ export interface Control {
     options?: Options;
     showOn?: ShowOnProperty;
 }
-/**
- * Gives multiple options to configure the element
- */
-export interface Options {
+export interface TagsOptions {
     /**
-     * Defines whether the fields label is activated
+     * Will be rendered as tags-Field
      */
-    label?: boolean;
-    /**
-     * If set true, textarea will be shown instead of textfield.
-     *  Alternatively can be set to the number of wanted lines
-     */
-    multi?: boolean | number;
-    /**
-     * If set to true, numberfield will appear as star-rating-field
-     */
-    rating?: boolean;
-    /**
-     * Will be shown as placeholder in form fields, if supported by field
-     */
-    placeholder?: string;
-    /**
-     * Will be shown as placeholder in file upload field when file drag and drop
-     */
-    'drop-placeholder'?: string;
-    /**
-     * Allows the upload of multiple files with fileupload
-     */
-    allowMultipleFiles?: boolean;
-    /**
-     * The accepted File Types
-     */
-    acceptedFileType?: string;
+    tags?: {
+        enabled?: boolean;
+        pills?: boolean;
+        [k: string]: unknown;
+    };
+    [k: string]: unknown;
+}
+export interface EnumOptions {
     enumTitles?: TitlesForEnum;
     /**
      * If set to true, a group of radiobuttons will be shown instead of the select field
@@ -135,35 +138,7 @@ export interface Options {
      * Radiobutton-/Checkbox group will be stacked if set to true
      */
     stacked?: boolean;
-    switch?: SwitchEs;
-    /**
-     * Will be appended to field
-     */
-    append?: string;
-    /**
-     * Will be rendered as tags-Field
-     */
-    tags?: {
-        enabled?: boolean;
-        pills?: boolean;
-        [k: string]: unknown;
-    };
-    /**
-     * Specifies what should be autocompleted by the browser. Possible values are listed here: https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
-     */
-    autocomplete?: string;
-    /**
-     * Set the text-align of input fields
-     */
-    textAlign?: 'left' | 'right' | 'center' | 'start' | 'end';
-    /**
-     * The Controls CSS classes
-     */
-    cssClass?: string;
-    /**
-     * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
-     */
-    hidden?: boolean;
+    switch?: Switches;
     [k: string]: unknown;
 }
 /**
@@ -176,10 +151,120 @@ export interface TitlesForEnum {
      */
     [k: string]: string;
 }
+export interface FileUploadOptions {
+    /**
+     * Allows the upload of multiple files with fileupload
+     */
+    allowMultipleFiles?: boolean;
+    /**
+     * The accepted File Types
+     */
+    acceptedFileType?: string;
+    [k: string]: unknown;
+}
 /**
- * Show field depending on value of other field
+ * Options for text fields
  */
-export interface ShowOnProperty {
+export interface InputOptions {
+    /**
+     * If set true, textarea will be shown instead of textfield.
+     *  Alternatively can be set to the number of wanted lines
+     */
+    multi?: boolean | number;
+    /**
+     * Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+     */
+    autocomplete?:
+        | 'off'
+        | 'on'
+        | 'name'
+        | 'honorific-prefix'
+        | 'given-name'
+        | 'additional-name'
+        | 'family-name'
+        | 'honorific-suffix'
+        | 'nickname'
+        | 'email'
+        | 'username'
+        | 'new-password'
+        | 'current-password'
+        | 'one-time-code'
+        | 'organization-title'
+        | 'organization'
+        | 'street-address'
+        | 'shipping'
+        | 'billing'
+        | 'address-line1'
+        | 'address-line2'
+        | 'address-line3'
+        | 'address-level4'
+        | 'address-level3'
+        | 'address-level2'
+        | 'address-level1'
+        | 'country'
+        | 'country-name'
+        | 'postal-code'
+        | 'cc-name'
+        | 'cc-given-name'
+        | 'cc-additional-name'
+        | 'cc-family-name'
+        | 'cc-number'
+        | 'cc-exp'
+        | 'cc-exp-month'
+        | 'cc-exp-year'
+        | 'cc-csc'
+        | 'cc-type'
+        | 'transaction-currency'
+        | 'transaction-amount'
+        | 'language'
+        | 'bday'
+        | 'bday-day'
+        | 'bday-month'
+        | 'bday-year'
+        | 'sex'
+        | 'tel'
+        | 'tel-country-code'
+        | 'tel-national'
+        | 'tel-area-code'
+        | 'tel-local'
+        | 'tel-extension'
+        | 'impp'
+        | 'url'
+        | 'photo'
+        | 'webauthn';
+    /**
+     * Set the text-align of input fields
+     */
+    textAlign?: 'left' | 'right' | 'center' | 'start' | 'end';
+    [k: string]: unknown;
+}
+export interface ControlFormattingOptions {
+    /**
+     * Defines whether the fields label is shown
+     */
+    label?: boolean;
+    /**
+     * Will be shown as placeholder in form fields, if supported by field
+     */
+    placeholder?: string;
+    /**
+     * The Controls CSS classes
+     */
+    cssClass?: string;
+    /**
+     * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
+     */
+    hidden?: boolean;
+    /**
+     * Will be appended to field
+     */
+    append?: string;
+    [k: string]: unknown;
+}
+/**
+ * Legacy Variant of defining ShowOn property
+ */
+export interface LegacyShowOnProperty {
     /**
      * The field this field depends on
      */
@@ -189,6 +274,162 @@ export interface ShowOnProperty {
      * The value the field from scope is compared against
      */
     referenceValue: boolean | string | number;
+}
+/**
+ * Rita Rule
+ * See https://educorvi.github.io/rita/rita-core/docs/schema/#/rule
+ */
+export interface Rule {
+    id: string;
+    /**
+     * A comment about what the rule does
+     */
+    comment?: string;
+    rule: Formula;
+    [k: string]: unknown;
+}
+/**
+ * Requires at least two arguments
+ */
+export interface NonUnaryOperator {
+    type: 'and' | 'or';
+    arguments: MultipleArguments;
+}
+/**
+ * Requires exactly on parameter
+ */
+export interface UnaryOperator {
+    type: 'not';
+    arguments: UnaryArguments;
+}
+/**
+ * Describes an atom. Those can be used to read Data
+ */
+export interface Atom {
+    type: 'atom';
+    /**
+     * The path to the atom in the data
+     */
+    path: string;
+    /**
+     * Must be set to true if the atom should be parsed as a date
+     */
+    isDate?: boolean;
+}
+/**
+ * Describes an plugin
+ */
+export interface Plugin {
+    type: 'plugin';
+    /**
+     * The plugins name
+     */
+    name: string;
+    formula: Formula;
+    /**
+     * The plugins options
+     */
+    options?: {
+        [k: string]: unknown;
+    };
+}
+/**
+ * Compare strings, dates or numbers with each other
+ */
+export interface Comparison {
+    type: 'comparison';
+    /**
+     * Selects how the arguments should be compared
+     */
+    operation: 'greater' | 'smaller' | 'greaterOrEqual' | 'smallerOrEqual' | 'equal';
+    /**
+     * Indicates if dates are compared
+     */
+    dates?: boolean;
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    arguments: [
+        Atom | Macro | number | string | string | Calculation | DateCalculation,
+        Atom | Macro | number | string | string | Calculation | DateCalculation,
+    ];
+}
+/**
+ * Describes macros. Available macros are `now` and `length`
+ */
+export interface Macro {
+    type: 'macro';
+    macro: Now | Length;
+}
+/**
+ * Returns the current time
+ */
+export interface Now {
+    type?: 'now';
+}
+/**
+ * Returns the length of an array
+ */
+export interface Length {
+    type?: 'length';
+    array?: Atom;
+}
+/**
+ * Calculates a result
+ */
+export interface Calculation {
+    type: 'calculation';
+    /**
+     * The mathematical operation to be calculated. Modulo refers to the function mod(a,b)=a-(floor(a/b)*b)
+     */
+    operation: 'add' | 'subtract' | 'multiply' | 'divide' | 'modulo';
+    /**
+     * @minItems 2
+     */
+    arguments: [
+        Atom | Macro | number | Calculation | DateCalculation,
+        Atom | Macro | number | Calculation | DateCalculation,
+        ...(Atom | Macro | number | Calculation | DateCalculation)[],
+    ];
+}
+/**
+ * Calculations involving dates
+ */
+export interface DateCalculation {
+    type: 'dateCalculation';
+    /**
+     * Add/subtract a time interval to/from a date or subtract two dates to get the interval between them
+     */
+    operation: 'add' | 'subtract';
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    arguments: [
+        Atom | Macro | number | string | Calculation | DateCalculation,
+        Atom | Macro | number | string | Calculation | DateCalculation,
+    ];
+    /**
+     * What unit time intervals given as arguments will be in.
+     */
+    dateCalculationUnit?: 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years';
+    /**
+     * What unit time intervals representing the result will be in.
+     */
+    dateResultUnit?: 'seconds' | 'minutes' | 'hours' | 'days' | 'months' | 'years';
+}
+/**
+ * Quantifiers that can be used to evaluate rules on arrays in Data
+ */
+export interface Quantifier {
+    type: 'forall' | 'exists';
+    array: DataArray;
+    /**
+     * This is a placeholder name for the current array object. This is the property name with wich you can reference the current value in the subsequent rule
+     */
+    placeholder: string;
+    rule: Formula;
 }
 /**
  * Some HTML to be rendered in the form
