@@ -7,7 +7,7 @@
   ],
   "types": "dist/vue-json-form.d.ts",
   "scripts": {
-    "dev": "vite -c dev_app.vite.config.ts",
+    "dev": "vite -c dev_app.vite.config.ts --host",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",

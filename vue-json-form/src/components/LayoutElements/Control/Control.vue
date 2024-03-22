@@ -34,7 +34,11 @@ const control_id_string = controlID(props.layoutElement);
 
 let additionalHiddenClass = props.layoutElement.options?.hidden ? 'hiddenControl' : '';
 
-const cssClass = computedCssClass(props.layoutElement, 'vjf_control', additionalHiddenClass);
+const cssClass = computedCssClass(
+    props.layoutElement,
+    'vjf_control mb-3 w-100',
+    additionalHiddenClass
+);
 
 const jsonElement = computed(
     () => jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope) as CoreSchemaMetaSchema
@@ -53,7 +57,10 @@ const controlType = computed(() => {
      * Display enums as Radiobuttons or Select
      */
     if (jsonElement.value.enum !== undefined && jsonElement.value.type !== 'array') {
-        if (props.layoutElement.options?.radiobuttons || props.layoutElement.options?.buttons) {
+        if (
+            props.layoutElement.options?.displayAs === 'radiobuttons' ||
+            props.layoutElement.options?.displayAs === 'buttons'
+        ) {
             return getComponent('RadiobuttonControl');
         } else {
             return getComponent('SelectControl');
@@ -87,13 +94,6 @@ const controlType = computed(() => {
      */
     if (jsonElement.value.type === 'string' && jsonElement.value.format === 'uri') {
         return getComponent('FileControl');
-    }
-
-    /**
-     * Display strings with format datetime as DateTimeControl
-     */
-    if (jsonElement.value.type === 'string' && jsonElement.value.format === 'date-time') {
-        return getComponent('DateTimeControl');
     }
 
     switch (jsonElement.value.type) {

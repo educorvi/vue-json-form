@@ -1,169 +1,172 @@
 {
-    "$schema": "../../schemas/ui/ui.schema.json",
+  "$schema": "../../schemas/ui/ui.schema.json",
+  "version": "2.0",
+  "layout": {
     "type": "VerticalLayout",
     "elements": [
-        {
-            "type": "Control",
-            "scope": "/properties/done",
-            "options": {
-                "switch": true
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/title"
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/name",
-            "options": {
-                "placeholder": "Full Name",
-                "autocomplete": "name"
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/fancyness",
-            "options": {
-                "radiobuttons": true,
-                "stacked": true
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/fileupload",
-            "options": {
-                "acceptedFileType": "*"
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/group_selector",
-            "options": {
-                "buttons": "outline-primary",
-                "label": false
-            }
-        },
-        {
-            "type": "Group",
-            "label": "Group 1",
-            "showOn": {
-                "type": "EQUALS",
-                "scope": "/properties/group_selector",
-                "referenceValue": "Groups"
-            },
-            "elements": [
-                {
-                    "type": "HorizontalLayout",
-                    "label": "Great Gruppe",
-                    "elements": [
-                        {
-                            "type": "Control",
-                            "scope": "/properties/due_date"
-                        },
-                        {
-                            "type": "Control",
-                            "scope": "/properties/rating",
-                            "options": {
-                                "rating": true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "Control",
-                    "scope": "/properties/description",
-                    "options": {
-                        "multi": true,
-                        "placeholder": "Enter a nice description"
-                    }
-                },
-                {
-                    "type": "Control",
-                    "scope": "/properties/teststring"
-                }
-            ]
-        },
-        {
-            "type": "Group",
-            "label": "Group 2",
-            "showOn": {
-                "type": "EQUALS",
-                "scope": "/properties/group_selector",
-                "referenceValue": "Groups"
-            },
-            "elements": [
-                {
-                    "type": "HorizontalLayout",
-                    "elements": [
-                        {
-                            "type": "Control",
-                            "scope": "/properties/weekdays",
-                            "options": {
-                                "stacked": false
-                            }
-                        },
-                        {
-                            "type": "Control",
-                            "scope": "/properties/recurrence_interval",
-                            "options": {
-                                "textAlign": "right"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "Control",
-                    "scope": "/properties/testArray"
-                }
-            ]
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/testObject",
-            "showOn": {
-                "type": "EQUALS",
-                "scope": "/properties/group_selector",
-                "referenceValue": "Object"
-            }
-        },
-        {
-            "type": "Divider"
-        },
-        {
-            "type": "HTML",
-            "htmlData": "<h3>Ich bin ein HTML Text</h3>"
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/tags",
-            "options": {
-                "tags": {
-                    "enabled": true,
-                    "variant": "primary"
-                }
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/hiddenDateTime",
-            "options": {
-                "hidden": true
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/hiddenDate",
-            "options": {
-                "hidden": true
-            }
-        },
-        {
-            "type": "Control",
-            "scope": "/properties/hiddenTime",
-            "options": {
-                "hidden": true
-            }
+      {
+        "type": "Control",
+        "scope": "/properties/done",
+        "options": {
+          "switch": true
         }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/title"
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/name",
+        "options": {
+          "placeholder": "Full Name",
+          "autocomplete": "name"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/fancyness",
+        "options": {
+          "displayAs": "radiobuttons",
+          "stacked": true
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/fileupload",
+        "options": {
+          "acceptedFileType": "*"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/group_selector",
+        "options": {
+          "displayAs": "buttons",
+          "buttonVariant": "outline-primary",
+          "label": false
+        }
+      },
+      {
+        "type": "Group",
+        "label": "Group 1",
+        "showOn": {
+          "type": "EQUALS",
+          "scope": "/properties/group_selector",
+          "referenceValue": "Groups"
+        },
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "label": "Great Gruppe",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "/properties/due_date"
+              },
+              {
+                "type": "Control",
+                "scope": "/properties/rating",
+                "options": {
+                }
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/description",
+            "options": {
+              "multi": true,
+              "placeholder": "Enter a nice description"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/teststring"
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "label": "Group 2",
+        "showOn": {
+          "type": "EQUALS",
+          "scope": "/properties/group_selector",
+          "referenceValue": "Groups"
+        },
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "/properties/weekdays",
+                "options": {
+                  "stacked": false
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "/properties/recurrence_interval",
+                "options": {
+                  "textAlign": "right"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/testArray"
+          }
+        ]
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/testObject",
+        "showOn": {
+          "type": "EQUALS",
+          "scope": "/properties/group_selector",
+          "referenceValue": "Object"
+        }
+      },
+      {
+        "type": "Divider"
+      },
+      {
+        "type": "HTML",
+        "htmlData": "<h3>Ich bin ein HTML Text</h3>"
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/tags",
+        "options": {
+          "tags": {
+            "enabled": true,
+            "variant": "primary"
+          }
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/hiddenDateTime",
+        "options": {
+          "hidden": true
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/hiddenDate",
+        "options": {
+          "hidden": true
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/hiddenTime",
+        "options": {
+          "hidden": true
+        }
+      }
     ]
+  }
 }

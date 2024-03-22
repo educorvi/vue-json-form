@@ -70,6 +70,7 @@
     },
     "controlFormattingOptions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "label": {
           "type": "boolean",
@@ -100,6 +101,7 @@
     },
     "tagsOptions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "tags": {
           "type": "object",
@@ -118,42 +120,98 @@
       }
     },
     "enumOptions": {
-      "type": "object",
-      "properties": {
-        "enumTitles": {
+      "allOf": [
+        {
+          "title": "Common Enum Options",
+          "additionalProperties": false,
           "type": "object",
-          "title": "Titles for enum",
-          "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
-          "propertyNames": {
-            "type": "string",
-            "minLength": 1
-          },
-          "patternProperties": {
-            "": {
-              "type": "string",
-              "minLength": 1
+          "properties": {
+            "enumTitles": {
+              "type": "object",
+              "title": "Titles for enum",
+              "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1
+              },
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "stacked": {
+              "type": "boolean",
+              "description": "Radiobutton-/Checkbox group will be stacked if set to true",
+              "default": false
+            },
+            "switch": {
+              "type": "boolean",
+              "title": "Switches",
+              "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
             }
           }
         },
-        "radiobuttons": {
-          "type": "boolean",
-          "description": "If set to true, a group of radiobuttons will be shown instead of the select field",
-          "default": false
-        },
-        "stacked": {
-          "type": "boolean",
-          "description": "Radiobutton-/Checkbox group will be stacked if set to true",
-          "default": false
-        },
-        "switch": {
-          "type": "boolean",
-          "title": "Switches",
-          "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "displayAs": {
+                  "type": "string",
+                  "description": "Choose how an enum should be displayed",
+                  "enum": [
+                    "select",
+                    "radiobuttons"
+                  ],
+                  "default": "select"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "displayAs"
+              ],
+              "properties": {
+                "displayAs": {
+                  "type": "string",
+                  "description": "Choose how an enum should be displayed",
+                  "enum": [
+                    "buttons"
+                  ]
+                },
+                "buttonVariant": {
+                  "type": "string",
+                  "description": "The variant of the buttons",
+                  "enum": [
+                    "primary",
+                    "secondary",
+                    "success",
+                    "danger",
+                    "warning",
+                    "info",
+                    "outline-primary",
+                    "outline-secondary",
+                    "outline-success",
+                    "outline-danger",
+                    "outline-warning",
+                    "outline-info"
+                  ],
+                  "default": "primary"
+                }
+              }
+            }
+          ]
         }
-      }
+      ]
     },
     "fileUploadOptions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "allowMultipleFiles": {
           "type": "boolean",
@@ -172,22 +230,26 @@
     },
     "inputOptions": {
       "type": "object",
+      "additionalProperties": false,
       "description": "Options for text fields",
       "properties": {
         "format": {
           "description": "Format for string fields",
           "type": "string",
           "enum": [
+            "text",
             "time",
             "date",
-            "date-time",
+            "datetime-local",
             "email",
             "password",
             "search",
             "url",
             "tel",
-            "color"
-          ]
+            "color",
+            "hidden"
+          ],
+          "default": "text"
         },
         "multi": {
           "oneOf": [
@@ -223,6 +285,7 @@
       "type": "object",
       "title": "Options",
       "description": "Gives multiple options to configure the element",
+      "additionalProperties": false,
       "allOf": [
         {
           "oneOf": [
@@ -242,6 +305,12 @@
         },
         {
           "$ref": "#/definitions/controlFormattingOptions"
+        },
+        {
+          "title": "customOptions",
+          "type": "object",
+          "description": "Custom options for the control",
+          "additionalProperties": true
         }
       ]
     },

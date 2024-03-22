@@ -12,8 +12,6 @@ export interface RenderInterface {
 
     CheckboxGroupControl?: Component;
 
-    DateTimeControl?: Component;
-
     DefaultControl?: Component;
 
     FileControl?: Component;

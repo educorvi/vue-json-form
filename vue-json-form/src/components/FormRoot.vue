@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-const SUPPORTED_UISCHEMA_VERSION = '2';
-
 import { watch, onMounted, provide, shallowRef } from 'vue';
 import { useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';

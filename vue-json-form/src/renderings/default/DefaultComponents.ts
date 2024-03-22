@@ -12,9 +12,6 @@ export const defaultComponents: Required<RenderInterface> = {
     CheckboxGroupControl: defineAsyncComponent(
         () => import('@/renderings/default/controls/CheckboxGroupControl.vue')
     ),
-    DateTimeControl: defineAsyncComponent(
-        () => import('@/renderings/default/controls/DateTimeControl.vue')
-    ),
     DefaultControl: defineAsyncComponent(
         () => import('@/renderings/default/controls/DefaultControl.vue')
     ),

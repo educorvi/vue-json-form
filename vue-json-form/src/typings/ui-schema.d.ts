@@ -9,7 +9,44 @@ export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button |
 /**
  * Gives multiple options to configure the element
  */
-export type Options = (TagsOptions | EnumOptions | FileUploadOptions | InputOptions) & ControlFormattingOptions;
+export type Options = (
+  | TagsOptions
+  | (CommonEnumOptions &
+      (
+        | {
+            /**
+             * Choose how an enum should be displayed
+             */
+            displayAs?: "select" | "radiobuttons";
+          }
+        | {
+            /**
+             * Choose how an enum should be displayed
+             */
+            displayAs: "buttons";
+            /**
+             * The variant of the buttons
+             */
+            buttonVariant?:
+              | "primary"
+              | "secondary"
+              | "success"
+              | "danger"
+              | "warning"
+              | "info"
+              | "outline-primary"
+              | "outline-secondary"
+              | "outline-success"
+              | "outline-danger"
+              | "outline-warning"
+              | "outline-info";
+          }
+      ))
+  | FileUploadOptions
+  | InputOptions
+) &
+  ControlFormattingOptions &
+  CustomOptions;
 /**
  * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
  */
@@ -62,11 +99,14 @@ export type Elements = LayoutElement[];
  */
 export interface UISchema {
   /**
+   * The Metaschema of the UI Schema
+   */
+  $schema?: string;
+  /**
    * Version of the UI Schema. Changes in a major version are backwards compatible, so a parser for version two must be compatible with UI Schemas of version 2.x but not version 1.x!
    */
   version: string;
   layout: Layout;
-  [k: string]: unknown;
 }
 /**
  * The different layouts
@@ -119,20 +159,14 @@ export interface TagsOptions {
     pills?: boolean;
     [k: string]: unknown;
   };
-  [k: string]: unknown;
 }
-export interface EnumOptions {
+export interface CommonEnumOptions {
   enumTitles?: TitlesForEnum;
-  /**
-   * If set to true, a group of radiobuttons will be shown instead of the select field
-   */
-  radiobuttons?: boolean;
   /**
    * Radiobutton-/Checkbox group will be stacked if set to true
    */
   stacked?: boolean;
   switch?: Switches;
-  [k: string]: unknown;
 }
 /**
  * If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
@@ -153,7 +187,6 @@ export interface FileUploadOptions {
    * The accepted File Types
    */
   acceptedFileType?: string;
-  [k: string]: unknown;
 }
 /**
  * Options for text fields
@@ -162,7 +195,18 @@ export interface InputOptions {
   /**
    * Format for string fields
    */
-  format?: "time" | "date" | "date-time" | "email" | "password" | "search" | "url" | "tel" | "color";
+  format?:
+    | "text"
+    | "time"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "password"
+    | "search"
+    | "url"
+    | "tel"
+    | "color"
+    | "hidden";
   /**
    * If set true, textarea will be shown instead of textfield.
    *  Alternatively can be set to the number of wanted lines
@@ -229,7 +273,6 @@ export interface InputOptions {
     | "url"
     | "photo"
     | "webauthn";
-  [k: string]: unknown;
 }
 export interface ControlFormattingOptions {
   /**
@@ -252,6 +295,11 @@ export interface ControlFormattingOptions {
    * Will be appended to field
    */
   append?: string;
+}
+/**
+ * Custom options for the control
+ */
+export interface CustomOptions {
   [k: string]: unknown;
 }
 /**

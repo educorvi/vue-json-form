@@ -3,14 +3,11 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { defaultComponents } from '@/renderings/default/DefaultComponents';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
+const { layoutElement } = injectJsonData();
 const id = controlID(layoutElement);
-
-const DateTimeControl = defaultComponents.DateTimeControl;
 </script>
 
 <template>
@@ -19,9 +16,6 @@ const DateTimeControl = defaultComponents.DateTimeControl;
         v-model="formData[layoutElement.scope]"
         class="vjf_textarea"
         :id="id"
-    />
-    <date-time-control
-        v-else-if="(layoutElement.options?.format || jsonElement.format) === 'date-time'"
     />
     <input v-else type="text" v-model="formData[layoutElement.scope]" class="vjf_input" :id="id" />
 </template>

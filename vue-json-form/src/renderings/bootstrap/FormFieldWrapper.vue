@@ -8,14 +8,22 @@ const props = defineProps<{
     labelFor: string;
 }>();
 
-const { jsonElement } = injectJsonData();
+const { jsonElement, layoutElement } = injectJsonData();
 const hideLabel = computed(() => {
-    return jsonElement.type === 'boolean';
+    return (
+        jsonElement.type === 'boolean' ||
+        jsonElement.type === 'object' ||
+        layoutElement.options?.label === false
+    );
 });
 </script>
 
 <template>
-    <BFormGroup :label="hideLabel ? '' : props.label" :label-for="hideLabel ? '' : props.labelFor">
+    <BFormGroup
+        :label="hideLabel ? '' : props.label"
+        :label-for="hideLabel ? '' : props.labelFor"
+        :description="jsonElement.description"
+    >
         <slot />
     </BFormGroup>
 </template>

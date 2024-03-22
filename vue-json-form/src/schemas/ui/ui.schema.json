@@ -5,6 +5,10 @@
     "description": "Schema for the UI Schema",
     "type": "object",
     "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "The Metaschema of the UI Schema"
+        },
         "version": {
             "type": "string",
             "examples": ["2.1"],
@@ -15,5 +19,6 @@
             "$ref": "layout.schema.json"
         }
     },
-    "required": ["version", "layout"]
+    "required": ["version", "layout"],
+    "additionalProperties": false
 }

@@ -10,8 +10,6 @@ const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement } = injectJsonData();
 const id = controlID(layoutElement);
-
-const DateTimeControl = bootstrapComponents.DateTimeControl;
 </script>
 
 <template>
@@ -21,12 +19,13 @@ const DateTimeControl = bootstrapComponents.DateTimeControl;
         class="vjf_textarea"
         :id="id"
     />
-    <date-time-control
-        v-else-if="(layoutElement.options?.format || jsonElement.format) === 'date-time'"
-    />
     <b-form-input
         v-else
-        type="text"
+        :type="
+            layoutElement.options?.type ||
+            jsonElement.format?.replace('date-time', 'datetime-local') ||
+            'text'
+        "
         v-model="formData[layoutElement.scope]"
         class="vjf_input"
         :id="id"

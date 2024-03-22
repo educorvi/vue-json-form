@@ -1,5 +1,5 @@
 import type { LayoutElement, ShowOnProperty } from '@/typings/ui-schema';
-import { mapUUID } from '@/CommonFunctions';
+import { mapUUID } from '@/Commons';
 
 /**
  * A layout element with child elements

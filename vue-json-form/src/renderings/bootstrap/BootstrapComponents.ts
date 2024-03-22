@@ -12,9 +12,6 @@ export const bootstrapComponents: RenderInterface = {
     CheckboxGroupControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/CheckboxGroupControl.vue')
     ),
-    DateTimeControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/DateTimeControl.vue')
-    ),
     FileControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/FileControl.vue')
     ),
