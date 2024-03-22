@@ -4,7 +4,10 @@ import { ref } from 'vue';
 import type { Layout, UISchema } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { RenderInterface } from '@/RenderInterface';
-import { defaultComponents } from '@/renderings/default/DefaultComponents';
+import { defaultComponents as defaultCompImport } from '@/renderings/default/DefaultComponents';
+import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
+
+const defaultComponents: Required<RenderInterface> = defaultCompImport;
 
 export const useFormStructureStore = defineStore('formStructure', () => {
     const jsonSchema: Ref<CoreSchemaMetaSchema | null> = ref(null);

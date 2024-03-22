@@ -39,4 +39,5 @@ export const defaultComponents: Required<RenderInterface> = {
     FormFieldWrapper: defineAsyncComponent(
         () => import('@/renderings/default/FormFieldWrapper.vue')
     ),
+    ErrorViewer: defineAsyncComponent(() => import('@/renderings/default/ErrorViewer.vue')),
 };

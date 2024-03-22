@@ -29,4 +29,6 @@ export interface RenderInterface {
     TagsControl?: Component;
 
     FormFieldWrapper?: Component;
+
+    ErrorViewer?: Component;
 }

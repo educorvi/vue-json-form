@@ -13,7 +13,8 @@ const hideLabel = computed(() => {
     return (
         jsonElement.type === 'boolean' ||
         jsonElement.type === 'object' ||
-        layoutElement.options?.label === false
+        layoutElement.options?.label === false ||
+        (jsonElement.type === 'array' && !jsonElement.enum)
     );
 });
 </script>

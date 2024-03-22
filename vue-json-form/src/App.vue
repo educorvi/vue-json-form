@@ -6,7 +6,7 @@
                 :json-schema="jsonSchema"
                 :on-submit-form="console.log"
                 :ui-schema="uiSchema"
-                :render-interface="components"
+                :render-interface="bootstrapComponents"
             >
             </FormRoot>
         </div>
