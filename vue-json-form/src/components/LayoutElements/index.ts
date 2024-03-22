@@ -1,4 +1,4 @@
-import Control from '@/components/LayoutElements/Control.vue';
+import Control from '@/components/LayoutElements/Control/Control.vue';
 import Divider from '@/components/LayoutElements/Divider.vue';
 import Group from '@/components/LayoutElements/Group.vue';
 import HorizontalLayout from '@/components/LayoutElements/HorizontalLayout.vue';

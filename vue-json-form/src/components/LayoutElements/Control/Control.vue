@@ -17,6 +17,7 @@ import { computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import { isTagsConfig } from '@/components/LayoutElements/Control/optionsParser';
 
 const { jsonSchema } = storeToRefs(useFormStructureStore());
 
@@ -62,14 +63,22 @@ const controlType = computed(() => {
     /**
      * Display arrays with item enums as CheckboxGroup
      */
-    if (jsonElement.value.items?.enum !== undefined && jsonElement.value.type === 'array') {
+    if (
+        typeof jsonElement.value.items === 'object' &&
+        'enum' in jsonElement.value.items &&
+        jsonElement.value.type === 'array'
+    ) {
         return getComponent('CheckboxGroupControl');
     }
 
     /**
      * Display arrays as Tags if enabled
      */
-    if (jsonElement.value.type === 'array' && props.layoutElement.options?.tags?.enabled) {
+    if (
+        jsonElement.value.type === 'array' &&
+        isTagsConfig(props.layoutElement.options) &&
+        props.layoutElement.options?.tags?.enabled
+    ) {
         return getComponent('TagsControl');
     }
 

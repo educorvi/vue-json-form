@@ -8,8 +8,8 @@
 //
 // app.mount('#app');
 
-import type { RenderInterface } from './RenderInterface';
-export type { RenderInterface };
+export type { RenderInterface } from './RenderInterface';
+// export type * from '@/typings/ui-schema';
 
 export * from '@/renderings/default/DefaultComponents';
 export * from '@/renderings/bootstrap/BootstrapComponents';
@@ -18,3 +18,4 @@ import VueJsonForm from '@/components/FormRoot.vue';
 export { VueJsonForm };
 
 import './RenderInterface';
+// import '@/typings/ui-schema';
