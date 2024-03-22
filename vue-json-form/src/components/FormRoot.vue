@@ -5,6 +5,8 @@
 </template>
 
 <script setup lang="ts">
+const SUPPORTED_UISCHEMA_VERSION = '2';
+
 import { watch, onMounted, provide, shallowRef } from 'vue';
 import { useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
@@ -64,14 +66,14 @@ function handleParsingError(error: Error) {
     console.error('Error parsing JSON Schema', error);
 }
 
-function validateJsonSchema(jsonSchema: Record<string, any>): jsonSchema is CoreSchemaMetaSchema {
-    //TODO
-    return true;
+function parseJsonSchema(jsonSchema: Record<string, any>): CoreSchemaMetaSchema {
+    //TODO: Validate and dereference
+    return jsonSchema as CoreSchemaMetaSchema;
 }
 
-function validateUiSchema(uiSchema: Record<string, any>): uiSchema is UISchema {
-    //TODO
-    return true;
+function parseUiSchema(uiSchema: Record<string, any>): UISchema {
+    //TODO: Validate and dereference
+    return uiSchema as UISchema;
 }
 
 function assignStoreData(
@@ -81,11 +83,8 @@ function assignStoreData(
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
-    if (!(validateJsonSchema(obj.jsonSchema) && validateUiSchema(obj.uiSchema))) {
-        throw new Error('Invalid JSON Schema or UI Schema');
-    }
-    storedJsonSchema.value = obj.jsonSchema;
-    storedUiSchema.value = obj.uiSchema;
+    storedJsonSchema.value = parseJsonSchema(obj.jsonSchema);
+    storedUiSchema.value = parseUiSchema(obj.uiSchema).layout;
     components.value = obj.renderInterface;
 }
 

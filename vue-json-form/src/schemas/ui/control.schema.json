@@ -179,11 +179,6 @@
                 },
                 "autocomplete": {
                     "$ref": "#/definitions/autocompleteValues"
-                },
-                "textAlign": {
-                    "type": "string",
-                    "enum": ["left", "right", "center", "start", "end"],
-                    "description": "Set the text-align of input fields"
                 }
             }
         }

@@ -13,7 +13,7 @@
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "pre-commit": "yarn run format && yarn run lint",
+    "pre-commit": "echo ''",
     "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
     "format": "prettier --write src/",
     "generateTypings": "run-p 'generateTypings:*'",

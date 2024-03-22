@@ -5,10 +5,6 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-/**
- * Schema for the UI Schema
- */
-export type UISchema = Layout;
 export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
  * Gives multiple options to configure the element
@@ -62,6 +58,17 @@ export type Text = string;
  */
 export type Elements = LayoutElement[];
 
+/**
+ * Schema for the UI Schema
+ */
+export interface UISchema {
+    /**
+     * Version of the UI Schema. Changes in a major version are backwards compatible, so a parser for version two must be compatible with UI Schemas of version 2.x but not version 1.x!
+     */
+    version: string;
+    layout: Layout;
+    [k: string]: unknown;
+}
 /**
  * The different layouts
  */
@@ -232,10 +239,6 @@ export interface InputOptions {
         | 'url'
         | 'photo'
         | 'webauthn';
-    /**
-     * Set the text-align of input fields
-     */
-    textAlign?: 'left' | 'right' | 'center' | 'start' | 'end';
     [k: string]: unknown;
 }
 export interface ControlFormattingOptions {
