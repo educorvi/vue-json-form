@@ -5,6 +5,26 @@
   "title": "Control",
   "description": "Contains a form element, e. g. a text input",
   "definitions": {
+    "variants": {
+      "type": "string",
+      "description": "Variants for colors",
+      "title": "Color Variants",
+      "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "danger",
+        "warning",
+        "info",
+        "outline-primary",
+        "outline-secondary",
+        "outline-success",
+        "outline-danger",
+        "outline-warning",
+        "outline-info"
+      ],
+      "default": "primary"
+    },
     "autocompleteValues": {
       "type": "string",
       "description": "Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
@@ -96,6 +116,11 @@
         "append": {
           "type": "string",
           "description": "Will be appended to field"
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Disables the field",
+          "default": false
         }
       }
     },
@@ -109,11 +134,15 @@
           "properties": {
             "enabled": {
               "type": "boolean",
+              "description": "Set to true to render the field as tags field",
               "default": false
             },
             "pills": {
               "type": "boolean",
               "default": false
+            },
+            "variant": {
+              "$ref": "#/definitions/variants"
             }
           }
         }
@@ -185,23 +214,7 @@
                   ]
                 },
                 "buttonVariant": {
-                  "type": "string",
-                  "description": "The variant of the buttons",
-                  "enum": [
-                    "primary",
-                    "secondary",
-                    "success",
-                    "danger",
-                    "warning",
-                    "info",
-                    "outline-primary",
-                    "outline-secondary",
-                    "outline-success",
-                    "outline-danger",
-                    "outline-warning",
-                    "outline-info"
-                  ],
-                  "default": "primary"
+                  "$ref": "#/definitions/variants"
                 }
               }
             }

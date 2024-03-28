@@ -24,22 +24,7 @@ export type Options = (
              * Choose how an enum should be displayed
              */
             displayAs: "buttons";
-            /**
-             * The variant of the buttons
-             */
-            buttonVariant?:
-              | "primary"
-              | "secondary"
-              | "success"
-              | "danger"
-              | "warning"
-              | "info"
-              | "outline-primary"
-              | "outline-secondary"
-              | "outline-success"
-              | "outline-danger"
-              | "outline-warning"
-              | "outline-info";
+            buttonVariant?: ColorVariants;
           }
       ))
   | FileUploadOptions
@@ -47,6 +32,22 @@ export type Options = (
 ) &
   ControlFormattingOptions &
   CustomOptions;
+/**
+ * Variants for colors
+ */
+export type ColorVariants =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "outline-primary"
+  | "outline-secondary"
+  | "outline-success"
+  | "outline-danger"
+  | "outline-warning"
+  | "outline-info";
 /**
  * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
  */
@@ -155,8 +156,12 @@ export interface TagsOptions {
    * Will be rendered as tags-Field
    */
   tags?: {
+    /**
+     * Set to true to render the field as tags field
+     */
     enabled?: boolean;
     pills?: boolean;
+    variant?: ColorVariants;
     [k: string]: unknown;
   };
 }
@@ -295,6 +300,10 @@ export interface ControlFormattingOptions {
    * Will be appended to field
    */
   append?: string;
+  /**
+   * Disables the field
+   */
+  disabled?: boolean;
 }
 /**
  * Custom options for the control
