@@ -8,14 +8,14 @@ import { BFormInput, BFormTextarea } from 'bootstrap-vue-next';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 </script>
 
 <template>
     <BFormTextarea
         v-if="layoutElement.options?.multi"
-        v-model="formData[layoutElement.scope]"
+        v-model="formData[savePath]"
         class="vjf_textarea"
         :id="id"
     />
@@ -26,7 +26,7 @@ const id = controlID(layoutElement);
             jsonElement.format?.replace('date-time', 'datetime-local') ||
             'text'
         "
-        v-model="formData[layoutElement.scope]"
+        v-model="formData[savePath]"
         class="vjf_input"
         :id="id"
     />

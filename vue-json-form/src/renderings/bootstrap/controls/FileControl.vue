@@ -6,12 +6,12 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 </script>
 
 <template>
-    <BFormFile v-model="formData[layoutElement.scope]" :id="id" class="vjf_file" />
+    <BFormFile v-model="formData[savePath]" :id="id" class="vjf_file" />
 </template>
 
 <style scoped></style>

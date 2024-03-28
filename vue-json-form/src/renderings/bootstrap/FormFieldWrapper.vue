@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BFormGroup } from 'bootstrap-vue-next';
+import { BFormGroup, BInputGroup, BInputGroupPrepend, BInputGroupAppend } from 'bootstrap-vue-next';
 import { computed } from 'vue';
 import { injectJsonData } from '@/computedProperties/json';
 
@@ -25,7 +25,17 @@ const hideLabel = computed(() => {
         :label-for="hideLabel ? '' : props.labelFor"
         :description="jsonElement.description"
     >
-        <slot />
+        <BInputGroup class="w-100">
+            <b-input-group-prepend>
+                <!--        Content is prepended to the input field-->
+                <slot name="prepend"></slot>
+            </b-input-group-prepend>
+            <slot />
+            <b-input-group-append>
+                <!--        Content is appended to the input field-->
+                <slot name="append" />
+            </b-input-group-append>
+        </BInputGroup>
     </BFormGroup>
 </template>
 

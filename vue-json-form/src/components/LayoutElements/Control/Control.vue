@@ -1,7 +1,13 @@
 <template>
     <div :class="cssClass">
         <component :is="FormFieldWrapper" :label="label" :label-for="control_id_string">
+            <template #prepend>
+                <slot name="prepend" />
+            </template>
             <component :is="controlType" />
+            <template #append>
+                <slot name="append" />
+            </template>
         </component>
     </div>
 </template>
@@ -10,9 +16,14 @@
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import { computed, provide } from 'vue';
+import { computed, inject, provide } from 'vue';
 import jsonPointer from 'json-pointer';
-import { layoutProviderKey, jsonElementProviderKey } from '@/components/ProviderKeys';
+import {
+    layoutProviderKey,
+    jsonElementProviderKey,
+    savePathProviderKey,
+    savePathOverrideProviderKey,
+} from '@/components/ProviderKeys';
 import { computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
@@ -30,8 +41,6 @@ const props = defineProps<{
     layoutElement: Control;
 }>();
 
-const control_id_string = controlID(props.layoutElement);
-
 let additionalHiddenClass = props.layoutElement.options?.hidden ? 'hiddenControl' : '';
 
 const cssClass = computedCssClass(
@@ -44,8 +53,14 @@ const jsonElement = computed(
     () => jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope) as CoreSchemaMetaSchema
 );
 
+const savePath = inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+
 provide(layoutProviderKey, props.layoutElement);
 provide(jsonElementProviderKey, jsonElement.value);
+provide(savePathProviderKey, savePath);
+provide(savePathOverrideProviderKey, undefined);
+
+const control_id_string = controlID(savePath);
 
 const label = computedLabel(props.layoutElement);
 

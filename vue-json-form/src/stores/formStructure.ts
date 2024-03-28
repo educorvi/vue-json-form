@@ -15,7 +15,12 @@ export const useFormStructureStore = defineStore('formStructure', () => {
 
     const components: Ref<RenderInterface | undefined> = ref(undefined);
 
-    return { jsonSchema, uiSchema, components };
+    /**
+     * List of all arrays in the schema that were written to
+     */
+    const arrays: Ref<Array<string>> = ref([]);
+
+    return { jsonSchema, uiSchema, components, arrays };
 });
 /**
  * This function is used to retrieve a component from the provided components object or fall back to the default components if the component is not found.

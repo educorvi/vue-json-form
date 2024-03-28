@@ -5,8 +5,8 @@ import { computed } from 'vue';
 import { generateUISchema } from '@/Commons';
 import FormWrap from '@/components/FormWrap.vue';
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 const computedLayout = computed(() => {
     return generateUISchema(jsonElement, {
         scopeBase: layoutElement.scope,

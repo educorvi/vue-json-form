@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="vjf_showOnWrapper">
+    <div class="vjf_showOnWrapper w-100">
         <slot v-if="visible" />
     </div>
 </template>

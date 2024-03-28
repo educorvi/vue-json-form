@@ -32,7 +32,8 @@
     "bootstrap-vue-next": "^0.16.6",
     "json-pointer": "^0.6.2",
     "pinia": "^2.1.6",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vuedraggable": "next"
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.1.0",

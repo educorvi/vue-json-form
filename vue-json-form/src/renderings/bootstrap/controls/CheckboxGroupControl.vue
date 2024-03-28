@@ -7,8 +7,8 @@ import { controlID } from '@/computedProperties/misc';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 
 let options: unknown[];
 if (typeof jsonElement.items !== 'object' || !('enum' in jsonElement.items)) {
@@ -24,7 +24,7 @@ if (typeof jsonElement.items !== 'object' || !('enum' in jsonElement.items)) {
 
 <template>
     <BFormCheckboxGroup
-        v-model="formData[layoutElement.scope]"
+        v-model="formData[savePath]"
         :options="options"
         class="vjf_checkboxGroup"
         :id="id"

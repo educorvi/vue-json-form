@@ -7,17 +7,12 @@ import { BFormInput } from 'bootstrap-vue-next';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 </script>
 
 <template>
-    <b-form-input
-        type="number"
-        v-model="formData[layoutElement.scope]"
-        class="vjf_input"
-        :id="id"
-    />
+    <b-form-input type="number" v-model="formData[savePath]" class="vjf_input" :id="id" />
 </template>
 
 <style scoped></style>

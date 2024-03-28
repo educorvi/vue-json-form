@@ -7,13 +7,13 @@ import { controlID } from '@/computedProperties/misc';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 </script>
 
 <template>
     <BFormRadioGroup
-        v-model="formData[layoutElement.scope]"
+        v-model="formData[savePath]"
         :options="jsonElement.enum"
         class="vjf_radioGroup w-100"
         :id="id"
