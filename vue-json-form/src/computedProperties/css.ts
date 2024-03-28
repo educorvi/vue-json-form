@@ -1,22 +1,5 @@
-import type { LayoutElement } from '@/typings/ui-schema';
 import { computed } from 'vue';
-
-/**
- * A layout element with a CSS class
- */
-export type elementWithCssClass = LayoutElement & {
-    options: {
-        cssClass: string;
-    };
-};
-
-/**
- * Checks if the given element has a CSS class
- * @param element The element to check
- */
-export function hasCssClass(element: LayoutElement): element is elementWithCssClass {
-    return typeof (element as elementWithCssClass).options?.cssClass === 'string';
-}
+import { hasCssClass } from '@/typings/typeValidators';
 
 /**
  * Computed CSS class for the given element

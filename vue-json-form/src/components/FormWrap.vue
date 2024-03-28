@@ -6,14 +6,21 @@
 
 <script setup lang="ts">
 import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
-import { computed, shallowRef, markRaw } from 'vue';
+import { computed, shallowRef, markRaw, watch, Ref } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
-import { isDependentElement } from '@/components/LayoutElements/LayoutCommons';
 import { getComponent } from '@/stores/formStructure';
+import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
+import { computedShowOnLogic, getComparisonFunction } from '@/components/ShowOnLogic';
+import { computedAsync } from '@vueuse/core';
+import { Parser } from '@educorvi/rita';
+import { storeToRefs } from 'pinia';
+import { useFormDataStore } from '@/stores/formData';
 
 const showOnWrapper = getComponent('showOnWrapper');
+
+const { formData } = storeToRefs(useFormDataStore());
 
 const props = defineProps<{
     /**
@@ -47,37 +54,9 @@ function getControlComponent(name: string | undefined) {
 
 const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
 
-function getComparisonFunction(functionName: ShowOnFunctionType) {
-    switch (functionName) {
-        case 'EQUALS':
-            return (a: any, b: any) => {
-                if (a === undefined) a = false;
-                return a == b;
-            };
-        case 'NOT_EQUALS':
-            return (a: any, b: any) => {
-                if (a === undefined) a = false;
-                return a != b;
-            };
-        case 'GREATER':
-            return (a: any, b: any) => a > b;
-        case 'GREATER_OR_EQUAL':
-            return (a: any, b: any) => a >= b;
-        case 'SMALLER':
-            return (a: any, b: any) => a < b;
-        case 'SMALLER_OR_EQUAL':
-            return (a: any, b: any) => a < b;
-        case 'LONGER':
-            return (a: any, b: any) => (a || '').length > b;
-    }
-}
+const layoutElement = props.layoutElement;
 
-const show = computed(() => {
-    if (!isDependentElement(props.layoutElement)) {
-        return true;
-    }
-    return true;
-});
+let show = computedShowOnLogic(props.layoutElement);
 </script>
 
 <style scoped></style>

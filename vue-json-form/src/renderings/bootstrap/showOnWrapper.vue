@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { BCollapse } from 'bootstrap-vue-next';
+
 const props = defineProps<{
     visible: boolean;
 }>();
 </script>
 
 <template>
-    <div class="vjf_showOnWrapper w-100">
-        <slot v-if="visible" />
-    </div>
+    <BCollapse class="vjf_showOnWrapper w-100" :visible="visible">
+        <slot />
+    </BCollapse>
 </template>
 
 <style scoped></style>

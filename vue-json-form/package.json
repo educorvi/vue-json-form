@@ -28,6 +28,8 @@
     }
   },
   "dependencies": {
+    "@educorvi/rita": "^5.0.1",
+    "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.16.6",
     "json-pointer": "^0.6.2",

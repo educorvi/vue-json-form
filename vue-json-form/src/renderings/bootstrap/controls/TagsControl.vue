@@ -4,7 +4,8 @@ import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { BFormTags } from 'bootstrap-vue-next';
-import { isTagsConfig } from '@/components/LayoutElements/Control/optionsParser';
+
+import { isTagsConfig } from '@/typings/typeValidators';
 
 const { formData } = storeToRefs(useFormDataStore());
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue';
 import { savePathOverrideProviderKey } from '@/components/ProviderKeys';
-import Control from '@/components/LayoutElements/Control/Control.vue';
+import Control from '@/components/LayoutElements/Control.vue';
 import type { Control as ControlType } from '@/typings/ui-schema';
 import { BButton } from 'bootstrap-vue-next';
 import XIcon from '@/assets/icons/XIcon.vue';

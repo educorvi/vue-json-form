@@ -28,7 +28,8 @@ import { computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import { isTagsConfig } from '@/components/LayoutElements/Control/optionsParser';
+
+import { isTagsConfig } from '@/typings/typeValidators';
 
 const { jsonSchema } = storeToRefs(useFormStructureStore());
 

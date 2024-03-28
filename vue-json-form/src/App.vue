@@ -1,6 +1,6 @@
 <template>
     <div style="display: flex; justify-content: center">
-        <div style="max-width: 700px; margin: 20px">
+        <div style="max-width: 700px; margin: 20px; width: 100%">
             <h1>Vue JSON Form Demo</h1>
             <FormRoot
                 :json-schema="jsonSchema"
