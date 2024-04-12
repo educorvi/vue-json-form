@@ -20,6 +20,9 @@
             "title": "Text",
             "description": "The buttons text"
         },
+        "showOn": {
+            "$ref": "show_on.schema.json"
+        },
         "options": {
             "type": "object",
             "title": "Options",

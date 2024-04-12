@@ -82,7 +82,7 @@
           },
           {
             "type": "HTML",
-            "htmlData": "<h3 style=\"background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);   -webkit-background-clip: text;color: transparent;\">You are a very talkative unicorn my friend...</h3>",
+            "htmlData": "<h3 style=\"background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);   -webkit-background-clip: text;color: transparent;\">You are a very fancy unicorn my friend...</h3>",
             "showOn": {
               "id": "ritaRule1",
               "rule": {
@@ -101,19 +101,20 @@
                   },
                   {
                     "type": "comparison",
-                    "operation": "greaterOrEqual",
+                    "operation": "equal",
                     "arguments": [
                       {
-                        "type": "macro",
-                        "macro": {
-                          "type": "length",
-                          "array": {
+                        "type": "calculation",
+                        "operation": "modulo",
+                        "arguments": [
+                          {
                             "type": "atom",
-                            "path": "/properties/description"
-                          }
-                        }
+                            "path": "/properties/rating"
+                          },
+                          12
+                        ]
                       },
-                      20
+                      0
                     ]
                   }
                 ]
@@ -149,7 +150,6 @@
                 "type": "Control",
                 "scope": "/properties/recurrence_interval",
                 "options": {
-                  "textAlign": "right"
                 }
               }
             ]

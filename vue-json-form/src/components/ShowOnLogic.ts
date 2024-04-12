@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { Parser, UndefinedPathError, UsageError } from '@educorvi/rita';
 import { computedAsync } from '@vueuse/core';
+import type { dependentElement } from '@/typings/customTypes';
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -31,44 +32,41 @@ function getComparisonFunction(functionName: ShowOnFunctionType) {
     }
 }
 
-export function computedShowOnLogic(layoutElement: LayoutElement): Ref<boolean> {
+function checkDependentElement(dependentElement: dependentElement): Ref<boolean> {
     const { formData } = storeToRefs(useFormDataStore());
+    if (isLegacyShowOn(dependentElement.showOn)) {
+        return computed(() => {
+            if (!isLegacyShowOn(dependentElement.showOn)) {
+                throw new Error('This should not happen');
+            }
+            const compFunc = getComparisonFunction(dependentElement.showOn.type);
+            const value = dependentElement.showOn.referenceValue;
+            return compFunc(formData.value[dependentElement.showOn.scope], value);
+        });
+    } else {
+        const show = ref(false);
+        const parser = new Parser();
+        const rule = parser.parseRule(dependentElement.showOn);
+        useFormDataStore().$subscribe((_, state) => {
+            rule.evaluate(state.formData)
+                .then((result) => {
+                    show.value = result;
+                })
+                .catch((e) => {
+                    show.value = false;
+                    if (!(e instanceof UndefinedPathError)) {
+                        console.warn('Error while evaluating showOn rule:', e);
+                    }
+                });
+        });
+        return show;
+    }
+}
+
+export function computedShowOnLogic(layoutElement: LayoutElement): Ref<boolean> {
     if (!isDependentElement(layoutElement)) {
         return ref(true);
+    } else {
+        return checkDependentElement(layoutElement);
     }
-    if (isLegacyShowOn(layoutElement.showOn)) {
-        return computed(() => {
-            const compFunc = getComparisonFunction(layoutElement.showOn.type);
-            const value = layoutElement.showOn.referenceValue;
-            return compFunc(formData.value[layoutElement.showOn.scope], value);
-        });
-    }
-    let show = ref(false);
-    const parser = new Parser();
-    const rule = parser.parseRule(layoutElement.showOn);
-
-    useFormDataStore().$subscribe((_, state) => {
-        try {
-            rule.evaluate(state.formData).then((result) => {
-                show.value = result;
-            });
-        } catch (e) {
-            show.value = false;
-        }
-    });
-    return show;
-
-    // return computedAsync(async () => {
-    //     if (isLegacyShowOn(layoutElement.showOn)) {
-    //         const compFunc = getComparisonFunction(layoutElement.showOn.type);
-    //         const value = layoutElement.showOn.referenceValue;
-    //         return compFunc(formData.value[layoutElement.showOn.scope], value);
-    //     } else {
-    //         const parser = new Parser();
-    //         const rule = parser.parseRule(layoutElement.showOn);
-    //         const ruleResult = rule.evaluate(formData.value);
-    //         console.log(await ruleResult);
-    //         return await ruleResult;
-    //     }
-    // }, false);
 }

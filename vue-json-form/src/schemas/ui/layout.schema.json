@@ -24,6 +24,7 @@
             "default": [],
             "items": {
                 "title": "Layout element",
+                "description": "Different types of layout elements",
                 "oneOf": [
                     {
                         "$ref": "control.schema.json"

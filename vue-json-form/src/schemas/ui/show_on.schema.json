@@ -4,7 +4,7 @@
     "title": "ShowOn property",
     "type": "object",
     "description": "Show field depending on value of other field",
-    "$defs": {
+    "definitions": {
         "legacyShowOn": {
             "title": "Legacy ShowOn property",
             "type": "object",
@@ -50,7 +50,7 @@
     },
     "oneOf": [
         {
-            "$ref": "#/$defs/legacyShowOn"
+            "$ref": "#/definitions/legacyShowOn"
         },
         {
             "description": "Rita Rule\nSee https://educorvi.github.io/rita/rita-core/docs/schema/#/rule",

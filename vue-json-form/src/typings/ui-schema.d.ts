@@ -5,6 +5,9 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+/**
+ * Different types of layout elements
+ */
 export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
  * Gives multiple options to configure the element
@@ -503,6 +506,7 @@ export interface Button {
   type: "Button";
   buttonType: TheButtonsType;
   text: Text;
+  showOn?: ShowOnProperty;
   options?: Options1;
 }
 /**
@@ -553,4 +557,5 @@ export interface Buttongroup {
    * Display the buttons vertical
    */
   vertical?: boolean;
+  showOn?: ShowOnProperty;
 }

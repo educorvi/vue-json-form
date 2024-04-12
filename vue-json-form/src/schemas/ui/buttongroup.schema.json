@@ -21,6 +21,9 @@
             "type": "boolean",
             "default": false,
             "description": "Display the buttons vertical"
+        },
+        "showOn": {
+            "$ref": "show_on.schema.json"
         }
     },
     "required": ["buttons", "type"],
