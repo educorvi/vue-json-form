@@ -46,8 +46,9 @@ function checkDependentElement(dependentElement: dependentElement): Ref<boolean>
         const show = ref(false);
         const parser = new Parser();
         const rule = parser.parseRule(dependentElement.showOn);
-        useFormDataStore().$subscribe((_, state) => {
-            rule.evaluate(state.formData)
+        const formDataStore = useFormDataStore();
+        formDataStore.$subscribe(() => {
+            rule.evaluate(formDataStore.cleanedFormData)
                 .then((result) => {
                     show.value = result;
                 })
