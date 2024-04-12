@@ -6,8 +6,8 @@ import { controlID } from '@/computedProperties/misc';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement } = injectJsonData();
-const id = controlID(layoutElement);
+const { layoutElement, jsonElement, savePath } = injectJsonData();
+const id = controlID(savePath);
 </script>
 
 <template>

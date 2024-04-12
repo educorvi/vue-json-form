@@ -3,8 +3,7 @@ import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
 import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { Parser, UndefinedPathError, UsageError } from '@educorvi/rita';
-import { computedAsync } from '@vueuse/core';
+import { Parser, UndefinedPathError } from '@educorvi/rita';
 import type { dependentElement } from '@/typings/customTypes';
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
