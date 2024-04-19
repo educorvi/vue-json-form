@@ -9,7 +9,7 @@ function formatValue(
     if (Array.isArray(value)) {
         return value.map((v) => {
             const subKey = currentKey + '.' + v;
-            const newValue = formatValue(data[subKey], subKey, data, arrayValueKeys);
+            const newValue = formatValue(data[subKey] || v, subKey, data, arrayValueKeys);
             // delete data[subKey];
             arrayValueKeys.push(subKey);
             return newValue;
@@ -28,7 +28,9 @@ function formatObject(obj: Readonly<Record<string, any>>): Record<string, any> {
         clone[key] = formatValue(value, key, obj, arrayValueKeys);
     }
     for (const key of arrayValueKeys) {
-        delete clone[key];
+        if (key in clone) {
+            delete clone[key];
+        }
     }
     return clone;
 }
