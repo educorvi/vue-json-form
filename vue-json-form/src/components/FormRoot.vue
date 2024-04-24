@@ -19,6 +19,7 @@ const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
     components,
+    defaultData,
 } = storeToRefs(useFormStructureStore());
 
 const { formData } = storeToRefs(useFormDataStore());
@@ -45,6 +46,11 @@ const props = defineProps<{
      * The Render Interface
      */
     renderInterface?: RenderInterface;
+
+    /**
+     * The default data of the form
+     */
+    presetData?: Record<string, any>;
 }>();
 
 function onSubmitFormLocal(evt: Event) {
@@ -52,6 +58,10 @@ function onSubmitFormLocal(evt: Event) {
         evt.preventDefault();
         props.onSubmitForm(formData.value);
     }
+}
+
+function initFormData() {
+    formData.value = { ...formData.value, ...(props.presetData || {}), ...defaultData.value };
 }
 
 function resetForm(evt: Event) {
@@ -94,6 +104,7 @@ onMounted(() => {
         uiSchema: props.uiSchema,
         renderInterface: props.renderInterface,
     });
+    initFormData();
 });
 
 watch(props, (newVal) => {
