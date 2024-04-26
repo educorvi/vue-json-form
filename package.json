@@ -16,10 +16,5 @@
     "prepare": "husky",
     "doc": "typedoc --out ./docs/ui-schema vue-json-form/src/typings/ui-schema.d.ts",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit"
-  },
-  "dependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "isomorphic-fetch": "^3.0.0",
-    "node-fetch": "^3.3.2"
   }
 }

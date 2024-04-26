@@ -32,7 +32,7 @@
                 :is="errorViewer"
                 v-for="error in validationErrors.jsonSchema.validation"
                 :key="error.message"
-                :header="error.keyword"
+                :header="error.name"
             >
                 <p>{{ error.message }}</p>
             </component>
@@ -56,7 +56,7 @@
                 :is="errorViewer"
                 v-for="error in validationErrors.uiSchema.validation"
                 :key="error.message"
-                :header="error.keyword"
+                :header="error.name"
             >
                 <p>{{ error.message }}</p>
             </component>
@@ -76,15 +76,6 @@ import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
 import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
-import metaJSONSchema from '@/schemas/json-schema_draft7.json';
-import metaUISchema from '@/schemas/ui/_compiled.schema.json';
-import Ajv, { type ErrorObject, type JSONSchemaType } from 'ajv';
-import { allSchemas, allSchemasWithIncludedRita } from '@/schemas/ui';
-
-const ajv = new Ajv({
-    formats: { 'json-pointer': true },
-});
-
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
@@ -96,11 +87,11 @@ const { formData, cleanedFormData } = storeToRefs(useFormDataStore());
 
 const validationErrors = ref({
     jsonSchema: {
-        validation: [] as ErrorObject[],
+        validation: [] as Error[],
         parsing: [] as Error[],
     },
     uiSchema: {
-        validation: [] as ErrorObject[],
+        validation: [] as Error[],
         parsing: [] as Error[],
     },
 });
@@ -158,12 +149,7 @@ function resetForm(evt: Event) {
 
 const parserOptions: ParserOptions = {
     resolve: {
-        // http: true,
-        // file: false,
-        external: false,
-    },
-    dereference: {
-        onDereference: (path, value) => console.log(path, value),
+        file: false,
     },
 };
 
@@ -171,34 +157,15 @@ async function parseJsonSchema(
     jsonSchema: Record<string, any>
 ): Promise<CoreSchemaMetaSchema | null> {
     const deRefJSON = await RefParser.dereference(jsonSchema, parserOptions);
-    const valid = ajv.validateSchema(deRefJSON);
-    if (!valid) {
-        validationErrors.value.jsonSchema.validation = ajv.errors || [];
-        return null;
-    }
     return deRefJSON as CoreSchemaMetaSchema;
 }
 
-function isUISchema(ui: Record<string, any>): ui is UISchema {
-    const validate = ajv.compile(metaUISchema);
-    if (!validate(ui)) {
-        validationErrors.value.uiSchema.validation = validate.errors || [];
-        return false;
-    } else {
-        return true;
-    }
-}
-
 async function parseUiSchema(uiSchema: Record<string, any>): Promise<UISchema | null> {
-    console.log(uiSchema);
     const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
-    if (!isUISchema(deRefUI)) {
-        return null;
-    }
     return deRefUI as UISchema;
 }
 
-function assignStoreData(
+async function assignStoreData(
     obj: {
         jsonSchema: Record<string, any>;
         uiSchema: Record<string, any>;
@@ -209,33 +176,35 @@ function assignStoreData(
 
     errorViewer = getComponent('ErrorViewer');
 
-    parseJsonSchema(obj.jsonSchema)
-        .then((res) => {
-            if (!res) return;
-            storedJsonSchema.value = res;
-        })
-        // .catch(validationErrors.value.jsonSchema.parsing.push);
-        .catch((err) => {
-            validationErrors.value.jsonSchema.parsing.push(err);
-            console.error(err);
-        });
+    await Promise.all([
+        parseJsonSchema(obj.jsonSchema)
+            .then((res) => {
+                if (!res) return;
+                storedJsonSchema.value = res;
+            })
+            // .catch(validationErrors.value.jsonSchema.parsing.push);
+            .catch((err) => {
+                validationErrors.value.jsonSchema.parsing.push(err);
+                console.error(err);
+            }),
 
-    parseUiSchema(obj.uiSchema)
-        .then((res) => {
-            if (!res) return;
-            storedUiSchema.value = res.layout;
-        })
-        // .catch(validationErrors.value.uiSchema.parsing.push);
-        .catch((err) => {
-            validationErrors.value.uiSchema.parsing.push(err);
-            console.error(err);
-        });
+        parseUiSchema(obj.uiSchema)
+            .then((res) => {
+                if (!res) return;
+                storedUiSchema.value = res.layout;
+            })
+            // .catch(validationErrors.value.uiSchema.parsing.push);
+            .catch((err) => {
+                validationErrors.value.uiSchema.parsing.push(err);
+                console.error(err);
+            }),
+    ]);
 }
 
 provide(requiredProviderKey, true);
 
-onMounted(() => {
-    assignStoreData({
+onMounted(async () => {
+    await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
         renderInterface: props.renderInterface,
