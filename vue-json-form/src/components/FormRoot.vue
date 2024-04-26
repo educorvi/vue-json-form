@@ -1,13 +1,73 @@
 <template>
-    <form @submit="onSubmitFormLocal" @reset="resetForm" v-if="storedUiSchema">
+    <form @submit="onSubmitFormLocal" @reset="resetForm" v-if="storedUiSchema && storedJsonSchema">
         <FormWrap :layoutElement="storedUiSchema" />
         <slot />
     </form>
+    <div
+        v-else-if="
+            validationErrors.jsonSchema.parsing.length +
+                validationErrors.jsonSchema.validation.length +
+                validationErrors.uiSchema.parsing.length +
+                validationErrors.uiSchema.validation.length >
+            0
+        "
+    >
+        <h4>Error</h4>
+        <p>There were errors while rendering this form</p>
+        <h5>JSON Schema</h5>
+        <div v-if="validationErrors.jsonSchema.parsing.length > 0">
+            <h6>Parsing errors</h6>
+            <component
+                :is="errorViewer"
+                v-for="error in validationErrors.jsonSchema.parsing"
+                :key="error.message"
+                :header="error.name"
+            >
+                <p>{{ error.message }}</p>
+            </component>
+        </div>
+        <div v-if="validationErrors.jsonSchema.validation.length > 0">
+            <h6>Validation errors</h6>
+            <component
+                :is="errorViewer"
+                v-for="error in validationErrors.jsonSchema.validation"
+                :key="error.message"
+                :header="error.name"
+            >
+                <p>{{ error.message }}</p>
+            </component>
+        </div>
+
+        <h5 class="mt-4">UI Schema</h5>
+        <div v-if="validationErrors.uiSchema.parsing.length > 0">
+            <h6>Parsing errors</h6>
+            <component
+                :is="errorViewer"
+                v-for="error in validationErrors.uiSchema.parsing"
+                :key="error.message"
+                :header="error.name"
+            >
+                <p>{{ error.message }}</p>
+            </component>
+        </div>
+        <div v-if="validationErrors.uiSchema.validation.length > 0">
+            <h6>Validation errors</h6>
+            <component
+                :is="errorViewer"
+                v-for="error in validationErrors.uiSchema.validation"
+                :key="error.message"
+                :header="error.name"
+            >
+                <p>{{ error.message }}</p>
+            </component>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, provide, shallowRef, toRaw } from 'vue';
-import { useFormStructureStore } from '@/stores/formStructure';
+import { watch, onMounted, provide, shallowRef, toRaw, ref } from 'vue';
+import type { Component } from 'vue';
+import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
@@ -15,7 +75,7 @@ import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
-
+import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
@@ -24,6 +84,19 @@ const {
 } = storeToRefs(useFormStructureStore());
 
 const { formData, cleanedFormData } = storeToRefs(useFormDataStore());
+
+const validationErrors = ref({
+    jsonSchema: {
+        validation: [] as Error[],
+        parsing: [] as Error[],
+    },
+    uiSchema: {
+        validation: [] as Error[],
+        parsing: [] as Error[],
+    },
+});
+
+let errorViewer: Component;
 
 const props = defineProps<{
     /**
@@ -74,36 +147,64 @@ function resetForm(evt: Event) {
     initFormData(true);
 }
 
-function handleParsingError(error: Error) {
-    console.error('Error parsing JSON Schema', error);
+const parserOptions: ParserOptions = {
+    resolve: {
+        file: false,
+    },
+};
+
+async function parseJsonSchema(
+    jsonSchema: Record<string, any>
+): Promise<CoreSchemaMetaSchema | null> {
+    const deRefJSON = await RefParser.dereference(jsonSchema, parserOptions);
+    return deRefJSON as CoreSchemaMetaSchema;
 }
 
-function parseJsonSchema(jsonSchema: Record<string, any>): CoreSchemaMetaSchema {
-    //TODO: Validate and dereference
-    return jsonSchema as CoreSchemaMetaSchema;
+async function parseUiSchema(uiSchema: Record<string, any>): Promise<UISchema | null> {
+    const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
+    return deRefUI as UISchema;
 }
 
-function parseUiSchema(uiSchema: Record<string, any>): UISchema {
-    //TODO: Validate and dereference
-    return uiSchema as UISchema;
-}
-
-function assignStoreData(
+async function assignStoreData(
     obj: {
         jsonSchema: Record<string, any>;
         uiSchema: Record<string, any>;
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
-    storedJsonSchema.value = parseJsonSchema(obj.jsonSchema);
-    storedUiSchema.value = parseUiSchema(obj.uiSchema).layout;
     components.value = obj.renderInterface;
+
+    errorViewer = getComponent('ErrorViewer');
+
+    await Promise.all([
+        parseJsonSchema(obj.jsonSchema)
+            .then((res) => {
+                if (!res) return;
+                storedJsonSchema.value = res;
+            })
+            // .catch(validationErrors.value.jsonSchema.parsing.push);
+            .catch((err) => {
+                validationErrors.value.jsonSchema.parsing.push(err);
+                console.error(err);
+            }),
+
+        parseUiSchema(obj.uiSchema)
+            .then((res) => {
+                if (!res) return;
+                storedUiSchema.value = res.layout;
+            })
+            // .catch(validationErrors.value.uiSchema.parsing.push);
+            .catch((err) => {
+                validationErrors.value.uiSchema.parsing.push(err);
+                console.error(err);
+            }),
+    ]);
 }
 
 provide(requiredProviderKey, true);
 
-onMounted(() => {
-    assignStoreData({
+onMounted(async () => {
+    await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
         renderInterface: props.renderInterface,
