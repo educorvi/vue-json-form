@@ -30,6 +30,7 @@ function addField() {
         throw new Error('jsonSchema is unexpectedly undefined');
     }
     formData.value[savePath].push(genId);
+    formData.value[`${savePath}.${genId}`] = '';
     nextTick().then(() => {
         const children = document.getElementById(id.value)?.querySelectorAll('.list-group > *');
         if (!children) {

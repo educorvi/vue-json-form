@@ -11,7 +11,12 @@ function formatValue(
     if (Array.isArray(value)) {
         return value.map((v) => {
             const subKey = currentKey + '.' + v;
-            const newValue = formatValue(data[subKey] || v, subKey, data, arrayValueKeys);
+            const newValue = formatValue(
+                data[subKey] !== undefined ? data[subKey] : v,
+                subKey,
+                data,
+                arrayValueKeys
+            );
             // delete data[subKey];
             arrayValueKeys.push(subKey);
             return newValue;
