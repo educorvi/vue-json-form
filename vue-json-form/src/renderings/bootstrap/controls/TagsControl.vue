@@ -17,6 +17,7 @@ const id = controlID(savePath);
     <b-form-tags
         variant
         v-model="formData[savePath]"
+        separator=" "
         :id="id"
         class="vjf_tags"
         :tagPills="isTagsConfig(layoutElement.options) && layoutElement.options?.tags?.pills"

@@ -30,6 +30,7 @@ function addField() {
         throw new Error('jsonSchema is unexpectedly undefined');
     }
     formData.value[savePath].push(genId);
+    // Define an empty string for the new item so that the uuid will not be visible in `cleanedData`
     formData.value[`${savePath}.${genId}`] = '';
     nextTick().then(() => {
         const children = document.getElementById(id.value)?.querySelectorAll('.list-group > *');

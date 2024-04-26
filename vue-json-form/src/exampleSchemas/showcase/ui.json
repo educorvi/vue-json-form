@@ -206,6 +206,27 @@
         "options": {
           "hidden": true
         }
+      },
+      {
+        "type": "Buttongroup",
+        "buttons": [
+          {
+            "type": "Button",
+            "buttonType": "submit",
+            "text": "Submit",
+            "options": {
+              "variant": "primary"
+            }
+          },
+          {
+            "type": "Button",
+            "buttonType": "reset",
+            "text": "Reset this form",
+            "options": {
+              "variant": "danger"
+            }
+          }
+        ]
       }
     ]
   }

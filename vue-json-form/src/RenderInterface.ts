@@ -31,4 +31,8 @@ export interface RenderInterface {
     FormFieldWrapper?: Component;
 
     ErrorViewer?: Component;
+
+    Button?: Component;
+
+    Buttongroup?: Component;
 }

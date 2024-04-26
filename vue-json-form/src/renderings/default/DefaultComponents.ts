@@ -40,4 +40,6 @@ export const defaultComponents: Required<RenderInterface> = {
         () => import('@/renderings/default/FormFieldWrapper.vue')
     ),
     ErrorViewer: defineAsyncComponent(() => import('@/renderings/default/ErrorViewer.vue')),
+    Button: defineAsyncComponent(() => import('@/renderings/default/Buttons/VJFButton.vue')),
+    Buttongroup: defineAsyncComponent(() => import('@/renderings/default/Buttons/ButtonGroup.vue')),
 };

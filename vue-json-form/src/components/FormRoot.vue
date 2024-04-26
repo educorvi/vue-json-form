@@ -1,11 +1,12 @@
 <template>
     <form @submit="onSubmitFormLocal" @reset="resetForm" v-if="storedUiSchema">
         <FormWrap :layoutElement="storedUiSchema" />
+        <slot />
     </form>
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, provide, shallowRef } from 'vue';
+import { watch, onMounted, provide, shallowRef, toRaw } from 'vue';
 import { useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
@@ -22,7 +23,7 @@ const {
     defaultData,
 } = storeToRefs(useFormStructureStore());
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formData, cleanedFormData } = storeToRefs(useFormDataStore());
 
 const props = defineProps<{
     /**
@@ -56,18 +57,21 @@ const props = defineProps<{
 function onSubmitFormLocal(evt: Event) {
     if (props.onSubmitForm) {
         evt.preventDefault();
-        props.onSubmitForm(formData.value);
+        props.onSubmitForm(toRaw(cleanedFormData.value));
     }
 }
 
-function initFormData() {
-    formData.value = { ...formData.value, ...(props.presetData || {}), ...defaultData.value };
+function initFormData(clean = false) {
+    formData.value = {
+        ...(clean ? {} : formData.value),
+        ...(props.presetData || {}),
+        ...defaultData.value,
+    };
 }
 
 function resetForm(evt: Event) {
     evt.preventDefault();
-    //TODO
-    return;
+    initFormData(true);
 }
 
 function handleParsingError(error: Error) {

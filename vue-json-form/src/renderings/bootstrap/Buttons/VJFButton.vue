@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Button } from '@/typings/ui-schema';
-import { getComponent } from '@/stores/formStructure';
+import { BButton } from 'bootstrap-vue-next';
 
 defineProps<{
     /**
@@ -8,12 +8,12 @@ defineProps<{
      */
     layoutElement: Button;
 }>();
-
-const buttonComponent = getComponent('Button');
 </script>
 
 <template>
-    <component :is="buttonComponent" :layoutElement="layoutElement" />
+    <b-button :variant="layoutElement.options?.variant" :type="layoutElement.buttonType">{{
+        layoutElement.text
+    }}</b-button>
 </template>
 
 <style scoped></style>

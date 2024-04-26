@@ -4,7 +4,7 @@
             <template #prepend>
                 <slot name="prepend" />
             </template>
-            <component :is="controlType" />
+            <component :is="controlType" :name="layoutElement.scope" />
             <template #append>
                 <slot name="append" />
             </template>

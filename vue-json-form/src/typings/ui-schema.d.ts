@@ -107,7 +107,7 @@ export interface UISchema {
    */
   $schema?: string;
   /**
-   * Version of the UI Schema. Changes in a major version are backwards compatible, so a parser for version two must be compatible with UI Schemas of version 2.x but not version 1.x!
+   * Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x.
    */
   version: string;
   layout: Layout;
@@ -517,11 +517,31 @@ export interface Options1 {
    * The layout's CSS classes
    */
   cssClass?: string;
+  /**
+   * The buttons variant
+   */
+  variant?:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "info"
+    | "light"
+    | "dark"
+    | "outline-primary"
+    | "outline-secondary"
+    | "outline-success"
+    | "outline-warning"
+    | "outline-danger"
+    | "outline-info"
+    | "outline-light"
+    | "outline-dark";
   nativeSubmitOptions?: NativeSubmitSettings;
   [k: string]: unknown;
 }
 /**
- * Settings if native form submit is used
+ * Settings that can be used if native form submit is used
  */
 export interface NativeSubmitSettings {
   /**

@@ -37,4 +37,8 @@ export const bootstrapComponents: RenderInterface = {
         () => import('@/renderings/bootstrap/FormFieldWrapper.vue')
     ),
     ErrorViewer: defineAsyncComponent(() => import('@/renderings/bootstrap/ErrorViewer.vue')),
+    Button: defineAsyncComponent(() => import('@/renderings/bootstrap/Buttons/VJFButton.vue')),
+    Buttongroup: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/Buttons/ButtonGroup.vue')
+    ),
 };
