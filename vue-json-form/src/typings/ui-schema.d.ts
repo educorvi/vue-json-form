@@ -27,7 +27,7 @@ export type Options = (
              * Choose how an enum should be displayed
              */
             displayAs: "buttons";
-            buttonVariant?: BootstrapButtonVariants;
+            buttonVariant?: ButtonVariants;
           }
       ))
   | FileUploadOptions
@@ -36,9 +36,9 @@ export type Options = (
   ControlFormattingOptions &
   CustomOptions;
 /**
- * The Variants, that Bootstrap allows you to have
+ * Different color variants for buttons
  */
-export type BootstrapButtonVariants =
+export type ButtonVariants =
   | "primary"
   | "secondary"
   | "success"
@@ -168,7 +168,7 @@ export interface TagsOptions {
      */
     enabled?: boolean;
     pills?: boolean;
-    variant?: BootstrapButtonVariants;
+    variant?: ButtonVariants;
     [k: string]: unknown;
   };
 }
@@ -521,7 +521,7 @@ export interface Options1 {
    * The layout's CSS classes
    */
   cssClass?: string;
-  variant?: BootstrapButtonVariants;
+  variant?: ButtonVariants;
   nativeSubmitOptions?: NativeSubmitSettings;
   [k: string]: unknown;
 }

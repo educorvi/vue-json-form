@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json",
-  "title": "Bootstrap Button Variants",
-  "description": "The Variants, that Bootstrap allows you to have",
+  "title": "Button Variants",
+  "description": "Different color variants for buttons",
   "type": "string",
   "enum": [
     "primary",
