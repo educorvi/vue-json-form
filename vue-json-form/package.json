@@ -8,7 +8,7 @@
   "types": "dist/vue-json-form.d.ts",
   "scripts": {
     "dev": "vite -c dev_app.vite.config.ts --host",
-    "build": "run-p type-check build-only",
+    "build": "yarn run compile-ui-schema && run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
@@ -19,7 +19,8 @@
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:jsonSchema": "json2ts -i src/schemas/json-schema_draft7.json -o src/typings/json-schema.d.ts",
     "generateTypings:uiSchema": "cd src/schemas/ui/ && json2ts -i ui.schema.json -o ../../typings/ui-schema.d.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "compile-ui-schema": "node compileSchema.js"
   },
   "exports": {
     ".": {
@@ -28,8 +29,10 @@
     }
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^11.6.1",
     "@educorvi/rita": "^5.0.1",
     "@vueuse/core": "^10.9.0",
+    "ajv": "^8.12.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.16.6",
     "json-pointer": "^0.6.2",
@@ -38,7 +41,6 @@
     "vuedraggable": "next"
   },
   "devDependencies": {
-    "@apidevtools/json-schema-ref-parser": "^11.1.0",
     "@rushstack/eslint-patch": "^1.3.2",
     "@tsconfig/node18": "^18.2.0",
     "@types/jsdom": "^21.1.1",
