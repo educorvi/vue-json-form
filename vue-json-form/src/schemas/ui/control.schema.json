@@ -5,26 +5,6 @@
   "title": "Control",
   "description": "Contains a form element, e. g. a text input",
   "definitions": {
-    "variants": {
-      "type": "string",
-      "description": "Variants for colors",
-      "title": "Color Variants",
-      "enum": [
-        "primary",
-        "secondary",
-        "success",
-        "danger",
-        "warning",
-        "info",
-        "outline-primary",
-        "outline-secondary",
-        "outline-success",
-        "outline-danger",
-        "outline-warning",
-        "outline-info"
-      ],
-      "default": "primary"
-    },
     "autocompleteValues": {
       "type": "string",
       "description": "Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
@@ -142,7 +122,7 @@
               "default": false
             },
             "variant": {
-              "$ref": "#/definitions/variants"
+              "$ref": "variants.schema.json"
             }
           }
         }
@@ -214,7 +194,7 @@
                   ]
                 },
                 "buttonVariant": {
-                  "$ref": "#/definitions/variants"
+                  "$ref": "variants.schema.json"
                 }
               }
             }

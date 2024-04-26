@@ -27,7 +27,7 @@ export type Options = (
              * Choose how an enum should be displayed
              */
             displayAs: "buttons";
-            buttonVariant?: ColorVariants;
+            buttonVariant?: BootstrapButtonVariants;
           }
       ))
   | FileUploadOptions
@@ -36,21 +36,25 @@ export type Options = (
   ControlFormattingOptions &
   CustomOptions;
 /**
- * Variants for colors
+ * The Variants, that Bootstrap allows you to have
  */
-export type ColorVariants =
+export type BootstrapButtonVariants =
   | "primary"
   | "secondary"
   | "success"
-  | "danger"
   | "warning"
+  | "danger"
   | "info"
+  | "light"
+  | "dark"
   | "outline-primary"
   | "outline-secondary"
   | "outline-success"
-  | "outline-danger"
   | "outline-warning"
-  | "outline-info";
+  | "outline-danger"
+  | "outline-info"
+  | "outline-light"
+  | "outline-dark";
 /**
  * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
  */
@@ -164,7 +168,7 @@ export interface TagsOptions {
      */
     enabled?: boolean;
     pills?: boolean;
-    variant?: ColorVariants;
+    variant?: BootstrapButtonVariants;
     [k: string]: unknown;
   };
 }
@@ -517,26 +521,7 @@ export interface Options1 {
    * The layout's CSS classes
    */
   cssClass?: string;
-  /**
-   * The buttons variant
-   */
-  variant?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "warning"
-    | "danger"
-    | "info"
-    | "light"
-    | "dark"
-    | "outline-primary"
-    | "outline-secondary"
-    | "outline-success"
-    | "outline-warning"
-    | "outline-danger"
-    | "outline-info"
-    | "outline-light"
-    | "outline-dark";
+  variant?: BootstrapButtonVariants;
   nativeSubmitOptions?: NativeSubmitSettings;
   [k: string]: unknown;
 }

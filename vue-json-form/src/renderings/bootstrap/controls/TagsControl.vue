@@ -9,7 +9,7 @@ import { isTagsConfig } from '@/typings/typeValidators';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 </script>
 

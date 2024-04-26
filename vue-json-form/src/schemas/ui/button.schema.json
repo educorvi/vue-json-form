@@ -38,26 +38,7 @@
           "description": "The layout's CSS classes"
         },
         "variant": {
-          "type": "string",
-          "description": "The buttons variant",
-          "enum": [
-            "primary",
-            "secondary",
-            "success",
-            "warning",
-            "danger",
-            "info",
-            "light",
-            "dark",
-            "outline-primary",
-            "outline-secondary",
-            "outline-success",
-            "outline-warning",
-            "outline-danger",
-            "outline-info",
-            "outline-light",
-            "outline-dark"
-          ]
+          "$ref": "variants.schema.json"
         },
         "nativeSubmitOptions": {
           "type": "object",
