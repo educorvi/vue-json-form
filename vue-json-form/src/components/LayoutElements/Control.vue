@@ -9,6 +9,7 @@
                 :name="layoutElement.scope"
                 :disabled="layoutElement.options?.disabled"
                 :placeholder="layoutElement.options?.placeholder"
+                :autocomplete="layoutElement.options?.autocomplete || 'on'"
             />
             <template #append>
                 <slot name="append" />
