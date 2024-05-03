@@ -558,9 +558,12 @@ export interface Buttongroup {
    * @minItems 1
    */
   buttons: [Button, ...Button[]];
-  /**
-   * Display the buttons vertical
-   */
-  vertical?: boolean;
+  options?: {
+    /**
+     * Display the buttons vertical
+     */
+    vertical?: boolean;
+    [k: string]: unknown;
+  };
   showOn?: ShowOnProperty;
 }

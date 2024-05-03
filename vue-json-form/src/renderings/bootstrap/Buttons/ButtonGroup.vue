@@ -12,7 +12,7 @@ defineProps<{
 </script>
 
 <template>
-    <BButtonGroup class="w-100">
+    <BButtonGroup class="w-100" :vertical="layoutElement.options?.vertical">
         <v-j-f-button
             v-for="button in layoutElement.buttons"
             :key="button.text"
