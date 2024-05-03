@@ -1,9 +1,6 @@
 <template>
     <div :class="cssClass">
         <component :is="FormFieldWrapper" :label="label" :label-for="control_id_string">
-            <template #prepend>
-                <slot name="prepend" />
-            </template>
             <component
                 :is="controlType"
                 :name="layoutElement.scope"
@@ -11,9 +8,6 @@
                 :placeholder="layoutElement.options?.placeholder"
                 :autocomplete="layoutElement.options?.autocomplete || 'on'"
             />
-            <template #append>
-                <slot name="append" />
-            </template>
         </component>
     </div>
 </template>

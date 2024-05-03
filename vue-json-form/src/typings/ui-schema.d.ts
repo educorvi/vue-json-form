@@ -303,6 +303,10 @@ export interface ControlFormattingOptions {
    */
   append?: string;
   /**
+   * Will be prepended to field
+   */
+  prepend?: string;
+  /**
    * Disables the field
    */
   disabled?: boolean;

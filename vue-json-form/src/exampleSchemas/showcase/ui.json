@@ -159,6 +159,7 @@
                 "type": "Control",
                 "scope": "/properties/recurrence_interval",
                 "options": {
+                  "append": "Weeks"
                 }
               }
             ]
