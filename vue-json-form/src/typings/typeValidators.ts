@@ -1,4 +1,5 @@
 import type {
+    Button,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
@@ -10,6 +11,7 @@ import type {
     elementWithCssClass,
     elementWithElements,
 } from '@/typings/customTypes';
+import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 /**
  * Checks if the given element is dependent on another element
@@ -45,4 +47,14 @@ export function hasCssClass(element: LayoutElement): element is elementWithCssCl
 
 export function isLegacyShowOn(showOn: ShowOnProperty): showOn is LegacyShowOnProperty {
     return 'scope' in showOn && 'type' in showOn && 'referenceValue' in showOn;
+}
+
+export function hasProperties(
+    json: CoreSchemaMetaSchema
+): json is CoreSchemaMetaSchema & { properties: any } {
+    return 'properties' in json;
+}
+
+export function hasOptions(layout: LayoutElement): layout is LayoutElement & { options: Options } {
+    return 'options' in layout;
 }

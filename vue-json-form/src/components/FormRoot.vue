@@ -76,6 +76,9 @@ import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
 import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
+import { SUPPORTED_UISCHEMA_VERSION } from '@/Commons';
+import { hasProperties } from '@/typings/typeValidators';
+
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
@@ -114,7 +117,7 @@ const props = defineProps<{
     /**
      * The UI Schema of the form
      */
-    uiSchema: Record<string, any>;
+    uiSchema?: Record<string, any>;
 
     /**
      * The Render Interface
@@ -160,15 +163,38 @@ async function parseJsonSchema(
     return deRefJSON as CoreSchemaMetaSchema;
 }
 
-async function parseUiSchema(uiSchema: Record<string, any>): Promise<UISchema | null> {
-    const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
-    return deRefUI as UISchema;
+async function parseUiSchema(
+    uiSchema: Record<string, any> | undefined,
+    jsonSchema: CoreSchemaMetaSchema
+): Promise<UISchema | null> {
+    if (uiSchema) {
+        const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
+        return deRefUI as UISchema;
+    } else {
+        const generatedSchema: UISchema = {
+            version: SUPPORTED_UISCHEMA_VERSION,
+            layout: {
+                type: 'VerticalLayout',
+                elements: [],
+            },
+        };
+
+        if (hasProperties(jsonSchema)) {
+            for (const formElement of Object.keys(jsonSchema.properties)) {
+                generatedSchema.layout.elements.push({
+                    type: 'Control',
+                    scope: `/properties/${formElement}`,
+                });
+            }
+        }
+        return generatedSchema;
+    }
 }
 
 async function assignStoreData(
     obj: {
         jsonSchema: Record<string, any>;
-        uiSchema: Record<string, any>;
+        uiSchema: Record<string, any> | undefined;
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
@@ -176,29 +202,19 @@ async function assignStoreData(
 
     errorViewer = getComponent('ErrorViewer');
 
-    await Promise.all([
-        parseJsonSchema(obj.jsonSchema)
-            .then((res) => {
-                if (!res) return;
-                storedJsonSchema.value = res;
-            })
-            // .catch(validationErrors.value.jsonSchema.parsing.push);
-            .catch((err) => {
-                validationErrors.value.jsonSchema.parsing.push(err);
-                console.error(err);
-            }),
+    const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
+        validationErrors.value.jsonSchema.parsing.push(err);
+        console.error(err);
+    });
+    if (!json) return;
+    storedJsonSchema.value = json;
 
-        parseUiSchema(obj.uiSchema)
-            .then((res) => {
-                if (!res) return;
-                storedUiSchema.value = res.layout;
-            })
-            // .catch(validationErrors.value.uiSchema.parsing.push);
-            .catch((err) => {
-                validationErrors.value.uiSchema.parsing.push(err);
-                console.error(err);
-            }),
-    ]);
+    const ui = await parseUiSchema(obj.uiSchema, json).catch((err) => {
+        validationErrors.value.uiSchema.parsing.push(err);
+        console.error(err);
+    });
+    if (!ui) return;
+    storedUiSchema.value = ui.layout;
 }
 
 provide(requiredProviderKey, true);

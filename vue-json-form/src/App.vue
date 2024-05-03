@@ -5,8 +5,8 @@
             <FormRoot
                 :json-schema="jsonSchema"
                 :on-submit-form="console.log"
-                :ui-schema="uiSchema"
                 :render-interface="bootstrapComponents"
+                :ui-schema="uiSchema"
             >
             </FormRoot>
         </div>
@@ -21,6 +21,7 @@ import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents'
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import { markRaw, shallowRef } from 'vue';
+import { BButton, BFormInput } from 'bootstrap-vue-next';
 
 const components = markRaw(bootstrapComponents);
 

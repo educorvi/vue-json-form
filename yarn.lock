@@ -130,6 +130,7 @@ __metadata:
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^11.6.1
     "@educorvi/rita": ^5.0.1
+    "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@rushstack/eslint-patch": ^1.3.2
     "@tsconfig/node18": ^18.2.0
     "@types/jsdom": ^21.1.1
@@ -162,6 +163,15 @@ __metadata:
     vuedraggable: next
   languageName: unknown
   linkType: soft
+
+"@esbuild-plugins/node-globals-polyfill@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "@esbuild-plugins/node-globals-polyfill@npm:0.2.3"
+  peerDependencies:
+    esbuild: "*"
+  checksum: f83eeaa382680b26a3b1cf6c396450332c41d2dc0f9fd935d3f4bacf5412bef7383d2aeb4246a858781435b7c005a570dadc81051f8a038f1ef2111f17d3d8b0
+  languageName: node
+  linkType: hard
 
 "@esbuild/android-arm64@npm:0.18.20":
   version: 0.18.20
