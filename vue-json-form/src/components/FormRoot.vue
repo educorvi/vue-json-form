@@ -65,8 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, provide, shallowRef, toRaw, ref } from 'vue';
 import type { Component } from 'vue';
+import { onMounted, provide, ref, toRaw, watch } from 'vue';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
@@ -76,8 +76,7 @@ import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
 import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
-import { SUPPORTED_UISCHEMA_VERSION } from '@/Commons';
-import { hasProperties } from '@/typings/typeValidators';
+import { generateUISchema, type GenerationOptions } from '@/Commons';
 
 const {
     jsonSchema: storedJsonSchema,
@@ -128,6 +127,11 @@ const props = defineProps<{
      * The default data of the form
      */
     presetData?: Record<string, any>;
+
+    /**
+     * Options for the generation of the UI-Schema if no UI-Schema is provided
+     */
+    generationOptions?: GenerationOptions;
 }>();
 
 function onSubmitFormLocal(evt: Event) {
@@ -171,23 +175,7 @@ async function parseUiSchema(
         const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
         return deRefUI as UISchema;
     } else {
-        const generatedSchema: UISchema = {
-            version: SUPPORTED_UISCHEMA_VERSION,
-            layout: {
-                type: 'VerticalLayout',
-                elements: [],
-            },
-        };
-
-        if (hasProperties(jsonSchema)) {
-            for (const formElement of Object.keys(jsonSchema.properties)) {
-                generatedSchema.layout.elements.push({
-                    type: 'Control',
-                    scope: `/properties/${formElement}`,
-                });
-            }
-        }
-        return generatedSchema;
+        return generateUISchema(jsonSchema, props.generationOptions);
     }
 }
 

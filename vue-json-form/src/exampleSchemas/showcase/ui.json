@@ -49,7 +49,9 @@
       },
       {
         "type": "Group",
-        "label": "Group 1",
+        "options": {
+          "label": "Group 1"
+        },
         "showOn": {
           "type": "EQUALS",
           "scope": "/properties/group_selector",
@@ -58,7 +60,9 @@
         "elements": [
           {
             "type": "HorizontalLayout",
-            "label": "Great Gruppe",
+            "options": {
+              "label": "Great Gruppe"
+            },
             "elements": [
               {
                 "type": "Control",
@@ -129,7 +133,6 @@
       },
       {
         "type": "Group",
-        "label": "Group 2",
         "showOn": {
           "type": "EQUALS",
           "scope": "/properties/group_selector",

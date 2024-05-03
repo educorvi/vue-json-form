@@ -41,7 +41,7 @@ export function mapUUID<T>(element: T[]): Array<T & { uuid: string }> {
 
 export const SUPPORTED_UISCHEMA_VERSION = '2.0';
 
-export type generationOptions = {
+export type GenerationOptions = {
     scopeBase?: string;
 } & (
     | {
@@ -55,13 +55,15 @@ export type generationOptions = {
 
 export function generateUISchema(
     json: CoreSchemaMetaSchema,
-    generationOptions: generationOptions = {}
+    generationOptions: GenerationOptions = {}
 ): UISchema {
     const uiSchema: UISchema = {
         version: SUPPORTED_UISCHEMA_VERSION,
         layout: {
             type: generationOptions.layoutType ?? 'VerticalLayout',
-            label: 'groupLabel' in generationOptions ? generationOptions.groupLabel : undefined,
+            options: {
+                label: 'groupLabel' in generationOptions ? generationOptions.groupLabel : undefined,
+            },
             elements: [],
         },
     };

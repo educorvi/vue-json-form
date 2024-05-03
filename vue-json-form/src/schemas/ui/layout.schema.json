@@ -1,82 +1,94 @@
 {
-    "title": "Layout",
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json",
-    "type": "object",
-    "description": "The different layouts",
-    "properties": {
-        "$id": {
-            "type": "string",
-            "description": "The ID of the layout"
-        },
-        "$schema": {
-            "type": "string",
-            "description": "May contain a schema reference to the ui schema"
-        },
-        "type": {
-            "type": "string",
-            "enum": ["VerticalLayout", "HorizontalLayout", "Group"]
-        },
-        "elements": {
-            "title": "Elements",
-            "description": "The elements of the layout",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Layout element",
-                "description": "Different types of layout elements",
-                "oneOf": [
-                    {
-                        "$ref": "control.schema.json"
-                    },
-                    {
-                        "$ref": "layout.schema.json"
-                    },
-                    {
-                        "$ref": "html.schema.json"
-                    },
-                    {
-                        "$ref": "divider.schema.json"
-                    },
-                    {
-                        "$ref": "button.schema.json"
-                    },
-                    {
-                        "$ref": "buttongroup.schema.json"
-                    }
-                ]
-            }
-        },
-        "showOn": {
-            "$ref": "show_on.schema.json"
+  "title": "Layout",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://educorvi.github.io/vue_json_form/schemas/layout.schema.json",
+  "type": "object",
+  "description": "The different layouts",
+  "properties": {
+    "$id": {
+      "type": "string",
+      "description": "The ID of the layout"
+    },
+    "$schema": {
+      "type": "string",
+      "description": "May contain a schema reference to the ui schema"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "VerticalLayout",
+        "HorizontalLayout",
+        "Group"
+      ]
+    },
+    "elements": {
+      "title": "Elements",
+      "description": "The elements of the layout",
+      "type": "array",
+      "default": [],
+      "items": {
+        "title": "Layout element",
+        "description": "Different types of layout elements",
+        "oneOf": [
+          {
+            "$ref": "control.schema.json"
+          },
+          {
+            "$ref": "layout.schema.json"
+          },
+          {
+            "$ref": "html.schema.json"
+          },
+          {
+            "$ref": "divider.schema.json"
+          },
+          {
+            "$ref": "button.schema.json"
+          },
+          {
+            "$ref": "buttongroup.schema.json"
+          }
+        ]
+      }
+    },
+    "showOn": {
+      "$ref": "show_on.schema.json"
+    },
+    "options": {
+      "description": "Additional options",
+      "type": "object",
+      "properties": {
+        "cssClass": {
+          "type": "string",
+          "description": "The layout's CSS classes",
+          "examples": [
+            "bg-primary",
+            "bg-info headerpart"
+          ]
         },
         "label": {
-            "type": "string",
-            "description": "Adds a label for groups (only for type=Group)"
-        },
-        "options": {
-            "description": "Additional options",
-            "type": "object",
-            "properties": {
-                "cssClass": {
-                    "type": "string",
-                    "description": "The layout's CSS classes",
-                    "examples": ["bg-primary", "bg-info headerpart"]
-                }
-            }
+          "type": "string",
+          "description": "Adds a label for groups (only for type=Group)"
         }
+      }
+    }
+  },
+  "examples": [
+    {
+      "type": "VerticalLayout",
+      "elements": []
     },
-    "examples": [
-        {
-            "type": "VerticalLayout",
-            "elements": []
-        },
-        {
-            "type": "Group",
-            "label": "This is a group",
-            "elements": []
-        }
-    ],
-    "additionalProperties": false,
-    "required": ["type", "elements"]
+    {
+      "type": "Group",
+      "elements": [],
+      "options": {
+        "label": "This is a group"
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "elements"
+  ]
 }

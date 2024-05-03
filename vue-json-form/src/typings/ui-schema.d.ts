@@ -132,10 +132,6 @@ export interface Layout {
   elements: Elements;
   showOn?: ShowOnProperty;
   /**
-   * Adds a label for groups (only for type=Group)
-   */
-  label?: string;
-  /**
    * Additional options
    */
   options?: {
@@ -143,6 +139,10 @@ export interface Layout {
      * The layout's CSS classes
      */
     cssClass?: string;
+    /**
+     * Adds a label for groups (only for type=Group)
+     */
+    label?: string;
     [k: string]: unknown;
   };
 }

@@ -174,8 +174,8 @@
                           },
                           "variant": {
                             "$schema": "http://json-schema.org/draft-07/schema#",
-                            "title": "Bootstrap Button Variants",
-                            "description": "The Variants, that Bootstrap allows you to have",
+                            "title": "Button Variants",
+                            "description": "Different color variants for buttons",
                             "type": "string",
                             "enum": [
                               "primary",
@@ -267,8 +267,8 @@
                               },
                               "buttonVariant": {
                                 "$schema": "http://json-schema.org/draft-07/schema#",
-                                "title": "Bootstrap Button Variants",
-                                "description": "The Variants, that Bootstrap allows you to have",
+                                "title": "Button Variants",
+                                "description": "Different color variants for buttons",
                                 "type": "string",
                                 "enum": [
                                   "primary",
@@ -454,8 +454,8 @@
                                   },
                                   "variant": {
                                     "$schema": "http://json-schema.org/draft-07/schema#",
-                                    "title": "Bootstrap Button Variants",
-                                    "description": "The Variants, that Bootstrap allows you to have",
+                                    "title": "Button Variants",
+                                    "description": "Different color variants for buttons",
                                     "type": "string",
                                     "enum": [
                                       "primary",
@@ -547,8 +547,8 @@
                                       },
                                       "buttonVariant": {
                                         "$schema": "http://json-schema.org/draft-07/schema#",
-                                        "title": "Bootstrap Button Variants",
-                                        "description": "The Variants, that Bootstrap allows you to have",
+                                        "title": "Button Variants",
+                                        "description": "Different color variants for buttons",
                                         "type": "string",
                                         "enum": [
                                           "primary",
@@ -861,8 +861,8 @@
                       },
                       "variant": {
                         "$schema": "http://json-schema.org/draft-07/schema#",
-                        "title": "Bootstrap Button Variants",
-                        "description": "The Variants, that Bootstrap allows you to have",
+                        "title": "Button Variants",
+                        "description": "Different color variants for buttons",
                         "type": "string",
                         "enum": [
                           "primary",
@@ -952,10 +952,15 @@
                     },
                     "minItems": 1
                   },
-                  "vertical": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Display the buttons vertical"
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "vertical": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Display the buttons vertical"
+                      }
+                    }
                   },
                   "showOn": {
                     "$ref": "#/properties/layout/properties/showOn"
@@ -1926,10 +1931,6 @@
             }
           ]
         },
-        "label": {
-          "type": "string",
-          "description": "Adds a label for groups (only for type=Group)"
-        },
         "options": {
           "description": "Additional options",
           "type": "object",
@@ -1941,6 +1942,10 @@
                 "bg-primary",
                 "bg-info headerpart"
               ]
+            },
+            "label": {
+              "type": "string",
+              "description": "Adds a label for groups (only for type=Group)"
             }
           }
         }
@@ -1952,8 +1957,10 @@
         },
         {
           "type": "Group",
-          "label": "This is a group",
-          "elements": []
+          "elements": [],
+          "options": {
+            "label": "This is a group"
+          }
         }
       ],
       "additionalProperties": false,
