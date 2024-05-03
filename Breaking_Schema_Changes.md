@@ -1,4 +1,4 @@
-# Breaking Schema Changesin the UI Schema
+# Breaking Changes in the UI Schema
 ## v2
 ### Root Schema
 Instead of starting with any layout, the root object of the schema now needs to fields:
@@ -12,7 +12,7 @@ Instead of starting with any layout, the root object of the schema now needs to 
 - `scope` is now defined without the leading `#`
 - `format` was moved into `options`
 - `options.drop-placeholder` was removed. Instead, use the normal `options.placeholder`.
-- Possible values for `format` are now:
+- Possible values for `options.format` are now:
   - "text"
   - "time"
   - "date"
@@ -23,9 +23,9 @@ Instead of starting with any layout, the root object of the schema now needs to 
   - "url"
   - "tel"
   - "color"
-  - "hidden"
+  - "hidden" (not the same as `options.hidden`, this one only hides the input, not the whole control)
 - star rating field was removed
 ### Layouts (Group, VerticalLayout & HorizontalLayout)
-`label` was moved into `options`
+`label` (for groups) was moved into `options`
 ### Wizard
 Wizard was dropped
