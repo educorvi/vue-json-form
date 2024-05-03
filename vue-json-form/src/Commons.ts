@@ -1,5 +1,6 @@
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import type { Layout, UISchema } from '@/typings/ui-schema';
+import type { UISchema } from '@/typings/ui-schema';
+import type { GenerationOptions } from '@/typings/customTypes';
 
 /**
  * Generate a random string of a given length.
@@ -40,18 +41,6 @@ export function mapUUID<T>(element: T[]): Array<T & { uuid: string }> {
 }
 
 export const SUPPORTED_UISCHEMA_VERSION = '2.0';
-
-export type GenerationOptions = {
-    scopeBase?: string;
-} & (
-    | {
-          layoutType?: Exclude<Layout['type'], 'Group'>;
-      }
-    | {
-          layoutType: 'Group';
-          groupLabel: string;
-      }
-);
 
 export function generateUISchema(
     json: CoreSchemaMetaSchema,

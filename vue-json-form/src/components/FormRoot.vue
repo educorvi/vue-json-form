@@ -76,7 +76,8 @@ import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
 import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
-import { generateUISchema, type GenerationOptions } from '@/Commons';
+import { generateUISchema } from '@/Commons';
+import type { GenerationOptions } from '@/typings/customTypes';
 
 const {
     jsonSchema: storedJsonSchema,

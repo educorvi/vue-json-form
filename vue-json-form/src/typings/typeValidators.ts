@@ -58,3 +58,21 @@ export function hasProperties(
 export function hasOptions(layout: LayoutElement): layout is LayoutElement & { options: Options } {
     return 'options' in layout;
 }
+
+export function hasItems(
+    json: CoreSchemaMetaSchema
+): json is CoreSchemaMetaSchema & { items: any } {
+    return 'items' in json;
+}
+
+export function hasEnum(
+    json: CoreSchemaMetaSchema
+): json is CoreSchemaMetaSchema & { enum: any[] } {
+    return 'enum' in json;
+}
+
+export function hasEnumValuesForItems(
+    json: CoreSchemaMetaSchema
+): json is CoreSchemaMetaSchema & { items: { enum: any[] } } {
+    return hasItems(json) && hasEnum(json.items);
+}

@@ -4,7 +4,12 @@
             <template #prepend>
                 <slot name="prepend" />
             </template>
-            <component :is="controlType" :name="layoutElement.scope" />
+            <component
+                :is="controlType"
+                :name="layoutElement.scope"
+                :disabled="layoutElement.options?.disabled"
+                :placeholder="layoutElement.options?.placeholder"
+            />
             <template #append>
                 <slot name="append" />
             </template>

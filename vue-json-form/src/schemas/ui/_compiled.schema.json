@@ -174,8 +174,8 @@
                           },
                           "variant": {
                             "$schema": "http://json-schema.org/draft-07/schema#",
-                            "title": "Button Variants",
-                            "description": "Different color variants for buttons",
+                            "title": "Color Variant",
+                            "description": "Different color variants",
                             "type": "string",
                             "enum": [
                               "primary",
@@ -226,11 +226,6 @@
                             "type": "boolean",
                             "description": "Radiobutton-/Checkbox group will be stacked if set to true",
                             "default": false
-                          },
-                          "switch": {
-                            "type": "boolean",
-                            "title": "Switches",
-                            "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
                           }
                         }
                       },
@@ -245,7 +240,8 @@
                                 "description": "Choose how an enum should be displayed",
                                 "enum": [
                                   "select",
-                                  "radiobuttons"
+                                  "radiobuttons",
+                                  "switches"
                                 ],
                                 "default": "select"
                               }
@@ -267,8 +263,8 @@
                               },
                               "buttonVariant": {
                                 "$schema": "http://json-schema.org/draft-07/schema#",
-                                "title": "Button Variants",
-                                "description": "Different color variants for buttons",
+                                "title": "Color Variant",
+                                "description": "Different color variants",
                                 "type": "string",
                                 "enum": [
                                   "primary",
@@ -454,8 +450,8 @@
                                   },
                                   "variant": {
                                     "$schema": "http://json-schema.org/draft-07/schema#",
-                                    "title": "Button Variants",
-                                    "description": "Different color variants for buttons",
+                                    "title": "Color Variant",
+                                    "description": "Different color variants",
                                     "type": "string",
                                     "enum": [
                                       "primary",
@@ -506,11 +502,6 @@
                                     "type": "boolean",
                                     "description": "Radiobutton-/Checkbox group will be stacked if set to true",
                                     "default": false
-                                  },
-                                  "switch": {
-                                    "type": "boolean",
-                                    "title": "Switches",
-                                    "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
                                   }
                                 }
                               },
@@ -525,7 +516,8 @@
                                         "description": "Choose how an enum should be displayed",
                                         "enum": [
                                           "select",
-                                          "radiobuttons"
+                                          "radiobuttons",
+                                          "switches"
                                         ],
                                         "default": "select"
                                       }
@@ -547,8 +539,8 @@
                                       },
                                       "buttonVariant": {
                                         "$schema": "http://json-schema.org/draft-07/schema#",
-                                        "title": "Button Variants",
-                                        "description": "Different color variants for buttons",
+                                        "title": "Color Variant",
+                                        "description": "Different color variants",
                                         "type": "string",
                                         "enum": [
                                           "primary",
@@ -861,8 +853,8 @@
                       },
                       "variant": {
                         "$schema": "http://json-schema.org/draft-07/schema#",
-                        "title": "Button Variants",
-                        "description": "Different color variants for buttons",
+                        "title": "Color Variant",
+                        "description": "Different color variants",
                         "type": "string",
                         "enum": [
                           "primary",

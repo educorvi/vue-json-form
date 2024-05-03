@@ -20,14 +20,14 @@ export type Options = (
             /**
              * Choose how an enum should be displayed
              */
-            displayAs?: "select" | "radiobuttons";
+            displayAs?: "select" | "radiobuttons" | "switches";
           }
         | {
             /**
              * Choose how an enum should be displayed
              */
             displayAs: "buttons";
-            buttonVariant?: ButtonVariants;
+            buttonVariant?: ColorVariant;
           }
       ))
   | FileUploadOptions
@@ -36,9 +36,9 @@ export type Options = (
   ControlFormattingOptions &
   CustomOptions;
 /**
- * Different color variants for buttons
+ * Different color variants
  */
-export type ButtonVariants =
+export type ColorVariant =
   | "primary"
   | "secondary"
   | "success"
@@ -55,10 +55,6 @@ export type ButtonVariants =
   | "outline-info"
   | "outline-light"
   | "outline-dark";
-/**
- * If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)
- */
-export type Switches = boolean;
 /**
  * Show field depending on value of other field
  */
@@ -168,7 +164,7 @@ export interface TagsOptions {
      */
     enabled?: boolean;
     pills?: boolean;
-    variant?: ButtonVariants;
+    variant?: ColorVariant;
     [k: string]: unknown;
   };
 }
@@ -178,7 +174,6 @@ export interface CommonEnumOptions {
    * Radiobutton-/Checkbox group will be stacked if set to true
    */
   stacked?: boolean;
-  switch?: Switches;
 }
 /**
  * If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
@@ -521,7 +516,7 @@ export interface Options1 {
    * The layout's CSS classes
    */
   cssClass?: string;
-  variant?: ButtonVariants;
+  variant?: ColorVariant;
   nativeSubmitOptions?: NativeSubmitSettings;
   [k: string]: unknown;
 }

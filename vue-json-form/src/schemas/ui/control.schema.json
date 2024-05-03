@@ -154,11 +154,6 @@
               "type": "boolean",
               "description": "Radiobutton-/Checkbox group will be stacked if set to true",
               "default": false
-            },
-            "switch": {
-              "type": "boolean",
-              "title": "Switches",
-              "description": "If set to true, the checkbox(-group) it was specified for will be rendered as switch(es)"
             }
           }
         },
@@ -173,7 +168,8 @@
                   "description": "Choose how an enum should be displayed",
                   "enum": [
                     "select",
-                    "radiobuttons"
+                    "radiobuttons",
+                    "switches"
                   ],
                   "default": "select"
                 }

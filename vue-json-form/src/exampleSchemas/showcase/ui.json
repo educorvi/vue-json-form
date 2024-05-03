@@ -28,7 +28,13 @@
         "scope": "/properties/fancyness",
         "options": {
           "displayAs": "radiobuttons",
-          "stacked": true
+          "stacked": true,
+          "enumTitles": {
+            "fancy": "Fancy",
+            "fancier": "Fancier",
+            "fanciest": "Fanciest",
+            "unicorn": "A real Unicorn"
+          }
         }
       },
       {

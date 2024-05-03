@@ -1,4 +1,4 @@
-import type { LayoutElement } from '@/typings/ui-schema';
+import type { Layout, LayoutElement } from '@/typings/ui-schema';
 
 /**
  * A layout element with child elements
@@ -18,3 +18,18 @@ export type elementWithCssClass = LayoutElement & {
         cssClass: string;
     };
 };
+
+/**
+ * Options for generating a UI schema
+ */
+export type GenerationOptions = {
+    scopeBase?: string;
+} & (
+    | {
+          layoutType?: Exclude<Layout['type'], 'Group'>;
+      }
+    | {
+          layoutType: 'Group';
+          groupLabel: string;
+      }
+);
