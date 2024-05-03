@@ -1,8 +1,31 @@
-# Breaking Schema Changes
+# Breaking Schema Changesin the UI Schema
 ## v2
+### Root Schema
+Instead of starting with any layout, the root object of the schema now needs to fields:
+- `version`: defines the version of the schema (currently 2.0)
+- `layout`: contains an object with the root layout (root of schema version 1)
 ### Buttongroup
-- `vertical` is moved into `options`
+`vertical` was moved into `options`
 ### Button
-`variant` and `nativeSubmitSettings` moved into `options`
+`variant` and `nativeSubmitSettings` were moved into `options`
 ### Control
-- Control optionen sind jetzt wesentlich restriktiver geschrieben
+- `scope` is now defined without the leading `#`
+- `format` was moved into `options`
+- `options.drop-placeholder` was removed. Instead, use the normal `options.placeholder`.
+- Possible values for `format` are now:
+  - "text"
+  - "time"
+  - "date"
+  - "datetime-local"
+  - "email"
+  - "password"
+  - "search"
+  - "url"
+  - "tel"
+  - "color"
+  - "hidden"
+- star rating field was removed
+### Layouts (Group, VerticalLayout & HorizontalLayout)
+`label` was moved into `options`
+### Wizard
+Wizard was dropped

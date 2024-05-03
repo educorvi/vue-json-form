@@ -1,5 +1,5 @@
 <template>
-    <div :class="cssClass">
+    <div :class="cssClass" v-if="!invalidJsonPointer">
         <component :is="FormFieldWrapper" :label="label" :label-for="control_id_string">
             <component
                 :is="controlType"
@@ -7,8 +7,12 @@
                 :disabled="layoutElement.options?.disabled"
                 :placeholder="layoutElement.options?.placeholder"
                 :autocomplete="layoutElement.options?.autocomplete || 'on'"
+                :required="required"
             />
         </component>
+    </div>
+    <div v-else>
+        <error-viewer header="Error"> Invalid Json Pointer: {{ invalidJsonPointer }} </error-viewer>
     </div>
 </template>
 
@@ -16,7 +20,7 @@
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import { computed, inject, provide } from 'vue';
+import { computed, inject, provide, ref } from 'vue';
 import jsonPointer from 'json-pointer';
 import {
     layoutProviderKey,
@@ -24,7 +28,7 @@ import {
     savePathProviderKey,
     savePathOverrideProviderKey,
 } from '@/components/ProviderKeys';
-import { computedLabel } from '@/computedProperties/json';
+import { computedLabel, computedRequired } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
@@ -34,6 +38,7 @@ import { isTagsConfig } from '@/typings/typeValidators';
 const { jsonSchema } = storeToRefs(useFormStructureStore());
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
+const ErrorViewer = getComponent('ErrorViewer');
 
 const props = defineProps<{
     /**
@@ -41,6 +46,10 @@ const props = defineProps<{
      */
     layoutElement: Control;
 }>();
+
+const required = computedRequired(props.layoutElement);
+
+const invalidJsonPointer = ref(false as false | string);
 
 let additionalHiddenClass = props.layoutElement.options?.hidden ? 'hiddenControl' : '';
 
@@ -50,9 +59,18 @@ const cssClass = computedCssClass(
     additionalHiddenClass
 );
 
-const jsonElement = computed(
-    () => jsonPointer.get(jsonSchema.value || {}, props.layoutElement.scope) as CoreSchemaMetaSchema
-);
+const jsonElement = computed(() => {
+    try {
+        return jsonPointer.get(
+            jsonSchema.value || {},
+            props.layoutElement.scope
+        ) as CoreSchemaMetaSchema;
+    } catch (e) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        invalidJsonPointer.value = props.layoutElement.scope;
+        return {};
+    }
+});
 
 const savePath = inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
 

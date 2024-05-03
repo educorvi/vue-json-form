@@ -1,6 +1,6 @@
 <template>
     <show-on-wrapper :visible="show">
-        <component :is="layoutComponent" :layoutElement="layoutElement"></component>
+        <component :is="layoutComponent" :layoutElement="layoutElement" v-if="show"></component>
     </show-on-wrapper>
 </template>
 
