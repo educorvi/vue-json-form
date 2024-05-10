@@ -1,5 +1,9 @@
 <template>
-    <form @submit="onSubmitFormLocal" @reset="resetForm" v-if="storedUiSchema && storedJsonSchema">
+    <form
+        @submit="onSubmitFormLocal"
+        @reset="resetForm"
+        v-if="storedUiSchema && storedJsonSchema"
+    >
         <FormWrap :layoutElement="storedUiSchema" />
         <slot />
     </form>
@@ -66,7 +70,7 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue';
-import { onMounted, provide, ref, toRaw, watch } from 'vue';
+import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
@@ -75,7 +79,9 @@ import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
-import RefParser, { type ParserOptions } from '@apidevtools/json-schema-ref-parser';
+import RefParser, {
+    type ParserOptions,
+} from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions } from '@/typings/customTypes';
 
@@ -86,7 +92,8 @@ const {
     defaultData,
 } = storeToRefs(useFormStructureStore());
 
-const { formData, cleanedFormData } = storeToRefs(useFormDataStore());
+const { formData, defaultFormData, cleanedFormData, cleanedJsonData } =
+    storeToRefs(useFormDataStore());
 
 const validationErrors = ref({
     jsonSchema: {
@@ -133,26 +140,38 @@ const props = defineProps<{
      * Options for the generation of the UI-Schema if no UI-Schema is provided
      */
     generationOptions?: GenerationOptions;
+
+    /**
+     * Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data
+     */
+    returnDataAsScopes?: boolean;
 }>();
 
 function onSubmitFormLocal(evt: Event) {
     if (props.onSubmitForm) {
         evt.preventDefault();
-        props.onSubmitForm(toRaw(cleanedFormData.value));
+        if (props.returnDataAsScopes) {
+            props.onSubmitForm(toRaw(cleanedFormData.value));
+        } else {
+            props.onSubmitForm(toRaw(cleanedJsonData.value));
+        }
     }
 }
 
-function initFormData(clean = false) {
-    formData.value = {
-        ...(clean ? {} : formData.value),
+function initDefaultFormData() {
+    defaultFormData.value = {
         ...(props.presetData || {}),
         ...defaultData.value,
     };
 }
 
+function cleanFormData() {
+    formData.value = defaultFormData.value;
+}
+
 function resetForm(evt: Event) {
     evt.preventDefault();
-    initFormData(true);
+    cleanFormData();
 }
 
 const parserOptions: ParserOptions = {
@@ -208,13 +227,13 @@ async function assignStoreData(
 
 provide(requiredProviderKey, true);
 
-onMounted(async () => {
+onBeforeMount(async () => {
     await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
         renderInterface: props.renderInterface,
     });
-    initFormData();
+    initDefaultFormData();
 });
 
 watch(props, (newVal) => {

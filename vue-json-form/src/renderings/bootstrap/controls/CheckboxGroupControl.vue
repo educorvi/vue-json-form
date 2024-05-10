@@ -17,7 +17,8 @@ if (!hasEnumValuesForItems(jsonElement)) {
 } else {
     options =
         jsonElement.items?.enum?.map((key) => {
-            const textVals: Record<any, any> = layoutElement.options?.enumTitles || {};
+            const textVals: Record<any, any> =
+                layoutElement.options?.enumTitles || {};
             const text = textVals[key] || key;
             return { value: key, text };
         }) || [];

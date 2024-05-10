@@ -52,7 +52,10 @@ export function computedRequired(layout: Control) {
             return false;
         }
         if (pointer.has(jsonSchema.value, parent.value + '/type')) {
-            const parentType = pointer.get(jsonSchema.value, parent.value + '/type');
+            const parentType = pointer.get(
+                jsonSchema.value,
+                parent.value + '/type'
+            );
             if (parentType === 'array') return true;
         }
 

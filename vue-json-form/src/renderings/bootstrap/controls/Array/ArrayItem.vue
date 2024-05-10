@@ -39,7 +39,10 @@ const emit = defineEmits<{
                 </b-button>
             </template>
             <template #append>
-                <b-button variant="outline-danger" @click="emit('delete', itemID, savePath)">
+                <b-button
+                    variant="outline-danger"
+                    @click="emit('delete', itemID, savePath)"
+                >
                     <XIcon />
                 </b-button>
             </template>

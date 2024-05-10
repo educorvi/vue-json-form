@@ -13,10 +13,21 @@
             "minimum": 0
         },
         "nonNegativeIntegerDefault0": {
-            "allOf": [{ "$ref": "#/definitions/nonNegativeInteger" }, { "default": 0 }]
+            "allOf": [
+                { "$ref": "#/definitions/nonNegativeInteger" },
+                { "default": 0 }
+            ]
         },
         "simpleTypes": {
-            "enum": ["array", "boolean", "integer", "null", "number", "object", "string"]
+            "enum": [
+                "array",
+                "boolean",
+                "integer",
+                "null",
+                "number",
+                "object",
+                "string"
+            ]
         },
         "stringArray": {
             "type": "array",
@@ -118,7 +129,10 @@
         "dependencies": {
             "type": "object",
             "additionalProperties": {
-                "anyOf": [{ "$ref": "#" }, { "$ref": "#/definitions/stringArray" }]
+                "anyOf": [
+                    { "$ref": "#" },
+                    { "$ref": "#/definitions/stringArray" }
+                ]
             }
         },
         "propertyNames": { "$ref": "#" },

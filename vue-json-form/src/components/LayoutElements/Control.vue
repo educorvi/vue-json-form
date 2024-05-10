@@ -1,6 +1,10 @@
 <template>
     <div :class="cssClass" v-if="!invalidJsonPointer">
-        <component :is="FormFieldWrapper" :label="label" :label-for="control_id_string">
+        <component
+            :is="FormFieldWrapper"
+            :label="label"
+            :label-for="control_id_string"
+        >
             <component
                 :is="controlType"
                 :name="layoutElement.scope"
@@ -12,7 +16,9 @@
         </component>
     </div>
     <div v-else>
-        <error-viewer header="Error"> Invalid Json Pointer: {{ invalidJsonPointer }} </error-viewer>
+        <error-viewer header="Error">
+            Invalid Json Pointer: {{ invalidJsonPointer }}
+        </error-viewer>
     </div>
 </template>
 
@@ -20,7 +26,14 @@
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import { computed, inject, provide, ref } from 'vue';
+import {
+    computed,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+    provide,
+    ref,
+} from 'vue';
 import jsonPointer from 'json-pointer';
 import {
     layoutProviderKey,
@@ -34,6 +47,7 @@ import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 import { isTagsConfig } from '@/typings/typeValidators';
+import { useFormDataStore } from '@/stores/formData';
 
 const { jsonSchema } = storeToRefs(useFormStructureStore());
 
@@ -47,11 +61,15 @@ const props = defineProps<{
     layoutElement: Control;
 }>();
 
+const { formData, defaultFormData } = storeToRefs(useFormDataStore());
+
 const required = computedRequired(props.layoutElement);
 
 const invalidJsonPointer = ref(false as false | string);
 
-let additionalHiddenClass = props.layoutElement.options?.hidden ? 'hiddenControl' : '';
+let additionalHiddenClass = props.layoutElement.options?.hidden
+    ? 'hiddenControl'
+    : '';
 
 const cssClass = computedCssClass(
     props.layoutElement,
@@ -72,7 +90,8 @@ const jsonElement = computed(() => {
     }
 });
 
-const savePath = inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+const savePath =
+    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
 
 provide(layoutProviderKey, props.layoutElement);
 provide(jsonElementProviderKey, jsonElement.value);
@@ -90,7 +109,10 @@ const controlType = computed(() => {
     /**
      * Display enums as Radiobuttons or Select
      */
-    if (jsonElement.value.enum !== undefined && jsonElement.value.type !== 'array') {
+    if (
+        jsonElement.value.enum !== undefined &&
+        jsonElement.value.type !== 'array'
+    ) {
         if (
             props.layoutElement.options?.displayAs === 'radiobuttons' ||
             props.layoutElement.options?.displayAs === 'buttons'
@@ -126,7 +148,10 @@ const controlType = computed(() => {
     /**
      * Display strings with format uri as FileControl
      */
-    if (jsonElement.value.type === 'string' && jsonElement.value.format === 'uri') {
+    if (
+        jsonElement.value.type === 'string' &&
+        jsonElement.value.format === 'uri'
+    ) {
         return getComponent('FileControl');
     }
 
@@ -145,6 +170,14 @@ const controlType = computed(() => {
         default:
             return getComponent('DefaultControl');
     }
+});
+
+onMounted(() => {
+    formData.value[savePath] = defaultFormData.value[savePath];
+});
+
+onBeforeUnmount(() => {
+    formData.value[savePath] = undefined;
 });
 </script>
 

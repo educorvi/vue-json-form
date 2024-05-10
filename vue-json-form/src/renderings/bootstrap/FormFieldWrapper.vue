@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { BFormGroup, BInputGroup, BInputGroupPrepend, BInputGroupAppend } from 'bootstrap-vue-next';
+import {
+    BFormGroup,
+    BInputGroup,
+    BInputGroupPrepend,
+    BInputGroupAppend,
+} from 'bootstrap-vue-next';
 import { computed } from 'vue';
 import { injectJsonData } from '@/computedProperties/json';
 import { isTagsConfig } from '@/typings/typeValidators';
@@ -17,7 +22,10 @@ const hideLabel = computed(() => {
         layoutElement.options?.label === false ||
         (jsonElement.type === 'array' &&
             !jsonElement.enum &&
-            !(isTagsConfig(layoutElement.options) && layoutElement.options.tags?.enabled))
+            !(
+                isTagsConfig(layoutElement.options) &&
+                layoutElement.options.tags?.enabled
+            ))
     );
 });
 </script>

@@ -2,7 +2,9 @@ import type { RenderInterface } from '@/RenderInterface';
 import { defineAsyncComponent } from 'vue';
 
 export const defaultComponents: Required<RenderInterface> = {
-    showOnWrapper: defineAsyncComponent(() => import('@/renderings/default/showOnWrapper.vue')),
+    showOnWrapper: defineAsyncComponent(
+        () => import('@/renderings/default/showOnWrapper.vue')
+    ),
     ArrayControl: defineAsyncComponent(
         () => import('@/renderings/default/controls/Array/ArrayControl.vue')
     ),
@@ -39,7 +41,13 @@ export const defaultComponents: Required<RenderInterface> = {
     FormFieldWrapper: defineAsyncComponent(
         () => import('@/renderings/default/FormFieldWrapper.vue')
     ),
-    ErrorViewer: defineAsyncComponent(() => import('@/renderings/default/ErrorViewer.vue')),
-    Button: defineAsyncComponent(() => import('@/renderings/default/Buttons/VJFButton.vue')),
-    Buttongroup: defineAsyncComponent(() => import('@/renderings/default/Buttons/ButtonGroup.vue')),
+    ErrorViewer: defineAsyncComponent(
+        () => import('@/renderings/default/ErrorViewer.vue')
+    ),
+    Button: defineAsyncComponent(
+        () => import('@/renderings/default/Buttons/VJFButton.vue')
+    ),
+    Buttongroup: defineAsyncComponent(
+        () => import('@/renderings/default/Buttons/ButtonGroup.vue')
+    ),
 };

@@ -33,7 +33,9 @@ function addField() {
     // Define an empty string for the new item so that the uuid will not be visible in `cleanedData`
     formData.value[`${savePath}.${genId}`] = '';
     nextTick().then(() => {
-        const children = document.getElementById(id.value)?.querySelectorAll('.list-group > *');
+        const children = document
+            .getElementById(id.value)
+            ?.querySelectorAll('.list-group > *');
         if (!children) {
             return;
         }
@@ -59,7 +61,12 @@ function deleteItemWithID(id: string, itemSavePath: string) {
     if (index > -1) {
         formData.value[savePath].splice(index, 1);
     } else {
-        console.warn('Could not find item with id', id, 'in', formData.value[savePath]);
+        console.warn(
+            'Could not find item with id',
+            id,
+            'in',
+            formData.value[savePath]
+        );
     }
     delete formData.value[itemSavePath];
 }
@@ -70,7 +77,10 @@ function deleteItemWithID(id: string, itemSavePath: string) {
         <legend>{{ computedLabel(layoutElement).value }}</legend>
         <div
             class="vjf_array"
-            v-if="typeof jsonElement.items === 'object' && 'type' in jsonElement.items"
+            v-if="
+                typeof jsonElement.items === 'object' &&
+                'type' in jsonElement.items
+            "
             :id="id"
         >
             <draggable

@@ -28,6 +28,42 @@ function formatValue(
     }
 }
 
+function setPropertyByString(o: any, s: string, v: any): void {
+    if (v === undefined) {
+        return;
+    }
+    s = s.replace(/\[(\w+)]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, ''); // strip a leading dot
+
+    const a = s
+        .split('/')
+        .filter((x) => x !== '')
+        .filter((x, i) => !(x === 'properties' && i % 2 === 0));
+
+    console.log(a, o, s);
+
+    for (let i = 0, n = a.length; i < n - 1; ++i) {
+        const k = a[i];
+        if (!(k in o)) {
+            o[k] = Object.create(null);
+        }
+        o = o[k];
+    }
+    o[a[a.length - 1]] = v;
+}
+
+function convertToJSONSchemaObject(
+    data: Readonly<Record<string, any>>
+): Record<string, any> {
+    const retObj: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(data)) {
+        setPropertyByString(retObj, key, value);
+    }
+
+    return retObj;
+}
+
 function formatObject(obj: Readonly<Record<string, any>>): Record<string, any> {
     const clone: Record<string, any> = {};
     const arrayValueKeys: string[] = [];
@@ -45,8 +81,11 @@ function formatObject(obj: Readonly<Record<string, any>>): Record<string, any> {
 export const useFormDataStore = defineStore('formData', {
     state: () => ({
         formData: {} as Record<string, any>,
+        defaultFormData: {} as Record<string, any>,
     }),
     getters: {
         cleanedFormData: (state) => formatObject(state.formData),
+        cleanedJsonData: (state) =>
+            convertToJSONSchemaObject(formatObject(state.formData)),
     },
 });

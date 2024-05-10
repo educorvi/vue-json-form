@@ -31,16 +31,23 @@ function getComparisonFunction(functionName: ShowOnFunctionType) {
     }
 }
 
-function checkDependentElement(dependentElement: dependentElement): Ref<boolean> {
+function checkDependentElement(
+    dependentElement: dependentElement
+): Ref<boolean> {
     const { formData } = storeToRefs(useFormDataStore());
     if (isLegacyShowOn(dependentElement.showOn)) {
         return computed(() => {
             if (!isLegacyShowOn(dependentElement.showOn)) {
                 throw new Error('This should not happen');
             }
-            const compFunc = getComparisonFunction(dependentElement.showOn.type);
+            const compFunc = getComparisonFunction(
+                dependentElement.showOn.type
+            );
             const value = dependentElement.showOn.referenceValue;
-            return compFunc(formData.value[dependentElement.showOn.scope], value);
+            return compFunc(
+                formData.value[dependentElement.showOn.scope],
+                value
+            );
         });
     } else {
         const show = ref(false);
@@ -63,7 +70,9 @@ function checkDependentElement(dependentElement: dependentElement): Ref<boolean>
     }
 }
 
-export function computedShowOnLogic(layoutElement: LayoutElement): Ref<boolean> {
+export function computedShowOnLogic(
+    layoutElement: LayoutElement
+): Ref<boolean> {
     if (!isDependentElement(layoutElement)) {
         return ref(true);
     } else {

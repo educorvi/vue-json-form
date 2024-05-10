@@ -17,7 +17,13 @@ const id = controlID(savePath);
         class="vjf_textarea"
         :id="id"
     />
-    <input v-else type="text" v-model="formData[layoutElement.scope]" class="vjf_input" :id="id" />
+    <input
+        v-else
+        type="text"
+        v-model="formData[layoutElement.scope]"
+        class="vjf_input"
+        :id="id"
+    />
 </template>
 
 <style scoped></style>

@@ -17,7 +17,11 @@ const computedLayout = computed(() => {
 </script>
 
 <template>
-    <FormWrap class="vjf_object" :id="id" :layout-element="computedLayout.layout" />
+    <FormWrap
+        class="vjf_object"
+        :id="id"
+        :layout-element="computedLayout.layout"
+    />
 </template>
 
 <style scoped></style>

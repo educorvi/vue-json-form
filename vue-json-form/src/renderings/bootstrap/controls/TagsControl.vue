@@ -20,8 +20,14 @@ const id = controlID(savePath);
         separator=" "
         :id="id"
         class="vjf_tags"
-        :tagPills="isTagsConfig(layoutElement.options) && layoutElement.options?.tags?.pills"
-        :tagVariant="isTagsConfig(layoutElement.options) && layoutElement.options?.tags?.variant"
+        :tagPills="
+            isTagsConfig(layoutElement.options) &&
+            layoutElement.options?.tags?.pills
+        "
+        :tagVariant="
+            isTagsConfig(layoutElement.options) &&
+            layoutElement.options?.tags?.variant
+        "
     />
 </template>
 

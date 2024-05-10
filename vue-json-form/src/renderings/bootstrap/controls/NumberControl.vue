@@ -12,7 +12,12 @@ const id = controlID(savePath);
 </script>
 
 <template>
-    <b-form-input type="number" v-model="formData[savePath]" class="vjf_input" :id="id" />
+    <b-form-input
+        type="number"
+        v-model="formData[savePath]"
+        class="vjf_input"
+        :id="id"
+    />
 </template>
 
 <style scoped></style>

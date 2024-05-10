@@ -9,11 +9,14 @@ import type { GenerationOptions } from '@/typings/customTypes';
 function makeID() {
     const length = 10;
     let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+        );
         counter += 1;
     }
     return result;
@@ -51,7 +54,10 @@ export function generateUISchema(
         layout: {
             type: generationOptions.layoutType ?? 'VerticalLayout',
             options: {
-                label: 'groupLabel' in generationOptions ? generationOptions.groupLabel : undefined,
+                label:
+                    'groupLabel' in generationOptions
+                        ? generationOptions.groupLabel
+                        : undefined,
             },
             elements: [],
         },

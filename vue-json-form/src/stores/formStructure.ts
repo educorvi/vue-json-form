@@ -18,7 +18,10 @@ function getDefaultData(
         if (typeof value === 'boolean') {
             continue;
         } else if (value.type === 'object') {
-            data = { ...data, ...getDefaultData(value, basePath + key + '/properties/') };
+            data = {
+                ...data,
+                ...getDefaultData(value, basePath + key + '/properties/'),
+            };
         } else if (value.default !== undefined) {
             let parsedDefault = value.default;
             if (parsedDefault === '$now') {
@@ -45,27 +48,30 @@ type FormStructureStore = StoreDefinition<
     {}
 >;
 
-export const useFormStructureStore: FormStructureStore = defineStore('formStructure', {
-    state: () =>
-        ({
-            jsonSchema: undefined,
-            uiSchema: undefined,
-            components: undefined,
+export const useFormStructureStore: FormStructureStore = defineStore(
+    'formStructure',
+    {
+        state: () =>
+            ({
+                jsonSchema: undefined,
+                uiSchema: undefined,
+                components: undefined,
 
-            /**
-             * List of all arrays in the schema that were written to
-             */
-            arrays: [] as string[],
-        }) as FormStructureStoreState,
-    getters: {
-        defaultData: (state: FormStructureStoreState) => {
-            if (!state.jsonSchema) {
-                return {};
-            }
-            return getDefaultData(state.jsonSchema);
+                /**
+                 * List of all arrays in the schema that were written to
+                 */
+                arrays: [] as string[],
+            }) as FormStructureStoreState,
+        getters: {
+            defaultData: (state: FormStructureStoreState) => {
+                if (!state.jsonSchema) {
+                    return {};
+                }
+                return getDefaultData(state.jsonSchema);
+            },
         },
-    },
-});
+    }
+);
 /**
  * This function is used to retrieve a component from the provided components object or fall back to the default components if the component is not found.
  *
@@ -74,5 +80,7 @@ export const useFormStructureStore: FormStructureStore = defineStore('formStruct
  */
 export function getComponent(componentName: keyof RenderInterface) {
     const { components } = storeToRefs(useFormStructureStore());
-    return components.value?.[componentName] || defaultComponents[componentName];
+    return (
+        components.value?.[componentName] || defaultComponents[componentName]
+    );
 }

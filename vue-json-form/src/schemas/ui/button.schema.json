@@ -1,90 +1,73 @@
 {
-  "$id": "https://educorvi.github.io/vue_json_form/schemas/button.schema.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Button",
-  "description": "Used to put a button into the form",
-  "type": "object",
-  "properties": {
-    "type": {
-      "type": "string",
-      "enum": [
-        "Button"
-      ]
-    },
-    "buttonType": {
-      "title": "The Buttons Type",
-      "description": "Submit or Reset",
-      "type": "string",
-      "enum": [
-        "submit",
-        "reset"
-      ]
-    },
-    "text": {
-      "type": "string",
-      "title": "Text",
-      "description": "The buttons text"
-    },
-    "showOn": {
-      "$ref": "show_on.schema.json"
-    },
-    "options": {
-      "type": "object",
-      "title": "Options",
-      "description": "Options for the button",
-      "properties": {
-        "cssClass": {
-          "type": "string",
-          "description": "The layout's CSS classes"
+    "$id": "https://educorvi.github.io/vue_json_form/schemas/button.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Button",
+    "description": "Used to put a button into the form",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["Button"]
         },
-        "variant": {
-          "$ref": "variants.schema.json"
+        "buttonType": {
+            "title": "The Buttons Type",
+            "description": "Submit or Reset",
+            "type": "string",
+            "enum": ["submit", "reset"]
         },
-        "nativeSubmitOptions": {
-          "type": "object",
-          "description": "Settings that can be used if native form submit is used",
-          "title": "Native Submit Settings",
-          "properties": {
-            "formaction": {
-              "type": "string",
-              "description": "Specifies where to send the form-data when a form is submitted"
-            },
-            "formmethod": {
-              "type": "string",
-              "description": "Specifies how to send the form-data",
-              "enum": [
-                "get",
-                "post"
-              ]
-            },
-            "formtarget": {
-              "type": "string",
-              "description": "Specifies where to display the response after submitting the form",
-              "enum": [
-                "_blank",
-                "_self",
-                "_parent",
-                "_top"
-              ]
-            },
-            "formenctype": {
-              "type": "string",
-              "description": "Specifies how form-data should be encoded before sending it to a server",
-              "enum": [
-                "application/x-www-form-urlencoded",
-                "multipart/form-data",
-                "text/plain"
-              ]
+        "text": {
+            "type": "string",
+            "title": "Text",
+            "description": "The buttons text"
+        },
+        "showOn": {
+            "$ref": "show_on.schema.json"
+        },
+        "options": {
+            "type": "object",
+            "title": "Options",
+            "description": "Options for the button",
+            "properties": {
+                "cssClass": {
+                    "type": "string",
+                    "description": "The layout's CSS classes"
+                },
+                "variant": {
+                    "$ref": "variants.schema.json"
+                },
+                "nativeSubmitOptions": {
+                    "type": "object",
+                    "description": "Settings that can be used if native form submit is used",
+                    "title": "Native Submit Settings",
+                    "properties": {
+                        "formaction": {
+                            "type": "string",
+                            "description": "Specifies where to send the form-data when a form is submitted"
+                        },
+                        "formmethod": {
+                            "type": "string",
+                            "description": "Specifies how to send the form-data",
+                            "enum": ["get", "post"]
+                        },
+                        "formtarget": {
+                            "type": "string",
+                            "description": "Specifies where to display the response after submitting the form",
+                            "enum": ["_blank", "_self", "_parent", "_top"]
+                        },
+                        "formenctype": {
+                            "type": "string",
+                            "description": "Specifies how form-data should be encoded before sending it to a server",
+                            "enum": [
+                                "application/x-www-form-urlencoded",
+                                "multipart/form-data",
+                                "text/plain"
+                            ]
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  },
-  "additionalProperties": false,
-  "required": [
-    "type",
-    "buttonType",
-    "text"
-  ]
+    },
+    "additionalProperties": false,
+    "required": ["type", "buttonType", "text"]
 }
