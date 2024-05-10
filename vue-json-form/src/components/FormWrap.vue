@@ -14,7 +14,7 @@ import { computed, shallowRef, markRaw, watch } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
-import { getComponent } from '@/stores/formStructure';
+import { getComponent } from '@/stores/formStructureHelpers';
 import { computedShowOnLogic } from '@/components/ShowOnLogic';
 
 const showOnWrapper = getComponent('showOnWrapper');

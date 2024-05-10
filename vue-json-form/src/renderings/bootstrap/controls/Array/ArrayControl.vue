@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { generateUUID, mapUUID } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { getComponent } from '@/stores/formStructureHelpers';
 import draggable from 'vuedraggable';
 import { ref, nextTick } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
+import { useFormStore } from '@/stores/formStore';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
-const { formData } = storeToRefs(useFormDataStore());
-const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
+const { formData, jsonSchema, arrays } = storeToRefs(useFormStore());
 
 const { savePath } = injectJsonData();
 

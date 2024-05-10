@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { BFormRadioGroup } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnum, hasEnumValuesForItems } from '@/typings/typeValidators';
+import { useFormStore } from '@/stores/formStore';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formData } = storeToRefs(useFormStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);

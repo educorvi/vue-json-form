@@ -2,9 +2,9 @@ import { computed, ref, type Ref } from 'vue';
 import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
 import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { Parser, UndefinedPathError } from '@educorvi/rita';
 import type { dependentElement } from '@/typings/customTypes';
+import { useFormStore } from '@/stores/formStore';
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -34,7 +34,7 @@ function getComparisonFunction(functionName: ShowOnFunctionType) {
 function checkDependentElement(
     dependentElement: dependentElement
 ): Ref<boolean> {
-    const { formData } = storeToRefs(useFormDataStore());
+    const { formData } = storeToRefs(useFormStore());
     if (isLegacyShowOn(dependentElement.showOn)) {
         return computed(() => {
             if (!isLegacyShowOn(dependentElement.showOn)) {
@@ -53,7 +53,7 @@ function checkDependentElement(
         const show = ref(false);
         const parser = new Parser();
         const rule = parser.parseRule(dependentElement.showOn);
-        const formDataStore = useFormDataStore();
+        const formDataStore = useFormStore();
         formDataStore.$subscribe(() => {
             rule.evaluate(formDataStore.cleanedFormData)
                 .then((result) => {

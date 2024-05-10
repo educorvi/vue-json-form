@@ -11,7 +11,10 @@ import type {
     elementWithCssClass,
     elementWithElements,
 } from '@/typings/customTypes';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type {
+    CoreSchemaMetaSchema,
+    CoreSchemaMetaSchema2,
+} from '@/typings/json-schema';
 
 /**
  * Checks if the given element is dependent on another element
@@ -89,4 +92,13 @@ export function hasEnumValuesForItems(
     json: CoreSchemaMetaSchema
 ): json is CoreSchemaMetaSchema & { items: { enum: any[] } } {
     return hasItems(json) && hasEnum(json.items);
+}
+
+type SchemaWithConditionals = CoreSchemaMetaSchema &
+    Required<Pick<CoreSchemaMetaSchema, 'if' | 'then'>>;
+
+export function isSchemaWithConditionals(
+    json: CoreSchemaMetaSchema
+): json is SchemaWithConditionals {
+    return 'if' in json && 'then' in json;
 }

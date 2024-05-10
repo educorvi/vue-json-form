@@ -71,29 +71,34 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { getComponent } from '@/stores/formStructureHelpers';
 import { storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
-import { useFormDataStore } from '@/stores/formData';
 import { requiredProviderKey } from '@/components/ProviderKeys';
 import RefParser, {
     type ParserOptions,
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions } from '@/typings/customTypes';
+import { useFormStore } from '@/stores/formStore';
+import { isSchemaWithConditionals } from '@/typings/typeValidators';
+import Ajv from 'ajv';
 
 const {
-    jsonSchema: storedJsonSchema,
+    rawJsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
     components,
     defaultData,
-} = storeToRefs(useFormStructureStore());
 
-const { formData, defaultFormData, cleanedFormData, cleanedJsonData } =
-    storeToRefs(useFormDataStore());
+    formData,
+    defaultFormData,
+    cleanedFormData,
+    cleanedJsonData,
+    jsonIfClauses,
+} = storeToRefs(useFormStore());
 
 const validationErrors = ref({
     jsonSchema: {
@@ -217,6 +222,16 @@ async function assignStoreData(
     if (!json) return;
     storedJsonSchema.value = json;
 
+    const ajv = new Ajv();
+
+    if (isSchemaWithConditionals(json)) {
+        jsonIfClauses.value.push({
+            if: json.if,
+            then: json.then,
+            else: json.else,
+            validate: ajv.compile(json.if),
+        });
+    }
     const ui = await parseUiSchema(obj.uiSchema, json).catch((err) => {
         validationErrors.value.uiSchema.parsing.push(err);
         console.error(err);

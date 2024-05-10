@@ -7,8 +7,8 @@ import {
 import type { Control } from '@/typings/ui-schema';
 import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import { useFormStore } from '@/stores/formStore';
 
 export function injectJsonData() {
     const layoutElement = inject(layoutProviderKey) as Control;
@@ -45,7 +45,7 @@ export function computedGrandparentJsonPath(layout: Control) {
 }
 
 export function computedRequired(layout: Control) {
-    const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const { jsonSchema } = storeToRefs(useFormStore());
     return computed(() => {
         const parent = computeParentJsonPath(layout);
         if (!parent || !jsonSchema.value || !layout) {
@@ -86,7 +86,7 @@ function titleCase(string: string) {
 }
 
 export function computedLabel(layout: Control) {
-    const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const { jsonSchema } = storeToRefs(useFormStore());
     return computed(() => {
         if (!jsonSchema.value) return '';
         return (

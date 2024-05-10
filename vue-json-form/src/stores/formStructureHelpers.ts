@@ -1,15 +1,17 @@
-import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
-import { type Ref, shallowRef } from 'vue';
-import { ref } from 'vue';
-import type { Layout, UISchema } from '@/typings/ui-schema';
+import { type StoreDefinition, storeToRefs } from 'pinia';
+import type { Layout } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { RenderInterface } from '@/RenderInterface';
 import { defaultComponents as defaultCompImport } from '@/renderings/default/DefaultComponents';
-import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
+import type { JsonIfClause } from '@/typings/customTypes';
+import Ajv from 'ajv';
+import { useFormStore } from '@/stores/formStore';
+
+const ajv = new Ajv();
 
 const defaultComponents: Required<RenderInterface> = defaultCompImport;
 
-function getDefaultData(
+export function getDefaultData(
     schema: CoreSchemaMetaSchema,
     basePath = '/properties/'
 ): Record<string, any> {
@@ -34,44 +36,6 @@ function getDefaultData(
     return data;
 }
 
-type FormStructureStoreState = {
-    jsonSchema: CoreSchemaMetaSchema | undefined;
-    uiSchema: Layout | undefined;
-    components: RenderInterface | undefined;
-    arrays: string[];
-};
-
-type FormStructureStore = StoreDefinition<
-    'formStructure',
-    FormStructureStoreState,
-    { defaultData: Record<string, any> },
-    {}
->;
-
-export const useFormStructureStore: FormStructureStore = defineStore(
-    'formStructure',
-    {
-        state: () =>
-            ({
-                jsonSchema: undefined,
-                uiSchema: undefined,
-                components: undefined,
-
-                /**
-                 * List of all arrays in the schema that were written to
-                 */
-                arrays: [] as string[],
-            }) as FormStructureStoreState,
-        getters: {
-            defaultData: (state: FormStructureStoreState) => {
-                if (!state.jsonSchema) {
-                    return {};
-                }
-                return getDefaultData(state.jsonSchema);
-            },
-        },
-    }
-);
 /**
  * This function is used to retrieve a component from the provided components object or fall back to the default components if the component is not found.
  *
@@ -79,7 +43,7 @@ export const useFormStructureStore: FormStructureStore = defineStore(
  * @returns The retrieved component.
  */
 export function getComponent(componentName: keyof RenderInterface) {
-    const { components } = storeToRefs(useFormStructureStore());
+    const { components } = storeToRefs(useFormStore());
     return (
         components.value?.[componentName] || defaultComponents[componentName]
     );

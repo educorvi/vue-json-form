@@ -1,7 +1,3 @@
-import { defineStore, storeToRefs } from 'pinia';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import { useFormStructureStore } from '@/stores/formStructure';
-
 function formatValue(
     value: any,
     currentKey: Readonly<string>,
@@ -40,8 +36,6 @@ function setPropertyByString(o: any, s: string, v: any): void {
         .filter((x) => x !== '')
         .filter((x, i) => !(x === 'properties' && i % 2 === 0));
 
-    console.log(a, o, s);
-
     for (let i = 0, n = a.length; i < n - 1; ++i) {
         const k = a[i];
         if (!(k in o)) {
@@ -52,7 +46,7 @@ function setPropertyByString(o: any, s: string, v: any): void {
     o[a[a.length - 1]] = v;
 }
 
-function convertToJSONSchemaObject(
+export function convertToJSONSchemaObject(
     data: Readonly<Record<string, any>>
 ): Record<string, any> {
     const retObj: Record<string, any> = {};
@@ -64,7 +58,9 @@ function convertToJSONSchemaObject(
     return retObj;
 }
 
-function formatObject(obj: Readonly<Record<string, any>>): Record<string, any> {
+export function formatObject(
+    obj: Readonly<Record<string, any>>
+): Record<string, any> {
     const clone: Record<string, any> = {};
     const arrayValueKeys: string[] = [];
     for (const [key, value] of Object.entries(obj)) {
@@ -77,15 +73,3 @@ function formatObject(obj: Readonly<Record<string, any>>): Record<string, any> {
     }
     return clone;
 }
-
-export const useFormDataStore = defineStore('formData', {
-    state: () => ({
-        formData: {} as Record<string, any>,
-        defaultFormData: {} as Record<string, any>,
-    }),
-    getters: {
-        cleanedFormData: (state) => formatObject(state.formData),
-        cleanedJsonData: (state) =>
-            convertToJSONSchemaObject(formatObject(state.formData)),
-    },
-});

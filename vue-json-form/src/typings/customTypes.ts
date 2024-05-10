@@ -1,4 +1,11 @@
 import type { Layout, LayoutElement } from '@/typings/ui-schema';
+import type {
+    CoreSchemaMetaSchema,
+    CoreSchemaMetaSchema2,
+} from '@/typings/json-schema';
+import type { ValidateFunction } from 'ajv';
+import type { RenderInterface } from '@/RenderInterface';
+import type { StoreDefinition } from 'pinia';
 
 /**
  * A layout element with child elements
@@ -37,3 +44,10 @@ export type GenerationOptions = {
           groupLabel: string;
       }
 );
+
+export type JsonIfClause = {
+    if: CoreSchemaMetaSchema2;
+    then: CoreSchemaMetaSchema2;
+    else?: CoreSchemaMetaSchema2;
+    validate: ValidateFunction;
+};

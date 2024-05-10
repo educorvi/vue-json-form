@@ -196,6 +196,17 @@
                 }
             },
             {
+                "type": "Divider"
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/makeRequired"
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/requiredField"
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/hiddenDateTime",
                 "options": {

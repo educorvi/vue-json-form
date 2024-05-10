@@ -95,6 +95,15 @@
             "title": "Tag this form",
             "type": "array"
         },
+        "makeRequired": {
+            "title": "Make the next field required",
+            "type": "boolean"
+        },
+        "requiredField": {
+            "title": "Dependently required field",
+            "type": "string",
+            "minLength": 1
+        },
         "hiddenDateTime": {
             "type": "string",
             "format": "date-time",
@@ -110,6 +119,17 @@
             "format": "time",
             "default": "$now"
         }
+    },
+    "if": {
+        "properties": {
+            "makeRequired": {
+                "const": true
+            }
+        }
+    },
+    "then": {
+        "required": ["requiredField"]
+
     },
     "required": ["done", "name", "fancyness"]
 }

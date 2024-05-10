@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
+import { useFormStore } from '@/stores/formStore';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formData } = storeToRefs(useFormStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);

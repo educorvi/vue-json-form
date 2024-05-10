@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Button } from '@/typings/ui-schema';
-import { getComponent } from '@/stores/formStructure';
+import { getComponent } from '@/stores/formStructureHelpers';
 
 defineProps<{
     /**

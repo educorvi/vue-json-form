@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { getComponent } from '@/stores/formStructureHelpers';
 import {
     computed,
     inject,
@@ -47,9 +47,10 @@ import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 import { isTagsConfig } from '@/typings/typeValidators';
-import { useFormDataStore } from '@/stores/formData';
 
-const { jsonSchema } = storeToRefs(useFormStructureStore());
+import { useFormStore } from '@/stores/formStore';
+
+const { jsonSchema, formData, defaultFormData } = storeToRefs(useFormStore());
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
 const ErrorViewer = getComponent('ErrorViewer');
@@ -60,8 +61,6 @@ const props = defineProps<{
      */
     layoutElement: Control;
 }>();
-
-const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
 const required = computedRequired(props.layoutElement);
 
