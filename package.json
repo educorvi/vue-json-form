@@ -4,7 +4,8 @@
   "workspaces": [
     "demo",
     "vue-json-form",
-    "vue-json-form-bootstrap"
+    "vue-json-form-bootstrap",
+    "webcomponent"
   ],
   "packageManager": "yarn@3.6.3",
   "devDependencies": {
