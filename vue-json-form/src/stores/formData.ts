@@ -1,6 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import { useFormStructureStore } from '@/stores/formStructure';
 
 function formatValue(
     value: any,

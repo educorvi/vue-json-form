@@ -28,7 +28,7 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
-        minify: true,
+        minify: 'terser',
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: resolve(__dirname, 'src/main.ts'),
@@ -59,6 +59,8 @@ export default defineConfig({
             rollupTypes: true,
             tsconfigPath: './tsconfig.app.json',
             outDir: './dist',
+            insertTypesEntry: true,
+            copyDtsFiles: true,
         }),
     ],
 });

@@ -5,10 +5,12 @@
   "files": [
     "dist"
   ],
+  "main": "dist/vue-json-form.umd.js",
+  "module": "dist/vue-json-form.mjs",
   "types": "dist/vue-json-form.d.ts",
   "scripts": {
-    "dev": "vite -c dev_app.vite.config.ts --host",
-    "build": "yarn run compile-ui-schema && run-p type-check build-only",
+    "dev": "vite -c vite.dev.config.ts --host",
+    "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
@@ -22,12 +24,6 @@
     "prepare": "husky",
     "compile-ui-schema": "node compileSchema.js"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/vue-json-form.js",
-      "require": "./dist/vue-json-form.umd.js"
-    }
-  },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.6.1",
     "@educorvi/rita": "^5.0.1",
@@ -39,7 +35,7 @@
     "json-pointer": "^0.6.2",
     "pinia": "^2.1.6",
     "vue": "^3.3.4",
-    "vuedraggable": "next"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
@@ -60,6 +56,7 @@
     "json-schema-to-typescript": "^13.1.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.4",
+    "terser": "^5.31.0",
     "typescript": "~5.1.6",
     "vite": "^4.4.9",
     "vite-plugin-dts": "^3.7.2",

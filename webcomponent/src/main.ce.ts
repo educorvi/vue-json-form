@@ -1,5 +1,5 @@
 import { defineCustomElement } from 'vue';
-import { VueJsonForm as VueJsonFormComponent } from '@educorvi/vue-json-form';
+import Webcomponent from './Webcomponent.vue';
 
-const VueJsonForm = defineCustomElement(VueJsonFormComponent);
+const VueJsonForm = defineCustomElement(Webcomponent);
 customElements.define('vue-json-form', VueJsonForm)
