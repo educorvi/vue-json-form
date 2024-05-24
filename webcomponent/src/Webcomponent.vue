@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {VueJsonForm as vjfComp} from "@educorvi/vue-json-form"
+
+import { VueJsonForm as vjfComp } from '@educorvi/vue-json-form';
 
 defineProps<{
-   /**
+    /**
      * The JSON Schema of the form
      */
     jsonSchema: Record<string, any>;
@@ -25,7 +26,8 @@ defineProps<{
 </script>
 
 <template>
-<vjf-comp :json-schema="jsonSchema" :ui-schema="uiSchema" :preset-data="presetData" :return-data-as-scopes="returnDataAsScopes"></vjf-comp>
+    <vjf-comp :json-schema="jsonSchema" :ui-schema="uiSchema" :preset-data="presetData"
+              :return-data-as-scopes="returnDataAsScopes"></vjf-comp>
 </template>
 
 <style scoped lang="scss">

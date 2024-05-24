@@ -72,7 +72,7 @@
 import type { Component } from 'vue';
 import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import { storeToRefs } from 'pinia';
+import { createPinia, setActivePinia, storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
@@ -84,6 +84,8 @@ import RefParser, {
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions } from '@/typings/customTypes';
+
+setActivePinia(createPinia());
 
 const {
     jsonSchema: storedJsonSchema,
