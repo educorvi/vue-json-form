@@ -2,19 +2,19 @@
     <div style="display: flex; justify-content: center">
         <div style="max-width: 700px; margin: 20px; width: 100%">
             <h1>Vue JSON Form Demo</h1>
-            <FormRoot
+            <VueJsonForm
                 :json-schema="jsonSchema"
                 :on-submit-form="console.log"
                 :render-interface="bootstrapComponents"
                 :ui-schema="uiSchema"
             >
-            </FormRoot>
+            </VueJsonForm>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import FormRoot from '@/components/FormRoot.vue';
+import { VueJsonForm } from './main';
 import json from './exampleSchemas/showcase/schema.json';
 import ui from './exampleSchemas/showcase/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
