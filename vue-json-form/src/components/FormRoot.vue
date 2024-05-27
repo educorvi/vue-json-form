@@ -71,8 +71,9 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { createPinia, setActivePinia, storeToRefs } from 'pinia';
+setActivePinia(createPinia());
+import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
@@ -84,8 +85,6 @@ import RefParser, {
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions } from '@/typings/customTypes';
-
-setActivePinia(createPinia());
 
 const {
     jsonSchema: storedJsonSchema,
@@ -168,7 +167,9 @@ function initDefaultFormData() {
 }
 
 function cleanFormData() {
-    formData.value = defaultFormData.value;
+    formData.value = {
+        ...defaultFormData.value,
+    };
 }
 
 function resetForm(evt: Event) {

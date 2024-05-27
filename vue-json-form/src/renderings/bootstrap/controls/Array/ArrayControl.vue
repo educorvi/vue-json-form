@@ -17,11 +17,6 @@ const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 
 const { savePath } = injectJsonData();
-
-if (!formData.value[savePath]) {
-    formData.value[savePath] = [];
-}
-arrays.value.push(savePath);
 const id = controlID(savePath);
 
 function addField() {
@@ -70,13 +65,22 @@ function deleteItemWithID(id: string, itemSavePath: string) {
     delete formData.value[itemSavePath];
 }
 
-onMounted(() => {
+function initArray() {
+    if (!formData.value[savePath]) {
+        formData.value[savePath] = [];
+    }
+    arrays.value.push(savePath);
     for (let i = 0; i < (jsonElement.minItems || 0); i++) {
         addField();
     }
-});
+}
+
+initArray();
 
 const allowAddField = computed(() => {
+    if (!formData.value[savePath]) {
+        initArray();
+    }
     return (
         formData.value[savePath].length <
         (jsonElement.maxItems || Number.MAX_VALUE)
@@ -84,6 +88,9 @@ const allowAddField = computed(() => {
 });
 
 const allowRemoveField = computed(() => {
+    if (!formData.value[savePath]) {
+        initArray();
+    }
     return formData.value[savePath].length > (jsonElement.minItems || 0);
 });
 </script>
