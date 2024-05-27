@@ -12,6 +12,7 @@ const props = defineProps<{
     index: number;
     itemID: string;
     baseSavePath: string;
+    allowRemove: boolean;
 }>();
 const savePath = props.baseSavePath + '.' + props.itemID;
 provide(savePathOverrideProviderKey, savePath);
@@ -42,6 +43,7 @@ const emit = defineEmits<{
                 <b-button
                     variant="outline-danger"
                     @click="emit('delete', itemID, savePath)"
+                    :disabled="!allowRemove"
                 >
                     <XIcon />
                 </b-button>

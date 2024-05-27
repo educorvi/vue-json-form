@@ -7,7 +7,7 @@ import { generateUUID, mapUUID } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted, computed } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 
@@ -70,6 +70,23 @@ function deleteItemWithID(id: string, itemSavePath: string) {
     }
     delete formData.value[itemSavePath];
 }
+
+onMounted(() => {
+    for (let i = 0; i < (jsonSchema.value?.minItems || 0); i++) {
+        addField();
+    }
+});
+
+const allowAddField = computed(() => {
+    return (
+        formData.value[savePath].length <
+        (jsonSchema.value?.maxItems || Number.MAX_VALUE)
+    );
+});
+
+const allowRemoveField = computed(() => {
+    return formData.value[savePath].length > (jsonSchema.value?.minItems || 0);
+});
 </script>
 
 <template>
@@ -106,12 +123,18 @@ function deleteItemWithID(id: string, itemSavePath: string) {
                             :index="index"
                             :itemID="element"
                             @delete="deleteItemWithID"
+                            :allowRemove="allowRemoveField"
                         />
                     </div>
                 </template>
             </draggable>
 
-            <b-button variant="outline-primary" class="w-100" @click="addField">
+            <b-button
+                variant="outline-primary"
+                class="w-100"
+                @click="addField"
+                :disabled="!allowAddField"
+            >
                 <PlusIcon />
             </b-button>
         </div>

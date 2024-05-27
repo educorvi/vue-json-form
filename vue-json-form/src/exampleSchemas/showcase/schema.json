@@ -65,7 +65,10 @@
             "type": "array",
             "items": {
                 "type": "string"
-            }
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "This array requires 2 to 4 entries"
         },
         "testObject": {
             "type": "object",
