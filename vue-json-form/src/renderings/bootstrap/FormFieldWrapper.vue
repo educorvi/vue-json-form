@@ -41,7 +41,15 @@ const hideLabel = computed(() => {
             :prepend="layoutElement.options?.prepend"
             :append="layoutElement.options?.append"
         >
+            <b-input-group-prepend>
+                <!--        Content is prepended to the input field-->
+                <slot name="prepend"></slot>
+            </b-input-group-prepend>
             <slot />
+            <b-input-group-append>
+                <!--        Content is appended to the input field-->
+                <slot name="append" />
+            </b-input-group-append>
         </BInputGroup>
     </BFormGroup>
 </template>

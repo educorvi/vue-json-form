@@ -5,6 +5,9 @@
             :label="label"
             :label-for="control_id_string"
         >
+            <template #prepend>
+                <slot name="prepend" />
+            </template>
             <component
                 :is="controlType"
                 :name="layoutElement.scope"
@@ -13,6 +16,9 @@
                 :autocomplete="layoutElement.options?.autocomplete || 'on'"
                 :required="required"
             />
+            <template #append>
+                <slot name="append" />
+            </template>
         </component>
     </div>
     <div v-else>

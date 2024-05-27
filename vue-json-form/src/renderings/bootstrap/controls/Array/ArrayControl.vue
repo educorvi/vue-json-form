@@ -56,7 +56,6 @@ const dragOptions = ref({
 });
 
 function deleteItemWithID(id: string, itemSavePath: string) {
-    console.log(id, itemSavePath);
     const index = formData.value[savePath].indexOf(id);
     if (index > -1) {
         formData.value[savePath].splice(index, 1);
@@ -72,7 +71,7 @@ function deleteItemWithID(id: string, itemSavePath: string) {
 }
 
 onMounted(() => {
-    for (let i = 0; i < (jsonSchema.value?.minItems || 0); i++) {
+    for (let i = 0; i < (jsonElement.minItems || 0); i++) {
         addField();
     }
 });
@@ -80,12 +79,12 @@ onMounted(() => {
 const allowAddField = computed(() => {
     return (
         formData.value[savePath].length <
-        (jsonSchema.value?.maxItems || Number.MAX_VALUE)
+        (jsonElement.maxItems || Number.MAX_VALUE)
     );
 });
 
 const allowRemoveField = computed(() => {
-    return formData.value[savePath].length > (jsonSchema.value?.minItems || 0);
+    return formData.value[savePath].length > (jsonElement.minItems || 0);
 });
 </script>
 
