@@ -4,7 +4,7 @@ import { hasCssClass } from '@/typings/typeValidators';
 /**
  * Computed CSS class for the given element
  * @param element The element
- * @param defaultClasses The default classes
+ * @param defaultClasses The plain classes
  */
 export function computedCssClass(element: any, ...defaultClasses: string[]) {
     return computed(() => {

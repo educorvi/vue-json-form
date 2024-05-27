@@ -3,7 +3,9 @@
   "version": "3.0.0",
   "private": true,
   "files": [
-    "dist"
+    "dist",
+    "src/schemas/ui",
+    "src/exampleSchemas"
   ],
   "main": "dist/vue-json-form.umd.js",
   "module": "dist/vue-json-form.mjs",

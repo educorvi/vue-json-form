@@ -1,7 +1,7 @@
 import type { RenderInterface } from '@/RenderInterface';
 import { defineAsyncComponent } from 'vue';
 
-export const bootstrapComponents: RenderInterface = {
+export const bootstrapComponents: Required<RenderInterface> = {
     showOnWrapper: defineAsyncComponent(
         () => import('@/renderings/bootstrap/showOnWrapper.vue')
     ),
@@ -46,5 +46,8 @@ export const bootstrapComponents: RenderInterface = {
     ),
     Buttongroup: defineAsyncComponent(
         () => import('@/renderings/bootstrap/Buttons/ButtonGroup.vue')
+    ),
+    DefaultControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
     ),
 };

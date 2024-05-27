@@ -19,7 +19,7 @@ const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 const { savePath } = injectJsonData();
 const id = controlID(savePath);
 
-function addField() {
+function addField(skipFocus = false) {
     const genId = generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
@@ -27,17 +27,19 @@ function addField() {
     formData.value[savePath].push(genId);
     // Define an empty string for the new item so that the uuid will not be visible in `cleanedData`
     formData.value[`${savePath}.${genId}`] = '';
-    nextTick().then(() => {
-        const children = document
-            .getElementById(id.value)
-            ?.querySelectorAll('.list-group > *');
-        if (!children) {
-            return;
-        }
-        const lastInput: HTMLInputElement | null =
-            children[children.length - 1].querySelector('input');
-        lastInput?.focus();
-    });
+    if (!skipFocus) {
+        nextTick().then(() => {
+            const children = document
+                .getElementById(id.value)
+                ?.querySelectorAll('.list-group > *');
+            if (!children) {
+                return;
+            }
+            const lastInput: HTMLInputElement | null =
+                children[children.length - 1].querySelector('input');
+            lastInput?.focus();
+        });
+    }
 }
 
 const { layoutElement, jsonElement } = injectJsonData();
@@ -71,7 +73,7 @@ function initArray() {
     }
     arrays.value.push(savePath);
     for (let i = 0; i < (jsonElement.minItems || 0); i++) {
-        addField();
+        addField(true);
     }
 }
 

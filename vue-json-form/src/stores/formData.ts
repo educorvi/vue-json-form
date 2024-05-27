@@ -39,8 +39,6 @@ function setPropertyByString(o: any, s: string, v: any): void {
         .filter((x) => x !== '')
         .filter((x, i) => !(x === 'properties' && i % 2 === 0));
 
-    console.log(a, o, s);
-
     for (let i = 0, n = a.length; i < n - 1; ++i) {
         const k = a[i];
         if (!(k in o)) {

@@ -15,7 +15,7 @@ const props = defineProps<{
     uiSchema?: string
 
     /**
-     * The default data of the form
+     * The plain data of the form
      */
     presetData?: string
 

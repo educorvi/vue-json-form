@@ -4,10 +4,9 @@ import { ref } from 'vue';
 import type { Layout, UISchema } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { RenderInterface } from '@/RenderInterface';
-import { defaultComponents as defaultCompImport } from '@/renderings/default/DefaultComponents';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 
-const defaultComponents: Required<RenderInterface> = defaultCompImport;
+const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 
 function getDefaultData(
     schema: CoreSchemaMetaSchema,
@@ -73,7 +72,7 @@ export const useFormStructureStore: FormStructureStore = defineStore(
     }
 );
 /**
- * This function is used to retrieve a component from the provided components object or fall back to the default components if the component is not found.
+ * This function is used to retrieve a component from the provided components object or fall back to the plain components if the component is not found.
  *
  * @param {keyof RenderInterface} componentName - The name of the component to retrieve.
  * @returns The retrieved component.

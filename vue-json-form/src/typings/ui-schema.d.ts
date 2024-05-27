@@ -301,7 +301,7 @@ export interface ControlFormattingOptions {
      */
     cssClass?: string;
     /**
-     * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
+     * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with plain:"$now" to create a hidden timestamp.
      */
     hidden?: boolean;
     /**

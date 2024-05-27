@@ -111,8 +111,8 @@ let errorViewer: Component;
 
 const props = defineProps<{
     /**
-     * This function will be called when the form is submitted. If non is passed, the default submit action will be called.
-     * To configure the default submit action, configure the ´options.nativeSubmitOptions´ of the submitting button in the UI-Schema.
+     * This function will be called when the form is submitted. If non is passed, the plain submit action will be called.
+     * To configure the plain submit action, configure the ´options.nativeSubmitOptions´ of the submitting button in the UI-Schema.
      * @param data The data of the form
      */
     onSubmitForm?: (data: Record<string, any>) => void;
@@ -133,7 +133,7 @@ const props = defineProps<{
     renderInterface?: RenderInterface;
 
     /**
-     * The default data of the form
+     * The plain data of the form
      */
     presetData?: Record<string, any>;
 

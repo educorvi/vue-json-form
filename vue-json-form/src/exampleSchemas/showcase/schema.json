@@ -40,7 +40,7 @@
             "title": "Rating",
             "description": "Please rate us",
             "type": "integer",
-            "maximum": 5
+            "maximum": 50
         },
         "weekdays": {
             "type": "array",
