@@ -18,6 +18,8 @@ const id = controlID(savePath);
         v-model="formData[savePath]"
         class="vjf_textarea"
         :id="id"
+        :minlength="jsonElement.minLength"
+        :maxlength="jsonElement.maxLength"
     />
     <b-form-input
         v-else
@@ -29,6 +31,11 @@ const id = controlID(savePath);
         v-model="formData[savePath]"
         class="vjf_input"
         :id="id"
+        :minlength="jsonElement.minLength"
+        :maxlength="jsonElement.maxLength"
+        :step="jsonElement.multipleOf"
+        :min="jsonElement.minimum"
+        :max="jsonElement.maximum"
     />
 </template>
 

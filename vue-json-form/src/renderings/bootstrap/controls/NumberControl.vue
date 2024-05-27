@@ -17,6 +17,9 @@ const id = controlID(savePath);
         v-model="formData[savePath]"
         class="vjf_input"
         :id="id"
+        :step="jsonElement.multipleOf"
+        :min="jsonElement.minimum"
+        :max="jsonElement.maximum"
     />
 </template>
 
