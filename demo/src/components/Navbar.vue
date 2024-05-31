@@ -21,13 +21,15 @@ const html = document.querySelector("html")
 watch(theme, (newValue) => {
     html?.setAttribute('data-bs-theme', newValue);
 });
+
+const visible = ref(true)
 </script>
 
 <template>
-    <BNavbar :toggleable="false" variant="primary" v-b-color-mode="'dark'">
+    <BNavbar toggleable="md" variant="primary" v-b-color-mode="'dark'">
         <BNavbarBrand href="/">Vue JSON Form Demo</BNavbarBrand>
-        <BNavbarToggle target="nav-collapse" />
-        <BCollapse id="nav-collapse" is-nav>
+        <BNavbarToggle v-b-toggle="'nav-collapse'" @click="console.log()" />
+        <BCollapse id="nav-collapse" is-nav v-model="visible">
             <BNavbarNav class="ms-auto">
                 <BNavForm>
                     <BFormSelect :options="themeOptions" v-model="theme"/>
