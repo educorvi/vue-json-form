@@ -40,8 +40,8 @@ const uiSchema = ref(undefined as Record<string, any> | undefined);
 </script>
 
 <template>
-    <h1>Showcase form</h1>
-    The following form gives an overview of the features of Vue JSON Form.
+    <h1>Custom form</h1>
+    Upload and display your own form here.
     <div class="mt-3 mb-3">
         <b-form-checkbox v-model="submitAsScopes">Submit as scopes</b-form-checkbox>
         <b-form-checkbox v-model="submitButton">Add submit button</b-form-checkbox>
