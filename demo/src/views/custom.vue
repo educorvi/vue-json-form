@@ -48,8 +48,8 @@ const uiSchema = ref(undefined as Record<string, any> | undefined);
     </div>
     <b-form @submit="loadSchemas">
         <label for="json-schema">Upload JSON Schema</label>
-        <b-form-file id="json-schema" v-model="rawJsonSchema"></b-form-file>
-        <label for="json-schema" class="mt-2">Upload UI Schema</label>
+        <b-form-file id="json-schema" v-model="rawJsonSchema" required></b-form-file>
+        <label for="json-schema" class="mt-2">Upload UI Schema (Optional)</label>
         <b-form-file id="json-schema" v-model="rawUiSchema"></b-form-file>
 
         <b-button-group class="mt-3 w-100">

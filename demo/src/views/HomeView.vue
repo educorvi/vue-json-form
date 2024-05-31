@@ -12,5 +12,8 @@
         <li>
             Under 'Custom' you can upload your own schema to test it.
         </li>
+        <li>
+            Under 'UI Generator' you can generate a UI schema for your JSON schema.
+        </li>
     </ul>
 </template>

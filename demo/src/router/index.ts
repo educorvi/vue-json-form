@@ -19,6 +19,11 @@ const router = createRouter({
             path: '/custom',
             name: 'custom',
             component: () => import('../views/custom.vue'),
+        },
+        {
+            path: '/ui-generator',
+            name: 'ui-generator',
+            component: () => import('../views/ui-generator.vue'),
         }
     ],
 });
