@@ -22,7 +22,7 @@ watch(theme, (newValue) => {
     html?.setAttribute('data-bs-theme', newValue);
 });
 
-const visible = ref(true)
+const visible = ref(false)
 </script>
 
 <template>
