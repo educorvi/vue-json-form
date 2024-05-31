@@ -35,9 +35,9 @@ const emit = defineEmits<{
     <div class="vjf_arrayItem" :id="itemID">
         <Control :layout-element="layoutElement">
             <template #prepend>
-                <b-button class="handle" variant="light">
+                <div class="handle">
                     <GripVerticalIcon />
-                </b-button>
+                </div>
             </template>
             <template #append>
                 <b-button
@@ -56,5 +56,12 @@ const emit = defineEmits<{
 .handle {
     border: var(--bs-border-width) solid var(--bs-border-color);
     cursor: move;
+
+    border-top-left-radius: var(--bs-border-radius);
+    border-bottom-left-radius: var(--bs-border-radius);
+
+    display: flex;
+    justify-content: center;
+    width: 40px;
 }
 </style>
