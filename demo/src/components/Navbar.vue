@@ -33,7 +33,7 @@ watch(theme, (newValue) => {
                     <BFormSelect :options="themeOptions" v-model="theme"/>
                 </BNavForm>
                 <BNavItem href="/showcase" :active="route.name === 'showcase'">Showcase</BNavItem>
-                <BNavItem href="/about" :active="route.name === 'about'">About</BNavItem>
+                <BNavItem href="/custom" :active="route.name === 'custom'">Custom</BNavItem>
             </BNavbarNav>
         </BCollapse>
     </BNavbar>
