@@ -27,15 +27,15 @@ const visible = ref(false)
 
 <template>
     <BNavbar toggleable="md" variant="primary" v-b-color-mode="'dark'">
-        <BNavbarBrand href="/">Vue JSON Form Demo</BNavbarBrand>
+        <BNavbarBrand to="/">Vue JSON Form Demo</BNavbarBrand>
         <BNavbarToggle v-b-toggle="'nav-collapse'" @click="console.log()" />
         <BCollapse id="nav-collapse" is-nav v-model="visible">
             <BNavbarNav class="ms-auto">
                 <BNavForm>
                     <BFormSelect :options="themeOptions" v-model="theme"/>
                 </BNavForm>
-                <BNavItem href="/showcase" :active="route.name === 'showcase'">Showcase</BNavItem>
-                <BNavItem href="/custom" :active="route.name === 'custom'">Custom</BNavItem>
+                <BNavItem to="/showcase" :active="route.name === 'showcase'">Showcase</BNavItem>
+                <BNavItem to="/custom" :active="route.name === 'custom'">Custom</BNavItem>
             </BNavbarNav>
         </BCollapse>
     </BNavbar>
