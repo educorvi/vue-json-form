@@ -26,5 +26,7 @@ export type * from '@/typings/customTypes';
 export * from '@/typings/typeValidators';
 export { generateUISchema } from '@/Commons';
 
+export * from '@/MapperFunctions/oneOfToEnum';
+
 import './RenderInterface';
 // import '@/typings/ui-schema';

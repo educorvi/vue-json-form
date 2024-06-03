@@ -2,6 +2,7 @@
 import { nextTick, ref } from 'vue';
 import { VueJsonForm } from '@educorvi/vue-json-form';
 import { BButton, BButtonGroup, BForm, BFormCheckbox, BFormFile, BInput } from 'bootstrap-vue-next';
+import { oneOfToEnum } from '@educorvi/vue-json-form';
 
 const emit = defineEmits<{
     viewCode: [title: string, object: Record<any, any>];
@@ -60,7 +61,8 @@ const uiSchema = ref(undefined as Record<string, any> | undefined);
     </b-form>
     <hr>
     <vue-json-form v-if="jsonSchema" :jsonSchema="jsonSchema" :uiSchema="uiSchema"
-                   :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod">
+                   :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"
+                    :mapperFunctions="[oneOfToEnum]">
         <b-button v-if="submitButton" type="submit" class="mt-3 w-100" variant="primary">Submit</b-button>
     </vue-json-form>
     <div v-else>

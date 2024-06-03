@@ -39,6 +39,7 @@ import {
     onMounted,
     provide,
     ref,
+    type ComputedRef,
 } from 'vue';
 import jsonPointer from 'json-pointer';
 import {
@@ -55,7 +56,7 @@ import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import { isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 
-const { jsonSchema } = storeToRefs(useFormStructureStore());
+const { jsonSchema, mappers } = storeToRefs(useFormStructureStore());
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
 const ErrorViewer = getComponent('ErrorViewer');
@@ -69,21 +70,7 @@ const props = defineProps<{
 
 const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
-const required = computedRequired(props.layoutElement);
-
-const invalidJsonPointer = ref(false as false | string);
-
-let additionalHiddenClass = props.layoutElement.options?.hidden
-    ? 'hiddenControl'
-    : '';
-
-const cssClass = computedCssClass(
-    props.layoutElement,
-    'vjf_control mb-3 w-100',
-    additionalHiddenClass
-);
-
-const jsonElement = computed(() => {
+const jsonElement: ComputedRef<CoreSchemaMetaSchema> = computed(() => {
     try {
         return jsonPointer.get(
             jsonSchema.value || {},
@@ -96,17 +83,50 @@ const jsonElement = computed(() => {
     }
 });
 
-const savePath =
-    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+const formStructureMapped = computed(() => {
+    let localJsonElement = jsonElement.value;
+    let localUiElement = props.layoutElement;
+    for (const mapper of mappers.value) {
+        const mapped = mapper(localJsonElement, localUiElement);
+        if (mapped) {
+            localJsonElement = mapped.jsonElement;
+            localUiElement = mapped.uiElement;
+        } else {
+            console.warn('Mapper failed', mapper);
+        }
+    }
+    return {
+        jsonElement: localJsonElement,
+        uiElement: localUiElement,
+    };
+});
 
-provide(layoutProviderKey, props.layoutElement);
-provide(jsonElementProviderKey, jsonElement.value);
+const required = computedRequired(formStructureMapped.value.uiElement);
+
+const invalidJsonPointer = ref(false as false | string);
+
+let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
+    ? 'hiddenControl'
+    : '';
+
+const cssClass = computedCssClass(
+    formStructureMapped.value.uiElement,
+    'vjf_control mb-3 w-100',
+    additionalHiddenClass
+);
+
+const savePath =
+    inject(savePathOverrideProviderKey, undefined) ||
+    formStructureMapped.value.uiElement.scope;
+
+provide(layoutProviderKey, formStructureMapped.value.uiElement);
+provide(jsonElementProviderKey, formStructureMapped.value.jsonElement);
 provide(savePathProviderKey, savePath);
 provide(savePathOverrideProviderKey, undefined);
 
 const control_id_string = controlID(savePath);
 
-const label = computedLabel(props.layoutElement);
+const label = computedLabel(formStructureMapped.value.uiElement);
 
 /**
  * The type of the control
@@ -116,12 +136,13 @@ const controlType = computed(() => {
      * Display enums as Radiobuttons or Select
      */
     if (
-        jsonElement.value.enum !== undefined &&
-        jsonElement.value.type !== 'array'
+        formStructureMapped.value.jsonElement.enum !== undefined &&
+        formStructureMapped.value.jsonElement.type !== 'array'
     ) {
         if (
-            props.layoutElement.options?.displayAs === 'radiobuttons' ||
-            props.layoutElement.options?.displayAs === 'buttons'
+            formStructureMapped.value.uiElement.options?.displayAs ===
+                'radiobuttons' ||
+            formStructureMapped.value.uiElement.options?.displayAs === 'buttons'
         ) {
             return getComponent('RadiobuttonControl');
         } else {
@@ -133,9 +154,9 @@ const controlType = computed(() => {
      * Display arrays with item enums as CheckboxGroup
      */
     if (
-        typeof jsonElement.value.items === 'object' &&
-        'enum' in jsonElement.value.items &&
-        jsonElement.value.type === 'array'
+        typeof formStructureMapped.value.jsonElement.items === 'object' &&
+        'enum' in formStructureMapped.value.jsonElement.items &&
+        formStructureMapped.value.jsonElement.type === 'array'
     ) {
         return getComponent('CheckboxGroupControl');
     }
@@ -144,9 +165,9 @@ const controlType = computed(() => {
      * Display arrays as Tags if enabled
      */
     if (
-        jsonElement.value.type === 'array' &&
-        isTagsConfig(props.layoutElement.options) &&
-        props.layoutElement.options?.tags?.enabled
+        formStructureMapped.value.jsonElement.type === 'array' &&
+        isTagsConfig(formStructureMapped.value.uiElement.options) &&
+        formStructureMapped.value.uiElement.options?.tags?.enabled
     ) {
         return getComponent('TagsControl');
     }
@@ -155,13 +176,13 @@ const controlType = computed(() => {
      * Display strings with format uri as FileControl
      */
     if (
-        jsonElement.value.type === 'string' &&
-        jsonElement.value.format === 'uri'
+        formStructureMapped.value.jsonElement.type === 'string' &&
+        formStructureMapped.value.jsonElement.format === 'uri'
     ) {
         return getComponent('FileControl');
     }
 
-    switch (jsonElement.value.type) {
+    switch (formStructureMapped.value.jsonElement.type) {
         case 'boolean':
             return getComponent('CheckboxControl');
         case 'number':
