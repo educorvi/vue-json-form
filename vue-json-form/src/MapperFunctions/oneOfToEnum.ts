@@ -36,6 +36,7 @@ export function oneOfToEnum(
         const titles: TitlesForEnum = {};
         for (const oe of jsonElement.oneOf) {
             if (!isCustomOneOfElement(oe)) {
+                console.warn('oneOf element is not a custom oneOf element');
                 return null;
             }
             // JSON Schema
@@ -48,12 +49,14 @@ export function oneOfToEnum(
             // UI Schema
             titles[oe.const] = oe.title;
         }
-        if (values?.length || 0 < 1) {
+        if ((values?.length || 0) < 1) {
+            console.warn('No values found in oneOf element');
             return null;
         } else {
             jsonElement.enum = values;
+            delete jsonElement.oneOf;
             uiElement.options = {
-                enum_titles: titles,
+                enumTitles: titles,
             };
         }
     }

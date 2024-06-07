@@ -4,17 +4,45 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
+import { computed, onMounted } from 'vue';
+import { hasEnumTitlesOptions } from '@/typings/typeValidators';
+import type { TitlesForEnum } from '@/typings/ui-schema';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
+
+const options = computed(() => {
+    if (!jsonElement.enum) {
+        return [];
+    }
+    if (!hasEnumTitlesOptions(layoutElement)) {
+        return jsonElement.enum;
+    } else {
+        return jsonElement.enum.map((value) => {
+            if (typeof value !== 'string' && typeof value !== 'number') {
+                return value;
+            }
+            return {
+                value,
+                text:
+                    (layoutElement.options.enumTitles as TitlesForEnum)[
+                        value
+                    ] || value,
+            };
+        });
+    }
+});
+onMounted(() => {
+    console.log(options.value);
+});
 </script>
 
 <template>
     <BFormSelect
         v-model="formData[savePath]"
-        :options="jsonElement.enum"
+        :options="options"
         class="vjf_select"
         :id="id"
     />
