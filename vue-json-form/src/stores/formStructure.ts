@@ -5,6 +5,7 @@ import type { Layout, UISchema } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { RenderInterface } from '@/RenderInterface';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
+import type { MapperFunction } from '@/typings/customTypes';
 
 const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 
@@ -38,6 +39,7 @@ type FormStructureStoreState = {
     uiSchema: Layout | undefined;
     components: RenderInterface | undefined;
     arrays: string[];
+    mappers: MapperFunction[];
 };
 
 type FormStructureStore = StoreDefinition<
@@ -60,6 +62,7 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                  * List of all arrays in the schema that were written to
                  */
                 arrays: [] as string[],
+                mappers: [],
             }) as FormStructureStoreState,
         getters: {
             defaultData: (state: FormStructureStoreState) => {

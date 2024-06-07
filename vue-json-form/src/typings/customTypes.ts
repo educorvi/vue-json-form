@@ -1,4 +1,5 @@
-import type { Layout, LayoutElement } from '@/typings/ui-schema';
+import type { Control, Layout, LayoutElement } from '@/typings/ui-schema';
+import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 /**
  * A layout element with child elements
@@ -37,3 +38,11 @@ export type GenerationOptions = {
           groupLabel: string;
       }
 );
+
+export type MapperFunction = (
+    jsonElement: CoreSchemaMetaSchema,
+    uiElement: Control
+) => null | {
+    jsonElement: CoreSchemaMetaSchema;
+    uiElement: Control;
+};

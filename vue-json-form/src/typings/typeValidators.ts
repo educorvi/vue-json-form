@@ -1,10 +1,12 @@
 import type {
     Button,
+    Control,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
     ShowOnProperty,
     TagsOptions,
+    TitlesForEnum,
 } from '@/typings/ui-schema';
 import type {
     dependentElement,
@@ -70,7 +72,7 @@ export function hasProperties(
 export function hasOptions(
     layout: LayoutElement
 ): layout is LayoutElement & { options: Options } {
-    return 'options' in layout;
+    return 'options' in layout && layout.options !== undefined;
 }
 
 export function hasItems(
@@ -89,4 +91,10 @@ export function hasEnumValuesForItems(
     json: CoreSchemaMetaSchema
 ): json is CoreSchemaMetaSchema & { items: { enum: any[] } } {
     return hasItems(json) && hasEnum(json.items);
+}
+
+export function hasEnumTitlesOptions(layout: Control): layout is Control & {
+    options: { enum_titles: TitlesForEnum };
+} {
+    return hasOptions(layout) && layout.options.enumTitles !== undefined;
 }

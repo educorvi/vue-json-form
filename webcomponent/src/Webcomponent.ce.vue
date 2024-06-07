@@ -2,6 +2,8 @@
 
 import { VueJsonForm as vjfComp, bootstrapComponents } from '@educorvi/vue-json-form';
 import { computed, type ComputedRef } from 'vue';
+import { oneOfToEnum } from '@educorvi/vue-json-form/src/MapperFunctions/oneOfToEnum';
+import type { MapperFunction } from '@educorvi/vue-json-form/src/typings/customTypes';
 
 const props = defineProps<{
     /**
@@ -34,11 +36,18 @@ const data: ComputedRef = computed(() => {
     };
 });
 
+const mapperFunctions: MapperFunction[] = [oneOfToEnum]
+
 </script>
 
 <template>
-        <vjf-comp :json-schema="data.jsonSchema" :ui-schema="data.uiSchema" :preset-data="data.presetData"
-                  :return-data-as-scopes="data.returnDataAsScopes" :render-interface="bootstrapComponents"></vjf-comp>
+        <vjf-comp :json-schema="data.jsonSchema"
+                  :ui-schema="data.uiSchema"
+                  :preset-data="data.presetData"
+                  :return-data-as-scopes="data.returnDataAsScopes"
+                  :render-interface="bootstrapComponents"
+                  :mapper-functions="mapperFunctions"
+        ></vjf-comp>
 </template>
 
 <style lang="scss">

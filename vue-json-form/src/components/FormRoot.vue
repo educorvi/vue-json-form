@@ -84,11 +84,12 @@ import RefParser, {
     type ParserOptions,
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
-import type { GenerationOptions } from '@/typings/customTypes';
+import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
 
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
+    mappers,
     components,
     defaultData,
 } = storeToRefs(useFormStructureStore());
@@ -146,6 +147,11 @@ const props = defineProps<{
      * Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data
      */
     returnDataAsScopes?: boolean;
+
+    /**
+     * Functions to change JSON- and UI-Schema of fields before rendering
+     */
+    mapperFunctions?: MapperFunction[];
 }>();
 
 function onSubmitFormLocal(evt: Event) {
@@ -210,6 +216,8 @@ async function assignStoreData(
     } & Record<string, any>
 ) {
     components.value = obj.renderInterface;
+
+    mappers.value = props.mapperFunctions || [];
 
     errorViewer = getComponent('ErrorViewer');
 

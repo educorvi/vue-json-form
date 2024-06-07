@@ -50,10 +50,7 @@ function getControlComponent(name: string | undefined) {
 }
 
 const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
-
-const layoutElement = props.layoutElement;
-
-let show = computedShowOnLogic(props.layoutElement);
+const show = computedShowOnLogic(props.layoutElement);
 </script>
 
 <style scoped></style>
