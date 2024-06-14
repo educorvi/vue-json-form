@@ -14,7 +14,7 @@ const id = controlID(savePath);
 <template>
     <b-form-input
         type="number"
-        v-model="formData[savePath]"
+        v-model.number="formData[savePath]"
         class="vjf_input"
         :id="id"
         :step="jsonElement.multipleOf"
