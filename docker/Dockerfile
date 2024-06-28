@@ -22,7 +22,7 @@ COPY .. .
 
 RUN yarn workspaces focus demo
 
-RUN yarn workspaces foreach -Rpt --from demo run build
+RUN yarn workspaces foreach -Rptv --from demo run build
 
 FROM nginx:stable-alpine as demo
 RUN mkdir /app

@@ -16,6 +16,10 @@
   "scripts": {
     "prepare": "husky",
     "doc": "typedoc --out ./docs/ui-schema vue-json-form/src/typings/ui-schema.d.ts",
-    "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit"
+    "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
+    "build": "yarn workspaces foreach -Aptv run build",
+    "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
+    "build:vue-json-form": "yarn workspaces foreach -Rptv --from vue-json-form run build",
+    "build:webcomponent": "yarn workspaces foreach -Rptv --from webcomponent run build"
   }
 }

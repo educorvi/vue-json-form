@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
 import { VueJsonForm, generateUISchema } from '@educorvi/vue-json-form';
-import { BButton, BButtonGroup, BCard, BForm, BFormCheckbox, BFormFile, BInput } from 'bootstrap-vue-next';
 import VueJsonPretty from 'vue-json-pretty';
 
 const emit = defineEmits<{
