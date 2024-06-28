@@ -70,6 +70,8 @@ const props = defineProps<{
 
 const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
+const invalidJsonPointer = ref(false as false | string);
+
 const jsonElement: ComputedRef<CoreSchemaMetaSchema> = computed(() => {
     try {
         return jsonPointer.get(
@@ -102,8 +104,6 @@ const formStructureMapped = computed(() => {
 });
 
 const required = computedRequired(formStructureMapped.value.uiElement);
-
-const invalidJsonPointer = ref(false as false | string);
 
 let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
     ? 'hiddenControl'

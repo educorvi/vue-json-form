@@ -8,59 +8,53 @@
 /**
  * Different types of layout elements
  */
-export type LayoutElement =
-    | Control
-    | Layout
-    | HTMLRenderer
-    | Divider
-    | Button
-    | Buttongroup;
+export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button | Buttongroup;
 /**
  * Gives multiple options to configure the element
  */
 export type Options = (
-    | TagsOptions
-    | (CommonEnumOptions &
-          (
-              | {
-                    /**
-                     * Choose how an enum should be displayed
-                     */
-                    displayAs?: 'select' | 'radiobuttons' | 'switches';
-                }
-              | {
-                    /**
-                     * Choose how an enum should be displayed
-                     */
-                    displayAs: 'buttons';
-                    buttonVariant?: ColorVariant;
-                }
-          ))
-    | FileUploadOptions
-    | InputOptions
+  | TagsOptions
+  | (CommonEnumOptions &
+      (
+        | {
+            /**
+             * Choose how an enum should be displayed
+             */
+            displayAs?: "select" | "radiobuttons" | "switches";
+          }
+        | {
+            /**
+             * Choose how an enum should be displayed
+             */
+            displayAs: "buttons";
+            buttonVariant?: ColorVariant;
+          }
+      ))
+  | FileUploadOptions
+  | InputOptions
 ) &
-    ControlFormattingOptions &
-    CustomOptions;
+  ControlFormattingOptions &
+  CustomOptions;
 /**
  * Different color variants
  */
 export type ColorVariant =
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'danger'
-    | 'info'
-    | 'light'
-    | 'dark'
-    | 'outline-primary'
-    | 'outline-secondary'
-    | 'outline-success'
-    | 'outline-warning'
-    | 'outline-danger'
-    | 'outline-info'
-    | 'outline-light'
-    | 'outline-dark';
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "light"
+  | "dark"
+  | "outline-primary"
+  | "outline-secondary"
+  | "outline-success"
+  | "outline-warning"
+  | "outline-danger"
+  | "outline-info"
+  | "outline-light"
+  | "outline-dark";
 /**
  * Show field depending on value of other field
  */
@@ -69,13 +63,13 @@ export type ShowOnProperty = LegacyShowOnProperty | Rule;
  * Condition to be applied
  */
 export type ShowOnFunctionType =
-    | 'EQUALS'
-    | 'NOT_EQUALS'
-    | 'GREATER'
-    | 'GREATER_OR_EQUAL'
-    | 'SMALLER_OR_EQUAL'
-    | 'SMALLER'
-    | 'LONGER';
+  | "EQUALS"
+  | "NOT_EQUALS"
+  | "GREATER"
+  | "GREATER_OR_EQUAL"
+  | "SMALLER_OR_EQUAL"
+  | "SMALLER"
+  | "LONGER";
 export type Formula = Operator | Atom | Plugin | Comparison | Quantifier;
 export type Operator = NonUnaryOperator | UnaryOperator;
 /**
@@ -94,7 +88,7 @@ export type DataArray = Formula[] | Atom;
 /**
  * Submit or Reset
  */
-export type TheButtonsType = 'submit' | 'reset';
+export type TheButtonsType = "submit" | "reset";
 /**
  * The buttons text
  */
@@ -108,487 +102,484 @@ export type Elements = LayoutElement[];
  * Schema for the UI Schema
  */
 export interface UISchema {
-    /**
-     * The Metaschema of the UI Schema
-     */
-    $schema?: string;
-    /**
-     * Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x.
-     */
-    version: string;
-    layout: Layout;
+  /**
+   * The Metaschema of the UI Schema
+   */
+  $schema?: string;
+  /**
+   * Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x.
+   */
+  version: string;
+  layout: Layout;
 }
 /**
  * The different layouts
  */
 export interface Layout {
+  /**
+   * The ID of the layout
+   */
+  $id?: string;
+  /**
+   * May contain a schema reference to the ui schema
+   */
+  $schema?: string;
+  type: "VerticalLayout" | "HorizontalLayout" | "Group";
+  elements: Elements;
+  showOn?: ShowOnProperty;
+  /**
+   * Additional options
+   */
+  options?: {
     /**
-     * The ID of the layout
+     * The layout's CSS classes
      */
-    $id?: string;
+    cssClass?: string;
     /**
-     * May contain a schema reference to the ui schema
+     * Adds a label for groups (only for type=Group)
      */
-    $schema?: string;
-    type: 'VerticalLayout' | 'HorizontalLayout' | 'Group';
-    elements: Elements;
-    showOn?: ShowOnProperty;
-    /**
-     * Additional options
-     */
-    options?: {
-        /**
-         * The layout's CSS classes
-         */
-        cssClass?: string;
-        /**
-         * Adds a label for groups (only for type=Group)
-         */
-        label?: string;
-        [k: string]: unknown;
-    };
+    label?: string;
+    [k: string]: unknown;
+  };
 }
 /**
  * Contains a form element, e. g. a text input
  */
 export interface Control {
-    type: 'Control';
-    /**
-     * A json pointer referring to the form element in the forms json schema
-     */
-    scope: string;
-    options?: Options;
-    showOn?: ShowOnProperty;
+  type: "Control";
+  /**
+   * A json pointer referring to the form element in the forms json schema
+   */
+  scope: string;
+  options?: Options;
+  showOn?: ShowOnProperty;
 }
 export interface TagsOptions {
+  /**
+   * Will be rendered as tags-Field
+   */
+  tags?: {
     /**
-     * Will be rendered as tags-Field
+     * Set to true to render the field as tags field
      */
-    tags?: {
-        /**
-         * Set to true to render the field as tags field
-         */
-        enabled?: boolean;
-        pills?: boolean;
-        variant?: ColorVariant;
-        [k: string]: unknown;
-    };
+    enabled?: boolean;
+    pills?: boolean;
+    variant?: ColorVariant;
+    [k: string]: unknown;
+  };
 }
 export interface CommonEnumOptions {
-    enumTitles?: TitlesForEnum;
-    /**
-     * Radiobutton-/Checkbox group will be stacked if set to true
-     */
-    stacked?: boolean;
+  enumTitles?: TitlesForEnum;
+  /**
+   * Radiobutton-/Checkbox group will be stacked if set to true
+   */
+  stacked?: boolean;
 }
 /**
  * If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
  */
 export interface TitlesForEnum {
-    /**
-     * This interface was referenced by `TitlesForEnum`'s JSON-Schema definition
-     * via the `patternProperty` "".
-     */
-    [k: string]: string;
+  /**
+   * This interface was referenced by `TitlesForEnum`'s JSON-Schema definition
+   * via the `patternProperty` "".
+   */
+  [k: string]: string;
 }
 export interface FileUploadOptions {
-    /**
-     * Allows the upload of multiple files with fileupload
-     */
-    allowMultipleFiles?: boolean;
-    /**
-     * The accepted File Types
-     */
-    acceptedFileType?: string;
+  /**
+   * Allows the upload of multiple files with fileupload
+   */
+  allowMultipleFiles?: boolean;
+  /**
+   * The accepted File Types
+   */
+  acceptedFileType?: string;
 }
 /**
  * Options for text fields
  */
 export interface InputOptions {
-    /**
-     * Format for string fields
-     */
-    format?:
-        | 'text'
-        | 'time'
-        | 'date'
-        | 'datetime-local'
-        | 'email'
-        | 'password'
-        | 'search'
-        | 'url'
-        | 'tel'
-        | 'color'
-        | 'hidden';
-    /**
-     * If set true, textarea will be shown instead of textfield.
-     *  Alternatively can be set to the number of wanted lines
-     */
-    multi?: boolean | number;
-    /**
-     * Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
-     */
-    autocomplete?:
-        | 'off'
-        | 'on'
-        | 'name'
-        | 'honorific-prefix'
-        | 'given-name'
-        | 'additional-name'
-        | 'family-name'
-        | 'honorific-suffix'
-        | 'nickname'
-        | 'email'
-        | 'username'
-        | 'new-password'
-        | 'current-password'
-        | 'one-time-code'
-        | 'organization-title'
-        | 'organization'
-        | 'street-address'
-        | 'shipping'
-        | 'billing'
-        | 'address-line1'
-        | 'address-line2'
-        | 'address-line3'
-        | 'address-level4'
-        | 'address-level3'
-        | 'address-level2'
-        | 'address-level1'
-        | 'country'
-        | 'country-name'
-        | 'postal-code'
-        | 'cc-name'
-        | 'cc-given-name'
-        | 'cc-additional-name'
-        | 'cc-family-name'
-        | 'cc-number'
-        | 'cc-exp'
-        | 'cc-exp-month'
-        | 'cc-exp-year'
-        | 'cc-csc'
-        | 'cc-type'
-        | 'transaction-currency'
-        | 'transaction-amount'
-        | 'language'
-        | 'bday'
-        | 'bday-day'
-        | 'bday-month'
-        | 'bday-year'
-        | 'sex'
-        | 'tel'
-        | 'tel-country-code'
-        | 'tel-national'
-        | 'tel-area-code'
-        | 'tel-local'
-        | 'tel-extension'
-        | 'impp'
-        | 'url'
-        | 'photo'
-        | 'webauthn';
+  /**
+   * Format for string fields
+   */
+  format?:
+    | "text"
+    | "time"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "password"
+    | "search"
+    | "url"
+    | "tel"
+    | "color"
+    | "hidden";
+  /**
+   * If set true, textarea will be shown instead of textfield.
+   *  Alternatively can be set to the number of wanted lines
+   */
+  multi?: boolean | number;
+  /**
+   * Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+   */
+  autocomplete?:
+    | "off"
+    | "on"
+    | "name"
+    | "honorific-prefix"
+    | "given-name"
+    | "additional-name"
+    | "family-name"
+    | "honorific-suffix"
+    | "nickname"
+    | "email"
+    | "username"
+    | "new-password"
+    | "current-password"
+    | "one-time-code"
+    | "organization-title"
+    | "organization"
+    | "street-address"
+    | "shipping"
+    | "billing"
+    | "address-line1"
+    | "address-line2"
+    | "address-line3"
+    | "address-level4"
+    | "address-level3"
+    | "address-level2"
+    | "address-level1"
+    | "country"
+    | "country-name"
+    | "postal-code"
+    | "cc-name"
+    | "cc-given-name"
+    | "cc-additional-name"
+    | "cc-family-name"
+    | "cc-number"
+    | "cc-exp"
+    | "cc-exp-month"
+    | "cc-exp-year"
+    | "cc-csc"
+    | "cc-type"
+    | "transaction-currency"
+    | "transaction-amount"
+    | "language"
+    | "bday"
+    | "bday-day"
+    | "bday-month"
+    | "bday-year"
+    | "sex"
+    | "tel"
+    | "tel-country-code"
+    | "tel-national"
+    | "tel-area-code"
+    | "tel-local"
+    | "tel-extension"
+    | "impp"
+    | "url"
+    | "photo"
+    | "webauthn";
 }
 export interface ControlFormattingOptions {
-    /**
-     * Defines whether the fields label is shown
-     */
-    label?: boolean;
-    /**
-     * Will be shown as placeholder in form fields, if supported by field
-     */
-    placeholder?: string;
-    /**
-     * The Controls CSS classes
-     */
-    cssClass?: string;
-    /**
-     * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with plain:"$now" to create a hidden timestamp.
-     */
-    hidden?: boolean;
-    /**
-     * Will be appended to field
-     */
-    append?: string;
-    /**
-     * Will be prepended to field
-     */
-    prepend?: string;
-    /**
-     * Disables the field
-     */
-    disabled?: boolean;
+  /**
+   * Defines whether the fields label is shown
+   */
+  label?: boolean;
+  /**
+   * Will be shown as placeholder in form fields, if supported by field
+   */
+  placeholder?: string;
+  /**
+   * The Controls CSS classes
+   */
+  cssClass?: string;
+  /**
+   * Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:"$now" to create a hidden timestamp.
+   */
+  hidden?: boolean;
+  /**
+   * Will be appended to field
+   */
+  append?: string;
+  /**
+   * Will be prepended to field
+   */
+  prepend?: string;
+  /**
+   * Disables the field
+   */
+  disabled?: boolean;
+  childUiSchema?: Control1;
 }
 /**
- * Custom options for the control
+ * The UI Schema for (a) child item(s). Can be used to set an UI Schema for array items or object properties
  */
-export interface CustomOptions {
-    [k: string]: unknown;
+export interface Control1 {
+  type: "Control";
+  /**
+   * A json pointer referring to the form element in the forms json schema
+   */
+  scope: string;
+  options?: Options;
+  showOn?: ShowOnProperty;
 }
 /**
  * Legacy Variant of defining ShowOn property
  */
 export interface LegacyShowOnProperty {
-    /**
-     * The field this field depends on
-     */
-    scope: string;
-    type: ShowOnFunctionType;
-    /**
-     * The value the field from scope is compared against
-     */
-    referenceValue: boolean | string | number;
+  /**
+   * The field this field depends on
+   */
+  scope: string;
+  type: ShowOnFunctionType;
+  /**
+   * The value the field from scope is compared against
+   */
+  referenceValue: boolean | string | number;
 }
 /**
  * Rita Rule
  * See https://educorvi.github.io/rita/rita-core/docs/schema/#/rule
  */
 export interface Rule {
-    id: string;
-    /**
-     * A comment about what the rule does
-     */
-    comment?: string;
-    rule: Formula;
-    [k: string]: unknown;
+  id: string;
+  /**
+   * A comment about what the rule does
+   */
+  comment?: string;
+  rule: Formula;
+  [k: string]: unknown;
 }
 /**
  * Requires at least two arguments
  */
 export interface NonUnaryOperator {
-    type: 'and' | 'or';
-    arguments: MultipleArguments;
+  type: "and" | "or";
+  arguments: MultipleArguments;
 }
 /**
  * Requires exactly on parameter
  */
 export interface UnaryOperator {
-    type: 'not';
-    arguments: UnaryArguments;
+  type: "not";
+  arguments: UnaryArguments;
 }
 /**
  * Describes an atom. Those can be used to read Data
  */
 export interface Atom {
-    type: 'atom';
-    /**
-     * The path to the atom in the data
-     */
-    path: string;
-    /**
-     * Must be set to true if the atom should be parsed as a date
-     */
-    isDate?: boolean;
+  type: "atom";
+  /**
+   * The path to the atom in the data
+   */
+  path: string;
+  /**
+   * Must be set to true if the atom should be parsed as a date
+   */
+  isDate?: boolean;
 }
 /**
  * Describes an plugin
  */
 export interface Plugin {
-    type: 'plugin';
-    /**
-     * The plugins name
-     */
-    name: string;
-    formula: Formula;
-    /**
-     * The plugins options
-     */
-    options?: {
-        [k: string]: unknown;
-    };
+  type: "plugin";
+  /**
+   * The plugins name
+   */
+  name: string;
+  formula: Formula;
+  /**
+   * The plugins options
+   */
+  options?: {
+    [k: string]: unknown;
+  };
 }
 /**
  * Compare strings, dates or numbers with each other
  */
 export interface Comparison {
-    type: 'comparison';
-    /**
-     * Selects how the arguments should be compared
-     */
-    operation:
-        | 'greater'
-        | 'smaller'
-        | 'greaterOrEqual'
-        | 'smallerOrEqual'
-        | 'equal';
-    /**
-     * Indicates if dates are compared
-     */
-    dates?: boolean;
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    arguments: [
-        Atom | Macro | number | string | string | Calculation | DateCalculation,
-        Atom | Macro | number | string | string | Calculation | DateCalculation,
-    ];
+  type: "comparison";
+  /**
+   * Selects how the arguments should be compared
+   */
+  operation: "greater" | "smaller" | "greaterOrEqual" | "smallerOrEqual" | "equal";
+  /**
+   * Indicates if dates are compared
+   */
+  dates?: boolean;
+  /**
+   * Indicates if different types are allowed inside a comparison. This follows the JavaScript rules for comparison (´===´ is used for ´equals´).
+   */
+  allowDifferentTypes?: boolean;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  arguments: [
+    Atom | Macro | number | string | string | Calculation | DateCalculation,
+    Atom | Macro | number | string | string | Calculation | DateCalculation
+  ];
 }
 /**
  * Describes macros. Available macros are `now` and `length`
  */
 export interface Macro {
-    type: 'macro';
-    macro: Now | Length;
+  type: "macro";
+  macro: Now | Length;
 }
 /**
  * Returns the current time
  */
 export interface Now {
-    type?: 'now';
+  type?: "now";
 }
 /**
  * Returns the length of an array
  */
 export interface Length {
-    type?: 'length';
-    array?: Atom;
+  type?: "length";
+  array?: Atom;
 }
 /**
  * Calculates a result
  */
 export interface Calculation {
-    type: 'calculation';
-    /**
-     * The mathematical operation to be calculated. Modulo refers to the function mod(a,b)=a-(floor(a/b)*b)
-     */
-    operation: 'add' | 'subtract' | 'multiply' | 'divide' | 'modulo';
-    /**
-     * @minItems 2
-     */
-    arguments: [
-        Atom | Macro | number | Calculation | DateCalculation,
-        Atom | Macro | number | Calculation | DateCalculation,
-        ...(Atom | Macro | number | Calculation | DateCalculation)[],
-    ];
+  type: "calculation";
+  /**
+   * The mathematical operation to be calculated. Modulo refers to the function mod(a,b)=a-(floor(a/b)*b)
+   */
+  operation: "add" | "subtract" | "multiply" | "divide" | "modulo";
+  /**
+   * @minItems 2
+   */
+  arguments: [
+    Atom | Macro | number | Calculation | DateCalculation,
+    Atom | Macro | number | Calculation | DateCalculation,
+    ...(Atom | Macro | number | Calculation | DateCalculation)[]
+  ];
 }
 /**
  * Calculations involving dates
  */
 export interface DateCalculation {
-    type: 'dateCalculation';
-    /**
-     * Add/subtract a time interval to/from a date or subtract two dates to get the interval between them
-     */
-    operation: 'add' | 'subtract';
-    /**
-     * @minItems 2
-     * @maxItems 2
-     */
-    arguments: [
-        Atom | Macro | number | string | Calculation | DateCalculation,
-        Atom | Macro | number | string | Calculation | DateCalculation,
-    ];
-    /**
-     * What unit time intervals given as arguments will be in.
-     */
-    dateCalculationUnit?:
-        | 'seconds'
-        | 'minutes'
-        | 'hours'
-        | 'days'
-        | 'months'
-        | 'years';
-    /**
-     * What unit time intervals representing the result will be in.
-     */
-    dateResultUnit?:
-        | 'seconds'
-        | 'minutes'
-        | 'hours'
-        | 'days'
-        | 'months'
-        | 'years';
+  type: "dateCalculation";
+  /**
+   * Add/subtract a time interval to/from a date or subtract two dates to get the interval between them
+   */
+  operation: "add" | "subtract";
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  arguments: [
+    Atom | Macro | number | string | Calculation | DateCalculation,
+    Atom | Macro | number | string | Calculation | DateCalculation
+  ];
+  /**
+   * What unit time intervals given as arguments will be in.
+   */
+  dateCalculationUnit?: "seconds" | "minutes" | "hours" | "days" | "months" | "years";
+  /**
+   * What unit time intervals representing the result will be in.
+   */
+  dateResultUnit?: "seconds" | "minutes" | "hours" | "days" | "months" | "years";
 }
 /**
  * Quantifiers that can be used to evaluate rules on arrays in Data
  */
 export interface Quantifier {
-    type: 'forall' | 'exists';
-    array: DataArray;
-    /**
-     * This is a placeholder name for the current array object. This is the property name with wich you can reference the current value in the subsequent rule
-     */
-    placeholder: string;
-    rule: Formula;
+  type: "forall" | "exists";
+  array: DataArray;
+  /**
+   * This is a placeholder name for the current array object. This is the property name with wich you can reference the current value in the subsequent rule
+   */
+  placeholder: string;
+  rule: Formula;
+}
+/**
+ * Custom options for the control
+ */
+export interface CustomOptions {
+  [k: string]: unknown;
 }
 /**
  * Some HTML to be rendered in the form
  */
 export interface HTMLRenderer {
-    type?: 'HTML';
-    htmlData: string;
-    showOn?: ShowOnProperty;
+  type?: "HTML";
+  htmlData: string;
+  showOn?: ShowOnProperty;
 }
 /**
  * inserts a simple divider
  */
 export interface Divider {
-    type: 'Divider';
-    showOn?: ShowOnProperty;
+  type: "Divider";
+  showOn?: ShowOnProperty;
 }
 /**
  * Used to put a button into the form
  */
 export interface Button {
-    type: 'Button';
-    buttonType: TheButtonsType;
-    text: Text;
-    showOn?: ShowOnProperty;
-    options?: Options1;
+  type: "Button";
+  buttonType: TheButtonsType;
+  text: Text;
+  showOn?: ShowOnProperty;
+  options?: Options1;
 }
 /**
  * Options for the button
  */
 export interface Options1 {
-    /**
-     * The layout's CSS classes
-     */
-    cssClass?: string;
-    variant?: ColorVariant;
-    nativeSubmitOptions?: NativeSubmitSettings;
-    [k: string]: unknown;
+  /**
+   * The layout's CSS classes
+   */
+  cssClass?: string;
+  variant?: ColorVariant;
+  nativeSubmitOptions?: NativeSubmitSettings;
+  [k: string]: unknown;
 }
 /**
  * Settings that can be used if native form submit is used
  */
 export interface NativeSubmitSettings {
-    /**
-     * Specifies where to send the form-data when a form is submitted
-     */
-    formaction?: string;
-    /**
-     * Specifies how to send the form-data
-     */
-    formmethod?: 'get' | 'post';
-    /**
-     * Specifies where to display the response after submitting the form
-     */
-    formtarget?: '_blank' | '_self' | '_parent' | '_top';
-    /**
-     * Specifies how form-data should be encoded before sending it to a server
-     */
-    formenctype?:
-        | 'application/x-www-form-urlencoded'
-        | 'multipart/form-data'
-        | 'text/plain';
-    [k: string]: unknown;
+  /**
+   * Specifies where to send the form-data when a form is submitted
+   */
+  formaction?: string;
+  /**
+   * Specifies how to send the form-data
+   */
+  formmethod?: "get" | "post";
+  /**
+   * Specifies where to display the response after submitting the form
+   */
+  formtarget?: "_blank" | "_self" | "_parent" | "_top";
+  /**
+   * Specifies how form-data should be encoded before sending it to a server
+   */
+  formenctype?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain";
+  [k: string]: unknown;
 }
 /**
  * Used to group buttons
  */
 export interface Buttongroup {
-    type: 'Buttongroup';
+  type: "Buttongroup";
+  /**
+   * The buttons in the button group
+   *
+   * @minItems 1
+   */
+  buttons: [Button, ...Button[]];
+  options?: {
     /**
-     * The buttons in the button group
-     *
-     * @minItems 1
+     * Display the buttons vertical
      */
-    buttons: [Button, ...Button[]];
-    options?: {
-        /**
-         * Display the buttons vertical
-         */
-        vertical?: boolean;
-        [k: string]: unknown;
-    };
-    showOn?: ShowOnProperty;
+    vertical?: boolean;
+    [k: string]: unknown;
+  };
+  showOn?: ShowOnProperty;
 }
