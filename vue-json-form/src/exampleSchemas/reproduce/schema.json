@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "passwortfeld098f378cd4864be1924ce03741030f4d": {
+      "title": "passwortfeld",
+      "type": "string"
+    },
+    "email": {
+      "title": "email",
+      "type": "string"
+    }
+  }
+}

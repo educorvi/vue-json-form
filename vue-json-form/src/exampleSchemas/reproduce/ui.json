@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/ui/ui.schema.json",
+  "version": "2.0",
+  "layout": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "/properties/passwortfeld098f378cd4864be1924ce03741030f4d",
+        "options": {
+          "format": "password"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/email",
+        "options": {
+          "format": "email"
+        }
+      },
+      {
+        "type": "Button",
+        "buttonType": "submit",
+        "text": "Submit"
+      }
+    ]
+  }
+}

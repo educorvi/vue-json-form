@@ -17,6 +17,9 @@
 import { VueJsonForm } from './main';
 import json from './exampleSchemas/showcase/schema.json';
 import ui from './exampleSchemas/showcase/ui.json';
+
+import json_repro from './exampleSchemas/reproduce/schema.json';
+import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
@@ -27,6 +30,8 @@ const components = markRaw(bootstrapComponents);
 
 const jsonSchema = json;
 const uiSchema = ui;
+// const jsonSchema = json_repro;
+// const uiSchema = ui_repro;
 </script>
 
 <style scoped></style>

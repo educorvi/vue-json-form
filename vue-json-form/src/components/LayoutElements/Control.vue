@@ -14,6 +14,7 @@
                 :disabled="layoutElement.options?.disabled"
                 :placeholder="layoutElement.options?.placeholder"
                 :autocomplete="layoutElement.options?.autocomplete || 'on'"
+                :type="layoutElement.options?.format"
                 :required="required"
             />
             <template #append>
