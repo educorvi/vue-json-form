@@ -5,23 +5,25 @@ import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnum, hasEnumValuesForItems } from '@/typings/typeValidators';
+import { computed } from 'vue';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
-let options: unknown[];
-if (!hasEnum(jsonElement)) {
-    options = [];
-} else {
-    options =
+let options = computed(() => {
+    if (!hasEnum(jsonElement)) {
+        return [];
+    }
+    return (
         jsonElement.enum?.map((key: any) => {
             const textVals: Record<any, any> =
                 layoutElement.options?.enumTitles || {};
             const text = textVals[key] || key;
             return { value: key, text };
-        }) || [];
-}
+        }) || []
+    );
+});
 </script>
 
 <template>

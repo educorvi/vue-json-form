@@ -178,7 +178,7 @@ __metadata:
     "@vue/tsconfig": ^0.4.0
     "@vueuse/core": ^10.9.0
     bootstrap: ^5.3.3
-    bootstrap-vue-next: 0.19.0
+    bootstrap-vue-next: 0.16.6
     buffer: ^6.0.3
     deepmerge: ^4.3.1
     eslint: ^8.56.0
@@ -1593,6 +1593,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/core@npm:^10.7.2":
+  version: 10.11.0
+  resolution: "@vueuse/core@npm:10.11.0"
+  dependencies:
+    "@types/web-bluetooth": ^0.0.20
+    "@vueuse/metadata": 10.11.0
+    "@vueuse/shared": 10.11.0
+    vue-demi: ">=0.14.8"
+  checksum: 51f9b06ee852eb8df2652de3c06db6c89216f17e8c8299996090e48b239411748edc6061d701eb349e6094c29cb1d99dbc011b988d4433a1c2d17fb36c28b1db
+  languageName: node
+  linkType: hard
+
 "@vueuse/core@npm:^10.9.0":
   version: 10.9.0
   resolution: "@vueuse/core@npm:10.9.0"
@@ -1605,10 +1617,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/metadata@npm:10.11.0":
+  version: 10.11.0
+  resolution: "@vueuse/metadata@npm:10.11.0"
+  checksum: 11591402e150928b22866f9ee4f9bae85918d35467d3df1d921200596a132fa5d937d410fc4490ec893a8ce6582e06eff6a483f4b24d403a46c521037894adea
+  languageName: node
+  linkType: hard
+
 "@vueuse/metadata@npm:10.9.0":
   version: 10.9.0
   resolution: "@vueuse/metadata@npm:10.9.0"
   checksum: e381d3134e1a5965e157503ddb1187f671316386ab0c779d3fc1b9c91d6658086c417414f4642554382ac43fd800d7565f5f25824b678433f937a917e931387e
+  languageName: node
+  linkType: hard
+
+"@vueuse/shared@npm:10.11.0":
+  version: 10.11.0
+  resolution: "@vueuse/shared@npm:10.11.0"
+  dependencies:
+    vue-demi: ">=0.14.8"
+  checksum: 25257b8d1b9fb5726d2bee0d1054ba33cce2b01263785ce7ecd01ee3102f2f0af52d486e121eaa9536e1e44508d46279bd452cec3f537367b5e6629de6c8b7b2
   languageName: node
   linkType: hard
 
@@ -2039,15 +2067,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.19.0":
-  version: 0.19.0
-  resolution: "bootstrap-vue-next@npm:0.19.0"
+"bootstrap-vue-next@npm:0.16.6":
+  version: 0.16.6
+  resolution: "bootstrap-vue-next@npm:0.16.6"
   dependencies:
     "@floating-ui/vue": ^1.0.6
-    "@vueuse/core": ^10.9.0
+    "@vueuse/core": ^10.7.2
   peerDependencies:
-    vue: ^3.4.27
-  checksum: a33482b893ce84519c282768c3b2289206419297e0aa884127419963ef38267e2318666fb33245155dd1f8db4006a9d993ce33fdfaa7d4cf165349286d41de23
+    vue: ^3.4.18
+  checksum: 824d46ca8626b7ef58907b06ff14e7ee2e853f3737198ddbda1a1d7442d5edbeb261cf4a258780c62361d0bbc8996016e6b769fe1ffcb8a58dd54cb88cdc6835
   languageName: node
   linkType: hard
 
@@ -2758,7 +2786,7 @@ __metadata:
     "@vitejs/plugin-vue": ^4.3.1
     "@vue/tsconfig": ^0.4.0
     bootstrap: ^5.3.3
-    bootstrap-vue-next: 0.19.0
+    bootstrap-vue-next: 0.16.6
     bootswatch: ^5.3.3
     cypress: ^12.17.4
     npm-run-all: ^4.1.5
@@ -7622,6 +7650,22 @@ __metadata:
     vue-demi-fix: bin/vue-demi-fix.js
     vue-demi-switch: bin/vue-demi-switch.js
   checksum: ff44b9372b8224590514252a2f73363cced6062205f9628a6b130dccb80e2023d55cd9d1da94aeb68d5539b7ea9eedcecf88ab281a3a9ff48b8db4c5366b9643
+  languageName: node
+  linkType: hard
+
+"vue-demi@npm:>=0.14.8":
+  version: 0.14.8
+  resolution: "vue-demi@npm:0.14.8"
+  peerDependencies:
+    "@vue/composition-api": ^1.0.0-rc.1
+    vue: ^3.0.0-0 || ^2.6.0
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+  bin:
+    vue-demi-fix: bin/vue-demi-fix.js
+    vue-demi-switch: bin/vue-demi-switch.js
+  checksum: e9ac4fd09dc1846cf840de34dc335dba810e5d47a488e66abc14102013ff2b2c13a4aa34c5f398a7c5e1ee1a40d0d52ef3901242487579f8caa0b410e8c7f4fb
   languageName: node
   linkType: hard
 
