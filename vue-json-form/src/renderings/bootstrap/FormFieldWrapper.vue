@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-    BFormGroup,
-    BInputGroup,
-    BInputGroupPrepend,
-    BInputGroupAppend,
-} from 'bootstrap-vue-next';
+import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
 import { computed } from 'vue';
 import { injectJsonData } from '@/computedProperties/json';
 import { hasItems, isTagsConfig } from '@/typings/typeValidators';
@@ -42,15 +37,12 @@ const hideLabel = computed(() => {
             :prepend="layoutElement.options?.prepend"
             :append="layoutElement.options?.append"
         >
-            <b-input-group-prepend>
-                <!--        Content is prepended to the input field-->
-                <slot name="prepend"></slot>
-            </b-input-group-prepend>
+            <!--        Content is prepended to the input field-->
+            <slot name="prepend"></slot>
+
             <slot />
-            <b-input-group-append>
-                <!--        Content is appended to the input field-->
-                <slot name="append" />
-            </b-input-group-append>
+            <!--        Content is appended to the input field-->
+            <slot name="append" />
         </BInputGroup>
     </BFormGroup>
 </template>

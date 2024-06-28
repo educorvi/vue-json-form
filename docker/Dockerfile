@@ -16,17 +16,13 @@ WORKDIR /app/webcomponent
 COPY ../webcomponent/package.json .
 
 WORKDIR /app
-RUN yarn install
+RUN yarn workspaces focus demo
 
 COPY .. .
 
-RUN yarn install
+RUN yarn workspaces focus demo
 
-WORKDIR /app/vue-json-form
-RUN yarn run build
-
-WORKDIR /app/demo
-RUN yarn run build
+RUN yarn workspaces foreach -Rpt --from demo run build
 
 FROM nginx:stable-alpine as demo
 RUN mkdir /app
