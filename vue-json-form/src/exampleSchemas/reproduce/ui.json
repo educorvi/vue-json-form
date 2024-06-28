@@ -19,6 +19,13 @@
         }
       },
       {
+        "type": "Control",
+        "scope": "/properties/checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6",
+        "options": {
+          "stacked": true
+        }
+      },
+      {
         "type": "Button",
         "buttonType": "submit",
         "text": "Submit"

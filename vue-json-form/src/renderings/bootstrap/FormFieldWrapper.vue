@@ -7,7 +7,7 @@ import {
 } from 'bootstrap-vue-next';
 import { computed } from 'vue';
 import { injectJsonData } from '@/computedProperties/json';
-import { isTagsConfig } from '@/typings/typeValidators';
+import { hasItems, isTagsConfig } from '@/typings/typeValidators';
 
 const props = defineProps<{
     label: string;
@@ -21,6 +21,7 @@ const hideLabel = computed(() => {
         jsonElement.type === 'object' ||
         layoutElement.options?.label === false ||
         (jsonElement.type === 'array' &&
+            !(hasItems(jsonElement) && jsonElement.items.enum) &&
             !jsonElement.enum &&
             !(
                 isTagsConfig(layoutElement.options) &&

@@ -2,7 +2,11 @@
     <div style="display: flex; justify-content: center">
         <div style="max-width: 700px; margin: 20px; width: 100%">
             <h1>Vue JSON Form Demo</h1>
+            <b-form-checkbox switch v-model="reprodue">
+                Reproduce form
+            </b-form-checkbox>
             <VueJsonForm
+                v-if="jsonSchema"
                 :json-schema="jsonSchema"
                 :on-submit-form="console.log"
                 :render-interface="bootstrapComponents"
@@ -23,13 +27,26 @@ import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
-import { markRaw, shallowRef } from 'vue';
-import { BButton, BFormInput } from 'bootstrap-vue-next';
+import { computed, markRaw, nextTick, Ref, ref, shallowRef, watch } from 'vue';
+import { BButton, BFormCheckbox, BFormInput } from 'bootstrap-vue-next';
 
 const components = markRaw(bootstrapComponents);
-
-const jsonSchema = json;
-const uiSchema = ui;
+const reprodue: Ref<boolean> = ref(false);
+const jsonSchema: Ref<Record<string, any> | null> = ref(json);
+const uiSchema: Ref<Record<string, any> | null> = ref(ui);
+watch(reprodue, async (value) => {
+    jsonSchema.value = null;
+    await nextTick();
+    if (value) {
+        jsonSchema.value = json_repro;
+        uiSchema.value = ui_repro;
+    } else {
+        jsonSchema.value = json;
+        uiSchema.value = ui;
+    }
+});
+// const jsonSchema = json;
+// const uiSchema = ui;
 // const jsonSchema = json_repro;
 // const uiSchema = ui_repro;
 </script>

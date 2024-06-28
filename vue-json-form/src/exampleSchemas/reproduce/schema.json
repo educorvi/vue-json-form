@@ -8,6 +8,18 @@
     "email": {
       "title": "email",
       "type": "string"
+    },
+    "checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6": {
+      "title": "checkboxenfeld",
+      "type": "array",
+      "items": {
+        "enum": [
+          "option1",
+          "option2",
+          "option3"
+        ],
+        "type": "string"
+      }
     }
   }
 }
