@@ -26,6 +26,10 @@
         }
       },
       {
+        "type": "Control",
+        "scope": "/properties/integer"
+      },
+      {
         "type": "Button",
         "buttonType": "submit",
         "text": "Submit"

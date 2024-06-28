@@ -23,11 +23,6 @@ const id = controlID(savePath);
     />
     <b-form-input
         v-else
-        :type="
-            layoutElement.options?.type ||
-            jsonElement.format?.replace('date-time', 'datetime-local') ||
-            'text'
-        "
         v-model="formData[savePath]"
         class="vjf_input"
         :id="id"

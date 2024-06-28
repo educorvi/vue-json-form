@@ -14,7 +14,7 @@
                 :disabled="layoutElement.options?.disabled"
                 :placeholder="layoutElement.options?.placeholder"
                 :autocomplete="layoutElement.options?.autocomplete || 'on'"
-                :type="layoutElement.options?.format"
+                :type="type"
                 :required="required"
             />
             <template #append>
@@ -68,6 +68,22 @@ const props = defineProps<{
      */
     layoutElement: Control;
 }>();
+
+const type = computed(() => {
+    if (jsonElement.value.type === 'string') {
+        return (
+            props.layoutElement.options?.format ||
+            jsonElement.value.format?.replace('date-time', 'datetime-local')
+        );
+    }
+    if (
+        jsonElement.value.type === 'number' ||
+        jsonElement.value.type === 'integer'
+    ) {
+        return 'number';
+    }
+    return undefined;
+});
 
 const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
