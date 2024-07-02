@@ -128,15 +128,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/rita@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@educorvi/rita@npm:5.1.0"
+"@educorvi/rita@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@educorvi/rita@npm:5.1.1"
   dependencies:
-    ajv: ^8.12.0
+    ajv: ^8.16.0
     ajv-formats: ^2.1.1
     luxon: ^3.4.4
-    tslib: ^2.6.2
-  checksum: 9bcf5226b4e76912e38ef36e61bcfb079ef15d0c87e6050ad7db8d6b9ca99472fabd4921c6eeefd6b1c89d4ebe66a10046c21b09c8cc21a2228ddbe5e987a197
+    tslib: ^2.6.3
+  checksum: f5db20b1c09f0dfbe002614b0264a1492e376ef0fed2097026b22478ca640fe6135386b6b4e3d0edc3af24706d9fe61faec3ba75a77d68a13f42c48d2f1ad778
   languageName: node
   linkType: hard
 
@@ -164,7 +164,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^11.6.1
-    "@educorvi/rita": ^5.1.0
+    "@educorvi/rita": ^5.1.1
     "@esbuild-plugins/node-globals-polyfill": ^0.2.3
     "@rushstack/eslint-patch": ^1.3.2
     "@tsconfig/node18": ^18.2.0
@@ -1751,7 +1751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^8.0.0, ajv@npm:^8.12.0":
+"ajv@npm:^8.0.0":
   version: 8.12.0
   resolution: "ajv@npm:8.12.0"
   dependencies:
@@ -1760,6 +1760,18 @@ __metadata:
     require-from-string: ^2.0.2
     uri-js: ^4.2.2
   checksum: 4dc13714e316e67537c8b31bc063f99a1d9d9a497eb4bbd55191ac0dcd5e4985bbb71570352ad6f1e76684fb6d790928f96ba3b2d4fd6e10024be9612fe3f001
+  languageName: node
+  linkType: hard
+
+"ajv@npm:^8.16.0":
+  version: 8.16.0
+  resolution: "ajv@npm:8.16.0"
+  dependencies:
+    fast-deep-equal: ^3.1.3
+    json-schema-traverse: ^1.0.0
+    require-from-string: ^2.0.2
+    uri-js: ^4.4.1
+  checksum: bdf3d4c9f1d11e220850051ef4cd89346e951cfb933d6d41be36d45053c1092af1523ee6c62525cce567355caf0a4f4c19a08a93851649c1fa32b4a39b7c4858
   languageName: node
   linkType: hard
 
@@ -7089,10 +7101,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.5.0, tslib@npm:^2.6.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.1.0, tslib@npm:^2.5.0, tslib@npm:^2.6.0":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 329ea56123005922f39642318e3d1f0f8265d1e7fcb92c633e0809521da75eeaca28d2cf96d7248229deb40e5c19adf408259f4b9640afd20d13aecc1430f3ad
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.6.3":
+  version: 2.6.3
+  resolution: "tslib@npm:2.6.3"
+  checksum: 74fce0e100f1ebd95b8995fbbd0e6c91bdd8f4c35c00d4da62e285a3363aaa534de40a80db30ecfd388ed7c313c42d930ee0eaf108e8114214b180eec3dbe6f5
   languageName: node
   linkType: hard
 
@@ -7401,7 +7420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uri-js@npm:^4.2.2":
+"uri-js@npm:^4.2.2, uri-js@npm:^4.4.1":
   version: 4.4.1
   resolution: "uri-js@npm:4.4.1"
   dependencies:
