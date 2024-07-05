@@ -27,7 +27,65 @@
       },
       {
         "type": "Control",
+        "scope": "/properties/checkboxen8c9fa56d35c449f484fc4426386a4ae6"
+      },
+      {
+        "type": "HTML",
+        "htmlData": "<h2>Checkbox Rita rule evaluated to true</h2>",
+        "showOn": {
+          "id": "ritaRule-checkbox6e6adce14a6142389583a03897fecf13",
+          "rule": {
+            "type": "exists",
+            "array": {
+              "type": "atom",
+              "path": "/properties/checkboxen8c9fa56d35c449f484fc4426386a4ae6"
+            },
+            "placeholder": "current_option",
+            "rule": {
+              "type": "comparison",
+              "operation": "equal",
+              "arguments": [
+                {
+                  "type": "atom",
+                  "path": "current_option"
+                },
+                "option6"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "type": "Control",
         "scope": "/properties/integer"
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/textline84630e8d5125441eadbafb7f6a2bda5b"
+      },
+      {
+        "type": "HTML",
+        "htmlData": "<h2>Length Rita rule evaluated to true</h2>",
+        "showOn": {
+          "id": "ritaRule-ganzzahlacb40ea1c6ff4b4e86151c8a6e46f4a2",
+          "rule": {
+            "type": "comparison",
+            "operation": "greater",
+            "arguments": [
+              {
+                "type": "macro",
+                "macro": {
+                  "type": "length",
+                  "array": {
+                    "type": "atom",
+                    "path": "/properties/textline84630e8d5125441eadbafb7f6a2bda5b"
+                  }
+                }
+              },
+              0
+            ]
+          }
+        }
       },
       {
         "type": "Button",

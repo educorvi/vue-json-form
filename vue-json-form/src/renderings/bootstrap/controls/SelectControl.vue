@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { hasEnumTitlesOptions } from '@/typings/typeValidators';
 import type { TitlesForEnum } from '@/typings/ui-schema';
 
@@ -33,9 +33,6 @@ const options = computed(() => {
             };
         });
     }
-});
-onMounted(() => {
-    console.log(options.value);
 });
 </script>
 
