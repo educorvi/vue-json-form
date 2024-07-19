@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: center">
         <div style="max-width: 700px; margin: 20px; width: 100%">
             <h1>Vue JSON Form Demo</h1>
-            <b-form-checkbox switch v-model="reprodue">
+            <b-form-checkbox switch v-model="reproduce">
                 Reproduce form
             </b-form-checkbox>
             <VueJsonForm
@@ -10,7 +10,7 @@
                 :json-schema="jsonSchema"
                 :on-submit-form="console.log"
                 :render-interface="bootstrapComponents"
-                :ui-schema="uiSchema"
+                :ui-schema="uiSchema || {}"
             >
             </VueJsonForm>
         </div>
@@ -31,19 +31,29 @@ import { computed, markRaw, nextTick, Ref, ref, shallowRef, watch } from 'vue';
 import { BButton, BFormCheckbox, BFormInput } from 'bootstrap-vue-next';
 
 const components = markRaw(bootstrapComponents);
-const reprodue: Ref<boolean> = ref(false);
-const jsonSchema: Ref<Record<string, any> | null> = ref(json);
-const uiSchema: Ref<Record<string, any> | null> = ref(ui);
-watch(reprodue, async (value) => {
+const reproduce: Ref<boolean> = ref(
+    localStorage.getItem('reproduce') === 'true'
+);
+const jsonSchema: Ref<Record<string, any> | null> = ref(null);
+const uiSchema: Ref<Record<string, any> | null> = ref(null);
+
+async function setSchema(reproduce_val: boolean) {
     jsonSchema.value = null;
     await nextTick();
-    if (value) {
+    if (reproduce_val) {
         jsonSchema.value = json_repro;
         uiSchema.value = ui_repro;
     } else {
         jsonSchema.value = json;
         uiSchema.value = ui;
     }
+}
+
+setSchema(reproduce.value);
+
+watch(reproduce, async (value) => {
+    localStorage.setItem('reproduce', value.toString());
+    await setSchema(value);
 });
 // const jsonSchema = json;
 // const uiSchema = ui;
