@@ -1,4 +1,4 @@
-import { computed, inject, provide } from 'vue';
+import { computed, type ComputedRef, inject, provide } from 'vue';
 import {
     jsonElementProviderKey,
     layoutProviderKey,
@@ -9,6 +9,7 @@ import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import jsonPointer from 'json-pointer';
 
 export function injectJsonData() {
     const layoutElement = inject(layoutProviderKey) as Control;
@@ -18,7 +19,7 @@ export function injectJsonData() {
     return { layoutElement, jsonElement, savePath };
 }
 
-export function computeParentJsonPath(layout: Control) {
+export function getComputedParentJsonPath(layout: Control) {
     return computed((): string | null => {
         if (!layout) throw new Error('No layout found');
 
@@ -31,7 +32,7 @@ export function computeParentJsonPath(layout: Control) {
     });
 }
 
-export function computedGrandparentJsonPath(layout: Control) {
+export function getComputedGrandparentJsonPath(layout: Control) {
     return computed((): string | null => {
         if (!layout) throw new Error('No layout found');
 
@@ -44,28 +45,25 @@ export function computedGrandparentJsonPath(layout: Control) {
     });
 }
 
-export function computedRequired(layout: Control) {
+export function getComputedRequired(layout: Control) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const jsonElement = getComputedJsonElement(layout.scope);
     return computed(() => {
-        const parent = computeParentJsonPath(layout);
+        const parent = getComputedParentJsonPath(layout);
         if (!parent || !jsonSchema.value || !layout) {
             return false;
         }
-        if (pointer.has(jsonSchema.value, parent.value + '/type')) {
-            const parentType = pointer.get(
-                jsonSchema.value,
-                parent.value + '/type'
-            );
-            if (parentType === 'array') return true;
-        }
 
-        const gp = computedGrandparentJsonPath(layout);
+        const parentType = jsonElement.value?.type;
+        if (parentType === 'array') return true;
+
+        const gp = getComputedGrandparentJsonPath(layout);
         if (!gp) {
             return false;
         }
-        let required: string;
+        let required: any[];
         try {
-            required = pointer.get(jsonSchema.value, gp.value + '/required');
+            required = jsonElement.value?.required || [];
         } catch (e) {
             console.warn('No required field found in schema for', layout.scope);
             return false;
@@ -85,13 +83,38 @@ function titleCase(string: string) {
     return sentence.join(' ');
 }
 
+export function getComputedJsonElement(scope: string) {
+    return computed(() => {
+        let internal_scope = scope;
+        const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
+        for (const arrayName of arrays.value) {
+            internal_scope = internal_scope.replace(
+                new RegExp(
+                    `(?<=${arrayName.replace('/', '\\/')})\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`
+                ),
+                '/items'
+            );
+        }
+        try {
+            return jsonPointer.get(
+                jsonSchema.value || {},
+                internal_scope
+            ) as CoreSchemaMetaSchema;
+        } catch (e) {
+            console.error('invalid json pointer', internal_scope, e);
+            return null;
+        }
+    });
+}
+
 export function computedLabel(layout: Control) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const jsonElement = getComputedJsonElement(layout.scope);
     return computed(() => {
         if (!jsonSchema.value) return '';
         return (
-            pointer.get(jsonSchema.value, layout.scope).title ||
+            jsonElement.value?.title ||
             titleCase(layout?.scope.split('/').pop() || '')
-        ).concat(computedRequired(layout).value ? '*' : '');
+        ).concat(getComputedRequired(layout).value ? '*' : '');
     });
 }

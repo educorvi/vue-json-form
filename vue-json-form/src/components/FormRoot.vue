@@ -71,8 +71,13 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
-import { createPinia, setActivePinia, storeToRefs } from 'pinia';
-setActivePinia(createPinia());
+import {
+    createPinia,
+    getActivePinia,
+    type Pinia,
+    setActivePinia,
+    storeToRefs,
+} from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
@@ -85,30 +90,6 @@ import RefParser, {
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
-
-const {
-    jsonSchema: storedJsonSchema,
-    uiSchema: storedUiSchema,
-    mappers,
-    components,
-    defaultData,
-} = storeToRefs(useFormStructureStore());
-
-const { formData, defaultFormData, cleanedFormData, cleanedJsonData } =
-    storeToRefs(useFormDataStore());
-
-const validationErrors = ref({
-    jsonSchema: {
-        validation: [] as Error[],
-        parsing: [] as Error[],
-    },
-    uiSchema: {
-        validation: [] as Error[],
-        parsing: [] as Error[],
-    },
-});
-
-let errorViewer: Component;
 
 const props = defineProps<{
     /**
@@ -153,6 +134,32 @@ const props = defineProps<{
      */
     mapperFunctions?: MapperFunction[];
 }>();
+
+setActivePinia(getActivePinia() || createPinia());
+
+const {
+    jsonSchema: storedJsonSchema,
+    uiSchema: storedUiSchema,
+    mappers,
+    components,
+    defaultData,
+} = storeToRefs(useFormStructureStore());
+
+const { formData, defaultFormData, cleanedFormData, cleanedJsonData } =
+    storeToRefs(useFormDataStore());
+
+const validationErrors = ref({
+    jsonSchema: {
+        validation: [] as Error[],
+        parsing: [] as Error[],
+    },
+    uiSchema: {
+        validation: [] as Error[],
+        parsing: [] as Error[],
+    },
+});
+
+let errorViewer: Component;
 
 function onSubmitFormLocal(evt: Event) {
     if (props.onSubmitForm) {

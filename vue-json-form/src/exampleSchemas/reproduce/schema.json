@@ -2,6 +2,38 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "simple-array": {
+        "type": "array",
+        "title": "Simple Array",
+        "items": {
+            "type": "string"
+        }
+    },
+    "angaben-zur-aenderung": {
+      "type": "array",
+      "title": "Angaben zur \u00c4nderung",
+      "items": {
+        "type": "object",
+        "properties": {
+          "bitte-geben-sie-an-was-sie-aendern-moechten": {
+            "title": "Bitte geben Sie an, was Sie \u00e4ndern m\u00f6chten",
+            "type": "string"
+          },
+          "ab-wann-soll-die-aenderung-wirksam-werden": {
+            "title": "Ab wann soll die \u00c4nderung wirksam werden?",
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [],
+        "dependentRequired": {}
+      }
+    },
+    "dateTime": {
+      "title": "dateTime",
+      "type": "string",
+      "format": "date-time"
+    },
     "passwortfeld098f378cd4864be1924ce03741030f4d": {
       "title": "passwortfeld",
       "type": "string"

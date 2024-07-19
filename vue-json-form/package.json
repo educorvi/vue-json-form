@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.6.1",
-    "@educorvi/rita": "^5.1.1",
+    "@educorvi/rita": "^5.1.2",
     "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.16.6",
@@ -37,7 +37,7 @@
     "deepmerge": "^4.3.1",
     "json-pointer": "^0.6.2",
     "pinia": "^2.1.6",
-    "vue": "^3.3.4",
+    "vue": "^3.4.32",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

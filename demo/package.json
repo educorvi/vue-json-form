@@ -19,7 +19,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.16.6",
     "bootswatch": "^5.3.3",
-    "vue": "^3.3.4",
+    "vue": "^3.4.32",
     "vue-json-pretty": "^2.4.0",
     "vue-router": "^4.2.4"
   },

@@ -18,15 +18,15 @@ const props = defineProps<{
 const savePath = props.baseSavePath + '.' + props.itemID;
 provide(savePathOverrideProviderKey, savePath);
 const layoutElement = computed(() => {
-    return (
-        props.uiSchema || {
-            type: 'Control',
-            scope: props.scope + '/items',
-            options: {
-                label: false,
-            },
-        }
-    );
+    const uiSchema = props.uiSchema || {
+        type: 'Control',
+        scope: '',
+        options: {
+            label: false,
+        },
+    };
+    uiSchema.scope = props.scope + '.' + props.itemID;
+    return uiSchema;
 });
 const emit = defineEmits<{
     (e: 'delete', id: string, savePath: string): void;
