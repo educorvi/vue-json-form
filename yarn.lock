@@ -180,6 +180,7 @@ __metadata:
     "@types/jsdom": ^21.1.1
     "@types/json-pointer": ^1.0.34
     "@types/node": ^18.17.5
+    "@types/uuid": ^10.0.0
     "@vitejs/plugin-vue": ^5.0.4
     "@vue/eslint-config-prettier": ^8.0.0
     "@vue/eslint-config-typescript": ^11.0.3
@@ -187,7 +188,7 @@ __metadata:
     "@vue/tsconfig": ^0.4.0
     "@vueuse/core": ^10.9.0
     bootstrap: ^5.3.3
-    bootstrap-vue-next: 0.16.6
+    bootstrap-vue-next: 0.24.2
     buffer: ^6.0.3
     deepmerge: ^4.3.1
     eslint: ^8.56.0
@@ -202,6 +203,7 @@ __metadata:
     sass: ^1.77.4
     terser: ^5.31.0
     typescript: ~5.1.6
+    uuid: ^10.0.0
     vite: ^4.4.9
     vite-plugin-dts: ^3.7.2
     vitest: ^0.34.2
@@ -425,6 +427,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.6.0":
+  version: 1.6.5
+  resolution: "@floating-ui/core@npm:1.6.5"
+  dependencies:
+    "@floating-ui/utils": ^0.2.5
+  checksum: 8e6c62a6e9223fba9afbcaca8afe408788a2bc8ab1b2f5734a26d5b02d4017a2baffc7176a938a610fd243e6a983ada605f259b35c88813e2230dd29906a78fd
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.0.0":
+  version: 1.6.8
+  resolution: "@floating-ui/dom@npm:1.6.8"
+  dependencies:
+    "@floating-ui/core": ^1.6.0
+    "@floating-ui/utils": ^0.2.5
+  checksum: bab6954bdde69afeaf8dbbf335818fe710c6eae1c62856ae1e09fa6abdc056bf5995e053638b76fa6661b8384c363ca2af874ab0448c3f6943808f4f8f77f3ea
+  languageName: node
+  linkType: hard
+
 "@floating-ui/dom@npm:^1.6.1":
   version: 1.6.3
   resolution: "@floating-ui/dom@npm:1.6.3"
@@ -442,6 +463,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/utils@npm:^0.2.5":
+  version: 0.2.5
+  resolution: "@floating-ui/utils@npm:0.2.5"
+  checksum: 32834fe0fec5ee89187f8defd0b10813d725dab7dc6ed1545ded6655630bac5d438f0c991d019d675585e118846f12391236fc2886a5c73a57576e7de3eca3f9
+  languageName: node
+  linkType: hard
+
 "@floating-ui/vue@npm:^1.0.6":
   version: 1.0.6
   resolution: "@floating-ui/vue@npm:1.0.6"
@@ -450,6 +478,17 @@ __metadata:
     "@floating-ui/utils": ^0.2.1
     vue-demi: ">=0.13.0"
   checksum: 6cd5c6acc676cab06b157f16a5ce7a6552f7477e6b9b4849c07d54029f775e797066a41be07b14fe0e3f6c37968b66e19b4afe9b833e46f0569276d1a834cc7c
+  languageName: node
+  linkType: hard
+
+"@floating-ui/vue@npm:^1.1.1":
+  version: 1.1.2
+  resolution: "@floating-ui/vue@npm:1.1.2"
+  dependencies:
+    "@floating-ui/dom": ^1.0.0
+    "@floating-ui/utils": ^0.2.5
+    vue-demi: ">=0.13.0"
+  checksum: 2af6ec3473b257c905335016c4daa990f9dce379863456e8e8c076c5cc7d2c3d53f45ee251af92bef0f454419a9cac201ae6eeed58129850d5509baca7185885
   languageName: node
   linkType: hard
 
@@ -947,6 +986,13 @@ __metadata:
   version: 4.0.2
   resolution: "@types/tough-cookie@npm:4.0.2"
   checksum: e055556ffdaa39ad85ede0af192c93f93f986f4bd9e9426efdc2948e3e2632db3a4a584d4937dbf6d7620527419bc99e6182d3daf2b08685e710f2eda5291905
+  languageName: node
+  linkType: hard
+
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: e3958f8b0fe551c86c14431f5940c3470127293280830684154b91dc7eb3514aeb79fe3216968833cf79d4d1c67f580f054b5be2cd562bebf4f728913e73e944
   languageName: node
   linkType: hard
 
@@ -1559,7 +1605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:^10.7.2":
+"@vueuse/core@npm:^10.10.0, @vueuse/core@npm:^10.7.2":
   version: 10.11.0
   resolution: "@vueuse/core@npm:10.11.0"
   dependencies:
@@ -2054,6 +2100,18 @@ __metadata:
   peerDependencies:
     vue: ^3.4.18
   checksum: 824d46ca8626b7ef58907b06ff14e7ee2e853f3737198ddbda1a1d7442d5edbeb261cf4a258780c62361d0bbc8996016e6b769fe1ffcb8a58dd54cb88cdc6835
+  languageName: node
+  linkType: hard
+
+"bootstrap-vue-next@npm:0.24.2":
+  version: 0.24.2
+  resolution: "bootstrap-vue-next@npm:0.24.2"
+  dependencies:
+    "@floating-ui/vue": ^1.1.1
+    "@vueuse/core": ^10.10.0
+  peerDependencies:
+    vue: ^3.4.27
+  checksum: c9e3d35506f5be50efde217657616e3395e9f079e25448cf4118a636c5f0c7aaaf1e6115018d39f9869afe7a3de1448e5f2aa898096f9cf50ef69a83049a57b2
   languageName: node
   linkType: hard
 
@@ -7409,6 +7467,15 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 4b81611ade2885d2313ddd8dc865d93d8dccc13ddf901745edca8f86d99bc46d7a330d678e7532e7ebf93ce616679fb19b2e3568873ac0c14c999032acb25869
   languageName: node
   linkType: hard
 

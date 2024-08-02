@@ -29,7 +29,7 @@ const hideLabel = computed(() => {
 <template>
     <BFormGroup
         :label="hideLabel ? '' : props.label"
-        :label-for="hideLabel ? '' : props.labelFor"
+        :label-for="props.labelFor"
         :description="jsonElement.description"
     >
         <BInputGroup

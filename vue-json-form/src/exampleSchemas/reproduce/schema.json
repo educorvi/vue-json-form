@@ -14,6 +14,7 @@
       "title": "Angaben zur \u00c4nderung",
       "items": {
         "type": "object",
+        "title": "Änderung",
         "properties": {
           "bitte-geben-sie-an-was-sie-aendern-moechten": {
             "title": "Bitte geben Sie an, was Sie \u00e4ndern m\u00f6chten",
@@ -27,6 +28,27 @@
         },
         "required": [],
         "dependentRequired": {}
+      }
+    },
+    "array-with-arrays": {
+      "type": "array",
+      "title": "Array with Arrays",
+      "items": {
+        "type": "object",
+        "title": "Person",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "areas-of-expertise": {
+            "title": "Areas of Expertise",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "dateTime": {

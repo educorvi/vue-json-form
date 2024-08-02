@@ -55,7 +55,7 @@ function checkDependentElement(
         const rule = parser.parseRule(dependentElement.showOn);
         const formDataStore = useFormDataStore();
         formDataStore.$subscribe(() => {
-            rule.evaluate(formDataStore.cleanedFormData)
+            rule.evaluate(formDataStore.cleanedFormData.scopes)
                 .then((result) => {
                     show.value = result;
                 })

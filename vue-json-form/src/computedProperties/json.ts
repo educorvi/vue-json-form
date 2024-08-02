@@ -10,6 +10,7 @@ import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import jsonPointer from 'json-pointer';
+import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
 export function injectJsonData() {
     const layoutElement = inject(layoutProviderKey) as Control;
@@ -83,18 +84,31 @@ function titleCase(string: string) {
     return sentence.join(' ');
 }
 
+export function cleanScope(
+    scope: string,
+    replaceValue: string | number = 'items',
+    arrayName = ''
+) {
+    return scope.replace(
+        new RegExp(
+            `(?<=${arrayName})\\.${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`,
+            'g'
+        ),
+        '/' + replaceValue
+    );
+}
+
 export function getComputedJsonElement(scope: string) {
     return computed(() => {
         let internal_scope = scope;
-        const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
-        for (const arrayName of arrays.value) {
-            internal_scope = internal_scope.replace(
-                new RegExp(
-                    `(?<=${arrayName.replace('/', '\\/')})\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`
-                ),
-                '/items'
-            );
-        }
+        const { jsonSchema } = storeToRefs(useFormStructureStore());
+        internal_scope = internal_scope.replace(
+            new RegExp(
+                `\\.${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`,
+                'g'
+            ),
+            '/items'
+        );
         try {
             return jsonPointer.get(
                 jsonSchema.value || {},
@@ -105,6 +119,21 @@ export function getComputedJsonElement(scope: string) {
             return null;
         }
     });
+}
+
+export function isArray(scope: string) {
+    const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const cleaned_scope = cleanScope(scope);
+    try {
+        const element = jsonPointer.get(
+            jsonSchema.value || {},
+            cleaned_scope
+        ) as CoreSchemaMetaSchema;
+        return element?.type === 'array';
+    } catch (e) {
+        console.error('invalid json pointer', cleaned_scope, e);
+        return false;
+    }
 }
 
 export function computedLabel(layout: Control) {

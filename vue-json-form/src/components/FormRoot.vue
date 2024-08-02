@@ -145,7 +145,7 @@ const {
     defaultData,
 } = storeToRefs(useFormStructureStore());
 
-const { formData, defaultFormData, cleanedFormData, cleanedJsonData } =
+const { formData, defaultFormData, cleanedFormData } =
     storeToRefs(useFormDataStore());
 
 const validationErrors = ref({
@@ -165,9 +165,9 @@ function onSubmitFormLocal(evt: Event) {
     if (props.onSubmitForm) {
         evt.preventDefault();
         if (props.returnDataAsScopes) {
-            props.onSubmitForm(toRaw(cleanedFormData.value));
+            props.onSubmitForm(toRaw(cleanedFormData.value.scopes));
         } else {
-            props.onSubmitForm(toRaw(cleanedJsonData.value));
+            props.onSubmitForm(toRaw(cleanedFormData.value.json));
         }
     }
 }

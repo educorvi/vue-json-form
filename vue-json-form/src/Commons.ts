@@ -1,36 +1,19 @@
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import type { GenerationOptions } from '@/typings/customTypes';
-
-/**
- * Generate a random string of a given length.
- * Adapted from https://stackoverflow.com/a/1349426/8410962
- */
-function makeID() {
-    const length = 10;
-    let result = '';
-    const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-        result += characters.charAt(
-            Math.floor(Math.random() * charactersLength)
-        );
-        counter += 1;
-    }
-    return result;
-}
+import { v4 as uuidv4 } from 'uuid';
 
 export function generateUUID(): string {
     let id: string;
     try {
         id = crypto.randomUUID();
     } catch (e) {
-        id = makeID();
+        id = uuidv4();
     }
     return id;
 }
+
+export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 
 /**
  * This function is used to map an array of elements to a new array where each element in the new array will have all the properties of the original element plus a 'uuid' property.

@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { generateUUID, mapUUID } from '@/Commons';
+import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
@@ -20,7 +20,7 @@ const { savePath } = injectJsonData();
 const id = controlID(savePath);
 
 function addField(skipFocus = false) {
-    const genId = generateUUID();
+    const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
     }
@@ -98,7 +98,7 @@ const allowRemoveField = computed(() => {
 </script>
 
 <template>
-    <fieldset class="w-100">
+    <div class="w-100">
         <legend>{{ computedLabel(layoutElement).value }}</legend>
         <div
             class="vjf_array"
@@ -150,7 +150,7 @@ const allowRemoveField = computed(() => {
         <error-viewer v-else header="Error" :id="id">
             The type of the array's items is missing in the schema
         </error-viewer>
-    </fieldset>
+    </div>
 </template>
 
 <style>
