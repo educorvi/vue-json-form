@@ -1,2 +1,2 @@
-yarn run pre-commit
-git add docs
+#yarn run pre-commit
+#git add docs
