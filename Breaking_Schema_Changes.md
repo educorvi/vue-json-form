@@ -1,8 +1,8 @@
 # Breaking Changes in the UI Schema
 ## v2
 ### General
-- Scopes output changed format for arrays. Now arrays are returned as `"../array-name/i": "value"`, where `i` is the index.
-- Do NOT use `properties` as name for a field (it must not be part of the scope).
+- Scopes output changed format for arrays. Now arrays are returned as `"../array-name[i]": "value"`, where `i` is the index.
+- Do NOT use `[` or `]` in names for a field.
 ### Root Schema
 Instead of starting with any layout, the root object of the schema now needs to fields:
 - `version`: defines the version of the schema (currently 2.0)
