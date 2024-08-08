@@ -51,12 +51,12 @@ export function getComputedRequired(layout: Control) {
     const jsonElement = getComputedJsonElement(layout.scope);
     return computed(() => {
         const parent = getComputedParentJsonPath(layout);
-        if (!parent || !jsonSchema.value || !layout) {
+        if (!parent || !jsonSchema.value) {
             return false;
         }
 
-        const parentType = jsonElement.value?.type;
-        if (parentType === 'array') return true;
+        // const parentType = jsonElement.value?.type;
+        // if (parentType === 'array' && !jsonElement.value?.enum) return true;
 
         const gp = getComputedGrandparentJsonPath(layout);
         if (!gp) {
