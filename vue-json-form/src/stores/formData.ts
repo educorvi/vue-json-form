@@ -2,27 +2,52 @@ import { defineStore, storeToRefs } from 'pinia';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import { useFormStructureStore } from '@/stores/formStructure';
 import { cleanScope, isArray } from '@/computedProperties/json';
+import type { FunctionArgs } from '@vueuse/core';
 
-function setPropertyByScope(object: any, key: string, value: any): void {
+function setPropertyByScope(
+    object: Record<any, any>,
+    key: string,
+    value: any
+): void {
     if (value === undefined) {
         return;
     }
-    key = key.replace(/\[(\w+)]/g, '/$1'); // convert indexes to properties
+    // key = key.replace(/\[(\w+)]/g, '/$1'); // convert indexes to properties
 
     const a = key
         .split('/')
         .filter((x) => x !== '')
-        //TODO bessere Lösung?
-        .filter((x) => !(x === 'properties'));
+        .filter((x, index) => !(index % 2 === 0 && x === 'properties'));
 
-    for (let i = 0; i < a.length - 1; i++) {
+    const arrayIndexRegex = /\[(\w+)]/;
+
+    for (let i = 0; i < a.length; i++) {
         const k = a[i];
-        if (!(k in object)) {
-            object[k] = Object.create(null);
+        const indexMatch = k.match(arrayIndexRegex);
+        if (indexMatch) {
+            const index = parseInt(indexMatch[1]);
+            const arrayName = k.replace(arrayIndexRegex, '');
+            if (!(arrayName in object)) {
+                object[arrayName] = [];
+            }
+            if (i === a.length - 1) {
+                object[arrayName][index] = value;
+                return;
+            }
+            if (object[arrayName][index] === undefined) {
+                object[arrayName][index] = Object.create(null);
+            }
+            object = object[arrayName][index];
+        } else if (!(k in object)) {
+            if (i === a.length - 1) {
+                object[a[a.length - 1]] = value;
+                return;
+            } else {
+                object[k] = Object.create(null);
+                object = object[k];
+            }
         }
-        object = object[k];
     }
-    object[a[a.length - 1]] = value;
 }
 
 function reduceObjects(
@@ -55,7 +80,7 @@ function cleanData(obj: Readonly<Record<string, any>>): Record<string, any> {
         if (!isArray(key)) {
             let newKey = key;
             for (const [element, index] of arrayIndices.entries()) {
-                newKey = newKey.replace(`.${element}`, `/${index}`);
+                newKey = newKey.replace(`.${element}`, `[${index}]`);
             }
             scopes[newKey] = value;
         }
