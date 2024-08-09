@@ -99,6 +99,14 @@
           },
           {
             "type": "Control",
+            "scope": "/properties/string_no_label",
+            "options": {
+              "placeholder": "No Label",
+              "label": false
+            }
+          },
+          {
+            "type": "Control",
             "scope": "/properties/textline84630e8d5125441eadbafb7f6a2bda5b"
           },
           {
