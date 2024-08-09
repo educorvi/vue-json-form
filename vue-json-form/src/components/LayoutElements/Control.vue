@@ -5,7 +5,7 @@
             :label="label"
             :label-for="control_id_string"
         >
-            <template #prepend>
+            <template #prepend v-if="$slots.prepend">
                 <slot name="prepend" />
             </template>
             <component
@@ -17,7 +17,7 @@
                 :type="type"
                 :required="required"
             />
-            <template #append>
+            <template #append v-if="$slots.append">
                 <slot name="append" />
             </template>
         </component>

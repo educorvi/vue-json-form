@@ -66,4 +66,8 @@ const emit = defineEmits<{
     justify-content: center;
     width: 40px;
 }
+
+.vjf_arrayItem > * {
+    background: var(--bs-body-bg);
+}
 </style>

@@ -170,7 +170,7 @@ const allowRemoveField = computed(() => {
     border-radius: var(--bs-border-radius);
 }
 
-.ghost .input-group {
+.ghost > * > * > * > * > .input-group {
     box-shadow: 5px 5px 5px #1e2024;
     transform: scale(1.005);
     transition: all 0.1s ease-in-out;
