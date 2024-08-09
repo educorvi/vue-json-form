@@ -101,7 +101,7 @@ const allowRemoveField = computed(() => {
 
 <template>
     <div class="w-100">
-        <legend>{{ label }}</legend>
+        <label :for="id" class="large-label">{{ label }}</label>
         <div
             class="vjf_array"
             v-if="
@@ -143,7 +143,7 @@ const allowRemoveField = computed(() => {
             <b-button
                 variant="outline-primary"
                 class="w-100"
-                @click="addField"
+                @click="() => addField()"
                 :disabled="!allowAddField"
             >
                 <PlusIcon />
@@ -156,6 +156,10 @@ const allowRemoveField = computed(() => {
 </template>
 
 <style>
+.large-label {
+    font-size: 1.4rem;
+}
+
 .flip-list-move {
     transition: transform 0.5s;
 }

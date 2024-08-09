@@ -11,7 +11,10 @@ const computedLayout = computed(() => {
     return generateUISchema(jsonElement, {
         scopeBase: layoutElement.scope,
         layoutType: 'Group',
-        groupLabel: computedLabel(layoutElement).value,
+        groupLabel:
+            layoutElement.options?.label !== false
+                ? computedLabel(layoutElement).value
+                : '',
     });
 });
 </script>
