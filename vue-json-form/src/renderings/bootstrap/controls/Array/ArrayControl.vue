@@ -44,10 +44,12 @@ function addField(skipFocus = false) {
 
 const { layoutElement, jsonElement } = injectJsonData();
 
+const label = computedLabel(layoutElement);
+
 const drag = ref(false);
 const dragOptions = ref({
     animation: 200,
-    group: 'description',
+    group: `array-${label.value}`,
     disabled: false,
     ghostClass: 'ghost',
 });
@@ -99,7 +101,7 @@ const allowRemoveField = computed(() => {
 
 <template>
     <div class="w-100">
-        <legend>{{ computedLabel(layoutElement).value }}</legend>
+        <legend>{{ label }}</legend>
         <div
             class="vjf_array"
             v-if="
