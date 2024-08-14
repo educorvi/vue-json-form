@@ -7,7 +7,7 @@
     "vue-json-form-bootstrap",
     "webcomponent"
   ],
-  "packageManager": "yarn@3.6.3",
+  "packageManager": "yarn@4.4.0",
   "devDependencies": {
     "husky": "^9.0.10",
     "typedoc": "^0.25.12",
