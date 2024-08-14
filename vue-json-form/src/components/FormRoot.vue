@@ -3,6 +3,7 @@
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         v-if="storedUiSchema && storedJsonSchema"
+        class="vjf_form"
     >
         <FormWrap :layoutElement="storedUiSchema" />
         <slot />
