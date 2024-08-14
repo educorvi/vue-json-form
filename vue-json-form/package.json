@@ -1,7 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "3.0.0",
-  "private": true,
+  "version": "3.0.0-alpha.0",
   "files": [
     "dist",
     "src/schemas/ui",
@@ -12,6 +11,7 @@
   "module": "dist/vue-json-form.mjs",
   "types": "dist/vue-json-form.d.ts",
   "scripts": {
+    "release:alpha": "yarn npm publish --access public --tag alpha",
     "dev": "vite -c vite.dev.config.ts --host",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
