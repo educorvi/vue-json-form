@@ -47,31 +47,19 @@ export function getComputedGrandparentJsonPath(layout: Control) {
 }
 
 export function getComputedRequired(layout: Control) {
-    const { jsonSchema } = storeToRefs(useFormStructureStore());
-    const jsonElement = getComputedJsonElement(layout.scope);
     return computed(() => {
-        const parent = getComputedParentJsonPath(layout);
-        if (!parent || !jsonSchema.value) {
+        const grandParentPath = getComputedGrandparentJsonPath(layout);
+        if (grandParentPath.value === null) {
             return false;
         }
 
-        // const parentType = jsonElement.value?.type;
-        // if (parentType === 'array' && !jsonElement.value?.enum) return true;
+        const jsonElement = getComputedJsonElement(
+            grandParentPath.value + '/required'
+        );
 
-        const gp = getComputedGrandparentJsonPath(layout);
-        if (!gp) {
-            return false;
-        }
-        let required: any[];
-        try {
-            required = jsonElement.value?.required || [];
-        } catch (e) {
-            console.warn('No required field found in schema for', layout.scope);
-            return false;
-        }
-        if (!required) return false;
+        if (!Array.isArray(jsonElement.value)) return false;
 
-        return required.includes(layout?.scope.split('/').pop() || '');
+        return jsonElement.value.includes(layout?.scope.split('/').pop() || '');
     });
 }
 
@@ -102,6 +90,7 @@ export function getComputedJsonElement(scope: string) {
     return computed(() => {
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());
+        if (!jsonSchema.value) return null;
         internal_scope = internal_scope.replace(
             new RegExp(
                 `\\.${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`,
