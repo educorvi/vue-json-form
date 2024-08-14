@@ -1,6 +1,6 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-alpha.1",
   "files": [
     "dist",
     "src/schemas/ui",
@@ -68,5 +68,6 @@
     "vite-plugin-dts": "^3.7.2",
     "vitest": "^0.34.2",
     "vue-tsc": "^2.0.17"
-  }
+  },
+  "stableVersion": "3.0.0-alpha.0"
 }

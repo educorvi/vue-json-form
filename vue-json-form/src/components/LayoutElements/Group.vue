@@ -15,7 +15,9 @@ const cssClass = computedCssClass(props.layoutElement, 'vjf_group');
 
 <template>
     <fieldset :class="cssClass">
-        <legend>{{ layoutElement.options?.label }}</legend>
+        <legend v-if="layoutElement.options?.label">
+            {{ layoutElement.options?.label }}
+        </legend>
         <vertical-layout
             class="vjf_fieldset-content"
             :layout-element="{ ...layoutElement, type: 'VerticalLayout' }"

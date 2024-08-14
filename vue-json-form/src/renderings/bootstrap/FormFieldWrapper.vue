@@ -28,13 +28,13 @@ const hideLabel = computed(() => {
 const slots = useSlots();
 
 const additionalMainClasses = computed(() => {
-    const classes = ['array-input-group-main-div'];
+    const classes = ['vjf-input-group-main-div'];
 
     if (slots.prepend) {
-        classes.push('array-input-group-main-div-prepend');
+        classes.push('vjf-input-group-main-div-prepend');
     }
     if (slots.append) {
-        classes.push('array-input-group-main-div-append');
+        classes.push('vjf-input-group-main-div-append');
     }
 
     return classes.join(' ');
@@ -65,27 +65,48 @@ const additionalMainClasses = computed(() => {
 </template>
 
 <style lang="scss">
-.array-input-group-main-div {
+.vjf-input-group-main-div {
     flex: 1;
     margin: 0;
+    width: 100%;
 }
 
-.array-input-group-main-div > * {
+.vjf-input-group-main-div > * {
     //border-radius: inherit;
     height: 100%;
 }
 
-.array-input-group-main-div > .vjf_object {
+.vjf-input-group-main-div > * > fieldset {
+    margin-bottom: 0;
+
+    padding-top: 5px;
+    //padding-bottom: 5px;
+
+    & > legend {
+        margin-top: 0 !important;
+    }
+}
+
+.vjf-input-group-main-div > .vjf_object {
     padding-left: 6px;
     padding-right: 6px;
 }
 
-.array-input-group-main-div-prepend > * {
+.vjf-input-group-main-div-prepend > * {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+
+    & > fieldset > .vjf_verticalLayout {
+        border-left: none !important;
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
 }
 
-.array-input-group-main-div-append > * {
+.vjf-input-group-main-div-append > * {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
