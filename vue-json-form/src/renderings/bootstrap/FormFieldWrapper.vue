@@ -28,13 +28,13 @@ const hideLabel = computed(() => {
 const slots = useSlots();
 
 const additionalMainClasses = computed(() => {
-    const classes = ['vjf-input-group-main-div'];
+    const classes = ['vjf_input-group-main-div'];
 
     if (slots.prepend) {
-        classes.push('vjf-input-group-main-div-prepend');
+        classes.push('vjf_input-group-main-div-prepend');
     }
     if (slots.append) {
-        classes.push('vjf-input-group-main-div-append');
+        classes.push('vjf_input-group-main-div-append');
     }
 
     return classes.join(' ');
@@ -65,18 +65,18 @@ const additionalMainClasses = computed(() => {
 </template>
 
 <style lang="scss">
-.vjf-input-group-main-div {
+.vjf_input-group-main-div {
     flex: 1;
     margin: 0;
     width: 100%;
 }
 
-.vjf-input-group-main-div > * {
+.vjf_input-group-main-div > * {
     //border-radius: inherit;
     height: 100%;
 }
 
-.vjf-input-group-main-div > * > fieldset {
+.vjf_input-group-main-div > * > fieldset {
     margin-bottom: 0;
 
     padding-top: 5px;
@@ -87,12 +87,12 @@ const additionalMainClasses = computed(() => {
     }
 }
 
-.vjf-input-group-main-div > .vjf_object {
+.vjf_input-group-main-div > .vjf_object {
     padding-left: 6px;
     padding-right: 6px;
 }
 
-.vjf-input-group-main-div-prepend > * {
+.vjf_input-group-main-div-prepend > * {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 
@@ -106,7 +106,7 @@ const additionalMainClasses = computed(() => {
     }
 }
 
-.vjf-input-group-main-div-append > * {
+.vjf_input-group-main-div-append > * {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
