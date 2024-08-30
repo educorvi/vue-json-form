@@ -15,7 +15,7 @@ const step = computed(() => {
     if (jsonElement.type === 'integer') {
         return jsonElement.multipleOf || 1;
     }
-    return jsonElement.multipleOf;
+    return jsonElement.multipleOf || 0.0000000000000000000001;
 });
 </script>
 
