@@ -6,6 +6,11 @@
   },
   "license": "MIT",
   "version": "3.0.0-alpha.6",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form",
+    "directory": "vue-json-form"
+  },
   "files": [
     "dist",
     "src/schemas/ui",
