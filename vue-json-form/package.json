@@ -1,6 +1,11 @@
 {
   "name": "@educorvi/vue-json-form",
-  "version": "3.0.0-alpha.5",
+  "author": {
+    "email": "julian.pollinger@educorvi.de",
+    "name": "Julian Pollinger"
+  },
+  "license": "MIT",
+  "version": "3.0.0-alpha.6",
   "files": [
     "dist",
     "src/schemas/ui",
