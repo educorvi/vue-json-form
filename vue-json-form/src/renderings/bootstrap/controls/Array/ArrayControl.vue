@@ -134,7 +134,6 @@ const allowRemoveField = computed(() => {
                             :itemID="element"
                             @delete="deleteItemWithID"
                             :allowRemove="allowRemoveField"
-                            :ui-schema="layoutElement.options?.childUiSchema"
                         />
                     </div>
                 </template>

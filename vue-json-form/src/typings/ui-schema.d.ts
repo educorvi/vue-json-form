@@ -310,19 +310,18 @@ export interface ControlFormattingOptions {
    * Disables the field
    */
   disabled?: boolean;
-  childUiSchema?: Control1;
+  /**
+   * Allows to override UI options for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.
+   */
+  descendantControlOptionsOverrides?: {
+    [k: string]: Options;
+  };
 }
 /**
- * The UI Schema for (a) child item(s). Can be used to set an UI Schema for array items or object properties
+ * Custom options for the control
  */
-export interface Control1 {
-  type: "Control";
-  /**
-   * A json pointer referring to the form element in the forms json schema
-   */
-  scope: string;
-  options?: Options;
-  showOn?: ShowOnProperty;
+export interface CustomOptions {
+  [k: string]: unknown;
 }
 /**
  * Legacy Variant of defining ShowOn property
@@ -497,12 +496,6 @@ export interface Quantifier {
    */
   placeholder: string;
   rule: Formula;
-}
-/**
- * Custom options for the control
- */
-export interface CustomOptions {
-  [k: string]: unknown;
 }
 /**
  * Some HTML to be rendered in the form
