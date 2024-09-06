@@ -85,7 +85,10 @@ import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
-import { requiredProviderKey } from '@/components/ProviderKeys';
+import {
+    descendantControlOptionsOverridesProviderKey,
+    requiredProviderKey,
+} from '@/components/ProviderKeys';
 import RefParser, {
     type ParserOptions,
 } from '@apidevtools/json-schema-ref-parser';
@@ -137,6 +140,8 @@ const props = defineProps<{
 }>();
 
 setActivePinia(getActivePinia() || createPinia());
+
+provide(descendantControlOptionsOverridesProviderKey, {});
 
 const {
     jsonSchema: storedJsonSchema,

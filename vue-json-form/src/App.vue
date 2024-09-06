@@ -38,8 +38,6 @@ const jsonSchema: Ref<Record<string, any> | null> = ref(null);
 const uiSchema: Ref<Record<string, any> | null> = ref(null);
 
 async function setSchema(reproduce_val: boolean) {
-    jsonSchema.value = null;
-    await nextTick();
     if (reproduce_val) {
         jsonSchema.value = json_repro;
         uiSchema.value = ui_repro;

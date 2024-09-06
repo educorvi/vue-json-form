@@ -35,8 +35,10 @@ export function setDescendantControlOptionsOverride(
     scope: string,
     overrides: Options
 ) {
-    const overridesMap: DescendantControlOptionsOverrides =
-        inject(descendantControlOptionsOverridesProviderKey) || {};
+    const overridesMap: DescendantControlOptionsOverrides = inject(
+        descendantControlOptionsOverridesProviderKey,
+        {}
+    );
     overridesMap[scope] = overrides;
     provide(descendantControlOptionsOverridesProviderKey, overridesMap);
 }

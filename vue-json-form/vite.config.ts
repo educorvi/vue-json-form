@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
-import NodeGlobalsPolyfillPlugin from '@esbuild-plugins/node-globals-polyfill';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
     resolve: {
@@ -18,12 +18,6 @@ export default defineConfig({
             define: {
                 global: 'globalThis',
             },
-            // Enable esbuild polyfill plugins
-            plugins: [
-                NodeGlobalsPolyfillPlugin({
-                    buffer: true,
-                }),
-            ],
         },
     },
     build: {
@@ -61,6 +55,9 @@ export default defineConfig({
             outDir: './dist',
             insertTypesEntry: true,
             copyDtsFiles: true,
+        }),
+        nodePolyfills({
+            include: ['path'],
         }),
     ],
 });

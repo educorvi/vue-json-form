@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { Layout } from '@/typings/ui-schema';
+import type { Layout, LayoutElement } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
-import { computedElementsWithUUID } from '@/components/LayoutElements/LayoutCommons';
 import { computedCssClass } from '@/computedProperties/css';
+import { computed, type ComputedRef } from 'vue';
+import { hasElements } from '@/typings/typeValidators';
+import { mapUUID } from '@/Commons';
 
 const props = defineProps<{
     /**
@@ -12,7 +14,10 @@ const props = defineProps<{
 }>();
 
 const cssClass = computedCssClass(props.layoutElement, 'vjf_verticalLayout');
-const elementsWithUUID = computedElementsWithUUID(props.layoutElement);
+const elementsWithUUID = computed(() => {
+    if (!hasElements(props.layoutElement)) return [];
+    return mapUUID(props.layoutElement.elements);
+});
 </script>
 
 <template>
