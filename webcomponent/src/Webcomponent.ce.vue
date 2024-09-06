@@ -51,8 +51,6 @@ const mapperFunctions: MapperFunction[] = [oneOfToEnum]
 </template>
 
 <style lang="scss">
-//@use "bootstrap/scss/bootstrap";
-//@use "bootstrap/scss/variables";
 @use 'sass:meta';
 @use "bootstrap/scss/bootstrap";
 
