@@ -54,8 +54,11 @@ export function getComputedRequired(layout: Control) {
         }
 
         const jsonElement = getComputedJsonElement(
-            grandParentPath.value + '/required'
+            grandParentPath.value + '/required',
+            true
         );
+
+        if (!jsonElement.value) return false;
 
         if (!Array.isArray(jsonElement.value)) return false;
 
@@ -86,7 +89,7 @@ export function cleanScope(
     );
 }
 
-export function getComputedJsonElement(scope: string) {
+export function getComputedJsonElement(scope: string, failSilently = false) {
     return computed(() => {
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());
@@ -104,7 +107,9 @@ export function getComputedJsonElement(scope: string) {
                 internal_scope
             ) as CoreSchemaMetaSchema;
         } catch (e) {
-            console.error('invalid json pointer', internal_scope, e);
+            if (!failSilently) {
+                console.error('invalid json pointer', internal_scope, e);
+            }
             return null;
         }
     });

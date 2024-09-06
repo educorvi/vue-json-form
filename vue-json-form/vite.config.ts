@@ -46,6 +46,14 @@ export default defineConfig({
         },
     },
     plugins: [
+        nodePolyfills({
+            include: ['path', 'util', 'process'],
+            globals: {
+                process: true,
+                global: false,
+                Buffer: true,
+            },
+        }),
         vue({
             include: [/\.vue$/],
         }),
@@ -55,9 +63,6 @@ export default defineConfig({
             outDir: './dist',
             insertTypesEntry: true,
             copyDtsFiles: true,
-        }),
-        nodePolyfills({
-            include: ['path'],
         }),
     ],
 });

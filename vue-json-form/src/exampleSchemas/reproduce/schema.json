@@ -2,6 +2,26 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "textline-in-form736e3a96a17d436996e5c8489cb9d102": {
+      "title": "textline in form",
+      "type": "string"
+    },
+    "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8": {
+      "title": "selectionfield in form",
+      "type": "array",
+      "items": {
+        "enum": [
+          "option 10",
+          "option 11"
+        ],
+        "type": "string"
+      }
+    },
+    "upload-field-in-formcd69370e0708472482997b3da12ad3cc": {
+      "title": "upload field in form",
+      "type": "string",
+      "format": "uri"
+    },
     "simple-array": {
         "type": "array",
         "title": "Simple Array",

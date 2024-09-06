@@ -7,6 +7,76 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-11"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/textline-in-form736e3a96a17d436996e5c8489cb9d102"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
+            "options": {
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc",
+            "showOn": {
+              "id": "ritaRule-upload-field-in-formcd69370e0708472482997b3da12ad3cc",
+              "rule": {
+                "type": "or",
+                "arguments": [
+                  {
+                    "type": "comparison",
+                    "operation": "greater",
+                    "arguments": [
+                      {
+                        "type": "macro",
+                        "macro": {
+                          "type": "length",
+                          "array": {
+                            "type": "atom",
+                            "path": "/properties/textline-in-form736e3a96a17d436996e5c8489cb9d102"
+                          }
+                        }
+                      },
+                      0
+                    ]
+                  },
+                  {
+                    "type": "exists",
+                    "array": {
+                      "type": "atom",
+                      "path": "/properties/selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8"
+                    },
+                    "placeholder": "current_option",
+                    "rule": {
+                      "type": "comparison",
+                      "operation": "equal",
+                      "arguments": [
+                        {
+                          "type": "atom",
+                          "path": "current_option"
+                        },
+                        "option 11"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "options": {
+              "acceptedFileType": "*"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-14"
         },
         "elements": [
