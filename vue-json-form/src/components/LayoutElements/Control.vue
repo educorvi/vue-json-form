@@ -10,10 +10,14 @@
             </template>
             <component
                 :is="controlType"
-                :name="layoutElement.scope"
-                :disabled="layoutElement.options?.disabled"
-                :placeholder="layoutElement.options?.placeholder"
-                :autocomplete="layoutElement.options?.autocomplete || 'on'"
+                :name="formStructureMapped.uiElement.scope"
+                :disabled="formStructureMapped.uiElement.options?.disabled"
+                :placeholder="
+                    formStructureMapped.uiElement.options?.placeholder
+                "
+                :autocomplete="
+                    formStructureMapped.uiElement.options?.autocomplete || 'on'
+                "
                 :type="type"
                 :required="required"
             />
@@ -49,6 +53,10 @@ import {
     jsonElementProviderKey,
     savePathProviderKey,
     savePathOverrideProviderKey,
+    mergeDescendantControlOptionsOverrides,
+    descendantControlOptionsOverridesProviderKey,
+    setDescendantControlOptionsOverride,
+    setDescendantControlOptionsOverrides,
 } from '@/components/ProviderKeys';
 import {
     computedLabel,
@@ -96,9 +104,13 @@ const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
 const invalidJsonPointer = ref(false as false | string);
 
+setDescendantControlOptionsOverrides(
+    props.layoutElement.options?.descendantControlOptionsOverrides
+);
+
 const formStructureMapped = computed(() => {
     let localJsonElement = jsonElement.value;
-    let localUiElement = props.layoutElement;
+    let localUiElement: Control = props.layoutElement;
     for (const mapper of mappers.value) {
         const mapped = mapper(localJsonElement || {}, localUiElement);
         if (mapped) {
@@ -108,6 +120,7 @@ const formStructureMapped = computed(() => {
             console.warn('Mapper failed', mapper);
         }
     }
+    localUiElement = mergeDescendantControlOptionsOverrides(localUiElement);
     return {
         jsonElement: localJsonElement,
         uiElement: localUiElement,

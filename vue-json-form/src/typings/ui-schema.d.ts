@@ -310,12 +310,13 @@ export interface ControlFormattingOptions {
    * Disables the field
    */
   disabled?: boolean;
-  /**
-   * Allows to override UI options for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.
-   */
-  descendantControlOptionsOverrides?: {
-    [k: string]: Options;
-  };
+  descendantControlOptionsOverrides?: DescendantControlOptionsOverrides;
+}
+/**
+ * Allows to override UI options for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.
+ */
+export interface DescendantControlOptionsOverrides {
+  [k: string]: Options;
 }
 /**
  * Custom options for the control

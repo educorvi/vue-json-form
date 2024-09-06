@@ -108,6 +108,7 @@
         },
         "descendantControlOptionsOverrides": {
           "description": "Allows to override UI options for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.",
+          "title": "Descendant Control Options Overrides",
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/options"
