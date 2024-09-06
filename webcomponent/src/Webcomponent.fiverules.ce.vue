@@ -53,6 +53,48 @@ const mapperFunctions: MapperFunction[] = [oneOfToEnum]
 <style lang="scss">
 @use 'sass:meta';
 @use "bootstrap/scss/bootstrap";
+$enable-negative-margins: true;
+@import "ef_theme-fiverules/variables";
+@import "bootstrap/scss/bootstrap";
+@import "ef_theme-fiverules/src/root";
+@import "ef_theme-fiverules/src/sidebar";
+@import "ef_theme-fiverules/src/navbar";
+@import "ef_theme-fiverules/src/form";
+@import "ef_theme-fiverules/src/buttons";
+
+@font-face {
+  font-family: 'DGUV';
+    //TODO: change URL
+  src: url("https://github.com/educorvi/ef_theme-fiverules/raw/main/DGUVMeta-Normal.otf") format("woff");
+  src: url("https://github.com/educorvi/ef_theme-fiverules/raw/main/DGUVMeta-Normal.woff") format("opentype");
+}
+
+* {
+  font-family: "DGUV", serif;
+  font-weight: 400;
+  font-size: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  color: #3c3c3c;
+
+  @include media-breakpoint-up(lg){
+    background-color: #e1e1e1;
+  }
+}
+
+//Ueberschriften Groessen
+@include media-breakpoint-up(lg){
+  h2 {
+    font-size: 50px;
+    line-height: 60px;
+  }
+}
+@include media-breakpoint-up(md){
+  h2 {
+    font-size: 42px;
+  }
+}
+
 
 @function is-map($value) {
     @if type-of($value) == 'map' {
@@ -72,5 +114,5 @@ const mapperFunctions: MapperFunction[] = [oneOfToEnum]
     }
 }
 
-@import "@educorvi/vue-json-form/dist/vue-json-form.css";
+@import "@educorvi/vue-json-form/dist/vue-json-form";
 </style>

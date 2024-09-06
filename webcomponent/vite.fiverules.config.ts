@@ -15,12 +15,12 @@ export default defineConfig({
         sourcemap: true,
         minify: 'terser',
         lib: {
-            entry: './src/main.ce.ts',
+            entry: './src/main.fiverules.ce.ts',
             name: 'vue-json-form',
             // the proper extensions will be added
             fileName: 'vue-json-form',
         },
-        outDir: 'dist/bootstrap',
+        outDir: 'dist/fiverules',
     },
     define: {
         'process.env.NODE_ENV': JSON.stringify('production'),
