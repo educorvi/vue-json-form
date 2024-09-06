@@ -6,10 +6,7 @@
     "elements": [
       {
         "type": "Control",
-        "scope": "/properties/done",
-        "options": {
-          "switch": true
-        }
+        "scope": "/properties/done"
       },
       {
         "type": "Control",
@@ -167,12 +164,9 @@
             "type": "Control",
             "scope": "/properties/testArray",
             "options": {
-              "childUiSchema": {
-                "type": "Control",
-                "scope": "/properties/testArray/items",
-                "options": {
-                  "placeholder": "Enter an array element",
-                  "label": false
+              "descendantControlOptionsOverrides": {
+                "/properties/testArray/items": {
+                  "placeholder": "Enter an array element"
                 }
               }
             }
