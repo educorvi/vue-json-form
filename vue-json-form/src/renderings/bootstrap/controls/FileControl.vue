@@ -16,7 +16,7 @@ const id = controlID(savePath);
         v-model="formData[savePath]"
         :id="id"
         class="vjf_file"
-        :multiple="layoutElement.options?.allowMultipleFiles"
+        :multiple="!!layoutElement.options?.allowMultipleFiles"
         :accept="layoutElement.options?.acceptedFileType"
     />
 </template>

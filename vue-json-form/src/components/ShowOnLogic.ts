@@ -7,7 +7,13 @@ import type {
 } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { Atom, Parser, RitaError, UndefinedPathError } from '@educorvi/rita';
+import {
+    Atom,
+    HasNoLengthError,
+    Parser,
+    RitaError,
+    UndefinedPathError,
+} from '@educorvi/rita';
 import type { dependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 
@@ -78,7 +84,14 @@ function checkDependentElement(
                 })
                 .catch((e) => {
                     show.value = false;
-                    if (e instanceof RitaError) {
+                    if (e instanceof HasNoLengthError) {
+                        console.warn(
+                            `Error while evaluating showOn rule "${rule.id}": ${e.message}\nIn formula:`,
+                            e.context,
+                            'with value',
+                            e.value
+                        );
+                    } else if (e instanceof RitaError) {
                         console.warn(
                             `Error while evaluating showOn rule "${rule.id}": ${e.message}\nIn formula:`,
                             e.context

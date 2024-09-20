@@ -125,6 +125,7 @@ function cleanData(obj: Readonly<Record<string, any>>): {
                 value.forEach((element, index) => {
                     arrayIndices.set(element, index);
                 });
+                scopes[key] = [...value];
             }
         }
     }
