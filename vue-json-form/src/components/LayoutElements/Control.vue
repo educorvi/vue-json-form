@@ -54,9 +54,9 @@ import {
     savePathProviderKey,
     savePathOverrideProviderKey,
     mergeDescendantControlOptionsOverrides,
-    descendantControlOptionsOverridesProviderKey,
-    setDescendantControlOptionsOverride,
-    setDescendantControlOptionsOverrides,
+    descendantControlOverridesProviderKey,
+    setDescendantControlOverride,
+    setDescendantControlOverrides,
 } from '@/components/ProviderKeys';
 import {
     computedLabel,
@@ -104,8 +104,8 @@ const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 
 const invalidJsonPointer = ref(false as false | string);
 
-setDescendantControlOptionsOverrides(
-    props.layoutElement.options?.descendantControlOptionsOverrides
+setDescendantControlOverrides(
+    props.layoutElement.options?.descendantControlOverrides
 );
 
 const formStructureMapped = computed(() => {

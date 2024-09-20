@@ -60,7 +60,7 @@ export function hasCssClass(
 export function isLegacyShowOn(
     showOn: ShowOnProperty
 ): showOn is LegacyShowOnProperty {
-    return 'scope' in showOn && 'type' in showOn && 'referenceValue' in showOn;
+    return 'path' in showOn && 'type' in showOn && 'referenceValue' in showOn;
 }
 
 export function hasProperties(

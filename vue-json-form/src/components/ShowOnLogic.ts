@@ -1,10 +1,15 @@
 import { computed, ref, type Ref } from 'vue';
 import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
-import type { LayoutElement, ShowOnFunctionType } from '@/typings/ui-schema';
+import type {
+    DescendantControlOverrides,
+    LayoutElement,
+    ShowOnFunctionType,
+} from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { Parser, UndefinedPathError } from '@educorvi/rita';
+import { Atom, Parser, RitaError, UndefinedPathError } from '@educorvi/rita';
 import type { dependentElement } from '@/typings/customTypes';
+import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 
 function getComparisonFunction(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -34,7 +39,7 @@ function getComparisonFunction(functionName: ShowOnFunctionType) {
 function checkDependentElement(
     dependentElement: dependentElement
 ): Ref<boolean> {
-    const { formData } = storeToRefs(useFormDataStore());
+    const formDataStore = useFormDataStore();
     if (isLegacyShowOn(dependentElement.showOn)) {
         return computed(() => {
             if (!isLegacyShowOn(dependentElement.showOn)) {
@@ -44,25 +49,40 @@ function checkDependentElement(
                 dependentElement.showOn.type
             );
             const value = dependentElement.showOn.referenceValue;
-            return compFunc(
-                formData.value[dependentElement.showOn.scope],
-                value
-            );
+            try {
+                return compFunc(
+                    Atom.getPropertyByString(
+                        formDataStore.cleanedFormData.json,
+                        dependentElement.showOn.path
+                    ),
+                    value
+                );
+            } catch (e) {
+                if (e instanceof UndefinedPathError) {
+                    console.warn(
+                        `Error while evaluating showOn rule: ${e.message}`,
+                        dependentElement.showOn
+                    );
+                }
+                return false;
+            }
         });
     } else {
         const show = ref(false);
         const parser = new Parser();
         const rule = parser.parseRule(dependentElement.showOn);
-        const formDataStore = useFormDataStore();
         formDataStore.$subscribe(() => {
-            rule.evaluate(formDataStore.cleanedFormData.scopes)
+            rule.evaluate(formDataStore.cleanedFormData.json)
                 .then((result) => {
                     show.value = result;
                 })
                 .catch((e) => {
                     show.value = false;
-                    if (!(e instanceof UndefinedPathError)) {
-                        console.warn('Error while evaluating showOn rule:', e);
+                    if (e instanceof RitaError) {
+                        console.warn(
+                            `Error while evaluating showOn rule "${rule.id}": ${e.message}\nIn formula:`,
+                            e.context
+                        );
                     }
                 });
         });
@@ -73,9 +93,15 @@ function checkDependentElement(
 export function computedShowOnLogic(
     layoutElement: LayoutElement
 ): Ref<boolean> {
-    if (!isDependentElement(layoutElement)) {
+    let localLayoutElement = layoutElement;
+    if (layoutElement.type === 'Control') {
+        localLayoutElement =
+            mergeDescendantControlOptionsOverrides(layoutElement);
+    }
+
+    if (!isDependentElement(localLayoutElement)) {
         return ref(true);
     } else {
-        return checkDependentElement(layoutElement);
+        return checkDependentElement(localLayoutElement);
     }
 }

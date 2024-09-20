@@ -86,7 +86,7 @@ import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import { useFormDataStore } from '@/stores/formData';
 import {
-    descendantControlOptionsOverridesProviderKey,
+    descendantControlOverridesProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import RefParser, {
@@ -141,7 +141,7 @@ const props = defineProps<{
 
 setActivePinia(getActivePinia() || createPinia());
 
-provide(descendantControlOptionsOverridesProviderKey, {});
+provide(descendantControlOverridesProviderKey, {});
 
 const {
     jsonSchema: storedJsonSchema,

@@ -30,5 +30,8 @@ Instead of starting with any layout, the root object of the schema now needs to 
 - star rating field was removed
 ### Layouts (Group, VerticalLayout & HorizontalLayout)
 `label` (for groups) was moved into `options`
+### ShowOn
+`showOn` now uses object notation instead of the scope to access data (e.g. `files[0].name`). For that `scope` in `showOn` was renamed to `path`.
+
 ### Wizard
 Wizard was dropped

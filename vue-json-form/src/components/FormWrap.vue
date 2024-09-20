@@ -16,6 +16,7 @@ import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
 import { getComponent } from '@/stores/formStructure';
 import { computedShowOnLogic } from '@/components/ShowOnLogic';
+import { setDescendantControlOverrides } from '@/components/ProviderKeys';
 
 const showOnWrapper = getComponent('showOnWrapper');
 
@@ -50,6 +51,7 @@ function getControlComponent(name: string | undefined) {
 }
 
 const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
+
 const show = computedShowOnLogic(props.layoutElement);
 </script>
 

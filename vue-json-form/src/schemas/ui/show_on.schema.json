@@ -10,10 +10,12 @@
             "type": "object",
             "description": "Legacy Variant of defining ShowOn property",
             "properties": {
-                "scope": {
+                "path": {
                     "type": "string",
-                    "format": "json-pointer",
-                    "description": "The field this field depends on"
+                    "description": "The field this field depends on in object notation",
+                    "examples": [
+                        "files[0].name"
+                    ]
                 },
                 "type": {
                     "type": "string",
@@ -44,7 +46,7 @@
                     ]
                 }
             },
-            "required": ["type", "scope", "referenceValue"],
+            "required": ["type", "path", "referenceValue"],
             "additionalProperties": false
         }
     },

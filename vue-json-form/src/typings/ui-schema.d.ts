@@ -310,28 +310,26 @@ export interface ControlFormattingOptions {
    * Disables the field
    */
   disabled?: boolean;
-  descendantControlOptionsOverrides?: DescendantControlOptionsOverrides;
+  descendantControlOverrides?: DescendantControlOverrides;
 }
 /**
- * Allows to override UI options for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.
+ * Allows to override UI options and ShowOn for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.
  */
-export interface DescendantControlOptionsOverrides {
-  [k: string]: Options;
+export interface DescendantControlOverrides {
+  [k: string]: DescendantControlOverride;
 }
-/**
- * Custom options for the control
- */
-export interface CustomOptions {
-  [k: string]: unknown;
+export interface DescendantControlOverride {
+  options?: Options;
+  showOn?: ShowOnProperty;
 }
 /**
  * Legacy Variant of defining ShowOn property
  */
 export interface LegacyShowOnProperty {
   /**
-   * The field this field depends on
+   * The field this field depends on in object notation
    */
-  scope: string;
+  path: string;
   type: ShowOnFunctionType;
   /**
    * The value the field from scope is compared against
@@ -497,6 +495,12 @@ export interface Quantifier {
    */
   placeholder: string;
   rule: Formula;
+}
+/**
+ * Custom options for the control
+ */
+export interface CustomOptions {
+  [k: string]: unknown;
 }
 /**
  * Some HTML to be rendered in the form

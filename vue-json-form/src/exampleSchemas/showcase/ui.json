@@ -57,7 +57,7 @@
         },
         "showOn": {
           "type": "EQUALS",
-          "scope": "/properties/group_selector",
+          "path": "group_selector",
           "referenceValue": "Groups"
         },
         "elements": [
@@ -100,7 +100,7 @@
                     "arguments": [
                       {
                         "type": "atom",
-                        "path": "/properties/fancyness"
+                        "path": "fancyness"
                       },
                       "unicorn"
                     ]
@@ -115,7 +115,7 @@
                         "arguments": [
                           {
                             "type": "atom",
-                            "path": "/properties/rating"
+                            "path": "rating"
                           },
                           12
                         ]
@@ -137,7 +137,7 @@
         "type": "Group",
         "showOn": {
           "type": "EQUALS",
-          "scope": "/properties/group_selector",
+          "path": "group_selector",
           "referenceValue": "Groups"
         },
         "elements": [
@@ -164,9 +164,11 @@
             "type": "Control",
             "scope": "/properties/testArray",
             "options": {
-              "descendantControlOptionsOverrides": {
+              "descendantControlOverrides": {
                 "/properties/testArray/items": {
-                  "placeholder": "Enter an array element"
+                    "options": {
+                        "placeholder": "This is a placeholder"
+                    }
                 }
               }
             }
@@ -178,7 +180,7 @@
         "scope": "/properties/testObject",
         "showOn": {
           "type": "EQUALS",
-          "scope": "/properties/group_selector",
+          "path": "group_selector",
           "referenceValue": "Object"
         }
       },

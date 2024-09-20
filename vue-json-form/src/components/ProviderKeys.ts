@@ -1,8 +1,8 @@
 import { inject, type InjectionKey, provide } from 'vue';
 import type {
     Control,
-    DescendantControlOptionsOverrides,
-    Options,
+    DescendantControlOverride,
+    DescendantControlOverrides,
 } from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import { cleanScope } from '@/computedProperties/json';
@@ -19,35 +19,35 @@ export const savePathOverrideProviderKey = Symbol() as InjectionKey<
 
 export const savePathProviderKey = Symbol() as InjectionKey<string>;
 
-export const descendantControlOptionsOverridesProviderKey =
-    Symbol() as InjectionKey<DescendantControlOptionsOverrides>;
+export const descendantControlOverridesProviderKey =
+    Symbol() as InjectionKey<DescendantControlOverrides>;
 
-export function setDescendantControlOptionsOverrides(
-    overrides?: DescendantControlOptionsOverrides
+export function setDescendantControlOverrides(
+    overrides?: DescendantControlOverrides
 ) {
     if (!overrides) return;
     for (const [scope, options] of Object.entries(overrides)) {
-        setDescendantControlOptionsOverride(scope, options);
+        setDescendantControlOverride(scope, options);
     }
 }
 
-export function setDescendantControlOptionsOverride(
+export function setDescendantControlOverride(
     scope: string,
-    overrides: Options
+    overrides: DescendantControlOverride
 ) {
-    const overridesMap: DescendantControlOptionsOverrides = inject(
-        descendantControlOptionsOverridesProviderKey,
+    const overridesMap: DescendantControlOverrides = inject(
+        descendantControlOverridesProviderKey,
         {}
     );
     overridesMap[scope] = overrides;
-    provide(descendantControlOptionsOverridesProviderKey, overridesMap);
+    provide(descendantControlOverridesProviderKey, overridesMap);
 }
 
 export function mergeDescendantControlOptionsOverrides(
     control: Control
 ): Control {
-    const overridesMap: DescendantControlOptionsOverrides | undefined = inject(
-        descendantControlOptionsOverridesProviderKey
+    const overridesMap: DescendantControlOverrides | undefined = inject(
+        descendantControlOverridesProviderKey
     );
     if (!overridesMap) return control;
 
@@ -56,5 +56,9 @@ export function mergeDescendantControlOptionsOverrides(
     const controlOverrides = overridesMap[cleanedScope];
     if (!controlOverrides) return control;
 
-    return { ...control, options: { ...control.options, ...controlOverrides } };
+    return {
+        ...control,
+        options: { ...control.options, ...controlOverrides.options },
+        showOn: controlOverrides.showOn || control.showOn,
+    };
 }
