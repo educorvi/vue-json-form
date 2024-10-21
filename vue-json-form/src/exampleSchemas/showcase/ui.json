@@ -101,7 +101,8 @@
                     "arguments": [
                       {
                         "type": "atom",
-                        "path": "fancyness"
+                        "path": "fancyness",
+                        "default": ""
                       },
                       "unicorn"
                     ]
@@ -116,7 +117,8 @@
                         "arguments": [
                           {
                             "type": "atom",
-                            "path": "rating"
+                            "path": "rating",
+                            "default": 1
                           },
                           12
                         ]
