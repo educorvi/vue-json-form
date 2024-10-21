@@ -84,7 +84,7 @@ import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
-import { useFormDataStore } from '@/stores/formData';
+import { addFilesToFormdata, useFormDataStore } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
     requiredProviderKey,
@@ -167,14 +167,17 @@ const validationErrors = ref({
 
 let errorViewer: Component;
 
-function onSubmitFormLocal(evt: Event) {
+async function onSubmitFormLocal(evt: Event) {
     if (props.onSubmitForm) {
         evt.preventDefault();
+        let submitData;
         if (props.returnDataAsScopes) {
-            props.onSubmitForm(toRaw(cleanedFormData.value.scopes));
+            submitData = toRaw(cleanedFormData.value.scopes);
         } else {
-            props.onSubmitForm(toRaw(cleanedFormData.value.json));
+            submitData = toRaw(cleanedFormData.value.json);
         }
+        submitData = await addFilesToFormdata(submitData);
+        props.onSubmitForm(submitData);
     }
 }
 

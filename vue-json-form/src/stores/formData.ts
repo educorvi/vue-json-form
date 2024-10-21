@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { isArray } from '@/computedProperties/json';
+import { toRaw, isProxy } from 'vue';
 
 /**
  * Sets a property on an object based on a scoped key.
@@ -143,6 +144,33 @@ function cleanData(obj: Readonly<Record<string, any>>): {
 
     const json = reduceToObject(scopes);
     return { scopes, json };
+}
+
+function readFileDataAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+export async function addFilesToFormdata(data: any) {
+    if (data instanceof File) {
+        return {
+            metadata: data,
+            data: await readFileDataAsDataUrl(data),
+        };
+    } else if (isProxy(data)) {
+        return await addFilesToFormdata(toRaw(data));
+    } else if (typeof data === 'object' || Array.isArray(data)) {
+        for (const [key, value] of Object.entries(data)) {
+            data[key] = await addFilesToFormdata(value);
+        }
+    }
+
+    return data;
 }
 
 export const useFormDataStore = defineStore('formData', {

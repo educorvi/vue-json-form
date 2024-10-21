@@ -38,7 +38,8 @@
         "type": "Control",
         "scope": "/properties/fileupload",
         "options": {
-          "acceptedFileType": "*"
+          "acceptedFileType": "*",
+          "allowMultipleFiles": true
         }
       },
       {
