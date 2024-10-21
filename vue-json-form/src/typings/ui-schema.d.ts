@@ -68,8 +68,7 @@ export type ShowOnFunctionType =
   | "GREATER"
   | "GREATER_OR_EQUAL"
   | "SMALLER_OR_EQUAL"
-  | "SMALLER"
-  | "LONGER";
+  | "SMALLER";
 export type Formula = Operator | Atom | Plugin | Comparison | Quantifier;
 export type Operator = NonUnaryOperator | UnaryOperator;
 /**
@@ -376,6 +375,7 @@ export interface Atom {
    * Must be set to true if the atom should be parsed as a date
    */
   isDate?: boolean;
+  default?: string | number | boolean | unknown[];
 }
 /**
  * Describes an plugin

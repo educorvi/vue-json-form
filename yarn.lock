@@ -137,15 +137,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/rita@npm:^5.2.1":
-  version: 5.2.1
-  resolution: "@educorvi/rita@npm:5.2.1"
+"@educorvi/rita@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "@educorvi/rita@npm:5.3.3"
   dependencies:
     ajv: "npm:^8.16.0"
     ajv-formats: "npm:^2.1.1"
     luxon: "npm:^3.4.4"
     tslib: "npm:^2.6.3"
-  checksum: 10/88343c09c9f5a3b5770cf302063d187af78d065f9be3971ff13f575f2d05eab5535d200bbcc1d8ef88ee4fb5862e335b6e0fa77594b814df12ffdc2e38ceac38
+  checksum: 10/72549f0e5970886b34fe3bf35390c27315ec9d0c26c3de39bb59de747e4f73541252b31259e0040b94d751c6326f60a208b34ad0d1ad260000105bc1a33f7056
   languageName: node
   linkType: hard
 
@@ -174,7 +174,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:^11.6.1"
-    "@educorvi/rita": "npm:^5.2.1"
+    "@educorvi/rita": "npm:^5.3.3"
     "@rushstack/eslint-patch": "npm:^1.3.2"
     "@tsconfig/node18": "npm:^18.2.0"
     "@types/jsdom": "npm:^21.1.1"

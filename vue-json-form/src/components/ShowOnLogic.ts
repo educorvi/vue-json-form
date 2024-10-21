@@ -3,6 +3,7 @@ import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
 import type {
     DescendantControlOverrides,
     LayoutElement,
+    LegacyShowOnProperty,
     ShowOnFunctionType,
 } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
@@ -17,28 +18,24 @@ import {
 import type { dependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 
-function getComparisonFunction(functionName: ShowOnFunctionType) {
+function getComparisonFunction<T>(functionName: ShowOnFunctionType) {
     switch (functionName) {
         case 'EQUALS':
-            return (a: any, b: any) => {
-                if (a === undefined) a = false;
+            return (a: T, b: T) => {
                 return a == b;
             };
         case 'NOT_EQUALS':
-            return (a: any, b: any) => {
-                if (a === undefined) a = false;
+            return (a: T, b: T) => {
                 return a != b;
             };
         case 'GREATER':
-            return (a: any, b: any) => a > b;
+            return (a: T, b: T) => a > b;
         case 'GREATER_OR_EQUAL':
-            return (a: any, b: any) => a >= b;
+            return (a: T, b: T) => a >= b;
         case 'SMALLER':
-            return (a: any, b: any) => a < b;
+            return (a: T, b: T) => a < b;
         case 'SMALLER_OR_EQUAL':
-            return (a: any, b: any) => a < b;
-        case 'LONGER':
-            return (a: any, b: any) => (a || '').length > b;
+            return (a: T, b: T) => a < b;
     }
 }
 
@@ -51,15 +48,16 @@ function checkDependentElement(
             if (!isLegacyShowOn(dependentElement.showOn)) {
                 throw new Error('This should not happen');
             }
-            const compFunc = getComparisonFunction(
-                dependentElement.showOn.type
-            );
+            const compFunc = getComparisonFunction<
+                Awaited<ReturnType<Atom['getPropertyByString']>>
+            >(dependentElement.showOn.type);
             const value = dependentElement.showOn.referenceValue;
             try {
                 return compFunc(
                     Atom.getPropertyByString(
                         formDataStore.cleanedFormData.json,
-                        dependentElement.showOn.path
+                        dependentElement.showOn.path,
+                        ''
                     ),
                     value
                 );
@@ -76,7 +74,16 @@ function checkDependentElement(
     } else {
         const show = ref(false);
         const parser = new Parser();
-        const rule = parser.parseRule(dependentElement.showOn);
+        let rule;
+        try {
+            rule = parser.parseRule(dependentElement.showOn);
+        } catch (e) {
+            console.warn(
+                `Error while parsing showOn rule '${dependentElement.showOn.id}'`,
+                e
+            );
+            return show;
+        }
         formDataStore.$subscribe(() => {
             rule.evaluate(formDataStore.cleanedFormData.json)
                 .then((result) => {

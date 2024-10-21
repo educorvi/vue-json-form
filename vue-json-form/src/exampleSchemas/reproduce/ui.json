@@ -69,6 +69,7 @@
                           "type": "length",
                           "array": {
                             "type": "atom",
+                            "default": "",
                             "path": "textline-in-form736e3a96a17d436996e5c8489cb9d102"
                           }
                         }
@@ -80,7 +81,8 @@
                     "type": "exists",
                     "array": {
                       "type": "atom",
-                      "path": "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8"
+                      "path": "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
+                      "default": []
                     },
                     "placeholder": "current_option",
                     "rule": {
@@ -224,6 +226,7 @@
                       "type": "length",
                       "array": {
                         "type": "atom",
+                        "default": [],
                         "path": "textline84630e8d5125441eadbafb7f6a2bda5b"
                       }
                     }

@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.6.1",
-    "@educorvi/rita": "^5.2.1",
+    "@educorvi/rita": "^5.3.3",
     "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.24.2",
