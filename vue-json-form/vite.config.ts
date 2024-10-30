@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
     resolve: {
@@ -54,6 +55,7 @@ export default defineConfig({
                 Buffer: true,
             },
         }),
+        vueDevTools(),
         vue({
             include: [/\.vue$/],
         }),

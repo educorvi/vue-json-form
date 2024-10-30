@@ -7,6 +7,27 @@
       {
         "type": "Group",
         "options": {
+            "label": "JSO-25"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/arrayWithSelfRule",
+            "options": {
+              "descendantControlOverrides": {
+                "/properties/arrayWithSelfRule/items/properties/string": {
+                  "options": {
+                    "placeholder": "Enter a string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-12"
         },
         "elements": [

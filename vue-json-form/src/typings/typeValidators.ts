@@ -22,7 +22,11 @@ import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 export function isDependentElement(
     element: LayoutElement
 ): element is dependentElement {
-    return 'showOn' in element;
+    return (
+        'showOn' in element &&
+        element.showOn !== undefined &&
+        element.showOn !== null
+    );
 }
 
 /**
@@ -60,7 +64,12 @@ export function hasCssClass(
 export function isLegacyShowOn(
     showOn: ShowOnProperty
 ): showOn is LegacyShowOnProperty {
-    return 'path' in showOn && 'type' in showOn && 'referenceValue' in showOn;
+    return (
+        showOn &&
+        'path' in showOn &&
+        'type' in showOn &&
+        'referenceValue' in showOn
+    );
 }
 
 export function hasProperties(

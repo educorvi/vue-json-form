@@ -15,6 +15,19 @@ export function generateUUID(): string {
 
 export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 
+export function isArrayItemKey(key: any): boolean {
+    if (typeof key !== 'string') {
+        return false;
+    }
+    return (
+        key.match(
+            new RegExp(
+                `^${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
+            )
+        ) !== null
+    );
+}
+
 /**
  * This function is used to map an array of elements to a new array where each element in the new array will have all the properties of the original element plus a 'uuid' property.
  * The 'uuid' property is generated using the `crypto.randomUUID()` or the `makeid()` function.

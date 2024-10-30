@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { isArray } from '@/computedProperties/json';
 import { toRaw, isProxy } from 'vue';
+import { isArrayItemKey } from '@/Commons';
 
 /**
  * Sets a property on an object based on a scoped key.
@@ -50,14 +51,13 @@ function setPropertyByScope(
                 object[arrayName] = [];
             }
 
-            // If this is the last key, set the value
             if (i === splitKey.length - 1) {
+                // If this is the last key, set the value
                 object[arrayName][index] = value;
                 return;
-            }
-
-            // If this is not the last key, create a new object
-            if (object[arrayName][index] === undefined) {
+            } else {
+                // Else, create a new object
+                // TODO check if next key is also an array -> 2D Array
                 object[arrayName][index] = Object.create(null);
             }
 
@@ -106,16 +106,39 @@ function reduceToObject(
 }
 
 /**
+ * The cleaned data of the form
+ */
+type CleanedData = {
+    /**
+     * The cleaned data in scopes formatting
+     */
+    scopes: Record<string, any>;
+
+    /**
+     * The cleaned data as object
+     */
+    json: Record<string, any>;
+};
+
+/**
  * Cleans the data by mapping the array entry values to their indices
  * @param obj - The object to clean
  * @returns The cleaned data in scopes formatting and as json object
  */
-function cleanData(obj: Readonly<Record<string, any>>): {
-    scopes: Record<string, any>;
-    json: Record<string, any>;
-} {
+function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
+    /**
+     * The scopes with their values
+     */
     const scopes: Record<string, any> = {};
+
+    /**
+     * Map of array values and their indices in their respective arrays
+     */
     const arrayIndices: Map<string, number> = new Map();
+
+    /**
+     * List of all arrays in the object
+     */
     const arrays = new Set<string>();
 
     // Create a map of all array values and their indices
@@ -126,7 +149,17 @@ function cleanData(obj: Readonly<Record<string, any>>): {
                 value.forEach((element, index) => {
                     arrayIndices.set(element, index);
                 });
-                scopes[key] = [...value];
+                // const arrayWithRemovedTempKeys = value.map((element) => {
+                //     if (isArrayItemKey(element)) {
+                //         return undefined;
+                //     } else {
+                //         return element;
+                //     }
+                // });
+                // scopes[key] = [...arrayWithRemovedTempKeys];
+                if (!value.filter((e) => isArrayItemKey(e)).length) {
+                    scopes[key] = [...value];
+                }
             }
         }
     }
@@ -142,7 +175,8 @@ function cleanData(obj: Readonly<Record<string, any>>): {
         }
     }
 
-    const json = reduceToObject(scopes);
+    // const json = reduceToObject(scopes);
+    const json = {};
     return { scopes, json };
 }
 

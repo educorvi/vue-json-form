@@ -79,7 +79,7 @@ function checkDependentElement(
             rule = parser.parseRule(dependentElement.showOn);
         } catch (e) {
             console.warn(
-                `Error while parsing showOn rule '${dependentElement.showOn.id}'`,
+                `Error while parsing showOn rule '${dependentElement.showOn?.id}'`,
                 e
             );
             return show;

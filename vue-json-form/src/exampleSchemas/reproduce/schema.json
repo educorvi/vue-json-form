@@ -2,6 +2,21 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "arrayWithSelfRule": {
+      "type": "array",
+      "title": "Array with self rule",
+      "items": {
+        "type": "object",
+        "properties": {
+          "boolean": {
+            "type": "boolean"
+          },
+          "string": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "boolean": {
       "type": "boolean",
       "title": "Show String2"
