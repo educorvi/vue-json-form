@@ -19,6 +19,8 @@ function setPropertyByScope(
     key: string,
     value: any
 ): void {
+    const TEMP_INDEX_ESCAPE = '!##!';
+
     // Do not write anything if the value is undefined
     if (value === undefined) {
         return;
@@ -29,56 +31,32 @@ function setPropertyByScope(
     const splitKey = key
         .split('/')
         .filter((x) => x !== '')
-        .filter((x, index) => !(index % 2 === 0 && x === 'properties'));
-
-    // Regular expression to match array indices
-    const arrayIndexRegex = /\[(\w+)]/;
+        .filter((x, index) => !(index % 2 === 0 && x === 'properties'))
+        .join('.')
+        .replace(/\[(\w+)]/g, `.${TEMP_INDEX_ESCAPE}$1`)
+        .split('.');
 
     // Create necessary nested objects or arrays and set the value at the specified path
     for (let i = 0; i < splitKey.length; i++) {
-        const k = splitKey[i];
-        const indexMatch = k.match(arrayIndexRegex);
+        let k: string | number = splitKey[i];
+        const index = parseInt(k.replace(TEMP_INDEX_ESCAPE, ''));
+        if (Number.isInteger(index)) {
+            k = index;
+        }
 
-        if (indexMatch) {
-            // Key is an array index
-
-            // Get name of array and index
-            const index = parseInt(indexMatch[1]);
-            const arrayName = k.replace(arrayIndexRegex, '');
-
-            // Create array if it doesn't exist
-            if (!(arrayName in object)) {
-                object[arrayName] = [];
-            }
-
-            if (i === splitKey.length - 1) {
-                // If this is the last key, set the value
-                object[arrayName][index] = value;
-                return;
-            } else {
-                // Else, create a new object
-                // TODO check if next key is also an array -> 2D Array
-                object[arrayName][index] = Object.create(null);
-            }
-
-            // Move to newly created object
-            object = object[arrayName][index];
+        if (i === splitKey.length - 1) {
+            object[k] = value;
         } else {
-            // Key is an object key
-
-            // Create object if it doesn't exist
-            if (!(k in object)) {
-                object[k] = Object.create(null);
-            }
-
-            // If this is the last key, set the value
-            if (i === splitKey.length - 1) {
-                object[splitKey[splitKey.length - 1]] = value;
-                return;
+            if (
+                Number.isInteger(
+                    parseInt(splitKey[i + 1].replace(TEMP_INDEX_ESCAPE, ''))
+                )
+            ) {
+                object[k] = object[k] || [];
             } else {
-                // Move to newly created object
-                object = object[k];
+                object[k] = object[k] || {};
             }
+            object = object[k];
         }
     }
 }
@@ -175,8 +153,8 @@ function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
         }
     }
 
-    // const json = reduceToObject(scopes);
-    const json = {};
+    const json = reduceToObject(scopes);
+    // const json = {};
     return { scopes, json };
 }
 
