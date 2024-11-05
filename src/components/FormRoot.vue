@@ -129,6 +129,10 @@ export default {
   methods: {
     onSubmitMeth(evt) {
       evt.preventDefault();
+      if(evt.submitter.hasAttribute('formnovalidate')) {
+        this.onSubmit(this.data, evt);
+        return;
+      }
       const form = document.getElementById(this.id);
       if (form.checkValidity()) {
         this.onSubmit(this.data, evt);
