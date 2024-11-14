@@ -37,6 +37,12 @@ const reproduce: Ref<boolean> = ref(
 const jsonSchema: Ref<Record<string, any> | null> = ref(null);
 const uiSchema: Ref<Record<string, any> | null> = ref(null);
 
+const searchParams = new URLSearchParams(window.location.search);
+
+if (searchParams.get('variant') === 'reproduce') {
+    reproduce.value = true;
+}
+
 async function setSchema(reproduce_val: boolean) {
     if (reproduce_val) {
         jsonSchema.value = json_repro;

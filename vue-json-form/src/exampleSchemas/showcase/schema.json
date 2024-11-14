@@ -8,7 +8,7 @@
         },
         "title": {
             "type": "string",
-            "enum": ["Mrs.", "Mr.", "Miss", "Ms.", "Dr."]
+            "enum": ["Mrs.", "Mr.", "Ms.", "Dr."]
         },
         "description": {
             "type": "string",
@@ -90,9 +90,10 @@
             },
             "required": ["petName", "age"]
         },
-        "fancyness": {
+        "fanciness": {
             "type": "string",
-            "enum": ["fancy", "fancier", "fanciest", "unicorn"]
+            "enum": ["fancy", "fancier", "fanciest", "unicorn"],
+            "description": "Select how fancy you are"
         },
         "tags": {
             "title": "Tag this form",
@@ -114,5 +115,7 @@
             "default": "$now"
         }
     },
-    "required": ["done", "name", "fancyness"]
+    "required": ["done", "name",
+        "fanciness"
+    ]
 }

@@ -22,7 +22,7 @@
       },
       {
         "type": "Control",
-        "scope": "/properties/fancyness",
+        "scope": "/properties/fanciness",
         "options": {
           "displayAs": "radiobuttons",
           "stacked": true,
