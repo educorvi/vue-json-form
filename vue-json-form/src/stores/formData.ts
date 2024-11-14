@@ -99,6 +99,30 @@ type CleanedData = {
 };
 
 /**
+ * Get the array alias indices.
+ * @param obj - The form data
+ */
+function getArrayAliasIndices(
+    obj: Readonly<Record<string, any>>
+): Map<string, number> {
+    const arrayIndices: Map<string, number> = new Map();
+    const arrays = new Set<string>();
+    for (const [key, value] of Object.entries(obj)) {
+        if (isArray(key)) {
+            arrays.add(key);
+            if (Array.isArray(value)) {
+                value.forEach((element, index) => {
+                    if (isArrayItemKey(element)) {
+                        arrayIndices.set(element, index);
+                    }
+                });
+            }
+        }
+    }
+    return arrayIndices;
+}
+
+/**
  * Cleans the data by mapping the array entry values to their indices
  * @param obj - The object to clean
  * @returns The cleaned data in scopes formatting and as json object
@@ -119,22 +143,16 @@ function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
      */
     const arrays = new Set<string>();
 
-    // Create a map of all array values and their indices
+    // Create a map of all array aliases and their indices
     for (const [key, value] of Object.entries(obj)) {
         if (isArray(key)) {
             arrays.add(key);
             if (Array.isArray(value)) {
                 value.forEach((element, index) => {
-                    arrayIndices.set(element, index);
+                    if (isArrayItemKey(element)) {
+                        arrayIndices.set(element, index);
+                    }
                 });
-                // const arrayWithRemovedTempKeys = value.map((element) => {
-                //     if (isArrayItemKey(element)) {
-                //         return undefined;
-                //     } else {
-                //         return element;
-                //     }
-                // });
-                // scopes[key] = [...arrayWithRemovedTempKeys];
                 if (!value.filter((e) => isArrayItemKey(e)).length) {
                     scopes[key] = [...value];
                 }
@@ -191,6 +209,7 @@ export const useFormDataStore = defineStore('formData', {
         defaultFormData: {} as Record<string, any>,
     }),
     getters: {
+        arrayAliasIndices: (state) => getArrayAliasIndices(state.formData),
         cleanedFormData: (state) => cleanData(state.formData),
     },
 });

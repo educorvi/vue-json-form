@@ -17,6 +17,7 @@ import {
 } from '@educorvi/rita';
 import type { dependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
+import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
 function getComparisonFunction<T>(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -85,7 +86,42 @@ function checkDependentElement(
             return show;
         }
         formDataStore.$subscribe(() => {
-            rule.evaluate(formDataStore.cleanedFormData.json)
+            const arrayAliasRegex = new RegExp(
+                `^([^.\\s]+)\\.(${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`
+            );
+            const arrayItemIndices: Record<string, number> = {};
+
+            if (dependentElement.type === 'Control') {
+                const scopeParts = dependentElement.scope.split('/');
+
+                const arrayAliases = scopeParts.map((e, i) => {
+                    const results = e.match(arrayAliasRegex);
+                    if (results) {
+                        return {
+                            arrayName:
+                                scopeParts.slice(0, i).join('/') +
+                                '/' +
+                                results[1],
+                            arrayAlias: results[2],
+                        };
+                    }
+                    return null;
+                });
+                arrayAliases.forEach((alias) => {
+                    if (alias) {
+                        arrayItemIndices[alias.arrayName] =
+                            formDataStore.arrayAliasIndices.get(
+                                alias.arrayAlias
+                            ) ?? 0;
+                    }
+                });
+            }
+            const evalData = {
+                $selfIndices: arrayItemIndices,
+                ...formDataStore.cleanedFormData.json,
+            };
+            console.log(evalData);
+            rule.evaluate(evalData)
                 .then((result) => {
                     show.value = result;
                 })
