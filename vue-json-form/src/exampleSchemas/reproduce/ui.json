@@ -7,6 +7,67 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-23 und 24"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/bluigfee51c238833463597e588efe55360f6"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a",
+            "options": {
+              "descendantControlOverrides": {
+                "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a/items/properties/textfeld69150ac2386d4a63aee2d8e499942692": {
+                  "options": {
+                    "placeholder": "Enter a string"
+                  },
+                  "showOn": {
+                    "id": "ritaRule-textfeld69150ac2386d4a63aee2d8e499942692",
+                    "rule": {
+                      "type": "comparison",
+                      "operation": "equal",
+                      "arguments": [
+                        {
+                          "type": "atom",
+                          "path": "array-11d6266e4c57d4363b1f4ef6d72025f3a[0].bbbbda5b601ed9bf4c3b9280f86bd0f95752",
+                          "default": false
+                        },
+                        true
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "Buttongroup",
+            "buttons": [
+              {
+                "type": "Button",
+                "buttonType": "submit",
+                "text": "Submit",
+                "options": {
+                  "variant": "primary"
+                }
+              },
+              {
+                "type": "Button",
+                "buttonType": "reset",
+                "text": "Reset this form",
+                "options": {
+                  "variant": "danger"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
             "label": "JSO-25"
         },
         "elements": [

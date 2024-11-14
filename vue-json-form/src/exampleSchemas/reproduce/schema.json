@@ -2,6 +2,28 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "bluigfee51c238833463597e588efe55360f6": {
+      "title": "bluig",
+      "type": "boolean"
+    },
+    "array-11d6266e4c57d4363b1f4ef6d72025f3a": {
+      "type": "array",
+      "title": "array 1",
+      "items": {
+        "type": "object",
+        "properties": {
+          "textfeld69150ac2386d4a63aee2d8e499942692": {
+            "title": "textfeld",
+            "type": "string"
+          },
+          "bbbbda5b601ed9bf4c3b9280f86bd0f95752": {
+            "title": "bbbb",
+            "type": "boolean"
+          }
+        },
+        "required": []
+      }
+    },
     "arrayWithSelfRule": {
       "type": "array",
       "title": "Array with self rule",
