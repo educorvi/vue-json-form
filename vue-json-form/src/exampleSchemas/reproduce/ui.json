@@ -68,7 +68,7 @@
       {
         "type": "Group",
         "options": {
-            "label": "JSO-25"
+          "label": "JSO-25"
         },
         "elements": [
           {
@@ -79,6 +79,50 @@
                 "/properties/arrayWithSelfRule/items/properties/string": {
                   "options": {
                     "placeholder": "Enter a string"
+                  },
+                  "showOn": {
+                    "id": "showSelfRule",
+                    "rule": {
+                      "type": "exists",
+                      "array": {
+                        "type": "atom",
+                        "path": "arrayWithSelfRule",
+                        "default": []
+                      },
+                      "placeholder": "$arrayItem",
+                      "indexPlaceholder": "$index",
+                      "rule": {
+                        "type": "and",
+                        "arguments": [
+                          {
+                            "type": "comparison",
+                            "operation": "equal",
+                            "arguments": [
+                              {
+                                "type": "atom",
+                                "path": "$index"
+                              },
+                              {
+                                "type": "atom",
+                                "path": "$selfIndices./properties/arrayWithSelfRule"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "comparison",
+                            "operation": "equal",
+                            "arguments": [
+                              {
+                                "type": "atom",
+                                "path": "$arrayItem.boolean",
+                                "default": false
+                              },
+                              true
+                            ]
+                          }
+                        ]
+                      }
+                    }
                   }
                 }
               }

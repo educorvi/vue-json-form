@@ -120,7 +120,6 @@ function checkDependentElement(
                 $selfIndices: arrayItemIndices,
                 ...formDataStore.cleanedFormData.json,
             };
-            console.log(evalData);
             rule.evaluate(evalData)
                 .then((result) => {
                     show.value = result;
@@ -138,6 +137,10 @@ function checkDependentElement(
                         console.warn(
                             `Error while evaluating showOn rule "${rule.id}": ${e.message}\nIn formula:`,
                             e.context
+                        );
+                    } else {
+                        console.warn(
+                            `Error while evaluating showOn rule "${rule.id}": ${e.message}`
                         );
                     }
                 });
