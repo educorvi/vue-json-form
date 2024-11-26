@@ -46,6 +46,7 @@ const emit = defineEmits<{
                     variant="outline-danger"
                     @click="emit('delete', itemID, savePath)"
                     :disabled="!allowRemove"
+                    aria-label="Delete Item"
                 >
                     <XIcon />
                 </b-button>

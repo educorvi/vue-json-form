@@ -144,6 +144,7 @@ const allowRemoveField = computed(() => {
                 class="w-100"
                 @click="() => addField()"
                 :disabled="!allowAddField"
+                aria-label="Add Item"
             >
                 <PlusIcon />
             </b-button>
