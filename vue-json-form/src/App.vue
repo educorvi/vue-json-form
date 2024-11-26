@@ -8,11 +8,17 @@
             <VueJsonForm
                 v-if="jsonSchema"
                 :json-schema="jsonSchema"
-                :on-submit-form="console.log"
+                :on-submit-form="onSubmitForm"
                 :render-interface="bootstrapComponents"
                 :ui-schema="uiSchema || {}"
             >
             </VueJsonForm>
+            <hr />
+            <h2>Results</h2>
+            <p class="text-muted">Press submit to update</p>
+            <pre id="result-container">{{
+                JSON.stringify(formData, null, 2)
+            }}</pre>
         </div>
     </div>
 </template>
@@ -37,6 +43,8 @@ const reproduce: Ref<boolean> = ref(
 const jsonSchema: Ref<Record<string, any> | null> = ref(null);
 const uiSchema: Ref<Record<string, any> | null> = ref(null);
 
+const formData = ref({});
+
 const searchParams = new URLSearchParams(window.location.search);
 
 if (searchParams.get('variant') === 'reproduce') {
@@ -59,6 +67,12 @@ watch(reproduce, async (value) => {
     localStorage.setItem('reproduce', value.toString());
     await setSchema(value);
 });
+
+function onSubmitForm(data: any) {
+    formData.value = data;
+    console.log(data);
+}
+
 // const jsonSchema = json;
 // const uiSchema = ui;
 // const jsonSchema = json_repro;
