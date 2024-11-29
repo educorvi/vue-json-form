@@ -20,6 +20,8 @@ jobs:
     name: Build on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Setup node
         uses: actions/setup-node@v4
         with:
@@ -28,10 +30,13 @@ jobs:
       - run: yarn install --immutable
       - run: yarn run build
   test:
+    needs: build
     runs-on: ubuntu-latest
     name: Test
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Setup node
         uses: actions/setup-node@v4
         with:
