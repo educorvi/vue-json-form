@@ -7,16 +7,22 @@ import { BFormCheckbox, BFormTextarea } from 'bootstrap-vue-next';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const label = computedLabel(layoutElement);
 </script>
 
 <template>
-    <BFormCheckbox v-model="formData[savePath]" class="vjf_checkbox" :id="id">
-        {{ label }}
-    </BFormCheckbox>
+    <div>
+        <BFormCheckbox
+            v-model="formData[savePath]"
+            class="vjf_checkbox"
+            :id="id"
+        >
+            {{ label }}
+        </BFormCheckbox>
+    </div>
 </template>
 
 <style scoped></style>

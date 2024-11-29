@@ -558,7 +558,7 @@ __metadata:
     "@vueuse/core": "npm:^10.9.0"
     axe-core: "npm:^4.10.2"
     bootstrap: "npm:^5.3.3"
-    bootstrap-vue-next: "npm:0.24.2"
+    bootstrap-vue-next: "npm:0.26.7"
     buffer: "npm:^6.0.3"
     cypress: "npm:^13.16.0"
     cypress-axe: "npm:^1.5.0"
@@ -953,25 +953,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/core@npm:^1.6.0":
-  version: 1.6.8
-  resolution: "@floating-ui/core@npm:1.6.8"
-  dependencies:
-    "@floating-ui/utils": "npm:^0.2.8"
-  checksum: 10/87d52989c3d2cc80373bc153b7a40814db3206ce7d0b2a2bdfb63e2ff39ffb8b999b1b0ccf28e548000ebf863bf16e2bed45eab4c4d287a5dbe974ef22368d82
-  languageName: node
-  linkType: hard
-
-"@floating-ui/dom@npm:^1.0.0":
-  version: 1.6.12
-  resolution: "@floating-ui/dom@npm:1.6.12"
-  dependencies:
-    "@floating-ui/core": "npm:^1.6.0"
-    "@floating-ui/utils": "npm:^0.2.8"
-  checksum: 10/5c8e5fdcd3843140a606ab6dc6c12ad740f44e66b898966ef877393faaede0bbe14586e1049e2c2f08856437da8847e884a2762e78275fefa65a5a9cd71e580d
-  languageName: node
-  linkType: hard
-
 "@floating-ui/dom@npm:^1.6.1":
   version: 1.6.3
   resolution: "@floating-ui/dom@npm:1.6.3"
@@ -989,13 +970,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/utils@npm:^0.2.8":
-  version: 0.2.8
-  resolution: "@floating-ui/utils@npm:0.2.8"
-  checksum: 10/3e3ea3b2de06badc4baebdf358b3dbd77ccd9474a257a6ef237277895943db2acbae756477ec64de65a2a1436d94aea3107129a1feeef6370675bf2b161c1abc
-  languageName: node
-  linkType: hard
-
 "@floating-ui/vue@npm:^1.0.6":
   version: 1.0.6
   resolution: "@floating-ui/vue@npm:1.0.6"
@@ -1004,17 +978,6 @@ __metadata:
     "@floating-ui/utils": "npm:^0.2.1"
     vue-demi: "npm:>=0.13.0"
   checksum: 10/3e90abd1d3bc56bbe78d5ec66fabb705b284f3abe805f2dd5ba9b98a5d78477ba4e17d8ce50afed50cca4ec9a56df7bec06fb0e231bb2d6702e93f253eb405c2
-  languageName: node
-  linkType: hard
-
-"@floating-ui/vue@npm:^1.1.1":
-  version: 1.1.5
-  resolution: "@floating-ui/vue@npm:1.1.5"
-  dependencies:
-    "@floating-ui/dom": "npm:^1.0.0"
-    "@floating-ui/utils": "npm:^0.2.8"
-    vue-demi: "npm:>=0.13.0"
-  checksum: 10/fb08cd68eac0094645be08ff5714bd8a2e2ed2153806fa65fd661cd9dd103306c3b48e7c9a5c588d2b96fce9713933c901520c281ddedd90d8d6ac38a2d82f65
   languageName: node
   linkType: hard
 
@@ -2458,18 +2421,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:^10.10.0":
-  version: 10.11.1
-  resolution: "@vueuse/core@npm:10.11.1"
-  dependencies:
-    "@types/web-bluetooth": "npm:^0.0.20"
-    "@vueuse/metadata": "npm:10.11.1"
-    "@vueuse/shared": "npm:10.11.1"
-    vue-demi: "npm:>=0.14.8"
-  checksum: 10/bbebdcd1ef0a77437cf2432062bb57c13e0afdadc474861ddad7ce343a8638778c5e54ad302c80e1d4351d4bdaf43501dc5937185e08d257fd000bdfea4ecb36
-  languageName: node
-  linkType: hard
-
 "@vueuse/core@npm:^10.7.2":
   version: 10.11.0
   resolution: "@vueuse/core@npm:10.11.0"
@@ -2501,13 +2452,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:10.11.1":
-  version: 10.11.1
-  resolution: "@vueuse/metadata@npm:10.11.1"
-  checksum: 10/20336a05eb4945c1486d5e0a81c91a8ba08137f567b86d2bc1171af36d916c56d30166163016ed64642cce904cad1af09332655f7f0178eb5f2c65e54f648b4f
-  languageName: node
-  linkType: hard
-
 "@vueuse/metadata@npm:10.9.0":
   version: 10.9.0
   resolution: "@vueuse/metadata@npm:10.9.0"
@@ -2521,15 +2465,6 @@ __metadata:
   dependencies:
     vue-demi: "npm:>=0.14.8"
   checksum: 10/670d8b934ba6348de085a82aa3adf457421bd2d18a7db3db29d67aa74fd36ef4123847858b9340aeb843b8feece3ef9118c90d400780dda29ecc961c08706553
-  languageName: node
-  linkType: hard
-
-"@vueuse/shared@npm:10.11.1":
-  version: 10.11.1
-  resolution: "@vueuse/shared@npm:10.11.1"
-  dependencies:
-    vue-demi: "npm:>=0.14.8"
-  checksum: 10/5d8c28ed441a66b200c76ab44b6dbc6af152a6cecc527a1f4f645d95547e1de65e4b99e16d25f77609cb146e9e4b4961b260fe723043b08ab198e88ed1d47f4e
   languageName: node
   linkType: hard
 
@@ -3045,15 +2980,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.24.2":
-  version: 0.24.2
-  resolution: "bootstrap-vue-next@npm:0.24.2"
-  dependencies:
-    "@floating-ui/vue": "npm:^1.1.1"
-    "@vueuse/core": "npm:^10.10.0"
+"bootstrap-vue-next@npm:0.26.7":
+  version: 0.26.7
+  resolution: "bootstrap-vue-next@npm:0.26.7"
   peerDependencies:
-    vue: ^3.4.27
-  checksum: 10/c38a803950a8d05aced0d05e34ea39abc9d9840dd78d153da3f77cf992fb9401059a81d37997a483eef55bbd434aae2036f46d0530f7de264c14aa50293710e9
+    vue: ^3.5.13
+  checksum: 10/6d6fce508ab5aba203055ec9cfbebeddfef9e26b3793d9c316e6f9c49c27f8dcb708cd82f05248b0acc6e16028cc3f675973610b60077273c5c80fe097da76d9
   languageName: node
   linkType: hard
 

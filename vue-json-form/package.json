@@ -43,7 +43,7 @@
     "@educorvi/rita": "^5.4.2",
     "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
-    "bootstrap-vue-next": "0.24.2",
+    "bootstrap-vue-next": "0.26.7",
     "buffer": "^6.0.3",
     "deepmerge": "^4.3.1",
     "json-pointer": "^0.6.2",
