@@ -55,7 +55,7 @@ export default defineConfig({
                 Buffer: true,
             },
         }),
-        vueDevTools(),
+        // vueDevTools(),
         vue({
             include: [/\.vue$/],
         }),

@@ -1,26 +1,28 @@
 <template>
-    <div style="display: flex; justify-content: center">
-        <div style="max-width: 700px; margin: 20px; width: 100%">
-            <h1>Vue JSON Form Demo</h1>
-            <b-form-checkbox switch v-model="reproduce">
-                Reproduce form
-            </b-form-checkbox>
-            <VueJsonForm
-                v-if="jsonSchema"
-                :json-schema="jsonSchema"
-                :on-submit-form="onSubmitForm"
-                :render-interface="bootstrapComponents"
-                :ui-schema="uiSchema || {}"
-            >
-            </VueJsonForm>
-            <hr />
-            <h2>Results</h2>
-            <p class="text-muted">Press submit to update</p>
-            <pre id="result-container">{{
-                JSON.stringify(formData, null, 2)
-            }}</pre>
+    <main>
+        <div style="display: flex; justify-content: center">
+            <div style="max-width: 700px; margin: 20px; width: 100%">
+                <h1>Vue JSON Form Demo</h1>
+                <b-form-checkbox switch v-model="reproduce">
+                    Reproduce form
+                </b-form-checkbox>
+                <VueJsonForm
+                    v-if="jsonSchema"
+                    :json-schema="jsonSchema"
+                    :on-submit-form="onSubmitForm"
+                    :render-interface="bootstrapComponents"
+                    :ui-schema="uiSchema || {}"
+                >
+                </VueJsonForm>
+                <hr />
+                <h2>Results</h2>
+                <p class="text-muted">Press submit to update</p>
+                <pre id="result-container">{{
+                    JSON.stringify(formData, null, 2)
+                }}</pre>
+            </div>
         </div>
-    </div>
+    </main>
 </template>
 
 <script setup lang="ts">

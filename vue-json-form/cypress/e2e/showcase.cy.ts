@@ -51,5 +51,6 @@ describe('Structure', () => {
     it('Group selector', () => {
         const id = '#vjf_control_for__properties_group_selector';
         cy.get(id).should('exist');
+        cy.get(`${id} > label`).should('exist');
     });
 });
