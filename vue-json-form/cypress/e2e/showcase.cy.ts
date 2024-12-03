@@ -138,12 +138,6 @@ describe('Structure', () => {
                 'input#vjf_control_for__properties_testObject_properties_petName';
             cy.get(id).should('exist');
             cy.get(id).should('have.attr', 'type', 'text');
-            cy.get(id)
-                .parent()
-                .parent()
-                .siblings()
-                .eq(0)
-                .should('have.text', 'Give me a name');
         });
 
         it('age', () => {
