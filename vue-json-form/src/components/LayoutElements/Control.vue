@@ -230,7 +230,10 @@ watch(jsonElement, () => {
 });
 
 onMounted(() => {
-    formData.value[savePath] = defaultFormData.value[savePath];
+    // Coalescing is needed because if this field is an array item, the value is set by ArrayControl due to
+    // the computed scope
+    formData.value[savePath] =
+        defaultFormData.value[savePath] ?? formData.value[savePath];
 });
 
 onBeforeUnmount(() => {
