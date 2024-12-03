@@ -11,7 +11,7 @@ import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick, onMounted, computed } from 'vue';
+import { ref, nextTick, onMounted, computed, onBeforeMount } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 
@@ -93,8 +93,6 @@ function initArray() {
     }
 }
 
-initArray();
-
 const allowAddField = computed(() => {
     if (!formData.value[savePath]) {
         initArray();
@@ -111,6 +109,8 @@ const allowRemoveField = computed(() => {
     }
     return formData.value[savePath].length > (jsonElement.minItems || 0);
 });
+
+onBeforeMount(initArray);
 </script>
 
 <template>
