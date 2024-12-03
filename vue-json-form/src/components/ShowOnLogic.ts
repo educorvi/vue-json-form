@@ -18,6 +18,7 @@ import {
 import type { dependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import { cleanScope } from '@/computedProperties/json';
 
 function getComparisonFunction<T>(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -109,13 +110,17 @@ function checkDependentElement(
                 });
                 arrayAliases.forEach((alias) => {
                     if (alias) {
-                        arrayItemIndices[alias.arrayName] =
+                        const cleanedName = cleanScope(alias.arrayName);
+                        arrayItemIndices[cleanedName] =
                             formDataStore.arrayAliasIndices.get(
                                 alias.arrayAlias
                             ) ?? 0;
                     }
                 });
             }
+            // if (Object.keys(arrayItemIndices).length > 0) {
+            //     console.log(arrayItemIndices);
+            // }
             const evalData = {
                 $selfIndices: arrayItemIndices,
                 ...formDataStore.cleanedFormData.json,

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { computedLabel, injectJsonData } from '@/computedProperties/json';
+import {
+    arrayContainsValue,
+    computedLabel,
+    injectJsonData,
+} from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
@@ -19,14 +23,14 @@ const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 const { savePath } = injectJsonData();
 const id = controlID(savePath);
 
-function addField(skipFocus = false) {
+function addField(skipFocus = false, value?: any) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
     }
     formData.value[savePath].push(genId);
     // Define an empty string for the new item so that the uuid will not be visible in `cleanedData`
-    formData.value[`${savePath}.${genId}`] = '';
+    formData.value[`${savePath}.${genId}`] = value ?? '';
     if (!skipFocus) {
         nextTick().then(() => {
             const children = document
@@ -72,9 +76,19 @@ function deleteItemWithID(id: string, itemSavePath: string) {
 function initArray() {
     if (!formData.value[savePath]) {
         formData.value[savePath] = [];
+    } else if (arrayContainsValue(formData.value[savePath])) {
+        const values = formData.value[savePath];
+        formData.value[savePath] = [];
+        for (const value of values) {
+            addField(true, value);
+        }
     }
     arrays.value.push(savePath);
-    for (let i = 0; i < (jsonElement.minItems || 0); i++) {
+    for (
+        let i = formData.value[savePath].length;
+        i < (jsonElement.minItems || 0);
+        i++
+    ) {
         addField(true);
     }
 }

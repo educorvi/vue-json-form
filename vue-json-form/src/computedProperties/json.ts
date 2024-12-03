@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import jsonPointer from 'json-pointer';
-import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
 export function injectJsonData() {
     const layoutElement = inject(layoutProviderKey) as Control;
@@ -128,6 +128,13 @@ export function isArray(scope: string) {
         console.error('invalid json pointer', cleaned_scope, e);
         return false;
     }
+}
+
+export function arrayContainsValue(array: any[]): boolean {
+    return array.reduce((prev, curr) => {
+        const isValue = !(typeof curr === 'string' && isArrayItemKey(curr));
+        return prev || isValue;
+    }, false);
 }
 
 export function computedLabel(layout: Control) {

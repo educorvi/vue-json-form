@@ -7,6 +7,18 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-17"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/arrayWithDefaults"
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-23 & JSO-24"
         },
         "elements": [
@@ -119,6 +131,92 @@
                               },
                               true
                             ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/arrayInArrayWithSelfRule",
+            "options": {
+              "descendantControlOverrides":{
+                "/properties/arrayInArrayWithSelfRule/items/properties/internalArray/items/properties/string": {
+                  "options": {
+                    "placeholder": "Enter a string"
+                  },
+                  "showOn": {
+                    "id": "showSelfRule",
+                    "rule": {
+                      "type": "exists",
+                      "array": {
+                        "type": "atom",
+                        "path": "arrayInArrayWithSelfRule",
+                        "default": []
+                      },
+                      "placeholder": "$arrayItem",
+                      "indexPlaceholder": "$index",
+                      "rule": {
+                        "type": "and",
+                        "arguments": [
+                          {
+                            "type": "comparison",
+                            "operation": "equal",
+                            "arguments": [
+                              {
+                                "type": "atom",
+                                "path": "$index"
+                              },
+                              {
+                                "type": "atom",
+                                "path": "$selfIndices./properties/arrayInArrayWithSelfRule"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "exists",
+                            "array": {
+                              "type": "atom",
+                              "path": "$arrayItem.internalArray",
+                              "default": []
+                            },
+                            "placeholder": "$arrayItem2",
+                            "indexPlaceholder": "$index2",
+                            "rule": {
+                              "type": "and",
+                              "arguments": [
+                                {
+                                  "type": "comparison",
+                                  "operation": "equal",
+                                  "arguments": [
+                                    {
+                                      "type": "atom",
+                                      "path": "$index2"
+                                    },
+                                    {
+                                      "type": "atom",
+                                      "path": "$selfIndices./properties/arrayInArrayWithSelfRule/items/properties/internalArray"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "comparison",
+                                  "operation": "equal",
+                                  "arguments": [
+                                    {
+                                      "type": "atom",
+                                      "path": "$arrayItem2.boolean",
+                                      "default": false
+                                    },
+                                    true
+                                  ]
+                                }
+                              ]
+                            }
                           }
                         ]
                       }
