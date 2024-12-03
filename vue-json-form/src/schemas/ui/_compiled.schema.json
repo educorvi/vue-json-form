@@ -156,6 +156,24 @@
                         "type": "boolean",
                         "description": "Disables the field",
                         "default": false
+                      },
+                      "descendantControlOverrides": {
+                        "description": "Allows to override UI options and ShowOn for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.",
+                        "title": "Descendant Control Overrides",
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "object",
+                          "title": "Descendant Control Override",
+                          "properties": {
+                            "options": {
+                              "$ref": "#/properties/layout/properties/elements/items/oneOf/0/definitions/options"
+                            },
+                            "showOn": {
+                              "$ref": "#/properties/layout/properties/showOn"
+                            }
+                          },
+                          "additionalProperties": false
+                        }
                       }
                     }
                   },
@@ -411,21 +429,13 @@
                           "photo",
                           "webauthn"
                         ]
+                      },
+                      "range": {
+                        "type": "boolean",
+                        "description": "If set true, a range input will be shown instead of a text input",
+                        "default": false
                       }
                     }
-                  }
-                },
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "Control"
-                    ]
-                  },
-                  "scope": {
-                    "type": "string",
-                    "description": "A json pointer referring to the form element in the forms json schema",
-                    "format": "json-pointer"
                   },
                   "options": {
                     "type": "object",
@@ -687,50 +697,18 @@
                                   "photo",
                                   "webauthn"
                                 ]
+                              },
+                              "range": {
+                                "type": "boolean",
+                                "description": "If set true, a range input will be shown instead of a text input",
+                                "default": false
                               }
                             }
                           }
                         ]
                       },
                       {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "label": {
-                            "type": "boolean",
-                            "description": "Defines whether the fields label is shown",
-                            "default": true
-                          },
-                          "placeholder": {
-                            "type": "string",
-                            "description": "Will be shown as placeholder in form fields, if supported by field"
-                          },
-                          "cssClass": {
-                            "type": "string",
-                            "description": "The Controls CSS classes",
-                            "examples": [
-                              "bg-primary",
-                              "bg-info specialpart"
-                            ]
-                          },
-                          "hidden": {
-                            "type": "boolean",
-                            "description": "Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:\"$now\" to create a hidden timestamp."
-                          },
-                          "append": {
-                            "type": "string",
-                            "description": "Will be appended to field"
-                          },
-                          "prepend": {
-                            "type": "string",
-                            "description": "Will be prepended to field"
-                          },
-                          "disabled": {
-                            "type": "boolean",
-                            "description": "Disables the field",
-                            "default": false
-                          }
-                        }
+                        "$ref": "#/properties/layout/properties/elements/items/oneOf/0/definitions/controlFormattingOptions"
                       },
                       {
                         "title": "customOptions",
@@ -739,6 +717,22 @@
                         "additionalProperties": true
                       }
                     ]
+                  }
+                },
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "Control"
+                    ]
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "A json pointer referring to the form element in the forms json schema",
+                    "format": "json-pointer"
+                  },
+                  "options": {
+                    "$ref": "#/properties/layout/properties/elements/items/oneOf/0/definitions/options"
                   },
                   "showOn": {
                     "$ref": "#/properties/layout/properties/showOn"
@@ -987,10 +981,12 @@
               "type": "object",
               "description": "Legacy Variant of defining ShowOn property",
               "properties": {
-                "scope": {
+                "path": {
                   "type": "string",
-                  "format": "json-pointer",
-                  "description": "The field this field depends on"
+                  "description": "The field this field depends on in object notation",
+                  "examples": [
+                    "files[0].name"
+                  ]
                 },
                 "type": {
                   "type": "string",
@@ -1002,8 +998,7 @@
                     "GREATER",
                     "GREATER_OR_EQUAL",
                     "SMALLER_OR_EQUAL",
-                    "SMALLER",
-                    "LONGER"
+                    "SMALLER"
                   ]
                 },
                 "referenceValue": {
@@ -1023,7 +1018,7 @@
               },
               "required": [
                 "type",
-                "scope",
+                "path",
                 "referenceValue"
               ],
               "additionalProperties": false
@@ -1035,10 +1030,12 @@
               "type": "object",
               "description": "Legacy Variant of defining ShowOn property",
               "properties": {
-                "scope": {
+                "path": {
                   "type": "string",
-                  "format": "json-pointer",
-                  "description": "The field this field depends on"
+                  "description": "The field this field depends on in object notation",
+                  "examples": [
+                    "files[0].name"
+                  ]
                 },
                 "type": {
                   "type": "string",
@@ -1050,8 +1047,7 @@
                     "GREATER",
                     "GREATER_OR_EQUAL",
                     "SMALLER_OR_EQUAL",
-                    "SMALLER",
-                    "LONGER"
+                    "SMALLER"
                   ]
                 },
                 "referenceValue": {
@@ -1071,7 +1067,7 @@
               },
               "required": [
                 "type",
-                "scope",
+                "path",
                 "referenceValue"
               ],
               "additionalProperties": false
@@ -1176,6 +1172,26 @@
                           "type": "boolean",
                           "default": false,
                           "description": "Must be set to true if the atom should be parsed as a date"
+                        },
+                        "default": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            {
+                              "type": "array"
+                            }
+                          ]
                         }
                       },
                       "required": [
@@ -1258,6 +1274,11 @@
                           "type": "boolean",
                           "default": false
                         },
+                        "allowDifferentTypes": {
+                          "description": "Indicates if different types are allowed inside a comparison. This follows the JavaScript rules for comparison (´===´ is used for ´equals´).",
+                          "type": "boolean",
+                          "default": false
+                        },
                         "arguments": {
                           "type": "array",
                           "minItems": 2,
@@ -1284,6 +1305,26 @@
                                     "type": "boolean",
                                     "default": false,
                                     "description": "Must be set to true if the atom should be parsed as a date"
+                                  },
+                                  "default": {
+                                    "oneOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "number"
+                                      },
+                                      {
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      {
+                                        "type": "array"
+                                      }
+                                    ]
                                   }
                                 },
                                 "required": [
@@ -1351,6 +1392,26 @@
                                                 "type": "boolean",
                                                 "default": false,
                                                 "description": "Must be set to true if the atom should be parsed as a date"
+                                              },
+                                              "default": {
+                                                "oneOf": [
+                                                  {
+                                                    "type": "string"
+                                                  },
+                                                  {
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "type": "boolean"
+                                                  },
+                                                  {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                  },
+                                                  {
+                                                    "type": "array"
+                                                  }
+                                                ]
                                               }
                                             },
                                             "required": [
@@ -1448,6 +1509,26 @@
                                               "type": "boolean",
                                               "default": false,
                                               "description": "Must be set to true if the atom should be parsed as a date"
+                                            },
+                                            "default": {
+                                              "oneOf": [
+                                                {
+                                                  "type": "string"
+                                                },
+                                                {
+                                                  "type": "number"
+                                                },
+                                                {
+                                                  "type": "boolean"
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "format": "date-time"
+                                                },
+                                                {
+                                                  "type": "array"
+                                                }
+                                              ]
                                             }
                                           },
                                           "required": [
@@ -1515,6 +1596,26 @@
                                                           "type": "boolean",
                                                           "default": false,
                                                           "description": "Must be set to true if the atom should be parsed as a date"
+                                                        },
+                                                        "default": {
+                                                          "oneOf": [
+                                                            {
+                                                              "type": "string"
+                                                            },
+                                                            {
+                                                              "type": "number"
+                                                            },
+                                                            {
+                                                              "type": "boolean"
+                                                            },
+                                                            {
+                                                              "type": "string",
+                                                              "format": "date-time"
+                                                            },
+                                                            {
+                                                              "type": "array"
+                                                            }
+                                                          ]
                                                         }
                                                       },
                                                       "required": [
@@ -1620,6 +1721,26 @@
                                               "type": "boolean",
                                               "default": false,
                                               "description": "Must be set to true if the atom should be parsed as a date"
+                                            },
+                                            "default": {
+                                              "oneOf": [
+                                                {
+                                                  "type": "string"
+                                                },
+                                                {
+                                                  "type": "number"
+                                                },
+                                                {
+                                                  "type": "boolean"
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "format": "date-time"
+                                                },
+                                                {
+                                                  "type": "array"
+                                                }
+                                              ]
                                             }
                                           },
                                           "required": [
@@ -1687,6 +1808,26 @@
                                                           "type": "boolean",
                                                           "default": false,
                                                           "description": "Must be set to true if the atom should be parsed as a date"
+                                                        },
+                                                        "default": {
+                                                          "oneOf": [
+                                                            {
+                                                              "type": "string"
+                                                            },
+                                                            {
+                                                              "type": "number"
+                                                            },
+                                                            {
+                                                              "type": "boolean"
+                                                            },
+                                                            {
+                                                              "type": "string",
+                                                              "format": "date-time"
+                                                            },
+                                                            {
+                                                              "type": "array"
+                                                            }
+                                                          ]
                                                         }
                                                       },
                                                       "required": [
@@ -1850,6 +1991,26 @@
                                   "type": "boolean",
                                   "default": false,
                                   "description": "Must be set to true if the atom should be parsed as a date"
+                                },
+                                "default": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "boolean"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "format": "date-time"
+                                    },
+                                    {
+                                      "type": "array"
+                                    }
+                                  ]
                                 }
                               },
                               "required": [
@@ -1864,6 +2025,12 @@
                           "description": "This is a placeholder name for the current array object. This is the property name with wich you can reference the current value in the subsequent rule",
                           "type": "string",
                           "minLength": 1
+                        },
+                        "indexPlaceholder": {
+                          "description": "This is a placeholder name for the current index of the array object. This is the property name with wich you can reference the current index in the subsequent rule",
+                          "type": "string",
+                          "minLength": 1,
+                          "default": "index"
                         },
                         "rule": {
                           "$ref": "#/properties/layout/properties/showOn/oneOf/1/properties/rule"

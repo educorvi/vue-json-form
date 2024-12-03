@@ -75,7 +75,9 @@
               {
                 "type": "Control",
                 "scope": "/properties/rating",
-                "options": {}
+                "options": {
+                  "range": true
+                }
               }
             ]
           },

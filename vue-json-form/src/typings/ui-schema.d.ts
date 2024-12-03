@@ -279,6 +279,10 @@ export interface InputOptions {
     | "url"
     | "photo"
     | "webauthn";
+  /**
+   * If set true, a range input will be shown instead of a text input
+   */
+  range?: boolean;
 }
 export interface ControlFormattingOptions {
   /**
@@ -494,6 +498,10 @@ export interface Quantifier {
    * This is a placeholder name for the current array object. This is the property name with wich you can reference the current value in the subsequent rule
    */
   placeholder: string;
+  /**
+   * This is a placeholder name for the current index of the array object. This is the property name with wich you can reference the current index in the subsequent rule
+   */
+  indexPlaceholder?: string;
   rule: Formula;
 }
 /**

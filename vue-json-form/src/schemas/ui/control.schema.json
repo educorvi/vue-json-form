@@ -276,6 +276,11 @@
         },
         "autocomplete": {
           "$ref": "#/definitions/autocompleteValues"
+        },
+        "range": {
+          "type": "boolean",
+          "description": "If set true, a range input will be shown instead of a text input",
+          "default": false
         }
       }
     },
