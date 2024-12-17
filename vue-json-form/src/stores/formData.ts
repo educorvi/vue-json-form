@@ -153,7 +153,10 @@ function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
                         arrayIndices.set(element, index);
                     }
                 });
-                if (!value.filter((e) => isArrayItemKey(e)).length) {
+                if (
+                    !value.filter((e) => isArrayItemKey(e)).length &&
+                    value.length > 0
+                ) {
                     scopes[key] = [...value];
                 }
             }

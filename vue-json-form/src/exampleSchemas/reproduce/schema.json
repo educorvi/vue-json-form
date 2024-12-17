@@ -2,6 +2,32 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "array141d1d356e40b4062ac2b1476ff52648c": {
+      "type": "array",
+      "title": "array1",
+      "items": {
+        "type": "object",
+        "properties": {
+          "array1513e3f3ba4e27453ba38d3008d6a99df6": {
+            "type": "array",
+            "title": "array1.5",
+            "items": {
+              "type": "object",
+              "properties": {
+                "boolean15eccd75d78e384400b25c8714f585b198": {
+                  "title": "boolean1.5",
+                  "type": "boolean"
+                },
+                "feld151673e20935e64062b171bbe7e27de96d": {
+                  "title": "feld1.5",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "arrayWithDefaults": {
       "type": "array",
       "items": {
