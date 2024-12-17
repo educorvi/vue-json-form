@@ -101,17 +101,25 @@ export function getComputedJsonElement(scope: string, failSilently = false) {
             ),
             '/items'
         );
+        let data: CoreSchemaMetaSchema | null = null;
         try {
-            return jsonPointer.get(
+            data = jsonPointer.get(
                 jsonSchema.value || {},
                 internal_scope
-            ) as CoreSchemaMetaSchema;
+            ) as CoreSchemaMetaSchema | null;
         } catch (e) {
             if (!failSilently) {
                 console.error('invalid json pointer', internal_scope, e);
             }
             return null;
         }
+        if (!data) {
+            if (!failSilently) {
+                console.error('No data under scope ' + scope);
+            }
+            return null;
+        }
+        return data;
     });
 }
 

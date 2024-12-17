@@ -7,6 +7,101 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-34"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/array141d1d356e40b4062ac2b1476ff52648c",
+            "options": {
+              "descendantControlOverrides": {
+                "/properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6/items/properties/feld151673e20935e64062b171bbe7e27de96d": {
+                  "showOn": {
+                    "id": "ritaRule-feld151673e20935e64062b171bbe7e27de96d",
+                    "rule": {
+                      "type": "exists",
+                      "array": {
+                        "type": "atom",
+                        "path": "array141d1d356e40b4062ac2b1476ff52648c",
+                        "default": []
+                      },
+                      "placeholder": "$array_item1",
+                      "indexPlaceholder": "$index1",
+                      "rule": {
+                        "type": "and",
+                        "arguments": [
+                          {
+                            "type": "comparison",
+                            "operation": "equal",
+                            "arguments": [
+                              {
+                                "type": "atom",
+                                "path": "$index1",
+                                "default": -1
+                              },
+                              {
+                                "type": "atom",
+                                "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c",
+                                "default": -1
+                              }
+                            ]
+                          },
+                          {
+                            "type": "exists",
+                            "array": {
+                              "type": "atom",
+                              "path": "$array_item1.array1513e3f3ba4e27453ba38d3008d6a99df6",
+                              "default": []
+                            },
+                            "placeholder": "$array_item2",
+                            "indexPlaceholder": "$index2",
+                            "rule": {
+                              "type": "and",
+                              "arguments": [
+                                {
+                                  "type": "comparison",
+                                  "operation": "equal",
+                                  "arguments": [
+                                    {
+                                      "type": "atom",
+                                      "path": "$index2",
+                                      "default": -1
+                                    },
+                                    {
+                                      "type": "atom",
+                                      "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6",
+                                      "default": -1
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "comparison",
+                                  "operation": "equal",
+                                  "arguments": [
+                                    {
+                                      "type": "atom",
+                                      "path": "$array_item2.boolean15eccd75d78e384400b25c8714f585b198",
+                                      "default": false
+                                    },
+                                    true
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-17"
         },
         "elements": [
@@ -402,7 +497,8 @@
                 "type": "exists",
                 "array": {
                   "type": "atom",
-                  "path": "checkboxen8c9fa56d35c449f484fc4426386a4ae6"
+                  "path": "checkboxen8c9fa56d35c449f484fc4426386a4ae6",
+                  "default": []
                 },
                 "placeholder": "current_option",
                 "rule": {

@@ -46,6 +46,22 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="UI Schema">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="UI Schema" />
+              <option name="relativePathToSchema" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="vue-json-form/src/exampleSchemas/reproduce/ui.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
       </map>
     </state>
   </component>
