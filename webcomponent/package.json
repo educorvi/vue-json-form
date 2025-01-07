@@ -2,11 +2,9 @@
   "name": "@educorvi/vue-json-form-webcomponent",
   "version": "0.0.0",
   "description": "Vue JSON Form Webcomponent",
-  "main": "dist/index.js",
+  "main": "dist/vue-json-form.umd.js",
   "scripts": {
-    "build": "vue-tsc --noEmit && run-p 'build:**'",
-    "build:bootstrap": "vite build",
-    "build:fiverules": "vite -c vite.fiverules.config.ts build",
+    "build": "vue-tsc --noEmit && vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

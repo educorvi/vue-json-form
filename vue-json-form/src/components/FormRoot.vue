@@ -75,7 +75,6 @@ import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
 import {
     createPinia,
     getActivePinia,
-    type Pinia,
     setActivePinia,
     storeToRefs,
 } from 'pinia';
