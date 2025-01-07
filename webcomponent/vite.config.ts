@@ -24,7 +24,7 @@ export default defineConfig({
     outDir: "dist",
   },
   define: {
-    // "process.env.NODE_ENV": JSON.stringify("production"),
-    "process.env.NODE_ENV": JSON.stringify("development"),
+    "process.env.NODE_ENV": JSON.stringify("production"),
+    // "process.env.NODE_ENV": JSON.stringify("development"),
   },
 });
