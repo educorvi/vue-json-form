@@ -6,9 +6,6 @@ import {
 import { computed, type ComputedRef } from "vue";
 import { oneOfToEnum } from "@educorvi/vue-json-form/src/MapperFunctions/oneOfToEnum";
 import type { MapperFunction } from "@educorvi/vue-json-form/src/typings/customTypes";
-import { createPinia, setActivePinia } from "pinia";
-
-setActivePinia(createPinia());
 
 const props = defineProps<{
   /**

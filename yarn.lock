@@ -520,7 +520,6 @@ __metadata:
     "@vueuse/core": "npm:^10.9.0"
     bootstrap: "npm:^5.3.3"
     npm-run-all: "npm:^4.1.5"
-    pinia: "npm:^2.1.7"
     sass: "npm:^1.77.0"
     terser: "npm:^5.31.0"
     vite: "npm:^5.4.11"
@@ -7805,25 +7804,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/682d16659375f6c11eb18533ce012af1c9c14a927eb9146f226d893444c69ab7d9cedcf7bd09a17c7a99b99be1fa314a7d923695291ad63dd934a5a13ec9a3a7
-  languageName: node
-  linkType: hard
-
-"pinia@npm:^2.1.7":
-  version: 2.1.7
-  resolution: "pinia@npm:2.1.7"
-  dependencies:
-    "@vue/devtools-api": "npm:^6.5.0"
-    vue-demi: "npm:>=0.14.5"
-  peerDependencies:
-    "@vue/composition-api": ^1.4.0
-    typescript: ">=4.4.4"
-    vue: ^2.6.14 || ^3.3.0
-  peerDependenciesMeta:
-    "@vue/composition-api":
-      optional: true
-    typescript:
-      optional: true
-  checksum: 10/e8426e01b127610c96069ae04a68a57569596611816f24d2baa50a03cb2bf773c5b794280063cce53501ad6ad75e419bfd9dc7b45c05014f78fb0b3421dbb7b0
   languageName: node
   linkType: hard
 
