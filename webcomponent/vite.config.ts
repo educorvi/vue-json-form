@@ -1,28 +1,30 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
-    plugins: [
-        vue({
-            template: {
-                compilerOptions: {
-                    isCustomElement: (tag) => tag.includes('vue-json-form'),
-                },
-            },
-        }),
-    ],
-    build: {
-        sourcemap: true,
-        minify: 'terser',
-        lib: {
-            entry: './src/main.ce.ts',
-            name: 'vue-json-form',
-            // the proper extensions will be added
-            fileName: 'vue-json-form',
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.includes("vue-json-form"),
         },
-        outDir: 'dist/bootstrap',
+      },
+    }),
+  ],
+  build: {
+    sourcemap: true,
+    minify: "terser",
+    lib: {
+      entry: "./src/main.ce.ts",
+      name: "vue-json-form",
+      // the proper extensions will be added
+      fileName: "vue-json-form",
+      formats: ["umd"],
     },
-    define: {
-        'process.env.NODE_ENV': JSON.stringify('production'),
-    },
+    outDir: "dist",
+  },
+  define: {
+    // "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env.NODE_ENV": JSON.stringify("development"),
+  },
 });

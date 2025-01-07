@@ -17,9 +17,10 @@
     "src/exampleSchemas",
     "src"
   ],
-  "main": "dist/vue-json-form.umd.js",
-  "module": "dist/vue-json-form.mjs",
+  "main": "dist/vue-json-form.umd.cjs",
+  "module": "dist/vue-json-form.js",
   "types": "dist/vue-json-form.d.ts",
+  "type": "module",
   "scripts": {
     "prepack": "yarn run build",
     "release:alpha": "yarn npm publish --access public --tag alpha",

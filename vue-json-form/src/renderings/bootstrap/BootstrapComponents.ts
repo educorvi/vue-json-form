@@ -1,6 +1,7 @@
 import type { RenderInterface } from '@/RenderInterface';
 import { defineAsyncComponent } from 'vue';
 import './styling.scss';
+import 'bootstrap-vue-next/src/styles/styles.scss';
 
 export const bootstrapComponents: Required<RenderInterface> = {
     showOnWrapper: defineAsyncComponent(
