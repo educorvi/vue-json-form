@@ -178,3 +178,25 @@ describe('Structure', () => {
         cy.get('button[type="reset"]').should('exist');
     });
 });
+
+describe('Button functions', () => {
+    beforeEach(() => {
+        cy.visit('http://localhost:5173/');
+    });
+
+    it('submit with missing fields', () => {
+        cy.get('#vjf_control_for__properties_name').type('Test User');
+        cy.get('button[type="submit"]:not([formnovalidate])').click();
+        cy.get('#result-container').contains('{}');
+    });
+    it('submit with missing fields and novalidate', () => {
+        cy.get('#vjf_control_for__properties_name').type('Test User');
+        cy.get('button[type="submit"][formnovalidate]').click();
+        cy.get('#result-container').contains('Test User');
+    });
+    it('reset form', () => {
+        cy.get('#vjf_control_for__properties_name').type('Test User');
+        cy.get('button[type="reset"]').click();
+        cy.get('#vjf_control_for__properties_name').should('have.value', '');
+    });
+});
