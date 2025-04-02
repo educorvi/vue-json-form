@@ -243,6 +243,15 @@
           },
           {
             "type": "Button",
+            "buttonType": "submit",
+            "text": "Submit without validation",
+            "options": {
+              "variant": "warning",
+              "formnovalidate": true
+            }
+          },
+          {
+            "type": "Button",
             "buttonType": "reset",
             "text": "Reset this form",
             "options": {

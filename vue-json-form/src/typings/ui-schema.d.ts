@@ -533,19 +533,22 @@ export interface Button {
   buttonType: TheButtonsType;
   text: Text;
   showOn?: ShowOnProperty;
-  options?: Options1;
+  options?: ButtonOptions;
 }
 /**
  * Options for the button
  */
-export interface Options1 {
+export interface ButtonOptions {
   /**
    * The layout's CSS classes
    */
   cssClass?: string;
   variant?: ColorVariant;
+  /**
+   * Specifies that the form-data should not be validated on submission
+   */
+  formnovalidate?: boolean;
   nativeSubmitOptions?: NativeSubmitSettings;
-  [k: string]: unknown;
 }
 /**
  * Settings that can be used if native form submit is used

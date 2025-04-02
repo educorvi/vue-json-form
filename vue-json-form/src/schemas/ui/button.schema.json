@@ -25,8 +25,9 @@
         },
         "options": {
             "type": "object",
-            "title": "Options",
+            "title": "Button Options",
             "description": "Options for the button",
+            "additionalProperties": false,
             "properties": {
                 "cssClass": {
                     "type": "string",
@@ -34,6 +35,11 @@
                 },
                 "variant": {
                     "$ref": "variants.schema.json"
+                },
+                "formnovalidate": {
+                    "type": "boolean",
+                    "description": "Specifies that the form-data should not be validated on submission",
+                    "default": false
                 },
                 "nativeSubmitOptions": {
                     "type": "object",

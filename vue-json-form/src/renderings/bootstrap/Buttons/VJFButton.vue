@@ -17,10 +17,13 @@ const cssClass = computedCssClass(props.layoutElement);
         :variant="layoutElement.options?.variant"
         :type="layoutElement.buttonType"
         :class="cssClass"
-        :formaction="layoutElement.options?.formaction"
-        :formmethod="layoutElement.options?.formmethod"
-        :formtarget="layoutElement.options?.formtarget"
-        :formenctype="layoutElement.options?.formenctype"
+        :formaction="layoutElement.options?.nativeSubmitOptions?.formaction"
+        :formmethod="layoutElement.options?.nativeSubmitOptions?.formmethod"
+        :formtarget="layoutElement.options?.nativeSubmitOptions?.formtarget"
+        :formenctype="layoutElement.options?.nativeSubmitOptions?.formenctype"
+        :formnovalidate="
+            layoutElement.options?.formnovalidate ? 'formnovalidate' : undefined
+        "
         >{{ layoutElement.text }}</b-button
     >
 </template>
