@@ -187,16 +187,118 @@ describe('Button functions', () => {
     it('submit with missing fields', () => {
         cy.get('#vjf_control_for__properties_name').type('Test User');
         cy.get('button[type="submit"]:not([formnovalidate])').click();
-        cy.get('#result-container').contains('{}');
+        cy.get('#result-container').then(($el) => {
+            const rawText = $el.text();
+            const json = JSON.parse(rawText);
+
+            expect(json).to.deep.equal({});
+        });
     });
     it('submit with missing fields and novalidate', () => {
         cy.get('#vjf_control_for__properties_name').type('Test User');
         cy.get('button[type="submit"][formnovalidate]').click();
-        cy.get('#result-container').contains('Test User');
+        cy.get('#result-container').then(($el) => {
+            const rawText = $el.text();
+            const json = JSON.parse(rawText);
+
+            expect(json['name']).to.equal('Test User');
+        });
     });
     it('reset form', () => {
         cy.get('#vjf_control_for__properties_name').type('Test User');
         cy.get('button[type="reset"]').click();
         cy.get('#vjf_control_for__properties_name').should('have.value', '');
+    });
+
+    it('submit with data (group)', function () {
+        cy.get('#vjf_control_for__properties_done').check();
+        cy.get('#vjf_control_for__properties_title').select('Mr.');
+        cy.get('#vjf_control_for__properties_name').type('Test User 2');
+        cy.get('#vjf_control_for__properties_fanciness input').eq(3).check();
+        cy.get('#vjf_control_for__properties_due_date').type(
+            '2000-12-11T14:24'
+        );
+        cy.get('#vjf_control_for__properties_description').click();
+        cy.get('#vjf_control_for__properties_teststring').type('test');
+        cy.get('#vjf_control_for__properties_weekdays input').eq(0).check();
+        cy.get('#vjf_control_for__properties_weekdays input').eq(4).check();
+        cy.get('#vjf_control_for__properties_recurrence_interval').type('4');
+        cy.get('#vjf_control_for__properties_testArray input')
+            .eq(0)
+            .type('Hello');
+        cy.get('#vjf_control_for__properties_testArray input')
+            .eq(1)
+            .type('World');
+        cy.get(
+            '#vjf_control_for__properties_testArray > .btn-outline-primary'
+        ).click();
+        cy.get('#vjf_control_for__properties_testArray input')
+            .eq(2)
+            .type('I am third!');
+        cy.get('.btn-primary').click();
+
+        cy.get('#result-container').then(($el) => {
+            const rawText = $el.text();
+            const json = JSON.parse(rawText);
+
+            expect(json['done']).to.equal(true);
+            expect(json['title']).to.equal('Mr.');
+            expect(json['name']).to.equal('Test User 2');
+            expect(json['fanciness']).to.equal('unicorn');
+            expect(json['due_date']).to.equal('2000-12-11T14:24');
+            expect(json['description']).to.equal(
+                'This good text was set as default'
+            );
+            expect(json['teststring']).to.equal('test');
+            expect(json['weekdays']).to.deep.equal(['Monday', 'Friday']);
+            expect(json['recurrence_interval']).to.equal(4);
+            expect(json['testArray']).to.deep.equal([
+                'Hello',
+                'World',
+                'I am third!',
+            ]);
+        });
+    });
+
+    it('submit with data (object)', function () {
+        cy.get('#vjf_control_for__properties_done').check();
+        cy.get('#vjf_control_for__properties_title').select('Mr.');
+        cy.get('#vjf_control_for__properties_name').type('Test User 2');
+        cy.get('#vjf_control_for__properties_fanciness input').eq(3).check();
+
+        cy.get('#vjf_control_for__properties_group_selector label')
+            .eq(1)
+            .click();
+
+        cy.get(
+            '#vjf_control_for__properties_testObject_properties_petName'
+        ).type('Richie');
+        cy.get(
+            '#vjf_control_for__properties_testObject_properties_age'
+        ).clear();
+        cy.get('#vjf_control_for__properties_testObject_properties_age').type(
+            '15'
+        );
+        cy.get(
+            '#vjf_control_for__properties_testObject_properties_flauschig'
+        ).check();
+
+        cy.get('.btn-primary').click();
+
+        cy.get('#result-container').then(($el) => {
+            const rawText = $el.text();
+            const json = JSON.parse(rawText);
+
+            expect(json['done']).to.equal(true);
+            expect(json['title']).to.equal('Mr.');
+            expect(json['name']).to.equal('Test User 2');
+            expect(json['fanciness']).to.equal('unicorn');
+
+            expect(json['testObject']).to.deep.equal({
+                petName: 'Richie',
+                age: 15,
+                flauschig: true,
+            });
+        });
     });
 });
