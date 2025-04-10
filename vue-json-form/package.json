@@ -5,7 +5,7 @@
     "name": "Julian Pollinger"
   },
   "license": "MIT",
-  "version": "3.0.0-alpha.8",
+  "version": "3.0.0-alpha.9",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/educorvi/vue-json-form",
