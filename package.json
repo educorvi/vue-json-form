@@ -15,7 +15,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "doc": "typedoc --out ./docs/ui-schema vue-json-form/src/typings/ui-schema.d.ts",
+    "doc": "rm -r ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc vue-json-form/src/schemas/ui/_compiled.schema.json ./docs/ui-schema/index.html",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
     "build": "yarn workspaces foreach -Aptv run build",
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",

@@ -265,6 +265,7 @@ npm run zip
 ```
 npm run doc
 ```
+Needs python package `json-schema-for-humans`
 
 ### Removes all build-folders
 

@@ -12,27 +12,7 @@ export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button |
 /**
  * Gives multiple options to configure the element
  */
-export type Options = (
-  | TagsOptions
-  | (CommonEnumOptions &
-      (
-        | {
-            /**
-             * Choose how an enum should be displayed
-             */
-            displayAs?: "select" | "radiobuttons" | "switches";
-          }
-        | {
-            /**
-             * Choose how an enum should be displayed
-             */
-            displayAs: "buttons";
-            buttonVariant?: ColorVariant;
-          }
-      ))
-  | FileUploadOptions
-  | InputOptions
-) &
+export type Options = (TagOptions | EnumOptions | FileUploadOptions | InputOptions) &
   ControlFormattingOptions &
   CustomOptions;
 /**
@@ -55,6 +35,21 @@ export type ColorVariant =
   | "outline-info"
   | "outline-light"
   | "outline-dark";
+export type EnumOptions = CommonEnumOptions & DisplayAs;
+export type DisplayAs =
+  | {
+      /**
+       * Choose how an enum should be displayed
+       */
+      displayAs?: "select" | "radiobuttons" | "switches";
+    }
+  | {
+      /**
+       * Choose how an enum should be displayed
+       */
+      displayAs: "buttons";
+      buttonVariant: ColorVariant;
+    };
 /**
  * Show field depending on value of other field
  */
@@ -153,7 +148,7 @@ export interface Control {
   options?: Options;
   showOn?: ShowOnProperty;
 }
-export interface TagsOptions {
+export interface TagOptions {
   /**
    * Will be rendered as tags-Field
    */

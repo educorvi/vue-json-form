@@ -1,11 +1,10 @@
 import type {
-    Button,
     Control,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
     ShowOnProperty,
-    TagsOptions,
+    TagOptions,
     TitlesForEnum,
 } from '@/typings/ui-schema';
 import type {
@@ -45,7 +44,7 @@ export function hasElements(
  */
 export function isTagsConfig(
     options: Options | undefined
-): options is TagsOptions & Options {
+): options is TagOptions & Options {
     return 'tags' in (options || {});
 }
 

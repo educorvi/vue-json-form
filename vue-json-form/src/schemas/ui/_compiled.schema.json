@@ -177,8 +177,9 @@
                       }
                     }
                   },
-                  "tagsOptions": {
+                  "tagOptions": {
                     "type": "object",
+                    "title": "Tag Options",
                     "additionalProperties": false,
                     "properties": {
                       "tags": {
@@ -223,6 +224,7 @@
                     }
                   },
                   "enumOptions": {
+                    "title": "Enum Options",
                     "allOf": [
                       {
                         "title": "Common Enum Options",
@@ -252,6 +254,7 @@
                         }
                       },
                       {
+                        "title": "Display As",
                         "oneOf": [
                           {
                             "type": "object",
@@ -273,7 +276,8 @@
                             "type": "object",
                             "additionalProperties": false,
                             "required": [
-                              "displayAs"
+                              "displayAs",
+                              "buttonVariant"
                             ],
                             "properties": {
                               "displayAs": {
@@ -314,6 +318,7 @@
                     ]
                   },
                   "fileUploadOptions": {
+                    "title": "File Upload Options",
                     "type": "object",
                     "additionalProperties": false,
                     "properties": {
@@ -333,6 +338,7 @@
                     }
                   },
                   "inputOptions": {
+                    "title": "Input Options",
                     "type": "object",
                     "additionalProperties": false,
                     "description": "Options for text fields",
@@ -447,6 +453,7 @@
                         "oneOf": [
                           {
                             "type": "object",
+                            "title": "Tag Options",
                             "additionalProperties": false,
                             "properties": {
                               "tags": {
@@ -491,6 +498,7 @@
                             }
                           },
                           {
+                            "title": "Enum Options",
                             "allOf": [
                               {
                                 "title": "Common Enum Options",
@@ -520,6 +528,7 @@
                                 }
                               },
                               {
+                                "title": "Display As",
                                 "oneOf": [
                                   {
                                     "type": "object",
@@ -541,7 +550,8 @@
                                     "type": "object",
                                     "additionalProperties": false,
                                     "required": [
-                                      "displayAs"
+                                      "displayAs",
+                                      "buttonVariant"
                                     ],
                                     "properties": {
                                       "displayAs": {
@@ -582,6 +592,7 @@
                             ]
                           },
                           {
+                            "title": "File Upload Options",
                             "type": "object",
                             "additionalProperties": false,
                             "properties": {
@@ -601,6 +612,7 @@
                             }
                           },
                           {
+                            "title": "Input Options",
                             "type": "object",
                             "additionalProperties": false,
                             "description": "Options for text fields",
@@ -846,8 +858,9 @@
                   },
                   "options": {
                     "type": "object",
-                    "title": "Options",
+                    "title": "Button Options",
                     "description": "Options for the button",
+                    "additionalProperties": false,
                     "properties": {
                       "cssClass": {
                         "type": "string",
@@ -876,6 +889,11 @@
                           "outline-light",
                           "outline-dark"
                         ]
+                      },
+                      "formnovalidate": {
+                        "type": "boolean",
+                        "description": "Specifies that the form-data should not be validated on submission",
+                        "default": false
                       },
                       "nativeSubmitOptions": {
                         "type": "object",
