@@ -6,7 +6,7 @@
 
 - Scopes output changed format for arrays. Now arrays are returned as `"../array-name[i]": "value"`, where `i` is the
   index.
-- Do NOT use `[` or `]` in names for a field.
+- Do NOT use `.`,`[` or `]` in names for a field.
 
 ### Root Schema
 

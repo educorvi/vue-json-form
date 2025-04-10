@@ -20,17 +20,15 @@ const step = computed(() => {
 </script>
 
 <template>
-    <div>
-        <b-form-input
-            v-model.number="formData[savePath]"
-            class="vjf_input"
-            :id="id"
-            :step="step"
-            :min="jsonElement.minimum"
-            :max="jsonElement.maximum"
-            :type="layoutElement.options?.range ? 'range' : 'number'"
-        />
-    </div>
+    <b-form-input
+        v-model.number="formData[savePath]"
+        class="vjf_input"
+        :id="id"
+        :step="step"
+        :min="jsonElement.minimum"
+        :max="jsonElement.maximum"
+        :type="layoutElement.options?.range ? 'range' : 'number'"
+    />
 </template>
 
 <style scoped></style>

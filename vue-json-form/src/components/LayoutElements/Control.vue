@@ -18,7 +18,6 @@
                 :autocomplete="
                     formStructureMapped.uiElement.options?.autocomplete || 'on'
                 "
-                :type="type"
                 :required="required"
             />
             <template #append v-if="$slots.append">
@@ -83,22 +82,6 @@ const props = defineProps<{
 }>();
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
-
-const type = computed(() => {
-    if (jsonElement.value?.type === 'string') {
-        return (
-            props.layoutElement.options?.format ||
-            jsonElement.value.format?.replace('date-time', 'datetime-local')
-        );
-    }
-    if (
-        jsonElement.value?.type === 'number' ||
-        jsonElement.value?.type === 'integer'
-    ) {
-        return 'number';
-    }
-    return undefined;
-});
 
 const { formData, defaultFormData } = storeToRefs(useFormDataStore());
 

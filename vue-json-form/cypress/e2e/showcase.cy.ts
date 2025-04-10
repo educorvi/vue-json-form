@@ -106,12 +106,7 @@ describe('Structure', () => {
             cy.get(id).should('exist');
             cy.get(id).should('have.attr', 'type', 'number');
             cy.get(id).should('have.attr', 'step', '1');
-            cy.get(id)
-                .parent()
-                .parent()
-                .siblings()
-                .eq(0)
-                .should('have.text', 'Weeks');
+            cy.get(id).siblings().eq(0).should('have.text', 'Weeks');
         });
         it('TestArray', () => {
             const id = 'div[name="/properties/testArray"]';

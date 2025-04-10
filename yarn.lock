@@ -548,7 +548,7 @@ __metadata:
     "@vueuse/core": "npm:^10.9.0"
     axe-core: "npm:^4.10.2"
     bootstrap: "npm:^5.3.3"
-    bootstrap-vue-next: "npm:0.26.7"
+    bootstrap-vue-next: "npm:0.28.5"
     buffer: "npm:^6.0.3"
     cypress: "npm:^14.2.1"
     cypress-axe: "npm:^1.6.0"
@@ -2970,12 +2970,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.26.7":
-  version: 0.26.7
-  resolution: "bootstrap-vue-next@npm:0.26.7"
+"bootstrap-vue-next@npm:0.28.5":
+  version: 0.28.5
+  resolution: "bootstrap-vue-next@npm:0.28.5"
   peerDependencies:
+    "@floating-ui/vue": "*"
+    "@vueuse/core": "*"
     vue: ^3.5.13
-  checksum: 10/6d6fce508ab5aba203055ec9cfbebeddfef9e26b3793d9c316e6f9c49c27f8dcb708cd82f05248b0acc6e16028cc3f675973610b60077273c5c80fe097da76d9
+    vue-router: "*"
+  peerDependenciesMeta:
+    "@floating-ui/vue":
+      optional: true
+    "@vueuse/core":
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10/f809d5540e2dfbc99ffdbd22d11f0f45c121ea2cf1dc3fc62d8870c87dd6467df22ae56d2414bc68f219ac6ba31b4958dc6eaba7801e01876cdeed673074a886
   languageName: node
   linkType: hard
 

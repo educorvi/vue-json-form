@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BFormCheckboxGroup, BFormRadioGroup } from 'bootstrap-vue-next';
+import { BFormCheckboxGroup } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';

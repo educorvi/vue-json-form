@@ -14,15 +14,9 @@ const label = computedLabel(layoutElement);
 </script>
 
 <template>
-    <div>
-        <BFormCheckbox
-            v-model="formData[savePath]"
-            class="vjf_checkbox"
-            :id="id"
-        >
-            {{ label }}
-        </BFormCheckbox>
-    </div>
+    <BFormCheckbox v-model="formData[savePath]" class="vjf_checkbox" :id="id">
+        {{ label }}
+    </BFormCheckbox>
 </template>
 
 <style scoped></style>

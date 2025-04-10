@@ -27,17 +27,13 @@ const hideLabel = computed(() => {
 
 const slots = useSlots();
 
-const additionalMainClasses = computed(() => {
-    const classes = ['vjf_input-group-main-div'];
-
-    if (slots.prepend) {
-        classes.push('vjf_input-group-main-div-prepend');
-    }
-    if (slots.append) {
-        classes.push('vjf_input-group-main-div-append');
-    }
-
-    return classes.join(' ');
+const hasPrependOrAppend = computed(() => {
+    return (
+        slots.prepend ||
+        slots.append ||
+        layoutElement.options?.prepend ||
+        layoutElement.options?.append
+    );
 });
 </script>
 
@@ -47,67 +43,26 @@ const additionalMainClasses = computed(() => {
         :label-for="props.labelFor"
         :description="jsonElement.description"
     >
-        <BInputGroup
-            class="w-100"
-            :prepend="layoutElement.options?.prepend"
-            :append="layoutElement.options?.append"
-        >
+        <BInputGroup v-if="hasPrependOrAppend">
             <!--        Content is prepended to the input field-->
-            <slot name="prepend"></slot>
+            <slot name="prepend">
+                <BInputGroupText v-if="layoutElement.options?.prepend">
+                    {{ layoutElement.options.prepend }}
+                </BInputGroupText>
+            </slot>
 
-            <div :class="additionalMainClasses">
-                <slot />
-            </div>
+            <slot />
             <!--        Content is appended to the input field-->
-            <slot name="append" />
+            <slot name="append">
+                <BInputGroupText v-if="layoutElement.options?.append">
+                    {{ layoutElement.options.append }}
+                </BInputGroupText>
+            </slot>
         </BInputGroup>
+        <div v-else>
+            <slot />
+        </div>
     </BFormGroup>
 </template>
 
-<style lang="scss">
-.vjf_input-group-main-div {
-    flex: 1;
-    margin: 0;
-    width: 100%;
-}
-
-.vjf_input-group-main-div > * {
-    //border-radius: inherit;
-    height: 100%;
-}
-
-.vjf_input-group-main-div > * > fieldset {
-    margin-bottom: 0;
-
-    padding-top: 5px;
-    //padding-bottom: 5px;
-
-    & > legend {
-        margin-top: 0 !important;
-    }
-}
-
-.vjf_input-group-main-div > .vjf_object {
-    padding-left: 6px;
-    padding-right: 6px;
-}
-
-.vjf_input-group-main-div-prepend > * {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-
-    border-top: var(--bs-border-width) solid var(--bs-border-color);
-    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
-
-    & > fieldset > .vjf_verticalLayout {
-        border-left: none !important;
-        padding-left: 0 !important;
-        margin-left: 0 !important;
-    }
-}
-
-.vjf_input-group-main-div-append > * {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-</style>
+<style lang="scss"></style>
