@@ -278,6 +278,10 @@ export interface InputOptions {
    * If set true, a range input will be shown instead of a text input
    */
   range?: boolean;
+  /**
+   * Set the text-align of input fields
+   */
+  textAlign?: "left" | "right" | "center" | "start" | "end";
 }
 export interface ControlFormattingOptions {
   /**

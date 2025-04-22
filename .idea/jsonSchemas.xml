@@ -51,7 +51,8 @@
             <SchemaInfo>
               <option name="generatedName" value="New Schema" />
               <option name="name" value="UI Schema" />
-              <option name="relativePathToSchema" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
+              <option name="relativePathToSchema" value="vue-json-form/src/schemas/ui/ui.schema.json" />
+              <option name="schemaVersion" value="JSON Schema 201,909" />
               <option name="patterns">
                 <list>
                   <Item>

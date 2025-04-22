@@ -15,6 +15,7 @@ import type {
     elementWithElements,
 } from '@/typings/customTypes';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type { InputType } from 'bootstrap-vue-next';
 
 /**
  * Checks if the given element is dependent on another element
@@ -120,4 +121,25 @@ export function hasEnumTitlesOptions(layout: Control): layout is Control & {
         'enumTitles' in layout.options &&
         layout.options.enumTitles !== undefined
     );
+}
+
+export function isInputType(value: any): value is InputType {
+    const validInputTypes: InputType[] = [
+        'text',
+        'number',
+        'email',
+        'password',
+        'search',
+        'url',
+        'tel',
+        'date',
+        'time',
+        'range',
+        'color',
+        'datetime',
+        'datetime-local',
+        'month',
+        'week',
+    ];
+    return validInputTypes.includes(value);
 }

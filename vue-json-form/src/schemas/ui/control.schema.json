@@ -288,6 +288,17 @@
           "type": "boolean",
           "description": "If set true, a range input will be shown instead of a text input",
           "default": false
+        },
+        "textAlign": {
+          "type": "string",
+          "description": "Set the text-align of input fields",
+          "enum": [
+            "left",
+            "right",
+            "center",
+            "start",
+            "end"
+          ]
         }
       }
     },

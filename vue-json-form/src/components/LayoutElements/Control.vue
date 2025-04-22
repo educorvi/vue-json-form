@@ -19,6 +19,7 @@
                     formStructureMapped.uiElement.options?.autocomplete || 'on'
                 "
                 :required="required"
+                :style="style"
             />
             <template #append v-if="$slots.append">
                 <slot name="append" />
@@ -66,7 +67,7 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
-import { isTagsConfig } from '@/typings/typeValidators';
+import { isInputType, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 
 const { jsonSchema, mappers, arrays } = storeToRefs(useFormStructureStore());
@@ -115,6 +116,17 @@ const required = getComputedRequired(formStructureMapped.value.uiElement);
 let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
     ? 'hiddenControl'
     : '';
+
+const style = computed(() => {
+    if (
+        props.layoutElement.options &&
+        'textAlign' in props.layoutElement.options &&
+        props.layoutElement.options.textAlign
+    ) {
+        return `text-align: ${props.layoutElement.options.textAlign}`;
+    }
+    return undefined;
+});
 
 const cssClass = computedCssClass(
     formStructureMapped.value.uiElement,

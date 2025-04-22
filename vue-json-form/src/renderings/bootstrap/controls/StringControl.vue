@@ -4,25 +4,30 @@ import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
-import { BFormInput, BFormTextarea } from 'bootstrap-vue-next';
-import { computed } from 'vue';
+import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
+import { computed, type Ref } from 'vue';
+import type { InputOptions } from '@/typings/ui-schema';
+import { isInputType } from '@/typings/typeValidators';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
-const type = computed(() => {
-    return (
-        layoutElement.options?.format ||
-        jsonElement.format?.replace('date-time', 'datetime-local')
-    );
+const type: Ref<InputType | undefined> = computed(() => {
+    const str =
+        (layoutElement.options as undefined | InputOptions)?.format ||
+        jsonElement.format?.replace('date-time', 'datetime-local');
+    if (!isInputType(str)) {
+        return undefined;
+    }
+    return str;
 });
 </script>
 
 <template>
     <BFormTextarea
-        v-if="layoutElement.options?.multi"
+        v-if="(layoutElement.options as InputOptions | undefined)?.multi"
         v-model="formData[savePath]"
         class="vjf_textarea"
         :id="id"
