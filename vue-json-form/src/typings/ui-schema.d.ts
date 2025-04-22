@@ -34,15 +34,11 @@ export type ColorVariant =
   | "outline-info"
   | "outline-light"
   | "outline-dark";
-export type EnumOptions = CommonEnumOptions & DisplayAs;
-export type DisplayAs =
-  | {
-      /**
-       * Choose how an enum should be displayed
-       */
-      displayAs?: "select" | "radiobuttons" | "switches";
-    }
-  | EnumButtonsOptions;
+export type EnumOptions = CommonEnumOptions;
+/**
+ * Choose how an enum should be displayed
+ */
+export type DisplayAs = "select" | "radiobuttons" | "switches" | "buttons";
 /**
  * Show field depending on value of other field
  */
@@ -126,7 +122,6 @@ export interface Layout {
      * Adds a label for groups (only for type=Group)
      */
     label?: string;
-    [k: string]: unknown;
   };
 }
 /**
@@ -161,6 +156,8 @@ export interface CommonEnumOptions {
    * Radiobutton-/Checkbox group will be stacked if set to true
    */
   stacked?: boolean;
+  displayAs?: DisplayAs;
+  buttonVariant?: ColorVariant;
 }
 /**
  * If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name
@@ -171,13 +168,6 @@ export interface TitlesForEnum {
    * via the `patternProperty` "".
    */
   [k: string]: string;
-}
-export interface EnumButtonsOptions {
-  /**
-   * Choose how an enum should be displayed
-   */
-  displayAs: "buttons";
-  buttonVariant: ColorVariant;
 }
 export interface FileUploadOptions {
   /**
@@ -581,7 +571,6 @@ export interface Buttongroup {
      * Display the buttons vertical
      */
     vertical?: boolean;
-    [k: string]: unknown;
   };
   showOn?: ShowOnProperty;
 }

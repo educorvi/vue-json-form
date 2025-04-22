@@ -153,6 +153,7 @@
     },
     "enumOptions": {
       "title": "Enum Options",
+      "additionalProperties": false,
       "allOf": [
         {
           "title": "Common Enum Options",
@@ -178,50 +179,23 @@
               "type": "boolean",
               "description": "Radiobutton-/Checkbox group will be stacked if set to true",
               "default": false
+            },
+            "displayAs": {
+              "type": "string",
+              "title": "Display As",
+              "description": "Choose how an enum should be displayed",
+              "enum": [
+                "select",
+                "radiobuttons",
+                "switches",
+                "buttons"
+              ],
+              "default": "select"
+            },
+            "buttonVariant": {
+              "$ref": "variants.schema.json"
             }
           }
-        },
-        {
-          "title": "Display As",
-          "oneOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "displayAs": {
-                  "type": "string",
-                  "description": "Choose how an enum should be displayed",
-                  "enum": [
-                    "select",
-                    "radiobuttons",
-                    "switches"
-                  ],
-                  "default": "select"
-                }
-              }
-            },
-            {
-              "type": "object",
-              "title": "Enum Buttons Options",
-              "additionalProperties": false,
-              "required": [
-                "displayAs",
-                "buttonVariant"
-              ],
-              "properties": {
-                "displayAs": {
-                  "type": "string",
-                  "description": "Choose how an enum should be displayed",
-                  "enum": [
-                    "buttons"
-                  ]
-                },
-                "buttonVariant": {
-                  "$ref": "variants.schema.json"
-                }
-              }
-            }
-          ]
         }
       ]
     },
@@ -310,23 +284,29 @@
       "allOf": [
         {
           "title": "Field Specific Options",
+          "additionalProperties": false,
           "oneOf": [
             {
-              "$ref": "#/definitions/tagOptions"
+              "$ref": "#/definitions/tagOptions",
+              "additionalProperties": false
             },
             {
-              "$ref": "#/definitions/enumOptions"
+              "$ref": "#/definitions/enumOptions",
+              "additionalProperties": false
             },
             {
-              "$ref": "#/definitions/fileUploadOptions"
+              "$ref": "#/definitions/fileUploadOptions",
+              "additionalProperties": false
             },
             {
-              "$ref": "#/definitions/inputOptions"
+              "$ref": "#/definitions/inputOptions",
+              "additionalProperties": false
             }
           ]
         },
         {
-          "$ref": "#/definitions/controlFormattingOptions"
+          "$ref": "#/definitions/controlFormattingOptions",
+          "additionalProperties": false
         }
       ]
     }

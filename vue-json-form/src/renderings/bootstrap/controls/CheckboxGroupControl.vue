@@ -1,24 +1,30 @@
 <script setup lang="ts">
-import { BFormCheckboxGroup } from 'bootstrap-vue-next';
+import {
+    BFormCheckboxGroup,
+    type ButtonVariant,
+    type CheckboxOption,
+} from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
+import { getOption } from '@/utilities';
+import type { ColorVariant } from '@/typings/ui-schema';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
-let options: unknown[];
+let options: CheckboxOption[];
 if (!hasEnumValuesForItems(jsonElement)) {
     options = [];
 } else {
     options =
         jsonElement.items?.enum?.map((key) => {
             const textVals: Record<any, any> =
-                layoutElement.options?.enumTitles || {};
+                getOption(layoutElement, 'enumTitles') || {};
             const text = textVals[key] || key;
             return { value: key, text };
         }) || [];
@@ -31,10 +37,12 @@ if (!hasEnumValuesForItems(jsonElement)) {
         :options="options"
         class="vjf_checkboxGroup"
         :id="id"
-        :stacked="layoutElement.options?.stacked"
-        :buttons="layoutElement.options?.displayAs === 'buttons'"
-        :switches="layoutElement.options?.displayAs === 'switches'"
-        :button-variant="layoutElement.options?.buttonVariant || 'primary'"
+        :stacked="getOption(layoutElement, 'stacked')"
+        :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
+        :switches="getOption(layoutElement, 'displayAs') === 'switches'"
+        :button-variant="
+            getOption<ColorVariant>(layoutElement, 'buttonVariant') || 'primary'
+        "
     />
 </template>
 

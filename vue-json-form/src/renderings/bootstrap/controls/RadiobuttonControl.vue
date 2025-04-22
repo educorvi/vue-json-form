@@ -10,6 +10,7 @@ import {
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
 import { computed } from 'vue';
+import { getOption } from '@/utilities';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -39,7 +40,7 @@ const displaySettings = computed(() => {
     if (isEnumButtonsConfig(layoutElement.options)) {
         return {
             displayAs: 'buttons',
-            buttonVariant: layoutElement.options?.buttonVariant || 'primary',
+            buttonVariant: getOption(layoutElement, 'buttonVariant', 'primary'),
             stacked,
         };
     }

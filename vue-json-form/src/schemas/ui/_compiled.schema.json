@@ -225,10 +225,10 @@
                   },
                   "enumOptions": {
                     "title": "Enum Options",
+                    "additionalProperties": false,
                     "allOf": [
                       {
                         "title": "Common Enum Options",
-                        "additionalProperties": false,
                         "type": "object",
                         "properties": {
                           "enumTitles": {
@@ -463,11 +463,12 @@
                     "allOf": [
                       {
                         "title": "Field Specific Options",
+                        "additionalProperties": false,
                         "oneOf": [
                           {
+                            "additionalProperties": false,
                             "type": "object",
                             "title": "Tag Options",
-                            "additionalProperties": false,
                             "properties": {
                               "tags": {
                                 "type": "object",
@@ -511,11 +512,11 @@
                             }
                           },
                           {
+                            "additionalProperties": false,
                             "title": "Enum Options",
                             "allOf": [
                               {
                                 "title": "Common Enum Options",
-                                "additionalProperties": false,
                                 "type": "object",
                                 "properties": {
                                   "enumTitles": {
@@ -606,9 +607,9 @@
                             ]
                           },
                           {
+                            "additionalProperties": false,
                             "title": "File Upload Options",
                             "type": "object",
-                            "additionalProperties": false,
                             "properties": {
                               "allowMultipleFiles": {
                                 "type": "boolean",
@@ -626,9 +627,9 @@
                             }
                           },
                           {
+                            "additionalProperties": false,
                             "title": "Input Options",
                             "type": "object",
-                            "additionalProperties": false,
                             "description": "Options for text fields",
                             "properties": {
                               "format": {
@@ -745,7 +746,8 @@
                         ]
                       },
                       {
-                        "$ref": "#/properties/layout/properties/elements/items/oneOf/0/definitions/controlFormattingOptions"
+                        "$ref": "#/properties/layout/properties/elements/items/oneOf/0/definitions/controlFormattingOptions",
+                        "additionalProperties": false
                       }
                     ]
                   }

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+/* eslint-disable vue/no-deprecated-filter */
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
+import { getOption } from '@/utilities';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -16,8 +18,10 @@ const id = controlID(savePath);
         v-model="formData[savePath]"
         :id="id"
         class="vjf_file"
-        :multiple="!!layoutElement.options?.allowMultipleFiles"
-        :accept="layoutElement.options?.acceptedFileType"
+        :multiple="getOption(layoutElement, 'allowMultipleFiles', false)"
+        :accept="
+            getOption<string | undefined>(layoutElement, 'acceptedFileType')
+        "
     />
 </template>
 

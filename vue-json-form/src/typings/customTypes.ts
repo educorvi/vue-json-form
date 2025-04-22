@@ -1,4 +1,9 @@
-import type { Control, Layout, LayoutElement } from '@/typings/ui-schema';
+import type {
+    Control,
+    Layout,
+    LayoutElement,
+    Options,
+} from '@/typings/ui-schema';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
 /**
@@ -46,3 +51,11 @@ export type MapperFunction = (
     jsonElement: CoreSchemaMetaSchema;
     uiElement: Control;
 };
+
+type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
+    x: infer I
+) => void
+    ? I
+    : never;
+
+export type FlatOptions = UnionToIntersection<Options>

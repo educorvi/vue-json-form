@@ -25,8 +25,9 @@ const id = controlID(savePath);
             layoutElement.options?.tags?.pills
         "
         :tagVariant="
-            isTagsConfig(layoutElement.options) &&
-            layoutElement.options?.tags?.variant
+            (isTagsConfig(layoutElement.options) &&
+                layoutElement.options?.tags?.variant) ||
+            undefined
         "
     />
 </template>

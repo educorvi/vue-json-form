@@ -53,6 +53,7 @@
         "options": {
             "description": "Additional options",
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "cssClass": {
                     "type": "string",

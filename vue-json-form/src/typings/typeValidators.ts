@@ -16,6 +16,7 @@ import type {
 } from '@/typings/customTypes';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { InputType } from 'bootstrap-vue-next';
+import layoutElements from '@/components/LayoutElements';
 
 /**
  * Checks if the given element is dependent on another element
@@ -93,6 +94,13 @@ export function hasOptions(
     layout: LayoutElement
 ): layout is LayoutElement & { options: Options } {
     return 'options' in layout && layout.options !== undefined;
+}
+
+export function hasOption<Key extends string>(
+    layoutElement: LayoutElement,
+    key: Key
+): layoutElement is LayoutElement & { options: Record<Key, any> } {
+    return hasOptions(layoutElement) && key in layoutElement.options;
 }
 
 export function hasItems(

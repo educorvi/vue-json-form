@@ -5,6 +5,7 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput } from 'bootstrap-vue-next';
 import { computed } from 'vue';
+import { getOption } from '@/utilities';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -27,7 +28,7 @@ const step = computed(() => {
         :step="step"
         :min="jsonElement.minimum"
         :max="jsonElement.maximum"
-        :type="layoutElement.options?.range ? 'range' : 'number'"
+        :type="getOption(layoutElement, 'range', false) ? 'range' : 'number'"
     />
 </template>
 

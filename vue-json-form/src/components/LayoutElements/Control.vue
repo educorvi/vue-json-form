@@ -16,7 +16,11 @@
                     formStructureMapped.uiElement.options?.placeholder
                 "
                 :autocomplete="
-                    formStructureMapped.uiElement.options?.autocomplete || 'on'
+                    getOption(
+                        formStructureMapped.uiElement,
+                        'autocomplete',
+                        'on'
+                    )
                 "
                 :required="required"
                 :style="style"
@@ -37,6 +41,7 @@
 import type { Control } from '@/typings/ui-schema';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { getOption } from '@/utilities';
 import {
     computed,
     inject,
@@ -67,7 +72,7 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 
-import { isInputType, isTagsConfig } from '@/typings/typeValidators';
+import { hasOption, isInputType, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 
 const { jsonSchema, mappers, arrays } = storeToRefs(useFormStructureStore());
@@ -159,9 +164,9 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement.type !== 'array'
     ) {
         if (
-            formStructureMapped.value.uiElement.options?.displayAs ===
-                'radiobuttons' ||
-            formStructureMapped.value.uiElement.options?.displayAs === 'buttons'
+            (getOption(formStructureMapped.value.uiElement, 'displayAs') === 'radiobuttons') ||
+            getOption(formStructureMapped.value.uiElement, 'displayAs') ===
+                'buttons'
         ) {
             return getComponent('RadiobuttonControl');
         } else {

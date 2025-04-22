@@ -25,7 +25,8 @@
                     "default": false,
                     "description": "Display the buttons vertical"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "showOn": {
             "$ref": "show_on.schema.json"
