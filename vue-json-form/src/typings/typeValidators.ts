@@ -1,5 +1,7 @@
 import type {
     Control,
+    EnumButtonsOptions,
+    EnumOptions,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
@@ -13,6 +15,7 @@ import type {
     elementWithElements,
 } from '@/typings/customTypes';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type { InputType } from 'bootstrap-vue-next';
 
 /**
  * Checks if the given element is dependent on another element
@@ -46,6 +49,15 @@ export function isTagsConfig(
     options: Options | undefined
 ): options is TagOptions & Options {
     return 'tags' in (options || {});
+}
+
+export function isEnumButtonsConfig(
+    options: Options | undefined
+): options is Options & EnumButtonsOptions {
+    if (!options) {
+        return false;
+    }
+    return 'displayAs' in options && options?.displayAs === 'buttons';
 }
 
 /**
@@ -102,7 +114,32 @@ export function hasEnumValuesForItems(
 }
 
 export function hasEnumTitlesOptions(layout: Control): layout is Control & {
-    options: { enum_titles: TitlesForEnum };
+    options: { enumTitles: TitlesForEnum };
 } {
-    return hasOptions(layout) && layout.options.enumTitles !== undefined;
+    return (
+        hasOptions(layout) &&
+        'enumTitles' in layout.options &&
+        layout.options.enumTitles !== undefined
+    );
+}
+
+export function isInputType(value: any): value is InputType {
+    const validInputTypes: InputType[] = [
+        'text',
+        'number',
+        'email',
+        'password',
+        'search',
+        'url',
+        'tel',
+        'date',
+        'time',
+        'range',
+        'color',
+        'datetime',
+        'datetime-local',
+        'month',
+        'week',
+    ];
+    return validInputTypes.includes(value);
 }

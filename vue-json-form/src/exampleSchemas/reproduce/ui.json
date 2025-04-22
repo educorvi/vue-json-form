@@ -7,6 +7,23 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-40"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/input-jso-40",
+            "options": {
+              "append": "€",
+              "textAlign": "right",
+              "placeholder": "0"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-34"
         },
         "elements": [
@@ -239,7 +256,7 @@
             "type": "Control",
             "scope": "/properties/arrayInArrayWithSelfRule",
             "options": {
-              "descendantControlOverrides":{
+              "descendantControlOverrides": {
                 "/properties/arrayInArrayWithSelfRule/items/properties/internalArray/items/properties/string": {
                   "options": {
                     "placeholder": "Enter a string"

@@ -41,6 +41,7 @@ Instead of starting with any layout, the root object of the schema now needs to 
     - "color"
     - "hidden" (not the same as `options.hidden`, this one only hides the input, not the whole control)
 - star rating field was removed
+- To display enums as radiobuttons or as switches instead of a select dropdown, the `options.displayAs` property is used instead of `options.radiobuttons`/`options.switch`.
 
 ### Layouts (Group, VerticalLayout & HorizontalLayout)
 

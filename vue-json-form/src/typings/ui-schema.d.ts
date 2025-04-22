@@ -12,9 +12,8 @@ export type LayoutElement = Control | Layout | HTMLRenderer | Divider | Button |
 /**
  * Gives multiple options to configure the element
  */
-export type Options = (TagOptions | EnumOptions | FileUploadOptions | InputOptions) &
-  ControlFormattingOptions &
-  CustomOptions;
+export type Options = FieldSpecificOptions & ControlFormattingOptions;
+export type FieldSpecificOptions = TagOptions | EnumOptions | FileUploadOptions | InputOptions;
 /**
  * Different color variants
  */
@@ -43,13 +42,7 @@ export type DisplayAs =
        */
       displayAs?: "select" | "radiobuttons" | "switches";
     }
-  | {
-      /**
-       * Choose how an enum should be displayed
-       */
-      displayAs: "buttons";
-      buttonVariant: ColorVariant;
-    };
+  | EnumButtonsOptions;
 /**
  * Show field depending on value of other field
  */
@@ -179,6 +172,13 @@ export interface TitlesForEnum {
    */
   [k: string]: string;
 }
+export interface EnumButtonsOptions {
+  /**
+   * Choose how an enum should be displayed
+   */
+  displayAs: "buttons";
+  buttonVariant: ColorVariant;
+}
 export interface FileUploadOptions {
   /**
    * Allows the upload of multiple files with fileupload
@@ -278,6 +278,10 @@ export interface InputOptions {
    * If set true, a range input will be shown instead of a text input
    */
   range?: boolean;
+  /**
+   * Set the text-align of input fields
+   */
+  textAlign?: "left" | "right" | "center" | "start" | "end";
 }
 export interface ControlFormattingOptions {
   /**
@@ -498,12 +502,6 @@ export interface Quantifier {
    */
   indexPlaceholder?: string;
   rule: Formula;
-}
-/**
- * Custom options for the control
- */
-export interface CustomOptions {
-  [k: string]: unknown;
 }
 /**
  * Some HTML to be rendered in the form
