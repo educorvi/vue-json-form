@@ -1,5 +1,7 @@
 import type {
     Control,
+    EnumButtonsOptions,
+    EnumOptions,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
@@ -46,6 +48,15 @@ export function isTagsConfig(
     options: Options | undefined
 ): options is TagOptions & Options {
     return 'tags' in (options || {});
+}
+
+export function isEnumButtonsConfig(
+    options: Options | undefined
+): options is Options & EnumButtonsOptions {
+    if (!options) {
+        return false;
+    }
+    return 'displayAs' in options && options?.displayAs === 'buttons';
 }
 
 /**
@@ -102,7 +113,11 @@ export function hasEnumValuesForItems(
 }
 
 export function hasEnumTitlesOptions(layout: Control): layout is Control & {
-    options: { enum_titles: TitlesForEnum };
+    options: { enumTitles: TitlesForEnum };
 } {
-    return hasOptions(layout) && layout.options.enumTitles !== undefined;
+    return (
+        hasOptions(layout) &&
+        'enumTitles' in layout.options &&
+        layout.options.enumTitles !== undefined
+    );
 }

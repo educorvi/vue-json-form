@@ -4,25 +4,46 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { hasEnum, hasEnumValuesForItems } from '@/typings/typeValidators';
+import {
+    hasEnum,
+    hasEnumTitlesOptions,
+    isEnumButtonsConfig,
+} from '@/typings/typeValidators';
 import { computed } from 'vue';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
-let options = computed(() => {
+const options = computed(() => {
     if (!hasEnum(jsonElement)) {
         return [];
     }
     return (
         jsonElement.enum?.map((key: any) => {
             const textVals: Record<any, any> =
-                layoutElement.options?.enumTitles || {};
+                (hasEnumTitlesOptions(layoutElement) &&
+                    layoutElement.options.enumTitles) ||
+                {};
             const text = textVals[key] || key;
             return { value: key, text };
         }) || []
     );
+});
+
+const displaySettings = computed(() => {
+    let stacked =
+        layoutElement.options &&
+        'stacked' in layoutElement.options &&
+        layoutElement.options.stacked;
+    if (isEnumButtonsConfig(layoutElement.options)) {
+        return {
+            displayAs: 'buttons',
+            buttonVariant: layoutElement.options?.buttonVariant || 'primary',
+            stacked,
+        };
+    }
+    return { stacked };
 });
 </script>
 
@@ -32,9 +53,9 @@ let options = computed(() => {
         :options="options"
         class="vjf_radioGroup w-100"
         :id="id"
-        :buttons="layoutElement.options?.displayAs === 'buttons'"
-        :button-variant="layoutElement.options?.buttonVariant || 'primary'"
-        :stacked="layoutElement.options?.stacked"
+        :buttons="displaySettings.displayAs === 'buttons'"
+        :button-variant="displaySettings.buttonVariant || 'primary'"
+        :stacked="displaySettings.stacked"
     />
 </template>
 
