@@ -83,7 +83,11 @@ import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
-import { addFilesToFormdata, useFormDataStore } from '@/stores/formData';
+import {
+    addFilesToFormdata,
+    flattenData,
+    useFormDataStore,
+} from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
     requiredProviderKey,
@@ -118,7 +122,7 @@ const props = defineProps<{
     renderInterface?: RenderInterface;
 
     /**
-     * The plain data of the form
+     * Data that should be loaded into the form.
      */
     presetData?: Record<string, any>;
 
@@ -182,7 +186,7 @@ async function onSubmitFormLocal(evt: Event) {
 
 function initDefaultFormData() {
     defaultFormData.value = {
-        ...(props.presetData || {}),
+        ...flattenData(props.presetData || {}),
         ...defaultData.value,
     };
 }

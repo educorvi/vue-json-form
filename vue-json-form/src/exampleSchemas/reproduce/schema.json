@@ -2,8 +2,35 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "input-jso-40": {
+    "jso-39-string": {
+      "type": "string"
+    },
+    "jso-39-multiselect": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["option 1", "option 2", "option 3"]
+      }
+    },
+    "jso-39-array": {
+      "type": "array",
+      "items": {
         "type": "string"
+      }
+    },
+    "jso-39-object": {
+      "type": "object",
+      "properties": {
+        "test": {
+            "type": "string"
+        },
+        "number": {
+          "type": "number"
+        }
+      }
+    },
+    "input-jso-40": {
+      "type": "string"
     },
     "array141d1d356e40b4062ac2b1476ff52648c": {
       "type": "array",

@@ -7,6 +7,30 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-39"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/jso-39-string"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/jso-39-multiselect"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/jso-39-array"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/jso-39-object"
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-40"
         },
         "elements": [

@@ -12,6 +12,7 @@
                     :on-submit-form="onSubmitForm"
                     :render-interface="bootstrapComponents"
                     :ui-schema="uiSchema || {}"
+                    :presetData="presetData"
                 >
                 </VueJsonForm>
                 <hr />
@@ -35,7 +36,15 @@ import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
 import type { UISchema } from '@/typings/ui-schema';
-import { computed, markRaw, nextTick, Ref, ref, shallowRef, watch } from 'vue';
+import {
+    computed,
+    markRaw,
+    nextTick,
+    ref,
+    type Ref,
+    shallowRef,
+    watch,
+} from 'vue';
 import { BButton, BFormCheckbox, BFormInput } from 'bootstrap-vue-next';
 
 const components = markRaw(bootstrapComponents);
@@ -44,6 +53,7 @@ const reproduce: Ref<boolean> = ref(
 );
 const jsonSchema: Ref<Record<string, any> | null> = ref(null);
 const uiSchema: Ref<Record<string, any> | null> = ref(null);
+const presetData: Ref<Record<string, any> | undefined> = ref(undefined);
 
 const formData = ref({});
 
@@ -54,10 +64,22 @@ if (searchParams.get('variant') === 'reproduce') {
 }
 
 async function setSchema(reproduce_val: boolean) {
+    jsonSchema.value = null;
+    await nextTick();
     if (reproduce_val) {
+        presetData.value = {
+            'jso-39-multiselect': ['option 2', 'option 3'],
+            'jso-39-string': 'Test',
+            'jso-39-array': ['Hello', 'World'],
+            'jso-39-object': {
+                test: 'ABC',
+                number: 14,
+            },
+        };
         jsonSchema.value = json_repro;
         uiSchema.value = ui_repro;
     } else {
+        presetData.value = undefined;
         jsonSchema.value = json;
         uiSchema.value = ui;
     }

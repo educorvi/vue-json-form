@@ -179,6 +179,24 @@ function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
     return { scopes, json };
 }
 
+export function flattenData(
+    data: Record<string, any>,
+    into: Record<string, any> = {},
+    parentKey = '/properties'
+): Record<string, any> {
+    for (const [key, value] of Object.entries(data)) {
+        const flatKey = `${parentKey}/${key}`;
+        if (Array.isArray(value)) {
+            into[flatKey] = value;
+        } else if (typeof value === 'object' && value !== null) {
+            flattenData(value, into, `${flatKey}/properties`);
+        } else {
+            into[flatKey] = value;
+        }
+    }
+    return into;
+}
+
 function readFileDataAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve) => {
         const reader = new FileReader();
