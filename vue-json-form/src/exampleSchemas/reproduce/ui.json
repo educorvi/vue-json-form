@@ -7,6 +7,36 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-37"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/jso-37-field1"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/jso-37-field2",
+            "showOn": {
+              "type": "NOT_EQUALS",
+              "referenceValue": "",
+              "path": "jso-37-field1"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/jso-37-field3",
+            "showOn": {
+              "type": "NOT_EQUALS",
+              "referenceValue": "",
+              "path": "jso-37-field2"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-39"
         },
         "elements": [

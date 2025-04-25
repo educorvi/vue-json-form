@@ -229,6 +229,7 @@
                     "allOf": [
                       {
                         "title": "Common Enum Options",
+                        "additionalProperties": false,
                         "type": "object",
                         "properties": {
                           "enumTitles": {
@@ -250,71 +251,44 @@
                             "type": "boolean",
                             "description": "Radiobutton-/Checkbox group will be stacked if set to true",
                             "default": false
+                          },
+                          "displayAs": {
+                            "type": "string",
+                            "title": "Display As",
+                            "description": "Choose how an enum should be displayed",
+                            "enum": [
+                              "select",
+                              "radiobuttons",
+                              "switches",
+                              "buttons"
+                            ],
+                            "default": "select"
+                          },
+                          "buttonVariant": {
+                            "$schema": "http://json-schema.org/draft-07/schema#",
+                            "title": "Color Variant",
+                            "description": "Different color variants",
+                            "type": "string",
+                            "enum": [
+                              "primary",
+                              "secondary",
+                              "success",
+                              "warning",
+                              "danger",
+                              "info",
+                              "light",
+                              "dark",
+                              "outline-primary",
+                              "outline-secondary",
+                              "outline-success",
+                              "outline-warning",
+                              "outline-danger",
+                              "outline-info",
+                              "outline-light",
+                              "outline-dark"
+                            ]
                           }
                         }
-                      },
-                      {
-                        "title": "Display As",
-                        "oneOf": [
-                          {
-                            "type": "object",
-                            "additionalProperties": false,
-                            "properties": {
-                              "displayAs": {
-                                "type": "string",
-                                "description": "Choose how an enum should be displayed",
-                                "enum": [
-                                  "select",
-                                  "radiobuttons",
-                                  "switches"
-                                ],
-                                "default": "select"
-                              }
-                            }
-                          },
-                          {
-                            "type": "object",
-                            "title": "Enum Buttons Options",
-                            "additionalProperties": false,
-                            "required": [
-                              "displayAs",
-                              "buttonVariant"
-                            ],
-                            "properties": {
-                              "displayAs": {
-                                "type": "string",
-                                "description": "Choose how an enum should be displayed",
-                                "enum": [
-                                  "buttons"
-                                ]
-                              },
-                              "buttonVariant": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "title": "Color Variant",
-                                "description": "Different color variants",
-                                "type": "string",
-                                "enum": [
-                                  "primary",
-                                  "secondary",
-                                  "success",
-                                  "warning",
-                                  "danger",
-                                  "info",
-                                  "light",
-                                  "dark",
-                                  "outline-primary",
-                                  "outline-secondary",
-                                  "outline-success",
-                                  "outline-warning",
-                                  "outline-danger",
-                                  "outline-info",
-                                  "outline-light",
-                                  "outline-dark"
-                                ]
-                              }
-                            }
-                          }
-                        ]
                       }
                     ]
                   },
@@ -517,6 +491,7 @@
                             "allOf": [
                               {
                                 "title": "Common Enum Options",
+                                "additionalProperties": false,
                                 "type": "object",
                                 "properties": {
                                   "enumTitles": {
@@ -538,71 +513,44 @@
                                     "type": "boolean",
                                     "description": "Radiobutton-/Checkbox group will be stacked if set to true",
                                     "default": false
+                                  },
+                                  "displayAs": {
+                                    "type": "string",
+                                    "title": "Display As",
+                                    "description": "Choose how an enum should be displayed",
+                                    "enum": [
+                                      "select",
+                                      "radiobuttons",
+                                      "switches",
+                                      "buttons"
+                                    ],
+                                    "default": "select"
+                                  },
+                                  "buttonVariant": {
+                                    "$schema": "http://json-schema.org/draft-07/schema#",
+                                    "title": "Color Variant",
+                                    "description": "Different color variants",
+                                    "type": "string",
+                                    "enum": [
+                                      "primary",
+                                      "secondary",
+                                      "success",
+                                      "warning",
+                                      "danger",
+                                      "info",
+                                      "light",
+                                      "dark",
+                                      "outline-primary",
+                                      "outline-secondary",
+                                      "outline-success",
+                                      "outline-warning",
+                                      "outline-danger",
+                                      "outline-info",
+                                      "outline-light",
+                                      "outline-dark"
+                                    ]
                                   }
                                 }
-                              },
-                              {
-                                "title": "Display As",
-                                "oneOf": [
-                                  {
-                                    "type": "object",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                      "displayAs": {
-                                        "type": "string",
-                                        "description": "Choose how an enum should be displayed",
-                                        "enum": [
-                                          "select",
-                                          "radiobuttons",
-                                          "switches"
-                                        ],
-                                        "default": "select"
-                                      }
-                                    }
-                                  },
-                                  {
-                                    "type": "object",
-                                    "title": "Enum Buttons Options",
-                                    "additionalProperties": false,
-                                    "required": [
-                                      "displayAs",
-                                      "buttonVariant"
-                                    ],
-                                    "properties": {
-                                      "displayAs": {
-                                        "type": "string",
-                                        "description": "Choose how an enum should be displayed",
-                                        "enum": [
-                                          "buttons"
-                                        ]
-                                      },
-                                      "buttonVariant": {
-                                        "$schema": "http://json-schema.org/draft-07/schema#",
-                                        "title": "Color Variant",
-                                        "description": "Different color variants",
-                                        "type": "string",
-                                        "enum": [
-                                          "primary",
-                                          "secondary",
-                                          "success",
-                                          "warning",
-                                          "danger",
-                                          "info",
-                                          "light",
-                                          "dark",
-                                          "outline-primary",
-                                          "outline-secondary",
-                                          "outline-success",
-                                          "outline-warning",
-                                          "outline-danger",
-                                          "outline-info",
-                                          "outline-light",
-                                          "outline-dark"
-                                        ]
-                                      }
-                                    }
-                                  }
-                                ]
                               }
                             ]
                           },
@@ -993,7 +941,8 @@
                         "default": false,
                         "description": "Display the buttons vertical"
                       }
-                    }
+                    },
+                    "additionalProperties": false
                   },
                   "showOn": {
                     "$ref": "#/properties/layout/properties/showOn"
@@ -2140,6 +2089,7 @@
         "options": {
           "description": "Additional options",
           "type": "object",
+          "additionalProperties": false,
           "properties": {
             "cssClass": {
               "type": "string",
