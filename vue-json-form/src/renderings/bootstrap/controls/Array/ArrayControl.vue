@@ -114,7 +114,7 @@ onBeforeMount(initArray);
 </script>
 
 <template>
-    <div class="w-100">
+    <div>
         <label :for="id" class="large-label">{{ label }}</label>
         <div
             class="vjf_array"

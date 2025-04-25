@@ -7,7 +7,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <BCollapse class="vjf_showOnWrapper w-100" :visible="visible">
+    <BCollapse class="vjf_showOnWrapper" :visible="visible">
         <slot />
     </BCollapse>
 </template>

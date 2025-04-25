@@ -35,7 +35,7 @@ const emit = defineEmits<{
 
 <template>
     <div class="vjf_arrayItem" :id="itemID">
-        <Control :layout-element="layoutElement">
+        <Control :layout-element="layoutElement" in-array-item>
             <template #prepend>
                 <div class="handle">
                     <GripVerticalIcon />

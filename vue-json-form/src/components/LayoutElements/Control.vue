@@ -85,6 +85,11 @@ const props = defineProps<{
      * The UI Schema of this Element
      */
     layoutElement: Control;
+
+    /**
+     * Is this control in an array item
+     */
+    inArrayItem?: boolean;
 }>();
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
@@ -135,7 +140,7 @@ const style = computed(() => {
 
 const cssClass = computedCssClass(
     formStructureMapped.value.uiElement,
-    'vjf_control mb-3 w-100',
+    'vjf_control mb-3',
     additionalHiddenClass
 );
 
@@ -164,7 +169,8 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement.type !== 'array'
     ) {
         if (
-            (getOption(formStructureMapped.value.uiElement, 'displayAs') === 'radiobuttons') ||
+            getOption(formStructureMapped.value.uiElement, 'displayAs') ===
+                'radiobuttons' ||
             getOption(formStructureMapped.value.uiElement, 'displayAs') ===
                 'buttons'
         ) {
