@@ -1,6 +1,6 @@
 import type {
+    ColorVariant,
     Control,
-    EnumButtonsOptions,
     EnumOptions,
     LayoutElement,
     LegacyShowOnProperty,
@@ -15,7 +15,7 @@ import type {
     elementWithElements,
 } from '@/typings/customTypes';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import type { InputType } from 'bootstrap-vue-next';
+import type { BaseColorVariant, InputType } from 'bootstrap-vue-next';
 import layoutElements from '@/components/LayoutElements';
 
 /**
@@ -54,7 +54,7 @@ export function isTagsConfig(
 
 export function isEnumButtonsConfig(
     options: Options | undefined
-): options is Options & EnumButtonsOptions {
+): options is Options & EnumOptions {
     if (!options) {
         return false;
     }
@@ -150,4 +150,13 @@ export function isInputType(value: any): value is InputType {
         'week',
     ];
     return validInputTypes.includes(value);
+}
+
+export function colorVariantToBaseColorVariant<
+    BaseVariants = keyof BaseColorVariant,
+>(color?: ColorVariant): BaseVariants | undefined {
+    if (!color) {
+        return undefined;
+    }
+    return color.replace('-outline', '') as BaseVariants;
 }
