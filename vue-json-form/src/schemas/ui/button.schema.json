@@ -41,33 +41,24 @@
                     "description": "Specifies that the form-data should not be validated on submission",
                     "default": false
                 },
-                "nativeSubmitOptions": {
+                "submitOptions": {
                     "type": "object",
-                    "description": "Settings that can be used if native form submit is used",
-                    "title": "Native Submit Settings",
+                    "title": "Submit Options",
+                    "description": "Options that are passed to the submit function. This will not change the behaviour of VueJsonForm itself, but can bes used by the application/the webcomponent to change the behaviour of the submit function.",
+                    "additionalProperties": true,
                     "properties": {
-                        "formaction": {
+                        "action": {
                             "type": "string",
-                            "description": "Specifies where to send the form-data when a form is submitted"
-                        },
-                        "formmethod": {
-                            "type": "string",
-                            "description": "Specifies how to send the form-data",
-                            "enum": ["get", "post"]
-                        },
-                        "formtarget": {
-                            "type": "string",
-                            "description": "Specifies where to display the response after submitting the form",
-                            "enum": ["_blank", "_self", "_parent", "_top"]
-                        },
-                        "formenctype": {
-                            "type": "string",
-                            "description": "Specifies how form-data should be encoded before sending it to a server",
-                            "enum": [
-                                "application/x-www-form-urlencoded",
-                                "multipart/form-data",
-                                "text/plain"
+                            "description": "Action to perform when the button is clicked",
+                            "examples": [
+                                "request",
+                                "save",
+                                "print"
                             ]
+                        },
+                        "requestUrl": {
+                            "type": "string",
+                            "description": "The URL to send the request to if `action` is `request`"
                         }
                     }
                 }

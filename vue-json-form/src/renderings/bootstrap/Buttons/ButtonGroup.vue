@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Buttongroup } from '@/typings/ui-schema';
 import { BButtonGroup } from 'bootstrap-vue-next';
-import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
+import VJFButton from '@/components/Buttons/VJFButton.vue';
 
 defineProps<{
     /**
@@ -13,7 +13,7 @@ defineProps<{
 
 <template>
     <BButtonGroup class="w-100" :vertical="layoutElement.options?.vertical">
-        <v-j-f-button
+        <VJFButton
             v-for="button in layoutElement.buttons"
             :key="button.text"
             :layoutElement="button"

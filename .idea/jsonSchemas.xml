@@ -56,7 +56,7 @@
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="vue-json-form/src/exampleSchemas/reproduce/ui.json" />
+                    <option name="path" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
                   </Item>
                 </list>
               </option>

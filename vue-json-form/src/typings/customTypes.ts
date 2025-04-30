@@ -58,4 +58,4 @@ type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
     ? I
     : never;
 
-export type FlatOptions = UnionToIntersection<Options>
+export type FlatOptions = UnionToIntersection<Options>;

@@ -531,28 +531,20 @@ export interface ButtonOptions {
    * Specifies that the form-data should not be validated on submission
    */
   formnovalidate?: boolean;
-  nativeSubmitOptions?: NativeSubmitSettings;
+  submitOptions?: SubmitOptions;
 }
 /**
- * Settings that can be used if native form submit is used
+ * Options that are passed to the submit function. This will not change the behaviour of VueJsonForm itself, but can bes used by the application/the webcomponent to change the behaviour of the submit function.
  */
-export interface NativeSubmitSettings {
+export interface SubmitOptions {
   /**
-   * Specifies where to send the form-data when a form is submitted
+   * Action to perform when the button is clicked
    */
-  formaction?: string;
+  action?: string;
   /**
-   * Specifies how to send the form-data
+   * The URL to send the request to if `action` is `request`
    */
-  formmethod?: "get" | "post";
-  /**
-   * Specifies where to display the response after submitting the form
-   */
-  formtarget?: "_blank" | "_self" | "_parent" | "_top";
-  /**
-   * Specifies how form-data should be encoded before sending it to a server
-   */
-  formenctype?: "application/x-www-form-urlencoded" | "multipart/form-data" | "text/plain";
+  requestUrl?: string;
   [k: string]: unknown;
 }
 /**

@@ -630,9 +630,39 @@
         ]
       },
       {
-        "type": "Button",
-        "buttonType": "submit",
-        "text": "Submit"
+        "type": "Buttongroup",
+        "buttons": [
+          {
+            "type": "Button",
+            "buttonType": "submit",
+            "text": "Submit",
+            "options": {
+              "variant": "primary"
+            }
+          },
+          {
+            "type": "Button",
+            "buttonType": "submit",
+            "text": "Submit to console",
+            "options": {
+              "variant": "info",
+              "submitOptions": {
+                "action": "console"
+              }
+            }
+          },
+          {
+            "type": "Button",
+            "buttonType": "submit",
+            "text": "Submit to sleep",
+            "options": {
+              "variant": "warning",
+              "submitOptions": {
+                "action": "sleep"
+              }
+            }
+          }
+        ]
       }
     ]
   }

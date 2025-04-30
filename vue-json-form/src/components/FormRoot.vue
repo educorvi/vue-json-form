@@ -80,7 +80,7 @@ import {
 } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import type { UISchema } from '@/typings/ui-schema';
+import type { SubmitOptions, UISchema } from '@/typings/ui-schema';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import {
@@ -104,7 +104,11 @@ const props = defineProps<{
      * To configure the plain submit action, configure the ´options.nativeSubmitOptions´ of the submitting button in the UI-Schema.
      * @param data The data of the form
      */
-    onSubmitForm?: (data: Record<string, any>) => void;
+    onSubmitForm: (
+        data: Record<string, any>,
+        customSubmitOptions: SubmitOptions,
+        evt: SubmitEvent
+    ) => Promise<void>;
 
     /**
      * The JSON Schema of the form
@@ -152,6 +156,7 @@ const {
     mappers,
     components,
     defaultData,
+    buttonWaiting,
 } = storeToRefs(useFormStructureStore());
 
 const { formData, defaultFormData, cleanedFormData } =
@@ -170,18 +175,26 @@ const validationErrors = ref({
 
 let errorViewer: Component;
 
-async function onSubmitFormLocal(evt: Event) {
-    if (props.onSubmitForm) {
-        evt.preventDefault();
-        let submitData;
-        if (props.returnDataAsScopes) {
-            submitData = toRaw(cleanedFormData.value.scopes);
-        } else {
-            submitData = toRaw(cleanedFormData.value.json);
-        }
-        submitData = await addFilesToFormdata(submitData);
-        props.onSubmitForm(submitData);
+async function onSubmitFormLocal(evt: SubmitEvent) {
+    evt.preventDefault();
+    let submitData;
+    if (props.returnDataAsScopes) {
+        submitData = toRaw(cleanedFormData.value.scopes);
+    } else {
+        submitData = toRaw(cleanedFormData.value.json);
     }
+    submitData = await addFilesToFormdata(submitData);
+    const customSubmitOptions =
+        JSON.parse(
+            decodeURIComponent(
+                evt.submitter?.attributes?.getNamedItem('submitOptions')
+                    ?.value || 'false'
+            )
+        ) || {};
+
+    buttonWaiting.value[customSubmitOptions['id']] = true;
+    await props.onSubmitForm(submitData, customSubmitOptions, evt);
+    buttonWaiting.value[customSubmitOptions['id']] = false;
 }
 
 function initDefaultFormData() {

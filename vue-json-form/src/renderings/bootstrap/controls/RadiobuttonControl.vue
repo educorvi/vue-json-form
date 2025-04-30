@@ -33,10 +33,7 @@ const options = computed(() => {
 });
 
 const displaySettings = computed(() => {
-    let stacked =
-        layoutElement.options &&
-        'stacked' in layoutElement.options &&
-        layoutElement.options.stacked;
+    let stacked: boolean = getOption(layoutElement, 'stacked', false);
     if (isEnumButtonsConfig(layoutElement.options)) {
         return {
             displayAs: 'buttons',

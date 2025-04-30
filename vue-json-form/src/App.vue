@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { VueJsonForm } from './main';
+import { type SubmitOptions, VueJsonForm } from './main';
 import json from './exampleSchemas/showcase/schema.json';
 import ui from './exampleSchemas/showcase/ui.json';
 
@@ -92,9 +92,18 @@ watch(reproduce, async (value) => {
     await setSchema(value);
 });
 
-function onSubmitForm(data: any) {
+async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     formData.value = data;
-    console.log(data);
+    switch (options.action) {
+        case 'console':
+            console.log(data);
+            break;
+        case 'sleep':
+            await new Promise((r) => setTimeout(r, 2000));
+            break;
+        default:
+            break;
+    }
 }
 
 // const jsonSchema = json;

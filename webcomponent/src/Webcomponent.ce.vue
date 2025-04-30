@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {
   VueJsonForm as vjfComp,
-  bootstrapComponents,
 } from "@educorvi/vue-json-form";
 import { computed, type ComputedRef } from "vue";
 import { oneOfToEnum } from "@educorvi/vue-json-form/src/MapperFunctions/oneOfToEnum";
 import type { MapperFunction } from "@educorvi/vue-json-form/src/typings/customTypes";
+import type { SubmitOptions } from '@educorvi/vue-json-form/src/typings/ui-schema';
+import axios from 'axios';
 
 const props = defineProps<{
   /**
@@ -29,6 +30,10 @@ const props = defineProps<{
   returnDataAsScopes?: boolean | string;
 }>();
 
+const emit = defineEmits<{
+  (e: 'submit', data: Record<string, any>, options: SubmitOptions): void;
+}>();
+
 const data: ComputedRef = computed(() => {
   return {
     jsonSchema: JSON.parse(props.jsonSchema) as Record<string, any>,
@@ -45,6 +50,14 @@ const data: ComputedRef = computed(() => {
 });
 
 const mapperFunctions: MapperFunction[] = [oneOfToEnum];
+
+async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+    if (options.action === 'request' && options.requestUrl) {
+        await axios.post(options.requestUrl);
+    } else {
+        emit('submit', data, options);
+    }
+}
 </script>
 
 <template>
@@ -54,5 +67,6 @@ const mapperFunctions: MapperFunction[] = [oneOfToEnum];
     :preset-data="data.presetData"
     :return-data-as-scopes="data.returnDataAsScopes"
     :mapper-functions="mapperFunctions"
+    :onSubmitForm="onSubmitForm"
   ></vjf-comp>
 </template>

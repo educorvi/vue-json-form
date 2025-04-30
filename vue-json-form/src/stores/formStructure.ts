@@ -40,6 +40,7 @@ type FormStructureStoreState = {
     components: RenderInterface | undefined;
     arrays: string[];
     mappers: MapperFunction[];
+    buttonWaiting: Record<string, boolean>;
 };
 
 type FormStructureStore = StoreDefinition<
@@ -57,12 +58,15 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                 jsonSchema: undefined,
                 uiSchema: undefined,
                 components: undefined,
-
                 /**
                  * List of all arrays in the schema that were written to
                  */
                 arrays: [] as string[],
                 mappers: [],
+                /**
+                 * List of all buttons that are waiting for a response
+                 */
+                buttonWaiting: {} as Record<string, boolean>,
             }) as FormStructureStoreState,
         getters: {
             defaultData: (state: FormStructureStoreState) => {
