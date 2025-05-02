@@ -2,14 +2,13 @@
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/releases/latest)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form)](https://www.npmjs.com/package/@educorvi/vue-json-form)
-[![End2End Tests](https://github.com/educorvi/vue_json_form/actions/workflows/cypress.yml/badge.svg)](https://github.com/educorvi/vue_json_form/actions/workflows/cypress.yml)
-[![Browserstack Tests](https://github.com/educorvi/vue_json_form/actions/workflows/browserstack.yml/badge.svg)](https://github.com/educorvi/vue_json_form/actions/workflows/browserstack.yml)
+[![Build And Test](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml/badge.svg?branch=master)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
 [![GitHub issues](https://img.shields.io/github/issues/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/issues)
 
 #### Automaticly generates form from json schema and json ui schema.
 
-- [Documentation](https://educorvi.github.io/vue_json_form/)
-- [Demo](https://educorvi.github.io/vue_json_form/demo/)
+- [Documentation](https://educorvi.github.io/vue-json-form/)
+- [Demo](https://educorvi.github.io/vue-json-form/demo/)
 
 ## Usage
 
