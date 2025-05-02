@@ -20,8 +20,6 @@ jobs:
     name: Build on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Setup node
         uses: actions/setup-node@v4
         with:
