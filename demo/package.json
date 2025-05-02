@@ -14,6 +14,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.cypress-ct.json --composite false"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@educorvi/vue-json-form": "workspace:^",
     "bootstrap": "^5.3.3",
