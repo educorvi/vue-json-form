@@ -27,6 +27,6 @@
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
     "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
     "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
-    "release": "yarn workspaces foreach -Atv semantic-release -e semantic-release-monorepo"
+    "release": "yarn workspaces foreach -Atv run semantic-release -e semantic-release-monorepo"
   }
 }
