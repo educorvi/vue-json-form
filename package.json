@@ -10,12 +10,15 @@
   "packageManager": "yarn@4.4.0",
   "devDependencies": {
     "husky": "^9.0.10",
+    "npm-run-all": "^4.1.5",
     "typedoc": "^0.25.12",
     "typescript": "^5.4.3"
   },
   "scripts": {
     "prepare": "husky",
-    "doc": "rm -r ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc vue-json-form/src/schemas/ui/_compiled.schema.json ./docs/ui-schema/index.html",
+    "doc": "run-p -l \"doc:**\"",
+    "doc:ui": "rm -rf ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc vue-json-form/src/schemas/ui/_compiled.schema.json ./docs/ui-schema/index.html",
+    "doc:demo": "yarn run build:demo && rm -rf ./docs/demo && cp -r ./demo/dist ./docs/demo",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
     "build": "yarn workspaces foreach -Aptv run build",
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
