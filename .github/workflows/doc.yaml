@@ -1,4 +1,4 @@
-name: Build And Test
+name: Deploy to pages
 
 on:
   push:
@@ -16,6 +16,10 @@ jobs:
         with:
           cache: yarn
       - run: yarn install --immutable
+      - uses: actions/setup-python@v5
+        with:
+          cache: 'pip' # caching pip dependencies
+      - run: pip install json-schema-for-humans
       - name: Build static files
         id: build
         run: yarn run doc
