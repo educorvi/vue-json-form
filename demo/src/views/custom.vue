@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
-import { VueJsonForm } from '@educorvi/vue-json-form';
+import { type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
 import { oneOfToEnum } from '@educorvi/vue-json-form';
 
 const emit = defineEmits<{
     viewCode: [title: string, object: Record<any, any>];
 }>();
 
-function submitMethod(data: Record<string, any>) {
+async function submitMethod(data: Record<string, any>, customSubmitOptions: SubmitOptions, evt: SubmitEvent) {
     emit("viewCode", "Form Results", data);
 }
 
