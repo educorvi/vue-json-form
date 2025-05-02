@@ -1,15 +1,4 @@
-// import { createApp } from 'vue';
-// import { createPinia } from 'pinia';
-// import App from './App.vue';
-//
-// const app = createApp(App);
-//
-// app.use(createPinia());
-//
-// app.mount('#app');
-
-// import { Buffer } from 'buffer';
-// globalThis.Buffer = Buffer;
+import { version } from '../package.json';
 
 export type { RenderInterface } from './RenderInterface';
 // export type * from '@/typings/ui-schema';
@@ -29,4 +18,5 @@ export { generateUISchema } from '@/Commons';
 export * from '@/MapperFunctions/oneOfToEnum';
 
 import './RenderInterface';
-// import '@/typings/ui-schema';
+
+export { version };

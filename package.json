@@ -11,6 +11,8 @@
   "devDependencies": {
     "husky": "^9.0.10",
     "npm-run-all": "^4.1.5",
+    "semantic-release": "^24.2.3",
+    "semantic-release-monorepo": "^8.0.2",
     "typedoc": "^0.25.12",
     "typescript": "^5.4.3"
   },
@@ -24,6 +26,7 @@
     "build": "yarn workspaces foreach -Aptv run build",
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
     "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
-    "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build"
+    "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
+    "release": "yarn workspaces foreach -Atv semantic-release -e semantic-release-monorepo"
   }
 }
