@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="JSON Schema Draft 2020-12">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="JSON Schema Draft 2020-12" />
+              <option name="relativePathToSchema" value="https://json-schema.org/draft/2020-12/schema" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="vue-json-form/src/schemas/ui/control.schema.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="Rita Rule">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="Rita Rule" />
+              <option name="relativePathToSchema" value="https://github.com/educorvi/rita/raw/develop/rita-core/src/schema/rule.json" />
+              <option name="schemaVersion" value="JSON Schema 201,909" />
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="Rita Ruleset">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="Rita Ruleset" />
+              <option name="relativePathToSchema" value="https://github.com/educorvi/rita/raw/develop/rita-core/src/schema/schema.json" />
+              <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="UI Schema">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="UI Schema" />
+              <option name="relativePathToSchema" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
+              <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>

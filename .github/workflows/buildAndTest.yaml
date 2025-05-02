@@ -1,0 +1,58 @@
+name: Build And Test
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'feat/rewrite'
+  pull_request:
+    branches:
+      - 'master'
+      - 'feat/rewrite'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ 18, 20, 22 ]
+    name: Build on Node ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn run build
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+      - run: yarn install --immutable
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./vue-json-form
+          build: yarn run build
+          start: yarn dev
+          wait-on: 'http://localhost:5173'
+          record: true
+        env:
+          # pass GitHub token to allow accurately detecting a build vs a re-run build
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Cypress
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}

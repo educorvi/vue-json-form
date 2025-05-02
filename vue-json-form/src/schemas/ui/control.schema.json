@@ -1,0 +1,358 @@
+{
+  "$id": "https://educorvi.github.io/vue_json_form/schemas/control.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Control",
+  "description": "Contains a form element, e. g. a text input",
+  "definitions": {
+    "autocompleteValues": {
+      "type": "string",
+      "description": "Specifies what should be autocompleted by the browser. Possible values are taken from https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
+      "enum": [
+        "off",
+        "on",
+        "name",
+        "honorific-prefix",
+        "given-name",
+        "additional-name",
+        "family-name",
+        "honorific-suffix",
+        "nickname",
+        "email",
+        "username",
+        "new-password",
+        "current-password",
+        "one-time-code",
+        "organization-title",
+        "organization",
+        "street-address",
+        "shipping",
+        "billing",
+        "address-line1",
+        "address-line2",
+        "address-line3",
+        "address-level4",
+        "address-level3",
+        "address-level2",
+        "address-level1",
+        "country",
+        "country-name",
+        "postal-code",
+        "cc-name",
+        "cc-given-name",
+        "cc-additional-name",
+        "cc-family-name",
+        "cc-number",
+        "cc-exp",
+        "cc-exp-month",
+        "cc-exp-year",
+        "cc-csc",
+        "cc-type",
+        "transaction-currency",
+        "transaction-amount",
+        "language",
+        "bday",
+        "bday-day",
+        "bday-month",
+        "bday-year",
+        "sex",
+        "tel",
+        "tel-country-code",
+        "tel-national",
+        "tel-area-code",
+        "tel-local",
+        "tel-extension",
+        "impp",
+        "url",
+        "photo",
+        "webauthn"
+      ]
+    },
+    "controlFormattingOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "boolean",
+          "description": "Defines whether the fields label is shown",
+          "default": true
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "Will be shown as placeholder in form fields, if supported by field"
+        },
+        "cssClass": {
+          "type": "string",
+          "description": "The Controls CSS classes",
+          "examples": [
+            "bg-primary",
+            "bg-info specialpart"
+          ]
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Sets the visibility of the field to hidden. For example useful in combination with a DateTime field with default:\"$now\" to create a hidden timestamp."
+        },
+        "append": {
+          "type": "string",
+          "description": "Will be appended to field"
+        },
+        "prepend": {
+          "type": "string",
+          "description": "Will be prepended to field"
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Disables the field",
+          "default": false
+        },
+        "descendantControlOverrides": {
+          "description": "Allows to override UI options and ShowOn for all descendant controls of this control. The key is the scope of the descendant control. Options will be merged.",
+          "title": "Descendant Control Overrides",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "title": "Descendant Control Override",
+            "properties": {
+              "options": {
+                "$ref": "#/definitions/options"
+              },
+              "showOn": {
+                "$ref": "show_on.schema.json"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "tagOptions": {
+      "type": "object",
+      "title": "Tag Options",
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "type": "object",
+          "description": "Will be rendered as tags-Field",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Set to true to render the field as tags field",
+              "default": false
+            },
+            "pills": {
+              "type": "boolean",
+              "default": false
+            },
+            "variant": {
+              "$ref": "variants.schema.json"
+            }
+          }
+        }
+      }
+    },
+    "enumOptions": {
+      "title": "Enum Options",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "title": "Common Enum Options",
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "enumTitles": {
+              "type": "object",
+              "title": "Titles for enum",
+              "description": "If the text in a enums select field is supposed to differ from the keys, they can be specified as properties of this object. The value in the enum must be used as property name",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1
+              },
+              "patternProperties": {
+                "": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "stacked": {
+              "type": "boolean",
+              "description": "Radiobutton-/Checkbox group will be stacked if set to true",
+              "default": false
+            },
+            "displayAs": {
+              "type": "string",
+              "title": "Display As",
+              "description": "Choose how an enum should be displayed",
+              "enum": [
+                "select",
+                "radiobuttons",
+                "switches",
+                "buttons"
+              ],
+              "default": "select"
+            },
+            "buttonVariant": {
+              "$ref": "variants.schema.json"
+            }
+          }
+        }
+      ]
+    },
+    "fileUploadOptions": {
+      "title": "File Upload Options",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowMultipleFiles": {
+          "type": "boolean",
+          "description": "Allows the upload of multiple files with fileupload"
+        },
+        "acceptedFileType": {
+          "type": "string",
+          "description": "The accepted File Types",
+          "examples": [
+            "image/*",
+            "image/jpeg, image/png, image/gif",
+            ".jpg, .png, .gif"
+          ]
+        }
+      }
+    },
+    "inputOptions": {
+      "title": "Input Options",
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Options for text fields",
+      "properties": {
+        "format": {
+          "description": "Format for string fields",
+          "type": "string",
+          "enum": [
+            "text",
+            "time",
+            "date",
+            "datetime-local",
+            "email",
+            "password",
+            "search",
+            "url",
+            "tel",
+            "color",
+            "hidden"
+          ],
+          "default": "text"
+        },
+        "multi": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "integer"
+            }
+          ],
+          "default": false,
+          "description": "If set true, textarea will be shown instead of textfield. \n Alternatively can be set to the number of wanted lines"
+        },
+        "autocomplete": {
+          "$ref": "#/definitions/autocompleteValues"
+        },
+        "range": {
+          "type": "boolean",
+          "description": "If set true, a range input will be shown instead of a text input",
+          "default": false
+        },
+        "textAlign": {
+          "type": "string",
+          "description": "Set the text-align of input fields",
+          "enum": [
+            "left",
+            "right",
+            "center",
+            "start",
+            "end"
+          ]
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "title": "Options",
+      "description": "Gives multiple options to configure the element",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "title": "Field Specific Options",
+          "additionalProperties": false,
+          "oneOf": [
+            {
+              "$ref": "#/definitions/tagOptions",
+              "additionalProperties": false
+            },
+            {
+              "$ref": "#/definitions/enumOptions",
+              "additionalProperties": false
+            },
+            {
+              "$ref": "#/definitions/fileUploadOptions",
+              "additionalProperties": false
+            },
+            {
+              "$ref": "#/definitions/inputOptions",
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "$ref": "#/definitions/controlFormattingOptions",
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "Control"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "description": "A json pointer referring to the form element in the forms json schema",
+      "format": "json-pointer"
+    },
+    "options": {
+      "$ref": "#/definitions/options"
+    },
+    "showOn": {
+      "$ref": "show_on.schema.json"
+    }
+  },
+  "examples": [
+    {
+      "type": "Control",
+      "scope": "/properties/objectInJsonSchema"
+    },
+    {
+      "type": "Control",
+      "scope": "/properties/field",
+      "showOn": {
+        "scope": "/properties/referenceField",
+        "type": "EQUALS",
+        "referenceValue": "awesomeValue"
+      },
+      "options": {
+        "label": false,
+        "radiobuttons": true,
+        "stacked": true
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "scope"
+  ]
+}

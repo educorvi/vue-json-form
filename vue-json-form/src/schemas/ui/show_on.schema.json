@@ -1,0 +1,61 @@
+{
+    "$id": "https://educorvi.github.io/vue_json_form/schemas/show_on.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ShowOn property",
+    "type": "object",
+    "description": "Show field depending on value of other field",
+    "definitions": {
+        "legacyShowOn": {
+            "title": "Legacy ShowOn property",
+            "type": "object",
+            "description": "Legacy Variant of defining ShowOn property",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "The field this field depends on in object notation",
+                    "examples": [
+                        "files[0].name"
+                    ]
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Condition to be applied",
+                    "title": "ShowOn function type",
+                    "enum": [
+                        "EQUALS",
+                        "NOT_EQUALS",
+                        "GREATER",
+                        "GREATER_OR_EQUAL",
+                        "SMALLER_OR_EQUAL",
+                        "SMALLER"
+                    ]
+                },
+                "referenceValue": {
+                    "description": "The value the field from scope is compared against",
+                    "oneOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                }
+            },
+            "required": ["type", "path", "referenceValue"],
+            "additionalProperties": false
+        }
+    },
+    "oneOf": [
+        {
+            "$ref": "#/definitions/legacyShowOn"
+        },
+        {
+            "description": "Rita Rule\nSee https://educorvi.github.io/rita/rita-core/docs/schema/#/rule",
+            "$ref": "https://raw.githubusercontent.com/educorvi/rita/main/rita-core/src/schema/rule.json"
+        }
+    ]
+}

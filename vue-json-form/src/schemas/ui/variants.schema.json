@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json",
+    "title": "Color Variant",
+    "description": "Different color variants",
+    "type": "string",
+    "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "warning",
+        "danger",
+        "info",
+        "light",
+        "dark",
+        "outline-primary",
+        "outline-secondary",
+        "outline-success",
+        "outline-warning",
+        "outline-danger",
+        "outline-info",
+        "outline-light",
+        "outline-dark"
+    ]
+}

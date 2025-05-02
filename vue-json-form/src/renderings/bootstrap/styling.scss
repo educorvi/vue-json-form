@@ -1,0 +1,32 @@
+.vjf_fieldset-content {
+  border-left: 3px solid gray !important;
+  padding-left: 10px !important;
+  margin-left: 5px !important;
+}
+
+.vjf_group {
+  margin-bottom: 15px;
+}
+
+// special styling for objects in arrays
+.vjf_arrayItem > * > * > * > .vjf_object {
+  flex: 1 1 auto;
+  border-top: var(--bs-border-width) solid var(--bs-border-color);
+  border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+}
+.vjf_arrayItem > * > * > * > * > fieldset.vjf_group {
+  margin-top: 4px;
+  margin-bottom: 2px;
+  width: 100%;
+  height: min-content;
+
+  & > .vjf_fieldset-content {
+    border: none !important;
+    margin-right: 5px;
+    padding-right: 10px;
+
+    & > *:last-child .vjf_control {
+      margin-bottom: 8px !important;
+    }
+  }
+}

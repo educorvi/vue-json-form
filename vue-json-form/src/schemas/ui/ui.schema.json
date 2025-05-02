@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://educorvi.github.io/vue_json_form/schemas/ui.schema.json",
+    "title": "UI Schema",
+    "description": "Schema for the UI Schema",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "The Metaschema of the UI Schema"
+        },
+        "version": {
+            "type": "string",
+            "examples": ["2.1"],
+            "pattern": "^\\d+\\.\\d+$",
+            "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x."
+        },
+        "layout": {
+            "$ref": "layout.schema.json"
+        }
+    },
+    "required": ["version", "layout"],
+    "additionalProperties": false
+}
