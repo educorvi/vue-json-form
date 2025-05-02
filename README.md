@@ -69,6 +69,12 @@ Can be used as a webcomponent.
 If you set `action === 'request'` and `requestUrl` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
 If either option is not set, the data and the submit options will be emitted as an event with the name `submit`.
 
+Supported options are:
+- `jsonSchema`
+- `uiSchema`
+- `presetData`
+- `returnDataAsScopes`
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -81,8 +87,8 @@ If either option is not set, the data and the submit options will be emitted as 
 <!-- json: Your JSON Schema   -->
 <!-- ui: Your UI Schema       -->
 <vue-json-form
-    json='{...}'
-    ui='{...}'
+    jsonSchema='{...}'
+    uiSchema='{...}'
 ></vue-json-form>
 
 
@@ -108,7 +114,7 @@ More details on the json-schema can be found [here](https://json-schema.org/).
 #### UI-Schema
 
 The UI-schema must conform
-to [https://educorvi.github.io/vue-json-form/ui-schema-files/ui.schema.json](https://educorvi.github.io/vue_json_form/schemas/ui.schema.json).
+to [https://educorvi.github.io/vue-json-form/ui-schema-files/ui.schema.json](https://educorvi.github.io/vue-json-form/ui-schema-files/ui.schema.json).
 Its documentation can be found [here](https://educorvi.github.io/vue-json-form/ui-schema).
 
 ## Development
