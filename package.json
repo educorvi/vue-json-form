@@ -4,7 +4,6 @@
   "workspaces": [
     "demo",
     "vue-json-form",
-    "vue-json-form-bootstrap",
     "webcomponent"
   ],
   "packageManager": "yarn@4.4.0",
@@ -13,6 +12,7 @@
     "npm-run-all": "^4.1.5",
     "semantic-release": "^24.2.3",
     "semantic-release-monorepo": "^8.0.2",
+    "semantic-release-yarn": "^3.0.2",
     "typedoc": "^0.25.12",
     "typescript": "^5.4.3"
   },
@@ -27,6 +27,6 @@
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
     "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
     "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
-    "release": "yarn workspaces foreach -Atv run semantic-release -e semantic-release-monorepo"
+    "release": "yarn workspaces foreach -Atv --exclude . run semantic-release -e semantic-release-monorepo"
   }
 }

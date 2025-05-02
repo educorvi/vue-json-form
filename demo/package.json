@@ -33,6 +33,7 @@
     "sass": "^1.77.2",
     "semantic-release": "^24.2.3",
     "semantic-release-monorepo": "^8.0.2",
+    "semantic-release-yarn": "^3.0.2",
     "start-server-and-test": "^2.0.0",
     "typescript": "~5.1.6",
     "unplugin-vue-components": "^0.27.0",
