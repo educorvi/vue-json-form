@@ -10,7 +10,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "yarn run build",
+    "prepack": "yarn workspace vue-json-form run build:webcomponent",
     "build": "vue-tsc --noEmit && vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

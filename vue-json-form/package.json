@@ -25,7 +25,7 @@
   "types": "dist/vue-json-form.d.ts",
   "type": "module",
   "scripts": {
-    "prepack": "yarn run build",
+    "prepack": "yarn workspace vue-json-form run build:vue-json-form",
     "release:alpha": "yarn npm publish --access public --tag alpha",
     "dev": "vite -c vite.dev.config.ts --host",
     "build": "run-p type-check build-only",
