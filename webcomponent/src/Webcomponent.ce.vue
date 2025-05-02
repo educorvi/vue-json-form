@@ -68,5 +68,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     :return-data-as-scopes="data.returnDataAsScopes"
     :mapper-functions="mapperFunctions"
     :onSubmitForm="onSubmitForm"
-  ></vjf-comp>
+  >
+      <slot/>
+  </vjf-comp>
 </template>

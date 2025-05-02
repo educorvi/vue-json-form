@@ -100,8 +100,7 @@ import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
 
 const props = defineProps<{
     /**
-     * This function will be called when the form is submitted. If non is passed, the plain submit action will be called.
-     * To configure the plain submit action, configure the ´options.nativeSubmitOptions´ of the submitting button in the UI-Schema.
+     * This function will be called when the form is submitted.
      * @param data The data of the form
      */
     onSubmitForm: (
@@ -122,6 +121,7 @@ const props = defineProps<{
 
     /**
      * The Render Interface
+     * Changes the form's UI components
      */
     renderInterface?: RenderInterface;
 

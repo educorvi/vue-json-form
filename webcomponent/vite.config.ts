@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   build: {
     sourcemap: true,
-    minify: "terser",
+    minify: "esbuild",
     lib: {
       entry: "./src/main.ce.ts",
       name: "vue-json-form",
