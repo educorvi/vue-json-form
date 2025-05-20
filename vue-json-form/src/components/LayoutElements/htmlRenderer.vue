@@ -15,7 +15,7 @@ const html = computed(() => {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat('img', 'a'),
         allowedAttributes: {
             ...sanitizeHtml.defaults.allowedAttributes,
-            '*': ['style'],
+            '*': ['style', 'class'],
         },
     });
 });
