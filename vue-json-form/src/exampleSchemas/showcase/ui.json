@@ -76,7 +76,7 @@
                 "type": "Control",
                 "scope": "/properties/rating",
                 "options": {
-                  "range": true
+                  "range": false
                 }
               }
             ]
@@ -103,7 +103,7 @@
                     "arguments": [
                       {
                         "type": "atom",
-                        "path": "fancyness",
+                        "path": "fanciness",
                         "default": ""
                       },
                       "unicorn"
@@ -122,7 +122,7 @@
                             "path": "rating",
                             "default": 1
                           },
-                          12
+                          4
                         ]
                       },
                       0
