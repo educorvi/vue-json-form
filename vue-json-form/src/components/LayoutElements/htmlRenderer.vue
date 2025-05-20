@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const html = computed(() => {
     return sanitizeHtml(props.layoutElement.htmlData, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat('img'),
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat('img', 'a'),
         allowedAttributes: {
             ...sanitizeHtml.defaults.allowedAttributes,
             '*': ['style'],
