@@ -172,6 +172,23 @@ describe('Structure', () => {
         cy.get('button[type="submit"]').should('exist');
         cy.get('button[type="reset"]').should('exist');
     });
+
+    it('Fancy Unicorn', () => {
+        cy.get('#vjf_control_for__properties_fanciness input').eq(3).check();
+        cy.get('input[type=range]#vjf_control_for__properties_rating')
+            .invoke('val', 4)
+            .trigger('input');
+        const id = 'span.vjf_htmlRenderer > h3';
+        cy.get(id).should(
+            'have.html',
+            'You are a very fancy unicorn my friend...'
+        );
+        cy.get(id).should(
+            'have.attr',
+            'style',
+            'background-image:linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip:text;color:transparent'
+        );
+    });
 });
 
 describe('Button functions', () => {
