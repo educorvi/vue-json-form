@@ -67,8 +67,8 @@ It can, for example, be used to add buttons if you don't want to add them to the
 ### Use as a Web Component
 VJF can be used as a webcomponent.
 Bootstrap needs to be set up on the surrounding page.
-If you set `action === 'request'` and `requestUrl` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
-If neither option is set, the data and the submit options will be emitted as an event with the name `submit`.
+If you set `action === 'request'` and `request.url` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
+If one of those options is not set, the data and the submit options will be emitted as an event with the name `submit`.
 
 Supported options are:
 - `jsonSchema`
