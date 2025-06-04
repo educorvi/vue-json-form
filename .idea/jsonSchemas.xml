@@ -58,6 +58,9 @@
                   <Item>
                     <option name="path" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>
