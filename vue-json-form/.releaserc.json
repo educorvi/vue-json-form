@@ -20,7 +20,7 @@
     [
       "@semantic-release/github",
       {
-        "assets": ["dist/**"]
+        "assets": ["dist/vue-json-form*"]
       }
     ]
   ]

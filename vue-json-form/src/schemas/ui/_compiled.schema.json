@@ -15,7 +15,7 @@
         "2.1"
       ],
       "pattern": "^\\d+\\.\\d+$",
-      "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x."
+      "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So a parser for version z.x must be compatible with all versions z.y where y is <=x."
     },
     "layout": {
       "title": "Layout",
@@ -879,9 +879,37 @@
                               "print"
                             ]
                           },
-                          "requestUrl": {
-                            "type": "string",
-                            "description": "The URL to send the request to if `action` is `request`"
+                          "request": {
+                            "type": "object",
+                            "description": "Settings for request actions",
+                            "properties": {
+                              "url": {
+                                "type": "string",
+                                "description": "The URL to send the request to"
+                              },
+                              "method": {
+                                "type": "string",
+                                "enum": [
+                                  "GET",
+                                  "POST",
+                                  "PUT",
+                                  "DELETE"
+                                ],
+                                "default": "POST",
+                                "description": "The HTTP method to use for the request"
+                              },
+                              "headers": {
+                                "type": "object",
+                                "description": "Headers to include in the request",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                              "url"
+                            ]
                           }
                         }
                       }
