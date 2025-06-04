@@ -90,7 +90,7 @@ export interface UISchema {
    */
   $schema?: string;
   /**
-   * Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x.
+   * Version of the UI Schema. Changes in a major version are backwards compatible. So a parser for version z.x must be compatible with all versions z.y where y is <=x.
    */
   version: string;
   layout: Layout;
@@ -542,9 +542,24 @@ export interface SubmitOptions {
    */
   action?: string;
   /**
-   * The URL to send the request to if `action` is `request`
+   * Settings for request actions
    */
-  requestUrl?: string;
+  request?: {
+    /**
+     * The URL to send the request to
+     */
+    url: string;
+    /**
+     * The HTTP method to use for the request
+     */
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    /**
+     * Headers to include in the request
+     */
+    headers?: {
+      [k: string]: string;
+    };
+  };
   [k: string]: unknown;
 }
 /**
