@@ -13,7 +13,7 @@
             "type": "string",
             "examples": ["2.1"],
             "pattern": "^\\d+\\.\\d+$",
-            "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So for a parser for version z.x must be compatible with all versions z.y where y is <=x."
+            "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So a parser for version z.x must be compatible with all versions z.y where y is <=x."
         },
         "layout": {
             "$ref": "layout.schema.json"
