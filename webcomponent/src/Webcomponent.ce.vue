@@ -56,6 +56,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         await axios(options.request.url, {
             method: options.request.method || 'POST',
             headers: options.request.headers,
+            data
         });
     } else {
         emit('submit', data, options);
