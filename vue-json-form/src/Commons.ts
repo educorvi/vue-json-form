@@ -15,6 +15,10 @@ export function generateUUID(): string {
 
 export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 
+/**
+ * Checks if the given key has the format of an array item key.
+ * @param key
+ */
 export function isArrayItemKey(key: any): boolean {
     if (typeof key !== 'string') {
         return false;

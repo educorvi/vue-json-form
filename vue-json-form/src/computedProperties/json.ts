@@ -123,6 +123,10 @@ export function getComputedJsonElement(scope: string, failSilently = false) {
     });
 }
 
+/**
+ * Checks if the given scope has the type `array` in the JSON schema.
+ * @param scope
+ */
 export function isArray(scope: string) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
     const cleaned_scope = cleanScope(scope);
