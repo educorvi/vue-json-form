@@ -7,6 +7,115 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-44"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/auswahlfeld",
+            "options": {
+              "stacked": true
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/abhaengiges-array",
+            "showOn": {
+              "id": "ritaRule-abhaengiges-array",
+              "rule": {
+                "type": "exists",
+                "array": {
+                  "type": "atom",
+                  "path": "auswahlfeld",
+                  "default": []
+                },
+                "placeholder": "current_option_auswahlfeld",
+                "rule": {
+                  "type": "comparison",
+                  "operation": "equal",
+                  "arguments": [
+                    {
+                      "type": "atom",
+                      "path": "current_option_auswahlfeld",
+                      "default": ""
+                    },
+                    "blub"
+                  ]
+                }
+              }
+            },
+            "options": {
+              "descendantControlOverrides": {
+                "/properties/abhaengiges-array/items/properties/auswahlfeld-in-array": {
+                  "options": {
+                    "stacked": true
+                  }
+                },
+                "/properties/abhaengiges-array/items/properties/zustaendiger-arzt": {
+                  "showOn": {
+                    "id": "ritaRule-zustaendiger-arzt",
+                    "rule": {
+                      "type": "exists",
+                      "array": {
+                        "type": "atom",
+                        "path": "abhaengiges-array",
+                        "default": []
+                      },
+                      "placeholder": "$array_item1",
+                      "indexPlaceholder": "$index1",
+                      "rule": {
+                        "type": "and",
+                        "arguments": [
+                          {
+                            "type": "comparison",
+                            "operation": "equal",
+                            "arguments": [
+                              {
+                                "type": "atom",
+                                "path": "$index1",
+                                "default": -1
+                              },
+                              {
+                                "type": "atom",
+                                "path": "$selfIndices./properties/abhaengiges-array",
+                                "default": -1
+                              }
+                            ]
+                          },
+                          {
+                            "type": "exists",
+                            "array": {
+                              "type": "atom",
+                              "path": "$array_item1.auswahlfeld-in-array",
+                              "default": []
+                            },
+                            "placeholder": "current_option_$array_item1",
+                            "rule": {
+                              "type": "comparison",
+                              "operation": "equal",
+                              "arguments": [
+                                {
+                                  "type": "atom",
+                                  "path": "current_option_$array_item1",
+                                  "default": ""
+                                },
+                                "blub"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-37"
         },
         "elements": [

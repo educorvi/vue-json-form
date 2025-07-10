@@ -125,6 +125,7 @@ function checkDependentElement(
                 $selfIndices: arrayItemIndices,
                 ...formDataStore.cleanedFormData.json,
             };
+            // console.log(evalData);
             rule.evaluate(evalData)
                 .then((result) => {
                     show.value = result;

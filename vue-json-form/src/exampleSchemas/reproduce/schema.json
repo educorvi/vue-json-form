@@ -2,6 +2,42 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "auswahlfeld": {
+      "title": "auswahlfeld",
+      "type": "array",
+      "items": {
+        "enum": [
+          "blub"
+        ],
+        "type": "string"
+      }
+    },
+    "abhaengiges-array": {
+      "type": "array",
+      "title": "abhängiges array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "auswahlfeld-in-array": {
+            "title": "auswahlfeld in array",
+            "type": "array",
+            "items": {
+              "enum": [
+                "blub"
+              ],
+              "type": "string"
+            }
+          },
+          "zustaendiger-arzt": {
+            "title": "zuständiger Arzt",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "dependentRequired": {}
+      }
+    },
     "jso-37-field1": {
       "type": "string"
     },
@@ -18,7 +54,11 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["option 1", "option 2", "option 3"]
+        "enum": [
+          "option 1",
+          "option 2",
+          "option 3"
+        ]
       }
     },
     "jso-39-array": {
@@ -31,7 +71,7 @@
       "type": "object",
       "properties": {
         "test": {
-            "type": "string"
+          "type": "string"
         },
         "number": {
           "type": "number"

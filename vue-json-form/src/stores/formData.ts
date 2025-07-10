@@ -19,7 +19,10 @@ function setPropertyByScope(
     key: string,
     value: any
 ): void {
-    const TEMP_INDEX_ESCAPE = '!##!';
+    const TEMP_INDEX_ESCAPE = '!#index#!';
+    const indexRegex = new RegExp(
+        `${TEMP_INDEX_ESCAPE}\\w+${TEMP_INDEX_ESCAPE}`
+    );
 
     // Do not write anything if the value is undefined
     if (value === undefined) {
@@ -33,30 +36,25 @@ function setPropertyByScope(
         .filter((x) => x !== '')
         .filter((x, index) => !(index % 2 === 0 && x === 'properties'))
         .join('.')
-        .replace(/\[(\w+)]/g, `.${TEMP_INDEX_ESCAPE}$1`)
+        .replace(/\[(\w+)]/g, `.${TEMP_INDEX_ESCAPE}$1${TEMP_INDEX_ESCAPE}`)
         .split('.');
 
     // Create necessary nested objects or arrays and set the value at the specified path
     for (let i = 0; i < splitKey.length; i++) {
-        let k: string | number = splitKey[i];
-        const index = parseInt(k.replace(TEMP_INDEX_ESCAPE, ''));
-        if (Number.isInteger(index)) {
-            k = index;
+        let nextKey: string | number = splitKey[i];
+        if (indexRegex.test(nextKey)) {
+            nextKey = parseInt(nextKey.replace(TEMP_INDEX_ESCAPE, ''));
         }
 
         if (i === splitKey.length - 1) {
-            object[k] = value;
+            object[nextKey] = object[nextKey] || value;
         } else {
-            if (
-                Number.isInteger(
-                    parseInt(splitKey[i + 1].replace(TEMP_INDEX_ESCAPE, ''))
-                )
-            ) {
-                object[k] = object[k] || [];
+            if (indexRegex.test(splitKey[i + 1])) {
+                object[nextKey] = object[nextKey] || [];
             } else {
-                object[k] = object[k] || {};
+                object[nextKey] = object[nextKey] || {};
             }
-            object = object[k];
+            object = object[nextKey];
         }
     }
 }
@@ -123,6 +121,22 @@ function getArrayAliasIndices(
 }
 
 /**
+ * Replaces array-style keys in the specified string with bracket-style indices
+ * based on the provided key-index mapping.
+ *
+ * @param arrayIndices - A map of array item placeholder keys to their respective indices.
+ * @param key - The input string where replacements will occur.
+ * @return The modified string where all matching keys have been replaced
+ *         with their corresponding bracket-style indices.
+ */
+function cleanKey(arrayIndices: Map<string, number>, key: string): string {
+    for (const [element, index] of arrayIndices.entries()) {
+        key = key.replace(`.${element}`, `[${index}]`);
+    }
+    return key;
+}
+
+/**
  * Cleans the data by mapping the array entry values to their indices
  * @param obj - The object to clean
  * @returns The cleaned data in scopes formatting and as json object
@@ -153,29 +167,30 @@ function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
                         arrayIndices.set(element, index);
                     }
                 });
-                if (
-                    !value.filter((e) => isArrayItemKey(e)).length &&
-                    value.length > 0
-                ) {
-                    scopes[key] = [...value];
-                }
             }
         }
     }
 
-    // Replace the placeholder in the scopes with the actual index
+    // If an array has an array value and does not contain placeholder keys, it can be assigned as is
+    for (const arrayKey of arrays) {
+        const value = obj[arrayKey];
+        if (
+            Array.isArray(value) &&
+            !value.filter((e: any) => isArrayItemKey(e)).length &&
+            value.length > 0
+        ) {
+            scopes[cleanKey(arrayIndices, arrayKey)] = [...value];
+        }
+    }
+
+    // Replace the placeholders in the scopes with the actual index
     for (const [key, value] of Object.entries(obj)) {
-        if (!isArray(key)) {
-            let newKey = key;
-            for (const [element, index] of arrayIndices.entries()) {
-                newKey = newKey.replace(`.${element}`, `[${index}]`);
-            }
-            scopes[newKey] = value;
+        if (!isArray(key) && value !== undefined) {
+            scopes[cleanKey(arrayIndices, key)] = value;
         }
     }
 
     const json = reduceToObject(scopes);
-    // const json = {};
     return { scopes, json };
 }
 
