@@ -85,7 +85,8 @@
               "type": "string"
             },
             "label": {
-              "type": "string"
+              "type": "string",
+              "default": "?"
             },
             "variant": {
               "type": "string",
