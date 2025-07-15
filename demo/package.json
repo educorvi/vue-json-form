@@ -2,6 +2,7 @@
   "name": "demo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "pre-commit": "echo 'No pre commit configured for demo'",
@@ -29,7 +30,7 @@
   "devDependencies": {
     "@tsconfig/node18": "^18.2.0",
     "@types/node": "^18.17.5",
-    "@vitejs/plugin-vue": "^4.3.1",
+    "@vitejs/plugin-vue": "^6.0.0",
     "@vue/tsconfig": "^0.4.0",
     "cypress": "^12.17.4",
     "npm-run-all": "^4.1.5",

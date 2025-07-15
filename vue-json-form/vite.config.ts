@@ -48,7 +48,7 @@ export default defineConfig({
     },
     plugins: [
         nodePolyfills({
-            include: ['path', 'util', 'process'],
+            include: ['path', 'util', 'process', 'buffer'],
             globals: {
                 process: true,
                 global: false,
