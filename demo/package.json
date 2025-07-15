@@ -19,7 +19,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@educorvi/vue-json-form": "workspace:^",
+    "@educorvi/vue-json-form": "beta",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.16.6",
     "bootswatch": "^5.3.3",
