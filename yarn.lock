@@ -756,7 +756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/vue-json-form-schemas@npm:~0.0.0, @educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:schemas":
+"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:schemas"
   dependencies:
@@ -795,28 +795,6 @@ __metadata:
     vue-tsc: "npm:^2.0.17"
   languageName: unknown
   linkType: soft
-
-"@educorvi/vue-json-form@npm:beta":
-  version: 3.0.0-beta.6
-  resolution: "@educorvi/vue-json-form@npm:3.0.0-beta.6"
-  dependencies:
-    "@apidevtools/json-schema-ref-parser": "npm:^11.6.1"
-    "@educorvi/rita": "npm:^5.4.3"
-    "@educorvi/vue-json-form-schemas": "npm:~0.0.0"
-    "@vueuse/core": "npm:^10.9.0"
-    bootstrap: "npm:^5.3.3"
-    bootstrap-vue-next: "npm:0.28.5"
-    buffer: "npm:^6.0.3"
-    deepmerge: "npm:^4.3.1"
-    json-pointer: "npm:^0.6.2"
-    pinia: "npm:^2.1.6"
-    sanitize-html: "npm:^2.17.0"
-    uuid: "npm:^10.0.0"
-    vue: "npm:^3.5.17"
-    vuedraggable: "npm:^4.1.0"
-  checksum: 10/208a1131dd8ace1f76e0d962123a401f7849829d5a6e81f3de9cc020250ef0c482acf2d5c89fea728c49e136f7f743f6ad8250ca1ece1de68a55b9fe931d461c
-  languageName: node
-  linkType: hard
 
 "@educorvi/vue-json-form@workspace:^, @educorvi/vue-json-form@workspace:vue-json-form":
   version: 0.0.0-use.local
@@ -5972,7 +5950,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "demo@workspace:demo"
   dependencies:
-    "@educorvi/vue-json-form": "npm:beta"
+    "@educorvi/vue-json-form": "workspace:^"
     "@tsconfig/node18": "npm:^18.2.0"
     "@types/node": "npm:^18.17.5"
     "@vitejs/plugin-vue": "npm:^6.0.0"
