@@ -7,11 +7,10 @@
   "types": "dist/vue-json-form-schemas.d.ts",
   "type": "module",
   "files": [
-    "dist",
-    "src/ui",
-    "src/json-schema_draft7.json"
+    "dist"
   ],
   "scripts": {
+    "prepack": "yarn run build",
     "build": "yarn run generateTypings && yarn run mergeSchema && vite build",
     "mergeSchema": "node mergeSchema.cjs",
     "generateTypings": "run-p 'generateTypings:*'",
