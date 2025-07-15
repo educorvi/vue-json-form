@@ -10,7 +10,7 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
-import type { ColorVariant } from '@/typings/ui-schema';
+import type { ColorVariant } from '@educorvi/vue-json-forn-schemas';
 
 const { formData } = storeToRefs(useFormDataStore());
 

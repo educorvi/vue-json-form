@@ -1,12 +1,4 @@
-import type {
-    ControlFormattingOptions,
-    EnumOptions,
-    FileUploadOptions,
-    InputOptions,
-    LayoutElement,
-    Options,
-    TagOptions,
-} from '@/typings/ui-schema';
+import type { LayoutElement, Options } from '@educorvi/vue-json-form-schemas';
 import { hasOption } from '@/typings/typeValidators';
 import type { FlatOptions } from '@/typings/customTypes';
 

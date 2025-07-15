@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://educorvi.github.io/vue_json_form/schemas/variants.schema.json",
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/variants.schema.json",
     "title": "Color Variant",
     "description": "Different color variants",
     "type": "string",

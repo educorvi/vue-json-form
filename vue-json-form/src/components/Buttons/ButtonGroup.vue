@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Buttongroup } from '@/typings/ui-schema';
+import type { Buttongroup } from '@educorvi/vue-json-form-schemas';
 import { getComponent } from '@/stores/formStructure';
 
 defineProps<{

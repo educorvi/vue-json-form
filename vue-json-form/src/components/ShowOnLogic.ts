@@ -5,7 +5,7 @@ import type {
     LayoutElement,
     LegacyShowOnProperty,
     ShowOnFunctionType,
-} from '@/typings/ui-schema';
+} from '@educorvi/vue-json-forn-schemas';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import {

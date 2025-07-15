@@ -17,7 +17,11 @@
         "scope": "/properties/name",
         "options": {
           "placeholder": "Full Name",
-          "autocomplete": "name"
+          "autocomplete": "name",
+          "help": {
+            "text": "Please enter your full name",
+            "label": "?"
+          }
         }
       },
       {
@@ -171,9 +175,9 @@
             "options": {
               "descendantControlOverrides": {
                 "/properties/testArray/items": {
-                    "options": {
-                        "placeholder": "This is a placeholder"
-                    }
+                  "options": {
+                    "placeholder": "This is a placeholder"
+                  }
                 }
               }
             }

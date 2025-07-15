@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Layout } from '@/typings/ui-schema';
+import type { Layout } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import { computedCssClass } from '@/computedProperties/css';
 import { computed } from 'vue';

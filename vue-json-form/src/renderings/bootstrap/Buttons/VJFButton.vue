@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Button } from '@/typings/ui-schema';
+import type { Button } from '@educorvi/vue-json-forn-schemas';
 import { BButton, BSpinner } from 'bootstrap-vue-next';
 import { computedCssClass } from '@/computedProperties/css';
 import { getOption } from '@/utilities';

@@ -9,7 +9,7 @@ import uiSchema from './ui.schema.json';
 import variantsSchema from './variants.schema.json';
 import RefParser from '@apidevtools/json-schema-ref-parser';
 
-const allSchemas = [
+export const allSchemas = [
     buttonSchema,
     buttongroupSchema,
     controlSchema,
@@ -21,7 +21,7 @@ const allSchemas = [
     variantsSchema,
 ];
 
-const allSchemasWithIncludedRita = [
+export const allSchemasWithIncludedRita = [
     buttonSchema,
     buttongroupSchema,
     controlSchema,
@@ -32,4 +32,3 @@ const allSchemasWithIncludedRita = [
     uiSchema,
     variantsSchema,
 ];
-export { allSchemas, allSchemasWithIncludedRita };

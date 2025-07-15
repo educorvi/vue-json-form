@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LayoutElement } from '@/typings/ui-schema';
+import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
 import { computed, shallowRef, markRaw, watch } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
@@ -17,7 +17,7 @@ import Buttons from '@/components/Buttons';
 import { getComponent } from '@/stores/formStructure';
 import { computedShowOnLogic } from '@/components/ShowOnLogic';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
-import type { Control } from '@/typings/ui-schema';
+import type { Control } from '@educorvi/vue-json-form-schemas';
 
 const showOnWrapper = getComponent('showOnWrapper');
 

@@ -4,11 +4,11 @@ import {
     layoutProviderKey,
     savePathProviderKey,
 } from '@/components/ProviderKeys';
-import type { Control } from '@/typings/ui-schema';
+import type { Control } from '@educorvi/vue-json-forn-schemas';
 import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-forn-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 

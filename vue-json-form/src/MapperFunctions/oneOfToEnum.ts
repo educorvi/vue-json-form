@@ -1,8 +1,8 @@
 import type {
     CoreSchemaMetaSchema,
     CoreSchemaMetaSchema2,
-} from '@/typings/json-schema';
-import type { Control, TitlesForEnum } from '@/typings/ui-schema';
+} from '@educorvi/vue-json-form-schemas';
+import type { Control, TitlesForEnum } from '@educorvi/vue-json-form-schemas';
 
 type customOneOfElement = CoreSchemaMetaSchema & {
     const: string;

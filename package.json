@@ -4,7 +4,8 @@
   "workspaces": [
     "demo",
     "vue-json-form",
-    "webcomponent"
+    "webcomponent",
+    "schemas"
   ],
   "packageManager": "yarn@4.4.0",
   "devDependencies": {
@@ -21,15 +22,16 @@
   "scripts": {
     "prepare": "husky",
     "commitlint": "commitlint --edit",
-    "doc": "run-p -l \"doc:**\"",
-    "doc:ui": "rm -rf ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc vue-json-form/src/schemas/ui/_compiled.schema.json ./docs/ui-schema/index.html",
+    "doc": "yarn run build:schemas && run-p -l \"doc:**\"",
+    "doc:ui": "rm -rf ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc ./schemas/src/generated/ui-merged.schema.json ./docs/ui-schema/index.html",
     "doc:demo": "yarn run build:demo && rm -rf ./docs/demo && cp -r ./demo/dist ./docs/demo",
-    "doc:ui-schema-files": "rm -rf ./docs/ui-schema-files && cp -r ./vue-json-form/src/schemas/ui ./docs/ui-schema-files",
+    "doc:ui-schema-files": "rm -rf ./docs/schemas && cp -r ./schemas/src/ui ./docs/schemas",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
     "build": "yarn workspaces foreach -Aptv run build",
     "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
     "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
     "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
+    "build:schemas": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-schemas run build",
     "release": "yarn workspaces foreach -Atv --exclude . run semantic-release -e semantic-release-monorepo"
   }
 }

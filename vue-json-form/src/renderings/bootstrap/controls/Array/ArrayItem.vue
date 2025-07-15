@@ -2,7 +2,10 @@
 import { computed, provide } from 'vue';
 import { savePathOverrideProviderKey } from '@/components/ProviderKeys';
 import Control from '@/components/LayoutElements/Control.vue';
-import type { Control as ControlType, Layout } from '@/typings/ui-schema';
+import type {
+    Control as ControlType,
+    Layout,
+} from '@educorvi/vue-json-forn-schemas';
 import { BButton } from 'bootstrap-vue-next';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';

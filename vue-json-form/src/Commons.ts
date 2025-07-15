@@ -1,5 +1,7 @@
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import type { UISchema } from '@/typings/ui-schema';
+import type {
+    CoreSchemaMetaSchema,
+    UISchema,
+} from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Buttongroup } from '@/typings/ui-schema';
+import type { Buttongroup } from '@educorvi/vue-json-forn-schemas';
 import { BButtonGroup } from 'bootstrap-vue-next';
 import VJFButton from '@/components/Buttons/VJFButton.vue';
 

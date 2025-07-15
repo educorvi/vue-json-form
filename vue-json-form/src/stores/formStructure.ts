@@ -1,8 +1,11 @@
 import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
 import { type Ref, shallowRef } from 'vue';
 import { ref } from 'vue';
-import type { Layout, UISchema } from '@/typings/ui-schema';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type {
+    Layout,
+    UISchema,
+    CoreSchemaMetaSchema,
+} from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/RenderInterface';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { MapperFunction } from '@/typings/customTypes';

@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
+import {
+    BBadge,
+    BFormGroup,
+    BInputGroup,
+    BInputGroupText,
+    BPopover,
+} from 'bootstrap-vue-next';
 import { computed, useSlots } from 'vue';
 import { injectJsonData } from '@/computedProperties/json';
 import { hasItems, isTagsConfig } from '@/typings/typeValidators';
@@ -43,6 +49,26 @@ const hasPrependOrAppend = computed(() => {
         :label-for="props.labelFor"
         :description="jsonElement.description"
     >
+        <template #label>
+            <span v-if="!hideLabel">
+                {{ props.label }}
+                <BPopover v-if="layoutElement.options?.help?.text">
+                    <template #target>
+                        <BBadge
+                            pill
+                            :variant="
+                                layoutElement.options.help.variant ?? 'primary'
+                            "
+                            >{{
+                                layoutElement.options.help.label ?? 'i'
+                            }}</BBadge
+                        ></template
+                    >
+                    <!--                    <template #title>Popover Title</template>-->
+                    {{ layoutElement.options.help.text }}
+                </BPopover>
+            </span>
+        </template>
         <BInputGroup v-if="hasPrependOrAppend">
             <!--        Content is prepended to the input field-->
             <slot name="prepend">

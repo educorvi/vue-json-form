@@ -79,8 +79,8 @@ import {
     storeToRefs,
 } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
-import type { SubmitOptions, UISchema } from '@/typings/ui-schema';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { SubmitOptions, UISchema } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLRenderer } from '@/typings/ui-schema';
+import type { HTMLRenderer } from '@educorvi/vue-json-forn-schemas';
 import sanitizeHtml from 'sanitize-html';
 import { computed } from 'vue';
 
