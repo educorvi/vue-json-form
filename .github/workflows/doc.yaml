@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+  workflow_call:
 permissions:
   pages: write
   id-token: write

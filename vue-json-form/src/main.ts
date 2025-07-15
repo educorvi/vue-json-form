@@ -12,7 +12,7 @@ export { VueJsonForm };
 export type * from '@educorvi/vue-json-form-schemas';
 export type * from '@/typings/customTypes';
 export * from '@/typings/typeValidators';
-export { generateUISchema } from '@/Commons';
+export { generateUISchema, SUPPORTED_UISCHEMA_VERSION as supportedUiSchemaVersion } from '@/Commons';
 
 export * from '@/MapperFunctions/oneOfToEnum';
 

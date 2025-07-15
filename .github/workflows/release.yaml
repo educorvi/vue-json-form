@@ -24,3 +24,8 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  rebuild-doc-and-demo:
+    needs:
+      - release
+    uses: ./.github/workflows/doc.yaml
+    secrets: inherit

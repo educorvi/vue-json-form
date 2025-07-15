@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { version } from '../../package.json';
-import { version as vjfVersion } from '@educorvi/vue-json-form';
+import { version as vjfVersion, supportedUiSchemaVersion } from '@educorvi/vue-json-form';
 
 const versions = [
     {
-        component: 'Demo',
-        version: version,
-    },
-    {
         component: 'Vue JSON Form',
         version: vjfVersion,
+    },
+    {
+        component: 'Schema Version',
+        version: supportedUiSchemaVersion
     },
 ];
 </script>
@@ -32,5 +31,5 @@ const versions = [
     </ul>
     <hr>
     <h2>Versions</h2>
-    <b-table :items="versions"/>
+    <b-table :items="versions" />
 </template>
