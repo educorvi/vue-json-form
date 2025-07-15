@@ -77,6 +77,25 @@
           "description": "Defines whether the fields label is shown",
           "default": true
         },
+        "help": {
+          "type": "object",
+          "description": "Help text popover",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "variant": {
+              "type": "string",
+              "description": "The color of the help text popover",
+              "default": "primary",
+              "$ref": "variants.schema.json"
+            }
+          },
+          "required": ["text"]
+        },
         "placeholder": {
           "type": "string",
           "description": "Will be shown as placeholder in form fields, if supported by field"

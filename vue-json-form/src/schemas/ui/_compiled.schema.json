@@ -128,6 +128,46 @@
                         "description": "Defines whether the fields label is shown",
                         "default": true
                       },
+                      "help": {
+                        "type": "object",
+                        "description": "Help text popover",
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "variant": {
+                            "type": "string",
+                            "description": "The color of the help text popover",
+                            "default": "primary",
+                            "$schema": "http://json-schema.org/draft-07/schema#",
+                            "title": "Color Variant",
+                            "enum": [
+                              "primary",
+                              "secondary",
+                              "success",
+                              "warning",
+                              "danger",
+                              "info",
+                              "light",
+                              "dark",
+                              "outline-primary",
+                              "outline-secondary",
+                              "outline-success",
+                              "outline-warning",
+                              "outline-danger",
+                              "outline-info",
+                              "outline-light",
+                              "outline-dark"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "text"
+                        ]
+                      },
                       "placeholder": {
                         "type": "string",
                         "description": "Will be shown as placeholder in form fields, if supported by field"

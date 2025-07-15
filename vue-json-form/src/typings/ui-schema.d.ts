@@ -40,6 +40,26 @@ export type EnumOptions = CommonEnumOptions;
  */
 export type DisplayAs = "select" | "radiobuttons" | "switches" | "buttons";
 /**
+ * The color of the help text popover
+ */
+export type ColorVariant1 =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "light"
+  | "dark"
+  | "outline-primary"
+  | "outline-secondary"
+  | "outline-success"
+  | "outline-warning"
+  | "outline-danger"
+  | "outline-info"
+  | "outline-light"
+  | "outline-dark";
+/**
  * Show field depending on value of other field
  */
 export type ShowOnProperty = LegacyShowOnProperty | Rule;
@@ -278,6 +298,15 @@ export interface ControlFormattingOptions {
    * Defines whether the fields label is shown
    */
   label?: boolean;
+  /**
+   * Help text popover
+   */
+  help?: {
+    text: string;
+    label?: string;
+    variant?: ColorVariant1;
+    [k: string]: unknown;
+  };
   /**
    * Will be shown as placeholder in form fields, if supported by field
    */
