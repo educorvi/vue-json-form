@@ -40,6 +40,7 @@ jobs:
         with:
           cache: yarn
       - run: yarn install --immutable
+      - run: yarn run build:vue-json-form
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
