@@ -42,7 +42,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.6.1",
     "@educorvi/rita": "^5.4.3",
-    "@educorvi/vue-json-form-schemas": "workspace:~",
+    "@educorvi/vue-json-form-schemas": "workspace:*",
     "@vueuse/core": "^10.9.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.28.5",
