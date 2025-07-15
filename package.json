@@ -22,7 +22,7 @@
   "scripts": {
     "prepare": "husky",
     "commitlint": "commitlint --edit",
-    "doc": "run-p -l \"doc:**\"",
+    "doc": "yarn run build:schemas && run-p -l \"doc:**\"",
     "doc:ui": "rm -rf ./docs/ui-schema && mkdir -p ./docs/ui-schema && generate-schema-doc ./schemas/src/generated/ui-merged.schema.json ./docs/ui-schema/index.html",
     "doc:demo": "yarn run build:demo && rm -rf ./docs/demo && cp -r ./demo/dist ./docs/demo",
     "doc:ui-schema-files": "rm -rf ./docs/schemas && cp -r ./schemas/src/ui ./docs/schemas",
