@@ -1,9 +1,9 @@
 # @educorvi/vue-json-form
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/educorvi/vue-json-form)](https://github.com/educorvi/vue-json-form/releases/latest)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form)](https://www.npmjs.com/package/@educorvi/vue-json-form)
 [![Build And Test](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml/badge.svg?branch=master)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
-[![GitHub issues](https://img.shields.io/github/issues/educorvi/vue_json_form)](https://github.com/educorvi/vue_json_form/issues)
+[![GitHub issues](https://img.shields.io/github/issues/educorvi/vue-json-form)](https://github.com/educorvi/vue-json-form/issues)
 
 #### Automatically generates forms from a JSON schema and an optional UI schema.
 

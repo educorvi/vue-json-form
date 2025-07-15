@@ -6,7 +6,7 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computed } from 'vue';
 import { hasEnumTitlesOptions } from '@/typings/typeValidators';
-import type { TitlesForEnum } from '@/typings/ui-schema';
+import type { TitlesForEnum } from '@educorvi/vue-json-forn-schemas';
 
 const { formData } = storeToRefs(useFormDataStore());
 

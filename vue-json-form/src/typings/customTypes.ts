@@ -3,8 +3,8 @@ import type {
     Layout,
     LayoutElement,
     Options,
-} from '@/typings/ui-schema';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+    CoreSchemaMetaSchema,
+} from '@educorvi/vue-json-form-schemas';
 
 /**
  * A layout element with child elements

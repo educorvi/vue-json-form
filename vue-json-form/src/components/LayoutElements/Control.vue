@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Control } from '@/typings/ui-schema';
+import type { Control } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { getOption } from '@/utilities';
@@ -70,7 +70,7 @@ import {
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 
 import { hasOption, isInputType, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';

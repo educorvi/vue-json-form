@@ -8,15 +8,14 @@ import type {
     ShowOnProperty,
     TagOptions,
     TitlesForEnum,
-} from '@/typings/ui-schema';
+} from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
 } from '@/typings/customTypes';
-import type { CoreSchemaMetaSchema } from '@/typings/json-schema';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import type { BaseColorVariant, InputType } from 'bootstrap-vue-next';
-import layoutElements from '@/components/LayoutElements';
 
 /**
  * Checks if the given element is dependent on another element

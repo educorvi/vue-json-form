@@ -1,5 +1,5 @@
 {
-  "$id": "https://educorvi.github.io/vue_json_form/schemas/control.schema.json",
+  "$id": "https://educorvi.github.io/vue-json-form/schemas/control.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Control",

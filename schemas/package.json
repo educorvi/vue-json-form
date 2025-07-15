@@ -1,0 +1,30 @@
+{
+  "name": "@educorvi/vue-json-form-schemas",
+  "version": "0.0.0",
+  "description": "Schemas for Vue JSON Form",
+  "main": "dist/vue-json-form-schemas.umd.cjs",
+  "module": "dist/vue-json-form-schemas.js",
+  "types": "dist/vue-json-form-schemas.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "yarn run generateTypings && yarn run mergeSchema && vite build",
+    "mergeSchema": "node mergeSchema.cjs",
+    "generateTypings": "run-p 'generateTypings:*'",
+    "generateTypings:jsonSchema": "json2ts -i src/json-schema_draft7.json -o src/generated/json-schema.d.ts",
+    "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts"
+  },
+  "packageManager": "yarn@4.4.0",
+  "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^14.1.0"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "^13.1.2",
+    "rollup-plugin-copy": "^3.5.0",
+    "semantic-release": "^24.2.3",
+    "semantic-release-monorepo": "^8.0.2",
+    "semantic-release-yarn": "^3.0.2",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-static-copy": "^3.1.1"
+  }
+}

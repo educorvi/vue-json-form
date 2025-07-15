@@ -1,5 +1,5 @@
 {
-    "$id": "https://educorvi.github.io/vue_json_form/schemas/buttongroup.schema.json",
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/buttongroup.schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Buttongroup",
     "description": "Used to group buttons",

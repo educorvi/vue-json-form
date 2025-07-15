@@ -1,0 +1,27 @@
+{
+  "branches": [
+    {
+      "name": "master"
+    },
+    {
+      "name": "2.x",
+      "channel": "2.x"
+    },
+    {
+      "name": "beta",
+      "prerelease": true,
+      "channel": "beta"
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "semantic-release-yarn",
+    [
+      "@semantic-release/github",
+      {
+        "assets": ["dist/**"]
+      }
+    ]
+  ]
+}

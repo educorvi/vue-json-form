@@ -1,5 +1,5 @@
 {
-    "$id": "https://educorvi.github.io/vue_json_form/schemas/button.schema.json",
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/button.schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Button",
     "description": "Used to put a button into the form",
