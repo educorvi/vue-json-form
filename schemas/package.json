@@ -1,6 +1,7 @@
 {
   "name": "@educorvi/vue-json-form-schemas",
   "version": "0.0.0",
+  "private": false,
   "description": "Schemas for Vue JSON Form",
   "main": "dist/vue-json-form-schemas.umd.cjs",
   "module": "dist/vue-json-form-schemas.js",
