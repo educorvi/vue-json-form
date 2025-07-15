@@ -6,6 +6,11 @@
   "module": "dist/vue-json-form-schemas.js",
   "types": "dist/vue-json-form-schemas.d.ts",
   "type": "module",
+  "files": [
+    "dist",
+    "src/ui",
+    "src/json-schema_draft7.json"
+  ],
   "scripts": {
     "build": "yarn run generateTypings && yarn run mergeSchema && vite build",
     "mergeSchema": "node mergeSchema.cjs",
