@@ -75,6 +75,10 @@ async function setSchema(reproduce_val: boolean) {
                 test: 'ABC',
                 number: 14,
             },
+            arrInArrPres: [
+                ['item1', 'item2'],
+                ['item3', 'item4'],
+            ],
         };
         jsonSchema.value = json_repro;
         uiSchema.value = ui_repro;

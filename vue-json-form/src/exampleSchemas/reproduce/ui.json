@@ -13,6 +13,14 @@
           {
             "type": "Control",
             "scope": "/properties/arrInArr"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/arrInArrPres"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/arrInArrDef"
           }
         ]
       },

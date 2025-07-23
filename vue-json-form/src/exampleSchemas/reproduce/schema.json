@@ -4,13 +4,43 @@
   "properties": {
     "arrInArr": {
       "title": "Array in Array",
+      "type": "array",
+      "items": {
         "type": "array",
         "items": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
+      }
+    },
+    "arrInArrPres": {
+      "title": "Array in Array (with preset data)",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "arrInArrDef": {
+      "title": "Array in Array (with default)",
+      "type": "array",
+      "default": [
+        [
+          "item1",
+          "item2"
+        ],
+        [
+          "item3",
+          "item4"
+        ]
+      ],
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
     },
     "auswahlfeld": {
       "title": "auswahlfeld",
