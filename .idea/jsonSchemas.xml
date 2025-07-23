@@ -51,13 +51,10 @@
             <SchemaInfo>
               <option name="generatedName" value="New Schema" />
               <option name="name" value="UI Schema" />
-              <option name="relativePathToSchema" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
+              <option name="relativePathToSchema" value="schemas/src/generated/ui-merged.schema.json" />
               <option name="schemaVersion" value="JSON Schema 201,909" />
               <option name="patterns">
                 <list>
-                  <Item>
-                    <option name="path" value="vue-json-form/src/schemas/ui/_compiled.schema.json" />
-                  </Item>
                   <Item>
                     <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.json" />
                   </Item>

@@ -1,9 +1,29 @@
 {
-  "$schema": "../../schemas/ui/ui.schema.json",
+  "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
   "version": "2.0",
   "layout": {
     "type": "VerticalLayout",
     "elements": [
+      {
+        "type": "Group",
+        "options": {
+          "label": "JSO-31"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/arrInArr"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/arrInArrPres"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/arrInArrDef"
+          }
+        ]
+      },
       {
         "type": "Group",
         "options": {

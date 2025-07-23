@@ -36,17 +36,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:^11.6.1":
-  version: 11.6.1
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.6.1"
-  dependencies:
-    "@jsdevtools/ono": "npm:^7.1.3"
-    "@types/json-schema": "npm:^7.0.15"
-    js-yaml: "npm:^4.1.0"
-  checksum: 10/4bb1859ea900cbdb1bc1531d32d791948d29b3af5b7d5abc28d00c41e5e2423f6a524d61953b093ba6fcfdf560e4d969bcd07ef54c6903400c8e947f744f89f9
-  languageName: node
-  linkType: hard
-
 "@apidevtools/json-schema-ref-parser@npm:^14.1.0":
   version: 14.1.0
   resolution: "@apidevtools/json-schema-ref-parser@npm:14.1.0"
@@ -800,7 +789,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
-    "@apidevtools/json-schema-ref-parser": "npm:^11.6.1"
     "@educorvi/rita": "npm:^5.4.3"
     "@educorvi/vue-json-form-schemas": "workspace:*"
     "@rushstack/eslint-patch": "npm:^1.3.2"

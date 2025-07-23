@@ -9,6 +9,9 @@ on:
     branches:
       - 'master'
       - 'feat/rewrite'
+  merge_group:
+    types:
+      - checks_requested
   workflow_dispatch:
 
 jobs:

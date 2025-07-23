@@ -8,12 +8,27 @@
   margin-bottom: 15px;
 }
 
-// special styling for objects in arrays
-.vjf_arrayItem > * > * > * > .vjf_object {
-  flex: 1 1 auto;
-  border-top: var(--bs-border-width) solid var(--bs-border-color);
-  border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+// special styling for objects/arrays in arrays
+.vjf_arrayItem > * > * > * {
+  & > .vjf_object, .vjf_array {
+    flex: 1 1 auto;
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+  }
 }
+
+.vjf_arrayItem > * > * > .input-group> *:nth-child(2) {
+  flex-grow: 1;
+  &>.vjf_array {
+    padding: 0 5px 5px;
+
+    // reduce spacing between array items in 2d array
+    & > * > * > * > * {
+      margin-bottom: 4px !important;
+    }
+  }
+}
+
 .vjf_arrayItem > * > * > * > * > fieldset.vjf_group {
   margin-top: 4px;
   margin-bottom: 2px;
