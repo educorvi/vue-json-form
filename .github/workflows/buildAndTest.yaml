@@ -9,6 +9,7 @@ on:
     branches:
       - 'master'
       - 'feat/rewrite'
+      - 'beta'
   workflow_dispatch:
 
 jobs:
