@@ -3,17 +3,21 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import {
     arrayContainsValue,
+    cleanScope,
     computedLabel,
+    getComputedJsonElement,
+    getComputedParentJsonPath,
     injectJsonData,
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
 import { ref, nextTick, onMounted, computed, onBeforeMount } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -110,12 +114,18 @@ const allowRemoveField = computed(() => {
     return formData.value[savePath].length > (jsonElement.minItems || 0);
 });
 
+const isArrayItem = computed(() => {
+    return isArrayItemKey(layoutElement.scope.split('.').pop() || '');
+});
+
 onBeforeMount(initArray);
 </script>
 
 <template>
     <div>
-        <label :for="id" class="large-label">{{ label }}</label>
+        <label :for="id" class="large-label" v-if="!isArrayItem">{{
+            label
+        }}</label>
         <div
             class="vjf_array"
             v-if="

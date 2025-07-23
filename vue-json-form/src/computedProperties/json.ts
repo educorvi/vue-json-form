@@ -20,6 +20,15 @@ export function injectJsonData() {
     return { layoutElement, jsonElement, savePath };
 }
 
+export function getParentJsonPath(scope: string): string | null {
+    let path = pointer.parse(scope);
+
+    if (path.length < 1) return null;
+
+    path = path.slice(0, -1);
+    return pointer.compile(path);
+}
+
 export function getComputedParentJsonPath(layout: Control) {
     return computed((): string | null => {
         if (!layout) throw new Error('No layout found');
@@ -89,7 +98,10 @@ export function cleanScope(
     );
 }
 
-export function getComputedJsonElement(scope: string, failSilently = false) {
+export function getComputedJsonElement(
+    scope: string,
+    failSilently = false
+): ComputedRef<CoreSchemaMetaSchema | null> {
     return computed(() => {
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());

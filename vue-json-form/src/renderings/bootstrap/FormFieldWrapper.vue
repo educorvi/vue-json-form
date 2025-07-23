@@ -7,7 +7,12 @@ import {
     BPopover,
 } from 'bootstrap-vue-next';
 import { computed, useSlots } from 'vue';
-import { injectJsonData } from '@/computedProperties/json';
+import {
+    getComputedJsonElement,
+    getComputedParentJsonPath,
+    getParentJsonPath,
+    injectJsonData,
+} from '@/computedProperties/json';
 import { hasItems, isTagsConfig } from '@/typings/typeValidators';
 
 const props = defineProps<{
