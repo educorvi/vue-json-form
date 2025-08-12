@@ -751,6 +751,7 @@ __metadata:
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:^14.1.0"
     json-schema-to-typescript: "npm:^13.1.2"
+    npm-run-all: "npm:^4.1.5"
     rollup-plugin-copy: "npm:^3.5.0"
     semantic-release: "npm:^24.2.3"
     semantic-release-monorepo: "npm:^8.0.2"
