@@ -1,9 +1,9 @@
-name: Deploy to pages
+name: Deploy documentation and demo to pages
 
 on:
   push:
     branches:
-      - 'master'
+      - 'release/latest'
   workflow_call:
 permissions:
   pages: write

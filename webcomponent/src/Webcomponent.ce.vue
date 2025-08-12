@@ -5,7 +5,7 @@ import {
 import { computed, type ComputedRef } from 'vue';
 import { oneOfToEnum } from '@educorvi/vue-json-form/src/MapperFunctions/oneOfToEnum';
 import type { MapperFunction } from '@educorvi/vue-json-form/src/typings/customTypes';
-import type { SubmitOptions } from '@educorvi/vue-json-form/src/typings/ui-schema';
+import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
 
 const props = defineProps<{
