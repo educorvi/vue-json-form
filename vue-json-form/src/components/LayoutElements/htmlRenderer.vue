@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLRenderer } from '@educorvi/vue-json-forn-schemas';
+import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import sanitizeHtml from 'sanitize-html';
 import { computed } from 'vue';
 
@@ -12,7 +12,11 @@ const props = defineProps<{
 
 const html = computed(() => {
     return sanitizeHtml(props.layoutElement.htmlData, {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat('img', 'a'),
+        allowedTags: sanitizeHtml.defaults.allowedTags.concat(
+            'img',
+            'a',
+            'svg'
+        ),
         allowedAttributes: {
             ...sanitizeHtml.defaults.allowedAttributes,
             '*': ['style', 'class'],
