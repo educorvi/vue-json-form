@@ -1,32 +1,11 @@
 {
-  "branches": [
-    {
-      "name": "release/latest"
-    },
-    {
-      "name": "2.x",
-      "channel": "2.x"
-    },
-    {
-      "name": "release/beta",
-      "prerelease": true,
-      "channel": "beta"
-    }
-  ],
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
-    "semantic-release-yarn",
     [
       "@semantic-release/github",
       {
-        "assets": ["dist/vue-json-form*"]
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "analyzeCommitsCmd": "./../.github/setOldVersion.sh ${lastRelease.version}"
+        "assets": [
+          "dist/vue-json-form*"
+        ]
       }
     ]
   ]
