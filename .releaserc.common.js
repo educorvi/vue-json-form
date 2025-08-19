@@ -1,0 +1,27 @@
+module.exports = {
+    "branches": [
+        {
+            "name": "release/latest"
+        },
+        {
+            "name": "release/2.x",
+            "channel": "2.x"
+        },
+        {
+            "name": "release/beta",
+            "prerelease": "beta",
+            "channel": "beta"
+        }
+    ],
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+        "semantic-release-yarn",
+        [
+            "@semantic-release/exec",
+            {
+                "analyzeCommitsCmd": "./../.github/setOldVersion.sh ${lastRelease.version}"
+            }
+        ]
+    ]
+}
