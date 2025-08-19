@@ -3,8 +3,8 @@ import type {
     Control,
     DescendantControlOverride,
     DescendantControlOverrides,
-} from '@educorvi/vue-json-forn-schemas';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-forn-schemas';
+} from '@educorvi/vue-json-form-schemas';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
 
 export const layoutProviderKey = Symbol() as InjectionKey<Control>;
