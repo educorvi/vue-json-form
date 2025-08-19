@@ -22,6 +22,12 @@
       {
         "assets": ["dist/vue-json-form*"]
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "analyzeCommitsCmd": "./../.github/setOldVersion.sh ${lastRelease.version}"
+      }
     ]
   ]
 }
