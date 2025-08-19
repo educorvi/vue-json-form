@@ -77,6 +77,20 @@
           "description": "Defines whether the fields label is shown",
           "default": true
         },
+        "preHtml": {
+          "type": "string",
+          "description": "Will be prepended to field (before the label)",
+          "examples": [
+            "<span class=\"text-muted\">Prepend</span>"
+          ]
+        },
+        "postHtml": {
+          "type": "string",
+          "description": "Will be appended to field",
+          "examples": [
+            "<span class=\"text-muted\">Append</span>"
+          ]
+        },
         "help": {
           "type": "object",
           "description": "Help text popover",

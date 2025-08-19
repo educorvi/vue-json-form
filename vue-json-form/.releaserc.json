@@ -8,7 +8,7 @@
       "channel": "2.x"
     },
     {
-      "name": "beta",
+      "name": "release/beta",
       "prerelease": true,
       "channel": "beta"
     }
@@ -21,6 +21,12 @@
       "@semantic-release/github",
       {
         "assets": ["dist/vue-json-form*"]
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "analyzeCommitsCmd": "./../.github/setOldVersion.sh ${lastRelease.version}"
       }
     ]
   ]

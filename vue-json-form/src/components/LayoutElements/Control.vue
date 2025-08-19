@@ -1,5 +1,9 @@
 <template>
     <div :class="cssClass" v-if="!invalidJsonPointer">
+        <html-renderer
+            v-if="htmlMessages.pre"
+            :layout-element="htmlMessages.pre"
+        />
         <component
             :is="FormFieldWrapper"
             :label="label"
@@ -29,6 +33,10 @@
                 <slot name="append" />
             </template>
         </component>
+        <html-renderer
+            v-if="htmlMessages.post"
+            :layout-element="htmlMessages.post"
+        />
     </div>
     <div v-else>
         <error-viewer header="Error">
@@ -70,10 +78,11 @@ import {
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import { hasOption, isInputType, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
+import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 
 const { jsonSchema, mappers, arrays } = storeToRefs(useFormStructureStore());
 
@@ -119,6 +128,25 @@ const formStructureMapped = computed(() => {
         jsonElement: localJsonElement,
         uiElement: localUiElement,
     };
+});
+
+const htmlMessages = computed(() => {
+    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
+    const layoutElement = formStructureMapped.value.uiElement;
+    if (layoutElement.options?.preHtml) {
+        messages.pre = {
+            type: 'HTML',
+            htmlData: layoutElement.options.preHtml,
+        };
+    }
+    if (layoutElement.options?.postHtml) {
+        messages.post = {
+            type: 'HTML',
+            htmlData: layoutElement.options.postHtml,
+        };
+    }
+
+    return messages;
 });
 
 const required = getComputedRequired(formStructureMapped.value.uiElement);
