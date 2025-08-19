@@ -32,7 +32,7 @@
     "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
     "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
     "build:schemas": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-schemas run build",
-    "release": "yarn workspaces foreach -Atv --exclude . run semantic-release -e semantic-release-monorepo -e ../.releaserc.common.js",
-    "release:dry-run": "yarn workspaces foreach -Atv --exclude . run semantic-release --dry-run -e semantic-release-monorepo -e ../.releaserc.common.js"
+    "release": "yarn workspaces foreach -Atv --exclude . run semantic-release -e semantic-release-monorepo",
+    "release:dry-run": "yarn workspaces foreach -Atv --exclude . run semantic-release --dry-run -e semantic-release-monorepo"
   }
 }
