@@ -6,7 +6,7 @@ import { controlID } from '@/computedProperties/misc';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
 import { computed, type Ref } from 'vue';
-import type { InputOptions } from '@educorvi/vue-json-forn-schemas';
+import type { InputOptions } from '@educorvi/vue-json-form-schemas';
 import { isInputType } from '@/typings/typeValidators';
 
 const { formData } = storeToRefs(useFormDataStore());

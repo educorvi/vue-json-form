@@ -2,6 +2,24 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "jso-51-arr": {
+      "title": "Array mit HTML",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "string1": {
+            "type": "string",
+            "title": "String 1"
+          },
+          "string2": {
+            "type": "string",
+            "title": "String 2"
+          }
+        }
+      },
+      "minItems": 1
+    },
     "arrInArr": {
       "title": "Array in Array",
       "type": "array",
