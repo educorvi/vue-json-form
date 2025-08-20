@@ -24,6 +24,10 @@ jobs:
       - run: pip install json-schema-for-humans
       - name: Set old versions
         run: yarn run release:dry-run
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build static files
         id: build
         run: yarn run doc
