@@ -32,6 +32,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'submit', data: Record<string, any>, options: SubmitOptions): void;
+    (e: 'afterSubmitted', data: Record<string, any>, options: SubmitOptions): void;
 }>();
 
 const data: ComputedRef = computed(() => {
@@ -61,6 +62,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     } else {
         emit('submit', data, options);
     }
+    emit('afterSubmitted', data, options);
 }
 </script>
 
