@@ -42,7 +42,7 @@
             "type": "integer",
             "maximum": 5,
             "minimum": 0,
-            "step": 1,
+            "multipleOf": 1,
             "default": 3
         },
         "weekdays": {

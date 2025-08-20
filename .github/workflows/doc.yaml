@@ -1,10 +1,8 @@
 name: Deploy documentation and demo to pages
 
 on:
-  push:
-    branches:
-      - 'release/latest'
   workflow_call:
+  workflow_dispatch:
 permissions:
   pages: write
   id-token: write
@@ -24,6 +22,8 @@ jobs:
         with:
           cache: 'pip' # caching pip dependencies
       - run: pip install json-schema-for-humans
+      - name: Set old versions
+        run: yarn run release:dry-run
       - name: Build static files
         id: build
         run: yarn run doc
