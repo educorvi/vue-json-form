@@ -21,7 +21,8 @@
       "@semantic-release/github",
       {
         "assets": [
-          "dist/ui.schema.json"
+          "dist/ui.schema.json",
+          "dist/vue-json-form-schemas.d.ts"
         ]
       }
     ],
