@@ -5,6 +5,8 @@
             >:
         </p>
         <p>{{ error.message }}</p>
+        <hr />
+        <pre>{{ JSON.stringify(error, null, 2) }}</pre>
     </component>
 </template>
 <script setup lang="ts">

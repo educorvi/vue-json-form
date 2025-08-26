@@ -8,7 +8,7 @@ const props = defineProps<{
 
 <template>
     <b-card
-        class="vjw_errorViewer text-center"
+        class="vjw_errorViewer"
         header-bg-variant="danger"
         header-text-variant="white"
         :header="props.header"
