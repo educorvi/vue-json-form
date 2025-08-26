@@ -1,5 +1,5 @@
 import type {
-    ColorVariant,
+    ColorVariants,
     Control,
     EnumOptions,
     LayoutElement,
@@ -149,13 +149,4 @@ export function isInputType(value: any): value is InputType {
         'week',
     ];
     return validInputTypes.includes(value);
-}
-
-export function colorVariantToBaseColorVariant<
-    BaseVariants = keyof BaseColorVariant,
->(color?: ColorVariant): BaseVariants | undefined {
-    if (!color) {
-        return undefined;
-    }
-    return color.replace('-outline', '') as BaseVariants;
 }

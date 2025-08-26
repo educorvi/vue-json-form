@@ -113,7 +113,7 @@ function checkDependentElement(
                         const cleanedName = cleanScope(alias.arrayName);
                         arrayItemIndices[cleanedName] =
                             formDataStore.arrayAliasIndices.get(
-                                alias.arrayAlias
+                                alias.arrayAlias || ''
                             ) ?? 0;
                     }
                 });

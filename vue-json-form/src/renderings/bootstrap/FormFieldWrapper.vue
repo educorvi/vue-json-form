@@ -6,7 +6,7 @@ import {
     BInputGroupText,
     BPopover,
 } from 'bootstrap-vue-next';
-import { computed, useSlots } from 'vue';
+import { computed, type ComputedRef, useSlots } from 'vue';
 import {
     getComputedJsonElement,
     getComputedParentJsonPath,
@@ -38,8 +38,8 @@ const hideLabel = computed(() => {
 
 const slots = useSlots();
 
-const hasPrependOrAppend = computed(() => {
-    return (
+const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
+    return !!(
         slots.prepend ||
         slots.append ||
         layoutElement.options?.prepend ||

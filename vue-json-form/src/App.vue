@@ -13,6 +13,7 @@
                     :render-interface="bootstrapComponents"
                     :ui-schema="uiSchema || {}"
                     :presetData="presetData"
+                    :validator="AjvValidator"
                 >
                 </VueJsonForm>
                 <hr />
@@ -34,7 +35,10 @@ import ui from './exampleSchemas/showcase/ui.json';
 import json_repro from './exampleSchemas/reproduce/schema.json';
 import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import {
+    AjvValidator,
+    type CoreSchemaMetaSchema,
+} from '@educorvi/vue-json-form-schemas';
 import type { UISchema } from '@educorvi/vue-json-form-schemas';
 import {
     computed,

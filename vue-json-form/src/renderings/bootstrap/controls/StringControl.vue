@@ -5,18 +5,26 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
-import { computed, type Ref } from 'vue';
-import type { InputOptions } from '@educorvi/vue-json-form-schemas';
+import { computed, type ComputedRef, type Ref } from 'vue';
+import type {
+    ControlFormattingOptions,
+    InputOptions,
+} from '@educorvi/vue-json-form-schemas';
 import { isInputType } from '@/typings/typeValidators';
+import { getOption } from '@/utilities.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
 const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
+const options: ComputedRef<ControlFormattingOptions & InputOptions> = computed(
+    () => layoutElement.options || {}
+);
+
 const type: Ref<InputType | undefined> = computed(() => {
     const str =
-        (layoutElement.options as undefined | InputOptions)?.format ||
+        options.value.format ||
         jsonElement.format?.replace('date-time', 'datetime-local');
     if (!isInputType(str)) {
         return undefined;
@@ -27,7 +35,7 @@ const type: Ref<InputType | undefined> = computed(() => {
 
 <template>
     <BFormTextarea
-        v-if="(layoutElement.options as InputOptions | undefined)?.multi"
+        v-if="options.multi"
         v-model="formData[savePath]"
         class="vjf_textarea"
         :id="id"

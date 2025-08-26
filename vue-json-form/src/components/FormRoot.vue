@@ -8,70 +8,22 @@
         <FormWrap :layoutElement="storedUiSchema" />
         <slot />
     </form>
-    <div
+    <ParsingAndValidationErrorsView
         v-else-if="
             validationErrors.jsonSchema.parsing.length +
                 validationErrors.jsonSchema.validation.length +
                 validationErrors.uiSchema.parsing.length +
-                validationErrors.uiSchema.validation.length >
+                validationErrors.uiSchema.validation.length +
+                validationErrors.general.length >
             0
         "
-    >
-        <h4>Error</h4>
-        <p>There were errors while rendering this form</p>
-        <h5>JSON Schema</h5>
-        <div v-if="validationErrors.jsonSchema.parsing.length > 0">
-            <h6>Parsing errors</h6>
-            <component
-                :is="errorViewer"
-                v-for="error in validationErrors.jsonSchema.parsing"
-                :key="error.message"
-                :header="error.name"
-            >
-                <p>{{ error.message }}</p>
-            </component>
-        </div>
-        <div v-if="validationErrors.jsonSchema.validation.length > 0">
-            <h6>Validation errors</h6>
-            <component
-                :is="errorViewer"
-                v-for="error in validationErrors.jsonSchema.validation"
-                :key="error.message"
-                :header="error.name"
-            >
-                <p>{{ error.message }}</p>
-            </component>
-        </div>
-
-        <h5 class="mt-4">UI Schema</h5>
-        <div v-if="validationErrors.uiSchema.parsing.length > 0">
-            <h6>Parsing errors</h6>
-            <component
-                :is="errorViewer"
-                v-for="error in validationErrors.uiSchema.parsing"
-                :key="error.message"
-                :header="error.name"
-            >
-                <p>{{ error.message }}</p>
-            </component>
-        </div>
-        <div v-if="validationErrors.uiSchema.validation.length > 0">
-            <h6>Validation errors</h6>
-            <component
-                :is="errorViewer"
-                v-for="error in validationErrors.uiSchema.validation"
-                :key="error.message"
-                :header="error.name"
-            >
-                <p>{{ error.message }}</p>
-            </component>
-        </div>
-    </div>
+        :validationErrors="validationErrors"
+    />
 </template>
 
 <script setup lang="ts">
-import type { Component } from 'vue';
-import { onBeforeMount, onMounted, provide, ref, toRaw, watch } from 'vue';
+import type { Component, Ref } from 'vue';
+import { onBeforeMount, provide, ref, toRaw, watch } from 'vue';
 import {
     createPinia,
     getActivePinia,
@@ -79,8 +31,17 @@ import {
     storeToRefs,
 } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
-import type { SubmitOptions, UISchema } from '@educorvi/vue-json-form-schemas';
+import {
+    AjvValidator,
+    type CoreSchemaMetaSchema,
+    EmptyValidator,
+    type SubmitOptions,
+    type UISchema,
+    type ValidationErrors,
+    Validator,
+    type ValidatorClass,
+} from '@educorvi/vue-json-form-schemas';
+import { type ErrorObject } from 'ajv';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import {
@@ -97,6 +58,7 @@ import RefParser, {
 } from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
+import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 
 const props = defineProps<{
     /**
@@ -144,6 +106,13 @@ const props = defineProps<{
      * Functions to change JSON- and UI-Schema of fields before rendering
      */
     mapperFunctions?: MapperFunction[];
+
+    /**
+     * The validator to use for validating the data
+     * Defaults to no validation.
+     * Validators can be found in the `@educorvi/vue-json-form-schemas` package.
+     */
+    validator?: ValidatorClass<ErrorObject>;
 }>();
 
 setActivePinia(getActivePinia() || createPinia());
@@ -162,21 +131,21 @@ const {
 const { formData, defaultFormData, cleanedFormData } =
     storeToRefs(useFormDataStore());
 
-const validationErrors = ref({
+const validationErrors: Ref<ValidationErrors> = ref({
+    general: [],
     jsonSchema: {
-        validation: [] as Error[],
+        validation: [] as ErrorObject[],
         parsing: [] as Error[],
     },
     uiSchema: {
-        validation: [] as Error[],
+        validation: [] as ErrorObject[],
         parsing: [] as Error[],
     },
 });
 
-let errorViewer: Component;
-
-async function onSubmitFormLocal(evt: SubmitEvent) {
+async function onSubmitFormLocal(evt: Event) {
     evt.preventDefault();
+    const submitEvt = evt as SubmitEvent;
     let submitData;
     if (props.returnDataAsScopes) {
         submitData = toRaw(cleanedFormData.value.scopes);
@@ -187,13 +156,13 @@ async function onSubmitFormLocal(evt: SubmitEvent) {
     const customSubmitOptions =
         JSON.parse(
             decodeURIComponent(
-                evt.submitter?.attributes?.getNamedItem('submitOptions')
+                submitEvt.submitter?.attributes?.getNamedItem('submitOptions')
                     ?.value || 'false'
             )
         ) || {};
 
     buttonWaiting.value[customSubmitOptions['id']] = true;
-    await props.onSubmitForm(submitData, customSubmitOptions, evt);
+    await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
     buttonWaiting.value[customSubmitOptions['id']] = false;
 }
 
@@ -221,11 +190,23 @@ const parserOptions: ParserOptions = {
     },
 };
 
+let validator: Validator<ErrorObject>;
+if (props.validator) {
+    validator = new props.validator();
+} else {
+    validator = new EmptyValidator();
+}
+
 async function parseJsonSchema(
     jsonSchema: Record<string, any>
 ): Promise<CoreSchemaMetaSchema | null> {
-    const deRefJSON = await RefParser.dereference(jsonSchema, parserOptions);
-    return deRefJSON as CoreSchemaMetaSchema;
+    if (validator.validateJsonSchema(jsonSchema)) {
+        return jsonSchema;
+    } else {
+        validationErrors.value.jsonSchema.validation =
+            validator.getJsonSchemaValidationErrors();
+        return null;
+    }
 }
 
 async function parseUiSchema(
@@ -233,8 +214,13 @@ async function parseUiSchema(
     jsonSchema: CoreSchemaMetaSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
-        const deRefUI = await RefParser.dereference(uiSchema, parserOptions);
-        return deRefUI as UISchema;
+        if (validator.validateUiSchema(uiSchema)) {
+            return uiSchema;
+        } else {
+            validationErrors.value.uiSchema.validation =
+                validator.getUiSchemaValidationErrors();
+            return null;
+        }
     } else {
         return generateUISchema(jsonSchema, props.generationOptions);
     }
@@ -250,8 +236,6 @@ async function assignStoreData(
     components.value = obj.renderInterface;
 
     mappers.value = props.mapperFunctions || [];
-
-    errorViewer = getComponent('ErrorViewer');
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);
@@ -271,6 +255,13 @@ async function assignStoreData(
 provide(requiredProviderKey, true);
 
 onBeforeMount(async () => {
+    try {
+        await validator.initialize();
+    } catch (e: any) {
+        console.error('Failed to initialize validator');
+        console.error(e);
+        validationErrors.value.general = [e];
+    }
     await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
@@ -287,5 +278,3 @@ watch(props, (newVal) => {
     });
 });
 </script>
-
-<style scoped></style>

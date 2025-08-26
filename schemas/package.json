@@ -2,12 +2,26 @@
   "name": "@educorvi/vue-json-form-schemas",
   "version": "0.0.0",
   "description": "Schemas for Vue JSON Form",
-  "main": "dist/vue-json-form-schemas.umd.cjs",
-  "module": "dist/vue-json-form-schemas.js",
-  "types": "dist/vue-json-form-schemas.d.ts",
+  "main": "./dist/vue-json-form-schemas.cjs",
+  "module": "./dist/vue-json-form-schemas.js",
+  "types": "./dist/vue-json-form-schemas.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/vue-json-form-schemas.d.ts",
+      "import": "./dist/vue-json-form-schemas.js",
+      "require": "./dist/vue-json-form-schemas.cjs",
+      "default": "./dist/vue-json-form-schemas.js"
+    },
+    "./ui.schema.json": "./dist/ui.schema.json",
+    "./json-schema_draft7.json": "./dist/json-schema_draft7.json",
+    "./package.json": "./package.json"
+  },
+  "unpkg": "./dist/vue-json-form-schemas.umd.cjs",
+  "jsdelivr": "./dist/vue-json-form-schemas.umd.cjs",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "prepack": "yarn run build",
@@ -19,7 +33,9 @@
   },
   "packageManager": "yarn@4.4.0",
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^14.1.0"
+    "@apidevtools/json-schema-ref-parser": "^14.2.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   },
   "devDependencies": {
     "@semantic-release/exec": "^7.1.0",

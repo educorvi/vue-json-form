@@ -41,7 +41,8 @@ function setPropertyByScope(
 
     // Create necessary nested objects or arrays and set the value at the specified path
     for (let i = 0; i < splitKey.length; i++) {
-        let nextKey: string | number = splitKey[i];
+        let nextKey: string | number | undefined = splitKey[i];
+        if (!nextKey) continue;
         if (indexRegex.test(nextKey)) {
             nextKey = parseInt(nextKey.replace(TEMP_INDEX_ESCAPE, ''));
         }
@@ -49,7 +50,7 @@ function setPropertyByScope(
         if (i === splitKey.length - 1) {
             object[nextKey] = object[nextKey] || value;
         } else {
-            if (indexRegex.test(splitKey[i + 1])) {
+            if (indexRegex.test(splitKey[i + 1] ?? '')) {
                 object[nextKey] = object[nextKey] || [];
             } else {
                 object[nextKey] = object[nextKey] || {};

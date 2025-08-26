@@ -1,7 +1,18 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "src/*.vue", "src/**/*.ts", "src/*.ts", "src/**/*.json"],
-  "exclude": ["src/**/__tests__/*"],
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "src/*.vue",
+    "src/**/*.ts",
+    "src/*.ts",
+    "src/**/*.json",
+    "package.json"
+  ],
+  "exclude": [
+    "src/**/__tests__/*"
+  ],
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "dist",
@@ -9,7 +20,9 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   }
 }

@@ -106,7 +106,7 @@
               "type": "string",
               "description": "The color of the help text popover",
               "default": "primary",
-              "$ref": "variants.schema.json"
+              "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           },
           "required": ["text"]
@@ -179,7 +179,7 @@
               "default": false
             },
             "variant": {
-              "$ref": "variants.schema.json"
+              "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           }
         }
