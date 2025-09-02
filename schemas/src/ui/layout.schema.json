@@ -5,14 +5,6 @@
     "type": "object",
     "description": "The different layouts",
     "properties": {
-        "$id": {
-            "type": "string",
-            "description": "The ID of the layout"
-        },
-        "$schema": {
-            "type": "string",
-            "description": "May contain a schema reference to the ui schema"
-        },
         "type": {
             "type": "string",
             "enum": ["VerticalLayout", "HorizontalLayout", "Group"]

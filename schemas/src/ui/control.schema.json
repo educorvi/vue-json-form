@@ -309,7 +309,7 @@
       "title": "Options",
       "description": "Gives multiple options to configure the element",
       "unevaluatedProperties": false,
-      "anyOf": [
+      "allOf": [
         {
           "$ref": "#/definitions/tagOptions"
         },

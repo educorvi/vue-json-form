@@ -55,13 +55,11 @@
   },
   "oneOf": [
     {
-      "$ref": "#/definitions/legacyShowOn",
-      "unevaluatedProperties": false
+      "$ref": "#/definitions/legacyShowOn"
     },
     {
       "description": "Rita Rule\nSee https://educorvi.github.io/rita/rita-core/docs/schema/#/rule",
-      "$ref": "https://raw.githubusercontent.com/educorvi/rita/main/rita-core/src/schema/rule.json",
-      "unevaluatedProperties": false
+      "$ref": "../../node_modules/@educorvi/rita/src/schema/rule.json"
     }
   ]
 }

@@ -34,6 +34,7 @@
   "packageManager": "yarn@4.4.0",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^14.2.0",
+    "@educorvi/rita": "^5.4.4",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
   },

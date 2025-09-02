@@ -760,11 +760,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@educorvi/rita@npm:^5.4.4":
+  version: 5.4.4
+  resolution: "@educorvi/rita@npm:5.4.4"
+  dependencies:
+    ajv: "npm:^8.17.1"
+    ajv-formats: "npm:^2.1.1"
+    luxon: "npm:^3.6.1"
+    tslib: "npm:^2.8.1"
+  checksum: 10/398a015e7a6c96e8c67d2b4d028840e637c27880a727b6e3c223e1d80b0380c8d506fbe841d167ca010c9c4d7154ae57e4d9de8bb09965ad7f300a7c0b5efeb9
+  languageName: node
+  linkType: hard
+
 "@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:schemas"
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:^14.2.0"
+    "@educorvi/rita": "npm:^5.4.4"
     "@semantic-release/exec": "npm:^7.1.0"
     ajv: "npm:^8.17.1"
     ajv-formats: "npm:^3.0.1"
