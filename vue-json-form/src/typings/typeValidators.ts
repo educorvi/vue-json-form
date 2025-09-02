@@ -95,7 +95,7 @@ export function hasOptions(
     return 'options' in layout && layout.options !== undefined;
 }
 
-export function hasOption<Key extends string>(
+export function hasOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key
 ): layoutElement is LayoutElement & { options: Record<Key, any> } {

@@ -6,7 +6,7 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement: (tag) => tag.includes("vue-json-form"),
+          isCustomElement: (tag:any) => tag.includes("vue-json-form"),
         },
       },
     }),

@@ -11,6 +11,7 @@ import {
 } from '@/typings/typeValidators';
 import { computed } from 'vue';
 import { getOption } from '@/utilities';
+import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -37,7 +38,11 @@ const displaySettings = computed(() => {
     if (isEnumButtonsConfig(layoutElement.options)) {
         return {
             displayAs: 'buttons',
-            buttonVariant: getOption(layoutElement, 'buttonVariant', 'primary'),
+            buttonVariant: getOption<ColorVariants>(
+                layoutElement,
+                'buttonVariant',
+                'primary'
+            ),
             stacked,
         };
     }
