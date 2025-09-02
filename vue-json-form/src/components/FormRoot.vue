@@ -32,16 +32,15 @@ import {
 } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import {
-    AjvValidator,
     type CoreSchemaMetaSchema,
     EmptyValidator,
     type SubmitOptions,
     type UISchema,
     type ValidationErrors,
-    Validator,
+    type Validator,
     type ValidatorClass,
 } from '@educorvi/vue-json-form-schemas';
-import { type ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/RenderInterface';
 import {
