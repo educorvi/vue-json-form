@@ -29,7 +29,8 @@
       "types": "./dist/vue-json-form.d.ts",
       "import": "./dist/vue-json-form.js",
       "default": "./dist/vue-json-form.js"
-    }
+    },
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "prepack": "yarn workspace vue-json-form run build:vue-json-form",
