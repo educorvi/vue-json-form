@@ -59,7 +59,7 @@
     },
     {
       "description": "Rita Rule\nSee https://educorvi.github.io/rita/rita-core/docs/schema/#/rule",
-      "$ref": "../../node_modules/@educorvi/rita/src/schema/rule.json"
+      "$ref": "../../../node_modules/@educorvi/rita/src/schema/rule.json"
     }
   ]
 }

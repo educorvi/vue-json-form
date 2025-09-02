@@ -35,11 +35,7 @@ import ui from './exampleSchemas/showcase/ui.json';
 import json_repro from './exampleSchemas/reproduce/schema.json';
 import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
-import {
-    AjvValidator,
-    type CoreSchemaMetaSchema,
-} from '@educorvi/vue-json-form-schemas';
-import type { UISchema } from '@educorvi/vue-json-form-schemas';
+
 import {
     computed,
     markRaw,
@@ -50,6 +46,7 @@ import {
     watch,
 } from 'vue';
 import { BButton, BFormCheckbox, BFormInput } from 'bootstrap-vue-next';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const components = markRaw(bootstrapComponents);
 const reproduce: Ref<boolean> = ref(

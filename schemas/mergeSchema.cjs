@@ -14,7 +14,7 @@ async function deleteIds(schema) {
     if(Array.isArray(schema)) {
         schema.forEach(it => deleteIds(it));
     }else if (typeof schema === 'object') {
-        if (schema.$id) {
+        if (schema.$id && schema.$id !== 'https://educorvi.github.io/vue-json-form/schemas/ui.schema.json') {
             delete schema.$id;
         }
         Object.values(schema).forEach(value => deleteIds(value));

@@ -5,7 +5,8 @@
     "demo",
     "vue-json-form",
     "webcomponent",
-    "schemas"
+    "schemas",
+    "ajv-validator"
   ],
   "packageManager": "yarn@4.4.0",
   "devDependencies": {
@@ -17,7 +18,8 @@
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
     "typedoc": "^0.25.12",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "vite-plugin-dts": "^4.5.4"
   },
   "scripts": {
     "prepare": "husky",
