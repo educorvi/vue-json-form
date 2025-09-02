@@ -3,8 +3,8 @@ import {
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
 import { computed, type ComputedRef } from 'vue';
-import { oneOfToEnum } from '@educorvi/vue-json-form/src/MapperFunctions/oneOfToEnum';
-import type { MapperFunction } from '@educorvi/vue-json-form/src/typings/customTypes';
+import { oneOfToEnum } from '@educorvi/vue-json-form';
+import type { MapperFunction } from '@educorvi/vue-json-form';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
 
