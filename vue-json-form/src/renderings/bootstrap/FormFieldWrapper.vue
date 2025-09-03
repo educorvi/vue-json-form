@@ -55,7 +55,7 @@ const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
         :description="jsonElement.description"
     >
         <template #label>
-            <span v-if="!hideLabel">
+            <span v-show="!hideLabel">
                 {{ props.label }}
                 <BPopover v-if="layoutElement.options?.help?.text">
                     <template #target>
