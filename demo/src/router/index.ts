@@ -1,6 +1,5 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import Showcase from '@/views/showcase.vue';
 
 const router = createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
