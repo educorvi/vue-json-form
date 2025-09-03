@@ -175,7 +175,10 @@ onBeforeMount(initArray);
                 :disabled="!allowAddField"
                 aria-label="Add Item"
             >
-                <PlusIcon />
+                <span v-if="getOption(layoutElement, 'addButtonText')">
+                    {{ getOption(layoutElement, 'addButtonText') }}
+                </span>
+                <PlusIcon v-else />
             </b-button>
         </div>
         <error-viewer v-else header="Error" :id="id">

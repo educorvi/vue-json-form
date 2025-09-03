@@ -304,6 +304,16 @@
         }
       }
     },
+    "arrayOptions": {
+        "type": "object",
+        "title": "Array Options",
+        "properties": {
+            "addButtonText": {
+                "type": "string",
+                "description": "Text for the add button"
+            }
+        }
+    },
     "options": {
       "type": "object",
       "title": "Options",
@@ -318,6 +328,9 @@
         },
         {
           "$ref": "#/definitions/fileUploadOptions"
+        },
+        {
+          "$ref": "#/definitions/arrayOptions"
         },
         {
           "$ref": "#/definitions/inputOptions"
