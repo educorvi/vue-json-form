@@ -1,7 +1,8 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "buildStandaloneAjv.ts"],
   "compilerOptions": {
+    "allowJs": true,
     "module": "es2022",
     "importHelpers": true,
     // output .d.ts declaration files for consumers

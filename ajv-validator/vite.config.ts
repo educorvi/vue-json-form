@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { analyzer } from 'vite-bundle-analyzer';
 
 export default defineConfig({
     build: {
@@ -8,12 +8,13 @@ export default defineConfig({
         minify: 'esbuild',
         lib: {
             entry: './src/index.ts',
-            name: 'vue-json-form-schemas',
+            name: 'vue-json-form-ajv-validator',
             // the proper extensions will be added
-            fileName: 'vue-json-form-schemas',
+            fileName: 'vue-json-form-ajv-validator',
             formats: ['umd', 'es', 'cjs'],
         },
         outDir: 'dist',
+        commonjsOptions: { transformMixedEsModules: true },
     },
     plugins: [
         dts({
@@ -23,11 +24,6 @@ export default defineConfig({
             insertTypesEntry: true,
             copyDtsFiles: true,
         }),
-        viteStaticCopy({
-            targets: [
-                { src: 'src/generated/ui-merged.schema.json', dest: '.', rename: 'ui.schema.json' },
-                { src: 'src/json-schema_draft7.json', dest: '.' },
-            ],
-        }),
+        // analyzer()
     ],
 });

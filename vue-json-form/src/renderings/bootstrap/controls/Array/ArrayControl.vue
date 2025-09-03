@@ -43,8 +43,8 @@ function addField(skipFocus = false, value?: any) {
             if (!children) {
                 return;
             }
-            const lastInput: HTMLInputElement | null =
-                children[children.length - 1].querySelector('input');
+            const lastInput: HTMLInputElement | null | undefined =
+                children[children.length - 1]?.querySelector('input');
             lastInput?.focus();
         });
     }

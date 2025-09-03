@@ -10,7 +10,7 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
-import type { ColorVariant } from '@educorvi/vue-json-form-schemas';
+import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -41,7 +41,8 @@ if (!hasEnumValuesForItems(jsonElement)) {
         :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
         :switches="getOption(layoutElement, 'displayAs') === 'switches'"
         :button-variant="
-            getOption<ColorVariant>(layoutElement, 'buttonVariant') || 'primary'
+            getOption<ColorVariants>(layoutElement, 'buttonVariant') ||
+            'primary'
         "
     />
 </template>

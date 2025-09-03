@@ -1,0 +1,18 @@
+[
+  {
+    "path": "vue-json-form/dist/vue-json-form.umd.cjs",
+    "name": "VueJsonForm"
+  },
+  {
+    "path": "webcomponent/dist/vue-json-form.umd.cjs",
+    "name": "WebComponent"
+  },
+  {
+    "path": "ajv-validator/dist/vue-json-form-ajv-validator.umd.cjs",
+    "name": "AjvValidator"
+  },
+  {
+    "path": "schemas/dist/vue-json-form-schemas.umd.cjs",
+    "name": "Schema Package"
+  }
+]
