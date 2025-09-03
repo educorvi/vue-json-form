@@ -781,7 +781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/vue-json-form-ajv-validator@workspace:ajv-validator":
+"@educorvi/vue-json-form-ajv-validator@workspace:*, @educorvi/vue-json-form-ajv-validator@workspace:ajv-validator":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-ajv-validator@workspace:ajv-validator"
   dependencies:
@@ -853,6 +853,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
     "@educorvi/rita": "npm:^5.4.3"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:*"
     "@educorvi/vue-json-form-schemas": "workspace:*"
     "@rushstack/eslint-patch": "npm:^1.3.2"
     "@semantic-release/exec": "npm:^7.1.0"
