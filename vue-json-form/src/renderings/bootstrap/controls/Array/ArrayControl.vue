@@ -18,6 +18,7 @@ import { ref, nextTick, onMounted, computed, onBeforeMount } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import { getOption } from '@/utilities.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -123,9 +124,13 @@ onBeforeMount(initArray);
 
 <template>
     <div>
-        <label :for="id" class="large-label" v-if="!isArrayItem">{{
-            label
-        }}</label>
+        <label
+            :for="id"
+            class="large-label"
+            v-if="!isArrayItem"
+            v-show="getOption(layoutElement, 'label', true)"
+            >{{ label }}</label
+        >
         <div
             class="vjf_array"
             v-if="
