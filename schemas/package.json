@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "prepack": "yarn run build",
-    "build": "yarn run mergeSchema && yarn run generateTypings && vite build",
+    "build": "yarn run generateTypings && yarn run mergeSchema && vite build",
     "mergeSchema": "node mergeSchema.cjs",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:jsonSchema": "json2ts -i src/json-schema_draft7.json -o src/generated/json-schema.d.ts",
