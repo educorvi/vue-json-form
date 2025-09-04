@@ -7,8 +7,8 @@ if ! command -v jq >/dev/null 2>&1; then
 fi
 
 if [[ $# -lt 1 ]]; then
-  echo "Usage: $(basename "$0") <new-version>" >&2
-  exit 1
+  echo "Usage: $(basename "$0") <old-version>" >&2
+  exit 0
 fi
 
 pkg="package.json"
