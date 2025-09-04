@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-    BBadge,
-    BFormGroup,
-    BInputGroup,
-    BInputGroupText,
-    BPopover,
-} from 'bootstrap-vue-next';
+import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
 import { computed, type ComputedRef, useSlots } from 'vue';
 import {
     getComputedJsonElement,
@@ -14,6 +8,7 @@ import {
     injectJsonData,
 } from '@/computedProperties/json';
 import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const props = defineProps<{
     label: string;
@@ -57,21 +52,7 @@ const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
         <template #label>
             <span v-show="!hideLabel">
                 {{ props.label }}
-                <BPopover v-if="layoutElement.options?.help?.text">
-                    <template #target>
-                        <BBadge
-                            pill
-                            :variant="
-                                layoutElement.options.help.variant ?? 'primary'
-                            "
-                            >{{
-                                layoutElement.options.help.label ?? 'i'
-                            }}</BBadge
-                        ></template
-                    >
-                    <!--                    <template #title>Popover Title</template>-->
-                    {{ layoutElement.options.help.text }}
-                </BPopover>
+                <HelpPopover />
             </span>
         </template>
         <BInputGroup v-if="hasPrependOrAppend">

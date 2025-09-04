@@ -2,6 +2,32 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "bool-mit-hilfe": {
+      "title": "bool mit hilfe",
+      "type": "boolean"
+    },
+    "array-mit-hilfe": {
+      "type": "array",
+      "title": "array mit hilfe",
+      "items": {
+        "type": "string"
+      }
+    },
+    "objekt-mit-hilfe": {
+      "type": "object",
+      "title": "objekt mit hilfe",
+      "properties": {
+        "test": {
+            "type": "string",
+            "title": "test"
+        }
+      }
+    },
+    "upload-mit-hilfe": {
+      "title": "upload mit hilfe",
+      "type": "string",
+      "format": "uri"
+    },
     "jso-51-arr": {
       "title": "Array mit HTML",
       "type": "array",

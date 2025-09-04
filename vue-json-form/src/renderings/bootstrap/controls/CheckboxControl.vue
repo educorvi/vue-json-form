@@ -4,6 +4,7 @@ import { useFormDataStore } from '@/stores/formData';
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { BFormCheckbox, BFormTextarea } from 'bootstrap-vue-next';
+import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -15,7 +16,7 @@ const label = computedLabel(layoutElement);
 
 <template>
     <BFormCheckbox v-model="formData[savePath]" class="vjf_checkbox" :id="id">
-        {{ label }}
+        {{ label }} <HelpPopover />
     </BFormCheckbox>
 </template>
 
