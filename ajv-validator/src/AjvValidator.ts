@@ -1,6 +1,5 @@
 import { CoreSchemaMetaSchema, UISchema, Validator } from '@educorvi/vue-json-form-schemas';
 import { ErrorObject, type ValidateFunction } from 'ajv';
-// import { JsonSchema, UiSchema } from './generated/validatorCode';
 
 export class AjvValidator extends Validator<ErrorObject> {
     jsonValidationFunc: ValidateFunction | undefined;
@@ -23,8 +22,6 @@ export class AjvValidator extends Validator<ErrorObject> {
     }
 
     protected async initializeInternal(): Promise<void> {
-        // this.jsonValidationFunc = JsonSchema;
-        // this.uiValidationFunc = UiSchema;
         const { JsonSchema, UiSchema } = await import('./generated/validatorCode');
         this.jsonValidationFunc = JsonSchema;
         this.uiValidationFunc = UiSchema;
