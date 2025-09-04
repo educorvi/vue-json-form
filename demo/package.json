@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@educorvi/vue-json-form": "workspace:^",
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "0.16.6",
     "bootswatch": "^5.3.3",
