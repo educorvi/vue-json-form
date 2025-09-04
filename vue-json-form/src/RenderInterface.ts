@@ -35,4 +35,6 @@ export interface RenderInterface {
     Button?: Component;
 
     Buttongroup?: Component;
+
+    HelpPopover?: Component;
 }

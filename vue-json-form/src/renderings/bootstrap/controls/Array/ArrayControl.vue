@@ -19,6 +19,7 @@ import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import { getOption } from '@/utilities.ts';
+import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -124,13 +125,18 @@ onBeforeMount(initArray);
 
 <template>
     <div>
-        <label
-            :for="id"
-            class="large-label"
-            v-if="!isArrayItem"
-            v-show="getOption(layoutElement, 'label', true)"
-            >{{ label }}</label
-        >
+        <div class="vjf_label_wrapper">
+            <label
+                :for="id"
+                v-if="!isArrayItem"
+                v-show="getOption(layoutElement, 'label', true)"
+            >
+                <span class="large-label">{{ label }}</span>
+            </label>
+            <div class="vjf_array-help-icon-wrapper">
+                <HelpPopover />
+            </div>
+        </div>
         <div
             class="vjf_array"
             v-if="
@@ -187,9 +193,20 @@ onBeforeMount(initArray);
     </div>
 </template>
 
-<style>
+<style lang="scss">
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
 .large-label {
-    font-size: 1.4rem;
+    font-size: calc(1.275rem + 0.3vw);
+}
+
+.vjf_array-help-icon-wrapper {
+    padding-left: $spacer * 0.25;
+}
+
+.vjf_label_wrapper {
+    display: flex;
+    align-items: center;
 }
 
 .flip-list-move {
