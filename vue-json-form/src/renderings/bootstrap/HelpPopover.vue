@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { BBadge, BPopover } from 'bootstrap-vue-next';
-import { injectJsonData } from '@/computedProperties/json.ts';
-const { layoutElement } = injectJsonData();
+import { injectJsonDataSafe } from '@/computedProperties/json.ts';
+const { layoutElement } = injectJsonDataSafe();
 </script>
 
 <template>
-    <BPopover v-if="layoutElement.options?.help?.text">
+    <BPopover v-if="layoutElement?.options?.help?.text">
         <template #target>
             <BBadge
                 pill
