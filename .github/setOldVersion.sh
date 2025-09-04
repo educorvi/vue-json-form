@@ -8,7 +8,7 @@ fi
 
 if [[ $# -lt 1 ]]; then
   echo "Usage: $(basename "$0") <new-version>" >&2
-  exit 1
+  exit 0
 fi
 
 pkg="package.json"
