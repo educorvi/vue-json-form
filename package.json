@@ -5,19 +5,24 @@
     "demo",
     "vue-json-form",
     "webcomponent",
-    "schemas"
+    "schemas",
+    "ajv-validator"
   ],
   "packageManager": "yarn@4.4.0",
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@size-limit/file": "^11.2.0",
+    "@size-limit/preset-big-lib": "^11.2.0",
     "husky": "^9.1.7",
     "npm-run-all": "^4.1.5",
     "semantic-release": "^24.2.3",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
+    "size-limit": "^11.2.0",
     "typedoc": "^0.25.12",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "vite-plugin-dts": "^4.5.4"
   },
   "scripts": {
     "prepare": "husky",
@@ -27,12 +32,13 @@
     "doc:demo": "yarn run build:demo && rm -rf ./docs/demo && cp -r ./demo/dist ./docs/demo",
     "doc:ui-schema-files": "rm -rf ./docs/schemas && cp -r ./schemas/src/ui ./docs/schemas",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
-    "build": "yarn workspaces foreach -Aptv run build",
-    "build:demo": "yarn workspaces foreach -Rptv --from demo run build",
-    "build:vue-json-form": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form run build",
-    "build:webcomponent": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-webcomponent run build",
-    "build:schemas": "yarn workspaces foreach -Rptv --from @educorvi/vue-json-form-schemas run build",
-    "release": "yarn workspaces foreach -Atv --exclude . run semantic-release -e semantic-release-monorepo",
-    "release:dry-run": "yarn workspaces foreach -Atv --exclude . run semantic-release --dry-run -e semantic-release-monorepo"
+    "build": "yarn workspaces foreach --topological-dev -Apv run build",
+    "build:demo": "yarn workspaces foreach --topological-dev -Rpv --from demo run build",
+    "build:vue-json-form": "yarn workspaces foreach --topological-dev -Rpv --from @educorvi/vue-json-form run build",
+    "build:webcomponent": "yarn workspaces foreach --topological-dev -Rpv --from @educorvi/vue-json-form-webcomponent run build",
+    "build:schemas": "yarn workspaces foreach --topological-dev -Rpv --from @educorvi/vue-json-form-schemas run build",
+    "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
+    "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
+    "size": "size-limit"
   }
 }

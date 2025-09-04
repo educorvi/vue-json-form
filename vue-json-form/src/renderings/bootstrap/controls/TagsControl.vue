@@ -5,10 +5,7 @@ import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { BFormTags } from 'bootstrap-vue-next';
 
-import {
-    colorVariantToBaseColorVariant,
-    isTagsConfig,
-} from '@/typings/typeValidators';
+import { isTagsConfig } from '@/typings/typeValidators';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -29,9 +26,7 @@ const id = controlID(savePath);
         "
         :tagVariant="
             isTagsConfig(layoutElement.options)
-                ? colorVariantToBaseColorVariant(
-                      layoutElement.options?.tags?.variant
-                  )
+                ? layoutElement.options?.tags?.variant
                 : undefined
         "
     />

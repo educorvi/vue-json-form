@@ -1,0 +1,30 @@
+[
+  {
+    "path": "vue-json-form/dist/vue-json-form.umd.cjs",
+    "name": "VueJsonForm"
+  },
+  {
+    "path": "vue-json-form/dist/vue-json-form.css",
+    "name": "VueJsonForm CSS",
+    "running": false,
+    "webpack": false
+  },
+  {
+    "path": "webcomponent/dist/vue-json-form.umd.cjs",
+    "name": "WebComponent"
+  },
+  {
+    "path": "webcomponent/dist/vue-json-form.css",
+    "name": "WebComponent CSS",
+    "running": false,
+    "webpack": false
+  },
+  {
+    "path": "ajv-validator/dist/vue-json-form-ajv-validator.umd.cjs",
+    "name": "AjvValidator"
+  },
+  {
+    "path": "schemas/dist/vue-json-form-schemas.umd.cjs",
+    "name": "Schema Package"
+  }
+]

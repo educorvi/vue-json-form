@@ -4,10 +4,14 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import pkg from './package.json';
+// import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
+    define: {
+        'import.meta.env.PACKAGE_VERSION': JSON.stringify(pkg.version),
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -30,6 +34,7 @@ export default defineConfig({
             name: 'VueJsonForm',
             // the proper extensions will be added
             fileName: 'vue-json-form',
+            formats: ['es', 'umd'],
         },
         rollupOptions: {
             // make sure to externalize deps that shouldn't be bundled
@@ -47,14 +52,14 @@ export default defineConfig({
         },
     },
     plugins: [
-        nodePolyfills({
-            include: ['path', 'util', 'process', 'buffer'],
-            globals: {
-                process: true,
-                global: false,
-                Buffer: true,
-            },
-        }),
+        // nodePolyfills({
+        //     include: ['path', 'util', 'process', 'buffer'],
+        //     globals: {
+        //         process: true,
+        //         global: false,
+        //         Buffer: true,
+        //     },
+        // }),
         // vueDevTools(),
         vue({
             include: [/\.vue$/],

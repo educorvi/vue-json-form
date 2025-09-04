@@ -12,10 +12,20 @@ import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
+export function injectJsonDataSafe() {
+    const layoutElement = inject(layoutProviderKey);
+    const jsonElement = inject(jsonElementProviderKey);
+    const savePath = inject(savePathProviderKey);
+
+    return { layoutElement, jsonElement, savePath };
+}
+
 export function injectJsonData() {
-    const layoutElement = inject(layoutProviderKey) as Control;
-    const jsonElement = inject(jsonElementProviderKey) as CoreSchemaMetaSchema;
-    const savePath = inject(savePathProviderKey) as string;
+    const { layoutElement, jsonElement, savePath } = injectJsonDataSafe();
+
+    if (!layoutElement) throw new Error('No layout element found');
+    if (!jsonElement) throw new Error('No json element found');
+    if (!savePath) throw new Error('No save path found');
 
     return { layoutElement, jsonElement, savePath };
 }
@@ -77,10 +87,11 @@ export function getComputedRequired(layout: Control) {
 
 function titleCase(string: string) {
     const sentence = string.toLowerCase().split('_');
-    for (let i = 0; i < sentence.length; i++) {
-        sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
-    }
-
+    sentence.forEach((part: string, index: number) => {
+        if (part) {
+            sentence[index] = (part[0]?.toUpperCase() ?? '') + part.slice(1);
+        }
+    });
     return sentence.join(' ');
 }
 

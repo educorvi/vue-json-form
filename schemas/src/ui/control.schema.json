@@ -1,6 +1,6 @@
 {
   "$id": "https://educorvi.github.io/vue-json-form/schemas/control.schema.json",
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "title": "Control",
   "description": "Contains a form element, e. g. a text input",
@@ -70,7 +70,6 @@
     },
     "controlFormattingOptions": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "label": {
           "type": "boolean",
@@ -106,7 +105,7 @@
               "type": "string",
               "description": "The color of the help text popover",
               "default": "primary",
-              "$ref": "variants.schema.json"
+              "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           },
           "required": ["text"]
@@ -163,7 +162,6 @@
     "tagOptions": {
       "type": "object",
       "title": "Tag Options",
-      "additionalProperties": false,
       "properties": {
         "tags": {
           "type": "object",
@@ -179,7 +177,7 @@
               "default": false
             },
             "variant": {
-              "$ref": "variants.schema.json"
+              "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           }
         }
@@ -187,11 +185,9 @@
     },
     "enumOptions": {
       "title": "Enum Options",
-      "additionalProperties": false,
       "allOf": [
         {
           "title": "Common Enum Options",
-          "additionalProperties": false,
           "type": "object",
           "properties": {
             "enumTitles": {
@@ -236,7 +232,6 @@
     "fileUploadOptions": {
       "title": "File Upload Options",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "allowMultipleFiles": {
           "type": "boolean",
@@ -256,7 +251,6 @@
     "inputOptions": {
       "title": "Input Options",
       "type": "object",
-      "additionalProperties": false,
       "description": "Options for text fields",
       "properties": {
         "format": {
@@ -310,37 +304,39 @@
         }
       }
     },
+    "arrayOptions": {
+        "type": "object",
+        "title": "Array Options",
+        "properties": {
+            "addButtonText": {
+                "type": "string",
+                "description": "Text for the add button"
+            }
+        }
+    },
     "options": {
       "type": "object",
       "title": "Options",
       "description": "Gives multiple options to configure the element",
-      "additionalProperties": false,
+      "unevaluatedProperties": false,
       "allOf": [
         {
-          "title": "Field Specific Options",
-          "additionalProperties": false,
-          "oneOf": [
-            {
-              "$ref": "#/definitions/tagOptions",
-              "additionalProperties": false
-            },
-            {
-              "$ref": "#/definitions/enumOptions",
-              "additionalProperties": false
-            },
-            {
-              "$ref": "#/definitions/fileUploadOptions",
-              "additionalProperties": false
-            },
-            {
-              "$ref": "#/definitions/inputOptions",
-              "additionalProperties": false
-            }
-          ]
+          "$ref": "#/definitions/tagOptions"
         },
         {
-          "$ref": "#/definitions/controlFormattingOptions",
-          "additionalProperties": false
+          "$ref": "#/definitions/enumOptions"
+        },
+        {
+          "$ref": "#/definitions/fileUploadOptions"
+        },
+        {
+          "$ref": "#/definitions/arrayOptions"
+        },
+        {
+          "$ref": "#/definitions/inputOptions"
+        },
+        {
+          "$ref": "#/definitions/controlFormattingOptions"
         }
       ]
     }
@@ -348,9 +344,7 @@
   "properties": {
     "type": {
       "type": "string",
-      "enum": [
-        "Control"
-      ]
+      "const": "Control"
     },
     "scope": {
       "type": "string",

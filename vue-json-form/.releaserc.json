@@ -20,7 +20,12 @@
     [
       "@semantic-release/github",
       {
-        "assets": []
+        "assets": [
+          "dist/vue-json-form.umd.cjs",
+          "dist/vue-json-form.js",
+          "dist/vue-json-form.d.ts",
+          "dist/*.css"
+        ]
       }
     ],
     [

@@ -1,5 +1,5 @@
 import type {
-    ColorVariant,
+    ColorVariants,
     Control,
     EnumOptions,
     LayoutElement,
@@ -95,7 +95,7 @@ export function hasOptions(
     return 'options' in layout && layout.options !== undefined;
 }
 
-export function hasOption<Key extends string>(
+export function hasOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key
 ): layoutElement is LayoutElement & { options: Record<Key, any> } {
@@ -149,13 +149,4 @@ export function isInputType(value: any): value is InputType {
         'week',
     ];
     return validInputTypes.includes(value);
-}
-
-export function colorVariantToBaseColorVariant<
-    BaseVariants = keyof BaseColorVariant,
->(color?: ColorVariant): BaseVariants | undefined {
-    if (!color) {
-        return undefined;
-    }
-    return color.replace('-outline', '') as BaseVariants;
 }

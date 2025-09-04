@@ -20,7 +20,10 @@
     [
       "@semantic-release/github",
       {
-        "assets": []
+        "assets": [
+          "dist/*.cjs",
+          "dist/*.css"
+        ]
       }
     ],
     [

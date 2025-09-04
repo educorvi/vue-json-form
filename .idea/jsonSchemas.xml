@@ -52,11 +52,17 @@
               <option name="generatedName" value="New Schema" />
               <option name="name" value="UI Schema" />
               <option name="relativePathToSchema" value="schemas/src/generated/ui-merged.schema.json" />
-              <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="schemaVersion" value="JSON Schema 202,012" />
               <option name="patterns">
                 <list>
                   <Item>
                     <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="vue-json-form/src/exampleSchemas/reproduce/ui.json" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="vue-json-form/src/exampleSchemas/showcase/ui.json" />
                   </Item>
                 </list>
               </option>

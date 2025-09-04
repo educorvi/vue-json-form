@@ -7,6 +7,54 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-58"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/bool-mit-hilfe",
+            "options": {
+              "help": {
+                "text": "hiiiiilfe"
+              }
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/array-mit-hilfe",
+            "options": {
+              "descendantControlOverrides": {},
+              "help": {
+                "text": "hiiiiilfe"
+              }
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/objekt-mit-hilfe",
+            "options": {
+              "descendantControlOverrides": {},
+              "help": {
+                "text": "hiiiiilfe"
+              }
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/upload-mit-hilfe",
+            "options": {
+              "help": {
+                "text": "hiiiiilfe"
+              },
+              "acceptedFileType": "*",
+              "allowMultipleFiles": true
+            }
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-51"
         },
         "elements": [

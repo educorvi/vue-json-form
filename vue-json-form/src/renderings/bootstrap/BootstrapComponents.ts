@@ -49,6 +49,9 @@ export const bootstrapComponents: Required<RenderInterface> = {
     Buttongroup: defineAsyncComponent(
         () => import('@/renderings/bootstrap/Buttons/ButtonGroup.vue')
     ),
+    HelpPopover: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/HelpPopover.vue')
+    ),
     DefaultControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
     ),
