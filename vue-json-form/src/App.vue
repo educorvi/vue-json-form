@@ -35,20 +35,12 @@ import ui from './exampleSchemas/showcase/ui.json';
 import json_repro from './exampleSchemas/reproduce/schema.json';
 import ui_repro from './exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
+import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-import {
-    computed,
-    markRaw,
-    nextTick,
-    ref,
-    type Ref,
-    shallowRef,
-    watch,
-} from 'vue';
-import { BButton, BFormCheckbox, BFormInput } from 'bootstrap-vue-next';
+import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
+import { BFormCheckbox } from 'bootstrap-vue-next';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
-const components = markRaw(bootstrapComponents);
 const reproduce: Ref<boolean> = ref(
     localStorage.getItem('reproduce') === 'true'
 );
@@ -110,11 +102,6 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
             break;
     }
 }
-
-// const jsonSchema = json;
-// const uiSchema = ui;
-// const jsonSchema = json_repro;
-// const uiSchema = ui_repro;
 </script>
 
 <style scoped></style>
