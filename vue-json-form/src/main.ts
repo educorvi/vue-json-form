@@ -16,6 +16,8 @@ export {
 
 export * from '@/MapperFunctions/oneOfToEnum';
 
+export * from '@/intl/LanguageProvider';
+
 import './RenderInterface';
 
 export const version: string = import.meta.env.PACKAGE_VERSION as string;

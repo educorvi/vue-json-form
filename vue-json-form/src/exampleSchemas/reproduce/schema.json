@@ -2,6 +2,10 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "multipleUpload": {
+      "type": "string",
+      "format": "uri"
+    },
     "obj-l": {
       "type": "object",
       "properties": {
@@ -128,7 +132,8 @@
           }
         },
         "required": [],
-        "dependentRequired": {}
+        "dependentRequired": {
+        }
       }
     },
     "jso-37-field1": {
@@ -339,7 +344,8 @@
           }
         },
         "required": [],
-        "dependentRequired": {}
+        "dependentRequired": {
+        }
       }
     },
     "array-with-arrays": {

@@ -28,7 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import { type SubmitOptions, VueJsonForm } from './main';
+import {
+    EnglishLanguageProvider,
+    type SubmitOptions,
+    VueJsonForm,
+} from './main';
 import json from './exampleSchemas/showcase/schema.json';
 import ui from './exampleSchemas/showcase/ui.json';
 

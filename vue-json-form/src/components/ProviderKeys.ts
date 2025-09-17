@@ -6,6 +6,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
+import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export const layoutProviderKey = Symbol() as InjectionKey<Control>;
 export const jsonElementProviderKey =
@@ -21,6 +22,10 @@ export const savePathProviderKey = Symbol() as InjectionKey<string>;
 
 export const descendantControlOverridesProviderKey =
     Symbol() as InjectionKey<DescendantControlOverrides>;
+
+export const languageProviderKey = Symbol() as InjectionKey<
+    LanguageProvider | undefined
+>;
 
 export function setDescendantControlOverrides(
     overrides?: DescendantControlOverrides

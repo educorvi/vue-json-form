@@ -50,6 +50,7 @@ import {
 } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
+    languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import RefParser, {
@@ -58,6 +59,10 @@ import RefParser, {
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
+import {
+    AutoLanguageProvider,
+    type LanguageProvider,
+} from '@/intl/LanguageProvider.ts';
 
 const props = defineProps<{
     /**
@@ -107,16 +112,25 @@ const props = defineProps<{
     mapperFunctions?: MapperFunction[];
 
     /**
-     * The validator to use for validating the data
+     * The validator to use for validating the input schemas
      * Defaults to no validation.
      * Validators can be found in the `@educorvi/vue-json-form-schemas` package.
      */
     validator?: ValidatorClass<ErrorObject>;
+
+    /**
+     * Provides internationalized string, for example for validation errors
+     */
+    languageProvider?: LanguageProvider;
 }>();
 
 setActivePinia(getActivePinia() || createPinia());
 
 provide(descendantControlOverridesProviderKey, {});
+provide(
+    languageProviderKey,
+    props.languageProvider || new AutoLanguageProvider()
+);
 
 const {
     jsonSchema: storedJsonSchema,

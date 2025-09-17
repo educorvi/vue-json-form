@@ -5,6 +5,24 @@
     "type": "VerticalLayout",
     "elements": [
       {
+        "type": "Group",
+        "options": {
+          "label": "JSO-64"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/multipleUpload",
+            "options": {
+              "acceptedFileType": "*",
+              "allowMultipleFiles": true,
+              "maxNumberOfFiles": 3,
+              "minNumberOfFiles": 2
+            }
+          }
+        ]
+      },
+      {
         "type": "Control",
         "scope": "/properties/obj-l/properties/auswahlfeld",
         "options": {

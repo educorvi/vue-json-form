@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "fileUpload": {
+      "tooManyFiles": "You can only upload !&data&! files.",
+      "tooFewFiles": "You need to upload at least !&data&! files."
+    }
+  }
+}
