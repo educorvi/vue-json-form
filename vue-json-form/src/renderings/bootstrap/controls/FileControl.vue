@@ -24,10 +24,16 @@ watch(
 );
 
 function validateInput(data: any) {
-    const { allowMultipleFiles, maxNumberOfFiles, minNumberOfFiles } =
-        layoutElement.options || {};
+    const {
+        allowMultipleFiles,
+        maxNumberOfFiles,
+        minNumberOfFiles,
+        maxFileSize,
+    } = layoutElement.options || {};
+    const el = document.getElementById(id.value) as HTMLInputElement;
+
+    // Validate number of files
     if (allowMultipleFiles) {
-        const el = document.getElementById(id.value) as HTMLInputElement;
         if (maxNumberOfFiles && (data.length || 0) > maxNumberOfFiles) {
             el?.setCustomValidity(
                 languageProvider?.getStringTemplate(
@@ -35,6 +41,7 @@ function validateInput(data: any) {
                     maxNumberOfFiles
                 ) || ''
             );
+            return;
         } else if (minNumberOfFiles && (data?.length || 0) < minNumberOfFiles) {
             el?.setCustomValidity(
                 languageProvider?.getStringTemplate(
@@ -42,10 +49,27 @@ function validateInput(data: any) {
                     minNumberOfFiles
                 ) || ''
             );
-        } else {
-            el?.setCustomValidity('');
+            return;
         }
     }
+    if (maxFileSize) {
+        let dataArray = (Array.isArray(data) ? data : [data]) || [];
+        const tooLargeFiles = dataArray.filter(
+            (file: File) => file.size > maxFileSize
+        );
+        if (tooLargeFiles.length > 0) {
+            el?.setCustomValidity(
+                languageProvider?.getStringTemplate(
+                    'errors.fileUpload.fileTooLarge',
+                    (maxFileSize / 1024 / 1024).toFixed(2),
+                    tooLargeFiles.map((file: File) => file.name).join(', ')
+                ) || ''
+            );
+            return;
+        }
+    }
+
+    el?.setCustomValidity('');
 }
 </script>
 
