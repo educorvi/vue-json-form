@@ -6,6 +6,10 @@
       "type": "string",
       "format": "uri"
     },
+    "singleUpload": {
+      "type": "string",
+      "format": "uri"
+    },
     "obj-l": {
       "type": "object",
       "properties": {

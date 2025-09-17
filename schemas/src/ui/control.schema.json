@@ -245,6 +245,10 @@
           "type": "integer",
           "description": "Minimum number of files that must be uploaded. If allowMultipleFiles is false, this property is ignored."
         },
+        "maxFileSize": {
+          "type": "integer",
+          "description": "Maximum file size in bytes per file"
+        },
         "acceptedFileType": {
           "type": "string",
           "description": "The accepted File Types",

@@ -9,7 +9,14 @@
         "options": {
           "label": "JSO-64"
         },
-        "elements": [
+        "elements": [{
+          "type": "Control",
+          "scope": "/properties/singleUpload",
+          "options": {
+            "acceptedFileType": "*",
+            "maxFileSize": 1000000
+          }
+        },
           {
             "type": "Control",
             "scope": "/properties/multipleUpload",
@@ -17,7 +24,8 @@
               "acceptedFileType": "*",
               "allowMultipleFiles": true,
               "maxNumberOfFiles": 3,
-              "minNumberOfFiles": 2
+              "minNumberOfFiles": 2,
+              "maxFileSize": 1000000
             }
           }
         ]
