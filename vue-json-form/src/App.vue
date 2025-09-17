@@ -52,8 +52,16 @@ const formData = ref({});
 
 const searchParams = new URLSearchParams(window.location.search);
 
-if (searchParams.get('variant') === 'reproduce') {
-    reproduce.value = true;
+switch (searchParams.get('variant')) {
+    case 'reproduce':
+        reproduce.value = true;
+        break;
+    case 'showcase':
+        reproduce.value = false;
+        break;
+    default:
+        // leave as is
+        break;
 }
 
 async function setSchema(reproduce_val: boolean) {

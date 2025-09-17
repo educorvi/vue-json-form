@@ -19,7 +19,7 @@ const html = computed(() => {
         ),
         allowedAttributes: {
             ...sanitizeHtml.defaults.allowedAttributes,
-            '*': ['style', 'class'],
+            '*': ['style', 'class', 'aria-*'],
         },
     });
 });
