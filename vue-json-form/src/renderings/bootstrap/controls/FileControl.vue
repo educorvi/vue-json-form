@@ -54,7 +54,6 @@ function validateInput(data: any) {
     }
     if (maxFileSize) {
         let dataArray = (Array.isArray(data) ? data : [data]) || [];
-        console.log(dataArray);
         const toLargeFiles = dataArray.filter(
             (file: File) => file.size > maxFileSize
         );
