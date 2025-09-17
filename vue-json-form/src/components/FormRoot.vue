@@ -119,7 +119,7 @@ const props = defineProps<{
     validator?: ValidatorClass<ErrorObject>;
 
     /**
-     * Provides internationalizes string, for example for validation errors
+     * Provides internationalized string, for example for validation errors
      */
     languageProvider?: LanguageProvider;
 }>();
