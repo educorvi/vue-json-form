@@ -9,14 +9,15 @@
         "options": {
           "label": "JSO-64"
         },
-        "elements": [{
-          "type": "Control",
-          "scope": "/properties/singleUpload",
-          "options": {
-            "acceptedFileType": "*",
-            "maxFileSize": 1000000
-          }
-        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/singleUpload",
+            "options": {
+              "acceptedFileType": "*",
+              "maxFileSize": 1000000
+            }
+          },
           {
             "type": "Control",
             "scope": "/properties/multipleUpload",
