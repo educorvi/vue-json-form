@@ -5,7 +5,7 @@ import { useFormDataStore } from '@/stores/formData';
 import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import { computed, inject, useTemplateRef, watch } from 'vue';
+import { inject, watch } from 'vue';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
@@ -14,8 +14,6 @@ const { layoutElement, jsonElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
-
-const el = useTemplateRef<HTMLInputElement>('fileUpload');
 
 watch(
     () => formData.value[savePath],
