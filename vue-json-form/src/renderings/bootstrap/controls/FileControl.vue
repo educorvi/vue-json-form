@@ -54,15 +54,15 @@ function validateInput(data: any) {
     }
     if (maxFileSize) {
         let dataArray = (Array.isArray(data) ? data : [data]) || [];
-        const toLargeFiles = dataArray.filter(
+        const tooLargeFiles = dataArray.filter(
             (file: File) => file.size > maxFileSize
         );
-        if (toLargeFiles.length > 0) {
+        if (tooLargeFiles.length > 0) {
             el?.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.fileTooLarge',
                     (maxFileSize / 1024 / 1024).toFixed(2),
-                    toLargeFiles.map((file: File) => file.name).join(', ')
+                    tooLargeFiles.map((file: File) => file.name).join(', ')
                 ) || ''
             );
             return;
