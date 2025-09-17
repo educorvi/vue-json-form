@@ -15,6 +15,8 @@ const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
 
+const el = useTemplateRef<HTMLInputElement>('fileUpload');
+
 watch(
     () => formData.value[savePath],
     (newVal) => {
@@ -28,21 +30,22 @@ function validateInput(data: any) {
         layoutElement.options || {};
     if (allowMultipleFiles) {
         const el = document.getElementById(id.value) as HTMLInputElement;
-        if (maxNumberOfFiles && data.length > maxNumberOfFiles) {
-            el.setCustomValidity(
+        if (maxNumberOfFiles && (data.length || 0) > maxNumberOfFiles) {
+            el?.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.tooManyFiles',
                     maxNumberOfFiles
                 ) || ''
             );
-        }
-        if (minNumberOfFiles && data.length < minNumberOfFiles) {
-            el.setCustomValidity(
+        } else if (minNumberOfFiles && (data?.length || 0) < minNumberOfFiles) {
+            el?.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.tooFewFiles',
                     minNumberOfFiles
                 ) || ''
             );
+        } else {
+            el?.setCustomValidity('');
         }
     }
 }
@@ -52,6 +55,7 @@ function validateInput(data: any) {
     <BFormFile
         v-model="formData[savePath]"
         :id="id"
+        ref="fileUpload"
         class="vjf_file"
         :multiple="getOption(layoutElement, 'allowMultipleFiles', false)"
         :accept="

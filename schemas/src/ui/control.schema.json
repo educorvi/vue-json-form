@@ -239,7 +239,7 @@
         },
         "maxNumberOfFiles": {
           "type": "integer",
-          "description": "Maximum number of files that can be uploaded. If allowMultipleFiles is false, this property is ignored.",
+          "description": "Maximum number of files that can be uploaded. If allowMultipleFiles is false, this property is ignored."
         },
         "minNumberOfFiles": {
           "type": "integer",

@@ -2,7 +2,7 @@
   "errors": {
     "fileUpload": {
       "tooManyFiles": "Sie können nur !&data&! Dateien hochladen.",
-        "tooFewFiles": "Sie müssen mindestens !&data&! Dateien hochladen."
+      "tooFewFiles": "Sie müssen mindestens !&data&! Dateien hochladen."
     }
   }
 }
