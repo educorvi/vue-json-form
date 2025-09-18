@@ -14,7 +14,7 @@ export abstract class LanguageProvider {
 }
 
 export abstract class JSONLanguageProvider extends LanguageProvider {
-    abstract data: Record<string, any>;
+    abstract data: typeof English;
     getString(key: string): string {
         let obj: any = this.data;
         for (let subKey of key.split('.')) {
