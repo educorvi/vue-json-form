@@ -2,6 +2,23 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "multipleUpload": {
+      "type": "string",
+      "format": "uri"
+    },
+    "singleUpload": {
+      "type": "string",
+      "format": "uri"
+    },
+    "obj-l": {
+      "type": "object",
+      "properties": {
+        "auswahlfeld": {
+          "title": "Auswahlfeld",
+          "type": "string"
+        }
+      }
+    },
     "bool-mit-hilfe": {
       "title": "bool mit hilfe",
       "type": "boolean"
@@ -18,8 +35,8 @@
       "title": "objekt mit hilfe",
       "properties": {
         "test": {
-            "type": "string",
-            "title": "test"
+          "type": "string",
+          "title": "test"
         }
       }
     },
@@ -119,7 +136,8 @@
           }
         },
         "required": [],
-        "dependentRequired": {}
+        "dependentRequired": {
+        }
       }
     },
     "jso-37-field1": {
@@ -330,7 +348,8 @@
           }
         },
         "required": [],
-        "dependentRequired": {}
+        "dependentRequired": {
+        }
       }
     },
     "array-with-arrays": {

@@ -7,6 +7,44 @@
       {
         "type": "Group",
         "options": {
+          "label": "JSO-64"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/singleUpload",
+            "options": {
+              "acceptedFileType": "*",
+              "maxFileSize": 1000000
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/multipleUpload",
+            "options": {
+              "acceptedFileType": "*",
+              "allowMultipleFiles": true,
+              "maxNumberOfFiles": 3,
+              "minNumberOfFiles": 2,
+              "maxFileSize": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "type": "Control",
+        "scope": "/properties/obj-l/properties/auswahlfeld",
+        "options": {
+          "help": {
+            "text": "dddda"
+          },
+          "preHtml": "<span><a aria-label=\"Element anzeigen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld\" title=\"View\"><i class=\"bi bi-eye\"></a>\n <a aria-label=\"Element bearbeiten\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/edit\" title=\"Edit\"><i class=\"bi bi-pen-fill\"></a>\n<a aria-label=\"Element löschen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/delete_confirmation\" title=\"Delete\"><i class=\"bi bi-trash\"></i></a></span>",
+          "stacked": true
+        }
+      },
+      {
+        "type": "Group",
+        "options": {
           "label": "JSO-58"
         },
         "elements": [

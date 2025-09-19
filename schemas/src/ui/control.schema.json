@@ -237,6 +237,18 @@
           "type": "boolean",
           "description": "Allows the upload of multiple files with fileupload"
         },
+        "maxNumberOfFiles": {
+          "type": "integer",
+          "description": "Maximum number of files that can be uploaded. If allowMultipleFiles is false, this property is ignored."
+        },
+        "minNumberOfFiles": {
+          "type": "integer",
+          "description": "Minimum number of files that must be uploaded. If allowMultipleFiles is false, this property is ignored."
+        },
+        "maxFileSize": {
+          "type": "integer",
+          "description": "Maximum file size in bytes per file"
+        },
         "acceptedFileType": {
           "type": "string",
           "description": "The accepted File Types",

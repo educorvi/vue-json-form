@@ -1,5 +1,4 @@
 export type { RenderInterface } from './RenderInterface';
-// export type * from '@educorvi/vue-json-form-schemas';
 
 export * from '@/renderings/bootstrap/BootstrapComponents';
 
@@ -15,6 +14,8 @@ export {
 } from '@/Commons';
 
 export * from '@/MapperFunctions/oneOfToEnum';
+
+export * from '@/intl/LanguageProvider';
 
 import './RenderInterface';
 
