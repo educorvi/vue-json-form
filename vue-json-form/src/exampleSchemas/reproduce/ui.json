@@ -5,6 +5,10 @@
     "type": "VerticalLayout",
     "elements": [
       {
+        "type": "Control",
+        "scope": "/properties/patternString"
+      },
+      {
         "type": "Group",
         "options": {
           "label": "JSO-64"

@@ -2,6 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "patternString": {
+      "type": "string",
+      "pattern": "^mystring-[a-z]+$",
+      "description": "Enter a string with pattern mystring-[a-z]+",
+      "title": "Pattern String"
+    },
     "multipleUpload": {
       "type": "string",
       "format": "uri"
