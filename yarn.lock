@@ -829,6 +829,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form-webcomponent@workspace:webcomponent"
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node18": "npm:^18.2.4"
     "@vitejs/plugin-vue": "npm:^6.0.1"
@@ -842,7 +843,7 @@ __metadata:
     semantic-release-yarn: "npm:^3.0.2"
     terser: "npm:^5.31.0"
     typescript: "npm:~5.8.2"
-    vite: "npm:^6.3.5"
+    vite: "npm:^7.1.7"
     vue: "npm:^3.5.13"
     vue-tsc: "npm:^2.0.17"
   languageName: unknown

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {
+    type Validator,
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
-import { computed, type ComputedRef } from 'vue';
+import { computed, type ComputedRef, onBeforeMount, ref } from 'vue';
 import { oneOfToEnum } from '@educorvi/vue-json-form';
 import type { MapperFunction } from '@educorvi/vue-json-form';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const props = defineProps<{
     /**
@@ -28,7 +30,20 @@ const props = defineProps<{
      * Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data
      */
     returnDataAsScopes?: boolean | string;
+
+    /**
+     * Validate the JSON and UI Schema of the form
+     */
+    enableSchemaValidation?: boolean | string;
 }>();
+
+const validator = ref<typeof AjvValidator | undefined>(undefined);
+
+onBeforeMount(() => {
+    if (props.enableSchemaValidation === 'true' || props.enableSchemaValidation === true) {
+        validator.value = AjvValidator
+    }
+})
 
 const emit = defineEmits<{
     (e: 'submit', data: Record<string, any>, options: SubmitOptions): void;
@@ -57,7 +72,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         await axios(options.request.url, {
             method: options.request.method || 'POST',
             headers: options.request.headers,
-            data
+            data,
         });
     } else {
         emit('submit', data, options);
@@ -74,6 +89,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         :return-data-as-scopes="data.returnDataAsScopes"
         :mapper-functions="mapperFunctions"
         :onSubmitForm="onSubmitForm"
+        :validator="validator"
     >
         <slot />
     </vjf-comp>

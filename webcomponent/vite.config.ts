@@ -12,14 +12,14 @@ export default defineConfig({
         }),
     ],
     build: {
-        sourcemap: true,
+        sourcemap: false,
         minify: 'esbuild',
         lib: {
             entry: './src/main.ce.ts',
             name: 'vue-json-form',
             // the proper extensions will be added
             fileName: 'vue-json-form',
-            formats: ['umd'],
+            formats: ['umd', 'es'],
         },
         outDir: 'dist',
     },
