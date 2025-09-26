@@ -9,13 +9,19 @@ import type {
     TagOptions,
     TitlesForEnum,
     CoreSchemaMetaSchema1,
+    CoreSchemaMetaSchema,
 } from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
 } from '@/typings/customTypes';
-import type { BaseColorVariant, InputType } from 'bootstrap-vue-next';
+import type {
+    BaseColorVariant,
+    CheckboxOption,
+    CheckboxValue,
+    InputType,
+} from 'bootstrap-vue-next';
 
 /**
  * Checks if the given element is dependent on another element

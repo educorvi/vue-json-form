@@ -80,12 +80,7 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
-import {
-    hasOption,
-    isCoreMetaSchema1,
-    isInputType,
-    isTagsConfig,
-} from '@/typings/typeValidators';
+import { hasItems, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 
@@ -250,9 +245,9 @@ const controlType = computed(() => {
      */
     if (
         formStructureMapped.value.jsonElement?.type === 'array' &&
-        isCoreMetaSchema1(formStructureMapped.value.jsonElement?.items) &&
-        formStructureMapped.value.jsonElement?.items?.type === 'string' &&
-        formStructureMapped.value.jsonElement?.items?.format === 'uri' &&
+        hasItems(formStructureMapped.value.jsonElement) &&
+        formStructureMapped.value.jsonElement.items.type === 'string' &&
+        formStructureMapped.value.jsonElement.items.format === 'uri' &&
         formStructureMapped.value.uiElement.options?.displayAsSingleUploadField
     ) {
         return getComponent('FileControl');
