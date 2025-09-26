@@ -7,7 +7,11 @@ import {
     getParentJsonPath,
     injectJsonData,
 } from '@/computedProperties/json';
-import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import {
+    hasItems,
+    isCoreMetaSchema1,
+    isTagsConfig,
+} from '@/typings/typeValidators';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const props = defineProps<{
@@ -22,11 +26,21 @@ const hideLabel = computed(() => {
         jsonElement.type === 'object' ||
         layoutElement.options?.label === false ||
         (jsonElement.type === 'array' &&
-            !(hasItems(jsonElement) && jsonElement.items.enum) &&
+            !(
+                hasItems(jsonElement) &&
+                isCoreMetaSchema1(jsonElement.items) &&
+                jsonElement.items.enum
+            ) &&
             !jsonElement.enum &&
             !(
                 isTagsConfig(layoutElement.options) &&
                 layoutElement.options.tags?.enabled
+            ) &&
+            !(
+                isCoreMetaSchema1(jsonElement.items) &&
+                jsonElement.items.type === 'string' &&
+                jsonElement.items.format === 'uri' &&
+                layoutElement.options?.displayAsSingleUploadField
             ))
     );
 });

@@ -5,6 +5,25 @@
     "type": "VerticalLayout",
     "elements": [
       {
+        "type": "Group",
+        "options": {
+          "label": "JSO-68"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "/properties/multiFileUpload1"
+          },
+          {
+            "type": "Control",
+            "scope": "/properties/multiFileUpload2",
+            "options": {
+              "displayAsSingleUploadField": true
+            }
+          }
+        ]
+      },
+      {
         "type": "Control",
         "scope": "/properties/patternString"
       },
@@ -27,9 +46,6 @@
             "scope": "/properties/multipleUpload",
             "options": {
               "acceptedFileType": "*",
-              "allowMultipleFiles": true,
-              "maxNumberOfFiles": 3,
-              "minNumberOfFiles": 2,
               "maxFileSize": 1000000
             }
           }
@@ -88,8 +104,7 @@
               "help": {
                 "text": "hiiiiilfe"
               },
-              "acceptedFileType": "*",
-              "allowMultipleFiles": true
+              "acceptedFileType": "*"
             }
           }
         ]
