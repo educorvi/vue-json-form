@@ -108,7 +108,9 @@
               "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           },
-          "required": ["text"]
+          "required": [
+            "text"
+          ]
         },
         "placeholder": {
           "type": "string",
@@ -235,7 +237,7 @@
       "properties": {
         "maxFileSize": {
           "type": "integer",
-          "description": "Maximum file size in bytes per file"
+          "description": "Maximum file size in bytes per file. If file using a multi file upload, this needs to be set on the array that is the multi file upload."
         },
         "displayAsSingleUploadField": {
           "type": "boolean",
@@ -310,14 +312,14 @@
       }
     },
     "arrayOptions": {
-        "type": "object",
-        "title": "Array Options",
-        "properties": {
-            "addButtonText": {
-                "type": "string",
-                "description": "Text for the add button"
-            }
+      "type": "object",
+      "title": "Array Options",
+      "properties": {
+        "addButtonText": {
+          "type": "string",
+          "description": "Text for the add button"
         }
+      }
     },
     "options": {
       "type": "object",

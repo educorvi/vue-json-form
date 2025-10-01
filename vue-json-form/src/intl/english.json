@@ -3,7 +3,7 @@
     "fileUpload": {
       "tooManyFiles": "You can only upload !&data&! files.",
       "tooFewFiles": "You need to upload at least !&data&! files.",
-      "fileTooLarge": "The following files exceed the file size limit of !&data&!MB: !&data&!"
+      "fileTooLarge": "The following files exceed the file size limit of !&data&! MB: !&data&!"
     }
   }
 }

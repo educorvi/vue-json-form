@@ -16,6 +16,7 @@ import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -92,6 +93,14 @@ function initArray() {
         i++
     ) {
         addField(true);
+    }
+
+    if (layoutElement.options?.maxFileSize) {
+        setDescendantControlOverride(layoutElement.scope + '/items', {
+            options: {
+                maxFileSize: layoutElement.options.maxFileSize,
+            },
+        });
     }
 }
 

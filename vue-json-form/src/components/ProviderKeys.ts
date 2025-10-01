@@ -44,7 +44,18 @@ export function setDescendantControlOverride(
         descendantControlOverridesProviderKey,
         {}
     );
-    overridesMap[scope] = overrides;
+    let oldOverrides = overridesMap[scope];
+    if (oldOverrides) {
+        overridesMap[scope] = {
+            showOn: overrides.showOn || oldOverrides.showOn,
+            options: {
+                ...oldOverrides.options,
+                ...overrides.options,
+            },
+        };
+    } else {
+        overridesMap[scope] = overrides;
+    }
     provide(descendantControlOverridesProviderKey, overridesMap);
 }
 

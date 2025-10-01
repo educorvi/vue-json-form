@@ -12,7 +12,10 @@
         "elements": [
           {
             "type": "Control",
-            "scope": "/properties/multiFileUpload1"
+            "scope": "/properties/multiFileUpload1",
+            "options": {
+              "maxFileSize": 1000000
+            }
           },
           {
             "type": "Control",

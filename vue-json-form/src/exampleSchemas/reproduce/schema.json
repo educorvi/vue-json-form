@@ -17,6 +17,7 @@
       "type": "array",
       "description": "Upload using the file upload field",
       "maxItems": 3,
+      "minItems": 2,
       "items": {
         "type": "string",
         "format": "uri"
