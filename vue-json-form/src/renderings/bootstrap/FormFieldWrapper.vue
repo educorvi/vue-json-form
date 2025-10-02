@@ -27,6 +27,12 @@ const hideLabel = computed(() => {
             !(
                 isTagsConfig(layoutElement.options) &&
                 layoutElement.options.tags?.enabled
+            ) &&
+            !(
+                hasItems(jsonElement) &&
+                jsonElement.items.type === 'string' &&
+                jsonElement.items.format === 'uri' &&
+                layoutElement.options?.displayAsSingleUploadField
             ))
     );
 });

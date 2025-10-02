@@ -8,14 +8,20 @@ import type {
     ShowOnProperty,
     TagOptions,
     TitlesForEnum,
+    CoreSchemaMetaSchema1,
+    CoreSchemaMetaSchema,
 } from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
 } from '@/typings/customTypes';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
-import type { BaseColorVariant, InputType } from 'bootstrap-vue-next';
+import type {
+    BaseColorVariant,
+    CheckboxOption,
+    CheckboxValue,
+    InputType,
+} from 'bootstrap-vue-next';
 
 /**
  * Checks if the given element is dependent on another element
@@ -104,8 +110,8 @@ export function hasOption<Key extends keyof Options>(
 
 export function hasItems(
     json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { items: any } {
-    return 'items' in json;
+): json is CoreSchemaMetaSchema & { items: CoreSchemaMetaSchema1 } {
+    return 'items' in json && isCoreMetaSchema1(json.items);
 }
 
 export function hasEnum(
@@ -149,4 +155,8 @@ export function isInputType(value: any): value is InputType {
         'week',
     ];
     return validInputTypes.includes(value);
+}
+
+export function isCoreMetaSchema1(obj: any): obj is CoreSchemaMetaSchema1 {
+    return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
 }

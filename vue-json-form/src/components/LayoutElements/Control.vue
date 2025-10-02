@@ -26,7 +26,7 @@
                         'on'
                     )
                 "
-                :required="required"
+                :required="required || inArrayItem"
                 :style="style"
             />
             <template #append v-if="$slots.append">
@@ -80,7 +80,7 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
-import { hasOption, isInputType, isTagsConfig } from '@/typings/typeValidators';
+import { hasItems, isTagsConfig } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 
@@ -236,6 +236,19 @@ const controlType = computed(() => {
     if (
         formStructureMapped.value.jsonElement?.type === 'string' &&
         formStructureMapped.value.jsonElement.format === 'uri'
+    ) {
+        return getComponent('FileControl');
+    }
+
+    /**
+     * Display an array of file uploads as multiple file upload if options is set
+     */
+    if (
+        formStructureMapped.value.jsonElement?.type === 'array' &&
+        hasItems(formStructureMapped.value.jsonElement) &&
+        formStructureMapped.value.jsonElement.items.type === 'string' &&
+        formStructureMapped.value.jsonElement.items.format === 'uri' &&
+        formStructureMapped.value.uiElement.options?.displayAsSingleUploadField
     ) {
         return getComponent('FileControl');
     }

@@ -108,7 +108,9 @@
               "$ref": "variants.schema.json#/definitions/baseVariants"
             }
           },
-          "required": ["text"]
+          "required": [
+            "text"
+          ]
         },
         "placeholder": {
           "type": "string",
@@ -233,21 +235,14 @@
       "title": "File Upload Options",
       "type": "object",
       "properties": {
-        "allowMultipleFiles": {
-          "type": "boolean",
-          "description": "Allows the upload of multiple files with fileupload"
-        },
-        "maxNumberOfFiles": {
-          "type": "integer",
-          "description": "Maximum number of files that can be uploaded. If allowMultipleFiles is false, this property is ignored."
-        },
-        "minNumberOfFiles": {
-          "type": "integer",
-          "description": "Minimum number of files that must be uploaded. If allowMultipleFiles is false, this property is ignored."
-        },
         "maxFileSize": {
           "type": "integer",
-          "description": "Maximum file size in bytes per file"
+          "description": "Maximum file size in bytes per file. If file using a multi file upload, this needs to be set on the array that is the multi file upload."
+        },
+        "displayAsSingleUploadField": {
+          "type": "boolean",
+          "description": "If this is an array of upload fields, display as a single Multi-Upload field instead",
+          "default": false
         },
         "acceptedFileType": {
           "type": "string",
@@ -317,14 +312,14 @@
       }
     },
     "arrayOptions": {
-        "type": "object",
-        "title": "Array Options",
-        "properties": {
-            "addButtonText": {
-                "type": "string",
-                "description": "Text for the add button"
-            }
+      "type": "object",
+      "title": "Array Options",
+      "properties": {
+        "addButtonText": {
+          "type": "string",
+          "description": "Text for the add button"
         }
+      }
     },
     "options": {
       "type": "object",

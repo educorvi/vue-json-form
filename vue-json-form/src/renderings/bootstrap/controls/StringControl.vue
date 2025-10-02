@@ -53,6 +53,7 @@ const type: Ref<InputType | undefined> = computed(() => {
         :min="jsonElement.minimum"
         :max="jsonElement.maximum"
         :type="type"
+        :pattern="jsonElement.pattern"
     />
 </template>
 

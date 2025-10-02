@@ -2,8 +2,9 @@
     <form
         @submit="onSubmitFormLocal"
         @reset="resetForm"
+        @invalid.capture="formStateWasValidated = true"
         v-if="storedUiSchema && storedJsonSchema"
-        class="vjf_form"
+        :class="formClass"
     >
         <FormWrap :layoutElement="storedUiSchema" />
         <slot />
@@ -22,7 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Component, Ref } from 'vue';
+import {
+    type Component,
+    computed,
+    type ComputedRef,
+    type Ref,
+    useTemplateRef,
+} from 'vue';
 import { onBeforeMount, provide, ref, toRaw, watch } from 'vue';
 import {
     createPinia,
@@ -53,9 +60,6 @@ import {
     languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
-import RefParser, {
-    type ParserOptions,
-} from '@apidevtools/json-schema-ref-parser';
 import { generateUISchema } from '@/Commons';
 import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
@@ -112,6 +116,11 @@ const props = defineProps<{
     mapperFunctions?: MapperFunction[];
 
     /**
+     * A boolean variable that determines whether the bootstrap validation state should be hidden.
+     */
+    hideValidationState?: boolean;
+
+    /**
      * The validator to use for validating the input schemas
      * Defaults to no validation.
      * Validators can be found in the `@educorvi/vue-json-form-schemas` package.
@@ -156,6 +165,24 @@ const validationErrors: Ref<ValidationErrors> = ref({
     },
 });
 
+const formStateWasValidated = ref(false);
+
+const validator: ComputedRef<Validator<ErrorObject>> = computed(() => {
+    if (props.validator) {
+        return new props.validator();
+    } else {
+        return new EmptyValidator();
+    }
+});
+
+const formClass = computed(() => {
+    let baseclass = 'vjf_form';
+    if (formStateWasValidated.value && !props.hideValidationState) {
+        baseclass += ' was-validated';
+    }
+    return baseclass;
+});
+
 async function onSubmitFormLocal(evt: Event) {
     evt.preventDefault();
     const submitEvt = evt as SubmitEvent;
@@ -197,27 +224,14 @@ function resetForm(evt: Event) {
     cleanFormData();
 }
 
-const parserOptions: ParserOptions = {
-    resolve: {
-        file: false,
-    },
-};
-
-let validator: Validator<ErrorObject>;
-if (props.validator) {
-    validator = new props.validator();
-} else {
-    validator = new EmptyValidator();
-}
-
 async function parseJsonSchema(
     jsonSchema: Record<string, any>
 ): Promise<CoreSchemaMetaSchema | null> {
-    if (validator.validateJsonSchema(jsonSchema)) {
+    if (validator.value.validateJsonSchema(jsonSchema)) {
         return jsonSchema;
     } else {
         validationErrors.value.jsonSchema.validation =
-            validator.getJsonSchemaValidationErrors();
+            validator.value.getJsonSchemaValidationErrors();
         return null;
     }
 }
@@ -227,11 +241,11 @@ async function parseUiSchema(
     jsonSchema: CoreSchemaMetaSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
-        if (validator.validateUiSchema(uiSchema)) {
+        if (validator.value.validateUiSchema(uiSchema)) {
             return uiSchema;
         } else {
             validationErrors.value.uiSchema.validation =
-                validator.getUiSchemaValidationErrors();
+                validator.value.getUiSchemaValidationErrors();
             return null;
         }
     } else {
@@ -269,7 +283,7 @@ provide(requiredProviderKey, true);
 
 onBeforeMount(async () => {
     try {
-        await validator.initialize();
+        await validator.value.initialize();
     } catch (e: any) {
         console.error('Failed to initialize validator');
         console.error(e);

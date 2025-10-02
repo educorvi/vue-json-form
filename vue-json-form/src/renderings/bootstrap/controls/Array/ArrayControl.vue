@@ -3,10 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import {
     arrayContainsValue,
-    cleanScope,
     computedLabel,
-    getComputedJsonElement,
-    getComputedParentJsonPath,
     injectJsonData,
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
@@ -14,12 +11,12 @@ import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick, onMounted, computed, onBeforeMount } from 'vue';
+import { ref, nextTick, computed, onBeforeMount } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import { getOption } from '@/utilities.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -96,6 +93,14 @@ function initArray() {
         i++
     ) {
         addField(true);
+    }
+
+    if (layoutElement.options?.maxFileSize) {
+        setDescendantControlOverride(layoutElement.scope + '/items', {
+            options: {
+                maxFileSize: layoutElement.options.maxFileSize,
+            },
+        });
     }
 }
 

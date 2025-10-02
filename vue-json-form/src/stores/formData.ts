@@ -225,10 +225,7 @@ function readFileDataAsDataUrl(file: File): Promise<string> {
 
 export async function addFilesToFormdata(data: any) {
     if (data instanceof File) {
-        return {
-            metadata: data,
-            data: await readFileDataAsDataUrl(data),
-        };
+        return await readFileDataAsDataUrl(data);
     } else if (isProxy(data)) {
         return await addFilesToFormdata(toRaw(data));
     } else if (typeof data === 'object' || Array.isArray(data)) {
