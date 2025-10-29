@@ -185,6 +185,7 @@ const formClass = computed(() => {
 
 async function onSubmitFormLocal(evt: Event) {
     evt.preventDefault();
+    evt.stopPropagation();
     const submitEvt = evt as SubmitEvent;
     let submitData;
     if (props.returnDataAsScopes) {
@@ -222,6 +223,7 @@ function cleanFormData() {
 function resetForm(evt: Event) {
     evt.preventDefault();
     cleanFormData();
+    formStateWasValidated.value = false;
 }
 
 async function parseJsonSchema(
