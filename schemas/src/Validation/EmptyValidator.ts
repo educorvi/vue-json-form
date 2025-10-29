@@ -8,12 +8,16 @@ export class EmptyValidator extends Validator<never>{
     }
 
     protected validateJsonSchemaInternal(data: unknown): data is CoreSchemaMetaSchema {
-        console.debug(`Validation skipped for data`, data)
+        if (import.meta.env.DEV) {
+            console.debug(`Validation skipped for data`, data);
+        }
         return true;
     }
 
     protected validateUiSchemaInternal(data: unknown): data is UISchema {
-        console.debug(`Validation skipped for data`, data)
+        if (import.meta.env.DEV) {
+            console.debug(`Validation skipped for data`, data);
+        }
         return true;
     }
 
