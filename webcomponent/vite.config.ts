@@ -19,7 +19,7 @@ export default defineConfig({
             name: 'vue-json-form',
             // the proper extensions will be added
             fileName: 'vue-json-form',
-            formats: ['umd'],
+            formats: ['umd', 'es'],
         },
         outDir: 'dist',
     },
