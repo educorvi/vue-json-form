@@ -107,13 +107,14 @@ export function hasOption<Key extends keyof Options>(
     return hasOptions(layoutElement) && key in layoutElement.options;
 }
 
+//todo: check typeguard
 export function hasItems(
     json: CoreSchemaMetaSchema
 ): json is CoreSchemaMetaSchema & { items: CoreSchemaMetaSchema } {
     return (
+        typeof json === 'object' &&
         'items' in json &&
-        Array.isArray(json.items) &&
-        json.items.reduce((curr, prev) => prev !== undefined, true)
+        typeof json.items === 'object'
     );
 }
 
