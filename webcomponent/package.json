@@ -2,8 +2,15 @@
   "name": "@educorvi/vue-json-form-webcomponent",
   "version": "0.0.0",
   "description": "Vue JSON Form Webcomponent",
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/vue-json-form.umd.js",
+  "module": "dist/vue-json-form.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-json-form.mjs",
+      "require": "./dist/vue-json-form.umd.js"
+    }
+  },
   "files": [
     "dist"
   ],
