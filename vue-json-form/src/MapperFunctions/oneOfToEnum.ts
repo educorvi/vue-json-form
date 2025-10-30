@@ -1,7 +1,4 @@
-import type {
-    CoreSchemaMetaSchema,
-    CoreSchemaMetaSchema2,
-} from '@educorvi/vue-json-form-schemas';
+import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import type { Control, TitlesForEnum } from '@educorvi/vue-json-form-schemas';
 
 type customOneOfElement = CoreSchemaMetaSchema & {
@@ -10,7 +7,7 @@ type customOneOfElement = CoreSchemaMetaSchema & {
 };
 
 function isCustomOneOfElement(
-    element: CoreSchemaMetaSchema2
+    element: CoreSchemaMetaSchema
 ): element is customOneOfElement {
     return (
         typeof element === 'object' &&

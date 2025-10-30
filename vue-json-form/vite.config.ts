@@ -72,4 +72,11 @@ export default defineConfig({
             copyDtsFiles: true,
         }),
     ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true,
+            },
+        },
+    },
 });
