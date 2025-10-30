@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
 import { computed, type ComputedRef, useSlots } from 'vue';
-import {
-    getComputedJsonElement,
-    getComputedParentJsonPath,
-    getParentJsonPath,
-    injectJsonData,
-} from '@/computedProperties/json';
-import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import { injectJsonData } from '@/computedProperties/json';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
 
 const props = defineProps<{
     label: string;
@@ -16,24 +11,15 @@ const props = defineProps<{
 }>();
 
 const { jsonElement, layoutElement } = injectJsonData();
+const isObjectOrArrayView = getIsObjectOrArrayViewComputed(
+    jsonElement,
+    layoutElement
+);
 const hideLabel = computed(() => {
     return (
         jsonElement.type === 'boolean' ||
-        jsonElement.type === 'object' ||
         layoutElement.options?.label === false ||
-        (jsonElement.type === 'array' &&
-            !(hasItems(jsonElement) && jsonElement.items.enum) &&
-            !jsonElement.enum &&
-            !(
-                isTagsConfig(layoutElement.options) &&
-                layoutElement.options.tags?.enabled
-            ) &&
-            !(
-                hasItems(jsonElement) &&
-                jsonElement.items.type === 'string' &&
-                jsonElement.items.format === 'uri' &&
-                layoutElement.options?.displayAsSingleUploadField
-            ))
+        isObjectOrArrayView.value
     );
 });
 
@@ -51,9 +37,10 @@ const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
 
 <template>
     <BFormGroup
-        :label="hideLabel ? '' : props.label"
         :label-for="props.labelFor"
-        :description="jsonElement.description"
+        :description="
+            !isObjectOrArrayView ? jsonElement.description : undefined
+        "
     >
         <template #label>
             <span v-show="!hideLabel">

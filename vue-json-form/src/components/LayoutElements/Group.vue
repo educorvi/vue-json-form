@@ -24,6 +24,9 @@ const HelpPopover = getComponent('HelpPopover');
                 <component :is="HelpPopover" />
             </span>
         </legend>
+        <p v-if="layoutElement.options?.description">
+            {{ layoutElement.options.description }}
+        </p>
         <vertical-layout
             class="vjf_fieldset-content"
             :layout-element="{ ...layoutElement, type: 'VerticalLayout' }"
