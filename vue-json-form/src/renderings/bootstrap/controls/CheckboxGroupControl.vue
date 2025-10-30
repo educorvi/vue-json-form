@@ -35,23 +35,18 @@ let options: ComputedRef<CheckboxOption[]> = computed(() => {
 </script>
 
 <template>
-    <!--    <BFormCheckboxGroup-->
-    <!--        v-model="formData[savePath]"-->
-    <!--        :options="options"-->
-    <!--        class="vjf_checkboxGroup"-->
-    <!--        :id="id"-->
-    <!--        :stacked="getOption(layoutElement, 'stacked')"-->
-    <!--        :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"-->
-    <!--        :switches="getOption(layoutElement, 'displayAs') === 'switches'"-->
-    <!--        :button-variant="-->
-    <!--            getOption<ColorVariants>(layoutElement, 'buttonVariant') ||-->
-    <!--            'primary'-->
-    <!--        "-->
-    <!--    />-->
-    <b-form-checkbox-group
-        id="checkbox-group-1"
+    <BFormCheckboxGroup
+        v-model="formData[savePath]"
         :options="options"
-        name="flavour-1"
+        class="vjf_checkboxGroup"
+        :id="id"
+        :stacked="getOption(layoutElement, 'stacked')"
+        :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
+        :switches="getOption(layoutElement, 'displayAs') === 'switches'"
+        :button-variant="
+            getOption<ColorVariants>(layoutElement, 'buttonVariant') ||
+            'primary'
+        "
     />
 </template>
 
