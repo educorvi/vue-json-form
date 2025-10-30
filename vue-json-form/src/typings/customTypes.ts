@@ -41,6 +41,7 @@ export type GenerationOptions = {
     | {
           layoutType: 'Group';
           groupLabel: string;
+          groupDescription?: string;
       }
 );
 

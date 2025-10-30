@@ -17,6 +17,7 @@ import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
+import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
@@ -142,6 +143,9 @@ onBeforeMount(initArray);
                 <HelpPopover />
             </div>
         </div>
+        <p v-if="jsonElement.description">
+            {{ jsonElement.description }}
+        </p>
         <div
             class="vjf_array"
             v-if="

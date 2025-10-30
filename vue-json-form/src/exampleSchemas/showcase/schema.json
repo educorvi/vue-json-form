@@ -71,11 +71,12 @@
             },
             "minItems": 2,
             "maxItems": 4,
-            "description": "This array requires 2 to 4 entries"
+            "description": "This array requires 2 to 4 entries. It is not possible to enter more than 4 entries or less than 2 entries."
         },
         "testObject": {
             "type": "object",
             "title": "Pet",
+            "description": "Details about your pet.",
             "properties": {
                 "petName": {
                     "type": "string",
@@ -118,7 +119,5 @@
             "default": "$now"
         }
     },
-    "required": ["done", "name",
-        "fanciness"
-    ]
+    "required": ["done", "name", "fanciness"]
 }

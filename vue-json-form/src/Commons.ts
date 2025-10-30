@@ -60,6 +60,10 @@ export function generateUISchema(
                     'groupLabel' in generationOptions
                         ? generationOptions.groupLabel
                         : undefined,
+                description:
+                    'groupDescription' in generationOptions
+                        ? generationOptions.groupDescription
+                        : undefined,
             },
             elements: [],
         },

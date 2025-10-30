@@ -15,6 +15,7 @@ const computedLayout = computed(() => {
             layoutElement.options?.label !== false
                 ? computedLabel(layoutElement).value
                 : '',
+        groupDescription: jsonElement.description,
     });
 });
 </script>
