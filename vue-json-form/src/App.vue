@@ -14,7 +14,7 @@
                     :ui-schema="uiSchema || {}"
                     :presetData="presetData"
                     :validator="AjvValidator"
-                    :mapper-functions="[debugMapper]"
+                    :mapper-functions="[dependantRequiredMapper]"
                 >
                 </VueJsonForm>
                 <hr />
@@ -46,6 +46,7 @@ import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
 import { BFormCheckbox } from 'bootstrap-vue-next';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { debugMapper } from '@/MapperFunctions/debugMapper.ts';
+import { dependantRequiredMapper } from '@/MapperFunctions';
 
 const reproduce: Ref<boolean> = ref(
     localStorage.getItem('reproduce') === 'true'
