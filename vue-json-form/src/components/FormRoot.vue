@@ -27,6 +27,7 @@ import {
     type Component,
     computed,
     type ComputedRef,
+    markRaw,
     type Ref,
     useTemplateRef,
 } from 'vue';
@@ -262,7 +263,9 @@ async function assignStoreData(
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
-    components.value = obj.renderInterface;
+    components.value = obj.renderInterface
+        ? markRaw(obj.renderInterface)
+        : undefined;
 
     mappers.value = props.mapperFunctions || [];
 
