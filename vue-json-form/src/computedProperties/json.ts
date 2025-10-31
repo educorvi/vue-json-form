@@ -2,6 +2,7 @@ import { computed, type ComputedRef, inject, provide } from 'vue';
 import {
     jsonElementProviderKey,
     layoutProviderKey,
+    savePathOverrideProviderKey,
     savePathProviderKey,
 } from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
@@ -11,6 +12,7 @@ import { useFormStructureStore } from '@/stores/formStructure';
 import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import { useFormDataStore } from '@/stores/formData.ts';
 
 export function injectJsonDataSafe() {
     const layoutElement = inject(layoutProviderKey, undefined);
@@ -72,16 +74,52 @@ export function getComputedRequired(layout: Control) {
             return false;
         }
 
-        const jsonElement = getComputedJsonElement(
+        const fieldName = layout?.scope.split('/').pop() || '';
+
+        // Check if the field is required
+        let jsonElement = getComputedJsonElement(
             grandParentPath.value + '/required',
             true
         );
 
-        if (!jsonElement.value) return false;
+        if (
+            jsonElement.value !== undefined &&
+            Array.isArray(jsonElement.value)
+        ) {
+            if (jsonElement.value.includes(fieldName)) {
+                return true;
+            }
+        }
 
-        if (!Array.isArray(jsonElement.value)) return false;
+        // Check if the field is dependentRequired
+        jsonElement = getComputedJsonElement(
+            grandParentPath.value + '/dependentRequired',
+            true
+        );
 
-        return jsonElement.value.includes(layout?.scope.split('/').pop() || '');
+        if (!jsonElement.value || typeof jsonElement !== 'object') return false;
+
+        for (const [dependentOf, dependentChildren] of Object.entries(
+            jsonElement.value
+        )) {
+            if (!Array.isArray(dependentChildren)) {
+                continue;
+            }
+            if (dependentChildren.includes(fieldName)) {
+                const savePath =
+                    inject(savePathOverrideProviderKey, undefined) ||
+                    layout.scope;
+                const formDataPath =
+                    savePath.split('/').slice(0, -1).join('/') +
+                    '/' +
+                    dependentOf;
+                if (useFormDataStore().formData[formDataPath]) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     });
 }
 
