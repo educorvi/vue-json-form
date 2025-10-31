@@ -13,9 +13,9 @@ import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
 export function injectJsonDataSafe() {
-    const layoutElement = inject(layoutProviderKey);
-    const jsonElement = inject(jsonElementProviderKey);
-    const savePath = inject(savePathProviderKey);
+    const layoutElement = inject(layoutProviderKey, undefined);
+    const jsonElement = inject(jsonElementProviderKey, undefined);
+    const savePath = inject(savePathProviderKey, undefined);
 
     return { layoutElement, jsonElement, savePath };
 }
