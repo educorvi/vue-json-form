@@ -9,7 +9,7 @@ import {
 } from 'vitest';
 import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
 import type { Control } from '@educorvi/vue-json-form-schemas';
-import { oneOfToEnum } from './oneOfToEnum';
+import { oneOfToEnumMapper } from './oneOfToEnumMapper.ts';
 
 function makeControl(scope = '/properties/x'): Control {
     return {
@@ -38,7 +38,7 @@ describe('oneOfToEnum', () => {
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = oneOfToEnumMapper(json, ui);
 
         expect(result).not.toBeNull();
         const { jsonElement, uiElement } = result!;
@@ -65,7 +65,7 @@ describe('oneOfToEnum', () => {
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = oneOfToEnumMapper(json, ui);
 
         expect(result).toBeNull();
         expect(warnSpy).toHaveBeenCalledWith(
@@ -79,7 +79,7 @@ describe('oneOfToEnum', () => {
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = oneOfToEnumMapper(json, ui);
 
         expect(result).toBeNull();
         expect(warnSpy).toHaveBeenCalledWith(
@@ -91,7 +91,7 @@ describe('oneOfToEnum', () => {
         const json: CoreSchemaMetaSchema = { type: 'string' } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = oneOfToEnumMapper(json, ui);
 
         expect(result).not.toBeNull();
         expect(result!.jsonElement).toBe(json);

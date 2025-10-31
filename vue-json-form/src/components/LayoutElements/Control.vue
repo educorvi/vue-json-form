@@ -80,24 +80,26 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
-import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import {
+    hasItems,
+    isMapperFunctionWithData,
+    isTagsConfig,
+} from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 
-const { jsonSchema, mappers, arrays } = storeToRefs(useFormStructureStore());
+const { jsonSchema, mappers, arrays, uiSchema } = storeToRefs(
+    useFormStructureStore()
+);
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
 const ErrorViewer = getComponent('ErrorViewer');
 
 const props = defineProps<{
-    /**
-     * The UI Schema of this Element
-     */
+    /** The UI Schema of this Element */
     layoutElement: Control;
 
-    /**
-     * Is this control in an array item
-     */
+    /** Is this control in an array item */
     inArrayItem?: boolean;
 }>();
 
@@ -111,11 +113,24 @@ setDescendantControlOverrides(
     props.layoutElement.options?.descendantControlOverrides
 );
 
+/** Form structure with applied mappers */
 const formStructureMapped = computed(() => {
     let localJsonElement = jsonElement.value;
     let localUiElement: Control = props.layoutElement;
     for (const mapper of mappers.value) {
-        const mapped = mapper(localJsonElement || {}, localUiElement);
+        let mapped;
+        if (isMapperFunctionWithData(mapper)) {
+            mapped = mapper(localJsonElement || {}, localUiElement);
+        } else {
+            mapped = mapper(
+                localJsonElement || {},
+                localUiElement,
+                props.layoutElement.scope,
+                jsonSchema.value,
+                uiSchema.value,
+                formData.value
+            );
+        }
         if (mapped) {
             localJsonElement = mapped.jsonElement;
             localUiElement = mapped.uiElement;

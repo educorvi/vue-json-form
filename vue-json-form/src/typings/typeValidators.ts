@@ -14,6 +14,8 @@ import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
+    MapperFunction,
+    MapperFunctionWithoutData,
 } from '@/typings/customTypes';
 import type {
     BaseColorVariant,
@@ -159,4 +161,10 @@ export function isInputType(value: any): value is InputType {
         'week',
     ];
     return validInputTypes.includes(value);
+}
+
+export function isMapperFunctionWithData(
+    mapper: MapperFunction
+): mapper is MapperFunctionWithoutData {
+    return mapper.length === 2;
 }

@@ -45,9 +45,23 @@ export type GenerationOptions = {
       }
 );
 
-export type MapperFunction = (
+export type MapperFunction = MapperFunctionWithoutData | MapperFunctionWithData;
+
+export type MapperFunctionWithoutData = (
     jsonElement: CoreSchemaMetaSchema,
     uiElement: Control
+) => null | {
+    jsonElement: CoreSchemaMetaSchema;
+    uiElement: Control;
+};
+
+export type MapperFunctionWithData = (
+    jsonElement: CoreSchemaMetaSchema,
+    uiElement: Control,
+    scope: string,
+    jsonSchema: CoreSchemaMetaSchema | undefined,
+    uiSchema: Layout | undefined,
+    data: Record<string, any>
 ) => null | {
     jsonElement: CoreSchemaMetaSchema;
     uiElement: Control;
