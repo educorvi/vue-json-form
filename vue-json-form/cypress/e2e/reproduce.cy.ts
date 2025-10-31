@@ -76,6 +76,7 @@ it('JSO-31', () => {
         ]);
     });
 });
+
 it('JSO-44', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('div[name="/properties/abhaengiges-array"]').should('not.exist');
@@ -91,6 +92,7 @@ it('JSO-44', () => {
         'div[name="/properties/abhaengiges-array"] input[type="text"]'
     ).should('exist');
 });
+
 it('JSO-37', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('input[name="/properties/jso-37-field1"]').should('exist');
@@ -127,6 +129,7 @@ it('JSO-37', () => {
     cy.get('input[name="/properties/jso-37-field2"]').should('exist');
     cy.get('input[name="/properties/jso-37-field3"]').should('not.exist');
 });
+
 it('JSO-39', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     submitForm();
@@ -143,6 +146,7 @@ it('JSO-39', () => {
         expect(res['jso-39-string']).to.equal('Test');
     });
 });
+
 it('JSO-34', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get(
@@ -199,6 +203,7 @@ it('JSO-34', () => {
         '#vjf_control_for__properties_array141d1d356e40b4062ac2b1476ff52648c > .list-group > div:nth-child(2) .list-group > div:nth-child(2) input[type="text"]'
     ).should('exist');
 });
+
 it('JSO-17', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     submitForm();
@@ -210,6 +215,7 @@ it('JSO-17', () => {
         ]);
     });
 });
+
 it('JSO-23 & JSO-24', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('.vjf_showOnWrapper button[type="submit"].btn-primary').should(
@@ -290,4 +296,33 @@ it('JSO-7', () => {
             expect(res['email']).to.equal('test@example.com');
         });
     });
+});
+
+it('JSO-79', function () {
+    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').clear();
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
 });
