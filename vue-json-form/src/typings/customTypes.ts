@@ -58,7 +58,6 @@ export type MapperFunctionWithoutData = (
 export type MapperFunctionWithData = (
     jsonElement: CoreSchemaMetaSchema,
     uiElement: Control,
-    scope: string,
     jsonSchema: CoreSchemaMetaSchema | undefined,
     uiSchema: Layout | undefined,
     data: Record<string, any>

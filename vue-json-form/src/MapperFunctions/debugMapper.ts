@@ -1,9 +1,16 @@
-import type {
-    MapperFunctionWithoutData,
-} from '@/typings/customTypes.ts';
+import type { MapperFunctionWithData } from '@/typings/customTypes.ts';
 
-export const debugMapper: MapperFunctionWithoutData = (jsonElement, uiElement) => {
-    console.log(jsonElement);
-    console.log(uiElement);
+export const debugMapper: MapperFunctionWithData = (
+    jsonElement,
+    uiElement,
+    jsonSchema,
+    uiSchema,
+    data
+) => {
+    console.log('JsonSchema', jsonElement);
+    console.log('UISchema', uiElement);
+    console.log('JsonSchema', jsonSchema);
+    console.log('UISchema', uiSchema);
+    console.log('Data', data);
     return { jsonElement, uiElement };
 };

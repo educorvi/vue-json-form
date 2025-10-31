@@ -82,7 +82,7 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
-    isMapperFunctionWithData,
+    isMapperFunctionWithoutData,
     isTagsConfig,
 } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
@@ -115,20 +115,23 @@ setDescendantControlOverrides(
 
 /** Form structure with applied mappers */
 const formStructureMapped = computed(() => {
+    // Force reactivity by accessing a getter that depends on formData
+    const _ = useFormDataStore().cleanedFormData; // This getter depends on formData
+
     let localJsonElement = jsonElement.value;
     let localUiElement: Control = props.layoutElement;
+    let localFormData = formData.value;
     for (const mapper of mappers.value) {
         let mapped;
-        if (isMapperFunctionWithData(mapper)) {
+        if (isMapperFunctionWithoutData(mapper)) {
             mapped = mapper(localJsonElement || {}, localUiElement);
         } else {
             mapped = mapper(
                 localJsonElement || {},
                 localUiElement,
-                props.layoutElement.scope,
                 jsonSchema.value,
                 uiSchema.value,
-                formData.value
+                localFormData
             );
         }
         if (mapped) {

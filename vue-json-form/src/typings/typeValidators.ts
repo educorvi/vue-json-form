@@ -163,7 +163,7 @@ export function isInputType(value: any): value is InputType {
     return validInputTypes.includes(value);
 }
 
-export function isMapperFunctionWithData(
+export function isMapperFunctionWithoutData(
     mapper: MapperFunction
 ): mapper is MapperFunctionWithoutData {
     return mapper.length === 2;
