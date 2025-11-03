@@ -6,6 +6,54 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-79": {
+            "type": "object",
+            "required": ["first", "second"],
+            "properties": {
+                "first": {
+                    "enum": ["A", "B"]
+                },
+                "second": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "first": {
+                                "const": "A"
+                            }
+                        },
+                        "required": ["first"]
+                    },
+                    "then": {
+                        "properties": {
+                            "second": {
+                                "enum": ["a1", "a2"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "first": {
+                                "const": "B"
+                            }
+                        },
+                        "required": ["first"]
+                    },
+                    "then": {
+                        "properties": {
+                            "second": {
+                                "enum": ["b1"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         "string-dep-required": {
             "type": "string",
             "title": "String with dependency"
