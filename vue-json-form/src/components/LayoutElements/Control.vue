@@ -116,7 +116,7 @@ setDescendantControlOverrides(
 /** Form structure with applied mappers */
 const formStructureMapped = computed(() => {
     // Force reactivity by accessing a getter that depends on formData
-    const _ = useFormDataStore().cleanedFormData; // This getter depends on formData
+    const cleanedFormData = useFormDataStore().cleanedFormData; // This getter depends on formData
 
     let localJsonElement = jsonElement.value;
     let localUiElement: Control = props.layoutElement;
@@ -131,7 +131,7 @@ const formStructureMapped = computed(() => {
                 localUiElement,
                 jsonSchema.value,
                 uiSchema.value,
-                localFormData
+                cleanedFormData
             );
         }
         if (mapped) {

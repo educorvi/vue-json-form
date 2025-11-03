@@ -16,6 +16,7 @@ import type {
     elementWithElements,
     MapperFunction,
     MapperFunctionWithoutData,
+    SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type {
     BaseColorVariant,
@@ -23,6 +24,7 @@ import type {
     CheckboxValue,
     InputType,
 } from 'bootstrap-vue-next';
+import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 
 /**
  * Checks if the given element is dependent on another element
@@ -88,6 +90,10 @@ export function isLegacyShowOn(
         'type' in showOn &&
         'referenceValue' in showOn
     );
+}
+
+export function isValidJsonSchemaKey(key: string): key is keyof JSONSchema {
+    return JsonSchemaKeywords.find((k) => k === key) !== undefined;
 }
 
 export function hasProperty<T, K extends keyof T>(
@@ -180,4 +186,50 @@ export function isMapperFunctionWithoutData(
     mapper: MapperFunction
 ): mapper is MapperFunctionWithoutData {
     return mapper.length === 2;
+}
+
+export function isIfThenAllOf(
+    json: Required<JSONSchema>['allOf']
+): json is SupportedIfThenElse[] {
+    return Array.isArray(json) && json.every(isSupportedIfThenElse);
+}
+
+export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'properties' in json &&
+        typeof json.properties === 'object' &&
+        Object.values(json.properties).every(
+            (value) =>
+                typeof value === 'object' && value !== null && 'const' in value
+        )
+    );
+}
+
+export function isSupportedThenOrElse(
+    json: any
+): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'properties' in json &&
+        typeof json.properties === 'object' &&
+        Object.values(json.properties).every(
+            (value) =>
+                typeof value === 'object' && value !== null && 'enum' in value
+        )
+    );
+}
+
+export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'if' in json &&
+        isSupportedIf(json['if']) &&
+        'then' in json &&
+        isSupportedThenOrElse(json['then']) &&
+        ('else in json' in json ? isSupportedThenOrElse(json['else']) : true)
+    );
 }

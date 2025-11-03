@@ -14,7 +14,8 @@
                     "enum": ["A", "B"]
                 },
                 "second": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": ["a1", "a2", "b1"]
                 }
             },
             "allOf": [

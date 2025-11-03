@@ -60,7 +60,7 @@ export type MapperFunctionWithData = (
     uiElement: Control,
     jsonSchema: JSONSchema | undefined,
     uiSchema: Layout | undefined,
-    data: Record<string, any>
+    data: { scopes: Record<string, any>; json: Record<string, any> }
 ) => null | {
     jsonElement: JSONSchema;
     uiElement: Control;
@@ -84,8 +84,13 @@ export type SupportedIfThenElse = {
     };
     then: {
         properties: {
+            [key: string]: Record<string, any>;
+        };
+    };
+    else?: {
+        properties: {
             [key: string]: {
-                enum: any[];
+                [key: string]: Record<string, any>;
             };
         };
     };
