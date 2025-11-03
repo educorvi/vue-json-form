@@ -4,13 +4,12 @@ import type {
     DescendantControlOverride,
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export const layoutProviderKey = Symbol() as InjectionKey<Control>;
-export const jsonElementProviderKey =
-    Symbol() as InjectionKey<CoreSchemaMetaSchema>;
+export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
 
 export const requiredProviderKey = Symbol() as InjectionKey<boolean>;
 

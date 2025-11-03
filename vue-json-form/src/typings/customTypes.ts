@@ -3,7 +3,7 @@ import type {
     Layout,
     LayoutElement,
     Options,
-    CoreSchemaMetaSchema,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 
 /**
@@ -48,21 +48,21 @@ export type GenerationOptions = {
 export type MapperFunction = MapperFunctionWithoutData | MapperFunctionWithData;
 
 export type MapperFunctionWithoutData = (
-    jsonElement: CoreSchemaMetaSchema,
+    jsonElement: JSONSchema,
     uiElement: Control
 ) => null | {
-    jsonElement: CoreSchemaMetaSchema;
+    jsonElement: JSONSchema;
     uiElement: Control;
 };
 
 export type MapperFunctionWithData = (
-    jsonElement: CoreSchemaMetaSchema,
+    jsonElement: JSONSchema,
     uiElement: Control,
-    jsonSchema: CoreSchemaMetaSchema | undefined,
+    jsonSchema: JSONSchema | undefined,
     uiSchema: Layout | undefined,
     data: Record<string, any>
 ) => null | {
-    jsonElement: CoreSchemaMetaSchema;
+    jsonElement: JSONSchema;
     uiElement: Control;
 };
 

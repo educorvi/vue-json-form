@@ -1,17 +1,18 @@
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
-import type { Control, TitlesForEnum } from '@educorvi/vue-json-form-schemas';
 import type {
-    MapperFunction,
-    MapperFunctionWithoutData,
-} from '@/typings/customTypes.ts';
+    JSONSchema,
+    JSONSchemaWithFalse,
+} from '@educorvi/vue-json-form-schemas';
+import type { Control, TitlesForEnum } from '@educorvi/vue-json-form-schemas';
+import type { MapperFunctionWithoutData } from '@/typings/customTypes.ts';
+import { hasProperty } from '@/typings/typeValidators.ts';
 
-type customOneOfElement = CoreSchemaMetaSchema & {
+type customOneOfElement = JSONSchema & {
     const: string;
     title: string;
 };
 
 function isCustomOneOfElement(
-    element: CoreSchemaMetaSchema
+    element: JSONSchemaWithFalse
 ): element is customOneOfElement {
     return (
         typeof element === 'object' &&
@@ -27,7 +28,7 @@ function isCustomOneOfElement(
  *
  * Transformation example:
  * From:
- * ```json
+ * ```JSON
  * {
  *   "oneOf": [
  *     { "const": "value1", "title": "Label 1" },
@@ -37,7 +38,7 @@ function isCustomOneOfElement(
  * ```
  *
  * To:
- * ```json
+ * ```JSON
  * {
  *   "enum": ["value1", "value2"]
  * }
@@ -50,14 +51,14 @@ function isCustomOneOfElement(
  * @returns The modified jsonElement and uiElement, or null if validation fails
  */
 function oneOfToEnumMapperFunc(
-    jsonElement: CoreSchemaMetaSchema,
+    jsonElement: JSONSchema,
     uiElement: Control
 ): null | {
-    jsonElement: CoreSchemaMetaSchema;
+    jsonElement: JSONSchema;
     uiElement: Control;
 } {
-    if (jsonElement.oneOf) {
-        let values: CoreSchemaMetaSchema['enum'] = undefined;
+    if (hasProperty(jsonElement, 'oneOf')) {
+        let values: string[] | undefined = undefined;
         const titles: TitlesForEnum = {};
         for (const oe of jsonElement.oneOf) {
             // Validate that each option has both `const` (the value) and `title` (the label) properties
@@ -81,7 +82,7 @@ function oneOfToEnumMapperFunc(
         } else {
             // Replace the `oneOf` with the simpler `enum` array in the JSON Schema
             jsonElement.enum = values;
-            delete jsonElement.oneOf;
+            delete (jsonElement as JSONSchema).oneOf;
             // Store the human-readable titles in the UI Schema's options
             uiElement.options = {
                 enumTitles: titles,

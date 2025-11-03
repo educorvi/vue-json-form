@@ -1,8 +1,5 @@
 import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
-import type {
-    Layout,
-    CoreSchemaMetaSchema,
-} from '@educorvi/vue-json-form-schemas';
+import type { Layout, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/RenderInterface';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { MapperFunction } from '@/typings/customTypes';
@@ -10,7 +7,7 @@ import type { MapperFunction } from '@/typings/customTypes';
 const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 
 function getDefaultData(
-    schema: CoreSchemaMetaSchema,
+    schema: JSONSchema,
     basePath = '/properties/'
 ): Record<string, any> {
     let data: Record<string, any> = {};
@@ -35,7 +32,7 @@ function getDefaultData(
 }
 
 type FormStructureStoreState = {
-    jsonSchema: CoreSchemaMetaSchema | undefined;
+    jsonSchema: JSONSchema | undefined;
     uiSchema: Layout | undefined;
     components: RenderInterface | undefined;
     arrays: string[];

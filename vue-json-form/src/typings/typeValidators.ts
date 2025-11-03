@@ -8,7 +8,7 @@ import type {
     ShowOnProperty,
     TagOptions,
     TitlesForEnum,
-    CoreSchemaMetaSchema,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
@@ -90,10 +90,23 @@ export function isLegacyShowOn(
     );
 }
 
+export function hasProperty<T, K extends keyof T>(
+    obj: T,
+    propertyName: K
+): obj is T & Record<K, NonNullable<T[K]>> {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        obj !== undefined &&
+        propertyName in obj &&
+        !!obj[propertyName]
+    );
+}
+
 export function hasProperties(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { properties: any } {
-    return 'properties' in json;
+    json: JSONSchema
+): json is JSONSchema & { properties: any } {
+    return typeof json === 'object' && 'properties' in json;
 }
 
 export function hasOptions(
@@ -111,8 +124,8 @@ export function hasOption<Key extends keyof Options>(
 
 //todo: check typeguard
 export function hasItems(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { items: CoreSchemaMetaSchema } {
+    json: JSONSchema
+): json is JSONSchema & { items: JSONSchema } {
     return (
         typeof json === 'object' &&
         'items' in json &&
@@ -121,14 +134,14 @@ export function hasItems(
 }
 
 export function hasEnum(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { enum: any[] } {
+    json: JSONSchema
+): json is JSONSchema & { enum: any[] } {
     return 'enum' in json;
 }
 
 export function hasEnumValuesForItems(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { items: { enum: any[] } } {
+    json: JSONSchema
+): json is JSONSchema & { items: { enum: any[] } } {
     return hasItems(json) && hasEnum(json.items);
 }
 

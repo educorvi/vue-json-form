@@ -1,7 +1,4 @@
-import type {
-    CoreSchemaMetaSchema,
-    UISchema,
-} from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -48,7 +45,7 @@ export function mapUUID<T>(element: T[]): Array<T & { uuid: string }> {
 export const SUPPORTED_UISCHEMA_VERSION = '2.0';
 
 export function generateUISchema(
-    json: CoreSchemaMetaSchema,
+    json: JSONSchema,
     generationOptions: GenerationOptions = {}
 ): UISchema {
     const uiSchema: UISchema = {

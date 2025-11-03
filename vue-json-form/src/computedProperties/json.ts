@@ -8,7 +8,7 @@ import type { Control } from '@educorvi/vue-json-form-schemas';
 import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 
@@ -112,7 +112,7 @@ export function cleanScope(
 export function getComputedJsonElement(
     scope: string,
     failSilently = false
-): ComputedRef<CoreSchemaMetaSchema | null> {
+): ComputedRef<JSONSchema | null> {
     return computed(() => {
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());
@@ -124,12 +124,12 @@ export function getComputedJsonElement(
             ),
             '/items'
         );
-        let data: CoreSchemaMetaSchema | null = null;
+        let data: JSONSchema | null = null;
         try {
             data = jsonPointer.get(
                 jsonSchema.value || {},
                 internal_scope
-            ) as CoreSchemaMetaSchema | null;
+            ) as JSONSchema | null;
         } catch (e) {
             if (!failSilently) {
                 console.error('invalid json pointer', internal_scope, e);
@@ -157,7 +157,7 @@ export function isArray(scope: string) {
         const element = jsonPointer.get(
             jsonSchema.value || {},
             cleaned_scope
-        ) as CoreSchemaMetaSchema;
+        ) as JSONSchema;
         return element?.type === 'array';
     } catch (e) {
         console.error('invalid json pointer', cleaned_scope, e);
