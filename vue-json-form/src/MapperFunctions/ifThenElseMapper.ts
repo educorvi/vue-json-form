@@ -5,11 +5,8 @@ import {
     isIfThenAllOf,
     isValidJsonSchemaKey,
 } from '@/typings/typeValidators.ts';
-import { inject } from 'vue';
-import { savePathOverrideProviderKey } from '@/components/ProviderKeys.ts';
 import { sliceScope } from '@/Commons.ts';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
-import merge from 'deepmerge';
 // todo: auf anderen Ebenen als der eigenen
 
 export const ifThenElseMapper: MapperFunctionWithData = (
@@ -36,43 +33,51 @@ export const ifThenElseMapper: MapperFunctionWithData = (
         return { jsonElement, uiElement };
     }
 
+    if (!parentAllOf || !isIfThenAllOf(parentAllOf)) {
+        return { jsonElement, uiElement };
+    }
+
+    // Create a plain object copy to avoid reactivity issues
     let newJsonElement: JSONSchema = JSON.parse(JSON.stringify(jsonElement));
+    let hasChanges = false;
 
-    if (parentAllOf && isIfThenAllOf(parentAllOf)) {
-        for (const ifThen of parentAllOf) {
-            const thenResult = ifThen.then.properties[fieldName];
-            const elseResult = ifThen.else?.properties[fieldName];
-            if (!thenResult && !elseResult) {
-                continue;
+    for (const ifThen of parentAllOf) {
+        const thenResult = ifThen.then.properties[fieldName];
+        const elseResult = ifThen.else?.properties[fieldName];
+        if (!thenResult && !elseResult) {
+            continue;
+        }
+
+        // Todo save path
+        const savePath = uiElement.scope;
+        const conditions = Object.entries(ifThen.if.properties).map(
+            ([key, value]) => {
+                return { key, value: value.const };
             }
+        );
+        const fulfilled = conditions.every(
+            ({ key, value }) =>
+                data.scopes[sliceScope(savePath, -1) + '/' + key] === value
+        );
 
-            const savePath =
-                inject(savePathOverrideProviderKey) || uiElement.scope;
-            const conditions = Object.entries(ifThen.if.properties).map(
-                ([key, value]) => {
-                    return { key, value: value.const };
-                }
-            );
-            const fulfilled = conditions.every(
-                ({ key, value }) =>
-                    data.scopes[sliceScope(savePath, -1) + '/' + key] === value
-            );
-            if (fulfilled) {
-                const props = ifThen.then.properties[fieldName] || {};
-                for (let [key, val] of Object.entries(props)) {
-                    if (isValidJsonSchemaKey(key)) {
-                        newJsonElement[key] = val;
-                    }
-                }
-            } else {
-                const props = ifThen.else?.properties[fieldName] || {};
-                for (let [key, val] of Object.entries(props)) {
-                    if (isValidJsonSchemaKey(key)) {
-                        newJsonElement[key] = val;
-                    }
+        const props = fulfilled
+            ? ifThen.then.properties[fieldName] || {}
+            : ifThen.else?.properties[fieldName] || {};
+
+        for (let [key, val] of Object.entries(props)) {
+            if (isValidJsonSchemaKey(key)) {
+                // Only update if the value actually changed
+                if (newJsonElement[key] !== val) {
+                    newJsonElement[key] = val;
+                    hasChanges = true;
                 }
             }
         }
     }
-    return { jsonElement: newJsonElement, uiElement };
+
+    // Only return a new object if something actually changed
+    return {
+        jsonElement: hasChanges ? newJsonElement : jsonElement,
+        uiElement,
+    };
 };

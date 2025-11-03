@@ -1,6 +1,6 @@
 import { hasItems, isTagsConfig } from '@/typings/typeValidators.ts';
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { computed } from 'vue';
+import { computed, type Ref } from 'vue';
 
 export function isObjectOrArrayViewFunc(
     jsonElement: JSONSchema,
@@ -24,8 +24,10 @@ export function isObjectOrArrayViewFunc(
     );
 }
 export function getIsObjectOrArrayViewComputed(
-    jsonElement: JSONSchema,
-    layoutElement: Control
+    jsonElement: Ref<JSONSchema, JSONSchema>,
+    layoutElement: Ref<Control, Control>
 ) {
-    return computed(() => isObjectOrArrayViewFunc(jsonElement, layoutElement));
+    return computed(() =>
+        isObjectOrArrayViewFunc(jsonElement.value, layoutElement.value)
+    );
 }

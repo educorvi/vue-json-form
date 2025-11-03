@@ -8,7 +8,7 @@ import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const label = computedLabel(layoutElement);

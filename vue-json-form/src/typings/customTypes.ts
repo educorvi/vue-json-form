@@ -48,19 +48,19 @@ export type GenerationOptions = {
 export type MapperFunction = MapperFunctionWithoutData | MapperFunctionWithData;
 
 export type MapperFunctionWithoutData = (
-    jsonElement: JSONSchema,
-    uiElement: Control
+    jsonElement: Readonly<JSONSchema>,
+    uiElement: Readonly<Control>
 ) => null | {
     jsonElement: JSONSchema;
     uiElement: Control;
 };
 
 export type MapperFunctionWithData = (
-    jsonElement: JSONSchema,
-    uiElement: Control,
-    jsonSchema: JSONSchema | undefined,
-    uiSchema: Layout | undefined,
-    data: { scopes: Record<string, any>; json: Record<string, any> }
+    jsonElement: Readonly<JSONSchema>,
+    uiElement: Readonly<Control>,
+    jsonSchema: Readonly<JSONSchema> | undefined,
+    uiSchema: Readonly<Layout> | undefined,
+    data: Readonly<{ scopes: Record<string, any>; json: Record<string, any> }>
 ) => null | {
     jsonElement: JSONSchema;
     uiElement: Control;

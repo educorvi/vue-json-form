@@ -14,7 +14,7 @@
                     :ui-schema="uiSchema || {}"
                     :presetData="presetData"
                     :validator="AjvValidator"
-                    :mapper-functions="[ifThenElseMapper]"
+                    :mapper-functions="[]"
                 >
                 </VueJsonForm>
                 <hr />

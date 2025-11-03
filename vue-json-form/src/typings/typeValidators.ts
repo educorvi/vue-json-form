@@ -109,12 +109,6 @@ export function hasProperty<T, K extends keyof T>(
     );
 }
 
-export function hasProperties(
-    json: JSONSchema
-): json is JSONSchema & { properties: any } {
-    return typeof json === 'object' && 'properties' in json;
-}
-
 export function hasOptions(
     layout: LayoutElement
 ): layout is LayoutElement & { options: Options } {
@@ -232,4 +226,18 @@ export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
         isSupportedThenOrElse(json['then']) &&
         ('else in json' in json ? isSupportedThenOrElse(json['else']) : true)
     );
+}
+
+/**
+ * Type guard that checks if a value is not undefined
+ */
+export function isDefined<T>(value: T): value is Exclude<T, undefined> {
+    return value !== undefined;
+}
+
+/**
+ * Checks if all provided values are defined (not undefined)
+ */
+export function allDefined(...values: any[]): boolean {
+    return values.every(isDefined);
 }

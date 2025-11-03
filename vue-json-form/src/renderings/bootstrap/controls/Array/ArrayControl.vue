@@ -1,36 +1,45 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import {
-    arrayContainsValue,
-    computedLabel,
-    injectJsonData,
-} from '@/computedProperties/json';
+import { arrayContainsValue, computedLabel } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick, computed, onBeforeMount } from 'vue';
+import { ref, nextTick, computed, onBeforeMount, inject, toRefs } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
-import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
+import {
+    formStructureProviderKey,
+    savePathProviderKey,
+    setDescendantControlOverride,
+} from '@/components/ProviderKeys.ts';
 import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
+import { isDefined } from '@/typings/typeValidators.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
 
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 
-const { savePath } = injectJsonData();
+const fs = inject(formStructureProviderKey);
+const savePath = inject(savePathProviderKey) || '';
+if (!isDefined(fs) || savePath === '') {
+    throw new Error('fs and savePath must be provided');
+}
+const { jsonElement, uiElement: layoutElement } = toRefs(fs.value);
 const id = controlID(savePath);
 
 function addField(skipFocus = false, value?: any) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
+    }
+    if (!isDefined(savePath)) {
+        throw new Error('savePath must be provided');
     }
     formData.value[savePath].push(genId);
     // Define an empty string for the new item so that the uuid will not be visible in `cleanedData`
@@ -49,8 +58,6 @@ function addField(skipFocus = false, value?: any) {
         });
     }
 }
-
-const { layoutElement, jsonElement } = injectJsonData();
 
 const label = computedLabel(layoutElement);
 
@@ -90,16 +97,16 @@ function initArray() {
     arrays.value.push(savePath);
     for (
         let i = formData.value[savePath].length;
-        i < (jsonElement.minItems || 0);
+        i < (jsonElement.value.minItems || 0);
         i++
     ) {
         addField(true);
     }
 
-    if (layoutElement.options?.maxFileSize) {
-        setDescendantControlOverride(layoutElement.scope + '/items', {
+    if (layoutElement.value.options?.maxFileSize) {
+        setDescendantControlOverride(layoutElement.value.scope + '/items', {
             options: {
-                maxFileSize: layoutElement.options.maxFileSize,
+                maxFileSize: layoutElement.value.options.maxFileSize,
             },
         });
     }
@@ -111,7 +118,7 @@ const allowAddField = computed(() => {
     }
     return (
         formData.value[savePath].length <
-        (jsonElement.maxItems || Number.MAX_VALUE)
+        (jsonElement.value.maxItems || Number.MAX_VALUE)
     );
 });
 
@@ -119,11 +126,11 @@ const allowRemoveField = computed(() => {
     if (!formData.value[savePath]) {
         initArray();
     }
-    return formData.value[savePath].length > (jsonElement.minItems || 0);
+    return formData.value[savePath].length > (jsonElement.value.minItems || 0);
 });
 
 const isArrayItem = computed(() => {
-    return isArrayItemKey(layoutElement.scope.split('.').pop() || '');
+    return isArrayItemKey(layoutElement.value.scope.split('.').pop() || '');
 });
 
 onBeforeMount(initArray);

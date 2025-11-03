@@ -1,4 +1,4 @@
-import { inject, type InjectionKey, provide } from 'vue';
+import { type ComputedRef, inject, type InjectionKey, provide } from 'vue';
 import type {
     Control,
     DescendantControlOverride,
@@ -8,9 +8,14 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
-export const layoutProviderKey = Symbol() as InjectionKey<Control>;
-export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
-
+// export const layoutProviderKey = Symbol() as InjectionKey<Control>;
+// export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
+export const formStructureProviderKey = Symbol() as InjectionKey<
+    ComputedRef<{
+        jsonElement: JSONSchema;
+        uiElement: Control;
+    }>
+>;
 export const requiredProviderKey = Symbol() as InjectionKey<boolean>;
 
 export const savePathOverrideProviderKey = Symbol() as InjectionKey<
@@ -59,11 +64,9 @@ export function setDescendantControlOverride(
 }
 
 export function mergeDescendantControlOptionsOverrides(
-    control: Control
+    control: Control,
+    overridesMap: DescendantControlOverrides | undefined
 ): Control {
-    const overridesMap: DescendantControlOverrides | undefined = inject(
-        descendantControlOverridesProviderKey
-    );
     if (!overridesMap) return control;
 
     const cleanedScope = cleanScope(control.scope);

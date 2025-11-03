@@ -915,6 +915,7 @@ __metadata:
     "@types/uuid": "npm:^11.0.0"
     "@vitejs/plugin-vue": "npm:^6.0.1"
     "@vitest/ui": "npm:^4.0.5"
+    "@vue-macros/reactivity-transform": "npm:^3.1.1"
     "@vue/eslint-config-prettier": "npm:^10.2.0"
     "@vue/eslint-config-typescript": "npm:^14.6.0"
     "@vue/test-utils": "npm:^2.4.6"
@@ -3467,6 +3468,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vue-macros/common@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@vue-macros/common@npm:3.1.1"
+  dependencies:
+    "@vue/compiler-sfc": "npm:^3.5.22"
+    ast-kit: "npm:^2.1.2"
+    local-pkg: "npm:^1.1.2"
+    magic-string-ast: "npm:^1.0.2"
+    unplugin-utils: "npm:^0.3.0"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.2.25
+  peerDependenciesMeta:
+    vue:
+      optional: true
+  checksum: 10/73c187e1652670bdd5ed96e7aa749b23ef17b68c8de32eec000ccc460843364b082132dc6cf38ee664fc4fdc35ed92ffbd474f1366467ba3404f14bb74fdd7d3
+  languageName: node
+  linkType: hard
+
+"@vue-macros/reactivity-transform@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@vue-macros/reactivity-transform@npm:3.1.1"
+  dependencies:
+    "@babel/parser": "npm:^7.28.4"
+    "@vue-macros/common": "npm:3.1.1"
+    "@vue/compiler-core": "npm:^3.5.22"
+    "@vue/shared": "npm:^3.5.22"
+    magic-string: "npm:^0.30.19"
+    unplugin: "npm:^2.3.10"
+  peerDependencies:
+    vue: ^2.7.0 || ^3.2.25
+  checksum: 10/e1707823a08ec27a039a806489fdbeb4ca5a021d8ccd68ec423633df79e84764e7302655e5031e9c58488eb02d45df489e4f3103d344e8759816aed63457bba8
+  languageName: node
+  linkType: hard
+
 "@vue/babel-helper-vue-transform-on@npm:1.2.5":
   version: 1.2.5
   resolution: "@vue/babel-helper-vue-transform-on@npm:1.2.5"
@@ -3538,7 +3573,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-core@npm:3.5.22":
+"@vue/compiler-core@npm:3.5.22, @vue/compiler-core@npm:^3.5.22":
   version: 3.5.22
   resolution: "@vue/compiler-core@npm:3.5.22"
   dependencies:
@@ -3581,7 +3616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/compiler-sfc@npm:3.5.22":
+"@vue/compiler-sfc@npm:3.5.22, @vue/compiler-sfc@npm:^3.5.22":
   version: 3.5.22
   resolution: "@vue/compiler-sfc@npm:3.5.22"
   dependencies:
@@ -3855,7 +3890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/shared@npm:3.5.22":
+"@vue/shared@npm:3.5.22, @vue/shared@npm:^3.5.22":
   version: 3.5.22
   resolution: "@vue/shared@npm:3.5.22"
   checksum: 10/8dac35e4ed992da493db8a7430e7c1a09aae1029771e3e7fd3cf2ec64a039f989baef52a47c2864041b01f3de822518c55954bc1c1f2de69690d28761197467d
@@ -4529,6 +4564,16 @@ __metadata:
   version: 1.0.0
   resolution: "assert-plus@npm:1.0.0"
   checksum: 10/f4f991ae2df849cc678b1afba52d512a7cbf0d09613ba111e72255409ff9158550c775162a47b12d015d1b82b3c273e8e25df0e4783d3ddb008a293486d00a07
+  languageName: node
+  linkType: hard
+
+"ast-kit@npm:^2.1.2":
+  version: 2.1.3
+  resolution: "ast-kit@npm:2.1.3"
+  dependencies:
+    "@babel/parser": "npm:^7.28.4"
+    pathe: "npm:^2.0.3"
+  checksum: 10/b082a1264129bfcfac259c4382f4968d9aa61c8a0e53e1d1f78416658684fc9f0f9dc0961b29d18336798c25461e1d5860fb2138730b4d8473343cecedc953c7
   languageName: node
   linkType: hard
 
@@ -9902,6 +9947,15 @@ __metadata:
   version: 3.7.1
   resolution: "luxon@npm:3.7.1"
   checksum: 10/3582460c0e2d4a88f6f0c11df30cac70c7e09a3d595b66b1d04543759a38afe6e5be28c601c4d81ee73d2e8602c65f825e2c8a8542392cc564624f2bf7d6301f
+  languageName: node
+  linkType: hard
+
+"magic-string-ast@npm:^1.0.2":
+  version: 1.0.3
+  resolution: "magic-string-ast@npm:1.0.3"
+  dependencies:
+    magic-string: "npm:^0.30.19"
+  checksum: 10/fe4f022958f333fee5f4164b189ce01c0bd4ee60cb7f368d765999b752451cf02444f3cd3115e20ed5901a360dc0714a2941258f394e6b02e0b20e2bb39ddd7d
   languageName: node
   linkType: hard
 

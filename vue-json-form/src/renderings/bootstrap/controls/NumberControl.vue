@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput } from 'bootstrap-vue-next';
-import { computed } from 'vue';
+import { computed, inject, toRefs } from 'vue';
 import { getOption } from '@/utilities';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const step = computed(() => {
-    if (jsonElement.type === 'integer') {
-        return jsonElement.multipleOf || 1;
+    if (jsonElement.value.type === 'integer') {
+        return jsonElement.value.multipleOf || 1;
     }
-    return jsonElement.multipleOf || 0.0000000000000000000001;
+    return jsonElement.value.multipleOf || 0.0000000000000000000001;
 });
 </script>
 
