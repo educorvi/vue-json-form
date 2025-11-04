@@ -13,7 +13,7 @@ export {
     SUPPORTED_UISCHEMA_VERSION as supportedUiSchemaVersion,
 } from '@/Commons';
 
-export * from '@/MapperFunctions/oneOfToEnumMapper.ts';
+export * from '@/MapperFunctions';
 
 export * from '@/intl/LanguageProvider';
 
