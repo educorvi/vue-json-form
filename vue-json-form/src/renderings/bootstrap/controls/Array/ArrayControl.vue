@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { arrayContainsValue, computedLabel } from '@/computedProperties/json';
+import {
+    arrayContainsValue,
+    computedLabel,
+    injectJsonData,
+} from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
@@ -12,12 +16,7 @@ import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
-import {
-    formStructureProviderKey,
-    savePathProviderKey,
-    setDescendantControlOverride,
-} from '@/components/ProviderKeys.ts';
-import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
+import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
 import { isDefined } from '@/typings/typeValidators.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
@@ -25,12 +24,7 @@ const ErrorViewer = getComponent('ErrorViewer');
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 
-const fs = inject(formStructureProviderKey);
-const savePath = inject(savePathProviderKey) || '';
-if (!isDefined(fs) || savePath === '') {
-    throw new Error('fs and savePath must be provided');
-}
-const { jsonElement, uiElement: layoutElement } = toRefs(fs.value);
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 function addField(skipFocus = false, value?: any) {
@@ -113,9 +107,6 @@ function initArray() {
 }
 
 const allowAddField = computed(() => {
-    if (!formData.value[savePath]) {
-        initArray();
-    }
     return (
         formData.value[savePath].length <
         (jsonElement.value.maxItems || Number.MAX_VALUE)
@@ -123,9 +114,6 @@ const allowAddField = computed(() => {
 });
 
 const allowRemoveField = computed(() => {
-    if (!formData.value[savePath]) {
-        initArray();
-    }
     return formData.value[savePath].length > (jsonElement.value.minItems || 0);
 });
 

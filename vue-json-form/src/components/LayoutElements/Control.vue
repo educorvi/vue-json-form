@@ -64,6 +64,7 @@ import {
     type ComputedRef,
     watch,
     toRef,
+    type Ref,
 } from 'vue';
 import {
     savePathProviderKey,
@@ -89,6 +90,13 @@ import {
 } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
+import {
+    computedWithControl,
+    useThrottleFn,
+    watchDeep,
+    watchThrottled,
+} from '@vueuse/core';
+import { diffChars, diffJson, diffLines } from 'diff';
 
 const { jsonSchema, mappers, arrays, uiSchema } = storeToRefs(
     useFormStructureStore()
@@ -107,7 +115,8 @@ const props = defineProps<{
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
 
-const { formData, defaultFormData } = storeToRefs(useFormDataStore());
+const { formData, defaultFormData, cleanedFormData } =
+    storeToRefs(useFormDataStore());
 
 const invalidJsonPointer = ref(false as false | string);
 
@@ -119,44 +128,96 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
     descendantControlOverridesProviderKey
 );
 
-/** Form structure with applied mappers */
-const formStructureMapped: ComputedRef<{
-    jsonElement: JSONSchema;
-    uiElement: Control;
-}> = computed(() => {
-    const cleanedFormData = useFormDataStore().cleanedFormData;
+// const formStructureMapped: Ref<{
+//     jsonElement: JSONSchema;
+//     uiElement: Control;
+// }> = ref({
+//     jsonElement: {},
+//     uiElement: {
+//         type: 'Control',
+//         scope: '',
+//     },
+// });
 
-    let localJsonElement = jsonElement.value || {};
-    let localUiElement: Control = props.layoutElement;
-    for (const mapper of mappers.value) {
-        let mapped;
-        if (isMapperFunctionWithoutData(mapper)) {
-            mapped = mapper(localJsonElement || {}, localUiElement);
-        } else {
-            mapped = mapper(
-                localJsonElement || {},
-                localUiElement,
-                jsonSchema.value,
-                uiSchema.value,
-                cleanedFormData
-            );
+// const updateFormStructureMapped = useThrottleFn(() => {
+//     let localJsonElement = JSON.parse(JSON.stringify(jsonElement.value || {}));
+//     let localUiElement: Control = JSON.parse(
+//         JSON.stringify(props.layoutElement)
+//     );
+//     for (const mapper of mappers.value) {
+//         let mapped;
+//         if (isMapperFunctionWithoutData(mapper)) {
+//             mapped = mapper(localJsonElement || {}, localUiElement);
+//         } else {
+//             mapped = mapper(
+//                 localJsonElement || {},
+//                 localUiElement,
+//                 jsonSchema.value,
+//                 uiSchema.value,
+//                 cleanedFormData.value
+//             );
+//         }
+//         if (mapped) {
+//             localJsonElement = mapped.jsonElement;
+//             localUiElement = mapped.uiElement;
+//         } else {
+//             console.warn('Mapper failed', mapper);
+//         }
+//     }
+//     localUiElement = mergeDescendantControlOptionsOverrides(
+//         localUiElement,
+//         overridesMap
+//     );
+//     formStructureMapped.value = {
+//         jsonElement: localJsonElement,
+//         uiElement: localUiElement,
+//     };
+// }, 200);
+
+const formStructureMapped = computedWithControl(
+    [() => jsonElement.value, () => props.layoutElement],
+    () => {
+        let localJsonElement = jsonElement.value || {};
+        let localUiElement: Control = props.layoutElement;
+        for (const mapper of mappers.value) {
+            let mapped;
+            if (isMapperFunctionWithoutData(mapper)) {
+                mapped = mapper(localJsonElement || {}, localUiElement);
+            } else {
+                mapped = mapper(
+                    localJsonElement || {},
+                    localUiElement,
+                    jsonSchema.value,
+                    uiSchema.value,
+                    cleanedFormData.value
+                );
+            }
+            if (mapped) {
+                localJsonElement = mapped.jsonElement;
+                localUiElement = mapped.uiElement;
+            } else {
+                console.warn('Mapper failed', mapper);
+            }
         }
-        if (mapped) {
-            localJsonElement = mapped.jsonElement;
-            localUiElement = mapped.uiElement;
-        } else {
-            console.warn('Mapper failed', mapper);
-        }
+        localUiElement = mergeDescendantControlOptionsOverrides(
+            localUiElement,
+            overridesMap
+        );
+        return {
+            jsonElement: localJsonElement,
+            uiElement: localUiElement,
+        };
     }
-    localUiElement = mergeDescendantControlOptionsOverrides(
-        localUiElement,
-        overridesMap
-    );
-    return {
-        jsonElement: localJsonElement,
-        uiElement: localUiElement,
-    };
-});
+);
+
+watchThrottled(
+    () => formData,
+    (newVal, oldVal) => {
+        console.log(diffChars(JSON.stringify(oldVal), JSON.stringify(newVal)));
+        formStructureMapped.trigger();
+    },
+    { throttle: 100, deep: true }
+);
 
 const htmlMessages = computed(() => {
     const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
@@ -311,7 +372,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    formData.value[savePath] = undefined;
+    // formData.value[savePath] = undefined;
 });
 </script>
 

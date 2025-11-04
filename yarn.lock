@@ -928,6 +928,7 @@ __metadata:
     cypress: "npm:^15.5.0"
     cypress-axe: "npm:^1.7.0"
     deepmerge: "npm:^4.3.1"
+    diff: "npm:^8.0.2"
     eslint: "npm:^9.38.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-vue: "npm:^10.5.1"

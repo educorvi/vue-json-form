@@ -57,6 +57,7 @@
     "bootstrap-vue-next": "0.40.7",
     "buffer": "^6.0.3",
     "deepmerge": "^4.3.1",
+    "diff": "^8.0.2",
     "json-pointer": "^0.6.2",
     "pinia": "^3.0.3",
     "sanitize-html": "^2.17.0",

@@ -1,4 +1,10 @@
-import { type ComputedRef, inject, type InjectionKey, provide } from 'vue';
+import {
+    type ComputedRef,
+    inject,
+    type InjectionKey,
+    provide,
+    type Ref,
+} from 'vue';
 import type {
     Control,
     DescendantControlOverride,
@@ -11,7 +17,7 @@ import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 // export const layoutProviderKey = Symbol() as InjectionKey<Control>;
 // export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
 export const formStructureProviderKey = Symbol() as InjectionKey<
-    ComputedRef<{
+    Ref<{
         jsonElement: JSONSchema;
         uiElement: Control;
     }>
