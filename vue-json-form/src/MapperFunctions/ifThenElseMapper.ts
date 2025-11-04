@@ -38,7 +38,7 @@ export const ifThenElseMapper: MapperFunctionWithData = (
     }
 
     // Create a plain object copy to avoid reactivity issues
-    let newJsonElement: JSONSchema = JSON.parse(JSON.stringify(jsonElement));
+    let newJsonElement: JSONSchema = jsonElement;
     let hasChanges = false;
 
     for (const ifThen of parentAllOf) {

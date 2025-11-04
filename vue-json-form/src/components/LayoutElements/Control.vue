@@ -65,6 +65,7 @@ import {
     watch,
     toRef,
     type Ref,
+    onUpdated,
 } from 'vue';
 import {
     savePathProviderKey,
@@ -177,6 +178,7 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
 const formStructureMapped = computedWithControl(
     [() => jsonElement.value, () => props.layoutElement],
     () => {
+        console.log('formStructureMapped');
         let localJsonElement = jsonElement.value || {};
         let localUiElement: Control = props.layoutElement;
         for (const mapper of mappers.value) {
@@ -211,9 +213,8 @@ const formStructureMapped = computedWithControl(
 );
 
 watchThrottled(
-    () => formData,
+    () => cleanedFormData.value,
     (newVal, oldVal) => {
-        console.log(diffChars(JSON.stringify(oldVal), JSON.stringify(newVal)));
         formStructureMapped.trigger();
     },
     { throttle: 100, deep: true }
@@ -372,7 +373,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    // formData.value[savePath] = undefined;
+    formData.value[savePath] = undefined;
 });
 </script>
 
