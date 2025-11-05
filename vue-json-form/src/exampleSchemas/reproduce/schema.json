@@ -8,7 +8,6 @@
     "properties": {
         "jso-79": {
             "type": "object",
-            "required": ["first", "second"],
             "properties": {
                 "first": {
                     "enum": ["A", "B"]
