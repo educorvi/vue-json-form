@@ -11,7 +11,7 @@ import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { BButton } from 'bootstrap-vue-next';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick, computed, onBeforeMount, inject, toRefs } from 'vue';
+import { ref, nextTick, computed, onBeforeMount, watch } from 'vue';
 import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
@@ -105,6 +105,15 @@ function initArray() {
         });
     }
 }
+
+watch(
+    () => formData.value[savePath],
+    () => {
+        if (!formData.value[savePath]) {
+            initArray();
+        }
+    }
+);
 
 const allowAddField = computed(() => {
     return (
