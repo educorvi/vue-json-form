@@ -3,10 +3,10 @@ import {
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
 import { computed, type ComputedRef } from 'vue';
-import { oneOfToEnumMapper } from '@educorvi/vue-json-form';
-import type { MapperFunction } from '@educorvi/vue-json-form';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
+import type { Mapper } from '@educorvi/vue-json-form';
+import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 
 const props = defineProps<{
     /**
@@ -50,7 +50,7 @@ const data: ComputedRef = computed(() => {
     };
 });
 
-const mapperFunctions: MapperFunction[] = [oneOfToEnumMapper];
+const mapperFunctions: Mapper[] = [OneOfToEnumMapper, IfThenElseMapper];
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     if (options.action === 'request' && options.request?.url) {
