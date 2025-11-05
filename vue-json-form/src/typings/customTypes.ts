@@ -5,6 +5,7 @@ import type {
     Options,
     JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
+import { MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
  * A layout element with child elements
@@ -45,26 +46,9 @@ export type GenerationOptions = {
       }
 );
 
-export type MapperFunction = MapperFunctionWithoutData | MapperFunctionWithData;
+export type Mapper = MapperWithoutData | MapperWithData;
 
-export type MapperFunctionWithoutData = (
-    jsonElement: Readonly<JSONSchema>,
-    uiElement: Readonly<Control>
-) => null | {
-    jsonElement: JSONSchema;
-    uiElement: Control;
-};
-
-export type MapperFunctionWithData = (
-    jsonElement: Readonly<JSONSchema>,
-    uiElement: Readonly<Control>,
-    jsonSchema: Readonly<JSONSchema> | undefined,
-    uiSchema: Readonly<Layout> | undefined,
-    data: Readonly<{ scopes: Record<string, any>; json: Record<string, any> }>
-) => null | {
-    jsonElement: JSONSchema;
-    uiElement: Control;
-};
+export type MapperClass = new () => Mapper;
 
 type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
     x: infer I

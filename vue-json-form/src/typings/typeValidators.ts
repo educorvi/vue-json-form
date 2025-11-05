@@ -14,8 +14,7 @@ import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
-    MapperFunction,
-    MapperFunctionWithoutData,
+    Mapper,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type {
@@ -25,6 +24,7 @@ import type {
     InputType,
 } from 'bootstrap-vue-next';
 import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
+import { MapperWithoutData } from '@/Mappers';
 
 /**
  * Checks if the given element is dependent on another element
@@ -97,7 +97,7 @@ export function isValidJsonSchemaKey(key: string): key is keyof JSONSchema {
 }
 
 export function hasProperty<T, K extends keyof T>(
-    obj: T,
+    obj: T | undefined,
     propertyName: K
 ): obj is T & Record<K, NonNullable<T[K]>> {
     return (
@@ -176,10 +176,10 @@ export function isInputType(value: any): value is InputType {
     return validInputTypes.includes(value);
 }
 
-export function isMapperFunctionWithoutData(
-    mapper: MapperFunction
-): mapper is MapperFunctionWithoutData {
-    return mapper.length === 2;
+export function isMapperWithoutData(
+    mapper: Mapper
+): mapper is MapperWithoutData {
+    return mapper instanceof MapperWithoutData;
 }
 
 export function isIfThenAllOf(

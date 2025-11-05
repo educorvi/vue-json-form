@@ -62,7 +62,11 @@ import {
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import { generateUISchema } from '@/Commons';
-import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
+import type {
+    GenerationOptions,
+    Mapper,
+    MapperClass,
+} from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
     AutoLanguageProvider,
@@ -114,7 +118,7 @@ const props = defineProps<{
     /**
      * Functions to change JSON- and UI-Schema of fields before rendering
      */
-    mapperFunctions?: MapperFunction[];
+    mappers?: MapperClass[];
 
     /**
      * A boolean variable that determines whether the bootstrap validation state should be hidden.
@@ -267,7 +271,7 @@ async function assignStoreData(
         ? markRaw(obj.renderInterface)
         : undefined;
 
-    mappers.value = props.mapperFunctions || [];
+    mappers.value = props.mappers || [];
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);

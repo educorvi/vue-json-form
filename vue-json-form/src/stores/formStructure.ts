@@ -2,7 +2,7 @@ import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
 import type { Layout, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/RenderInterface';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
-import type { MapperFunction } from '@/typings/customTypes';
+import type { Mapper, MapperClass } from '@/typings/customTypes.ts';
 
 const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 
@@ -36,7 +36,7 @@ type FormStructureStoreState = {
     uiSchema: Layout | undefined;
     components: RenderInterface | undefined;
     arrays: string[];
-    mappers: MapperFunction[];
+    mappers: MapperClass[];
     buttonWaiting: Record<string, boolean>;
 };
 

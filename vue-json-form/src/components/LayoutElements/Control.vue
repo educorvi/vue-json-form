@@ -86,7 +86,7 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
-    isMapperFunctionWithoutData,
+    isMapperWithoutData,
     isTagsConfig,
 } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
@@ -98,10 +98,14 @@ import {
     watchThrottled,
 } from '@vueuse/core';
 import { diffChars, diffJson, diffLines } from 'diff';
+import type { Mapper } from '@/typings/customTypes.ts';
 
-const { jsonSchema, mappers, arrays, uiSchema } = storeToRefs(
-    useFormStructureStore()
-);
+const {
+    jsonSchema,
+    mappers: mapperClasses,
+    arrays,
+    uiSchema,
+} = storeToRefs(useFormStructureStore());
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
 const ErrorViewer = getComponent('ErrorViewer');
@@ -129,69 +133,25 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
     descendantControlOverridesProviderKey
 );
 
-// const formStructureMapped: Ref<{
-//     jsonElement: JSONSchema;
-//     uiElement: Control;
-// }> = ref({
-//     jsonElement: {},
-//     uiElement: {
-//         type: 'Control',
-//         scope: '',
-//     },
-// });
+const savePath =
+    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
 
-// const updateFormStructureMapped = useThrottleFn(() => {
-//     let localJsonElement = JSON.parse(JSON.stringify(jsonElement.value || {}));
-//     let localUiElement: Control = JSON.parse(
-//         JSON.stringify(props.layoutElement)
-//     );
-//     for (const mapper of mappers.value) {
-//         let mapped;
-//         if (isMapperFunctionWithoutData(mapper)) {
-//             mapped = mapper(localJsonElement || {}, localUiElement);
-//         } else {
-//             mapped = mapper(
-//                 localJsonElement || {},
-//                 localUiElement,
-//                 jsonSchema.value,
-//                 uiSchema.value,
-//                 cleanedFormData.value
-//             );
-//         }
-//         if (mapped) {
-//             localJsonElement = mapped.jsonElement;
-//             localUiElement = mapped.uiElement;
-//         } else {
-//             console.warn('Mapper failed', mapper);
-//         }
-//     }
-//     localUiElement = mergeDescendantControlOptionsOverrides(
-//         localUiElement,
-//         overridesMap
-//     );
-//     formStructureMapped.value = {
-//         jsonElement: localJsonElement,
-//         uiElement: localUiElement,
-//     };
-// }, 200);
+const mappers: Ref<Mapper[]> = ref([]);
 
 const formStructureMapped = computedWithControl(
     [() => jsonElement.value, () => props.layoutElement],
     () => {
-        console.log('formStructureMapped');
         let localJsonElement = jsonElement.value || {};
         let localUiElement: Control = props.layoutElement;
         for (const mapper of mappers.value) {
             let mapped;
-            if (isMapperFunctionWithoutData(mapper)) {
-                mapped = mapper(localJsonElement || {}, localUiElement);
+            if (isMapperWithoutData(mapper)) {
+                mapped = mapper.map(localJsonElement || {}, localUiElement);
             } else {
-                mapped = mapper(
+                mapped = mapper.map(
                     localJsonElement || {},
                     localUiElement,
-                    jsonSchema.value,
-                    uiSchema.value,
-                    cleanedFormData.value
+                    formData.value
                 );
             }
             if (mapped) {
@@ -212,13 +172,44 @@ const formStructureMapped = computedWithControl(
     }
 );
 
-watchThrottled(
-    () => cleanedFormData.value,
-    (newVal, oldVal) => {
-        formStructureMapped.trigger();
-    },
-    { throttle: 100, deep: true }
-);
+onMounted(() => {
+    if (
+        !jsonElement.value ||
+        !props.layoutElement ||
+        !jsonSchema.value ||
+        !uiSchema.value
+    ) {
+        return;
+    }
+    const registeredDependencies = new Set<string>();
+    mappers.value = mapperClasses.value.map((mapperClass) => {
+        return new mapperClass();
+    });
+    for (const mapper of mappers.value) {
+        if (!isMapperWithoutData(mapper)) {
+            mapper.registerSchemata(
+                jsonSchema.value,
+                uiSchema.value,
+                props.layoutElement.scope,
+                savePath
+            );
+            for (const dependency of mapper.getDependencies()) {
+                if (registeredDependencies.has(dependency)) {
+                    continue;
+                }
+                registeredDependencies.add(dependency);
+                watchThrottled(
+                    () => formData.value[dependency],
+                    () => {
+                        formStructureMapped.trigger();
+                    },
+                    { throttle: 100, deep: false }
+                );
+            }
+        }
+    }
+    formStructureMapped.trigger();
+});
 
 const htmlMessages = computed(() => {
     const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
@@ -261,10 +252,6 @@ const cssClass = computedCssClass(
     'vjf_control mb-3',
     additionalHiddenClass
 );
-
-const savePath =
-    inject(savePathOverrideProviderKey, undefined) ||
-    formStructureMapped.value.uiElement.scope;
 
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
