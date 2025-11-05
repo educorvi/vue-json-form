@@ -94,6 +94,7 @@ import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import {
     computedWithControl,
     useThrottleFn,
+    watchDebounced,
     watchDeep,
     watchThrottled,
 } from '@vueuse/core';
@@ -198,12 +199,12 @@ onMounted(() => {
                     continue;
                 }
                 registeredDependencies.add(dependency);
-                watchThrottled(
+                watchDebounced(
                     () => formData.value[dependency],
                     () => {
                         formStructureMapped.trigger();
                     },
-                    { throttle: 100, deep: false }
+                    { debounce: 50, deep: false }
                 );
             }
         }
