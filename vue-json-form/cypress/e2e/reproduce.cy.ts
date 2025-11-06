@@ -37,6 +37,7 @@ it('JSO-79 (IfThenElse)', () => {
     cy.get(FIRST_SELECT).select('A');
     cy.get(SECOND_SELECT).select('a1');
     cy.get(FIRST_SELECT).select('B');
+    cy.wait(WAIT_TIME);
     submitForm();
     cy.get('#result-container').then((el) => {
         let res = JSON.parse(el.text());
