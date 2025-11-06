@@ -5,7 +5,6 @@ import {
 import { computed, type ComputedRef } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
-import type { Mapper } from '@educorvi/vue-json-form';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 
 const props = defineProps<{
@@ -50,7 +49,7 @@ const data: ComputedRef = computed(() => {
     };
 });
 
-const mapperFunctions: Mapper[] = [OneOfToEnumMapper, IfThenElseMapper];
+const mapperFunctions = [OneOfToEnumMapper, IfThenElseMapper];
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     if (options.action === 'request' && options.request?.url) {
