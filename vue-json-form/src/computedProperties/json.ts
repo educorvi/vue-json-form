@@ -1,15 +1,8 @@
-import {
-    computed,
-    type ComputedRef,
-    inject,
-    provide,
-    type Ref,
-    toRef,
-    toRefs,
-} from 'vue';
+import { computed, type ComputedRef, inject, type Ref, toRef } from 'vue';
 import {
     formStructureProviderKey,
     savePathProviderKey,
+    savePathOverrideProviderKey,
 } from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
 import pointer from 'json-pointer';
@@ -19,6 +12,7 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { isDefined } from '@/typings/typeValidators.ts';
+import { useFormDataStore } from '@/stores/formData.ts';
 
 export function injectJsonData() {
     const fs = inject(formStructureProviderKey);
@@ -74,18 +68,52 @@ export function getComputedRequired(layout: Ref<Control, Control>) {
             return false;
         }
 
-        const jsonElement = getComputedJsonElement(
+        const fieldName = layout.value.scope.split('/').pop() || '';
+
+        // Check if the field is required
+        let jsonElement = getComputedJsonElement(
             grandParentPath.value + '/required',
             true
         );
 
-        if (!jsonElement.value) return false;
+        if (
+            jsonElement.value !== undefined &&
+            Array.isArray(jsonElement.value)
+        ) {
+            if (jsonElement.value.includes(fieldName)) {
+                return true;
+            }
+        }
 
-        if (!Array.isArray(jsonElement.value)) return false;
-
-        return jsonElement.value.includes(
-            layout?.value.scope.split('/').pop() || ''
+        // Check if the field is dependentRequired
+        jsonElement = getComputedJsonElement(
+            grandParentPath.value + '/dependentRequired',
+            true
         );
+
+        if (!jsonElement.value || typeof jsonElement !== 'object') return false;
+
+        for (const [dependentOf, dependentChildren] of Object.entries(
+            jsonElement.value
+        )) {
+            if (!Array.isArray(dependentChildren)) {
+                continue;
+            }
+            if (dependentChildren.includes(fieldName)) {
+                const savePath =
+                    inject(savePathOverrideProviderKey, undefined) ||
+                    layout.value.scope;
+                const formDataPath =
+                    savePath.split('/').slice(0, -1).join('/') +
+                    '/' +
+                    dependentOf;
+                if (useFormDataStore().formData[formDataPath]) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     });
 }
 
