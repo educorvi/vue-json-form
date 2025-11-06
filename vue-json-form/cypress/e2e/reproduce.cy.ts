@@ -4,6 +4,35 @@ function submitForm() {
     cy.get('button[type="submit"]').eq(-3).click();
 }
 
+it('JSO-43', function () {
+    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').clear();
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+});
+
 it('Pattern string', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
 
@@ -296,33 +325,4 @@ it('JSO-7', () => {
             expect(res['email']).to.equal('test@example.com');
         });
     });
-});
-
-it('JSO-79', function () {
-    cy.visit('http://localhost:5173?variant=reproduce');
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'not.have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('not.include.text', '*');
-
-    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('include.text', '*');
-
-    cy.get('#vjf_control_for__properties_string-dep-required').clear();
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'not.have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('not.include.text', '*');
 });
