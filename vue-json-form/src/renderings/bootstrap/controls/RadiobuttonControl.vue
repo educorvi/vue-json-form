@@ -9,7 +9,7 @@ import {
     isDefined,
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
-import { computed, inject, toRefs } from 'vue';
+import { computed, inject, toRefs, watch } from 'vue';
 import { getOption } from '@/utilities';
 import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
 import { injectJsonData } from '@/computedProperties/json.ts';
@@ -48,6 +48,18 @@ const displaySettings = computed(() => {
     }
     return { stacked };
 });
+
+watch(
+    () => jsonElement.value.enum,
+    () => {
+        if (
+            jsonElement.value.enum &&
+            !jsonElement.value.enum.includes(formData.value[savePath])
+        ) {
+            formData.value[savePath] = undefined;
+        }
+    }
+);
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import { BFormSelect } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
-import { computed, inject, toRef, toRefs } from 'vue';
+import { computed, inject, toRef, toRefs, watch } from 'vue';
 import {
     allDefined,
     hasEnumTitlesOptions,
@@ -39,6 +39,18 @@ const options = computed(() => {
         });
     }
 });
+
+watch(
+    () => jsonElement.value.enum,
+    () => {
+        if (
+            jsonElement.value.enum &&
+            !jsonElement.value.enum.includes(formData.value[savePath])
+        ) {
+            formData.value[savePath] = undefined;
+        }
+    }
+);
 </script>
 
 <template>
