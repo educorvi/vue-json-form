@@ -40,7 +40,7 @@ import {
 } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import {
-    type CoreSchemaMetaSchema,
+    type JSONSchema,
     EmptyValidator,
     type SubmitOptions,
     type UISchema,
@@ -62,7 +62,11 @@ import {
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import { generateUISchema } from '@/Commons';
-import type { GenerationOptions, MapperFunction } from '@/typings/customTypes';
+import type {
+    GenerationOptions,
+    Mapper,
+    MapperClass,
+} from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
     AutoLanguageProvider,
@@ -114,7 +118,7 @@ const props = defineProps<{
     /**
      * Functions to change JSON- and UI-Schema of fields before rendering
      */
-    mapperFunctions?: MapperFunction[];
+    mappers?: MapperClass[];
 
     /**
      * A boolean variable that determines whether the bootstrap validation state should be hidden.
@@ -229,7 +233,7 @@ function resetForm(evt: Event) {
 
 async function parseJsonSchema(
     jsonSchema: Record<string, any>
-): Promise<CoreSchemaMetaSchema | null> {
+): Promise<JSONSchema | null> {
     if (validator.value.validateJsonSchema(jsonSchema)) {
         return jsonSchema;
     } else {
@@ -241,7 +245,7 @@ async function parseJsonSchema(
 
 async function parseUiSchema(
     uiSchema: Record<string, any> | undefined,
-    jsonSchema: CoreSchemaMetaSchema
+    jsonSchema: JSONSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
         if (validator.value.validateUiSchema(uiSchema)) {
@@ -267,7 +271,7 @@ async function assignStoreData(
         ? markRaw(obj.renderInterface)
         : undefined;
 
-    mappers.value = props.mapperFunctions || [];
+    mappers.value = props.mappers || [];
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);

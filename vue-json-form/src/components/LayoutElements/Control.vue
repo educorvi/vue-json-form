@@ -46,7 +46,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Control } from '@educorvi/vue-json-form-schemas';
+import type {
+    Control,
+    DescendantControlOverrides,
+    JSONSchema,
+} from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
 import { getOption } from '@/utilities';
@@ -59,17 +63,17 @@ import {
     ref,
     type ComputedRef,
     watch,
+    toRef,
+    type Ref,
+    onUpdated,
 } from 'vue';
-import jsonPointer from 'json-pointer';
 import {
-    layoutProviderKey,
-    jsonElementProviderKey,
     savePathProviderKey,
     savePathOverrideProviderKey,
     mergeDescendantControlOptionsOverrides,
-    descendantControlOverridesProviderKey,
-    setDescendantControlOverride,
     setDescendantControlOverrides,
+    formStructureProviderKey,
+    descendantControlOverridesProviderKey,
 } from '@/components/ProviderKeys';
 import {
     computedLabel,
@@ -80,30 +84,45 @@ import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
-import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import {
+    hasItems,
+    isMapperWithoutData,
+    isTagsConfig,
+} from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
+import {
+    computedWithControl,
+    useThrottleFn,
+    watchDebounced,
+    watchDeep,
+    watchThrottled,
+} from '@vueuse/core';
+import { diffChars, diffJson, diffLines } from 'diff';
+import type { Mapper } from '@/typings/customTypes.ts';
 
-const { jsonSchema, mappers, arrays } = storeToRefs(useFormStructureStore());
+const {
+    jsonSchema,
+    mappers: mapperClasses,
+    arrays,
+    uiSchema,
+} = storeToRefs(useFormStructureStore());
 
 const FormFieldWrapper = getComponent('FormFieldWrapper');
 const ErrorViewer = getComponent('ErrorViewer');
 
 const props = defineProps<{
-    /**
-     * The UI Schema of this Element
-     */
+    /** The UI Schema of this Element */
     layoutElement: Control;
 
-    /**
-     * Is this control in an array item
-     */
+    /** Is this control in an array item */
     inArrayItem?: boolean;
 }>();
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
 
-const { formData, defaultFormData } = storeToRefs(useFormDataStore());
+const { formData, defaultFormData, cleanedFormData } =
+    storeToRefs(useFormDataStore());
 
 const invalidJsonPointer = ref(false as false | string);
 
@@ -111,23 +130,86 @@ setDescendantControlOverrides(
     props.layoutElement.options?.descendantControlOverrides
 );
 
-const formStructureMapped = computed(() => {
-    let localJsonElement = jsonElement.value;
-    let localUiElement: Control = props.layoutElement;
+const overridesMap: DescendantControlOverrides | undefined = inject(
+    descendantControlOverridesProviderKey
+);
+
+const savePath =
+    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+
+const mappers: Ref<Mapper[]> = ref([]);
+
+const formStructureMapped = computedWithControl(
+    [() => jsonElement.value, () => props.layoutElement],
+    () => {
+        let localJsonElement = jsonElement.value || {};
+        let localUiElement: Control = props.layoutElement;
+        for (const mapper of mappers.value) {
+            let mapped;
+            if (isMapperWithoutData(mapper)) {
+                mapped = mapper.map(localJsonElement || {}, localUiElement);
+            } else {
+                mapped = mapper.map(
+                    localJsonElement || {},
+                    localUiElement,
+                    formData.value
+                );
+            }
+            if (mapped) {
+                localJsonElement = mapped.jsonElement;
+                localUiElement = mapped.uiElement;
+            } else {
+                console.warn('Mapper failed', mapper);
+            }
+        }
+        localUiElement = mergeDescendantControlOptionsOverrides(
+            localUiElement,
+            overridesMap
+        );
+        return {
+            jsonElement: localJsonElement,
+            uiElement: localUiElement,
+        };
+    }
+);
+
+onMounted(() => {
+    if (
+        !jsonElement.value ||
+        !props.layoutElement ||
+        !jsonSchema.value ||
+        !uiSchema.value
+    ) {
+        return;
+    }
+    const registeredDependencies = new Set<string>();
+    mappers.value = mapperClasses.value.map((mapperClass) => {
+        return new mapperClass();
+    });
     for (const mapper of mappers.value) {
-        const mapped = mapper(localJsonElement || {}, localUiElement);
-        if (mapped) {
-            localJsonElement = mapped.jsonElement;
-            localUiElement = mapped.uiElement;
-        } else {
-            console.warn('Mapper failed', mapper);
+        if (!isMapperWithoutData(mapper)) {
+            mapper.registerSchemata(
+                jsonSchema.value,
+                uiSchema.value,
+                props.layoutElement.scope,
+                savePath
+            );
+            for (const dependency of mapper.getDependencies()) {
+                if (registeredDependencies.has(dependency)) {
+                    continue;
+                }
+                registeredDependencies.add(dependency);
+                watchDebounced(
+                    () => formData.value[dependency],
+                    () => {
+                        formStructureMapped.trigger();
+                    },
+                    { debounce: 50, deep: false }
+                );
+            }
         }
     }
-    localUiElement = mergeDescendantControlOptionsOverrides(localUiElement);
-    return {
-        jsonElement: localJsonElement,
-        uiElement: localUiElement,
-    };
+    formStructureMapped.trigger();
 });
 
 const htmlMessages = computed(() => {
@@ -149,7 +231,7 @@ const htmlMessages = computed(() => {
     return messages;
 });
 
-const required = getComputedRequired(formStructureMapped.value.uiElement);
+const required = getComputedRequired(ref(formStructureMapped.value.uiElement));
 
 let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
     ? 'hiddenControl'
@@ -172,18 +254,13 @@ const cssClass = computedCssClass(
     additionalHiddenClass
 );
 
-const savePath =
-    inject(savePathOverrideProviderKey, undefined) ||
-    formStructureMapped.value.uiElement.scope;
-
-provide(layoutProviderKey, formStructureMapped.value.uiElement);
-provide(jsonElementProviderKey, formStructureMapped.value.jsonElement || {});
+provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
 provide(savePathOverrideProviderKey, undefined);
 
 const control_id_string = controlID(savePath);
 
-const label = computedLabel(formStructureMapped.value.uiElement);
+const label = computedLabel(toRef(() => formStructureMapped.value.uiElement));
 
 /**
  * The type of the control

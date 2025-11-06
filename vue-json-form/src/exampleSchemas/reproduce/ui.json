@@ -5,6 +5,10 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Control",
+                "scope": "/properties/jso-79"
+            },
+            {
                 "type": "Group",
                 "options": { "label": "JSO-79" },
                 "elements": [

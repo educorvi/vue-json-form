@@ -33,6 +33,48 @@ it('JSO-43', function () {
     ).should('not.include.text', '*');
 });
 
+
+it('JSO-79 (IfThenElse)', () => {
+    const FIRST_SELECT = '#vjf_control_for__properties_jso-79_properties_first';
+    const SECOND_SELECT =
+        '#vjf_control_for__properties_jso-79_properties_second';
+    const WAIT_TIME = 150;
+
+    const validateSelectOptions = (
+        selector: string,
+        expectedValues: string[]
+    ) => {
+        cy.get(`${selector} option`).each((option) => {
+            expect(option.attr('value')).to.be.oneOf(expectedValues);
+        });
+    };
+
+    cy.visit('http://localhost:5173?variant=reproduce');
+
+    // Initial state: all options should be available
+    validateSelectOptions(SECOND_SELECT, ['a1', 'a2', 'b1']);
+
+    // Select 'A': only 'a' options should be available
+    cy.get(FIRST_SELECT).select('A');
+    cy.wait(WAIT_TIME);
+    validateSelectOptions(SECOND_SELECT, ['a1', 'a2']);
+
+    // Select 'B': only 'b' options should be available
+    cy.get(FIRST_SELECT).select('B');
+    cy.wait(WAIT_TIME);
+    validateSelectOptions(SECOND_SELECT, ['b1']);
+
+    cy.get(FIRST_SELECT).select('A');
+    cy.get(SECOND_SELECT).select('a1');
+    cy.get(FIRST_SELECT).select('B');
+    cy.wait(WAIT_TIME);
+    submitForm();
+    cy.get('#result-container').then((el) => {
+        let res = JSON.parse(el.text());
+        expect(res['jso-79']['second']).to.be.undefined;
+    });
+});
+
 it('Pattern string', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
 

@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, useSlots } from 'vue';
-import { injectJsonData } from '@/computedProperties/json';
+import { computed, type ComputedRef, inject, toRefs, useSlots } from 'vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     label: string;
     labelFor: string;
 }>();
 
-const { jsonElement, layoutElement } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
+
 const isObjectOrArrayView = getIsObjectOrArrayViewComputed(
     jsonElement,
     layoutElement
 );
 const hideLabel = computed(() => {
     return (
-        jsonElement.type === 'boolean' ||
-        layoutElement.options?.label === false ||
+        jsonElement.value.type === 'boolean' ||
+        layoutElement.value.options?.label === false ||
         isObjectOrArrayView.value
     );
 });
@@ -29,8 +30,8 @@ const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
     return !!(
         slots.prepend ||
         slots.append ||
-        layoutElement.options?.prepend ||
-        layoutElement.options?.append
+        layoutElement.value.options?.prepend ||
+        layoutElement.value.options?.append
     );
 });
 </script>

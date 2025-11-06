@@ -2,29 +2,29 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import { inject, watch, computed } from 'vue';
+import { inject, watch, computed, toRefs } from 'vue';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
 
 const multiple = computed(() => {
-    return jsonElement.type === 'array';
+    return jsonElement.value.type === 'array';
 });
 
 const minNumberOfFiles = computed(() => {
-    return jsonElement.minItems;
+    return jsonElement.value.minItems;
 });
 
 const maxNumberOfFiles = computed(() => {
-    return jsonElement.maxItems;
+    return jsonElement.value.maxItems;
 });
 
 watch(
@@ -36,7 +36,7 @@ watch(
 );
 
 function validateInput(data: any) {
-    const { maxFileSize } = layoutElement.options || {};
+    const { maxFileSize } = layoutElement.value.options || {};
     const el = document.getElementById(id.value) as HTMLInputElement;
 
     // Validate number of files

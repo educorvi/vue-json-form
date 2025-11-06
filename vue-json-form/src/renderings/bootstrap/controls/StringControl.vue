@@ -1,31 +1,30 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, type Ref } from 'vue';
+import { computed, type ComputedRef, inject, type Ref, toRefs } from 'vue';
 import type {
     ControlFormattingOptions,
     InputOptions,
 } from '@educorvi/vue-json-form-schemas';
 import { isInputType } from '@/typings/typeValidators';
-import { getOption } from '@/utilities.ts';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const options: ComputedRef<ControlFormattingOptions & InputOptions> = computed(
-    () => layoutElement.options || {}
+    () => layoutElement.value.options || {}
 );
 
 const type: Ref<InputType | undefined> = computed(() => {
     const str =
         options.value.format ||
-        jsonElement.format?.replace('date-time', 'datetime-local');
+        jsonElement.value.format?.replace('date-time', 'datetime-local');
     if (!isInputType(str)) {
         return undefined;
     }

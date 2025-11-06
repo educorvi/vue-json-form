@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ErrorViewer from '@/renderings/bootstrap/ErrorViewer.vue';
-import { injectJsonData } from '@/computedProperties/json';
+import { injectJsonData } from '@/computedProperties/json.ts';
+
 const { jsonElement } = injectJsonData();
 </script>
 

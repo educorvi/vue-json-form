@@ -1,7 +1,8 @@
 [
   {
     "path": "vue-json-form/dist/vue-json-form.umd.cjs",
-    "name": "VueJsonForm"
+    "name": "VueJsonForm",
+    "limit": "300 kB"
   },
   {
     "path": "vue-json-form/dist/vue-json-form.css",
@@ -10,8 +11,14 @@
     "webpack": false
   },
   {
-    "path": "webcomponent/dist/vue-json-form.umd.cjs",
-    "name": "WebComponent"
+    "path": "webcomponent/dist/vue-json-form.umd.js",
+    "name": "WebComponent",
+    "limit": "300 kB"
+  },
+  {
+    "path": "webcomponent/dist/vue-json-form.mjs",
+    "name": "WebComponent Module",
+    "limit": "300 kB"
   },
   {
     "path": "webcomponent/dist/vue-json-form.css",

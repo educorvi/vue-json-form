@@ -7,9 +7,11 @@ import {
     afterEach,
     type Mock,
 } from 'vitest';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { Control } from '@educorvi/vue-json-form-schemas';
-import { oneOfToEnum } from './oneOfToEnum';
+import { OneOfToEnumMapper } from '.';
+
+const mapper = new OneOfToEnumMapper();
 
 function makeControl(scope = '/properties/x'): Control {
     return {
@@ -30,7 +32,7 @@ describe('oneOfToEnum', () => {
     });
 
     it('converts oneOf to enum and sets enumTitles on ui options', () => {
-        const json: CoreSchemaMetaSchema = {
+        const json: JSONSchema = {
             oneOf: [
                 { const: 'a', title: 'A' },
                 { const: 'b', title: 'B' },
@@ -38,7 +40,7 @@ describe('oneOfToEnum', () => {
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = mapper.map(json, ui);
 
         expect(result).not.toBeNull();
         const { jsonElement, uiElement } = result!;
@@ -56,7 +58,7 @@ describe('oneOfToEnum', () => {
     });
 
     it('returns null and warns when a oneOf element is not a custom one (missing title)', () => {
-        const json: CoreSchemaMetaSchema = {
+        const json: JSONSchema = {
             oneOf: [
                 { const: 'a', title: 'A' },
                 // missing title -> invalid
@@ -65,7 +67,7 @@ describe('oneOfToEnum', () => {
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = mapper.map(json, ui);
 
         expect(result).toBeNull();
         expect(warnSpy).toHaveBeenCalledWith(
@@ -74,12 +76,12 @@ describe('oneOfToEnum', () => {
     });
 
     it('returns null and warns when oneOf array is empty', () => {
-        const json: CoreSchemaMetaSchema = {
+        const json: JSONSchema = {
             oneOf: [],
         } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = mapper.map(json, ui);
 
         expect(result).toBeNull();
         expect(warnSpy).toHaveBeenCalledWith(
@@ -88,10 +90,10 @@ describe('oneOfToEnum', () => {
     });
 
     it('passes through unchanged when no oneOf is present', () => {
-        const json: CoreSchemaMetaSchema = { type: 'string' } as any;
+        const json: JSONSchema = { type: 'string' } as any;
         const ui = makeControl();
 
-        const result = oneOfToEnum(json, ui);
+        const result = mapper.map(json, ui);
 
         expect(result).not.toBeNull();
         expect(result!.jsonElement).toBe(json);

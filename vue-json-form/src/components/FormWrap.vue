@@ -9,14 +9,20 @@
 </template>
 
 <script setup lang="ts">
-import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
-import { computed, shallowRef, markRaw, watch } from 'vue';
+import type {
+    DescendantControlOverrides,
+    LayoutElement,
+} from '@educorvi/vue-json-form-schemas';
+import { computed, shallowRef, markRaw, watch, inject, onMounted } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
 import { getComponent } from '@/stores/formStructure';
 import { computedShowOnLogic } from '@/components/ShowOnLogic';
-import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
+import {
+    descendantControlOverridesProviderKey,
+    mergeDescendantControlOptionsOverrides,
+} from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
 
 const showOnWrapper = getComponent('showOnWrapper');
@@ -55,11 +61,15 @@ const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
 
 let localLayoutElement: LayoutElement = props.layoutElement;
 
+const overridesMap: DescendantControlOverrides | undefined = inject(
+    descendantControlOverridesProviderKey
+);
+
 if (localLayoutElement.type === 'Control') {
-    mergeDescendantControlOptionsOverrides(localLayoutElement);
+    mergeDescendantControlOptionsOverrides(localLayoutElement, overridesMap);
 }
 
-const show = computedShowOnLogic(localLayoutElement);
+const show = computedShowOnLogic(localLayoutElement, overridesMap);
 </script>
 
 <style scoped></style>

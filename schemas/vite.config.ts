@@ -25,8 +25,7 @@ export default defineConfig({
         }),
         viteStaticCopy({
             targets: [
-                { src: 'src/generated/ui-merged.schema.json', dest: '.', rename: 'ui.schema.json' },
-                { src: 'src/json-schema_draft7.json', dest: '.' },
+                { src: 'src/generated/ui-merged.schema.json', dest: '.', rename: 'ui.schema.json' }
             ],
         }),
     ],

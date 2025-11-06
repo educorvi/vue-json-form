@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { BBadge, BPopover } from 'bootstrap-vue-next';
-import { injectJsonDataSafe } from '@/computedProperties/json.ts';
-const { layoutElement } = injectJsonDataSafe();
+import { injectJsonData } from '@/computedProperties/json.ts';
+
+const { layoutElement } = injectJsonData();
 </script>
 
 <template>

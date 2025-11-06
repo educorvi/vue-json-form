@@ -14,6 +14,7 @@
                     :ui-schema="uiSchema || {}"
                     :presetData="presetData"
                     :validator="AjvValidator"
+                    :mappers="[IfThenElseMapper]"
                 >
                 </VueJsonForm>
                 <hr />
@@ -44,6 +45,7 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
 import { BFormCheckbox } from 'bootstrap-vue-next';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
+import { IfThenElseMapper } from './Mappers';
 
 const reproduce: Ref<boolean> = ref(
     localStorage.getItem('reproduce') === 'true'

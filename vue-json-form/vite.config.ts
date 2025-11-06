@@ -7,6 +7,7 @@ import dts from 'vite-plugin-dts';
 import pkg from './package.json';
 // import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import vueDevTools from 'vite-plugin-vue-devtools';
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 
 export default defineConfig({
     define: {
@@ -71,6 +72,7 @@ export default defineConfig({
             insertTypesEntry: true,
             copyDtsFiles: true,
         }),
+        ReactivityTransform(),
     ],
     css: {
         preprocessorOptions: {
