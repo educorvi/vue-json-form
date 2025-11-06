@@ -1,3 +1,20 @@
+/**
+ * IfThenElseMapper
+ *
+ * Applies conditional JSON Schema fragments (then/else) to a single field based on
+ * sibling data using JSON Schema style `if`/`then`/`else` blocks that are
+ * collected via an `allOf` on the parent object.
+ *
+ *
+ * Mapper behavior in short:
+ * - During `registerSchemata`, the mapper reads the parent `allOf` and extracts every
+ *   supported `{ if: { properties: ... }, then: { properties: ... }, else?: ... }` block
+ *   that touches the current field (by `fieldName`).
+ * - During `map`, it evaluates the conditions against sibling values in `data` and
+ *   merges the corresponding `then` or `else` properties into the current field’s
+ *   JSON Schema. Later rules overwrite earlier ones when they define the same keys.
+ * - `getDependencies` returns the list of sibling data paths this field depends on.
+ */
 import jsonPointer from 'json-pointer';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
@@ -13,11 +30,17 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
 
+/** Describes a single condition coming from `if.properties` where
+ *  the sibling property `key` must equal the constant `value`. */
 type Condition = {
     key: string;
     value: any;
 };
 
+/** A preprocessed rule extracted from the parent `allOf`:
+ *  - `conditions`: pairs of sibling key and required constant value.
+ *  - `then`/`else`: schema fragments specifically for the current field.
+ */
 type ConditionsAndResults = {
     conditions: Condition[];
     then?: JSONSchema;
@@ -25,6 +48,21 @@ type ConditionsAndResults = {
 };
 
 // todo: support other depth than own one
+/**
+ * Mapper that conditionally augments a field’s JSON Schema based on sibling values.
+ *
+ * It looks for supported `if`/`then`/`else` blocks inside the parent object’s `allOf`.
+ * For each block touching the current field, it records the required sibling
+ * conditions and the field-specific schema fragments (`then`/`else`). During `map`,
+ * it evaluates the conditions against the provided `data` and merges the resulting
+ * properties into the field’s schema.
+ *
+ * Notes and limitations:
+ * - Depth: currently only supports conditions defined at the immediate parent level
+ *   of the current field (see `todo` above).
+ * - Const: only supports `const` conditions.
+ * - Merge strategy: later matching rules may overwrite keys from earlier ones.
+ */
 export class IfThenElseMapper extends MapperWithData {
     private conditionsAndResults: ConditionsAndResults[] = [];
     private dependencies: string[] = [];
