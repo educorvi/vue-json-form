@@ -2,30 +2,30 @@
 import { BFormRadioGroup } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import {
     hasEnum,
     hasEnumTitlesOptions,
+    isDefined,
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
-import { computed } from 'vue';
+import { computed, inject, toRefs, watch } from 'vue';
 import { getOption } from '@/utilities';
 import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
-
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 const options = computed(() => {
-    if (!hasEnum(jsonElement)) {
+    if (!hasEnum(jsonElement.value)) {
         return [];
     }
     return (
-        jsonElement.enum?.map((key: any) => {
+        jsonElement.value.enum?.map((key: any) => {
             const textVals: Record<any, any> =
-                (hasEnumTitlesOptions(layoutElement) &&
-                    layoutElement.options.enumTitles) ||
+                (hasEnumTitlesOptions(layoutElement.value) &&
+                    layoutElement.value.options.enumTitles) ||
                 {};
             const text = textVals[key] || key;
             return { value: key, text };
@@ -34,12 +34,12 @@ const options = computed(() => {
 });
 
 const displaySettings = computed(() => {
-    let stacked: boolean = getOption(layoutElement, 'stacked', false);
-    if (isEnumButtonsConfig(layoutElement.options)) {
+    let stacked: boolean = getOption(layoutElement.value, 'stacked', false);
+    if (isEnumButtonsConfig(layoutElement.value.options)) {
         return {
             displayAs: 'buttons',
             buttonVariant: getOption<ColorVariants>(
-                layoutElement,
+                layoutElement.value,
                 'buttonVariant',
                 'primary'
             ),
@@ -48,6 +48,18 @@ const displaySettings = computed(() => {
     }
     return { stacked };
 });
+
+watch(
+    () => jsonElement.value.enum,
+    () => {
+        if (
+            jsonElement.value.enum &&
+            !jsonElement.value.enum.includes(formData.value[savePath])
+        ) {
+            formData.value[savePath] = undefined;
+        }
+    }
+);
 </script>
 
 <template>

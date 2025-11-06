@@ -1,455 +1,483 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "required": [
-  ],
-  "properties": {
-    "multiFileUpload1": {
-      "type": "array",
-      "description": "Upload using the array view",
-      "maxItems": 3,
-      "items": {
-        "type": "string",
-        "format": "uri"
-      }
+    "$schema": "https://json-schema.org/draft/2019-09/schema#",
+    "type": "object",
+    "required": [],
+    "dependentRequired": {
+        "string-dep-required": ["string-dep-required-2"]
     },
-    "multiFileUpload2": {
-      "type": "array",
-      "description": "Upload using the file upload field",
-      "maxItems": 3,
-      "minItems": 2,
-      "items": {
-        "type": "string",
-        "format": "uri"
-      }
-    },
-    "patternString": {
-      "type": "string",
-      "pattern": "^mystring-[a-z]+$",
-      "description": "Enter a string with pattern mystring-[a-z]+",
-      "title": "Pattern String"
-    },
-    "multipleUpload": {
-      "type": "string",
-      "format": "uri"
-    },
-    "singleUpload": {
-      "type": "string",
-      "format": "uri"
-    },
-    "obj-l": {
-      "type": "object",
-      "properties": {
-        "auswahlfeld": {
-          "title": "Auswahlfeld",
-          "type": "string"
-        }
-      }
-    },
-    "bool-mit-hilfe": {
-      "title": "bool mit hilfe",
-      "type": "boolean"
-    },
-    "array-mit-hilfe": {
-      "type": "array",
-      "title": "array mit hilfe",
-      "items": {
-        "type": "string"
-      }
-    },
-    "objekt-mit-hilfe": {
-      "type": "object",
-      "title": "objekt mit hilfe",
-      "properties": {
-        "test": {
-          "type": "string",
-          "title": "test"
-        }
-      }
-    },
-    "upload-mit-hilfe": {
-      "title": "upload mit hilfe",
-      "type": "string",
-      "format": "uri"
-    },
-    "jso-51-arr": {
-      "title": "Array mit HTML",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "string1": {
-            "type": "string",
-            "title": "String 1"
-          },
-          "string2": {
-            "type": "string",
-            "title": "String 2"
-          }
-        }
-      },
-      "minItems": 1
-    },
-    "arrInArr": {
-      "title": "Array in Array",
-      "type": "array",
-      "items": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      }
-    },
-    "arrInArrPres": {
-      "title": "Array in Array (with preset data)",
-      "type": "array",
-      "items": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      }
-    },
-    "arrInArrDef": {
-      "title": "Array in Array (with default)",
-      "type": "array",
-      "default": [
-        [
-          "item1",
-          "item2"
-        ],
-        [
-          "item3",
-          "item4"
-        ]
-      ],
-      "items": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      }
-    },
-    "auswahlfeld": {
-      "title": "auswahlfeld",
-      "type": "array",
-      "items": {
-        "enum": [
-          "blub"
-        ],
-        "type": "string"
-      }
-    },
-    "abhaengiges-array": {
-      "type": "array",
-      "title": "abhängiges array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "properties": {
-          "auswahlfeld-in-array": {
-            "title": "auswahlfeld in array",
-            "type": "array",
-            "items": {
-              "enum": [
-                "blub"
-              ],
-              "type": "string"
-            }
-          },
-          "zustaendiger-arzt": {
-            "title": "zuständiger Arzt",
-            "type": "string"
-          }
-        },
-        "required": [],
-        "dependentRequired": {
-        }
-      }
-    },
-    "jso-37-field1": {
-      "type": "string"
-    },
-    "jso-37-field2": {
-      "type": "string"
-    },
-    "jso-37-field3": {
-      "type": "string"
-    },
-    "jso-39-string": {
-      "type": "string"
-    },
-    "jso-39-multiselect": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "option 1",
-          "option 2",
-          "option 3"
-        ]
-      }
-    },
-    "jso-39-array": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "jso-39-object": {
-      "type": "object",
-      "properties": {
-        "test": {
-          "type": "string"
-        },
-        "number": {
-          "type": "number"
-        }
-      }
-    },
-    "input-jso-40": {
-      "type": "string"
-    },
-    "array141d1d356e40b4062ac2b1476ff52648c": {
-      "type": "array",
-      "title": "array1",
-      "items": {
-        "type": "object",
-        "properties": {
-          "array1513e3f3ba4e27453ba38d3008d6a99df6": {
-            "type": "array",
-            "title": "array1.5",
-            "items": {
-              "type": "object",
-              "properties": {
-                "boolean15eccd75d78e384400b25c8714f585b198": {
-                  "title": "boolean1.5",
-                  "type": "boolean"
+    "properties": {
+        "jso-79": {
+            "type": "object",
+            "properties": {
+                "first": {
+                    "enum": ["A", "B"]
                 },
-                "feld151673e20935e64062b171bbe7e27de96d": {
-                  "title": "feld1.5",
-                  "type": "string"
+                "second": {
+                    "type": "string",
+                    "enum": ["a1", "a2", "b1"]
                 }
-              }
-            }
-          }
-        }
-      }
-    },
-    "arrayWithDefaults": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "default": [
-        "default1",
-        "default2"
-      ]
-    },
-    "bluigfee51c238833463597e588efe55360f6": {
-      "title": "bluig",
-      "type": "boolean"
-    },
-    "array-11d6266e4c57d4363b1f4ef6d72025f3a": {
-      "type": "array",
-      "title": "array 1",
-      "items": {
-        "type": "object",
-        "properties": {
-          "textfeld69150ac2386d4a63aee2d8e499942692": {
-            "title": "textfeld",
-            "type": "string"
-          },
-          "bbbbda5b601ed9bf4c3b9280f86bd0f95752": {
-            "title": "bbbb",
-            "type": "boolean"
-          }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "first": {
+                                "const": "A"
+                            }
+                        },
+                        "required": ["first"]
+                    },
+                    "then": {
+                        "properties": {
+                            "second": {
+                                "enum": ["a1", "a2"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "first": {
+                                "const": "B"
+                            }
+                        },
+                        "required": ["first"]
+                    },
+                    "then": {
+                        "properties": {
+                            "second": {
+                                "enum": ["b1"]
+                            }
+                        }
+                    }
+                }
+            ]
         },
-        "required": []
-      }
-    },
-    "arrayWithSelfRule": {
-      "type": "array",
-      "title": "Array with self rule",
-      "items": {
-        "type": "object",
-        "properties": {
-          "boolean": {
+        "string-dep-required": {
+            "type": "string",
+            "title": "String with dependency"
+        },
+        "string-dep-required-2": {
+            "type": "string",
+            "title": "Dependant String"
+        },
+        "multiFileUpload1": {
+            "type": "array",
+            "description": "Upload using the array view",
+            "maxItems": 3,
+            "items": {
+                "type": "string",
+                "format": "uri"
+            }
+        },
+        "multiFileUpload2": {
+            "type": "array",
+            "description": "Upload using the file upload field",
+            "maxItems": 3,
+            "minItems": 2,
+            "items": {
+                "type": "string",
+                "format": "uri"
+            }
+        },
+        "patternString": {
+            "type": "string",
+            "pattern": "^mystring-[a-z]+$",
+            "description": "Enter a string with pattern mystring-[a-z]+",
+            "title": "Pattern String"
+        },
+        "multipleUpload": {
+            "type": "string",
+            "format": "uri"
+        },
+        "singleUpload": {
+            "type": "string",
+            "format": "uri"
+        },
+        "obj-l": {
+            "type": "object",
+            "properties": {
+                "auswahlfeld": {
+                    "title": "Auswahlfeld",
+                    "type": "string"
+                }
+            }
+        },
+        "bool-mit-hilfe": {
+            "title": "bool mit hilfe",
             "type": "boolean"
-          },
-          "string": {
+        },
+        "array-mit-hilfe": {
+            "type": "array",
+            "title": "array mit hilfe",
+            "items": {
+                "type": "string"
+            }
+        },
+        "objekt-mit-hilfe": {
+            "type": "object",
+            "title": "objekt mit hilfe",
+            "properties": {
+                "test": {
+                    "type": "string",
+                    "title": "test"
+                }
+            }
+        },
+        "upload-mit-hilfe": {
+            "title": "upload mit hilfe",
+            "type": "string",
+            "format": "uri"
+        },
+        "jso-51-arr": {
+            "title": "Array mit HTML",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "string1": {
+                        "type": "string",
+                        "title": "String 1"
+                    },
+                    "string2": {
+                        "type": "string",
+                        "title": "String 2"
+                    }
+                }
+            },
+            "minItems": 1
+        },
+        "arrInArr": {
+            "title": "Array in Array",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "arrInArrPres": {
+            "title": "Array in Array (with preset data)",
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "arrInArrDef": {
+            "title": "Array in Array (with default)",
+            "type": "array",
+            "default": [
+                ["item1", "item2"],
+                ["item3", "item4"]
+            ],
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "auswahlfeld": {
+            "title": "auswahlfeld",
+            "type": "array",
+            "items": {
+                "enum": ["blub"],
+                "type": "string"
+            }
+        },
+        "abhaengiges-array": {
+            "type": "array",
+            "title": "abhängiges array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "auswahlfeld-in-array": {
+                        "title": "auswahlfeld in array",
+                        "type": "array",
+                        "items": {
+                            "enum": ["blub"],
+                            "type": "string"
+                        }
+                    },
+                    "zustaendiger-arzt": {
+                        "title": "zuständiger Arzt",
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "dependentRequired": {}
+            }
+        },
+        "jso-37-field1": {
             "type": "string"
-          }
-        }
-      }
-    },
-    "arrayInArrayWithSelfRule": {
-      "type": "array",
-      "title": "Array in Array with self rule",
-      "items": {
-        "type": "object",
-        "properties": {
-          "testString": {
+        },
+        "jso-37-field2": {
             "type": "string"
-          },
-          "internalArray": {
+        },
+        "jso-37-field3": {
+            "type": "string"
+        },
+        "jso-39-string": {
+            "type": "string"
+        },
+        "jso-39-multiselect": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["option 1", "option 2", "option 3"]
+            }
+        },
+        "jso-39-array": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "jso-39-object": {
+            "type": "object",
+            "properties": {
+                "test": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "number"
+                }
+            }
+        },
+        "input-jso-40": {
+            "type": "string"
+        },
+        "array141d1d356e40b4062ac2b1476ff52648c": {
+            "type": "array",
+            "title": "array1",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "array1513e3f3ba4e27453ba38d3008d6a99df6": {
+                        "type": "array",
+                        "title": "array1.5",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "boolean15eccd75d78e384400b25c8714f585b198": {
+                                    "title": "boolean1.5",
+                                    "type": "boolean"
+                                },
+                                "feld151673e20935e64062b171bbe7e27de96d": {
+                                    "title": "feld1.5",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "arrayWithDefaults": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "default": ["default1", "default2"]
+        },
+        "bluigfee51c238833463597e588efe55360f6": {
+            "title": "bluig",
+            "type": "boolean"
+        },
+        "array-11d6266e4c57d4363b1f4ef6d72025f3a": {
+            "type": "array",
+            "title": "array 1",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "textfeld69150ac2386d4a63aee2d8e499942692": {
+                        "title": "textfeld",
+                        "type": "string"
+                    },
+                    "bbbbda5b601ed9bf4c3b9280f86bd0f95752": {
+                        "title": "bbbb",
+                        "type": "boolean"
+                    }
+                },
+                "required": []
+            }
+        },
+        "arrayWithSelfRule": {
+            "type": "array",
+            "title": "Array with self rule",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "boolean": {
+                        "type": "boolean"
+                    },
+                    "string": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "arrayInArrayWithSelfRule": {
+            "type": "array",
+            "title": "Array in Array with self rule",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "testString": {
+                        "type": "string"
+                    },
+                    "internalArray": {
+                        "type": "array",
+                        "title": "Array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "boolean": {
+                                    "type": "boolean"
+                                },
+                                "string": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "boolean": {
+            "type": "boolean",
+            "title": "Show String2"
+        },
+        "array": {
             "type": "array",
             "title": "Array",
+            "minItems": 1,
             "items": {
-              "type": "object",
-              "properties": {
-                "boolean": {
-                  "type": "boolean"
-                },
-                "string": {
-                  "type": "string"
+                "type": "object",
+                "properties": {
+                    "string1": {
+                        "type": "string"
+                    },
+                    "string2": {
+                        "type": "string"
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
-    "boolean": {
-      "type": "boolean",
-      "title": "Show String2"
-    },
-    "array": {
-      "type": "array",
-      "title": "Array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "properties": {
-          "string1": {
-            "type": "string"
-          },
-          "string2": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "textline-in-form736e3a96a17d436996e5c8489cb9d102": {
-      "title": "textline in form",
-      "type": "string"
-    },
-    "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8": {
-      "title": "selectionfield in form",
-      "type": "array",
-      "items": {
-        "enum": [
-          "option 10",
-          "option 11"
-        ],
-        "type": "string"
-      }
-    },
-    "upload-field-in-formcd69370e0708472482997b3da12ad3cc": {
-      "title": "upload field in form",
-      "type": "string",
-      "format": "uri"
-    },
-    "simple-array": {
-      "type": "array",
-      "title": "Simple Array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "angaben-zur-aenderung": {
-      "type": "array",
-      "title": "Angaben zur \u00c4nderung",
-      "items": {
-        "type": "object",
-        "title": "Änderung",
-        "properties": {
-          "bitte-geben-sie-an-was-sie-aendern-moechten": {
-            "title": "Bitte geben Sie an, was Sie \u00e4ndern m\u00f6chten",
-            "type": "string"
-          },
-          "ab-wann-soll-die-aenderung-wirksam-werden": {
-            "title": "Ab wann soll die \u00c4nderung wirksam werden?",
-            "type": "string",
-            "format": "date"
-          }
         },
-        "required": [],
-        "dependentRequired": {
-        }
-      }
-    },
-    "array-with-arrays": {
-      "type": "array",
-      "title": "Array with Arrays",
-      "items": {
-        "type": "object",
-        "title": "Person",
-        "properties": {
-          "name": {
-            "title": "Name",
+        "textline-in-form736e3a96a17d436996e5c8489cb9d102": {
+            "title": "textline in form",
             "type": "string"
-          },
-          "areas-of-expertise": {
-            "title": "Areas of Expertise",
+        },
+        "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8": {
+            "title": "selectionfield in form",
             "type": "array",
             "items": {
-              "type": "string"
+                "enum": ["option 10", "option 11"],
+                "type": "string"
             }
-          }
+        },
+        "upload-field-in-formcd69370e0708472482997b3da12ad3cc": {
+            "title": "upload field in form",
+            "type": "string",
+            "format": "uri"
+        },
+        "simple-array": {
+            "type": "array",
+            "title": "Simple Array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "angaben-zur-aenderung": {
+            "type": "array",
+            "title": "Angaben zur \u00c4nderung",
+            "items": {
+                "type": "object",
+                "title": "Änderung",
+                "properties": {
+                    "bitte-geben-sie-an-was-sie-aendern-moechten": {
+                        "title": "Bitte geben Sie an, was Sie \u00e4ndern m\u00f6chten",
+                        "type": "string"
+                    },
+                    "ab-wann-soll-die-aenderung-wirksam-werden": {
+                        "title": "Ab wann soll die \u00c4nderung wirksam werden?",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [],
+                "dependentRequired": {}
+            }
+        },
+        "array-with-arrays": {
+            "type": "array",
+            "title": "Array with Arrays",
+            "items": {
+                "type": "object",
+                "title": "Person",
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "type": "string"
+                    },
+                    "areas-of-expertise": {
+                        "title": "Areas of Expertise",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "dateTime": {
+            "title": "dateTime",
+            "type": "string",
+            "format": "date-time"
+        },
+        "passwortfeld098f378cd4864be1924ce03741030f4d": {
+            "title": "passwortfeld",
+            "type": "string"
+        },
+        "email": {
+            "title": "email",
+            "type": "string"
+        },
+        "checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6": {
+            "title": "checkboxenfeld",
+            "type": "array",
+            "items": {
+                "enum": ["option1", "option2", "option3"],
+                "type": "string"
+            }
+        },
+        "integer": {
+            "title": "integer",
+            "type": "integer"
+        },
+        "checkboxen8c9fa56d35c449f484fc4426386a4ae6": {
+            "title": "checkboxen",
+            "type": "array",
+            "default": [],
+            "items": {
+                "enum": ["option4", "option5", "option6"],
+                "type": "string"
+            }
+        },
+        "textline84630e8d5125441eadbafb7f6a2bda5b": {
+            "title": "textline",
+            "description": "beschreibung",
+            "type": "string",
+            "maxLength": 5
+        },
+        "string_no_label": {
+            "type": "string"
         }
-      }
-    },
-    "dateTime": {
-      "title": "dateTime",
-      "type": "string",
-      "format": "date-time"
-    },
-    "passwortfeld098f378cd4864be1924ce03741030f4d": {
-      "title": "passwortfeld",
-      "type": "string"
-    },
-    "email": {
-      "title": "email",
-      "type": "string"
-    },
-    "checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6": {
-      "title": "checkboxenfeld",
-      "type": "array",
-      "items": {
-        "enum": [
-          "option1",
-          "option2",
-          "option3"
-        ],
-        "type": "string"
-      }
-    },
-    "integer": {
-      "title": "integer",
-      "type": "integer"
-    },
-    "checkboxen8c9fa56d35c449f484fc4426386a4ae6": {
-      "title": "checkboxen",
-      "type": "array",
-      "default": [],
-      "items": {
-        "enum": [
-          "option4",
-          "option5",
-          "option6"
-        ],
-        "type": "string"
-      }
-    },
-    "textline84630e8d5125441eadbafb7f6a2bda5b": {
-      "title": "textline",
-      "description": "beschreibung",
-      "type": "string",
-      "maxLength": 5
-    },
-    "string_no_label": {
-      "type": "string"
     }
-  }
 }

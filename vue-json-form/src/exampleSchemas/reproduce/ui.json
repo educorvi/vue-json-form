@@ -1,929 +1,947 @@
 {
-  "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
-  "version": "2.0",
-  "layout": {
-    "type": "VerticalLayout",
-    "elements": [
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-68"
-        },
+    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
+    "version": "2.0",
+    "layout": {
+        "type": "VerticalLayout",
         "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/multiFileUpload1",
-            "options": {
-              "maxFileSize": 1000000
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/multiFileUpload2",
-            "options": {
-              "displayAsSingleUploadField": true
-            }
-          }
-        ]
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/patternString"
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-64"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/singleUpload",
-            "options": {
-              "acceptedFileType": "*",
-              "maxFileSize": 1000000
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/multipleUpload",
-            "options": {
-              "acceptedFileType": "*",
-              "maxFileSize": 1000000
-            }
-          }
-        ]
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/obj-l/properties/auswahlfeld",
-        "options": {
-          "help": {
-            "text": "dddda"
-          },
-          "preHtml": "<span><a aria-label=\"Element anzeigen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld\" title=\"View\"><i class=\"bi bi-eye\"></a>\n <a aria-label=\"Element bearbeiten\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/edit\" title=\"Edit\"><i class=\"bi bi-pen-fill\"></a>\n<a aria-label=\"Element löschen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/delete_confirmation\" title=\"Delete\"><i class=\"bi bi-trash\"></i></a></span>",
-          "stacked": true
-        }
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-58"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/bool-mit-hilfe",
-            "options": {
-              "help": {
-                "text": "hiiiiilfe"
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/array-mit-hilfe",
-            "options": {
-              "descendantControlOverrides": {},
-              "help": {
-                "text": "hiiiiilfe"
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/objekt-mit-hilfe",
-            "options": {
-              "descendantControlOverrides": {},
-              "help": {
-                "text": "hiiiiilfe"
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/upload-mit-hilfe",
-            "options": {
-              "help": {
-                "text": "hiiiiilfe"
-              },
-              "acceptedFileType": "*"
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-51"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/jso-51-arr",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/jso-51-arr/items/properties/string2": {
-                  "options": {
-                    "preHtml": "<strong>Pre html</strong>",
-                    "postHtml": "<strong>Post html</strong>",
-                    "placeholder": "test"
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-31"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/arrInArr"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/arrInArrPres"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/arrInArrDef"
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-44"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/auswahlfeld",
-            "options": {
-              "stacked": true
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/abhaengiges-array",
-            "showOn": {
-              "id": "ritaRule-abhaengiges-array",
-              "rule": {
-                "type": "exists",
-                "array": {
-                  "type": "atom",
-                  "path": "auswahlfeld",
-                  "default": []
-                },
-                "placeholder": "current_option_auswahlfeld",
-                "rule": {
-                  "type": "comparison",
-                  "operation": "equal",
-                  "arguments": [
-                    {
-                      "type": "atom",
-                      "path": "current_option_auswahlfeld",
-                      "default": ""
-                    },
-                    "blub"
-                  ]
-                }
-              }
+            {
+                "type": "Control",
+                "scope": "/properties/jso-79"
             },
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/abhaengiges-array/items/properties/auswahlfeld-in-array": {
-                  "options": {
-                    "stacked": true
-                  }
+            {
+                "type": "Group",
+                "options": { "label": "JSO-79" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/string-dep-required"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/string-dep-required-2"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-68"
                 },
-                "/properties/abhaengiges-array/items/properties/zustaendiger-arzt": {
-                  "showOn": {
-                    "id": "ritaRule-zustaendiger-arzt",
-                    "rule": {
-                      "type": "exists",
-                      "array": {
-                        "type": "atom",
-                        "path": "abhaengiges-array",
-                        "default": []
-                      },
-                      "placeholder": "$array_item1",
-                      "indexPlaceholder": "$index1",
-                      "rule": {
-                        "type": "and",
-                        "arguments": [
-                          {
-                            "type": "comparison",
-                            "operation": "equal",
-                            "arguments": [
-                              {
-                                "type": "atom",
-                                "path": "$index1",
-                                "default": -1
-                              },
-                              {
-                                "type": "atom",
-                                "path": "$selfIndices./properties/abhaengiges-array",
-                                "default": -1
-                              }
-                            ]
-                          },
-                          {
-                            "type": "exists",
-                            "array": {
-                              "type": "atom",
-                              "path": "$array_item1.auswahlfeld-in-array",
-                              "default": []
-                            },
-                            "placeholder": "current_option_$array_item1",
-                            "rule": {
-                              "type": "comparison",
-                              "operation": "equal",
-                              "arguments": [
-                                {
-                                  "type": "atom",
-                                  "path": "current_option_$array_item1",
-                                  "default": ""
-                                },
-                                "blub"
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-37"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/jso-37-field1"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/jso-37-field2",
-            "showOn": {
-              "type": "NOT_EQUALS",
-              "referenceValue": "",
-              "path": "jso-37-field1"
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/jso-37-field3",
-            "showOn": {
-              "type": "NOT_EQUALS",
-              "referenceValue": "",
-              "path": "jso-37-field2"
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-39"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/jso-39-string"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/jso-39-multiselect"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/jso-39-array"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/jso-39-object"
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-40"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/input-jso-40",
-            "options": {
-              "append": "€",
-              "textAlign": "right",
-              "placeholder": "0"
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-34"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/array141d1d356e40b4062ac2b1476ff52648c",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6/items/properties/feld151673e20935e64062b171bbe7e27de96d": {
-                  "showOn": {
-                    "id": "ritaRule-feld151673e20935e64062b171bbe7e27de96d",
-                    "rule": {
-                      "type": "exists",
-                      "array": {
-                        "type": "atom",
-                        "path": "array141d1d356e40b4062ac2b1476ff52648c",
-                        "default": []
-                      },
-                      "placeholder": "$array_item1",
-                      "indexPlaceholder": "$index1",
-                      "rule": {
-                        "type": "and",
-                        "arguments": [
-                          {
-                            "type": "comparison",
-                            "operation": "equal",
-                            "arguments": [
-                              {
-                                "type": "atom",
-                                "path": "$index1",
-                                "default": -1
-                              },
-                              {
-                                "type": "atom",
-                                "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c",
-                                "default": -1
-                              }
-                            ]
-                          },
-                          {
-                            "type": "exists",
-                            "array": {
-                              "type": "atom",
-                              "path": "$array_item1.array1513e3f3ba4e27453ba38d3008d6a99df6",
-                              "default": []
-                            },
-                            "placeholder": "$array_item2",
-                            "indexPlaceholder": "$index2",
-                            "rule": {
-                              "type": "and",
-                              "arguments": [
-                                {
-                                  "type": "comparison",
-                                  "operation": "equal",
-                                  "arguments": [
-                                    {
-                                      "type": "atom",
-                                      "path": "$index2",
-                                      "default": -1
-                                    },
-                                    {
-                                      "type": "atom",
-                                      "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6",
-                                      "default": -1
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "comparison",
-                                  "operation": "equal",
-                                  "arguments": [
-                                    {
-                                      "type": "atom",
-                                      "path": "$array_item2.boolean15eccd75d78e384400b25c8714f585b198",
-                                      "default": false
-                                    },
-                                    true
-                                  ]
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-17"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/arrayWithDefaults"
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-23 & JSO-24"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/bluigfee51c238833463597e588efe55360f6"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a/items/properties/textfeld69150ac2386d4a63aee2d8e499942692": {
-                  "options": {
-                    "placeholder": "Enter a string"
-                  },
-                  "showOn": {
-                    "id": "ritaRule-textfeld69150ac2386d4a63aee2d8e499942692",
-                    "rule": {
-                      "type": "comparison",
-                      "operation": "equal",
-                      "arguments": [
-                        {
-                          "type": "atom",
-                          "path": "array-11d6266e4c57d4363b1f4ef6d72025f3a[0].bbbbda5b601ed9bf4c3b9280f86bd0f95752",
-                          "default": false
-                        },
-                        true
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          {
-            "type": "Buttongroup",
-            "buttons": [
-              {
-                "type": "Button",
-                "buttonType": "submit",
-                "text": "Submit",
-                "options": {
-                  "variant": "primary"
-                }
-              },
-              {
-                "type": "Button",
-                "buttonType": "reset",
-                "text": "Reset this form",
-                "options": {
-                  "variant": "danger"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-25"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/arrayWithSelfRule",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/arrayWithSelfRule/items/properties/string": {
-                  "options": {
-                    "placeholder": "Enter a string"
-                  },
-                  "showOn": {
-                    "id": "showSelfRule",
-                    "rule": {
-                      "type": "exists",
-                      "array": {
-                        "type": "atom",
-                        "path": "arrayWithSelfRule",
-                        "default": []
-                      },
-                      "placeholder": "$arrayItem",
-                      "indexPlaceholder": "$index",
-                      "rule": {
-                        "type": "and",
-                        "arguments": [
-                          {
-                            "type": "comparison",
-                            "operation": "equal",
-                            "arguments": [
-                              {
-                                "type": "atom",
-                                "path": "$index"
-                              },
-                              {
-                                "type": "atom",
-                                "path": "$selfIndices./properties/arrayWithSelfRule"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "comparison",
-                            "operation": "equal",
-                            "arguments": [
-                              {
-                                "type": "atom",
-                                "path": "$arrayItem.boolean",
-                                "default": false
-                              },
-                              true
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/arrayInArrayWithSelfRule",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/arrayInArrayWithSelfRule/items/properties/internalArray/items/properties/string": {
-                  "options": {
-                    "placeholder": "Enter a string"
-                  },
-                  "showOn": {
-                    "id": "showSelfRule",
-                    "rule": {
-                      "type": "exists",
-                      "array": {
-                        "type": "atom",
-                        "path": "arrayInArrayWithSelfRule",
-                        "default": []
-                      },
-                      "placeholder": "$arrayItem",
-                      "indexPlaceholder": "$index",
-                      "rule": {
-                        "type": "and",
-                        "arguments": [
-                          {
-                            "type": "comparison",
-                            "operation": "equal",
-                            "arguments": [
-                              {
-                                "type": "atom",
-                                "path": "$index"
-                              },
-                              {
-                                "type": "atom",
-                                "path": "$selfIndices./properties/arrayInArrayWithSelfRule"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "exists",
-                            "array": {
-                              "type": "atom",
-                              "path": "$arrayItem.internalArray",
-                              "default": []
-                            },
-                            "placeholder": "$arrayItem2",
-                            "indexPlaceholder": "$index2",
-                            "rule": {
-                              "type": "and",
-                              "arguments": [
-                                {
-                                  "type": "comparison",
-                                  "operation": "equal",
-                                  "arguments": [
-                                    {
-                                      "type": "atom",
-                                      "path": "$index2"
-                                    },
-                                    {
-                                      "type": "atom",
-                                      "path": "$selfIndices./properties/arrayInArrayWithSelfRule/items/properties/internalArray"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "comparison",
-                                  "operation": "equal",
-                                  "arguments": [
-                                    {
-                                      "type": "atom",
-                                      "path": "$arrayItem2.boolean",
-                                      "default": false
-                                    },
-                                    true
-                                  ]
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-12"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/boolean"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/array",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/array/items/properties/string2": {
-                  "options": {
-                    "placeholder": "Enter a string"
-                  },
-                  "showOn": {
-                    "path": "boolean",
-                    "type": "EQUALS",
-                    "referenceValue": true
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-11"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/textline-in-form736e3a96a17d436996e5c8489cb9d102"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
-            "options": {
-              "stacked": true
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc",
-            "showOn": {
-              "id": "ritaRule-upload-field-in-formcd69370e0708472482997b3da12ad3cc",
-              "rule": {
-                "type": "or",
-                "arguments": [
-                  {
-                    "type": "comparison",
-                    "operation": "greater",
-                    "arguments": [
-                      {
-                        "type": "macro",
-                        "macro": {
-                          "type": "length",
-                          "array": {
-                            "type": "atom",
-                            "default": "",
-                            "path": "textline-in-form736e3a96a17d436996e5c8489cb9d102"
-                          }
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/multiFileUpload1",
+                        "options": {
+                            "maxFileSize": 1000000
                         }
-                      },
-                      0
-                    ]
-                  },
-                  {
-                    "type": "exists",
-                    "array": {
-                      "type": "atom",
-                      "path": "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
-                      "default": []
                     },
-                    "placeholder": "current_option",
-                    "rule": {
-                      "type": "comparison",
-                      "operation": "equal",
-                      "arguments": [
-                        {
-                          "type": "atom",
-                          "path": "current_option"
-                        },
-                        "option 11"
-                      ]
-                    }
-                  }
-                ]
-              }
-            },
-            "options": {
-              "acceptedFileType": "*"
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-14"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/simple-array"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/angaben-zur-aenderung"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/array-with-arrays"
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "JSO-7"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/dateTime"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/passwortfeld098f378cd4864be1924ce03741030f4d",
-            "options": {
-              "format": "password"
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/email",
-            "options": {
-              "format": "email"
-            }
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "Others"
-        },
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "/properties/checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6",
-            "options": {
-              "stacked": true
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/checkboxen8c9fa56d35c449f484fc4426386a4ae6"
-          },
-          {
-            "type": "HTML",
-            "htmlData": "<h2>Checkbox Rita rule evaluated to true</h2>",
-            "showOn": {
-              "id": "ritaRule-checkbox6e6adce14a6142389583a03897fecf13",
-              "rule": {
-                "type": "exists",
-                "array": {
-                  "type": "atom",
-                  "path": "checkboxen8c9fa56d35c449f484fc4426386a4ae6",
-                  "default": []
-                },
-                "placeholder": "current_option",
-                "rule": {
-                  "type": "comparison",
-                  "operation": "equal",
-                  "arguments": [
                     {
-                      "type": "atom",
-                      "path": "current_option"
-                    },
-                    "option6"
-                  ]
-                }
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/integer"
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/string_no_label",
-            "options": {
-              "placeholder": "No Label",
-              "label": false
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/textline84630e8d5125441eadbafb7f6a2bda5b"
-          },
-          {
-            "type": "HTML",
-            "htmlData": "<h2>Length Rita rule evaluated to true</h2>",
-            "showOn": {
-              "id": "ritaRule-ganzzahlacb40ea1c6ff4b4e86151c8a6e46f4a2",
-              "rule": {
-                "type": "comparison",
-                "operation": "greater",
-                "arguments": [
-                  {
-                    "type": "macro",
-                    "macro": {
-                      "type": "length",
-                      "array": {
-                        "type": "atom",
-                        "default": [],
-                        "path": "textline84630e8d5125441eadbafb7f6a2bda5b"
-                      }
+                        "type": "Control",
+                        "scope": "/properties/multiFileUpload2",
+                        "options": {
+                            "displayAsSingleUploadField": true
+                        }
                     }
-                  },
-                  0
                 ]
-              }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/patternString"
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-64"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/singleUpload",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "maxFileSize": 1000000
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/multipleUpload",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "maxFileSize": 1000000
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/obj-l/properties/auswahlfeld",
+                "options": {
+                    "help": {
+                        "text": "dddda"
+                    },
+                    "preHtml": "<span><a aria-label=\"Element anzeigen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld\" title=\"View\"><i class=\"bi bi-eye\"></a>\n <a aria-label=\"Element bearbeiten\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/edit\" title=\"Edit\"><i class=\"bi bi-pen-fill\"></a>\n<a aria-label=\"Element löschen\" href=\"http://localhost:8080/Plone3/minimaler-fragebogen-2/auswahlfeld/delete_confirmation\" title=\"Delete\"><i class=\"bi bi-trash\"></i></a></span>",
+                    "stacked": true
+                }
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-58"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/bool-mit-hilfe",
+                        "options": {
+                            "help": {
+                                "text": "hiiiiilfe"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/array-mit-hilfe",
+                        "options": {
+                            "descendantControlOverrides": {},
+                            "help": {
+                                "text": "hiiiiilfe"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/objekt-mit-hilfe",
+                        "options": {
+                            "descendantControlOverrides": {},
+                            "help": {
+                                "text": "hiiiiilfe"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/upload-mit-hilfe",
+                        "options": {
+                            "help": {
+                                "text": "hiiiiilfe"
+                            },
+                            "acceptedFileType": "*"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-51"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-51-arr",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/jso-51-arr/items/properties/string2": {
+                                    "options": {
+                                        "preHtml": "<strong>Pre html</strong>",
+                                        "postHtml": "<strong>Post html</strong>",
+                                        "placeholder": "test"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-31"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrInArr"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrInArrPres"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrInArrDef"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-44"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/auswahlfeld",
+                        "options": {
+                            "stacked": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/abhaengiges-array",
+                        "showOn": {
+                            "id": "ritaRule-abhaengiges-array",
+                            "rule": {
+                                "type": "exists",
+                                "array": {
+                                    "type": "atom",
+                                    "path": "auswahlfeld",
+                                    "default": []
+                                },
+                                "placeholder": "current_option_auswahlfeld",
+                                "rule": {
+                                    "type": "comparison",
+                                    "operation": "equal",
+                                    "arguments": [
+                                        {
+                                            "type": "atom",
+                                            "path": "current_option_auswahlfeld",
+                                            "default": ""
+                                        },
+                                        "blub"
+                                    ]
+                                }
+                            }
+                        },
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/abhaengiges-array/items/properties/auswahlfeld-in-array": {
+                                    "options": {
+                                        "stacked": true
+                                    }
+                                },
+                                "/properties/abhaengiges-array/items/properties/zustaendiger-arzt": {
+                                    "showOn": {
+                                        "id": "ritaRule-zustaendiger-arzt",
+                                        "rule": {
+                                            "type": "exists",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "abhaengiges-array",
+                                                "default": []
+                                            },
+                                            "placeholder": "$array_item1",
+                                            "indexPlaceholder": "$index1",
+                                            "rule": {
+                                                "type": "and",
+                                                "arguments": [
+                                                    {
+                                                        "type": "comparison",
+                                                        "operation": "equal",
+                                                        "arguments": [
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$index1",
+                                                                "default": -1
+                                                            },
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$selfIndices./properties/abhaengiges-array",
+                                                                "default": -1
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "exists",
+                                                        "array": {
+                                                            "type": "atom",
+                                                            "path": "$array_item1.auswahlfeld-in-array",
+                                                            "default": []
+                                                        },
+                                                        "placeholder": "current_option_$array_item1",
+                                                        "rule": {
+                                                            "type": "comparison",
+                                                            "operation": "equal",
+                                                            "arguments": [
+                                                                {
+                                                                    "type": "atom",
+                                                                    "path": "current_option_$array_item1",
+                                                                    "default": ""
+                                                                },
+                                                                "blub"
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-37"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-37-field1"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-37-field2",
+                        "showOn": {
+                            "type": "NOT_EQUALS",
+                            "referenceValue": "",
+                            "path": "jso-37-field1"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-37-field3",
+                        "showOn": {
+                            "type": "NOT_EQUALS",
+                            "referenceValue": "",
+                            "path": "jso-37-field2"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-39"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-39-string"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-39-multiselect"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-39-array"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-39-object"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-40"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/input-jso-40",
+                        "options": {
+                            "append": "€",
+                            "textAlign": "right",
+                            "placeholder": "0"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-34"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/array141d1d356e40b4062ac2b1476ff52648c",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6/items/properties/feld151673e20935e64062b171bbe7e27de96d": {
+                                    "showOn": {
+                                        "id": "ritaRule-feld151673e20935e64062b171bbe7e27de96d",
+                                        "rule": {
+                                            "type": "exists",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "array141d1d356e40b4062ac2b1476ff52648c",
+                                                "default": []
+                                            },
+                                            "placeholder": "$array_item1",
+                                            "indexPlaceholder": "$index1",
+                                            "rule": {
+                                                "type": "and",
+                                                "arguments": [
+                                                    {
+                                                        "type": "comparison",
+                                                        "operation": "equal",
+                                                        "arguments": [
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$index1",
+                                                                "default": -1
+                                                            },
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c",
+                                                                "default": -1
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "exists",
+                                                        "array": {
+                                                            "type": "atom",
+                                                            "path": "$array_item1.array1513e3f3ba4e27453ba38d3008d6a99df6",
+                                                            "default": []
+                                                        },
+                                                        "placeholder": "$array_item2",
+                                                        "indexPlaceholder": "$index2",
+                                                        "rule": {
+                                                            "type": "and",
+                                                            "arguments": [
+                                                                {
+                                                                    "type": "comparison",
+                                                                    "operation": "equal",
+                                                                    "arguments": [
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$index2",
+                                                                            "default": -1
+                                                                        },
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$selfIndices./properties/array141d1d356e40b4062ac2b1476ff52648c/items/properties/array1513e3f3ba4e27453ba38d3008d6a99df6",
+                                                                            "default": -1
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "comparison",
+                                                                    "operation": "equal",
+                                                                    "arguments": [
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$array_item2.boolean15eccd75d78e384400b25c8714f585b198",
+                                                                            "default": false
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-17"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithDefaults"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-23 & JSO-24"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/bluigfee51c238833463597e588efe55360f6"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/array-11d6266e4c57d4363b1f4ef6d72025f3a/items/properties/textfeld69150ac2386d4a63aee2d8e499942692": {
+                                    "options": {
+                                        "placeholder": "Enter a string"
+                                    },
+                                    "showOn": {
+                                        "id": "ritaRule-textfeld69150ac2386d4a63aee2d8e499942692",
+                                        "rule": {
+                                            "type": "comparison",
+                                            "operation": "equal",
+                                            "arguments": [
+                                                {
+                                                    "type": "atom",
+                                                    "path": "array-11d6266e4c57d4363b1f4ef6d72025f3a[0].bbbbda5b601ed9bf4c3b9280f86bd0f95752",
+                                                    "default": false
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "submit",
+                                "text": "Submit",
+                                "options": {
+                                    "variant": "primary"
+                                }
+                            },
+                            {
+                                "type": "Button",
+                                "buttonType": "reset",
+                                "text": "Reset this form",
+                                "options": {
+                                    "variant": "danger"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-25"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithSelfRule",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/arrayWithSelfRule/items/properties/string": {
+                                    "options": {
+                                        "placeholder": "Enter a string"
+                                    },
+                                    "showOn": {
+                                        "id": "showSelfRule",
+                                        "rule": {
+                                            "type": "exists",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "arrayWithSelfRule",
+                                                "default": []
+                                            },
+                                            "placeholder": "$arrayItem",
+                                            "indexPlaceholder": "$index",
+                                            "rule": {
+                                                "type": "and",
+                                                "arguments": [
+                                                    {
+                                                        "type": "comparison",
+                                                        "operation": "equal",
+                                                        "arguments": [
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$index"
+                                                            },
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$selfIndices./properties/arrayWithSelfRule"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "comparison",
+                                                        "operation": "equal",
+                                                        "arguments": [
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$arrayItem.boolean",
+                                                                "default": false
+                                                            },
+                                                            true
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayInArrayWithSelfRule",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/arrayInArrayWithSelfRule/items/properties/internalArray/items/properties/string": {
+                                    "options": {
+                                        "placeholder": "Enter a string"
+                                    },
+                                    "showOn": {
+                                        "id": "showSelfRule",
+                                        "rule": {
+                                            "type": "exists",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "arrayInArrayWithSelfRule",
+                                                "default": []
+                                            },
+                                            "placeholder": "$arrayItem",
+                                            "indexPlaceholder": "$index",
+                                            "rule": {
+                                                "type": "and",
+                                                "arguments": [
+                                                    {
+                                                        "type": "comparison",
+                                                        "operation": "equal",
+                                                        "arguments": [
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$index"
+                                                            },
+                                                            {
+                                                                "type": "atom",
+                                                                "path": "$selfIndices./properties/arrayInArrayWithSelfRule"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "exists",
+                                                        "array": {
+                                                            "type": "atom",
+                                                            "path": "$arrayItem.internalArray",
+                                                            "default": []
+                                                        },
+                                                        "placeholder": "$arrayItem2",
+                                                        "indexPlaceholder": "$index2",
+                                                        "rule": {
+                                                            "type": "and",
+                                                            "arguments": [
+                                                                {
+                                                                    "type": "comparison",
+                                                                    "operation": "equal",
+                                                                    "arguments": [
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$index2"
+                                                                        },
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$selfIndices./properties/arrayInArrayWithSelfRule/items/properties/internalArray"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "comparison",
+                                                                    "operation": "equal",
+                                                                    "arguments": [
+                                                                        {
+                                                                            "type": "atom",
+                                                                            "path": "$arrayItem2.boolean",
+                                                                            "default": false
+                                                                        },
+                                                                        true
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-12"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/boolean"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/array",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/array/items/properties/string2": {
+                                    "options": {
+                                        "placeholder": "Enter a string"
+                                    },
+                                    "showOn": {
+                                        "path": "boolean",
+                                        "type": "EQUALS",
+                                        "referenceValue": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-11"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/textline-in-form736e3a96a17d436996e5c8489cb9d102"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
+                        "options": {
+                            "stacked": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc",
+                        "showOn": {
+                            "id": "ritaRule-upload-field-in-formcd69370e0708472482997b3da12ad3cc",
+                            "rule": {
+                                "type": "or",
+                                "arguments": [
+                                    {
+                                        "type": "comparison",
+                                        "operation": "greater",
+                                        "arguments": [
+                                            {
+                                                "type": "macro",
+                                                "macro": {
+                                                    "type": "length",
+                                                    "array": {
+                                                        "type": "atom",
+                                                        "default": "",
+                                                        "path": "textline-in-form736e3a96a17d436996e5c8489cb9d102"
+                                                    }
+                                                }
+                                            },
+                                            0
+                                        ]
+                                    },
+                                    {
+                                        "type": "exists",
+                                        "array": {
+                                            "type": "atom",
+                                            "path": "selectionfield-in-formad0995330a9343efbb2e5488ab28e4a8",
+                                            "default": []
+                                        },
+                                        "placeholder": "current_option",
+                                        "rule": {
+                                            "type": "comparison",
+                                            "operation": "equal",
+                                            "arguments": [
+                                                {
+                                                    "type": "atom",
+                                                    "path": "current_option"
+                                                },
+                                                "option 11"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "options": {
+                            "acceptedFileType": "*"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-14"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/simple-array"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/angaben-zur-aenderung"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/array-with-arrays"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-7"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/dateTime"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/passwortfeld098f378cd4864be1924ce03741030f4d",
+                        "options": {
+                            "format": "password"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/email",
+                        "options": {
+                            "format": "email"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "Others"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/checkboxenfeld011f2a8dc54c49bcb9ee7ceb2763ccf6",
+                        "options": {
+                            "stacked": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/checkboxen8c9fa56d35c449f484fc4426386a4ae6"
+                    },
+                    {
+                        "type": "HTML",
+                        "htmlData": "<h2>Checkbox Rita rule evaluated to true</h2>",
+                        "showOn": {
+                            "id": "ritaRule-checkbox6e6adce14a6142389583a03897fecf13",
+                            "rule": {
+                                "type": "exists",
+                                "array": {
+                                    "type": "atom",
+                                    "path": "checkboxen8c9fa56d35c449f484fc4426386a4ae6",
+                                    "default": []
+                                },
+                                "placeholder": "current_option",
+                                "rule": {
+                                    "type": "comparison",
+                                    "operation": "equal",
+                                    "arguments": [
+                                        {
+                                            "type": "atom",
+                                            "path": "current_option"
+                                        },
+                                        "option6"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/integer"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/string_no_label",
+                        "options": {
+                            "placeholder": "No Label",
+                            "label": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/textline84630e8d5125441eadbafb7f6a2bda5b"
+                    },
+                    {
+                        "type": "HTML",
+                        "htmlData": "<h2>Length Rita rule evaluated to true</h2>",
+                        "showOn": {
+                            "id": "ritaRule-ganzzahlacb40ea1c6ff4b4e86151c8a6e46f4a2",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "greater",
+                                "arguments": [
+                                    {
+                                        "type": "macro",
+                                        "macro": {
+                                            "type": "length",
+                                            "array": {
+                                                "type": "atom",
+                                                "default": [],
+                                                "path": "textline84630e8d5125441eadbafb7f6a2bda5b"
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Buttongroup",
+                "buttons": [
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit",
+                        "options": {
+                            "variant": "primary"
+                        }
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit to console",
+                        "options": {
+                            "variant": "info",
+                            "submitOptions": {
+                                "action": "console"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit to sleep",
+                        "options": {
+                            "variant": "warning",
+                            "submitOptions": {
+                                "action": "sleep"
+                            }
+                        }
+                    }
+                ]
             }
-          }
         ]
-      },
-      {
-        "type": "Buttongroup",
-        "buttons": [
-          {
-            "type": "Button",
-            "buttonType": "submit",
-            "text": "Submit",
-            "options": {
-              "variant": "primary"
-            }
-          },
-          {
-            "type": "Button",
-            "buttonType": "submit",
-            "text": "Submit to console",
-            "options": {
-              "variant": "info",
-              "submitOptions": {
-                "action": "console"
-              }
-            }
-          },
-          {
-            "type": "Button",
-            "buttonType": "submit",
-            "text": "Submit to sleep",
-            "options": {
-              "variant": "warning",
-              "submitOptions": {
-                "action": "sleep"
-              }
-            }
-          }
-        ]
-      }
-    ]
-  }
+    }
 }

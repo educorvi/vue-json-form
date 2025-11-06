@@ -1,33 +1,35 @@
-import { computed, type ComputedRef, inject, provide } from 'vue';
 import {
-    jsonElementProviderKey,
-    layoutProviderKey,
+    computed,
+    type ComputedRef,
+    inject,
+    provide,
+    type Ref,
+    toRef,
+    toRefs,
+} from 'vue';
+import {
+    formStructureProviderKey,
     savePathProviderKey,
 } from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
 import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
-import type { CoreSchemaMetaSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
-
-export function injectJsonDataSafe() {
-    const layoutElement = inject(layoutProviderKey, undefined);
-    const jsonElement = inject(jsonElementProviderKey, undefined);
-    const savePath = inject(savePathProviderKey, undefined);
-
-    return { layoutElement, jsonElement, savePath };
-}
+import { isDefined } from '@/typings/typeValidators.ts';
 
 export function injectJsonData() {
-    const { layoutElement, jsonElement, savePath } = injectJsonDataSafe();
+    const fs = inject(formStructureProviderKey);
+    const savePath = inject(savePathProviderKey);
+    if (!isDefined(fs) || !isDefined(savePath)) {
+        throw new Error('fs and savePath must be provided');
+    }
+    const jsonElement = toRef(() => fs.value.jsonElement);
+    const uiElement = toRef(() => fs.value.uiElement);
 
-    if (!layoutElement) throw new Error('No layout element found');
-    if (!jsonElement) throw new Error('No json element found');
-    if (!savePath) throw new Error('No save path found');
-
-    return { layoutElement, jsonElement, savePath };
+    return { jsonElement, layoutElement: uiElement, savePath };
 }
 
 export function getParentJsonPath(scope: string): string | null {
@@ -52,11 +54,11 @@ export function getComputedParentJsonPath(layout: Control) {
     });
 }
 
-export function getComputedGrandparentJsonPath(layout: Control) {
+export function getComputedGrandparentJsonPath(layout: Ref<Control, Control>) {
     return computed((): string | null => {
         if (!layout) throw new Error('No layout found');
 
-        let path = pointer.parse(layout.scope);
+        let path = pointer.parse(layout.value.scope);
 
         if (path.length < 2) return null;
 
@@ -65,7 +67,7 @@ export function getComputedGrandparentJsonPath(layout: Control) {
     });
 }
 
-export function getComputedRequired(layout: Control) {
+export function getComputedRequired(layout: Ref<Control, Control>) {
     return computed(() => {
         const grandParentPath = getComputedGrandparentJsonPath(layout);
         if (grandParentPath.value === null) {
@@ -81,7 +83,9 @@ export function getComputedRequired(layout: Control) {
 
         if (!Array.isArray(jsonElement.value)) return false;
 
-        return jsonElement.value.includes(layout?.scope.split('/').pop() || '');
+        return jsonElement.value.includes(
+            layout?.value.scope.split('/').pop() || ''
+        );
     });
 }
 
@@ -112,7 +116,7 @@ export function cleanScope(
 export function getComputedJsonElement(
     scope: string,
     failSilently = false
-): ComputedRef<CoreSchemaMetaSchema | null> {
+): ComputedRef<JSONSchema | null> {
     return computed(() => {
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());
@@ -124,12 +128,12 @@ export function getComputedJsonElement(
             ),
             '/items'
         );
-        let data: CoreSchemaMetaSchema | null = null;
+        let data: JSONSchema | null = null;
         try {
             data = jsonPointer.get(
                 jsonSchema.value || {},
                 internal_scope
-            ) as CoreSchemaMetaSchema | null;
+            ) as JSONSchema | null;
         } catch (e) {
             if (!failSilently) {
                 console.error('invalid json pointer', internal_scope, e);
@@ -157,7 +161,7 @@ export function isArray(scope: string) {
         const element = jsonPointer.get(
             jsonSchema.value || {},
             cleaned_scope
-        ) as CoreSchemaMetaSchema;
+        ) as JSONSchema;
         return element?.type === 'array';
     } catch (e) {
         console.error('invalid json pointer', cleaned_scope, e);
@@ -172,14 +176,14 @@ export function arrayContainsValue(array: any[]): boolean {
     }, false);
 }
 
-export function computedLabel(layout: Control) {
+export function computedLabel(layout: Ref<Control, Control>) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
-    const jsonElement = getComputedJsonElement(layout.scope);
+    const jsonElement = getComputedJsonElement(layout.value.scope);
     return computed(() => {
         if (!jsonSchema.value) return '';
         return (
             jsonElement.value?.title ||
-            titleCase(layout?.scope.split('/').pop() || '')
+            titleCase(layout.value.scope.split('/').pop() || '')
         ).concat(getComputedRequired(layout).value ? '*' : '');
     });
 }

@@ -1,7 +1,4 @@
-import type {
-    CoreSchemaMetaSchema,
-    UISchema,
-} from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,6 +32,17 @@ export function isArrayItemKey(key: any): boolean {
 }
 
 /**
+ * Extracts a portion of a scope string based on the specified length.
+ *
+ * @param {string} scope - The scope string to be sliced.
+ * @param {number} length - The number of segments to extract from the beginning of the scope string.
+ * @return {string} The sliced scope containing the specified number of segments.
+ */
+export function sliceScope(scope: string, length: number): string {
+    return scope.split('/').slice(0, length).join('/');
+}
+
+/**
  * This function is used to map an array of elements to a new array where each element in the new array will have all the properties of the original element plus a 'uuid' property.
  * The 'uuid' property is generated using the `crypto.randomUUID()` or the `makeid()` function.
  *
@@ -48,7 +56,7 @@ export function mapUUID<T>(element: T[]): Array<T & { uuid: string }> {
 export const SUPPORTED_UISCHEMA_VERSION = '2.0';
 
 export function generateUISchema(
-    json: CoreSchemaMetaSchema,
+    json: JSONSchema,
     generationOptions: GenerationOptions = {}
 ): UISchema {
     const uiSchema: UISchema = {
