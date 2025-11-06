@@ -8,7 +8,7 @@ it('JSO-79 (IfThenElse)', () => {
     const FIRST_SELECT = '#vjf_control_for__properties_jso-79_properties_first';
     const SECOND_SELECT =
         '#vjf_control_for__properties_jso-79_properties_second';
-    const WAIT_TIME = 50;
+    const WAIT_TIME = 150;
 
     const validateSelectOptions = (
         selector: string,
