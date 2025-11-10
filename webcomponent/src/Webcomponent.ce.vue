@@ -71,7 +71,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         :ui-schema="data.uiSchema"
         :preset-data="data.presetData"
         :return-data-as-scopes="data.returnDataAsScopes"
-        :mapper-functions="mapperFunctions"
+        :mappers="mapperFunctions"
         :onSubmitForm="onSubmitForm"
     >
         <slot />
