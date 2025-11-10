@@ -1,19 +1,23 @@
 import { Validator } from './Validator';
-import { CoreSchemaMetaSchema } from '../generated/json-schema';
 import { UISchema } from '../generated/ui-schema';
+import { JSONSchema } from '../index';
 
 export class EmptyValidator extends Validator<never>{
     protected async initializeInternal(): Promise<void> {
         return;
     }
 
-    protected validateJsonSchemaInternal(data: unknown): data is CoreSchemaMetaSchema {
-        console.debug(`Validation skipped for data`, data)
+    protected validateJsonSchemaInternal(data: unknown): data is JSONSchema {
+        if (import.meta.env.DEV) {
+            console.debug(`Validation skipped for data`, data);
+        }
         return true;
     }
 
     protected validateUiSchemaInternal(data: unknown): data is UISchema {
-        console.debug(`Validation skipped for data`, data)
+        if (import.meta.env.DEV) {
+            console.debug(`Validation skipped for data`, data);
+        }
         return true;
     }
 

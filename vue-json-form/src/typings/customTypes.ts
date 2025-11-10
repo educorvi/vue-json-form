@@ -3,8 +3,9 @@ import type {
     Layout,
     LayoutElement,
     Options,
-    CoreSchemaMetaSchema,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
+import { MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
  * A layout element with child elements
@@ -41,16 +42,13 @@ export type GenerationOptions = {
     | {
           layoutType: 'Group';
           groupLabel: string;
+          groupDescription?: string;
       }
 );
 
-export type MapperFunction = (
-    jsonElement: CoreSchemaMetaSchema,
-    uiElement: Control
-) => null | {
-    jsonElement: CoreSchemaMetaSchema;
-    uiElement: Control;
-};
+export type Mapper = MapperWithoutData | MapperWithData;
+
+export type MapperClass = new () => Mapper;
 
 type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
     x: infer I
@@ -59,3 +57,25 @@ type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
     : never;
 
 export type FlatOptions = UnionToIntersection<Options>;
+
+export type SupportedIfThenElse = {
+    if: {
+        properties: {
+            [key: string]: {
+                const: any;
+            };
+        };
+    };
+    then: {
+        properties: {
+            [key: string]: Record<string, any>;
+        };
+    };
+    else?: {
+        properties: {
+            [key: string]: {
+                [key: string]: Record<string, any>;
+            };
+        };
+    };
+};

@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import { ref } from 'vue';
 import VueJsonPretty from 'vue-json-pretty';
+import {BApp} from 'bootstrap-vue-next';
 
 const show = ref(false);
 const modalData = ref({
@@ -20,26 +21,28 @@ function viewCode(title: string, code: Record<string, any>) {
 </script>
 
 <template>
-    <header>
-        <navbar />
-    </header>
+    <BApp>
+        <header>
+            <navbar />
+        </header>
 
-    <div id="content">
-        <main>
-            <RouterView @viewCode="viewCode" />
-        </main>
-    </div>
+        <div id="content">
+            <main>
+                <RouterView @viewCode="viewCode" />
+            </main>
+        </div>
 
-    <BModal
-        v-if="modalData.json"
-        v-model="show"
-        :title="modalData.title"
-        scrollable
-        centered
-        hideFooter
-        size="lg">
-        <vue-json-pretty :data="modalData.json" />
-    </BModal>
+        <BModal
+            v-if="modalData.json"
+            v-model="show"
+            :title="modalData.title"
+            scrollable
+            centered
+            hideFooter
+            size="lg">
+            <vue-json-pretty :data="modalData.json" />
+        </BModal>
+    </BApp>
 </template>
 
 <style scoped>

@@ -13,17 +13,20 @@ const props = defineProps<{
 
 const cssClass = computedCssClass(props.layoutElement, 'vjf_group');
 
-const HelpPopover = getComponent('HelpPopover');
+// const HelpPopover = getComponent('HelpPopover');
 </script>
 
 <template>
     <fieldset :class="cssClass">
         <legend v-show="layoutElement.options?.label">
             {{ layoutElement.options?.label || 'Unnamed group' }}
-            <span style="font-size: 1rem">
-                <component :is="HelpPopover" />
-            </span>
+            <!--            <span style="font-size: 1rem">-->
+            <!--                <component :is="HelpPopover" />-->
+            <!--            </span>-->
         </legend>
+        <p v-if="layoutElement.options?.description">
+            {{ layoutElement.options.description }}
+        </p>
         <vertical-layout
             class="vjf_fieldset-content"
             :layout-element="{ ...layoutElement, type: 'VerticalLayout' }"

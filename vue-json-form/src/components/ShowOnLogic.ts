@@ -156,12 +156,15 @@ function checkDependentElement(
 }
 
 export function computedShowOnLogic(
-    layoutElement: LayoutElement
+    layoutElement: LayoutElement,
+    descendantControlOverrides: DescendantControlOverrides | undefined
 ): Ref<boolean> {
     let localLayoutElement = layoutElement;
     if (layoutElement.type === 'Control') {
-        localLayoutElement =
-            mergeDescendantControlOptionsOverrides(layoutElement);
+        localLayoutElement = mergeDescendantControlOptionsOverrides(
+            layoutElement,
+            descendantControlOverrides
+        );
     }
 
     if (!isDependentElement(localLayoutElement)) {

@@ -8,13 +8,14 @@ import type {
     ShowOnProperty,
     TagOptions,
     TitlesForEnum,
-    CoreSchemaMetaSchema1,
-    CoreSchemaMetaSchema,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
     elementWithCssClass,
     elementWithElements,
+    Mapper,
+    SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type {
     BaseColorVariant,
@@ -22,6 +23,8 @@ import type {
     CheckboxValue,
     InputType,
 } from 'bootstrap-vue-next';
+import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
+import { MapperWithoutData } from '@/Mappers';
 
 /**
  * Checks if the given element is dependent on another element
@@ -89,10 +92,21 @@ export function isLegacyShowOn(
     );
 }
 
-export function hasProperties(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { properties: any } {
-    return 'properties' in json;
+export function isValidJsonSchemaKey(key: string): key is keyof JSONSchema {
+    return JsonSchemaKeywords.find((k) => k === key) !== undefined;
+}
+
+export function hasProperty<T, K extends keyof T>(
+    obj: T | undefined,
+    propertyName: K
+): obj is T & Record<K, NonNullable<T[K]>> {
+    return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        obj !== undefined &&
+        propertyName in obj &&
+        !!obj[propertyName]
+    );
 }
 
 export function hasOptions(
@@ -108,21 +122,26 @@ export function hasOption<Key extends keyof Options>(
     return hasOptions(layoutElement) && key in layoutElement.options;
 }
 
+//todo: check typeguard
 export function hasItems(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { items: CoreSchemaMetaSchema1 } {
-    return 'items' in json && isCoreMetaSchema1(json.items);
+    json: JSONSchema
+): json is JSONSchema & { items: JSONSchema } {
+    return (
+        typeof json === 'object' &&
+        'items' in json &&
+        typeof json.items === 'object'
+    );
 }
 
 export function hasEnum(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { enum: any[] } {
+    json: JSONSchema
+): json is JSONSchema & { enum: any[] } {
     return 'enum' in json;
 }
 
 export function hasEnumValuesForItems(
-    json: CoreSchemaMetaSchema
-): json is CoreSchemaMetaSchema & { items: { enum: any[] } } {
+    json: JSONSchema
+): json is JSONSchema & { items: { enum: any[] } } {
     return hasItems(json) && hasEnum(json.items);
 }
 
@@ -157,6 +176,68 @@ export function isInputType(value: any): value is InputType {
     return validInputTypes.includes(value);
 }
 
-export function isCoreMetaSchema1(obj: any): obj is CoreSchemaMetaSchema1 {
-    return typeof obj === 'object' && obj !== null && !Array.isArray(obj);
+export function isMapperWithoutData(
+    mapper: Mapper
+): mapper is MapperWithoutData {
+    return mapper instanceof MapperWithoutData;
+}
+
+export function isIfThenAllOf(
+    json: Required<JSONSchema>['allOf']
+): json is SupportedIfThenElse[] {
+    return Array.isArray(json) && json.every(isSupportedIfThenElse);
+}
+
+export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'properties' in json &&
+        typeof json.properties === 'object' &&
+        Object.values(json.properties).every(
+            (value) =>
+                typeof value === 'object' && value !== null && 'const' in value
+        )
+    );
+}
+
+export function isSupportedThenOrElse(
+    json: any
+): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'properties' in json &&
+        typeof json.properties === 'object' &&
+        Object.values(json.properties).every(
+            (value) =>
+                typeof value === 'object' && value !== null && 'enum' in value
+        )
+    );
+}
+
+export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
+    return (
+        typeof json === 'object' &&
+        json !== null &&
+        'if' in json &&
+        isSupportedIf(json['if']) &&
+        'then' in json &&
+        isSupportedThenOrElse(json['then']) &&
+        ('else in json' in json ? isSupportedThenOrElse(json['else']) : true)
+    );
+}
+
+/**
+ * Type guard that checks if a value is not undefined
+ */
+export function isDefined<T>(value: T): value is Exclude<T, undefined> {
+    return value !== undefined;
+}
+
+/**
+ * Checks if all provided values are defined (not undefined)
+ */
+export function allDefined(...values: any[]): boolean {
+    return values.every(isDefined);
 }

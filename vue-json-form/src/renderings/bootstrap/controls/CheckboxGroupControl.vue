@@ -6,26 +6,26 @@ import {
 } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
-import { injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { hasEnumValuesForItems } from '@/typings/typeValidators';
+import { hasEnumValuesForItems, isDefined } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
 import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
-import { computed, type ComputedRef } from 'vue';
+import { computed, type ComputedRef, inject, toRefs } from 'vue';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { layoutElement, jsonElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 let options: ComputedRef<CheckboxOption[]> = computed(() => {
-    if (!hasEnumValuesForItems(jsonElement)) {
+    if (!hasEnumValuesForItems(jsonElement.value)) {
         return [];
     } else {
         return (
-            jsonElement.items?.enum?.map((key) => {
+            jsonElement.value.items?.enum?.map((key) => {
                 const textVals: Record<any, any> =
-                    getOption(layoutElement, 'enumTitles') || {};
+                    getOption(layoutElement.value, 'enumTitles') || {};
                 const text = textVals[key] || key;
                 return { value: key, text };
             }) || []

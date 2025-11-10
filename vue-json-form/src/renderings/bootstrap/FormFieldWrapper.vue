@@ -1,39 +1,26 @@
 <script setup lang="ts">
 import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, useSlots } from 'vue';
-import {
-    getComputedJsonElement,
-    getComputedParentJsonPath,
-    getParentJsonPath,
-    injectJsonData,
-} from '@/computedProperties/json';
-import { hasItems, isTagsConfig } from '@/typings/typeValidators';
+import { computed, type ComputedRef, inject, toRefs, useSlots } from 'vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
+import { injectJsonData } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     label: string;
     labelFor: string;
 }>();
 
-const { jsonElement, layoutElement } = injectJsonData();
+const { jsonElement, layoutElement, savePath } = injectJsonData();
+
+const isObjectOrArrayView = getIsObjectOrArrayViewComputed(
+    jsonElement,
+    layoutElement
+);
 const hideLabel = computed(() => {
     return (
-        jsonElement.type === 'boolean' ||
-        jsonElement.type === 'object' ||
-        layoutElement.options?.label === false ||
-        (jsonElement.type === 'array' &&
-            !(hasItems(jsonElement) && jsonElement.items.enum) &&
-            !jsonElement.enum &&
-            !(
-                isTagsConfig(layoutElement.options) &&
-                layoutElement.options.tags?.enabled
-            ) &&
-            !(
-                hasItems(jsonElement) &&
-                jsonElement.items.type === 'string' &&
-                jsonElement.items.format === 'uri' &&
-                layoutElement.options?.displayAsSingleUploadField
-            ))
+        jsonElement.value.type === 'boolean' ||
+        layoutElement.value.options?.label === false ||
+        isObjectOrArrayView.value
     );
 });
 
@@ -43,17 +30,18 @@ const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
     return !!(
         slots.prepend ||
         slots.append ||
-        layoutElement.options?.prepend ||
-        layoutElement.options?.append
+        layoutElement.value.options?.prepend ||
+        layoutElement.value.options?.append
     );
 });
 </script>
 
 <template>
     <BFormGroup
-        :label="hideLabel ? '' : props.label"
         :label-for="props.labelFor"
-        :description="jsonElement.description"
+        :description="
+            !isObjectOrArrayView ? jsonElement.description : undefined
+        "
     >
         <template #label>
             <span v-show="!hideLabel">

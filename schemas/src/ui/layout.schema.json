@@ -1,77 +1,91 @@
 {
-    "title": "Layout",
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://educorvi.github.io/vue-json-form/schemas/layout.schema.json",
-    "type": "object",
-    "description": "The different layouts",
-    "properties": {
-        "type": {
-            "type": "string",
-            "enum": ["VerticalLayout", "HorizontalLayout", "Group"]
-        },
-        "elements": {
-            "title": "Elements",
-            "description": "The elements of the layout",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Layout element",
-                "description": "Different types of layout elements",
-                "oneOf": [
-                    {
-                        "$ref": "control.schema.json"
-                    },
-                    {
-                        "$ref": "layout.schema.json"
-                    },
-                    {
-                        "$ref": "html.schema.json"
-                    },
-                    {
-                        "$ref": "divider.schema.json"
-                    },
-                    {
-                        "$ref": "button.schema.json"
-                    },
-                    {
-                        "$ref": "buttongroup.schema.json"
-                    }
-                ]
-            }
-        },
-        "showOn": {
-            "$ref": "show_on.schema.json"
-        },
-        "options": {
-            "description": "Additional options",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "cssClass": {
-                    "type": "string",
-                    "description": "The layout's CSS classes",
-                    "examples": ["bg-primary", "bg-info headerpart"]
-                },
-                "label": {
-                    "type": "string",
-                    "description": "Adds a label for groups (only for type=Group)"
-                }
-            }
-        }
+  "title": "Layout",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://educorvi.github.io/vue-json-form/schemas/layout.schema.json",
+  "type": "object",
+  "description": "The different layouts",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "VerticalLayout",
+        "HorizontalLayout",
+        "Group"
+      ]
     },
-    "examples": [
-        {
-            "type": "VerticalLayout",
-            "elements": []
+    "elements": {
+      "title": "Elements",
+      "description": "The elements of the layout",
+      "type": "array",
+      "default": [],
+      "items": {
+        "title": "Layout element",
+        "description": "Different types of layout elements",
+        "oneOf": [
+          {
+            "$ref": "control.schema.json"
+          },
+          {
+            "$ref": "layout.schema.json"
+          },
+          {
+            "$ref": "html.schema.json"
+          },
+          {
+            "$ref": "divider.schema.json"
+          },
+          {
+            "$ref": "button.schema.json"
+          },
+          {
+            "$ref": "buttongroup.schema.json"
+          }
+        ]
+      }
+    },
+    "showOn": {
+      "$ref": "show_on.schema.json"
+    },
+    "options": {
+      "description": "Additional options",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cssClass": {
+          "type": "string",
+          "description": "The layout's CSS classes",
+          "examples": [
+            "bg-primary",
+            "bg-info headerpart"
+          ]
         },
-        {
-            "type": "Group",
-            "elements": [],
-            "options": {
-                "label": "This is a group"
-            }
+        "label": {
+          "type": "string",
+          "description": "Adds a label for groups (only for type=Group)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Adds a description for a group (only for type=Group)"
         }
-    ],
-    "additionalProperties": false,
-    "required": ["type", "elements"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "type": "VerticalLayout",
+      "elements": []
+    },
+    {
+      "type": "Group",
+      "elements": [],
+      "options": {
+        "label": "This is a group"
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "elements"
+  ]
 }

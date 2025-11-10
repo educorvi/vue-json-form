@@ -34,16 +34,16 @@
     "@semantic-release/exec": "^7.1.0",
     "npm-run-all": "^4.1.5",
     "rollup-plugin-copy": "^3.5.0",
-    "semantic-release": "^24.2.3",
+    "semantic-release": "^25.0.1",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.5",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.4",
+    "tsx": "^4.20.6",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.12",
     "vite-bundle-analyzer": "^1.2.3",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-static-copy": "^3.1.1"
+    "vite-plugin-static-copy": "^3.1.4"
   },
   "publishConfig": {
     "access": "public"

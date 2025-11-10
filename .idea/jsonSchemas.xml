@@ -26,6 +26,13 @@
               <option name="name" value="Rita Rule" />
               <option name="relativePathToSchema" value="https://github.com/educorvi/rita/raw/develop/rita-core/src/schema/rule.json" />
               <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_7.json" />
+                  </Item>
+                </list>
+              </option>
             </SchemaInfo>
           </value>
         </entry>
@@ -66,6 +73,15 @@
                   </Item>
                 </list>
               </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="show_on.schema">
+          <value>
+            <SchemaInfo>
+              <option name="generatedName" value="New Schema" />
+              <option name="name" value="show_on.schema" />
+              <option name="relativePathToSchema" value="schemas/src/ui/show_on.schema.json" />
             </SchemaInfo>
           </value>
         </entry>

@@ -4,6 +4,77 @@ function submitForm() {
     cy.get('button[type="submit"]').eq(-3).click();
 }
 
+it('JSO-43', function () {
+    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').clear();
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+});
+
+
+it('JSO-79 (IfThenElse)', () => {
+    const FIRST_SELECT = '#vjf_control_for__properties_jso-79_properties_first';
+    const SECOND_SELECT =
+        '#vjf_control_for__properties_jso-79_properties_second';
+    const WAIT_TIME = 150;
+
+    const validateSelectOptions = (
+        selector: string,
+        expectedValues: string[]
+    ) => {
+        cy.get(`${selector} option`).each((option) => {
+            expect(option.attr('value')).to.be.oneOf(expectedValues);
+        });
+    };
+
+    cy.visit('http://localhost:5173?variant=reproduce');
+
+    // Initial state: all options should be available
+    validateSelectOptions(SECOND_SELECT, ['a1', 'a2', 'b1']);
+
+    // Select 'A': only 'a' options should be available
+    cy.get(FIRST_SELECT).select('A');
+    cy.wait(WAIT_TIME);
+    validateSelectOptions(SECOND_SELECT, ['a1', 'a2']);
+
+    // Select 'B': only 'b' options should be available
+    cy.get(FIRST_SELECT).select('B');
+    cy.wait(WAIT_TIME);
+    validateSelectOptions(SECOND_SELECT, ['b1']);
+
+    cy.get(FIRST_SELECT).select('A');
+    cy.get(SECOND_SELECT).select('a1');
+    cy.get(FIRST_SELECT).select('B');
+    cy.wait(WAIT_TIME);
+    submitForm();
+    cy.get('#result-container').then((el) => {
+        let res = JSON.parse(el.text());
+        expect(res['jso-79']['second']).to.be.undefined;
+    });
+});
+
 it('Pattern string', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
 
@@ -76,6 +147,7 @@ it('JSO-31', () => {
         ]);
     });
 });
+
 it('JSO-44', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('div[name="/properties/abhaengiges-array"]').should('not.exist');
@@ -91,6 +163,7 @@ it('JSO-44', () => {
         'div[name="/properties/abhaengiges-array"] input[type="text"]'
     ).should('exist');
 });
+
 it('JSO-37', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('input[name="/properties/jso-37-field1"]').should('exist');
@@ -127,6 +200,7 @@ it('JSO-37', () => {
     cy.get('input[name="/properties/jso-37-field2"]').should('exist');
     cy.get('input[name="/properties/jso-37-field3"]').should('not.exist');
 });
+
 it('JSO-39', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     submitForm();
@@ -143,6 +217,7 @@ it('JSO-39', () => {
         expect(res['jso-39-string']).to.equal('Test');
     });
 });
+
 it('JSO-34', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get(
@@ -199,6 +274,7 @@ it('JSO-34', () => {
         '#vjf_control_for__properties_array141d1d356e40b4062ac2b1476ff52648c > .list-group > div:nth-child(2) .list-group > div:nth-child(2) input[type="text"]'
     ).should('exist');
 });
+
 it('JSO-17', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     submitForm();
@@ -210,6 +286,7 @@ it('JSO-17', () => {
         ]);
     });
 });
+
 it('JSO-23 & JSO-24', () => {
     cy.visit('http://localhost:5173?variant=reproduce');
     cy.get('.vjf_showOnWrapper button[type="submit"].btn-primary').should(
