@@ -54,6 +54,99 @@
                 }
             ]
         },
+        "jso-79-ii": {
+            "type": "object",
+            "properties": {
+                "unabhaengige-frage": {
+                    "title": "unabhängige frage",
+                    "type": "string",
+                    "enum": ["a", "b", "c"]
+                },
+                "abhaengige-frage": {
+                    "title": "abhängige frage",
+                    "type": "string",
+                    "enum": ["1", "2", "3"]
+                },
+                "wie-heisst-du": {
+                    "title": "Wie heißt du?",
+                    "type": "string",
+                    "enum": ["Julian", "Henrik", "Jonas"]
+                },
+                "array": {
+                    "type": "array",
+                    "title": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "auswahlfeld-in-array": {
+                                "title": "auswahlfeld in array",
+                                "type": "string",
+                                "enum": ["abc", "bc"]
+                            }
+                        },
+                        "required": [],
+                        "dependentRequired": {},
+                        "allOf": [
+                            {
+                                "if": {
+                                    "properties": {
+                                        "abhaengige-frage": {
+                                            "const": "2"
+                                        }
+                                    },
+                                    "required": ["abhaengige-frage"]
+                                },
+                                "then": {
+                                    "properties": {
+                                        "auswahlfeld-in-array": {
+                                            "enum": ["abc"]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "required": [],
+            "dependentRequired": {},
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "const": "a"
+                            }
+                        },
+                        "required": ["unabhaengige-frage"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["1", "3"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "wie-heisst-du": {
+                                "const": "Henrik"
+                            }
+                        },
+                        "required": ["wie-heisst-du"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         "string-dep-required": {
             "type": "string",
             "title": "String with dependency"
