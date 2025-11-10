@@ -109,7 +109,7 @@ function clear() {
     <hr>
     <vue-json-form v-if="jsonSchema" :jsonSchema="jsonSchema" :uiSchema="uiSchema"
                    :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"
-                   :mapperFunctions="[OneOfToEnumMapper, IfThenElseMapper]" :validator="AjvValidator">
+                   :mappers="[OneOfToEnumMapper, IfThenElseMapper]" :validator="AjvValidator">
         <b-button v-if="submitButton" type="submit" class="mt-3 w-100" variant="primary">Submit</b-button>
     </vue-json-form>
     <div v-else>

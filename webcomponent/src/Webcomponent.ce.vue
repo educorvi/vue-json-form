@@ -49,7 +49,7 @@ const data: ComputedRef = computed(() => {
     };
 });
 
-const mapperFunctions = [OneOfToEnumMapper, IfThenElseMapper];
+const mappers = [OneOfToEnumMapper, IfThenElseMapper];
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     if (options.action === 'request' && options.request?.url) {
@@ -71,7 +71,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         :ui-schema="data.uiSchema"
         :preset-data="data.presetData"
         :return-data-as-scopes="data.returnDataAsScopes"
-        :mapper-functions="mapperFunctions"
+        :mappers="mappers"
         :onSubmitForm="onSubmitForm"
     >
         <slot />
