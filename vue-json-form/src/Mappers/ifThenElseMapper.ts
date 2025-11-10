@@ -158,7 +158,9 @@ export class IfThenElseMapper extends MapperWithData {
             return { jsonElement, uiElement };
         }
 
-        let newJsonElement: JSONSchema = jsonElement;
+        let newJsonElement: JSONSchema = JSON.parse(
+            JSON.stringify(jsonElement)
+        );
         let hasChanges = false;
 
         for (const ifThen of this.conditionsAndResults) {
