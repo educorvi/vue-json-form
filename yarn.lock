@@ -926,6 +926,7 @@ __metadata:
     bootstrap-vue-next: "npm:0.40.7"
     cypress: "npm:^15.5.0"
     cypress-axe: "npm:^1.7.0"
+    deepmerge: "npm:^4.3.1"
     eslint: "npm:^9.38.0"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-vue: "npm:^10.5.1"
@@ -5987,7 +5988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10/058d9e1b0ff1a154468bf3837aea436abcfea1ba1d165ddaaf48ca93765fdd01a30d33c36173da8fbbed951dd0a267602bc782fe288b0fc4b7e1e7091afc4529

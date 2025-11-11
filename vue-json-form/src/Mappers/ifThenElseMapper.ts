@@ -16,6 +16,7 @@
  * - `getDependencies` returns the list of sibling data paths this field depends on.
  */
 import jsonPointer from 'json-pointer';
+import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
     isIfThenAllOf,
@@ -29,12 +30,24 @@ import type {
     Layout,
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
+import type {
+    IfConditions,
+    SupportedIfThenElse,
+} from '@/typings/customTypes.ts';
+
+enum ConditionType {
+    CONST = 'const',
+    ENUM = 'enum',
+    CONTAINS_CONST = 'containsConst',
+    CONTAINS_ENUM = 'containsEnum',
+}
 
 /** Describes a single condition coming from `if.properties` where
  *  the sibling property `key` must equal the constant `value`. */
 type Condition = {
     key: string;
     value: any;
+    type: ConditionType;
 };
 
 /** A preprocessed rule extracted from the parent `allOf`:
@@ -99,6 +112,47 @@ export class IfThenElseMapper extends MapperWithData {
         return this.scope?.split('/').pop();
     }
 
+    private parseCondition([key, condition]: [
+        string,
+        IfConditions,
+    ]): Condition {
+        let conditionType: ConditionType;
+        let conditionValue: any;
+        if ('const' in condition) {
+            conditionType = ConditionType.CONST;
+            conditionValue = condition.const;
+        } else if ('enum' in condition) {
+            conditionType = ConditionType.ENUM;
+            conditionValue = condition.enum;
+        } else if ('contains' in condition) {
+            if ('const' in condition.contains) {
+                conditionType = ConditionType.CONTAINS_CONST;
+                conditionValue = condition.contains.const;
+            } else if ('enum' in condition.contains) {
+                conditionType = ConditionType.CONTAINS_ENUM;
+                conditionValue = condition.contains.enum;
+            } else {
+                // This should only ever happen if type checking is wrong
+                throw new Error('Invalid contains condition');
+            }
+        } else {
+            // This should only ever happen if type checking is wrong
+            throw new Error('Invalid condition');
+        }
+
+        return {
+            value: conditionValue,
+            type: conditionType,
+            key,
+        };
+    }
+
+    private parseConditions(
+        ifJson: SupportedIfThenElse['if']['properties']
+    ): Condition[] {
+        return Object.entries(ifJson).map(this.parseCondition);
+    }
+
     private getConditionsAndResults(): ConditionsAndResults[] {
         const fieldName = this.getFieldName();
         if (!fieldName || !this.scope || !this.jsonSchema || !this.uiSchema) {
@@ -127,17 +181,41 @@ export class IfThenElseMapper extends MapperWithData {
                     }
 
                     return {
-                        conditions: Object.entries(ifThen.if.properties).map(
-                            ([key, value]) => {
-                                return { key, value: value.const };
-                            }
-                        ),
+                        conditions: this.parseConditions(ifThen.if.properties),
                         then: thenResult,
                         else: elseResult,
                     };
                 }
             })
             .filter((c) => c !== undefined);
+    }
+
+    checkConditionFulfilled(
+        condition: Condition,
+        data: Readonly<Record<string, any>>
+    ): boolean {
+        const actualValue = this.savePath
+            ? data[sliceScope(this.savePath, -1) + '/' + condition.key]
+            : undefined;
+        if (actualValue === undefined) {
+            return false;
+        }
+        switch (condition.type) {
+            case ConditionType.CONST:
+                return actualValue === condition.value;
+            case ConditionType.ENUM:
+                return condition.value.includes(actualValue);
+            case ConditionType.CONTAINS_CONST:
+                if (!Array.isArray(actualValue)) {
+                    return false;
+                }
+                return actualValue.includes(condition.value);
+            case ConditionType.CONTAINS_ENUM:
+                if (!Array.isArray(actualValue)) {
+                    return false;
+                }
+                return actualValue.some((a) => condition.value.includes(a));
+        }
     }
 
     map(
@@ -169,21 +247,42 @@ export class IfThenElseMapper extends MapperWithData {
             if (!thenResult && !elseResult) {
                 continue;
             }
-
-            const fulfilled = ifThen.conditions.every(({ key, value }) =>
-                this.savePath
-                    ? data[sliceScope(this.savePath, -1) + '/' + key] === value
-                    : false
+            const fulfilled = ifThen.conditions.every((cond) =>
+                this.checkConditionFulfilled(cond, data)
             );
 
             const props = fulfilled ? ifThen.then || {} : ifThen.else || {};
 
             for (let [key, val] of Object.entries(props)) {
                 if (isValidJsonSchemaKey(key)) {
-                    // Only update if the value actually changed
-                    if (newJsonElement[key] !== val) {
-                        newJsonElement[key] = val;
-                        hasChanges = true;
+                    if (typeof val !== 'object') {
+                        // Only update if the value actually changed
+                        if (newJsonElement[key] !== val) {
+                            newJsonElement[key] = val;
+                            hasChanges = true;
+                        }
+                    } else {
+                        if (val) {
+                            const overwriteMerge = (
+                                destinationArray: any[],
+                                sourceArray: any[],
+                                options: ArrayMergeOptions
+                            ) => sourceArray;
+                            const merged = deepmerge(
+                                newJsonElement[key] || {},
+                                val,
+                                { arrayMerge: overwriteMerge }
+                            );
+                            if (
+                                JSON.parse(JSON.stringify(merged)) !==
+                                JSON.parse(
+                                    JSON.stringify(newJsonElement[key] || {})
+                                )
+                            ) {
+                                newJsonElement[key] = merged;
+                                hasChanges = true;
+                            }
+                        }
                     }
                 }
             }

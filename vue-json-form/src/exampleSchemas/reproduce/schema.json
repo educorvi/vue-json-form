@@ -71,41 +71,6 @@
                     "title": "Wie heißt du?",
                     "type": "string",
                     "enum": ["Julian", "Henrik", "Jonas"]
-                },
-                "array": {
-                    "type": "array",
-                    "title": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "auswahlfeld-in-array": {
-                                "title": "auswahlfeld in array",
-                                "type": "string",
-                                "enum": ["abc", "bc"]
-                            }
-                        },
-                        "required": [],
-                        "dependentRequired": {},
-                        "allOf": [
-                            {
-                                "if": {
-                                    "properties": {
-                                        "abhaengige-frage": {
-                                            "const": "2"
-                                        }
-                                    },
-                                    "required": ["abhaengige-frage"]
-                                },
-                                "then": {
-                                    "properties": {
-                                        "auswahlfeld-in-array": {
-                                            "enum": ["abc"]
-                                        }
-                                    }
-                                }
-                            }
-                        ]
-                    }
                 }
             },
             "required": [],
@@ -141,6 +106,173 @@
                         "properties": {
                             "abhaengige-frage": {
                                 "enum": ["2", "3"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "jso-79-iii": {
+            "type": "object",
+            "properties": {
+                "unabhaengige-frage": {
+                    "title": "unabhängige frage",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c"],
+                        "type": "string"
+                    }
+                },
+                "abhaengige-frage": {
+                    "title": "abhängige frage",
+                    "type": "string",
+                    "enum": ["3"]
+                },
+                "wie-heisst-du": {
+                    "title": "Wie heißt du?",
+                    "type": "string",
+                    "enum": ["Julian", "Henrik", "Jonas"]
+                }
+            },
+            "required": [],
+            "dependentRequired": {},
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "wie-heisst-du": {
+                                "const": "Henrik"
+                            }
+                        },
+                        "required": ["wie-heisst-du"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["a"]
+                                }
+                            }
+                        },
+                        "required": ["unabhaengige-frage"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["a"]
+                                }
+                            },
+                            "wie-heisst-du": {
+                                "const": "Henrik"
+                            }
+                        },
+                        "required": ["unabhaengige-frage", "wie-heisst-du"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["b"]
+                                }
+                            }
+                        },
+                        "required": ["unabhaengige-frage"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["b"]
+                                }
+                            },
+                            "wie-heisst-du": {
+                                "const": "Henrik"
+                            }
+                        },
+                        "required": ["unabhaengige-frage", "wie-heisst-du"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["a", "b"]
+                                }
+                            }
+                        },
+                        "required": ["unabhaengige-frage"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["3", "1"]
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "contains": {
+                                    "enum": ["a", "b"]
+                                }
+                            },
+                            "wie-heisst-du": {
+                                "const": "Henrik"
+                            }
+                        },
+                        "required": ["unabhaengige-frage", "wie-heisst-du"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3", "1"]
                             }
                         }
                     }

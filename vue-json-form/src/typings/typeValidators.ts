@@ -196,7 +196,15 @@ export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
         typeof json.properties === 'object' &&
         Object.values(json.properties).every(
             (value) =>
-                typeof value === 'object' && value !== null && 'const' in value
+                typeof value === 'object' &&
+                value !== null &&
+                ('const' in value ||
+                    'enum' in value ||
+                    ('contains' in value &&
+                        typeof value.contains === 'object' &&
+                        value.contains &&
+                        ('const' in value.contains ||
+                            'enum' in value.contains)))
         )
     );
 }
@@ -206,13 +214,10 @@ export function isSupportedThenOrElse(
 ): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
     return (
         typeof json === 'object' &&
-        json !== null &&
+        json &&
         'properties' in json &&
         typeof json.properties === 'object' &&
-        Object.values(json.properties).every(
-            (value) =>
-                typeof value === 'object' && value !== null && 'enum' in value
-        )
+        json.properties
     );
 }
 
@@ -224,7 +229,7 @@ export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
         isSupportedIf(json['if']) &&
         'then' in json &&
         isSupportedThenOrElse(json['then']) &&
-        ('else in json' in json ? isSupportedThenOrElse(json['else']) : true)
+        ('else' in json ? isSupportedThenOrElse(json['else']) : true)
     );
 }
 
