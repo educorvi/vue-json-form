@@ -17,6 +17,7 @@
  */
 import jsonPointer from 'json-pointer';
 import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
+import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
     isIfThenAllOf,
@@ -202,7 +203,8 @@ export class IfThenElseMapper extends MapperWithData {
         }
         switch (condition.type) {
             case ConditionType.CONST:
-                return actualValue === condition.value;
+                // return actualValue === condition.value;
+                return deepEqual(actualValue, condition.value);
             case ConditionType.ENUM:
                 return condition.value.includes(actualValue);
             case ConditionType.CONTAINS_CONST:

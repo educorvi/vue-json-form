@@ -276,6 +276,23 @@
                             }
                         }
                     }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "unabhaengige-frage": {
+                                "const": ["b", "c"]
+                            }
+                        },
+                        "required": ["unabhaengige-frage"]
+                    },
+                    "then": {
+                        "properties": {
+                            "abhaengige-frage": {
+                                "enum": ["2", "3", "1", "4"]
+                            }
+                        }
+                    }
                 }
             ]
         },
