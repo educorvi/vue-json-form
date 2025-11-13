@@ -16,7 +16,12 @@ function clickedStep(step: number) {
 
 <template>
     <div class="stepWrapper">
-        <div class="d-flex justify-content-between">
+        <div
+            class="stepGrid"
+            :style="{
+                gridTemplateColumns: `repeat(${max}, minmax(var(--step-size), 1fr))`,
+            }"
+        >
             <div
                 :class="{
                     'stepNumber d-flex justify-content-center align-items-center': true,
@@ -27,6 +32,7 @@ function clickedStep(step: number) {
                     { length: props.max },
                     (_, i) => i + 1
                 )"
+                :key="`step-${stepNumber}`"
             >
                 <button
                     :disabled="stepNumber > currentStep"
@@ -36,20 +42,17 @@ function clickedStep(step: number) {
                     {{ stepNumber }}
                 </button>
             </div>
+            <div
+                class="stepLabel text-center"
+                v-for="(pageName, index) in pageNames"
+                :key="`step-label-${index}`"
+            >
+                <span class="fs-4">
+                    {{ pageName }}
+                </span>
+            </div>
         </div>
         <BProgress class="stepProgress" :value="currentStep" :max="max - 1" />
-    </div>
-    <div class="d-flex justify-content-between">
-        <div
-            style="flex: 1 1 0"
-            class="text-center"
-            v-for="(pageName, index) in pageNames"
-            :key="index"
-        >
-            <span class="fs-4">
-                {{ pageName }}
-            </span>
-        </div>
     </div>
 </template>
 
@@ -57,14 +60,18 @@ function clickedStep(step: number) {
 $step-border-radius: 50%;
 .stepWrapper {
     position: relative;
-    margin-left: 40px;
-    margin-right: 40px;
+    --step-size: 60px;
+}
+.stepGrid {
+    display: grid;
+    justify-items: center;
+    row-gap: 1.5rem;
 }
 .stepProgress {
     position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
+    top: calc(var(--step-size) / 2);
+    left: calc(var(--step-size));
+    width: calc(100% - var(--step-size) * 2);
     transform: translateY(-50%);
     z-index: -2;
 }
@@ -79,8 +86,8 @@ $step-border-radius: 50%;
     text-align: center;
     background: var(--bs-body-bg);
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: var(--step-size);
+    height: var(--step-size);
     border-radius: $step-border-radius;
 
     &::after {
@@ -122,5 +129,9 @@ $step-border-radius: 50%;
             color: unset;
         }
     }
+}
+.stepLabel {
+    width: 100%;
+    word-break: break-word;
 }
 </style>
