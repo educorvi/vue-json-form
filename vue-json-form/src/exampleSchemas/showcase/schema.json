@@ -99,10 +99,6 @@
             "enum": ["fancy", "fancier", "fanciest", "unicorn"],
             "description": "Select how fancy you are"
         },
-        "tags": {
-            "title": "Tag this form",
-            "type": "array"
-        },
         "hiddenDateTime": {
             "type": "string",
             "format": "date-time",

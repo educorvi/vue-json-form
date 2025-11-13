@@ -102,6 +102,7 @@
         "vite-plugin-vue-devtools": "^8.0.3",
         "vitest": "^4.0.5",
         "vue-eslint-parser": "^10.2.0",
+        "vue-router": "4",
         "vue-tsc": "^3.1.2"
     }
 }
