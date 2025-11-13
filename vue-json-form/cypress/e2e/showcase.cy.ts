@@ -14,7 +14,7 @@ describe('Structure', () => {
     }
 
     beforeEach(() => {
-        cy.visit('http://localhost:5173?variant=showcase/');
+        cy.visit('http://localhost:5173/showcase?nonav=true');
     });
 
     it('Switch', () => {
@@ -161,11 +161,6 @@ describe('Structure', () => {
             'have.html',
             'Ich bin ein <strong class="text-primary">HTML</strong> Text'
         );
-    });
-
-    it('Tags', () => {
-        const id = 'div#vjf_control_for__properties_tags';
-        cy.get(id).should('exist');
     });
 
     it('Form Buttons', () => {

@@ -951,6 +951,7 @@ __metadata:
     vitest: "npm:^4.0.5"
     vue: "npm:^3.5.22"
     vue-eslint-parser: "npm:^10.2.0"
+    vue-router: "npm:4"
     vue-tsc: "npm:^3.1.2"
     vuedraggable: "npm:^4.1.0"
   languageName: unknown
@@ -15159,7 +15160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^4.6.3":
+"vue-router@npm:4, vue-router@npm:^4.6.3":
   version: 4.6.3
   resolution: "vue-router@npm:4.6.3"
   dependencies:

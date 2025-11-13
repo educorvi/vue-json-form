@@ -1,268 +1,258 @@
 {
-  "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
-  "version": "2.0",
-  "layout": {
-    "type": "VerticalLayout",
-    "elements": [
-      {
-        "type": "Control",
-        "scope": "/properties/done"
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/title"
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/name",
-        "options": {
-          "placeholder": "Full Name",
-          "autocomplete": "name",
-          "help": {
-            "text": "Please enter your full name",
-            "label": "?"
-          }
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/fanciness",
-        "options": {
-          "displayAs": "radiobuttons",
-          "stacked": true,
-          "enumTitles": {
-            "fancy": "Fancy",
-            "fancier": "Fancier",
-            "fanciest": "Fanciest",
-            "unicorn": "A real Unicorn"
-          }
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/fileupload",
-        "options": {
-          "acceptedFileType": "*"
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/group_selector",
-        "options": {
-          "displayAs": "buttons",
-          "buttonVariant": "outline-primary",
-          "label": false
-        }
-      },
-      {
-        "type": "Group",
-        "options": {
-          "label": "Group 1"
-        },
-        "showOn": {
-          "type": "EQUALS",
-          "path": "group_selector",
-          "referenceValue": "Groups"
-        },
+    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
+    "version": "2.0",
+    "layout": {
+        "type": "VerticalLayout",
         "elements": [
-          {
-            "type": "HorizontalLayout",
-            "options": {
-              "label": "Great Gruppe"
+            {
+                "type": "Control",
+                "scope": "/properties/done"
             },
-            "elements": [
-              {
+            {
                 "type": "Control",
-                "scope": "/properties/due_date"
-              },
-              {
+                "scope": "/properties/title"
+            },
+            {
                 "type": "Control",
-                "scope": "/properties/rating",
+                "scope": "/properties/name",
                 "options": {
-                  "range": true
+                    "placeholder": "Full Name",
+                    "autocomplete": "name",
+                    "help": {
+                        "text": "Please enter your full name",
+                        "label": "?"
+                    }
                 }
-              }
-            ]
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/description",
-            "options": {
-              "multi": true,
-              "placeholder": "Enter a nice description"
-            }
-          },
-          {
-            "type": "HTML",
-            "htmlData": "<h3 style=\"background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);   -webkit-background-clip: text;color: transparent;\">You are a very fancy unicorn my friend...</h3>",
-            "showOn": {
-              "id": "ritaRule1",
-              "rule": {
-                "type": "and",
-                "arguments": [
-                  {
-                    "type": "comparison",
-                    "operation": "equal",
-                    "arguments": [
-                      {
-                        "type": "atom",
-                        "path": "fanciness",
-                        "default": ""
-                      },
-                      "unicorn"
-                    ]
-                  },
-                  {
-                    "type": "comparison",
-                    "operation": "equal",
-                    "arguments": [
-                      {
-                        "type": "calculation",
-                        "operation": "modulo",
-                        "arguments": [
-                          {
-                            "type": "atom",
-                            "path": "rating",
-                            "default": 1
-                          },
-                          4
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/fanciness",
+                "options": {
+                    "displayAs": "radiobuttons",
+                    "stacked": true,
+                    "enumTitles": {
+                        "fancy": "Fancy",
+                        "fancier": "Fancier",
+                        "fanciest": "Fanciest",
+                        "unicorn": "A real Unicorn"
+                    }
+                }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/fileupload",
+                "options": {
+                    "acceptedFileType": "*"
+                }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/group_selector",
+                "options": {
+                    "displayAs": "buttons",
+                    "buttonVariant": "outline-primary",
+                    "label": false
+                }
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "Group 1"
+                },
+                "showOn": {
+                    "type": "EQUALS",
+                    "path": "group_selector",
+                    "referenceValue": "Groups"
+                },
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "options": {
+                            "label": "Great Gruppe"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/due_date"
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/rating",
+                                "options": {
+                                    "range": true
+                                }
+                            }
                         ]
-                      },
-                      0
-                    ]
-                  }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/description",
+                        "options": {
+                            "multi": true,
+                            "placeholder": "Enter a nice description"
+                        }
+                    },
+                    {
+                        "type": "HTML",
+                        "htmlData": "<h3 style=\"background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);   -webkit-background-clip: text;color: transparent;\">You are a very fancy unicorn my friend...</h3>",
+                        "showOn": {
+                            "id": "ritaRule1",
+                            "rule": {
+                                "type": "and",
+                                "arguments": [
+                                    {
+                                        "type": "comparison",
+                                        "operation": "equal",
+                                        "arguments": [
+                                            {
+                                                "type": "atom",
+                                                "path": "fanciness",
+                                                "default": ""
+                                            },
+                                            "unicorn"
+                                        ]
+                                    },
+                                    {
+                                        "type": "comparison",
+                                        "operation": "equal",
+                                        "arguments": [
+                                            {
+                                                "type": "calculation",
+                                                "operation": "modulo",
+                                                "arguments": [
+                                                    {
+                                                        "type": "atom",
+                                                        "path": "rating",
+                                                        "default": 1
+                                                    },
+                                                    4
+                                                ]
+                                            },
+                                            0
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/teststring"
+                    }
                 ]
-              }
-            }
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/teststring"
-          }
-        ]
-      },
-      {
-        "type": "Group",
-        "showOn": {
-          "type": "EQUALS",
-          "path": "group_selector",
-          "referenceValue": "Groups"
-        },
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
+            },
+            {
+                "type": "Group",
+                "showOn": {
+                    "type": "EQUALS",
+                    "path": "group_selector",
+                    "referenceValue": "Groups"
+                },
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/weekdays",
+                                "options": {
+                                    "stacked": false
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/recurrence_interval",
+                                "options": {
+                                    "append": "Weeks"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/testArray",
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/testArray/items": {
+                                    "options": {
+                                        "placeholder": "This is a placeholder"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
                 "type": "Control",
-                "scope": "/properties/weekdays",
-                "options": {
-                  "stacked": false
+                "scope": "/properties/testObject",
+                "showOn": {
+                    "type": "EQUALS",
+                    "path": "group_selector",
+                    "referenceValue": "Object"
                 }
-              },
-              {
+            },
+            {
+                "type": "Divider"
+            },
+            {
+                "type": "HTML",
+                "htmlData": "<p>Ich bin ein <strong class='text-primary'>HTML</strong> Text</p>"
+            },
+            {
+                "type": "Divider"
+            },
+            {
                 "type": "Control",
-                "scope": "/properties/recurrence_interval",
+                "scope": "/properties/hiddenDateTime",
                 "options": {
-                  "append": "Weeks"
+                    "hidden": true
                 }
-              }
-            ]
-          },
-          {
-            "type": "Control",
-            "scope": "/properties/testArray",
-            "options": {
-              "descendantControlOverrides": {
-                "/properties/testArray/items": {
-                  "options": {
-                    "placeholder": "This is a placeholder"
-                  }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/hiddenDate",
+                "options": {
+                    "hidden": true
                 }
-              }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/hiddenTime",
+                "options": {
+                    "hidden": true
+                }
+            },
+            {
+                "type": "Buttongroup",
+                "buttons": [
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit",
+                        "options": {
+                            "variant": "primary"
+                        }
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit without validation",
+                        "options": {
+                            "variant": "warning",
+                            "formnovalidate": true
+                        }
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "reset",
+                        "text": "Reset this form",
+                        "options": {
+                            "variant": "danger"
+                        }
+                    }
+                ]
             }
-          }
         ]
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/testObject",
-        "showOn": {
-          "type": "EQUALS",
-          "path": "group_selector",
-          "referenceValue": "Object"
-        }
-      },
-      {
-        "type": "Divider"
-      },
-      {
-        "type": "HTML",
-        "htmlData": "<p>Ich bin ein <strong class='text-primary'>HTML</strong> Text</p>"
-      },
-      {
-        "type": "Divider"
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/tags",
-        "options": {
-          "tags": {
-            "enabled": true,
-            "variant": "primary"
-          }
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/hiddenDateTime",
-        "options": {
-          "hidden": true
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/hiddenDate",
-        "options": {
-          "hidden": true
-        }
-      },
-      {
-        "type": "Control",
-        "scope": "/properties/hiddenTime",
-        "options": {
-          "hidden": true
-        }
-      },
-      {
-        "type": "Buttongroup",
-        "buttons": [
-          {
-            "type": "Button",
-            "buttonType": "submit",
-            "text": "Submit",
-            "options": {
-              "variant": "primary"
-            }
-          },
-          {
-            "type": "Button",
-            "buttonType": "submit",
-            "text": "Submit without validation",
-            "options": {
-              "variant": "warning",
-              "formnovalidate": true
-            }
-          },
-          {
-            "type": "Button",
-            "buttonType": "reset",
-            "text": "Reset this form",
-            "options": {
-              "variant": "danger"
-            }
-          }
-        ]
-      }
-    ]
-  }
+    }
 }
