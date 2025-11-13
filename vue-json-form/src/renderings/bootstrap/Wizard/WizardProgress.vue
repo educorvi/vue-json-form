@@ -65,7 +65,7 @@ $step-border-radius: 50%;
 .stepGrid {
     display: grid;
     justify-items: center;
-    row-gap: 1.5rem;
+    row-gap: 0.8rem;
 }
 .stepProgress {
     position: absolute;

@@ -6,7 +6,10 @@
         v-if="storedUiSchema && storedJsonSchema"
         :class="formClass"
     >
-        <FormWrap :layoutElement="storedUiSchema" />
+        <FormWrap
+            v-if="isLayout(storedUiSchema)"
+            :layoutElement="storedUiSchema"
+        />
         <slot />
     </form>
     <ParsingAndValidationErrorsView
@@ -72,6 +75,7 @@ import {
     AutoLanguageProvider,
     type LanguageProvider,
 } from '@/intl/LanguageProvider.ts';
+import { isLayout } from '@/typings/typeValidators';
 
 const props = defineProps<{
     /**

@@ -12,7 +12,14 @@
             "description": "Version of the UI Schema. Changes in a major version are backwards compatible. So a parser for version z.x must be compatible with all versions z.y where y is <=x."
         },
         "layout": {
-            "$ref": "layout.schema.json"
+          "anyOf": [
+            {
+              "$ref": "layout.schema.json"
+            },
+            {
+              "$ref": "wizard.schema.json"
+            }
+          ]
         }
     },
     "required": ["version", "layout"],

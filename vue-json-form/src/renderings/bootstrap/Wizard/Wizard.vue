@@ -15,6 +15,7 @@ const currentStep = ref(0);
         :pageNames="pageNames"
         v-model:currentStep="currentStep"
     />
+    <hr />
     <WizardPage
         v-for="(page, index) in pages"
         :page="page"
