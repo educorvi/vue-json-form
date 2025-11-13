@@ -12,6 +12,7 @@
                 <BNavbarNav>
                     <BNavItem :to="{ name: 'showcase' }">Showcase</BNavItem>
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
+                    <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
                 </BNavbarNav>
             </BCollapse>
         </BNavbar>

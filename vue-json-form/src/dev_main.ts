@@ -9,11 +9,13 @@ import Home from '@/_DevViews/Home.vue';
 import { createWebHistory, createRouter } from 'vue-router';
 import Showcase from '@/_DevViews/Showcase.vue';
 import Reproduce from '@/_DevViews/Reproduce.vue';
+import Wizard from '@/_DevViews/Wizard.vue';
 
 const routes = [
     { path: '/', component: Home, name: 'home' },
     { path: '/showcase', component: Showcase, name: 'showcase' },
     { path: '/reproduce', component: Reproduce, name: 'reproduce' },
+    { path: '/wizard', component: Wizard, name: 'wizard' },
 ];
 
 export const router = createRouter({
