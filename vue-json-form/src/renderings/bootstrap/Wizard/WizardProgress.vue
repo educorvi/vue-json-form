@@ -28,7 +28,11 @@ function clickedStep(step: number) {
                     (_, i) => i + 1
                 )"
             >
-                <button class="fs-1" @click="() => clickedStep(stepNumber)">
+                <button
+                    :disabled="stepNumber > currentStep"
+                    class="fs-1"
+                    @click="() => clickedStep(stepNumber)"
+                >
                     {{ stepNumber }}
                 </button>
             </div>
@@ -100,7 +104,7 @@ $step-border-radius: 50%;
     }
 
     &.active::after {
-        --fadePercent: 40%;
+        --fadePercent: 38%;
         transition-delay: 0.3s !important;
         transition: --fadePercent 0.5s;
     }
@@ -113,6 +117,10 @@ $step-border-radius: 50%;
     & > button {
         background: transparent;
         border: none !important;
+
+        &[disabled] {
+            color: unset;
+        }
     }
 }
 </style>
