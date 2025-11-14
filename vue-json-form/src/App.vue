@@ -18,7 +18,12 @@
         </BNavbar>
     </header>
     <main>
-        <BApp> <RouterView /> </BApp>
+        <BApp>
+            <div style="display: flex; justify-content: center">
+                <div style="max-width: 700px; margin: 20px; width: 100%">
+                    <RouterView />
+                </div></div
+        ></BApp>
     </main>
 </template>
 
@@ -33,6 +38,12 @@ import {
     BNavbarToggle,
 } from 'bootstrap-vue-next';
 import { useRoute } from 'vue-router';
+import json from '@/exampleSchemas/reproduce/schema.json';
+import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
+import ui from '@/exampleSchemas/reproduce/ui.json';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
+import { IfThenElseMapper } from '@/Mappers';
+import { VueJsonForm } from '@/main.ts';
 </script>
 
 <style scoped></style>
