@@ -13,15 +13,9 @@ function clickedStep(step: number) {
     }
 }
 </script>
-
 <template>
     <div class="stepWrapper">
-        <div
-            class="stepGrid"
-            :style="{
-                gridTemplateColumns: `repeat(${max}, minmax(var(--step-size), 1fr))`,
-            }"
-        >
+        <div class="d-flex justify-content-between">
             <div
                 :class="{
                     'stepNumber d-flex justify-content-center align-items-center': true,
@@ -32,7 +26,6 @@ function clickedStep(step: number) {
                     { length: props.max },
                     (_, i) => i + 1
                 )"
-                :key="`step-${stepNumber}`"
             >
                 <button
                     :disabled="stepNumber > currentStep"
@@ -42,36 +35,48 @@ function clickedStep(step: number) {
                     {{ stepNumber }}
                 </button>
             </div>
-            <div
-                class="stepLabel text-center"
-                v-for="(pageName, index) in pageNames ?? []"
-                :key="`step-label-${index}`"
-            >
-                <span class="fs-4">
-                    {{ pageName }}
-                </span>
-            </div>
         </div>
         <BProgress class="stepProgress" :value="currentStep" :max="max - 1" />
+    </div>
+    <div class="d-flex justify-content-between">
+        <div
+            class="text-center stepName"
+            v-for="(pageName, index) in pageNames"
+            :key="index"
+        >
+            <span class="fs-4">
+                {{ pageName }}
+            </span>
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 $step-border-radius: 50%;
+$step-size: 60px;
+
+.stepName {
+    flex: 1 1 0;
+
+    &:first-child {
+        transform: translateX($step-size) translateX(-50%);
+    }
+
+    &:last-child {
+        transform: translateX(-$step-size) translateX(50%);
+    }
+}
+
 .stepWrapper {
     position: relative;
-    --step-size: 60px;
-}
-.stepGrid {
-    display: grid;
-    justify-items: center;
-    row-gap: 0.8rem;
+    margin-left: 40px;
+    margin-right: 40px;
 }
 .stepProgress {
     position: absolute;
-    top: calc(var(--step-size) / 2);
-    left: calc(var(--step-size));
-    width: calc(100% - var(--step-size) * 2);
+    top: 50%;
+    left: 0;
+    width: 100%;
     transform: translateY(-50%);
     z-index: -2;
 }
@@ -86,8 +91,8 @@ $step-border-radius: 50%;
     text-align: center;
     background: var(--bs-body-bg);
     position: relative;
-    width: var(--step-size);
-    height: var(--step-size);
+    width: $step-size;
+    height: $step-size;
     border-radius: $step-border-radius;
 
     &::after {
@@ -129,9 +134,5 @@ $step-border-radius: 50%;
             color: unset;
         }
     }
-}
-.stepLabel {
-    width: 100%;
-    word-break: break-word;
 }
 </style>
