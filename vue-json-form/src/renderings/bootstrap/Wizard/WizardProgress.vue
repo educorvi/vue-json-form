@@ -2,7 +2,7 @@
 import { BProgress, BRow, BCol } from 'bootstrap-vue-next';
 const props = defineProps<{
     max: number;
-    pageNames: string[];
+    pageNames?: string[];
 }>();
 const currentStep = defineModel<number>('currentStep', { required: true });
 
@@ -44,7 +44,7 @@ function clickedStep(step: number) {
             </div>
             <div
                 class="stepLabel text-center"
-                v-for="(pageName, index) in pageNames"
+                v-for="(pageName, index) in pageNames ?? []"
                 :key="`step-label-${index}`"
             >
                 <span class="fs-4">

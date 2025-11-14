@@ -10,6 +10,11 @@
             v-if="isLayout(storedUiSchema)"
             :layoutElement="storedUiSchema"
         />
+        <component
+            v-else-if="isWizard(storedUiSchema)"
+            :is="getComponent('Wizard')"
+            :wizardElement="storedUiSchema"
+        />
         <slot />
     </form>
     <ParsingAndValidationErrorsView
@@ -75,7 +80,7 @@ import {
     AutoLanguageProvider,
     type LanguageProvider,
 } from '@/intl/LanguageProvider.ts';
-import { isLayout } from '@/typings/typeValidators';
+import { isLayout, isWizard } from '@/typings/typeValidators';
 
 const props = defineProps<{
     /**

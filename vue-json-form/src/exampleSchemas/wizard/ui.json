@@ -1,0 +1,47 @@
+{
+    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
+    "version": "2.0",
+    "layout": {
+        "type": "Wizard",
+        "options": {
+            "pageTitles": ["Personal Data", "Message", "Credentials"]
+        },
+        "pages": [
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/personalData/name"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/personalData/age"
+                    }
+                ]
+            },
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/message/important"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/message/yourMessage"
+                    }
+                ]
+            },
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/credentials/credentials"
+                    }
+                ]
+            }
+        ]
+    }
+}
