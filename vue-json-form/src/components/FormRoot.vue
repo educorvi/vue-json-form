@@ -162,6 +162,7 @@ const {
     components,
     defaultData,
     buttonWaiting,
+    formStateWasValidated,
 } = storeToRefs(useFormStructureStore());
 
 const { formData, defaultFormData, cleanedFormData } =
@@ -178,8 +179,6 @@ const validationErrors: Ref<ValidationErrors> = ref({
         parsing: [] as Error[],
     },
 });
-
-const formStateWasValidated = ref(false);
 
 const validator: ComputedRef<Validator<ErrorObject>> = computed(() => {
     if (props.validator) {

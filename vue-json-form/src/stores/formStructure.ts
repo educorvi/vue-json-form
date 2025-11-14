@@ -42,6 +42,9 @@ type FormStructureStoreState = {
     arrays: string[];
     mappers: MapperClass[];
     buttonWaiting: Record<string, boolean>;
+    currentWizardPage: number;
+    wizardValidateFunctions: Array<() => boolean>;
+    formStateWasValidated: boolean;
 };
 
 type FormStructureStore = StoreDefinition<
@@ -68,6 +71,11 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                  * List of all buttons that are waiting for a response
                  */
                 buttonWaiting: {} as Record<string, boolean>,
+
+                currentWizardPage: 0,
+                wizardValidateFunctions: [] as Array<() => boolean>,
+
+                formStateWasValidated: false,
             }) as FormStructureStoreState,
         getters: {
             defaultData: (state: FormStructureStoreState) => {

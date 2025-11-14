@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import WizardPage from '@/renderings/bootstrap/Wizard/WizardPage.vue';
-import { BButton } from 'bootstrap-vue-next';
 import WizardProgress from '@/renderings/bootstrap/Wizard/WizardProgress.vue';
 import type { Wizard as WizardType } from '@educorvi/vue-json-form-schemas';
+import { storeToRefs } from 'pinia';
+import { useFormStructureStore } from '@/stores/formStructure.ts';
 
 const props = defineProps<{ wizardElement: WizardType }>();
-const currentStep = ref(0);
+const { currentWizardPage: currentStep } = storeToRefs(useFormStructureStore());
+const visible = computed(() => {
+    return props.wizardElement.pages.map((_, i) => i === currentStep.value);
+});
 </script>
 
 <template>
@@ -16,29 +20,22 @@ const currentStep = ref(0);
         v-model:currentStep="currentStep"
     />
     <hr />
-    <WizardPage
-        v-for="(page, index) in wizardElement.pages"
-        :page="page"
-        :pageName="wizardElement.options?.pageTitles?.[index]"
-        v-show="index === currentStep"
-    />
-
-    {{ wizardElement }}
-
-    <div class="d-flex justify-content-between">
-        <BButton
-            variant="primary"
-            :disabled="currentStep === 0"
-            @click="currentStep -= 1"
-            >Previous</BButton
-        >
-        <BButton
-            variant="primary"
-            :disabled="currentStep === wizardElement.pages.length - 1"
-            @click="currentStep += 1"
-            >Next</BButton
-        >
+    <div class="pages-wrapper">
+        <div v-for="(page, index) in wizardElement.pages">
+            <div v-show="visible[index]">
+                <WizardPage
+                    :page="page"
+                    :pageName="wizardElement.options?.pageTitles?.[index]"
+                    :index="index"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.pages-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+</style>
