@@ -38,34 +38,11 @@ function clickedStep(step: number) {
         </div>
         <BProgress class="stepProgress" :value="currentStep" :max="max - 1" />
     </div>
-    <div class="d-flex justify-content-between">
-        <div
-            class="text-center stepName"
-            v-for="(pageName, index) in pageNames"
-            :key="index"
-        >
-            <span class="fs-4">
-                {{ pageName }}
-            </span>
-        </div>
-    </div>
 </template>
 
 <style scoped lang="scss">
 $step-border-radius: 50%;
 $step-size: 60px;
-
-.stepName {
-    flex: 1 1 0;
-
-    &:first-child {
-        transform: translateX($step-size) translateX(-50%);
-    }
-
-    &:last-child {
-        transform: translateX(-$step-size) translateX(50%);
-    }
-}
 
 .stepWrapper {
     position: relative;

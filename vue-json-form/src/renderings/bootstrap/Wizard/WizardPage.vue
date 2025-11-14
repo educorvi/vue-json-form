@@ -2,7 +2,6 @@
 import type { Layout } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import { getRandomId } from '@/computedProperties/misc.ts';
-import { BButton } from 'bootstrap-vue-next';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
 
 const props = defineProps<{
@@ -39,6 +38,7 @@ useFormStructureStore().wizardValidateFunctions[props.index] = validate;
 </script>
 
 <template>
+    <h2>{{ pageName }}</h2>
     <FormWrap :id="id" :layout-element="page" />
 </template>
 
