@@ -3,6 +3,7 @@ import type { Layout } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import { getRandomId } from '@/computedProperties/misc.ts';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
+import { onUnmounted } from 'vue';
 
 const props = defineProps<{
     page: Layout;
@@ -34,7 +35,13 @@ function validate() {
     elsWithStates.find((el) => !el.valid)?.el.reportValidity();
     return elsWithStates.every((el) => el.valid);
 }
-useFormStructureStore().wizardValidateFunctions[props.index] = validate;
+
+const store = useFormStructureStore();
+store.wizardValidateFunctions[props.index] = validate;
+
+onUnmounted(() => {
+    delete store.wizardValidateFunctions[props.index];
+});
 </script>
 
 <template>
