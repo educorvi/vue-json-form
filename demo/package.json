@@ -6,14 +6,13 @@
   "scripts": {
     "dev": "vite",
     "pre-commit": "echo 'No pre commit configured for demo'",
-    "build": "run-p type-check build-only",
+    "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "test:unit": "cypress run --component",
     "test:unit:dev": "cypress open --component",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.cypress-ct.json --composite false"
+    "check-types": "vue-tsc --noEmit -p tsconfig.cypress-ct.json --composite false"
   },
   "publishConfig": {
     "access": "public"

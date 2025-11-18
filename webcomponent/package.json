@@ -19,8 +19,9 @@
   },
   "scripts": {
     "prepack": "yarn workspace vue-json-form run build:webcomponent",
-    "build": "vue-tsc --noEmit && vite build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-types": "vue-tsc --noEmit"
   },
   "repository": {
     "type": "git",
