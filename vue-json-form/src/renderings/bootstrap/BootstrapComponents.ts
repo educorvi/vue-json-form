@@ -55,4 +55,7 @@ export const bootstrapComponents: Required<RenderInterface> = {
     DefaultControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
     ),
+    Wizard: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/Wizard/Wizard.vue')
+    ),
 };

@@ -23,6 +23,11 @@ const router = createRouter({
             path: '/ui-generator',
             name: 'ui-generator',
             component: () => import('../views/ui-generator.vue'),
+        },
+        {
+            path: "/wizard",
+            name: "wizard",
+            component: () => import('../views/wizard.vue')
         }
     ],
 });

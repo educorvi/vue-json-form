@@ -9,6 +9,9 @@ import type {
     TagOptions,
     TitlesForEnum,
     JSONSchema,
+    UISchema,
+    Layout,
+    Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import type {
     dependentElement,
@@ -245,4 +248,12 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
  */
 export function allDefined(...values: any[]): boolean {
     return values.every(isDefined);
+}
+
+export function isWizard(element: UISchema['layout']): element is Wizard {
+    return element.type === 'Wizard';
+}
+
+export function isLayout(element: UISchema['layout']): element is Layout {
+    return !isWizard(element);
 }

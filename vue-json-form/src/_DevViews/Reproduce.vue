@@ -1,24 +1,19 @@
 <template>
-    <div style="display: flex; justify-content: center">
-        <div style="max-width: 700px; margin: 20px; width: 100%">
-            <VueJsonForm
-                :json-schema="json"
-                :on-submit-form="onSubmitForm"
-                :render-interface="bootstrapComponents"
-                :ui-schema="ui"
-                :presetData="presetData"
-                :validator="AjvValidator"
-                :mappers="[IfThenElseMapper]"
-            >
-            </VueJsonForm>
-            <hr />
-            <h2>Results</h2>
-            <p class="text-muted">Press submit to update</p>
-            <pre id="result-container">{{
-                JSON.stringify(formData, null, 2)
-            }}</pre>
-        </div>
-    </div>
+    <VueJsonForm
+        id="reproduce-form"
+        :json-schema="json"
+        :on-submit-form="onSubmitForm"
+        :render-interface="bootstrapComponents"
+        :ui-schema="ui"
+        :presetData="presetData"
+        :validator="AjvValidator"
+        :mappers="[IfThenElseMapper]"
+    >
+    </VueJsonForm>
+    <hr />
+    <h2>Results</h2>
+    <p class="text-muted">Press submit to update</p>
+    <pre id="result-container">{{ JSON.stringify(formData, null, 2) }}</pre>
 </template>
 
 <script setup lang="ts">

@@ -12,12 +12,18 @@
                 <BNavbarNav>
                     <BNavItem :to="{ name: 'showcase' }">Showcase</BNavItem>
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
+                    <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
                 </BNavbarNav>
             </BCollapse>
         </BNavbar>
     </header>
     <main>
-        <BApp> <RouterView /> </BApp>
+        <BApp>
+            <div style="display: flex; justify-content: center">
+                <div style="max-width: 700px; margin: 20px; width: 100%">
+                    <RouterView />
+                </div></div
+        ></BApp>
     </main>
 </template>
 

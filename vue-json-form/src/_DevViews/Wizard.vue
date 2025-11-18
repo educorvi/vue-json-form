@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
-import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
-import { IfThenElseMapper } from '@/Mappers';
-import { VueJsonForm } from '@/main.ts';
-
-import json from '../exampleSchemas/showcase/schema.json';
-import ui from '../exampleSchemas/showcase/ui.json';
-
-import { nextTick, ref, type Ref, watch } from 'vue';
+import { IfThenElseMapper, VueJsonForm } from '../main';
+import jsonSchema from '../exampleSchemas/wizard/schema.json';
+import uiSchema from '../exampleSchemas/wizard/ui.json';
+import { ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const formData = ref({});
 
@@ -28,16 +24,13 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
 </script>
 
 <template>
-    <VueJsonForm
-        id="showcase-form"
-        :json-schema="json"
+    <vue-json-form
+        :json-schema="jsonSchema"
+        :ui-schema="uiSchema"
         :on-submit-form="onSubmitForm"
-        :render-interface="bootstrapComponents"
-        :ui-schema="ui"
         :validator="AjvValidator"
         :mappers="[IfThenElseMapper]"
-    >
-    </VueJsonForm>
+    />
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>

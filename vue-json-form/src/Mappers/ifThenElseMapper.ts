@@ -29,6 +29,7 @@ import type {
     Control,
     JSONSchema,
     Layout,
+    Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
 import type {
@@ -82,7 +83,7 @@ export class IfThenElseMapper extends MapperWithData {
     private dependencies: string[] = [];
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
-        uiSchema: Readonly<Layout>,
+        uiSchema: Readonly<Layout | Wizard>,
         scope: string,
         savePath: string
     ): void {

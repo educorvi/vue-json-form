@@ -188,7 +188,7 @@ describe('Structure', () => {
 
 describe('Button functions', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:5173/');
+        cy.visit('http://localhost:5173/showcase?nonav=true');
     });
 
     it('submit with missing fields', () => {
