@@ -38,12 +38,6 @@ import {
     BNavbarToggle,
 } from 'bootstrap-vue-next';
 import { useRoute } from 'vue-router';
-import json from '@/exampleSchemas/reproduce/schema.json';
-import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
-import ui from '@/exampleSchemas/reproduce/ui.json';
-import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
-import { IfThenElseMapper } from '@/Mappers';
-import { VueJsonForm } from '@/main.ts';
 </script>
 
 <style scoped></style>
