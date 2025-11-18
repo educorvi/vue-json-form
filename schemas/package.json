@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "prepack": "yarn run build",
-    "build": "yarn run generateTypings && yarn run mergeSchema && vite build",
+    "build": "yarn run generateTypings && yarn run mergeSchema && tsc --noEmit && vite build",
     "mergeSchema": "node mergeSchema.cjs",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts"
