@@ -4,35 +4,9 @@
     "layout": {
         "type": "Wizard",
         "options": {
-            "pageTitles": ["Personal Data", "Message", "Credentials", "name"]
+            "pageTitles": ["Personal Data", "Message", "Credentials"]
         },
         "pages": [
-            {
-                "type": "VerticalLayout",
-                "elements": [
-                    {
-                        "type": "Control",
-                        "scope": "/properties/personalData/properties/name"
-                    },
-                    {
-                        "type": "Control",
-                        "scope": "/properties/personalData/properties/age"
-                    },
-                    {
-                        "type": "Buttongroup",
-                        "buttons": [
-                            {
-                                "type": "Button",
-                                "buttonType": "nextWizardPage",
-                                "text": "Next",
-                                "options": {
-                                    "variant": "outline-primary"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
             {
                 "type": "VerticalLayout",
                 "elements": [

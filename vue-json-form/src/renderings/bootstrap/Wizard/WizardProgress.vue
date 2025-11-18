@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { BProgress, BRow, BCol } from 'bootstrap-vue-next';
 import { watch } from 'vue';
 const props = defineProps<{
     max: number;
@@ -13,15 +12,57 @@ function clickedStep(step: number) {
         currentStep.value = index;
     }
 }
-watch(currentStep, () => {
-    Array.from(
-        document.querySelectorAll<HTMLTableElement>('.custom-wizard-progress')
-    ).forEach((el: HTMLElement) => {
-        const progress = (currentStep.value / (props.max - 1)) * 100;
-        el.style.setProperty('--progress', `${progress}%`);
-        el.style.setProperty('--offset', `${progress / 100}%`);
-    });
-});
+
+/**
+ * Watches the `currentStep` property and updates the progress bar
+ * based on the current step value.
+ * This function dynamically calculates the progress percentage and
+ * applies it to the CSS custom property `--progress` for visual updates.
+ */
+watch(
+    currentStep,
+    () => {
+        // Select all elements with the class `.wrappers-parent`
+        const wrappers =
+            document.querySelectorAll<HTMLElement>('.wrappers-parent');
+
+        // Iterate over each wrapper element
+        wrappers.forEach((wrapper) => {
+            const bar = wrapper.querySelector<HTMLElement>(
+                '.custom-wizard-progress'
+            );
+            const steps = wrapper.querySelectorAll<HTMLElement>(
+                '.stepWrapper .stepNumber'
+            );
+
+            if (!bar || steps.length < 2) return;
+            // Get the first and last step elements
+            const first = steps[0];
+            const last = steps[steps.length - 1];
+            if (!first || !last) return;
+
+            // Calculate the center positions of the first and last steps
+            const firstCenter = first.offsetLeft + first.offsetWidth / 2;
+            const lastCenter = last.offsetLeft + last.offsetWidth / 2;
+
+            // Calculate the usable width between the first and last step centers
+            const usableWidth = lastCenter - firstCenter;
+
+            // Calculate the progress ratio (0 to 1) based on the current step
+            const t = currentStep.value / (steps.length - 1);
+
+            // Calculate the progress in pixels
+            const progressPx = firstCenter + t * usableWidth;
+
+            // Convert the progress to a percentage of the progress bar's width
+            const progressPercent = (progressPx / bar.offsetWidth) * 100;
+
+            // Update the CSS custom property `--progress` with the calculated percentage
+            bar.style.setProperty('--progress', `${progressPercent}%`);
+        });
+    },
+    { immediate: true }
+);
 </script>
 <template>
     <div class="wrappers-parent">
@@ -87,7 +128,6 @@ $bar-size: 13px;
 
 .custom-wizard-progress {
     --progress: 0%;
-    --offset: 0%;
     position: absolute;
     top: 0;
     left: 0;
@@ -100,8 +140,8 @@ $bar-size: 13px;
         content: '';
         position: absolute;
         top: 0;
-        left: calc(var(--progress) + (var(--offset)));
-        width: calc(100% - var(--progress) - (var(--offset)));
+        left: var(--progress);
+        width: calc(100% - var(--progress));
         height: 100%;
         background: var(--bs-secondary-bg);
         transition: all 0.4s ease-in-out;
@@ -126,13 +166,11 @@ $bar-size: 13px;
         content: '';
         position: absolute;
         top: 50%;
-        left: calc($step-size/2);
-        width: calc(100% - $step-size);
+        width: 100%;
+        border-radius: 8px;
         height: $bar-size;
         background: black;
         transform: translateY(-50%);
-        padding-left: calc($step-size/2);
-        padding-right: calc($step-size/2);
     }
 }
 .stepProgress {
