@@ -11,6 +11,11 @@
                 "age": {
                     "type": "integer",
                     "minimum": 0
+                },
+                "guardianAgrees": {
+                    "type": "boolean",
+                    "default": false,
+                    "title": "Legal Guardian Agreement"
                 }
             },
             "required": ["name"]
@@ -25,6 +30,13 @@
                 "yourMessage": {
                     "title": "Your Message",
                     "type": "string"
+                },
+                "parents": {
+                    "title": "Names of your parents",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "maxItems": 2
                 }
             },
             "required": ["yourMessage"]
