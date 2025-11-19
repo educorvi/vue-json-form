@@ -903,6 +903,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
     "@educorvi/rita": "npm:^5.4.4"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:*"
     "@rushstack/eslint-patch": "npm:^1.14.1"
     "@semantic-release/exec": "npm:^7.1.0"
