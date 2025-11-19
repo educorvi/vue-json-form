@@ -1,5 +1,9 @@
 import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
-import type { Layout, JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type {
+    Layout,
+    JSONSchema,
+    Wizard,
+} from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/RenderInterface';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { Mapper, MapperClass } from '@/typings/customTypes.ts';
@@ -33,11 +37,14 @@ function getDefaultData(
 
 type FormStructureStoreState = {
     jsonSchema: JSONSchema | undefined;
-    uiSchema: Layout | undefined;
+    uiSchema: Layout | Wizard | undefined;
     components: RenderInterface | undefined;
     arrays: string[];
     mappers: MapperClass[];
     buttonWaiting: Record<string, boolean>;
+    currentWizardPage: number;
+    wizardValidateFunctions: Array<() => boolean>;
+    formStateWasValidated: boolean;
 };
 
 type FormStructureStore = StoreDefinition<
@@ -64,6 +71,11 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                  * List of all buttons that are waiting for a response
                  */
                 buttonWaiting: {} as Record<string, boolean>,
+
+                currentWizardPage: 0,
+                wizardValidateFunctions: [] as Array<() => boolean>,
+
+                formStateWasValidated: false,
             }) as FormStructureStoreState,
         getters: {
             defaultData: (state: FormStructureStoreState) => {

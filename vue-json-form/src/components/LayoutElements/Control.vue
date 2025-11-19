@@ -28,6 +28,7 @@
                 "
                 :required="required || inArrayItem"
                 :style="style"
+                :aria-label="inArrayItem ? 'List item' : undefined"
             />
             <template #append v-if="$slots.append">
                 <slot name="append" />

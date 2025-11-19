@@ -58,12 +58,24 @@ type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
 
 export type FlatOptions = UnionToIntersection<Options>;
 
+export type IfBaseConditions =
+    | {
+          const: any;
+      }
+    | {
+          enum: any[];
+      };
+
+export type IfConditions =
+    | IfBaseConditions
+    | {
+          contains: IfBaseConditions;
+      };
+
 export type SupportedIfThenElse = {
     if: {
         properties: {
-            [key: string]: {
-                const: any;
-            };
+            [key: string]: IfConditions;
         };
     };
     then: {

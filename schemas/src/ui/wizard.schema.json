@@ -1,0 +1,39 @@
+{
+  "title": "Wizard",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://educorvi.github.io/vue-json-form/schemas/wizard.schema.json",
+  "type": "object",
+  "description": "A wizard",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "Wizard"
+      ]
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "$ref": "layout.schema.json"
+      }
+    },
+    "options": {
+      "description": "Additional options",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pageTitles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "pages"
+  ]
+}

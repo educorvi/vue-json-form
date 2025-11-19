@@ -13,6 +13,10 @@
                 "scope": "/properties/jso-79-ii"
             },
             {
+                "type": "Control",
+                "scope": "/properties/jso-79-iii"
+            },
+            {
                 "type": "Group",
                 "options": { "label": "JSO-79" },
                 "elements": [

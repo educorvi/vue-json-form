@@ -32,6 +32,7 @@ const visible = ref(false);
         <BCollapse id="nav-collapse" is-nav v-model="visible">
             <BNavbarNav class="ms-auto">
                 <BNavItem to="/showcase" :active="route.name === 'showcase'">Showcase</BNavItem>
+                <BNavItem to="/wizard" :active="route.name === 'wizard'">Wizard</BNavItem>
                 <BNavItem to="/custom" :active="route.name === 'custom'">Custom</BNavItem>
                 <BNavItem to="/ui-generator" :active="route.name === 'ui-generator'">UI Generator</BNavItem>
                 <BNavForm v-b-color-mode="theme">

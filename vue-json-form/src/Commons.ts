@@ -1,4 +1,9 @@
-import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
+import type {
+    JSONSchema,
+    UISchema,
+    LayoutElement,
+    Layout,
+} from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -58,8 +63,8 @@ export const SUPPORTED_UISCHEMA_VERSION = '2.0';
 export function generateUISchema(
     json: JSONSchema,
     generationOptions: GenerationOptions = {}
-): UISchema {
-    const uiSchema: UISchema = {
+): UISchema & { layout: Layout } {
+    const uiSchema: UISchema & { layout: Layout } = {
         version: SUPPORTED_UISCHEMA_VERSION,
         layout: {
             type: generationOptions.layoutType ?? 'VerticalLayout',

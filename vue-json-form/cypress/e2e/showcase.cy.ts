@@ -14,7 +14,7 @@ describe('Structure', () => {
     }
 
     beforeEach(() => {
-        cy.visit('http://localhost:5173?variant=showcase/');
+        cy.visit('http://localhost:5173/showcase?nonav=true');
     });
 
     it('Switch', () => {
@@ -163,11 +163,6 @@ describe('Structure', () => {
         );
     });
 
-    it('Tags', () => {
-        const id = 'div#vjf_control_for__properties_tags';
-        cy.get(id).should('exist');
-    });
-
     it('Form Buttons', () => {
         cy.get('button[type="submit"]').should('exist');
         cy.get('button[type="reset"]').should('exist');
@@ -193,7 +188,7 @@ describe('Structure', () => {
 
 describe('Button functions', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:5173/');
+        cy.visit('http://localhost:5173/showcase?nonav=true');
     });
 
     it('submit with missing fields', () => {

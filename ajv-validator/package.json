@@ -22,7 +22,8 @@
   "scripts": {
     "prepack": "yarn run build",
     "build": "yarn run build:ajvStandalone && vite build",
-    "build:ajvStandalone": "tsx buildStandaloneAjv.ts"
+    "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
+    "check-types": "tsc --noEmit"
   },
   "packageManager": "yarn@4.4.0",
   "dependencies": {

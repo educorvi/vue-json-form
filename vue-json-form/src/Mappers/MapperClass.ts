@@ -7,6 +7,7 @@ import type {
     Control,
     JSONSchema,
     Layout,
+    Wizard,
 } from '@educorvi/vue-json-form-schemas';
 
 /**
@@ -50,7 +51,7 @@ export abstract class MapperWithoutData {
  */
 export abstract class MapperWithData {
     protected jsonSchema: Readonly<JSONSchema> | undefined;
-    protected uiSchema: Readonly<Layout> | undefined;
+    protected uiSchema: Readonly<Layout | Wizard> | undefined;
     protected savePath: string | undefined;
     protected scope: string | undefined;
 
@@ -68,7 +69,7 @@ export abstract class MapperWithData {
      */
     abstract registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
-        uiSchema: Readonly<Layout>,
+        uiSchema: Readonly<Layout | Wizard>,
         scope: string,
         savePath: string
     ): void;

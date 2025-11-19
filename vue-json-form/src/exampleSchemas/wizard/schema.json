@@ -1,0 +1,54 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema#",
+    "type": "object",
+    "properties": {
+        "personalData": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "guardianAgrees": {
+                    "type": "boolean",
+                    "default": false,
+                    "title": "Legal Guardian Agreement"
+                }
+            },
+            "required": ["name"]
+        },
+        "message": {
+            "type": "object",
+            "properties": {
+                "important": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "yourMessage": {
+                    "title": "Your Message",
+                    "type": "string"
+                },
+                "parents": {
+                    "title": "Names of your parents",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "maxItems": 2
+                }
+            },
+            "required": ["yourMessage"]
+        },
+        "credentials": {
+            "type": "object",
+            "properties": {
+                "credentials": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                }
+            }
+        }
+    }
+}

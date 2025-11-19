@@ -1,0 +1,141 @@
+{
+    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
+    "version": "2.0",
+    "layout": {
+        "type": "Wizard",
+        "options": {
+            "pageTitles": ["Personal Data", "Message", "Credentials"]
+        },
+        "pages": [
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/personalData/properties/name"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/personalData/properties/age"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/personalData/properties/guardianAgrees",
+                        "showOn": {
+                            "id": "underage",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "smaller",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "personalData.age"
+                                    },
+                                    18
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "nextWizardPage",
+                                "text": "Next",
+                                "options": {
+                                    "variant": "outline-primary"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/message/properties/important"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/message/properties/yourMessage",
+                        "options": {
+                            "multi": 4
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/message/properties/parents",
+                        "showOn": {
+                            "id": "underage",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "smaller",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "personalData.age"
+                                    },
+                                    18
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "previousWizardPage",
+                                "text": "Previous",
+                                "options": {
+                                    "variant": "outline-primary"
+                                }
+                            },
+                            {
+                                "type": "Button",
+                                "buttonType": "nextWizardPage",
+                                "text": "Next",
+                                "options": {
+                                    "variant": "outline-primary"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "VerticalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/credentials/properties/credentials"
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "previousWizardPage",
+                                "text": "Previous",
+                                "options": {
+                                    "variant": "outline-primary"
+                                }
+                            },
+                            {
+                                "type": "Button",
+                                "buttonType": "submit",
+                                "text": "Submit",
+                                "options": {
+                                    "variant": "primary"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

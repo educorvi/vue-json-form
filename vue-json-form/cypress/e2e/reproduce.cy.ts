@@ -5,7 +5,7 @@ function submitForm() {
 }
 
 it('JSO-43', function () {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('#vjf_control_for__properties_string-dep-required-2').should(
         'not.have.attr',
         'required'
@@ -33,7 +33,6 @@ it('JSO-43', function () {
     ).should('not.include.text', '*');
 });
 
-
 it('JSO-79 (IfThenElse)', () => {
     const FIRST_SELECT = '#vjf_control_for__properties_jso-79_properties_first';
     const SECOND_SELECT =
@@ -49,7 +48,7 @@ it('JSO-79 (IfThenElse)', () => {
         });
     };
 
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
 
     // Initial state: all options should be available
     validateSelectOptions(SECOND_SELECT, ['a1', 'a2', 'b1']);
@@ -76,7 +75,7 @@ it('JSO-79 (IfThenElse)', () => {
 });
 
 it('Pattern string', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
 
     cy.get("input[name='/properties/patternString']").type('abc');
     submitForm();
@@ -96,7 +95,7 @@ it('Pattern string', () => {
 // JSO-64 Skipped for now
 
 it('Edit Symbols', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('input[name="/properties/obj-l/properties/auswahlfeld"]')
         .parent()
         .parent()
@@ -113,7 +112,7 @@ it('Edit Symbols', () => {
 });
 
 it('JSO-58', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('input[name="/properties/bool-mit-hilfe"]')
         .siblings()
         .eq(0)
@@ -123,7 +122,7 @@ it('JSO-58', () => {
 });
 
 it('JSO-51', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('div[name="/properties/jso-51-arr"] .vjf_htmlRenderer')
         .eq(0)
         .should('have.text', 'Pre html');
@@ -133,7 +132,7 @@ it('JSO-51', () => {
 });
 
 it('JSO-31', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     submitForm();
     cy.get('#result-container').then((el) => {
         let res = JSON.parse(el.text());
@@ -149,7 +148,7 @@ it('JSO-31', () => {
 });
 
 it('JSO-44', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('div[name="/properties/abhaengiges-array"]').should('not.exist');
     cy.get('input[name="/properties/auswahlfeld"]').check();
     cy.get('div[name="/properties/abhaengiges-array"]').should('exist');
@@ -165,7 +164,7 @@ it('JSO-44', () => {
 });
 
 it('JSO-37', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('input[name="/properties/jso-37-field1"]').should('exist');
     cy.get('input[name="/properties/jso-37-field2"]').should('not.exist');
     cy.get('input[name="/properties/jso-37-field3"]').should('not.exist');
@@ -202,7 +201,7 @@ it('JSO-37', () => {
 });
 
 it('JSO-39', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     submitForm();
     cy.get('#result-container').then((el) => {
         let res = JSON.parse(el.text());
@@ -219,7 +218,7 @@ it('JSO-39', () => {
 });
 
 it('JSO-34', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get(
         '#vjf_control_for__properties_array141d1d356e40b4062ac2b1476ff52648c > button'
     ).click();
@@ -276,7 +275,7 @@ it('JSO-34', () => {
 });
 
 it('JSO-17', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     submitForm();
     cy.get('#result-container').then((el) => {
         let res = JSON.parse(el.text());
@@ -288,7 +287,7 @@ it('JSO-17', () => {
 });
 
 it('JSO-23 & JSO-24', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('.vjf_showOnWrapper button[type="submit"].btn-primary').should(
         'exist'
     );
@@ -325,7 +324,7 @@ it('JSO-23 & JSO-24', () => {
 // JSO-25 & JSO-12 skipped for redundancy
 
 it('JSO-11', () => {
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get(
         'input[name="/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc"]'
     ).should('not.exist');
@@ -351,7 +350,7 @@ it('JSO-11', () => {
 
 it('JSO-7', () => {
     //     Incomplete
-    cy.visit('http://localhost:5173?variant=reproduce');
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('input[name="/properties/email"]').type('test');
     submitForm();
     cy.get('#result-container').then((el) => {

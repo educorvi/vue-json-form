@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import { ref } from 'vue';
 import VueJsonPretty from 'vue-json-pretty';
-import {BApp} from 'bootstrap-vue-next';
+import {BApp, BModal} from 'bootstrap-vue-next';
 
 const show = ref(false);
 const modalData = ref({
@@ -38,7 +38,7 @@ function viewCode(title: string, code: Record<string, any>) {
             :title="modalData.title"
             scrollable
             centered
-            hideFooter
+            no-footer
             size="lg">
             <vue-json-pretty :data="modalData.json" />
         </BModal>

@@ -6,7 +6,15 @@
         v-if="storedUiSchema && storedJsonSchema"
         :class="formClass"
     >
-        <FormWrap :layoutElement="storedUiSchema" />
+        <FormWrap
+            v-if="isLayout(storedUiSchema)"
+            :layoutElement="storedUiSchema"
+        />
+        <component
+            v-else-if="isWizard(storedUiSchema)"
+            :is="getComponent('Wizard')"
+            :wizardElement="storedUiSchema"
+        />
         <slot />
     </form>
     <ParsingAndValidationErrorsView
@@ -72,6 +80,7 @@ import {
     AutoLanguageProvider,
     type LanguageProvider,
 } from '@/intl/LanguageProvider.ts';
+import { isLayout, isWizard } from '@/typings/typeValidators';
 
 const props = defineProps<{
     /**
@@ -153,6 +162,7 @@ const {
     components,
     defaultData,
     buttonWaiting,
+    formStateWasValidated,
 } = storeToRefs(useFormStructureStore());
 
 const { formData, defaultFormData, cleanedFormData } =
@@ -169,8 +179,6 @@ const validationErrors: Ref<ValidationErrors> = ref({
         parsing: [] as Error[],
     },
 });
-
-const formStateWasValidated = ref(false);
 
 const validator: ComputedRef<Validator<ErrorObject>> = computed(() => {
     if (props.validator) {
