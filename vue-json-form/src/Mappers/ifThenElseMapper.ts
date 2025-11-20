@@ -60,6 +60,8 @@ type ConditionsAndResults = {
     conditions: Condition[];
     then?: JSONSchema;
     else?: JSONSchema;
+    thenRequired?: string[];
+    elseRequired?: string[];
 };
 
 // todo: support other depth than own one
@@ -176,9 +178,18 @@ export class IfThenElseMapper extends MapperWithData {
         return parentAllOf
             .map((ifThen) => {
                 if (isSupportedIfThenElse(ifThen)) {
-                    const thenResult = ifThen.then.properties[fieldName];
-                    const elseResult = ifThen.else?.properties[fieldName];
-                    if (!thenResult && !elseResult) {
+                    const thenResult = ifThen.then.properties?.[fieldName];
+                    const elseResult = ifThen.else?.properties?.[fieldName];
+
+                    const thenRequired = ifThen.then.required;
+                    const elseRequired = ifThen.else?.required;
+
+                    if (
+                        !thenResult &&
+                        !elseResult &&
+                        !thenRequired &&
+                        !elseRequired
+                    ) {
                         return undefined;
                     }
 
@@ -186,6 +197,8 @@ export class IfThenElseMapper extends MapperWithData {
                         conditions: this.parseConditions(ifThen.if.properties),
                         then: thenResult,
                         else: elseResult,
+                        thenRequired,
+                        elseRequired,
                     };
                 }
             })
@@ -242,19 +255,25 @@ export class IfThenElseMapper extends MapperWithData {
         let newJsonElement: JSONSchema = JSON.parse(
             JSON.stringify(jsonElement)
         );
+        let newUiElement: Control = JSON.parse(JSON.stringify(uiElement));
         let hasChanges = false;
+        let uiHasChanges = false;
 
         for (const ifThen of this.conditionsAndResults) {
-            const thenResult = ifThen.then;
-            const elseResult = ifThen.else;
-            if (!thenResult && !elseResult) {
+            const {
+                then: thenResult,
+                else: elseResult,
+                elseRequired,
+                thenRequired,
+            } = ifThen;
+            if (!thenResult && !elseResult && !thenRequired && !elseRequired) {
                 continue;
             }
             const fulfilled = ifThen.conditions.every((cond) =>
                 this.checkConditionFulfilled(cond, data)
             );
 
-            const props = fulfilled ? ifThen.then || {} : ifThen.else || {};
+            const props = fulfilled ? thenResult || {} : elseResult || {};
 
             for (let [key, val] of Object.entries(props)) {
                 if (isValidJsonSchemaKey(key)) {
@@ -289,12 +308,22 @@ export class IfThenElseMapper extends MapperWithData {
                     }
                 }
             }
+
+            const required = fulfilled ? thenRequired : elseRequired;
+
+            if (required?.includes(fieldName)) {
+                if (!newUiElement.options) {
+                    newUiElement.options = {};
+                }
+                newUiElement.options.forceRequired = true;
+                uiHasChanges = true;
+            }
         }
 
         // Only return a new object if something actually changed
         return {
             jsonElement: hasChanges ? newJsonElement : jsonElement,
-            uiElement,
+            uiElement: uiHasChanges ? newUiElement : uiElement,
         };
     }
 }

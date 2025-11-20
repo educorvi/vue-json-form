@@ -215,13 +215,7 @@ export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
 export function isSupportedThenOrElse(
     json: any
 ): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
-    return (
-        typeof json === 'object' &&
-        json &&
-        'properties' in json &&
-        typeof json.properties === 'object' &&
-        json.properties
-    );
+    return typeof json === 'object' && json;
 }
 
 export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
