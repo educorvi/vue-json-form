@@ -215,7 +215,7 @@ export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
 export function isSupportedThenOrElse(
     json: any
 ): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
-    return typeof json === 'object' && json;
+    return typeof json === 'object' && json !== null && !Array.isArray(json);
 }
 
 export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
