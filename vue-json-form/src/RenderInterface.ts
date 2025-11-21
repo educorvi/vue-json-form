@@ -1,43 +1,52 @@
 import type { Component } from 'vue';
-import type { ArrayButtonComponent } from '@/renderings/PropsAndEmitsForRenderings.ts';
+import type {
+    ArrayButtonComponent,
+    ButtonGroupComponent,
+    ControlComponent,
+    ErrorViewerComponent,
+    FormFieldWrapperComponent,
+    ShowOnWrapperComponent,
+    VjfButtonComponent,
+    WizardProgressComponent,
+} from '@/renderings/PropsAndEmitsForRenderings.ts';
 
 export interface RenderInterface {
     /**
      * Wrapper component for showOn
      */
-    showOnWrapper?: Component;
+    showOnWrapper?: ShowOnWrapperComponent;
 
-    CheckboxControl?: Component;
-
-    CheckboxGroupControl?: Component;
-
-    DefaultControl?: Component;
-
-    FileControl?: Component;
-
-    NumberControl?: Component;
-
-    ObjectControl?: Component;
-
-    RadiobuttonControl?: Component;
-
-    SelectControl?: Component;
-
-    StringControl?: Component;
-
-    TagsControl?: Component;
-
-    FormFieldWrapper?: Component;
-
-    ErrorViewer?: Component;
-
-    Button?: Component;
-
-    Buttongroup?: Component;
-
-    HelpPopover?: Component;
-
-    Wizard?: Component;
+    FormFieldWrapper?: FormFieldWrapperComponent;
 
     ArrayButton?: ArrayButtonComponent;
+
+    ErrorViewer?: ErrorViewerComponent;
+
+    Button?: VjfButtonComponent;
+
+    Buttongroup?: ButtonGroupComponent;
+
+    HelpPopover?: ControlComponent;
+
+    WizardProgress?: WizardProgressComponent;
+
+    CheckboxControl?: ControlComponent;
+
+    CheckboxGroupControl?: ControlComponent;
+
+    DefaultControl?: ControlComponent;
+
+    FileControl?: ControlComponent;
+
+    NumberControl?: ControlComponent;
+
+    ObjectControl?: ControlComponent;
+
+    RadiobuttonControl?: ControlComponent;
+
+    SelectControl?: ControlComponent;
+
+    StringControl?: ControlComponent;
+
+    TagsControl?: ControlComponent;
 }

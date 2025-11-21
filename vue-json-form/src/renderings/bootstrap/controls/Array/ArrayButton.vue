@@ -2,11 +2,13 @@
 import type {
     ArrayButtonEmits,
     ArrayButtonProps,
+    ArrayButtonSlots,
 } from '@/renderings/PropsAndEmitsForRenderings.ts';
 import { BButton } from 'bootstrap-vue-next';
 
 const props = defineProps<ArrayButtonProps>();
 const emit = defineEmits<ArrayButtonEmits>();
+defineSlots<ArrayButtonSlots>();
 </script>
 
 <template>

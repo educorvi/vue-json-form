@@ -10,9 +10,8 @@
             v-if="isLayout(storedUiSchema)"
             :layoutElement="storedUiSchema"
         />
-        <component
+        <Wizard
             v-else-if="isWizard(storedUiSchema)"
-            :is="getComponent('Wizard')"
             :wizardElement="storedUiSchema"
         />
         <slot />
@@ -81,6 +80,7 @@ import {
     type LanguageProvider,
 } from '@/intl/LanguageProvider.ts';
 import { isLayout, isWizard } from '@/typings/typeValidators';
+import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
 
 const props = defineProps<{
     /**
