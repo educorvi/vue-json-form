@@ -96,8 +96,8 @@ export const useFormStructureStore: FormStructureStore = defineStore(
 export function getComponent<E extends keyof RenderInterface>(
     componentName: E
 ): NonNullable<RenderInterface[E]> {
-    const { components } = storeToRefs(useFormStructureStore());
     return (
-        components.value?.[componentName] || defaultComponents[componentName]
+        useFormStructureStore().components?.[componentName] ||
+        defaultComponents[componentName]
     );
 }
