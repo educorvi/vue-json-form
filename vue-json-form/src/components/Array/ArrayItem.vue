@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue';
-import { savePathOverrideProviderKey } from '@/components/ProviderKeys';
+import { savePathOverrideProviderKey } from '@/components/ProviderKeys.ts';
 import Control from '@/components/LayoutElements/Control.vue';
-import type {
-    Control as ControlType,
-    Layout,
-} from '@educorvi/vue-json-form-schemas';
-import { BButton } from 'bootstrap-vue-next';
+import type { Control as ControlType } from '@educorvi/vue-json-form-schemas';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';
+import { getComponent } from '@/stores/formStructure.ts';
 
 const props = defineProps<{
     scope: string;
@@ -34,6 +31,7 @@ const layoutElement = computed(() => {
 const emit = defineEmits<{
     (e: 'delete', id: string, savePath: string): void;
 }>();
+const ArrayButton = getComponent('ArrayButton');
 </script>
 
 <template>
@@ -45,14 +43,14 @@ const emit = defineEmits<{
                 </div>
             </template>
             <template #append>
-                <b-button
+                <ArrayButton
                     variant="outline-danger"
                     @click="emit('delete', itemID, savePath)"
                     :disabled="!allowRemove"
                     aria-label="Delete Item"
                 >
                     <XIcon />
-                </b-button>
+                </ArrayButton>
             </template>
         </Control>
     </div>

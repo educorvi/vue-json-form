@@ -1,12 +1,11 @@
 import type { Component } from 'vue';
+import type { ArrayButtonComponent } from '@/renderings/PropsAndEmitsForRenderings.ts';
 
 export interface RenderInterface {
     /**
      * Wrapper component for showOn
      */
     showOnWrapper?: Component;
-
-    ArrayControl?: Component;
 
     CheckboxControl?: Component;
 
@@ -39,4 +38,6 @@ export interface RenderInterface {
     HelpPopover?: Component;
 
     Wizard?: Component;
+
+    ArrayButton?: ArrayButtonComponent;
 }

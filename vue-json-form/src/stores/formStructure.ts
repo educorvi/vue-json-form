@@ -93,7 +93,9 @@ export const useFormStructureStore: FormStructureStore = defineStore(
  * @param {keyof RenderInterface} componentName - The name of the component to retrieve.
  * @returns The retrieved component.
  */
-export function getComponent(componentName: keyof RenderInterface) {
+export function getComponent<E extends keyof RenderInterface>(
+    componentName: E
+): NonNullable<RenderInterface[E]> {
     const { components } = storeToRefs(useFormStructureStore());
     return (
         components.value?.[componentName] || defaultComponents[componentName]
