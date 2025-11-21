@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import type { Buttongroup } from '@educorvi/vue-json-form-schemas';
 import { BButtonGroup } from 'bootstrap-vue-next';
 import VJFButton from '@/components/Buttons/VJFButton.vue';
+import type { ButtonGroupProps } from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-defineProps<{
-    /**
-     * The UI Schema of this Element
-     */
-    layoutElement: Buttongroup;
-}>();
+defineProps<ButtonGroupProps>();
 </script>
 
 <template>

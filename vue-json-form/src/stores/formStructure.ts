@@ -4,7 +4,7 @@ import type {
     JSONSchema,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { Mapper, MapperClass } from '@/typings/customTypes.ts';
 
@@ -93,9 +93,11 @@ export const useFormStructureStore: FormStructureStore = defineStore(
  * @param {keyof RenderInterface} componentName - The name of the component to retrieve.
  * @returns The retrieved component.
  */
-export function getComponent(componentName: keyof RenderInterface) {
-    const { components } = storeToRefs(useFormStructureStore());
+export function getComponent<E extends keyof RenderInterface>(
+    componentName: E
+): NonNullable<RenderInterface[E]> {
     return (
-        components.value?.[componentName] || defaultComponents[componentName]
+        useFormStructureStore().components?.[componentName] ||
+        defaultComponents[componentName]
     );
 }

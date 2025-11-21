@@ -834,8 +834,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-ajv-validator@workspace:ajv-validator"
   dependencies:
-    "@educorvi/vue-json-form-schemas": "workspace:*"
+    "@educorvi/vue-json-form-schemas": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
+    "@types/node": "npm:^24.10.1"
     ajv: "npm:^8.17.1"
     ajv-formats: "npm:^3.0.1"
     npm-run-all: "npm:^4.1.5"
@@ -850,10 +851,12 @@ __metadata:
     vite-bundle-analyzer: "npm:^1.2.3"
     vite-plugin-dts: "npm:^4.5.4"
     vite-plugin-static-copy: "npm:^3.1.4"
+  peerDependencies:
+    "@educorvi/vue-json-form": "workspace:^"
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:schemas":
+"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:^, @educorvi/vue-json-form-schemas@workspace:schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:schemas"
   dependencies:
@@ -3081,6 +3084,15 @@ __metadata:
   version: 20.5.6
   resolution: "@types/node@npm:20.5.6"
   checksum: 10/58573cf9e3a174fd0a443ac77f60c62e4408ed9566c685bc51554093c5b64dcc5124be113cfdafbdbd350f1be842db581439998e307a97755368dcb3e3033e7f
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^24.10.1":
+  version: 24.10.1
+  resolution: "@types/node@npm:24.10.1"
+  dependencies:
+    undici-types: "npm:~7.16.0"
+  checksum: 10/ddac8c97be5f7401e31ea0e9316c6e864993c6cd06689b7f9874ecfb576ef8349f2d14298248a08b94a6dd029570a46a285cddc4d50e524817f1a3730b29a86e
   languageName: node
   linkType: hard
 

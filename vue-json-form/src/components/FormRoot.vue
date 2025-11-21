@@ -10,9 +10,8 @@
             v-if="isLayout(storedUiSchema)"
             :layoutElement="storedUiSchema"
         />
-        <component
+        <Wizard
             v-else-if="isWizard(storedUiSchema)"
-            :is="getComponent('Wizard')"
             :wizardElement="storedUiSchema"
         />
         <slot />
@@ -58,7 +57,7 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import type { ErrorObject } from 'ajv';
 import FormWrap from '@/components/FormWrap.vue';
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import {
     addFilesToFormdata,
     flattenData,
@@ -81,6 +80,7 @@ import {
     type LanguageProvider,
 } from '@/intl/LanguageProvider.ts';
 import { isLayout, isWizard } from '@/typings/typeValidators';
+import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
 
 const props = defineProps<{
     /**

@@ -29,7 +29,8 @@
                                 "arguments": [
                                     {
                                         "type": "atom",
-                                        "path": "personalData.age"
+                                        "path": "personalData.age",
+                                        "default": 1000
                                     },
                                     18
                                 ]

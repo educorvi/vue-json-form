@@ -3,12 +3,12 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { BFormCheckbox, BFormTextarea } from 'bootstrap-vue-next';
+import { BFormCheckbox } from 'bootstrap-vue-next';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const { formData } = storeToRefs(useFormDataStore());
 
-const { jsonElement, layoutElement, savePath } = injectJsonData();
+const { layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const label = computedLabel(layoutElement);

@@ -1,25 +1,29 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
+import { useFormDataStore } from '@/stores/formData.ts';
 import {
     arrayContainsValue,
     computedLabel,
     injectJsonData,
-} from '@/computedProperties/json';
-import { controlID } from '@/computedProperties/misc';
-import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
-import { BButton } from 'bootstrap-vue-next';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+} from '@/computedProperties/json.ts';
+import { controlID } from '@/computedProperties/misc.ts';
+import {
+    generateUUID,
+    isArrayItemKey,
+    VJF_ARRAY_ITEM_PREFIX,
+} from '@/Commons.ts';
+import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
 import draggable from 'vuedraggable/src/vuedraggable';
 import { ref, nextTick, computed, onBeforeMount, watch } from 'vue';
-import ArrayItem from '@/renderings/bootstrap/controls/Array/ArrayItem.vue';
+import ArrayItem from '@/components/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
-import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
 import { isDefined } from '@/typings/typeValidators.ts';
 
 const ErrorViewer = getComponent('ErrorViewer');
+const HelpPopover = getComponent('HelpPopover');
+const ArrayButton = getComponent('ArrayButton');
 
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
@@ -187,7 +191,7 @@ onBeforeMount(initArray);
                 </template>
             </draggable>
 
-            <b-button
+            <array-button
                 variant="outline-primary"
                 class="w-100"
                 @click="() => addField()"
@@ -198,7 +202,7 @@ onBeforeMount(initArray);
                     {{ getOption(layoutElement, 'addButtonText') }}
                 </span>
                 <PlusIcon v-else />
-            </b-button>
+            </array-button>
         </div>
         <error-viewer v-else header="Error" :id="id">
             The type of the array's items is missing in the schema
@@ -207,8 +211,8 @@ onBeforeMount(initArray);
 </template>
 
 <style lang="scss">
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
+@import '../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../node_modules/bootstrap/scss/variables';
 .large-label {
     font-size: calc(1.275rem + 0.3vw);
 }

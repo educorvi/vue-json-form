@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { BCollapse } from 'bootstrap-vue-next';
+import type {
+    ShowOnWrapperProps,
+    ShowOnWrapperSlots,
+} from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-const props = defineProps<{
-    visible: boolean;
-}>();
+defineProps<ShowOnWrapperProps>();
+defineSlots<ShowOnWrapperSlots>();
 </script>
 
 <template>

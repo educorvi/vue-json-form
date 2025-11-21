@@ -1,4 +1,4 @@
-export type { RenderInterface } from './RenderInterface';
+export type { RenderInterface } from './renderings/RenderInterface.ts';
 
 export * from '@/renderings/bootstrap/BootstrapComponents';
 
@@ -17,6 +17,7 @@ export * from '@/Mappers';
 
 export * from '@/intl/LanguageProvider';
 
-import './RenderInterface';
+export * from '@/renderings/RenderInterface.ts';
+export * from '@/renderings/PropsAndEmitsForRenderings.ts';
 
 export const version: string = import.meta.env.PACKAGE_VERSION as string;
