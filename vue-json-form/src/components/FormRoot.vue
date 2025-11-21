@@ -57,7 +57,7 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import type { ErrorObject } from 'ajv';
 import FormWrap from '@/components/FormWrap.vue';
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import {
     addFilesToFormdata,
     flattenData,

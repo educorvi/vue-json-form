@@ -4,7 +4,7 @@ import type {
     JSONSchema,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { Mapper, MapperClass } from '@/typings/customTypes.ts';
 

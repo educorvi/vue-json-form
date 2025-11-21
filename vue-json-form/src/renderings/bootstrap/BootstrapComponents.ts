@@ -1,4 +1,4 @@
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import { defineAsyncComponent } from 'vue';
 import './styling.scss';
 import 'bootstrap-vue-next/src/styles/styles.scss';
