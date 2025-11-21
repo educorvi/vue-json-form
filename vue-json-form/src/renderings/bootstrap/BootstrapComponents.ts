@@ -5,25 +5,24 @@ import 'bootstrap-vue-next/src/styles/styles.scss';
 import ArrayButton from '@/renderings/bootstrap/controls/ArrayButton.vue';
 import ShowOnWrapper from '@/renderings/bootstrap/showOnWrapper.vue';
 import WizardProgress from '@/renderings/bootstrap/WizardProgress.vue';
-import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
-import ErrorViewer from '@/renderings/bootstrap/ErrorViewer.vue';
-import DefaultControl from '@/renderings/bootstrap/controls/DefaultControl.vue';
-import CheckboxControl from '@/renderings/bootstrap/controls/CheckboxControl.vue';
-import CheckboxGroupControl from '@/renderings/bootstrap/controls/CheckboxGroupControl.vue';
-import NumberControl from '@/renderings/bootstrap/controls/NumberControl.vue';
-import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
-import ButtonGroup from '@/renderings/bootstrap/Buttons/ButtonGroup.vue';
-import ObjectControl from '@/renderings/bootstrap/controls/ObjectControl.vue';
 
 export const bootstrapComponents: Required<RenderInterface> = {
     showOnWrapper: ShowOnWrapper,
-    CheckboxControl: CheckboxControl,
-    CheckboxGroupControl: CheckboxGroupControl,
+    CheckboxControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/CheckboxControl.vue')
+    ),
+    CheckboxGroupControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/CheckboxGroupControl.vue')
+    ),
     FileControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/FileControl.vue')
     ),
-    NumberControl: NumberControl,
-    ObjectControl: ObjectControl,
+    NumberControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/NumberControl.vue')
+    ),
+    ObjectControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/ObjectControl.vue')
+    ),
     RadiobuttonControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/RadiobuttonControl.vue')
     ),
@@ -39,11 +38,21 @@ export const bootstrapComponents: Required<RenderInterface> = {
     FormFieldWrapper: defineAsyncComponent(
         () => import('@/renderings/bootstrap/FormFieldWrapper.vue')
     ),
-    ErrorViewer: ErrorViewer,
-    Button: VJFButton,
-    Buttongroup: ButtonGroup,
-    HelpPopover: HelpPopover,
-    DefaultControl: DefaultControl,
+    ErrorViewer: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/ErrorViewer.vue')
+    ),
+    Button: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/Buttons/VJFButton.vue')
+    ),
+    Buttongroup: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/Buttons/ButtonGroup.vue')
+    ),
+    HelpPopover: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/HelpPopover.vue')
+    ),
+    DefaultControl: defineAsyncComponent(
+        () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
+    ),
     ArrayButton: ArrayButton,
     WizardProgress: WizardProgress,
 };
