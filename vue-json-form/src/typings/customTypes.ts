@@ -79,15 +79,15 @@ export type SupportedIfThenElse = {
         };
     };
     then: {
-        properties: {
+        properties?: {
             [key: string]: Record<string, any>;
         };
+        required?: string[];
     };
     else?: {
-        properties: {
-            [key: string]: {
-                [key: string]: Record<string, any>;
-            };
+        properties?: {
+            [key: string]: Record<string, any>;
         };
+        required?: string[];
     };
 };

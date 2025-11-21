@@ -63,6 +63,10 @@ export function getComputedGrandparentJsonPath(layout: Ref<Control, Control>) {
 
 export function getComputedRequired(layout: Ref<Control, Control>) {
     return computed(() => {
+        if (layout.value.options?.forceRequired) {
+            return true;
+        }
+
         const grandParentPath = getComputedGrandparentJsonPath(layout);
         if (grandParentPath.value === null) {
             return false;

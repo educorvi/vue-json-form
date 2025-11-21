@@ -158,6 +158,11 @@
             },
             "additionalProperties": false
           }
+        },
+        "forceRequired": {
+          "type": "boolean",
+          "default": false,
+          "description": "If set to true, the field will be marked as required even if it is not required by the schema"
         }
       }
     },
