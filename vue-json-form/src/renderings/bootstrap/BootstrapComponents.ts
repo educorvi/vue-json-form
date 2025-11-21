@@ -2,7 +2,7 @@ import type { RenderInterface } from '@/RenderInterface';
 import { defineAsyncComponent } from 'vue';
 import './styling.scss';
 import 'bootstrap-vue-next/src/styles/styles.scss';
-import ArrayButton from '@/renderings/bootstrap/controls/Array/ArrayButton.vue';
+import ArrayButton from '@/renderings/bootstrap/controls/ArrayButton.vue';
 import ShowOnWrapper from '@/renderings/bootstrap/showOnWrapper.vue';
 import WizardProgress from '@/renderings/bootstrap/WizardProgress.vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
