@@ -6,6 +6,7 @@ import { computed, type ComputedRef } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import axios from 'axios';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const props = defineProps<{
     /**
@@ -73,6 +74,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         :return-data-as-scopes="data.returnDataAsScopes"
         :mappers="mappers"
         :onSubmitForm="onSubmitForm"
+        :validator="AjvValidator"
     >
         <slot />
     </vjf-comp>
