@@ -211,14 +211,12 @@ onBeforeMount(initArray);
 </template>
 
 <style lang="scss">
-@import '../../../../node_modules/bootstrap/scss/functions';
-@import '../../../../node_modules/bootstrap/scss/variables';
 .large-label {
     font-size: calc(1.275rem + 0.3vw);
 }
 
 .vjf_array-help-icon-wrapper {
-    padding-left: $spacer * 0.25;
+    padding-left: 1rem * 0.25;
 }
 
 .vjf_label_wrapper {
