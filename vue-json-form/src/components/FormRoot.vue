@@ -227,7 +227,7 @@ function initDefaultFormData() {
     };
 }
 
-function cleanFormData() {
+function setDefaultFormData() {
     formData.value = {
         ...defaultFormData.value,
     };
@@ -235,7 +235,7 @@ function cleanFormData() {
 
 function resetForm(evt: Event) {
     evt.preventDefault();
-    cleanFormData();
+    setDefaultFormData();
     formStateWasValidated.value = false;
 }
 
@@ -312,6 +312,7 @@ onBeforeMount(async () => {
         renderInterface: props.renderInterface,
     });
     initDefaultFormData();
+    setDefaultFormData();
 });
 
 watch(props, (newVal) => {
