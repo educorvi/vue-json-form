@@ -191,6 +191,25 @@ it('JSO-79-IV', function () {
     ).should('not.include.text', '*');
 });
 
+it('JSO-68', () => {
+    const ARRAY_CONTAINER = '#vjf_control_for__properties_multiFileUpload1';
+    const SINGLE_UPLOAD = '#vjf_control_for__properties_multiFileUpload2';
+
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
+
+    cy.get(ARRAY_CONTAINER).should('exist').and('have.class', 'vjf_array');
+    cy.get(`${ARRAY_CONTAINER} button[aria-label="Add Item"]`).should('exist');
+
+    cy.get(SINGLE_UPLOAD)
+        .should('exist')
+        .and('have.attr', 'type', 'file')
+        .and('have.attr', 'multiple');
+    cy.get(SINGLE_UPLOAD)
+        .parents('.vjf_control')
+        .find('.vjf_array')
+        .should('not.exist');
+});
+
 it('Pattern string', () => {
     cy.visit('http://localhost:5173/reproduce?nonav=true');
 
