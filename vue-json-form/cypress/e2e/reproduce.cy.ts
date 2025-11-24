@@ -162,7 +162,7 @@ it('JSO-79-III', () => {
     });
 });
 
-it('JSO-79-IV', function () {
+it('JSO-79-IV', () => {
     cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('#vjf_control_for__properties_string-dep-required-2').should(
         'not.have.attr',
