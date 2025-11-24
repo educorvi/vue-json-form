@@ -6,34 +6,15 @@ function submitForm() {
     cy.get('button[type="submit"]').eq(-3).click();
 }
 
-it('JSO-79', function () {
-    cy.visit('http://localhost:5173/reproduce?nonav=true');
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'not.have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('not.include.text', '*');
+const WAIT_TIME = 150;
 
-    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('include.text', '*');
-
-    cy.get('#vjf_control_for__properties_string-dep-required').clear();
-    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
-        'not.have.attr',
-        'required'
-    );
-    cy.get(
-        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-    ).should('not.include.text', '*');
-});
+const expectSelectOptions = (selector: string, expectedValues: string[]) => {
+    cy.get(`${selector} option`)
+        .should('have.length', expectedValues.length)
+        .each(($option, index) => {
+            expect($option.attr('value')).to.equal(expectedValues[index]);
+        });
+};
 
 it('JSO-43', () => {
     const BOOL_FIELD = '#vjf_control_for__properties_jso-43_properties_bool';
@@ -70,35 +51,25 @@ it('JSO-43', () => {
     });
 });
 
-it('JSO-79 (IfThenElse)', () => {
+it('JSO-79 (I)', () => {
     const FIRST_SELECT = '#vjf_control_for__properties_jso-79_properties_first';
     const SECOND_SELECT =
         '#vjf_control_for__properties_jso-79_properties_second';
-    const WAIT_TIME = 150;
-
-    const validateSelectOptions = (
-        selector: string,
-        expectedValues: string[]
-    ) => {
-        cy.get(`${selector} option`).each((option) => {
-            expect(option.attr('value')).to.be.oneOf(expectedValues);
-        });
-    };
 
     cy.visit('http://localhost:5173/reproduce?nonav=true');
 
     // Initial state: all options should be available
-    validateSelectOptions(SECOND_SELECT, ['a1', 'a2', 'b1']);
+    expectSelectOptions(SECOND_SELECT, ['a1', 'a2', 'b1']);
 
     // Select 'A': only 'a' options should be available
     cy.get(FIRST_SELECT).select('A');
     cy.wait(WAIT_TIME);
-    validateSelectOptions(SECOND_SELECT, ['a1', 'a2']);
+    expectSelectOptions(SECOND_SELECT, ['a1', 'a2']);
 
     // Select 'B': only 'b' options should be available
     cy.get(FIRST_SELECT).select('B');
     cy.wait(WAIT_TIME);
-    validateSelectOptions(SECOND_SELECT, ['b1']);
+    expectSelectOptions(SECOND_SELECT, ['b1']);
 
     cy.get(FIRST_SELECT).select('A');
     cy.get(SECOND_SELECT).select('a1');
@@ -109,6 +80,115 @@ it('JSO-79 (IfThenElse)', () => {
         let res = JSON.parse(el.text());
         expect(res['jso-79']['second']).to.be.undefined;
     });
+});
+
+it('JSO-79-II', () => {
+    const BASE = '#vjf_control_for__properties_jso-79-ii_properties';
+    const INDEPENDENT_SELECT = `${BASE}_unabhaengige-frage`;
+    const DEPENDENT_SELECT = `${BASE}_abhaengige-frage`;
+    const NAME_SELECT = `${BASE}_wie-heisst-du`;
+
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
+
+    expectSelectOptions(DEPENDENT_SELECT, ['1', '2', '3']);
+
+    cy.get(INDEPENDENT_SELECT).select('a');
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['1', '3']);
+
+    cy.get(DEPENDENT_SELECT).select('1');
+
+    cy.get(NAME_SELECT).select('Henrik');
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['2', '3']);
+    cy.get(DEPENDENT_SELECT).should('have.value', null);
+
+    cy.get(DEPENDENT_SELECT).select('3');
+    submitForm();
+    cy.get('#result-container').then((el) => {
+        const res = JSON.parse(el.text());
+        expect(res['jso-79-ii']['unabhaengige-frage']).to.equal('a');
+        expect(res['jso-79-ii']['wie-heisst-du']).to.equal('Henrik');
+        expect(res['jso-79-ii']['abhaengige-frage']).to.equal('3');
+    });
+});
+
+it('JSO-79-III', () => {
+    const BASE = '#vjf_control_for__properties_jso-79-iii_properties';
+    const INDEPENDENT_GROUP = `${BASE}_unabhaengige-frage`;
+    const DEPENDENT_SELECT = `${BASE}_abhaengige-frage`;
+    const NAME_SELECT = `${BASE}_wie-heisst-du`;
+
+    const toggleIndependent = (value: string, checked: boolean) => {
+        const selector = `${INDEPENDENT_GROUP} input[value="${value}"]`;
+        if (checked) {
+            cy.get(selector).check({ force: true });
+        } else {
+            cy.get(selector).uncheck({ force: true });
+        }
+    };
+
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
+
+    expectSelectOptions(DEPENDENT_SELECT, ['3']);
+
+    toggleIndependent('a', true);
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['3', '1']);
+
+    cy.get(NAME_SELECT).select('Henrik');
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['2', '3', '1']);
+
+    toggleIndependent('a', false);
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['2', '3', '1']);
+
+    toggleIndependent('b', true);
+    toggleIndependent('c', true);
+    cy.wait(WAIT_TIME);
+    expectSelectOptions(DEPENDENT_SELECT, ['2', '3', '1', '4']);
+
+    cy.get(DEPENDENT_SELECT).select('4');
+    submitForm();
+    cy.get('#result-container').then((el) => {
+        const res = JSON.parse(el.text());
+        expect(res['jso-79-iii']['unabhaengige-frage']).to.deep.equal([
+            'b',
+            'c',
+        ]);
+        expect(res['jso-79-iii']['wie-heisst-du']).to.equal('Henrik');
+        expect(res['jso-79-iii']['abhaengige-frage']).to.equal('4');
+    });
+});
+
+it('JSO-79-IV', function () {
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').type('Test');
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('include.text', '*');
+
+    cy.get('#vjf_control_for__properties_string-dep-required').clear();
+    cy.get('#vjf_control_for__properties_string-dep-required-2').should(
+        'not.have.attr',
+        'required'
+    );
+    cy.get(
+        'label[for="vjf_control_for__properties_string-dep-required-2"] span'
+    ).should('not.include.text', '*');
 });
 
 it('Pattern string', () => {
