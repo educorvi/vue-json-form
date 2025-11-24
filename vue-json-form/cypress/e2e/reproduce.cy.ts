@@ -1,10 +1,12 @@
 /// <reference types="cypress" />
+import { register as registerCypressGrep } from '@cypress/grep';
+registerCypressGrep();
 
 function submitForm() {
     cy.get('button[type="submit"]').eq(-3).click();
 }
 
-it('JSO-43', function () {
+it('JSO-79', function () {
     cy.visit('http://localhost:5173/reproduce?nonav=true');
     cy.get('#vjf_control_for__properties_string-dep-required-2').should(
         'not.have.attr',
@@ -31,6 +33,41 @@ it('JSO-43', function () {
     cy.get(
         'label[for="vjf_control_for__properties_string-dep-required-2"] span'
     ).should('not.include.text', '*');
+});
+
+it('JSO-43', () => {
+    const BOOL_FIELD = '#vjf_control_for__properties_jso-43_properties_bool';
+    const HALLO_FIELD =
+        '#vjf_control_for__properties_jso-43_properties_hallo input[value="du"]';
+    const HALLO_FIELD_ICH =
+        '#vjf_control_for__properties_jso-43_properties_hallo input[value="ich"]';
+    const REQUIRED_FIELD =
+        '#vjf_control_for__properties_jso-43_properties_abhaengiges-feld';
+    const REQUIRED_LABEL =
+        'label[for="vjf_control_for__properties_jso-43_properties_abhaengiges-feld"]';
+
+    cy.visit('http://localhost:5173/reproduce?nonav=true');
+    cy.get(REQUIRED_FIELD).should('not.exist');
+
+    cy.get(BOOL_FIELD).check({ force: true });
+    cy.get(REQUIRED_FIELD).should('exist').and('have.attr', 'required');
+    cy.get(REQUIRED_LABEL).should('contain.text', '*');
+
+    cy.get(BOOL_FIELD).uncheck({ force: true });
+    cy.get(HALLO_FIELD_ICH).check({ force: true });
+    cy.get(REQUIRED_FIELD).should('not.exist');
+
+    cy.get(HALLO_FIELD).check({ force: true });
+    cy.get(REQUIRED_FIELD).should('exist').and('have.attr', 'required');
+    cy.get(REQUIRED_LABEL).should('contain.text', '*');
+
+    cy.get(REQUIRED_FIELD).type('Hallo Pflichtfeld');
+    submitForm();
+    cy.get('#result-container').then((el) => {
+        const res = JSON.parse(el.text());
+        expect(res['jso-43']['abhaengiges-feld']).to.equal('Hallo Pflichtfeld');
+        expect(res['jso-43']['hallo']).to.equal('du');
+    });
 });
 
 it('JSO-79 (IfThenElse)', () => {

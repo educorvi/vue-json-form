@@ -233,7 +233,8 @@ const htmlMessages = computed(() => {
     return messages;
 });
 
-const required = getComputedRequired(ref(formStructureMapped.value.uiElement));
+const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
+const required = getComputedRequired(mappedUiElement);
 
 let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
     ? 'hiddenControl'
@@ -262,7 +263,7 @@ provide(savePathOverrideProviderKey, undefined);
 
 const control_id_string = controlID(savePath);
 
-const label = computedLabel(toRef(() => formStructureMapped.value.uiElement));
+const label = computedLabel(mappedUiElement);
 
 /**
  * The type of the control

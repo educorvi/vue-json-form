@@ -65,6 +65,7 @@
         "vuedraggable": "^4.1.0"
     },
     "devDependencies": {
+        "@cypress/grep": "^5.0.0",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@rushstack/eslint-patch": "^1.14.1",
         "@semantic-release/exec": "^7.1.0",
