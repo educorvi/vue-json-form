@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { BCard } from 'bootstrap-vue-next';
+import type {
+    ErrorViewerProps,
+    ErrorViewerSlots,
+} from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-const props = defineProps<{
-    header?: string;
-}>();
+const props = defineProps<ErrorViewerProps>();
+defineSlots<ErrorViewerSlots>();
 </script>
 
 <template>

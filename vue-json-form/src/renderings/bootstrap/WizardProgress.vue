@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { watch } from 'vue';
-const props = defineProps<{
-    max: number;
-    pageNames?: string[];
-}>();
-const currentStep = defineModel<number>('currentStep', { required: true });
+import type {
+    WizardProgessProps,
+    WizardProgressEmits,
+} from '@/renderings/PropsAndEmitsForRenderings.ts';
+
+const props = defineProps<WizardProgessProps>();
+const emit = defineEmits<WizardProgressEmits>();
 
 function clickedStep(step: number) {
     const index = step - 1;
-    if (index < currentStep.value) {
-        currentStep.value = index;
+    if (index < props.currentStep) {
+        emit('update:currentStep', index);
     }
 }
 
@@ -20,7 +22,7 @@ function clickedStep(step: number) {
  * applies it to the CSS custom property `--progress` for visual updates.
  */
 watch(
-    currentStep,
+    () => props.currentStep,
     () => {
         // Select all elements with the class `.wrappers-parent`
         const wrappers =
@@ -49,7 +51,7 @@ watch(
             const usableWidth = lastCenter - firstCenter;
 
             // Calculate the progress ratio (0 to 1) based on the current step
-            const t = currentStep.value / (steps.length - 1);
+            const t = props.currentStep / (steps.length - 1);
 
             // Calculate the progress in pixels
             const progressPx = firstCenter + t * usableWidth;
@@ -75,7 +77,7 @@ watch(
                         filled: stepNumber - 1 < currentStep,
                     }"
                     v-for="stepNumber in Array.from(
-                        { length: props.max },
+                        { length: props.numberOfPages },
                         (_, i) => i + 1
                     )"
                 >
@@ -100,7 +102,7 @@ watch(
                         filled: stepNumber - 1 < currentStep,
                     }"
                     v-for="stepNumber in Array.from(
-                        { length: props.max },
+                        { length: props.numberOfPages },
                         (_, i) => i + 1
                     )"
                 ></div>

@@ -1,23 +1,12 @@
 <script setup lang="ts">
-import type { Button } from '@educorvi/vue-json-form-schemas';
 import { BButton, BSpinner, type ButtonType } from 'bootstrap-vue-next';
 import { computedCssClass } from '@/computedProperties/css';
-import { getOption } from '@/utilities';
 import { computed, type ComputedRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
+import type { VjfButtonProps } from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-const props = defineProps<{
-    /**
-     * The UI Schema of this Element
-     */
-    layoutElement: Button;
-
-    /**
-     * Show spinner
-     */
-    waiting?: boolean;
-}>();
+const props = defineProps<VjfButtonProps>();
 const {
     currentWizardPage,
     uiSchema,

@@ -4,11 +4,12 @@ import { computed, type ComputedRef, inject, toRefs, useSlots } from 'vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';
+import type {
+    FormFieldWrapperProps,
+    FormFieldWrapperSlots,
+} from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-const props = defineProps<{
-    label: string;
-    labelFor: string;
-}>();
+const props = defineProps<FormFieldWrapperProps>();
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 
@@ -25,6 +26,7 @@ const hideLabel = computed(() => {
 });
 
 const slots = useSlots();
+defineSlots<FormFieldWrapperSlots>();
 
 const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
     return !!(

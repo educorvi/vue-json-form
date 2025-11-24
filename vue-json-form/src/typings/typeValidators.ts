@@ -1,5 +1,4 @@
 import type {
-    ColorVariants,
     Control,
     EnumOptions,
     LayoutElement,
@@ -20,12 +19,7 @@ import type {
     Mapper,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
-import type {
-    BaseColorVariant,
-    CheckboxOption,
-    CheckboxValue,
-    InputType,
-} from 'bootstrap-vue-next';
+import type { InputType } from 'bootstrap-vue-next';
 import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 import { MapperWithoutData } from '@/Mappers';
 

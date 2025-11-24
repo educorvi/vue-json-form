@@ -101,6 +101,7 @@ import {
 } from '@vueuse/core';
 import { diffChars, diffJson, diffLines } from 'diff';
 import type { Mapper } from '@/typings/customTypes.ts';
+import ArrayControl from '@/components/Array/ArrayControl.vue';
 
 const {
     jsonSchema,
@@ -342,7 +343,7 @@ const controlType = computed(() => {
         case 'string':
             return getComponent('StringControl');
         case 'array':
-            return getComponent('ArrayControl');
+            return ArrayControl;
         default:
             return getComponent('DefaultControl');
     }
