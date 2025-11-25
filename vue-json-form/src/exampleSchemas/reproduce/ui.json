@@ -74,7 +74,7 @@
             },
             {
                 "type": "Group",
-                "options": { "label": "JSO-79" },
+                "options": { "label": "JSO-79-iv" },
                 "elements": [
                     {
                         "type": "Control",
