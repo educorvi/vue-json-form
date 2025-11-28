@@ -1,25 +1,25 @@
 import type { LayoutElement, Options } from '@educorvi/vue-json-form-schemas';
 import { hasOption } from '@/typings/typeValidators';
-import type { FlatOptions } from '@/typings/customTypes';
 
-function getOption<T extends Options[keyof Options]>(
+export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
-    key: keyof FlatOptions
-): T | undefined;
-function getOption<T extends Options[keyof Options]>(
+    key: Key
+): Options[Key] | undefined;
+
+export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
-    key: keyof FlatOptions,
-    defaultValue: T
-): T;
-function getOption<T extends Options[keyof Options]>(
+    key: Key,
+    defaultValue: NonNullable<Options[Key]>
+): NonNullable<Options[Key]>;
+
+export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
-    key: keyof FlatOptions,
-    defaultValue?: T
-): T | undefined {
+    key: Key,
+    defaultValue?: NonNullable<Options[Key]>
+): Options[Key] | undefined {
     if (hasOption(layoutElement, key)) {
-        return layoutElement.options[key];
+        const value = layoutElement.options[key] as Options[Key];
+        if (value !== undefined) return value;
     }
     return defaultValue;
 }
-
-export { getOption };

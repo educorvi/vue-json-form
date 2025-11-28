@@ -3,14 +3,10 @@ import { BFormSelect } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
-import { computed, inject, toRef, toRefs, watch } from 'vue';
-import {
-    allDefined,
-    hasEnumTitlesOptions,
-    isDefined,
-} from '@/typings/typeValidators';
+import { computed, watch } from 'vue';
 import type { TitlesForEnum } from '@educorvi/vue-json-form-schemas';
 import { injectJsonData } from '@/computedProperties/json.ts';
+import { hasOption } from '@/typings/typeValidators.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 
@@ -22,7 +18,7 @@ const options = computed(() => {
     if (!jsonElement.value.enum) {
         return [];
     }
-    if (!hasEnumTitlesOptions(layoutElement.value)) {
+    if (!hasOption(layoutElement.value, 'enumTitles')) {
         return jsonElement.value.enum;
     } else {
         return jsonElement.value.enum.map((value) => {

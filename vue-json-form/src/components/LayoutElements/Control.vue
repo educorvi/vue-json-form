@@ -50,7 +50,6 @@
 import type {
     Control,
     DescendantControlOverrides,
-    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure';
@@ -62,11 +61,8 @@ import {
     onMounted,
     provide,
     ref,
-    type ComputedRef,
     watch,
-    toRef,
     type Ref,
-    onUpdated,
 } from 'vue';
 import {
     savePathProviderKey,
@@ -87,26 +83,19 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
+    hasOption,
+    hasProperty,
     isMapperWithoutData,
-    isTagsConfig,
 } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
-import {
-    computedWithControl,
-    useThrottleFn,
-    watchDebounced,
-    watchDeep,
-    watchThrottled,
-} from '@vueuse/core';
-import { diffChars, diffJson, diffLines } from 'diff';
+import { computedWithControl, watchDebounced } from '@vueuse/core';
 import type { Mapper } from '@/typings/customTypes.ts';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
 
 const {
     jsonSchema,
     mappers: mapperClasses,
-    arrays,
     uiSchema,
 } = storeToRefs(useFormStructureStore());
 
@@ -304,7 +293,7 @@ const controlType = computed(() => {
      */
     if (
         formStructureMapped.value.jsonElement?.type === 'array' &&
-        isTagsConfig(formStructureMapped.value.uiElement.options) &&
+        hasOption(formStructureMapped.value.uiElement, 'tags') &&
         formStructureMapped.value.uiElement.options?.tags?.enabled
     ) {
         return getComponent('TagsControl');

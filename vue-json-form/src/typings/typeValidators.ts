@@ -23,6 +23,46 @@ import type { InputType } from 'bootstrap-vue-next';
 import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 import { MapperWithoutData } from '@/Mappers';
 
+type IndexType = string | number | symbol;
+
+/**
+ * Checks if a given key exists in the provided object.
+ *
+ * @param key - The key to check for existence in the object.
+ * @param obj - The object in which to check for the key.
+ * @return A boolean indicating whether the key exists in the object.
+ */
+export function isKeyOf<T extends Object>(
+    key: IndexType,
+    obj: T
+): key is keyof T {
+    return key in obj;
+}
+
+/**
+ * Checks if a given object has a specified property, ensuring it is both defined and non-null.
+ *
+ * @param obj - The object to check for the specified property. Can be undefined or null.
+ * @param propertyName - The name of the property to verify its existence in the object.
+ * @return A boolean indicating whether the object has the specified property and the property is both defined and non-null.
+ */
+export function hasProperty<T, K extends IndexType>(
+    obj: T | undefined,
+    propertyName: K
+): obj is T & Record<K, K extends keyof T ? NonNullable<T[K]> : never> {
+    if (!(typeof obj === 'object' && obj !== null && obj !== undefined)) {
+        return false;
+    }
+    if (!isKeyOf(propertyName, obj)) {
+        return false;
+    }
+    return (
+        propertyName in obj &&
+        obj[propertyName] !== undefined &&
+        obj[propertyName] !== null
+    );
+}
+
 /**
  * Checks if the given element is dependent on another element
  * @param element The element to check
@@ -30,11 +70,7 @@ import { MapperWithoutData } from '@/Mappers';
 export function isDependentElement(
     element: LayoutElement
 ): element is dependentElement {
-    return (
-        'showOn' in element &&
-        element.showOn !== undefined &&
-        element.showOn !== null
-    );
+    return hasProperty(element, 'showOn');
 }
 
 /**
@@ -45,16 +81,6 @@ export function hasElements(
     element: LayoutElement
 ): element is elementWithElements {
     return Array.isArray((element as elementWithElements).elements);
-}
-
-/**
- * The options include options for tags
- * @param options The options to check
- */
-export function isTagsConfig(
-    options: Options | undefined
-): options is TagOptions & Options {
-    return 'tags' in (options || {});
 }
 
 export function isEnumButtonsConfig(
@@ -74,7 +100,8 @@ export function hasCssClass(
     element: LayoutElement
 ): element is elementWithCssClass {
     return (
-        typeof (element as elementWithCssClass).options?.cssClass === 'string'
+        hasProperty(element, 'options') &&
+        hasProperty(element.options, 'cssClass')
     );
 }
 
@@ -93,63 +120,32 @@ export function isValidJsonSchemaKey(key: string): key is keyof JSONSchema {
     return JsonSchemaKeywords.find((k) => k === key) !== undefined;
 }
 
-export function hasProperty<T, K extends keyof T>(
-    obj: T | undefined,
-    propertyName: K
-): obj is T & Record<K, NonNullable<T[K]>> {
-    return (
-        typeof obj === 'object' &&
-        obj !== null &&
-        obj !== undefined &&
-        propertyName in obj &&
-        !!obj[propertyName]
-    );
-}
-
-export function hasOptions(
-    layout: LayoutElement
-): layout is LayoutElement & { options: Options } {
-    return 'options' in layout && layout.options !== undefined;
-}
-
 export function hasOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key
-): layoutElement is LayoutElement & { options: Record<Key, any> } {
-    return hasOptions(layoutElement) && key in layoutElement.options;
-}
-
-//todo: check typeguard
-export function hasItems(
-    json: JSONSchema
-): json is JSONSchema & { items: JSONSchema } {
+): layoutElement is LayoutElement & {
+    options: Options & Required<Pick<Options, Key>>;
+} {
     return (
-        typeof json === 'object' &&
-        'items' in json &&
-        typeof json.items === 'object'
+        hasProperty(layoutElement, 'options') &&
+        hasProperty(layoutElement.options, key)
     );
 }
 
-export function hasEnum(
-    json: JSONSchema
-): json is JSONSchema & { enum: any[] } {
-    return 'enum' in json;
+export function hasItems(jsonSchema: JSONSchema): jsonSchema is JSONSchema & {
+    items: JSONSchema;
+} {
+    return (
+        hasProperty(jsonSchema, 'items') &&
+        typeof jsonSchema.items === 'object' &&
+        !Array.isArray(jsonSchema.items)
+    );
 }
 
 export function hasEnumValuesForItems(
     json: JSONSchema
 ): json is JSONSchema & { items: { enum: any[] } } {
-    return hasItems(json) && hasEnum(json.items);
-}
-
-export function hasEnumTitlesOptions(layout: Control): layout is Control & {
-    options: { enumTitles: TitlesForEnum };
-} {
-    return (
-        hasOptions(layout) &&
-        'enumTitles' in layout.options &&
-        layout.options.enumTitles !== undefined
-    );
+    return hasProperty(json, 'items') && hasProperty(json.items, 'enum');
 }
 
 export function isInputType(value: any): value is InputType {
@@ -187,21 +183,14 @@ export function isIfThenAllOf(
 
 export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
     return (
-        typeof json === 'object' &&
-        json !== null &&
-        'properties' in json &&
-        typeof json.properties === 'object' &&
+        hasProperty(json, 'properties') &&
         Object.values(json.properties).every(
             (value) =>
-                typeof value === 'object' &&
-                value !== null &&
-                ('const' in value ||
-                    'enum' in value ||
-                    ('contains' in value &&
-                        typeof value.contains === 'object' &&
-                        value.contains &&
-                        ('const' in value.contains ||
-                            'enum' in value.contains)))
+                hasProperty(value, 'const') ||
+                hasProperty(value, 'enum') ||
+                (hasProperty(value, 'contains') &&
+                    (hasProperty(value.contains, 'const') ||
+                        hasProperty(value.contains, 'enum')))
         )
     );
 }
@@ -214,9 +203,7 @@ export function isSupportedThenOrElse(
 
 export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
     return (
-        typeof json === 'object' &&
-        json !== null &&
-        'if' in json &&
+        hasProperty(json, 'if') &&
         isSupportedIf(json['if']) &&
         'then' in json &&
         isSupportedThenOrElse(json['then']) &&
@@ -232,9 +219,9 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
 }
 
 /**
- * Checks if all provided values are defined (not undefined)
+ * Checks if all provided values are defined
  */
-export function allDefined(...values: any[]): boolean {
+export function allDefined<T>(values: T[]): values is NonNullable<T>[] {
     return values.every(isDefined);
 }
 
