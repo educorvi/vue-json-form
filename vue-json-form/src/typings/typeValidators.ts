@@ -56,11 +56,7 @@ export function hasProperty<T, K extends IndexType>(
     if (!isKeyOf(propertyName, obj)) {
         return false;
     }
-    return (
-        propertyName in obj &&
-        obj[propertyName] !== undefined &&
-        obj[propertyName] !== null
-    );
+    return obj[propertyName] !== undefined && obj[propertyName] !== null;
 }
 
 /**
