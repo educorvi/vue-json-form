@@ -221,7 +221,7 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
 /**
  * Checks if all provided values are defined
  */
-export function allDefined<T>(values: T[]): values is NonNullable<T>[] {
+export function allDefined<T>(values: T[]): values is Exclude<T, undefined>[] {
     return values.every(isDefined);
 }
 
