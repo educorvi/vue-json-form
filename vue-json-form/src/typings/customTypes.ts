@@ -50,14 +50,6 @@ export type Mapper = MapperWithoutData | MapperWithData;
 
 export type MapperClass = new () => Mapper;
 
-type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
-    x: infer I
-) => void
-    ? I
-    : never;
-
-export type FlatOptions = UnionToIntersection<Options>;
-
 export type IfBaseConditions =
     | {
           const: any;

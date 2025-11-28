@@ -93,9 +93,7 @@ function validateInput(data: any) {
         ref="fileUpload"
         class="vjf_file"
         :multiple="multiple"
-        :accept="
-            getOption<string | undefined>(layoutElement, 'acceptedFileType')
-        "
+        :accept="getOption(layoutElement, 'acceptedFileType')"
     />
 </template>
 

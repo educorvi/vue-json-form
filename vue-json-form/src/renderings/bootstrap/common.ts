@@ -1,4 +1,4 @@
-import { hasItems, isTagsConfig } from '@/typings/typeValidators.ts';
+import { hasItems, hasOption } from '@/typings/typeValidators.ts';
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { computed, type Ref } from 'vue';
 
@@ -12,7 +12,7 @@ export function isObjectOrArrayViewFunc(
             !(hasItems(jsonElement) && jsonElement.items.enum) &&
             !jsonElement.enum &&
             !(
-                isTagsConfig(layoutElement.options) &&
+                hasOption(layoutElement, 'tags') &&
                 layoutElement.options.tags?.enabled
             ) &&
             !(

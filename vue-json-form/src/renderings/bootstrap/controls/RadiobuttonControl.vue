@@ -4,12 +4,11 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import {
-    hasEnum,
-    hasEnumTitlesOptions,
-    isDefined,
+    hasOption,
+    hasProperty,
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
-import { computed, inject, toRefs, watch } from 'vue';
+import { computed, watch } from 'vue';
 import { getOption } from '@/utilities';
 import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
 import { injectJsonData } from '@/computedProperties/json.ts';
@@ -18,13 +17,16 @@ const { formData } = storeToRefs(useFormDataStore());
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 const options = computed(() => {
-    if (!hasEnum(jsonElement.value)) {
+    if (
+        !hasProperty(jsonElement.value, 'enum') ||
+        !Array.isArray(jsonElement.value.enum)
+    ) {
         return [];
     }
     return (
-        jsonElement.value.enum?.map((key: any) => {
+        jsonElement.value.enum.map((key: any) => {
             const textVals: Record<any, any> =
-                (hasEnumTitlesOptions(layoutElement.value) &&
+                (hasOption(layoutElement.value, 'enumTitles') &&
                     layoutElement.value.options.enumTitles) ||
                 {};
             const text = textVals[key] || key;
@@ -38,7 +40,7 @@ const displaySettings = computed(() => {
     if (isEnumButtonsConfig(layoutElement.value.options)) {
         return {
             displayAs: 'buttons',
-            buttonVariant: getOption<ColorVariants>(
+            buttonVariant: getOption(
                 layoutElement.value,
                 'buttonVariant',
                 'primary'

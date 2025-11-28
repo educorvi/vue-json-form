@@ -4,7 +4,7 @@ import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { BFormTags } from 'bootstrap-vue-next';
 
-import { isTagsConfig } from '@/typings/typeValidators';
+import { hasOption } from '@/typings/typeValidators';
 import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
@@ -21,11 +21,11 @@ const id = controlID(savePath);
         :id="id"
         class="vjf_tags"
         :tagPills="
-            isTagsConfig(layoutElement.options) &&
+            hasOption(layoutElement, 'tags') &&
             layoutElement.options?.tags?.pills
         "
         :tagVariant="
-            isTagsConfig(layoutElement.options)
+            hasOption(layoutElement, 'tags')
                 ? layoutElement.options?.tags?.variant
                 : undefined
         "
