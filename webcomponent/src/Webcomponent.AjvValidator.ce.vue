@@ -4,6 +4,7 @@ import {
 } from '@educorvi/vue-json-form';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 import { getComputed, getSubmitFunc, type Props, type Emits } from './vueComponentCommons.ts';
+import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const props = defineProps<Props>();
 
@@ -23,6 +24,7 @@ const onSubmitForm = getSubmitFunc(emit)
         :preset-data="presetData"
         :return-data-as-scopes="returnDataAsScopes"
         :mappers="mappers"
+        :validator="AjvValidator"
         :onSubmitForm="onSubmitForm"
     >
         <slot />

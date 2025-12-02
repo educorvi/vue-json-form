@@ -11,17 +11,37 @@
     "webpack": false
   },
   {
-    "path": "webcomponent/dist/vue-json-form.umd.js",
+    "path": "webcomponent/dist/default/vue-json-form.umd.js",
     "name": "WebComponent",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/vue-json-form.mjs",
+    "path": "webcomponent/dist/default/vue-json-form.mjs",
     "name": "WebComponent Module",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/vue-json-form.css",
+    "path": "webcomponent/dist/shadowDom/vue-json-form.umd.js",
+    "name": "WebComponent Shadow DOM",
+    "limit": "300 kB"
+  },
+  {
+    "path": "webcomponent/dist/shadowDom/vue-json-form.mjs",
+    "name": "WebComponent Shadow DOM Module",
+    "limit": "300 kB"
+  },
+  {
+    "path": "webcomponent/dist/ajvValidator/vue-json-form.umd.js",
+    "name": "WebComponent AjvValidator",
+    "limit": "300 kB"
+  },
+  {
+    "path": "webcomponent/dist/ajvValidator/vue-json-form.mjs",
+    "name": "WebComponent AjvValidator Module",
+    "limit": "300 kB"
+  },
+  {
+    "path": "webcomponent/dist/default/vue-json-form.css",
     "name": "WebComponent CSS",
     "running": false,
     "webpack": false
