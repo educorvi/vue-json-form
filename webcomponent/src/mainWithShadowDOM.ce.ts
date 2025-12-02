@@ -1,14 +1,14 @@
-import { defineCustomElement } from "vue";
-import Webcomponent from "./Webcomponent.ce.vue";
-import bootstrapStyles from 'bootstrap/dist/css/bootstrap.min.css?inline';
-import jsonFormStyles from "@educorvi/vue-json-form/dist/vue-json-form.css?inline";
+import { defineCustomElement } from 'vue';
+import Webcomponent from './Webcomponent.ShadowDom.ce.vue';
+import bootstrapStyles from './shadowDomBootstrap.scss?inline';
+import jsonFormStyles from '@educorvi/vue-json-form/dist/vue-json-form.css?inline';
 
 
-Webcomponent.styles = [
-    ...(Webcomponent.styles || []),
-    bootstrapStyles,
-    jsonFormStyles
-];
-
-const VueJsonForm = defineCustomElement(Webcomponent);
-customElements.define("vue-json-form", VueJsonForm);
+const VueJsonForm = defineCustomElement(Webcomponent, {
+    shadowRoot: true,
+    styles: [
+        bootstrapStyles,
+        jsonFormStyles
+    ],
+});
+customElements.define('vue-json-form', VueJsonForm);
