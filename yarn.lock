@@ -266,6 +266,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-plugin-utils@npm:^7.27.1":
+  version: 7.27.1
+  resolution: "@babel/helper-plugin-utils@npm:7.27.1"
+  checksum: 10/96136c2428888e620e2ec493c25888f9ceb4a21099dcf3dd4508ea64b58cdedbd5a9fb6c7b352546de84d6c24edafe482318646932a22c449ebd16d16c22d864
+  languageName: node
+  linkType: hard
+
 "@babel/helper-replace-supers@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/helper-replace-supers@npm:7.25.9"
@@ -352,6 +359,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/parser@npm:^7.27.2, @babel/parser@npm:^7.28.4":
+  version: 7.28.5
+  resolution: "@babel/parser@npm:7.28.5"
+  dependencies:
+    "@babel/types": "npm:^7.28.5"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 10/8d9bfb437af6c97a7f6351840b9ac06b4529ba79d6d3def24d6c2996ab38ff7f1f9d301e868ca84a93a3050fadb3d09dbc5105b24634cd281671ac11eebe8df7
+  languageName: node
+  linkType: hard
+
 "@babel/parser@npm:^7.27.5":
   version: 7.28.0
   resolution: "@babel/parser@npm:7.28.0"
@@ -360,17 +378,6 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 10/2c14a0d2600bae9ab81924df0a85bbd34e427caa099c260743f7c6c12b2042e743e776043a0d1a2573229ae648f7e66a80cfb26fc27e2a9eb59b55932d44c817
-  languageName: node
-  linkType: hard
-
-"@babel/parser@npm:^7.28.4":
-  version: 7.28.5
-  resolution: "@babel/parser@npm:7.28.5"
-  dependencies:
-    "@babel/types": "npm:^7.28.5"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 10/8d9bfb437af6c97a7f6351840b9ac06b4529ba79d6d3def24d6c2996ab38ff7f1f9d301e868ca84a93a3050fadb3d09dbc5105b24634cd281671ac11eebe8df7
   languageName: node
   linkType: hard
 
@@ -428,6 +435,17 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 10/bb609d1ffb50b58f0c1bac8810d0e46a4f6c922aa171c458f3a19d66ee545d36e782d3bffbbc1fed0dc65a558bdce1caf5279316583c0fff5a2c1658982a8563
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-syntax-jsx@npm:^7.27.1":
+  version: 7.27.1
+  resolution: "@babel/plugin-syntax-jsx@npm:7.27.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.27.1"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 10/c6d1324cff286a369aa95d99b8abd21dd07821b5d3affd5fe7d6058c84cff9190743287826463ee57a7beecd10fa1e4bc99061df532ee14e188c1c8937b13e3a
   languageName: node
   linkType: hard
 
@@ -782,6 +800,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cypress/grep@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@cypress/grep@npm:5.0.0"
+  dependencies:
+    debug: "npm:^4.3.4"
+    find-test-names: "npm:^1.28.18"
+    globby: "npm:^11.0.4"
+  peerDependencies:
+    cypress: ">=10"
+  checksum: 10/a7ebd1936dbbe7c832559dd13bc381a1cec73f044d01074577cc8f5aaa07a2585d17021b184536dcc528816e865d222685c3829811f7d9f5a4c9beac24b51a90
+  languageName: node
+  linkType: hard
+
 "@cypress/request@npm:^3.0.9":
   version: 3.0.9
   resolution: "@cypress/request@npm:3.0.9"
@@ -834,8 +865,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-ajv-validator@workspace:ajv-validator"
   dependencies:
-    "@educorvi/vue-json-form-schemas": "workspace:*"
+    "@educorvi/vue-json-form-schemas": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
+    "@types/node": "npm:^24.10.1"
     ajv: "npm:^8.17.1"
     ajv-formats: "npm:^3.0.1"
     npm-run-all: "npm:^4.1.5"
@@ -850,10 +882,12 @@ __metadata:
     vite-bundle-analyzer: "npm:^1.2.3"
     vite-plugin-dts: "npm:^4.5.4"
     vite-plugin-static-copy: "npm:^3.1.4"
+  peerDependencies:
+    "@educorvi/vue-json-form": "workspace:^"
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:schemas":
+"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:^, @educorvi/vue-json-form-schemas@workspace:schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:schemas"
   dependencies:
@@ -879,6 +913,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form-webcomponent@workspace:webcomponent"
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node18": "npm:^18.2.4"
     "@vitejs/plugin-vue": "npm:^6.0.1"
@@ -902,6 +937,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
+    "@cypress/grep": "npm:^5.0.0"
     "@educorvi/rita": "npm:^5.4.4"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:*"
@@ -3084,6 +3120,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^24.10.1":
+  version: 24.10.1
+  resolution: "@types/node@npm:24.10.1"
+  dependencies:
+    undici-types: "npm:~7.16.0"
+  checksum: 10/ddac8c97be5f7401e31ea0e9316c6e864993c6cd06689b7f9874ecfb576ef8349f2d14298248a08b94a6dd029570a46a285cddc4d50e524817f1a3730b29a86e
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^24.9.2":
   version: 24.9.2
   resolution: "@types/node@npm:24.9.2"
@@ -4168,7 +4213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-walk@npm:^8.1.1":
+"acorn-walk@npm:^8.1.1, acorn-walk@npm:^8.2.0":
   version: 8.3.4
   resolution: "acorn-walk@npm:8.3.4"
   dependencies:
@@ -7341,6 +7386,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-test-names@npm:^1.28.18":
+  version: 1.29.19
+  resolution: "find-test-names@npm:1.29.19"
+  dependencies:
+    "@babel/parser": "npm:^7.27.2"
+    "@babel/plugin-syntax-jsx": "npm:^7.27.1"
+    acorn-walk: "npm:^8.2.0"
+    debug: "npm:^4.3.3"
+    simple-bin-help: "npm:^1.8.0"
+    tinyglobby: "npm:^0.2.13"
+  bin:
+    find-test-names: bin/find-test-names.js
+    print-tests: bin/print-tests.js
+    update-test-count: bin/update-test-count.js
+  checksum: 10/0bd0a791e6122881457a177c548bde7a4bb6caa1e4b01a7e768cfab156e65ce4d712830cca9fc856125f5f4e4e589bf10da415cba36a8e836e30c3034f57cb8d
+  languageName: node
+  linkType: hard
+
 "find-up-simple@npm:^1.0.0":
   version: 1.0.1
   resolution: "find-up-simple@npm:1.0.1"
@@ -7980,7 +8043,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:^11.0.1":
+"globby@npm:^11.0.1, globby@npm:^11.0.4":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
   dependencies:
@@ -13116,6 +13179,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"simple-bin-help@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "simple-bin-help@npm:1.8.0"
+  checksum: 10/2333be11a8863f9ea7c5fbd9824824bcc56bfd91e436ea4364bd117600e9a2971ecdbaf1782924b53d3c16f393200e85ddbdf075a454375f80572481cd0aecd3
+  languageName: node
+  linkType: hard
+
 "sirv@npm:^3.0.1":
   version: 3.0.1
   resolution: "sirv@npm:3.0.1"
@@ -14118,7 +14188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.15, tinyglobby@npm:^0.2.9":
+"tinyglobby@npm:^0.2.13, tinyglobby@npm:^0.2.15, tinyglobby@npm:^0.2.9":
   version: 0.2.15
   resolution: "tinyglobby@npm:0.2.15"
   dependencies:

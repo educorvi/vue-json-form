@@ -6,6 +6,42 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-43": {
+            "type": "object",
+            "properties": {
+                "bool": {
+                    "title": "bool",
+                    "type": "boolean"
+                },
+                "hallo": {
+                    "title": "hallo",
+                    "type": "string",
+                    "enum": ["ich", "du"]
+                },
+                "abhaengiges-feld": {
+                    "title": "abhängiges pflicht feld",
+                    "type": "string"
+                }
+            },
+            "required": [],
+            "dependentRequired": {
+                "bool": ["abhaengiges-feld"]
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "hallo": {
+                                "const": "du"
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": ["abhaengiges-feld"]
+                    }
+                }
+            ]
+        },
         "jso-79": {
             "type": "object",
             "properties": {

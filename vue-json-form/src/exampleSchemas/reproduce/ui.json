@@ -5,6 +5,62 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-43"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-43/properties/bool"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-43/properties/hallo",
+                        "options": {
+                            "displayAs": "radiobuttons",
+                            "stacked": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-43/properties/abhaengiges-feld",
+                        "showOn": {
+                            "id": "ritaRule-abhaengiges-feld",
+                            "rule": {
+                                "type": "or",
+                                "arguments": [
+                                    {
+                                        "type": "comparison",
+                                        "operation": "equal",
+                                        "arguments": [
+                                            {
+                                                "type": "atom",
+                                                "path": "jso-43.bool",
+                                                "default": false
+                                            },
+                                            true
+                                        ]
+                                    },
+                                    {
+                                        "type": "comparison",
+                                        "operation": "equal",
+                                        "arguments": [
+                                            {
+                                                "type": "atom",
+                                                "path": "jso-43.hallo",
+                                                "default": ""
+                                            },
+                                            "du"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/jso-79"
             },
@@ -18,7 +74,7 @@
             },
             {
                 "type": "Group",
-                "options": { "label": "JSO-79" },
+                "options": { "label": "JSO-79-iv" },
                 "elements": [
                     {
                         "type": "Control",

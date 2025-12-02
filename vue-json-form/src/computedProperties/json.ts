@@ -26,6 +26,15 @@ export function injectJsonData() {
     return { jsonElement, layoutElement: uiElement, savePath };
 }
 
+function getJsonPointerSafe(
+    ...args: Parameters<typeof jsonPointer.get>
+): ReturnType<typeof jsonPointer.get> {
+    if (!jsonPointer.has(...args)) {
+        return null;
+    }
+    return jsonPointer.get(...args);
+}
+
 export function getParentJsonPath(scope: string): string | null {
     let path = pointer.parse(scope);
 
@@ -63,6 +72,10 @@ export function getComputedGrandparentJsonPath(layout: Ref<Control, Control>) {
 
 export function getComputedRequired(layout: Ref<Control, Control>) {
     return computed(() => {
+        if (layout.value.options?.forceRequired) {
+            return true;
+        }
+
         const grandParentPath = getComputedGrandparentJsonPath(layout);
         if (grandParentPath.value === null) {
             return false;
@@ -156,18 +169,10 @@ export function getComputedJsonElement(
             ),
             '/items'
         );
-        let data: JSONSchema | null = null;
-        try {
-            data = jsonPointer.get(
-                jsonSchema.value || {},
-                internal_scope
-            ) as JSONSchema | null;
-        } catch (e) {
-            if (!failSilently) {
-                console.error('invalid json pointer', internal_scope, e);
-            }
-            return null;
-        }
+        const data = getJsonPointerSafe(
+            jsonSchema.value || {},
+            internal_scope
+        ) as JSONSchema | null;
         if (!data) {
             if (!failSilently) {
                 console.error('No data under scope ' + scope);
@@ -185,16 +190,11 @@ export function getComputedJsonElement(
 export function isArray(scope: string) {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
     const cleaned_scope = cleanScope(scope);
-    try {
-        const element = jsonPointer.get(
-            jsonSchema.value || {},
-            cleaned_scope
-        ) as JSONSchema;
-        return element?.type === 'array';
-    } catch (e) {
-        console.error('invalid json pointer', cleaned_scope, e);
-        return false;
-    }
+    const element = getJsonPointerSafe(
+        jsonSchema.value || {},
+        cleaned_scope
+    ) as JSONSchema;
+    return element?.type === 'array';
 }
 
 export function arrayContainsValue(array: any[]): boolean {

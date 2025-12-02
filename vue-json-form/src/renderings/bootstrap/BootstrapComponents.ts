@@ -1,15 +1,13 @@
-import type { RenderInterface } from '@/RenderInterface';
+import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import { defineAsyncComponent } from 'vue';
 import './styling.scss';
 import 'bootstrap-vue-next/src/styles/styles.scss';
+import ArrayButton from '@/renderings/bootstrap/controls/ArrayButton.vue';
+import ShowOnWrapper from '@/renderings/bootstrap/showOnWrapper.vue';
+import WizardProgress from '@/renderings/bootstrap/WizardProgress.vue';
 
 export const bootstrapComponents: Required<RenderInterface> = {
-    showOnWrapper: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/showOnWrapper.vue')
-    ),
-    ArrayControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/Array/ArrayControl.vue')
-    ),
+    showOnWrapper: ShowOnWrapper,
     CheckboxControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/CheckboxControl.vue')
     ),
@@ -55,7 +53,6 @@ export const bootstrapComponents: Required<RenderInterface> = {
     DefaultControl: defineAsyncComponent(
         () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
     ),
-    Wizard: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/Wizard/Wizard.vue')
-    ),
+    ArrayButton: ArrayButton,
+    WizardProgress: WizardProgress,
 };

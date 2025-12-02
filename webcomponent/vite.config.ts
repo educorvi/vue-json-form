@@ -1,6 +1,28 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
+const buildTargets = {
+    default: {
+        entry: './src/main.ce.ts',
+        outDir: './dist/default',
+    },
+    shadowDom: {
+        entry: './src/mainWithShadowDOM.ce.ts',
+        outDir: './dist/shadowDom',
+    },
+    ajvValidator: {
+        entry: './src/Webcomponent.AjvValidator.ce.vue',
+        outDir: './dist/ajvValidator',
+    },
+};
+
+const target = process.env.BUILD_TARGET || 'default';
+const config = buildTargets[target as keyof typeof buildTargets];
+
+if (!config) {
+    throw new Error(`Unknown build target: ${target}. Available targets: ${Object.keys(buildTargets).join(', ')}`);
+}
+
 export default defineConfig({
     plugins: [
         vue({
@@ -15,13 +37,13 @@ export default defineConfig({
         sourcemap: true,
         minify: 'esbuild',
         lib: {
-            entry: './src/main.ce.ts',
+            entry: config.entry,
             name: 'vue-json-form',
             // the proper extensions will be added
             fileName: 'vue-json-form',
             formats: ['umd', 'es'],
         },
-        outDir: 'dist',
+        outDir: config.outDir,
     },
     define: {
         'process.env.NODE_ENV': JSON.stringify('production'),

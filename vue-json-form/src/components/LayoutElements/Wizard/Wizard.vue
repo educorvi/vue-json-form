@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import WizardPage from '@/renderings/bootstrap/Wizard/WizardPage.vue';
-import WizardProgress from '@/renderings/bootstrap/Wizard/WizardProgress.vue';
-import type { Wizard as WizardType } from '@educorvi/vue-json-form-schemas';
+import WizardPage from '@/components/LayoutElements/Wizard/WizardPage.vue';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
+import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
+import type { Wizard as WizardType } from '@educorvi/vue-json-form-schemas';
+
+const WizardProgress = getComponent('WizardProgress');
 
 const props = defineProps<{ wizardElement: WizardType }>();
 const { currentWizardPage: currentStep } = storeToRefs(useFormStructureStore());
@@ -15,7 +16,7 @@ const visible = computed(() => {
 
 <template>
     <WizardProgress
-        :max="wizardElement.pages.length"
+        :numberOfPages="wizardElement.pages.length"
         :pageNames="wizardElement.options?.pageTitles"
         v-model:currentStep="currentStep"
     />

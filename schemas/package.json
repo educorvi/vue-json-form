@@ -13,7 +13,7 @@
       "default": "./dist/vue-json-form-schemas.js"
     },
     "./dist/ui.schema.json": "./dist/ui.schema.json",
-    "./dist/json-schema_draft7.json": "./dist/json-schema_draft7.json",
+    "./dist/json-2019.schema.json": "./dist/json-2019.schema.json",
     "./package.json": "./package.json"
   },
   "unpkg": "./dist/vue-json-form-schemas.umd.cjs",

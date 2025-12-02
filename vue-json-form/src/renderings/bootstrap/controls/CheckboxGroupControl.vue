@@ -55,10 +55,7 @@ watch(values, (newVal) => {
         :stacked="getOption(layoutElement, 'stacked')"
         :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
         :switches="getOption(layoutElement, 'displayAs') === 'switches'"
-        :button-variant="
-            getOption<ColorVariants>(layoutElement, 'buttonVariant') ||
-            'primary'
-        "
+        :button-variant="getOption(layoutElement, 'buttonVariant') || 'primary'"
     />
 </template>
 

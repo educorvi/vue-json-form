@@ -1,8 +1,9 @@
 import { defineConfig } from 'cypress';
+import { plugin as cypressGrepPlugin } from '@cypress/grep/plugin';
 
 const registerCommonTasks = (
     on: Cypress.PluginEvents,
-    config: Cypress.PluginConfigOptions,
+    config: Cypress.PluginConfigOptions
 ) => {
     on('task', {
         log(message) {
@@ -32,6 +33,7 @@ export default defineConfig({
 
     e2e: {
         setupNodeEvents(on, config) {
+            cypressGrepPlugin(config);
             return registerCommonTasks(on, config);
         },
     },
