@@ -31,9 +31,6 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1"
   },
-  "peerDependencies": {
-    "@educorvi/vue-json-form": "workspace:^"
-  },
   "devDependencies": {
     "@semantic-release/exec": "^7.1.0",
     "@types/node": "^24.10.1",

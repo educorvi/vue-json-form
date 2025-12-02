@@ -882,8 +882,6 @@ __metadata:
     vite-bundle-analyzer: "npm:^1.2.3"
     vite-plugin-dts: "npm:^4.5.4"
     vite-plugin-static-copy: "npm:^3.1.4"
-  peerDependencies:
-    "@educorvi/vue-json-form": "workspace:^"
   languageName: unknown
   linkType: soft
 
