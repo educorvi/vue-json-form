@@ -29,7 +29,7 @@ export type Emits = {
     (e: 'afterSubmitted', data: Record<string, any>, options: SubmitOptions): void;
 }
 
-export function getComputed(props: DefineProps<Props, never>) {
+export function getComputed(props: Props) {
     const jsonSchema = computed(() => JSON.parse(props.jsonSchema) as Record<string, any>);
     const uiSchema = computed(() => props.uiSchema ? JSON.parse(props.uiSchema) as Record<string, any> : undefined);
     const presetData = computed(() => props.presetData ? JSON.parse(props.presetData) as Record<string, any> : undefined);
