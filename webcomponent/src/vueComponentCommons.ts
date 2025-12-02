@@ -30,9 +30,36 @@ export type Emits = {
 }
 
 export function getComputed(props: Props) {
-    const jsonSchema = computed(() => JSON.parse(props.jsonSchema) as Record<string, any>);
-    const uiSchema = computed(() => props.uiSchema ? JSON.parse(props.uiSchema) as Record<string, any> : undefined);
-    const presetData = computed(() => props.presetData ? JSON.parse(props.presetData) as Record<string, any> : undefined);
+    const jsonSchema = computed(() => {
+        try{
+            return JSON.parse(props.jsonSchema) as Record<string, any>
+        } catch (e) {
+            console.warn('Could not parse JSON Schema', e);
+            return undefined
+        }
+    });
+    const uiSchema = computed(() => {
+        if (!props.uiSchema) {
+            return undefined;
+        }
+        try {
+            return JSON.parse(props.uiSchema) as Record<string, any>;
+        } catch (e) {
+            console.warn('Could not parse UI Schema', e);
+            return undefined;
+        }
+    });
+    const presetData = computed(()=>{
+        if (!props.presetData) {
+            return undefined;
+        }
+        try {
+            return JSON.parse(props.presetData) as Record<string, any>;
+        } catch (e) {
+            console.warn('Could not parse pre-set data', e);
+            return undefined;
+        }
+    })
     const returnDataAsScopes = computed(() => props.returnDataAsScopes === true || props.returnDataAsScopes === 'true');
     return { jsonSchema, uiSchema, presetData, returnDataAsScopes };
 }
