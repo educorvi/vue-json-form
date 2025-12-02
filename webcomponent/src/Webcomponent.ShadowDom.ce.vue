@@ -19,6 +19,7 @@ const onSubmitForm = getSubmitFunc(emit);
 <template>
     <body>
     <vjf-comp
+        v-if="jsonSchema"
         :json-schema="jsonSchema"
         :ui-schema="uiSchema"
         :preset-data="presetData"
