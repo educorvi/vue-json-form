@@ -27,7 +27,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "yarn workspace vue-json-form run build:default",
+    "prepack": "yarn workspace vue-json-form run build",
     "build:default": "BUILD_TARGET=default vite build",
     "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "build:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
