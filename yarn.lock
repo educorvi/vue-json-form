@@ -883,7 +883,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.4"
     vite-plugin-static-copy: "npm:^3.1.4"
   peerDependencies:
-    "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form": 3.x
   languageName: unknown
   linkType: soft
 
