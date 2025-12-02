@@ -913,6 +913,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form-webcomponent@workspace:webcomponent"
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node18": "npm:^18.2.4"
     "@vitejs/plugin-vue": "npm:^6.0.1"

@@ -2,6 +2,8 @@
   "extends": "@tsconfig/node18/tsconfig.json",
   "include": [
     "vite.config.*",
+    "vite.shadowDom.config.ts",
+    "vite.ajvValidator.config.ts",
     "vitest.config.*",
     "cypress.config.*",
     "nightwatch.conf.*",
