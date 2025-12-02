@@ -28,9 +28,9 @@
   },
   "scripts": {
     "prepack": "yarn workspace vue-json-form run build:default",
-    "build:default": "vite build",
-    "build:shadowDom": "vite build --config vite.shadowDom.config.ts",
-    "build:ajvValidator": "vite build --config vite.ajvValidator.config.ts",
+    "build:default": "BUILD_TARGET=default vite build",
+    "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
+    "build:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
     "build": "run-p 'build:*'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "check-types": "vue-tsc --noEmit"
