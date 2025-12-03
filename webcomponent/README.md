@@ -42,15 +42,20 @@ A working example can be found in the file `webcomponent/webcomponent_test.html`
 
 ## Development
 
-## Project setup
+### Project setup
 
 ```
 yarn install
 ```
 
-### Compiles and minifies for production
-(In the according folder)
+### Compiles and hot-reloads for development
 
 ```
-turbo build
+yarn run dev
+```
+
+### Type-Check and Build for Production
+
+```
+turbo run check-types build --filter @educorvi/vue-json-form-webcomponent
 ```

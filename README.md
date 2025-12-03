@@ -122,24 +122,22 @@ Its documentation can be found [here](https://educorvi.github.io/vue-json-form/u
 
 ## Development
 
-## Project setup
+### Project setup
 
 ```
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-(In the according folder)
 
 ```
 yarn run dev
 ```
 
-### Compiles and minifies for production
-(In the according folder)
+### Type-Check and Build for Production
 
 ```
-yarn run build
+turbo run check-types build
 ```
 
 ### Generates the documentation
