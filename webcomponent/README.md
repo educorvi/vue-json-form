@@ -22,7 +22,7 @@ Supported options are:
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.css">
 </head>
 <body>
 <!-- json: Your JSON Schema   -->
@@ -33,7 +33,7 @@ Supported options are:
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/vue-json-form.umd.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.umd.js"></script>
 </body>
 </html>
 ```
@@ -48,16 +48,9 @@ A working example can be found in the file `webcomponent/webcomponent_test.html`
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-(In the according folder)
-
-```
-yarn run dev
-```
-
 ### Compiles and minifies for production
 (In the according folder)
 
 ```
-yarn run build
+turbo build
 ```
