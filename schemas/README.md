@@ -15,7 +15,7 @@ yarn install
 ### Type-Check and Build
 
 ```sh
-turbo run check-types build --filter @educorvi/vue-json-form-schemas
+turbo run check-types build
 ```
 
 ### Build Only

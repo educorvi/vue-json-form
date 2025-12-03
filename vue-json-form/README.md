@@ -96,5 +96,5 @@ yarn run dev
 ### Type-Check and Build for Production
 
 ```
-turbo run check-types build --filter @educorvi/vue-json-form
+turbo run check-types build
 ```

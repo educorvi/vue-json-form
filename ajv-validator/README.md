@@ -12,17 +12,22 @@ npm install @educorvi/vue-json-form-ajv-validator
 
 ## Usage
 
-```typescript
-import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
-import { VueJsonForm } from '@educorvi/vue-json-form';
+```vue
 
-// Use the validator in your form
-<VueJsonForm
-  :jsonSchema="jsonSchema"
-  :uiSchema="uiSchema"
-  :validator="AjvValidator"
-  :onSubmitForm="handleSubmit"
-/>
+<script setup>
+    import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
+    import { VueJsonForm } from '@educorvi/vue-json-form';
+</script>
+
+<template>
+    // Use the validator in your form
+    <VueJsonForm
+        :jsonSchema="jsonSchema"
+        :uiSchema="uiSchema"
+        :validator="AjvValidator"
+        :onSubmitForm="handleSubmit"
+    />
+</template>
 ```
 
 ## Development
@@ -36,7 +41,7 @@ yarn install
 ### Type-Check and Build
 
 ```sh
-turbo run check-types build --filter @educorvi/vue-json-form-ajv-validator
+turbo run check-types build
 ```
 
 ### Build Only
