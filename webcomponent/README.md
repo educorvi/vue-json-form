@@ -33,7 +33,7 @@ Supported options are:
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent/dist/webcomponent@^3/vue-json-form.umd.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/vue-json-form.umd.js"></script>
 </body>
 </html>
 ```
