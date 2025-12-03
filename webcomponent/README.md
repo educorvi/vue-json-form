@@ -1,7 +1,7 @@
 # VueJsonForm Webcomponent
-
-![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
+[![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-webcomponent?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-webcomponent)
+![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
 
 ## Usage
@@ -22,7 +22,7 @@ Supported options are:
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.css">
 </head>
 <body>
 <!-- json: Your JSON Schema   -->
@@ -33,7 +33,7 @@ Supported options are:
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent/dist/webcomponent@^3/vue-json-form.umd.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.umd.js"></script>
 </body>
 </html>
 ```
@@ -42,22 +42,20 @@ A working example can be found in the file `webcomponent/webcomponent_test.html`
 
 ## Development
 
-## Project setup
+### Project setup
 
 ```
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-(In the according folder)
 
 ```
 yarn run dev
 ```
 
-### Compiles and minifies for production
-(In the according folder)
+### Type-Check and Build for Production
 
 ```
-yarn run build
+turbo run check-types build --filter @educorvi/vue-json-form-webcomponent
 ```

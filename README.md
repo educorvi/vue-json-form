@@ -60,7 +60,10 @@ It can, for example, be used to add buttons if you don't want to add them to the
 | presetData         | Data that should be loaded into the form.                                                                            | `Object`   | `false`  | -       |
 | generationOptions  | Options for the generation of the UI-Schema if no UI-Schema is provided                                              | `Object`   | `false`  | -       |
 | returnDataAsScopes | Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data | `Object`   | `false`  | -       |
-| mapperFunctions    | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
+| mappers            | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
+| hideValidationState | Hide the Bootstrap validation state                                                                                  | `Boolean`  | `false`  | `false` |
+| validator          | The validator to use for validating the input schemas                                                                 | `Object`   | `false`  | -       |
+| languageProvider   | Provides internationalized strings, for example for validation errors                                                 | `Object`   | `false`  | -       |
 
 
 ### Use as a Web Component
@@ -92,7 +95,7 @@ Supported options are:
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent/dist/webcomponent@^3/vue-json-form.umd.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/vue-json-form.umd.js"></script>
 </body>
 </html>
 ```
@@ -114,29 +117,27 @@ More details on the json-schema can be found [here](https://json-schema.org/).
 #### UI-Schema
 
 The UI-schema must conform
-to [https://educorvi.github.io/vue-json-form/ui-schema-files/ui.schema.json](https://educorvi.github.io/vue-json-form/ui-schema-files/ui.schema.json).
-Its documentation can be found [here](https://educorvi.github.io/vue-json-form/ui-schema).
+to [https://educorvi.github.io/vue-json-form/schemas/ui.schema.json](https://educorvi.github.io/vue-json-form/schemas/ui.schema.json).
+Its documentation can be found [here](https://educorvi.github.io/vue-json-form/ui-schema/).
 
 ## Development
 
-## Project setup
+### Project setup
 
 ```
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-(In the according folder)
 
 ```
 yarn run dev
 ```
 
-### Compiles and minifies for production
-(In the according folder)
+### Type-Check and Build for Production
 
 ```
-yarn run build
+turbo run check-types build
 ```
 
 ### Generates the documentation
