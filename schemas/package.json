@@ -16,8 +16,6 @@
     "./dist/json-2019.schema.json": "./dist/json-2019.schema.json",
     "./package.json": "./package.json"
   },
-  "unpkg": "./dist/vue-json-form-schemas.umd.cjs",
-  "jsdelivr": "./dist/vue-json-form-schemas.umd.cjs",
   "type": "module",
   "files": [
     "dist"
@@ -46,6 +44,7 @@
     "typescript": "~5.9.3",
     "vite": "^7.1.12",
     "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-externalize-deps": "^0.10.0",
     "vite-plugin-static-copy": "^3.1.4"
   },
   "publishConfig": {

@@ -19,7 +19,7 @@
         "src/exampleSchemas",
         "package.json"
     ],
-    "main": "dist/vue-json-form.umd.cjs",
+    "main": "dist/vue-json-form.cjs",
     "module": "dist/vue-json-form.js",
     "types": "dist/vue-json-form.d.ts",
     "type": "module",
@@ -99,6 +99,7 @@
         "typescript": "~5.9.3",
         "vite": "^7.1.12",
         "vite-plugin-dts": "^4.5.4",
+        "vite-plugin-externalize-deps": "^0.10.0",
         "vite-plugin-vue-devtools": "^8.0.3",
         "vitest": "^4.0.5",
         "vue-eslint-parser": "^10.2.0",

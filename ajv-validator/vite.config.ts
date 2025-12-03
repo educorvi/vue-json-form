@@ -11,7 +11,7 @@ export default defineConfig({
             name: 'vue-json-form-ajv-validator',
             // the proper extensions will be added
             fileName: 'vue-json-form-ajv-validator',
-            formats: ['umd', 'es', 'cjs'],
+            formats: ['es', 'cjs'],
         },
         outDir: 'dist',
         commonjsOptions: { transformMixedEsModules: true },
