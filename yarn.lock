@@ -902,6 +902,7 @@ __metadata:
     typescript: "npm:~5.9.3"
     vite: "npm:^7.1.12"
     vite-plugin-dts: "npm:^4.5.4"
+    vite-plugin-externalize-deps: "npm:^0.10.0"
     vite-plugin-static-copy: "npm:^3.1.4"
   languageName: unknown
   linkType: soft
@@ -981,6 +982,7 @@ __metadata:
     uuid: "npm:^13.0.0"
     vite: "npm:^7.1.12"
     vite-plugin-dts: "npm:^4.5.4"
+    vite-plugin-externalize-deps: "npm:^0.10.0"
     vite-plugin-vue-devtools: "npm:^8.0.3"
     vitest: "npm:^4.0.5"
     vue: "npm:^3.5.22"
@@ -15050,6 +15052,15 @@ __metadata:
     vite:
       optional: true
   checksum: 10/1504a8da02f8015c3138ef57a690179ad9b9d4369a054ae48b52a1c8cbc7ad05474551eab309cd90cf758800e17b67ccd13317aa5f8e28efde957547c7a339fb
+  languageName: node
+  linkType: hard
+
+"vite-plugin-externalize-deps@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "vite-plugin-externalize-deps@npm:0.10.0"
+  peerDependencies:
+    vite: ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+  checksum: 10/a8fbf71d7658185d05fc96b52385057af0c770e0b421140b12f4bea66a3605dd1bcc0f18f44b9d2b2edd808d7c85c5e3e950c4461dfaa564bcbeaa152d40e532
   languageName: node
   linkType: hard
 
