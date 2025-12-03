@@ -55,7 +55,7 @@ It can, for example, be used to add buttons if you don't want to add them to the
 | generationOptions  | Options for the generation of the UI-Schema if no UI-Schema is provided                                              | `Object`   | `false`  | -       |
 | returnDataAsScopes | Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data | `Object`   | `false`  | -       |
 | mappers            | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
-| hideValidationState | Hide the bootstrap validation state                                                                                  | `Boolean`  | `false`  | `false` |
+| hideValidationState | Hide the Bootstrap validation state                                                                                  | `Boolean`  | `false`  | `false` |
 | validator          | The validator to use for validating the input schemas                                                                 | `Object`   | `false`  | -       |
 | languageProvider   | Provides internationalized strings, for example for validation errors                                                 | `Object`   | `false`  | -       |
 
