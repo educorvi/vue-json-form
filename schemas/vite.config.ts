@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import {externalizeDeps} from 'vite-plugin-externalize-deps';
+import { externalizeDeps } from 'vite-plugin-externalize-deps';
 
 export default defineConfig({
     build: {
