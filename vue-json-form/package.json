@@ -17,9 +17,10 @@
     "files": [
         "dist",
         "src/exampleSchemas",
-        "package.json"
+        "package.json",
+        "README.md"
     ],
-    "main": "dist/vue-json-form.umd.cjs",
+    "main": "dist/vue-json-form.cjs",
     "module": "dist/vue-json-form.js",
     "types": "dist/vue-json-form.d.ts",
     "type": "module",
@@ -49,7 +50,7 @@
         "cypress": "cypress open"
     },
     "dependencies": {
-        "@educorvi/rita": "^5.4.4",
+        "@educorvi/rita": "^5.5.0",
         "@educorvi/vue-json-form-schemas": "workspace:*",
         "@vueuse/core": "^14.0.0",
         "bootstrap": "^5.3.8",
@@ -99,6 +100,7 @@
         "typescript": "~5.9.3",
         "vite": "^7.1.12",
         "vite-plugin-dts": "^4.5.4",
+        "vite-plugin-externalize-deps": "^0.10.0",
         "vite-plugin-vue-devtools": "^8.0.3",
         "vitest": "^4.0.5",
         "vue-eslint-parser": "^10.2.0",

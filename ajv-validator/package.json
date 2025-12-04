@@ -13,11 +13,10 @@
       "default": "./dist/vue-json-form-ajv-validator.js"
     }
   },
-  "unpkg": "./dist/vue-json-form-ajv-validator.umd.cjs",
-  "jsdelivr": "./dist/vue-json-form-ajv-validator.umd.cjs",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "prepack": "yarn run build",

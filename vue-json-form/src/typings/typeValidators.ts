@@ -13,7 +13,7 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import type {
-    dependentElement,
+    DependentElement,
     elementWithCssClass,
     elementWithElements,
     Mapper,
@@ -23,7 +23,7 @@ import type { InputType } from 'bootstrap-vue-next';
 import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 import { MapperWithoutData } from '@/Mappers';
 
-type IndexType = string | number | symbol;
+export type IndexType = string | number | symbol;
 
 /**
  * Checks if a given key exists in the provided object.
@@ -65,7 +65,7 @@ export function hasProperty<T, K extends IndexType>(
  */
 export function isDependentElement(
     element: LayoutElement
-): element is dependentElement {
+): element is DependentElement {
     return hasProperty(element, 'showOn');
 }
 

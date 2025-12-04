@@ -5,6 +5,41 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Control",
+                "scope": "/properties/jso-87",
+                "options": {
+                    "descendantControlOverrides": {
+                        "/properties/jso-87/properties/q1": {
+                            "options": {
+                                "displayAs": "radiobuttons"
+                            }
+                        },
+                        "/properties/jso-87/properties/q2": {
+                            "options": {
+                                "displayAs": "radiobuttons",
+                                "optionFilters": {
+                                    "b": {
+                                        "id": "show b only on q1.b",
+                                        "rule": {
+                                            "type": "comparison",
+                                            "operation": "equal",
+                                            "arguments": [
+                                                "b",
+                                                {
+                                                    "type": "atom",
+                                                    "path": "jso-87.q1",
+                                                    "default": ""
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
                 "type": "Group",
                 "options": {
                     "label": "JSO-43"

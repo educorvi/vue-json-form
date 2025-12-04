@@ -130,39 +130,45 @@ const savePath =
 
 const mappers: Ref<Mapper[]> = ref([]);
 
-const formStructureMapped = computedWithControl(
-    [() => jsonElement.value, () => props.layoutElement],
-    () => {
-        let localJsonElement = jsonElement.value || {};
-        let localUiElement: Control = props.layoutElement;
-        for (const mapper of mappers.value) {
-            let mapped;
-            if (isMapperWithoutData(mapper)) {
-                mapped = mapper.map(localJsonElement || {}, localUiElement);
-            } else {
-                mapped = mapper.map(
-                    localJsonElement || {},
-                    localUiElement,
-                    formData.value
-                );
-            }
-            if (mapped) {
-                localJsonElement = mapped.jsonElement;
-                localUiElement = mapped.uiElement;
-            } else {
-                console.warn('Mapper failed', mapper);
-            }
+const formStructureMapped = ref({
+    jsonElement: jsonElement.value || ({} as Record<string, any>),
+    uiElement: props.layoutElement,
+});
+
+async function mapFormStructure() {
+    let localJsonElement = jsonElement.value || {};
+    let localUiElement: Control = props.layoutElement;
+    localUiElement = mergeDescendantControlOptionsOverrides(
+        localUiElement,
+        overridesMap
+    );
+    for (const mapper of mappers.value) {
+        let mapped;
+        if (isMapperWithoutData(mapper)) {
+            mapped = mapper.map(localJsonElement || {}, localUiElement);
+        } else {
+            mapped = await mapper.map(
+                localJsonElement || {},
+                localUiElement,
+                formData.value
+            );
         }
-        localUiElement = mergeDescendantControlOptionsOverrides(
-            localUiElement,
-            overridesMap
-        );
-        return {
-            jsonElement: localJsonElement,
-            uiElement: localUiElement,
-        };
+        if (mapped) {
+            localJsonElement = mapped.jsonElement;
+            localUiElement = mapped.uiElement;
+        } else {
+            console.warn('Mapper failed', mapper);
+        }
     }
-);
+    formStructureMapped.value = {
+        jsonElement: localJsonElement || {},
+        uiElement: localUiElement,
+    };
+}
+
+watch([() => jsonElement.value, () => props.layoutElement], mapFormStructure, {
+    immediate: true,
+});
 
 onMounted(() => {
     if (
@@ -183,7 +189,12 @@ onMounted(() => {
                 jsonSchema.value,
                 uiSchema.value,
                 props.layoutElement.scope,
-                savePath
+                savePath,
+                jsonElement.value,
+                mergeDescendantControlOptionsOverrides(
+                    props.layoutElement,
+                    overridesMap
+                )
             );
             for (const dependency of mapper.getDependencies()) {
                 if (registeredDependencies.has(dependency)) {
@@ -193,14 +204,14 @@ onMounted(() => {
                 watchDebounced(
                     () => formData.value[dependency],
                     () => {
-                        formStructureMapped.trigger();
+                        mapFormStructure();
                     },
                     { debounce: 50, deep: false }
                 );
             }
         }
     }
-    formStructureMapped.trigger();
+    mapFormStructure();
 });
 
 const htmlMessages = computed(() => {

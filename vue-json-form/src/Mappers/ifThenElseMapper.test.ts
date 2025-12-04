@@ -28,7 +28,7 @@ describe('IfThenElseMapper', () => {
         mapper = new IfThenElseMapper();
     });
 
-    it('applies "then" properties when conditions are fulfilled', () => {
+    it('applies "then" properties when conditions are fulfilled', async () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties';
 
@@ -65,15 +65,20 @@ describe('IfThenElseMapper', () => {
         const uiSchema = makeLayout();
         const ui = makeControl(fieldScope);
 
-        mapper.registerSchemata(jsonSchema, uiSchema, fieldScope, savePath);
+        const initialJson: JSONSchema = {};
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
 
         const data: Record<string, any> = {
             '/country': 'DE',
         };
-
-        const initialJson: JSONSchema = {} as any;
-
-        const result = mapper.map(initialJson, ui, data);
+        const result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         const { jsonElement, uiElement } = result!;
 
@@ -84,7 +89,7 @@ describe('IfThenElseMapper', () => {
         expect(jsonElement.minLength).toBe(2);
     });
 
-    it('applies "else" properties when conditions are not fulfilled', () => {
+    it('applies "else" properties when conditions are not fulfilled', async () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties';
 
@@ -121,15 +126,20 @@ describe('IfThenElseMapper', () => {
         const uiSchema = makeLayout();
         const ui = makeControl(fieldScope);
 
-        mapper.registerSchemata(jsonSchema, uiSchema, fieldScope, savePath);
+        const initialJson: JSONSchema = {};
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
 
         const data: Record<string, any> = {
             '/country': 'US',
         };
-
-        const initialJson: JSONSchema = {} as any;
-
-        const result = mapper.map(initialJson, ui, data);
+        const result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         const { jsonElement } = result!;
 
@@ -138,7 +148,7 @@ describe('IfThenElseMapper', () => {
         expect(jsonElement.minLength).toBe(0);
     });
 
-    it('merges results of multiple matching "if-then" rules in order', () => {
+    it('merges results of multiple matching "if-then" rules in order', async () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties';
 
@@ -176,16 +186,21 @@ describe('IfThenElseMapper', () => {
         const uiSchema = makeLayout();
         const ui = makeControl(fieldScope);
 
-        mapper.registerSchemata(jsonSchema, uiSchema, fieldScope, savePath);
+        const initialJson: JSONSchema = {};
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
 
         const data: Record<string, any> = {
             '/country': 'DE',
             '/role': 'admin',
         };
-
-        const initialJson: JSONSchema = {};
-
-        const result = mapper.map(initialJson, ui, data)!;
+        const result = (await mapper.map(initialJson, ui, data))!;
         const { jsonElement } = result;
 
         // From rule1
@@ -220,14 +235,21 @@ describe('IfThenElseMapper', () => {
         const uiSchema = makeLayout();
         const ui = makeControl(fieldScope);
 
-        mapper.registerSchemata(jsonSchema, uiSchema, fieldScope, savePath);
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            {},
+            ui
+        );
 
         const deps = mapper.getDependencies();
         // sliceScope(savePath, -1) is '' for '/properties', therefore deps are '/<key>'
         expect(deps.sort()).toEqual(['/a', '/b']);
     });
 
-    it('passes through unchanged when no matching allOf with supported if/then[/else] exists', () => {
+    it('passes through unchanged when no matching allOf with supported if/then[/else] exists', async () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties';
 
@@ -238,11 +260,17 @@ describe('IfThenElseMapper', () => {
         const uiSchema = makeLayout();
         const ui = makeControl(fieldScope);
 
-        mapper.registerSchemata(jsonSchema, uiSchema, fieldScope, savePath);
-
         const initialJson: JSONSchema = { type: 'integer' };
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
 
-        const result = mapper.map(initialJson, ui, {});
+        const result = await mapper.map(initialJson, ui, {});
         expect(result).not.toBeNull();
         // Should be exact same references when nothing changed
         expect(result!.jsonElement).toBe(initialJson);

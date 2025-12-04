@@ -1,19 +1,16 @@
 [
   {
-    "path": "vue-json-form/dist/vue-json-form.umd.cjs",
+    "path": "vue-json-form/dist/vue-json-form.cjs",
     "name": "VueJsonForm",
-    "limit": "300 kB"
+    "limit": "300 kB",
+    "running": false,
+    "webpack": false
   },
   {
     "path": "vue-json-form/dist/vue-json-form.css",
     "name": "VueJsonForm CSS",
     "running": false,
     "webpack": false
-  },
-  {
-    "path": "webcomponent/dist/default/vue-json-form.umd.js",
-    "name": "WebComponent",
-    "limit": "300 kB"
   },
   {
     "path": "webcomponent/dist/default/vue-json-form.mjs",
@@ -47,11 +44,11 @@
     "webpack": false
   },
   {
-    "path": "ajv-validator/dist/vue-json-form-ajv-validator.umd.cjs",
-    "name": "AjvValidator"
+    "path": "ajv-validator/dist/vue-json-form-ajv-validator.js",
+    "name": "AjvValidator Module"
   },
   {
-    "path": "schemas/dist/vue-json-form-schemas.umd.cjs",
-    "name": "Schema Package"
+    "path": "schemas/dist/vue-json-form-schemas.js",
+    "name": "Schema Package Module"
   }
 ]

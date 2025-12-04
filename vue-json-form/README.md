@@ -3,9 +3,15 @@
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
+The main Vue.js component for rendering JSON Schema-based forms. Provides an extensible form generation system.
+## Installation
+
+```bash
+npm install @educorvi/vue-json-form
+```
+
 ## Usage
 
-Install with `npm install @educorvi/vue-json-form`.
 Import the CSS file into your application:
 
 ```ts
@@ -54,7 +60,10 @@ It can, for example, be used to add buttons if you don't want to add them to the
 | presetData         | Data that should be loaded into the form.                                                                            | `Object`   | `false`  | -       |
 | generationOptions  | Options for the generation of the UI-Schema if no UI-Schema is provided                                              | `Object`   | `false`  | -       |
 | returnDataAsScopes | Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data | `Object`   | `false`  | -       |
-| mapperFunctions    | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
+| mappers            | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
+| hideValidationState | Hide the Bootstrap validation state                                                                                  | `Boolean`  | `false`  | `false` |
+| validator          | The validator to use for validating the input schemas                                                                 | `Object`   | `false`  | -       |
+| languageProvider   | Provides internationalized strings, for example for validation errors                                                 | `Object`   | `false`  | -       |
 
 
 ### About the Schemas
@@ -78,22 +87,20 @@ Its documentation can be found [here](https://educorvi.github.io/vue-json-form/u
 
 ## Development
 
-## Project setup
+### Project setup
 
 ```
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-(In the according folder)
 
 ```
 yarn run dev
 ```
 
-### Compiles and minifies for production
-(In the according folder)
+### Type-Check and Build for Production
 
 ```
-yarn run build
+turbo run check-types build
 ```
