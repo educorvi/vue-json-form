@@ -67,12 +67,19 @@ export abstract class MapperWithData {
      * @param scope - Json-pointer-like path to the current field.
      * @param savePath - Data addressing base for the current field/siblings.
      */
-    abstract registerSchemata(
+    registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
         scope: string,
-        savePath: string
-    ): void;
+        savePath: string,
+        jsonElement: JSONSchema,
+        uiElement: Control
+    ): void {
+        this.jsonSchema = jsonSchema;
+        this.uiSchema = uiSchema;
+        this.scope = scope;
+        this.savePath = savePath;
+    }
 
     /**
      * Transform the current field's JSON Schema/UI control using the latest data.
@@ -89,10 +96,10 @@ export abstract class MapperWithData {
         jsonElement: JSONSchema,
         uiElement: Control,
         data: Readonly<Record<string, any>>
-    ): null | {
+    ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
-    };
+    }>;
 
     /**
      * Declare data keys this mapper depends on to recompute its result.

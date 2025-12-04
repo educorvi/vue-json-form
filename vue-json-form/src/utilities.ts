@@ -4,7 +4,7 @@ import { hasOption } from '@/typings/typeValidators';
 export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key
-): Options[Key] | undefined;
+): Options[Key];
 
 export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
@@ -16,7 +16,7 @@ export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key,
     defaultValue?: NonNullable<Options[Key]>
-): Options[Key] | undefined {
+): Options[Key] {
     if (hasOption(layoutElement, key)) {
         const value = layoutElement.options[key] as Options[Key];
         if (value !== undefined) return value;

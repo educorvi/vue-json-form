@@ -229,6 +229,13 @@
               ],
               "default": "select"
             },
+            "optionFilters": {
+              "type": "object",
+              "description": "Use rita rules to conditionally display options. If a rule is set for an option, then it will only be displayed, if the rule is fulfilled. The option value is to be used as a key in the object.",
+              "additionalProperties": {
+                "$ref": "rita_rule.schema.json"
+              }
+            },
             "buttonVariant": {
               "$ref": "variants.schema.json"
             }

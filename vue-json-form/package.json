@@ -49,7 +49,7 @@
         "cypress": "cypress open"
     },
     "dependencies": {
-        "@educorvi/rita": "^5.4.4",
+        "@educorvi/rita": "^5.5.0",
         "@educorvi/vue-json-form-schemas": "workspace:*",
         "@vueuse/core": "^14.0.0",
         "bootstrap": "^5.3.8",

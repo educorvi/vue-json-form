@@ -6,6 +6,19 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-87": {
+            "type": "object",
+            "properties": {
+                "q1": {
+                    "type": "string",
+                    "enum": ["a", "b"]
+                },
+                "q2": {
+                    "type": "string",
+                    "enum": ["a", "b"]
+                }
+            }
+        },
         "jso-43": {
             "type": "object",
             "properties": {

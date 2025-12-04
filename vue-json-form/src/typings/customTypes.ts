@@ -18,7 +18,7 @@ export type elementWithElements = Extract<
 /**
  * A layout element that is dependent on another element
  */
-export type dependentElement = LayoutElement &
+export type DependentElement = LayoutElement &
     Required<Pick<LayoutElement, 'showOn'>>;
 
 /**

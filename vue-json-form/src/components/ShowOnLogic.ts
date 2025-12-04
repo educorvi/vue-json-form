@@ -15,7 +15,7 @@ import {
     RitaError,
     UndefinedPathError,
 } from '@educorvi/rita';
-import type { dependentElement } from '@/typings/customTypes';
+import type { DependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { cleanScope } from '@/computedProperties/json';
@@ -41,8 +41,43 @@ function getComparisonFunction<T>(functionName: ShowOnFunctionType) {
     }
 }
 
+export const arrayAliasRegex = new RegExp(
+    `^([^.\\s]+)\\.(${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`
+);
+
+export function getArrayItemIndices(dependentElement: LayoutElement) {
+    const formDataStore = useFormDataStore();
+    const arrayItemIndices: Record<string, number> = {};
+
+    if (dependentElement.type === 'Control') {
+        const scopeParts = dependentElement.scope.split('/');
+
+        const arrayAliases = scopeParts.map((e, i) => {
+            const results = e.match(arrayAliasRegex);
+            if (results) {
+                return {
+                    arrayName:
+                        scopeParts.slice(0, i).join('/') + '/' + results[1],
+                    arrayAlias: results[2],
+                };
+            }
+            return null;
+        });
+        arrayAliases.forEach((alias) => {
+            if (alias) {
+                const cleanedName = cleanScope(alias.arrayName);
+                arrayItemIndices[cleanedName] =
+                    formDataStore.arrayAliasIndices.get(
+                        alias.arrayAlias || ''
+                    ) ?? 0;
+            }
+        });
+    }
+    return arrayItemIndices;
+}
+
 function checkDependentElement(
-    dependentElement: dependentElement
+    dependentElement: DependentElement
 ): Ref<boolean> {
     const formDataStore = useFormDataStore();
     if (isLegacyShowOn(dependentElement.showOn)) {
@@ -87,37 +122,7 @@ function checkDependentElement(
             return show;
         }
         formDataStore.$subscribe(() => {
-            const arrayAliasRegex = new RegExp(
-                `^([^.\\s]+)\\.(${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`
-            );
-            const arrayItemIndices: Record<string, number> = {};
-
-            if (dependentElement.type === 'Control') {
-                const scopeParts = dependentElement.scope.split('/');
-
-                const arrayAliases = scopeParts.map((e, i) => {
-                    const results = e.match(arrayAliasRegex);
-                    if (results) {
-                        return {
-                            arrayName:
-                                scopeParts.slice(0, i).join('/') +
-                                '/' +
-                                results[1],
-                            arrayAlias: results[2],
-                        };
-                    }
-                    return null;
-                });
-                arrayAliases.forEach((alias) => {
-                    if (alias) {
-                        const cleanedName = cleanScope(alias.arrayName);
-                        arrayItemIndices[cleanedName] =
-                            formDataStore.arrayAliasIndices.get(
-                                alias.arrayAlias || ''
-                            ) ?? 0;
-                    }
-                });
-            }
+            const arrayItemIndices = getArrayItemIndices(dependentElement);
             // if (Object.keys(arrayItemIndices).length > 0) {
             //     console.log(arrayItemIndices);
             // }
