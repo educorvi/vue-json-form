@@ -128,16 +128,10 @@ Its documentation can be found [here](https://educorvi.github.io/vue-json-form/u
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-
-```
-yarn run dev
-```
-
 ### Type-Check and Build for Production
 
 ```
-turbo run check-types build
+yarn run build
 ```
 
 ### Generates the documentation
@@ -147,3 +141,4 @@ yarn run doc
 ```
 
 Needs python package `json-schema-for-humans`
+
