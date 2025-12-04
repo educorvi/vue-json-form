@@ -142,7 +142,7 @@ function cleanKey(arrayIndices: Map<string, number>, key: string): string {
  * @param obj - The object to clean
  * @returns The cleaned data in scopes formatting and as json object
  */
-function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
+export function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
     /**
      * The scopes with their values
      */

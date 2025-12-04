@@ -87,12 +87,18 @@ export class IfThenElseMapper extends MapperWithData {
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
         scope: string,
-        savePath: string
+        savePath: string,
+        jsonElement: JSONSchema,
+        uiElement: Control
     ): void {
-        this.jsonSchema = jsonSchema;
-        this.uiSchema = uiSchema;
-        this.scope = scope;
-        this.savePath = savePath;
+        super.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            scope,
+            savePath,
+            jsonElement,
+            uiElement
+        );
         this.conditionsAndResults = this.getConditionsAndResults();
         this.setDependencies();
     }
@@ -234,14 +240,14 @@ export class IfThenElseMapper extends MapperWithData {
         }
     }
 
-    map(
+    async map(
         jsonElement: JSONSchema,
         uiElement: Control,
         data: Readonly<Record<string, any>>
-    ): {
+    ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
-    } | null {
+    }> {
         const fieldName = this.getFieldName();
         if (
             !this.jsonSchema ||

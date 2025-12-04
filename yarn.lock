@@ -861,6 +861,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@educorvi/rita@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@educorvi/rita@npm:5.5.0"
+  dependencies:
+    ajv: "npm:^8.17.1"
+    ajv-formats: "npm:^2.1.1"
+    luxon: "npm:^3.6.1"
+    tslib: "npm:^2.8.1"
+  checksum: 10/92d9d3aa05ac7c610ac614ffacbe28641376832eaebb3e65f7a71050b562e8e7a048de245d79960fc44ee8941011ff39f7bfa64a0d66aab3ba6df06781cba041
+  languageName: node
+  linkType: hard
+
 "@educorvi/vue-json-form-ajv-validator@workspace:^, @educorvi/vue-json-form-ajv-validator@workspace:ajv-validator":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-ajv-validator@workspace:ajv-validator"
@@ -937,7 +949,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:vue-json-form"
   dependencies:
     "@cypress/grep": "npm:^5.0.0"
-    "@educorvi/rita": "npm:^5.4.4"
+    "@educorvi/rita": "npm:^5.5.0"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:*"
     "@rushstack/eslint-patch": "npm:^1.14.1"

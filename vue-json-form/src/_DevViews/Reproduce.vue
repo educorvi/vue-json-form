@@ -7,7 +7,7 @@
         :ui-schema="ui"
         :presetData="presetData"
         :validator="AjvValidator"
-        :mappers="[IfThenElseMapper]"
+        :mappers="[IfThenElseMapper, RitaDependentOptionsMapper]"
     >
     </VueJsonForm>
     <hr />
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import {
     EnglishLanguageProvider,
+    RitaDependentOptionsMapper,
     type SubmitOptions,
     VueJsonForm,
 } from '../main';
