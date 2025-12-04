@@ -21,7 +21,8 @@
     "./vue-json-form.css": "./dist/default/vue-json-form.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
