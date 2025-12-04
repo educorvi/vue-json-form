@@ -46,7 +46,7 @@ describe('RitaDependentOptionsMapper', () => {
 
         // Default mock implementations
         mockGetOption.mockReturnValue(undefined); // No optionFilters by default
-        mockCleanData.mockImplementation((data: Readonly<Record<string, any>>) => ({ json: data })); // Return data as is by default
+        mockCleanData.mockImplementation((data: Readonly<Record<string, any>>) => ({ scopes: {}, json: data })); // Return data as is by default
     });
 
     it('should initialize with empty dependencies and depsRuleMap', async () => {
