@@ -2,4 +2,4 @@ export * from './MapperClass';
 
 export * from './oneOfToEnumMapper';
 export * from './ifThenElseMapper';
-export * from './RitaDependentOptionsMapper';
+export * from './ritaDependentOptionsMapper.ts';

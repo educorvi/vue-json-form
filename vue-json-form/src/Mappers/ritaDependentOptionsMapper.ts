@@ -14,6 +14,7 @@ import {
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
 import { getOption } from '@/utilities.ts';
 import { cleanData } from '@/stores/formData.ts';
+import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
 
 export class RitaDependentOptionsMapper extends MapperWithData {
     private depsRuleMap: Record<IndexType, ParsedRule> = {};
@@ -37,7 +38,10 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         const newJsonElement: JSONSchema = JSON.parse(
             JSON.stringify(jsonElement)
         );
-        const cleanedData = cleanData(data).json;
+        const cleanedData = {
+            $selfIndices: getArrayItemIndices(uiElement),
+            ...cleanData(data).json,
+        };
         let hasChanges = false;
         const evaluatedRules: [string, boolean][] = [];
         for (const [key, rule] of Object.entries(this.depsRuleMap)) {
@@ -75,14 +79,14 @@ export class RitaDependentOptionsMapper extends MapperWithData {
             uiElement
         );
         const depsSet = new Set<string>();
-        this.depsRuleMap = this.processOptionFilters(
+        this.depsRuleMap = this.getOptionFilterDependencies(
             uiElement,
             depsSet,
             savePath
         );
         this.dependencies = Array.from(depsSet);
     }
-    private processOptionFilters(
+    private getOptionFilterDependencies(
         uiElement: Control,
         depsSet: Set<string>,
         savePath: string
@@ -99,9 +103,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
                     for (let path of atoms.pathSet) {
                         path =
                             '/properties/' +
-                            path.split('.').join('/properties/');
+                            path.split('[')[0]?.split('.').join('/properties/');
                         depsSet.add(path);
-                        console.error(path);
                     }
                 } catch (e) {
                     console.warn(`Invalid rule ${rule.id} for option ${key}`);
