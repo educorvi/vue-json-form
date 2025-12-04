@@ -56,8 +56,22 @@ Basic usage example:
 import { VueJsonForm } from '@educorvi/vue-json-form';
 import '@educorvi/vue-json-form/dist/vue-json-form.css';
 
-const jsonSchema = { /* your JSON schema */ };
-const uiSchema = { /* your UI schema */ };
+const jsonSchema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    email: { type: 'string', format: 'email' }
+  },
+  required: ['name', 'email']
+};
+
+const uiSchema = {
+  type: 'VerticalLayout',
+  elements: [
+    { type: 'Control', scope: '#/properties/name' },
+    { type: 'Control', scope: '#/properties/email' }
+  ]
+};
 
 function handleSubmit(data: Record<string, any>) {
   console.log('Form submitted:', data);
