@@ -3,9 +3,15 @@
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
+The main Vue.js component for rendering JSON Schema-based forms. Provides an extensible form generation system.
+## Installation
+
+```bash
+npm install @educorvi/vue-json-form
+```
+
 ## Usage
 
-Install with `npm install @educorvi/vue-json-form`.
 Import the CSS file into your application:
 
 ```ts

@@ -15,7 +15,8 @@
   },
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "prepack": "yarn run build",

@@ -17,7 +17,8 @@
     "files": [
         "dist",
         "src/exampleSchemas",
-        "package.json"
+        "package.json",
+        "README.md"
     ],
     "main": "dist/vue-json-form.cjs",
     "module": "dist/vue-json-form.js",

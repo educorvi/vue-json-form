@@ -1,7 +1,17 @@
-# VueJsonForm Webcomponent
+# @educorvi/vue-json-form-webcomponent
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-webcomponent?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-webcomponent)
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+
+A standalone web component wrapper for VueJsonForm. Use it in any HTML page without a Vue.js build setup.
+
+## Installation
+
+```bash
+npm install @educorvi/vue-json-form-webcomponent
+```
+
+Or use it directly from a CDN (see usage example below).
 
 
 ## Usage

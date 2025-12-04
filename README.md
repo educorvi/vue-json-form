@@ -1,144 +1,118 @@
 # VueJsonForm
 
-[![Build And Test](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml/badge.svg?branch=master)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
-![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=flat&logo=vuedotjs&logoColor=%234FC08D)
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
+[![Build And Test](https://img.shields.io/github/actions/workflow/status/educorvi/vue-json-form/buildAndTest.yaml?branch=master&style=for-the-badge&label=Build%20And%20Test)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
+![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
-#### Automatically generates forms from a JSON schema and an optional UI schema.
+Automatically generates forms from a JSON schema and an optional UI schema.
 
 - [Documentation](https://educorvi.github.io/vue-json-form/)
 - [Demo](https://educorvi.github.io/vue-json-form/demo/)
 
-## Usage
+## Packages
 
-Install with `npm install @educorvi/vue-json-form`.
-Import the CSS file into your application:
+This monorepo contains several packages that make up VueJsonForm:
 
-```ts
-import '@educorvi/vue-json-form/dist/vue-json-form.css';
+### [@educorvi/vue-json-form](./vue-json-form)
+[![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form)
+
+The main Vue.js component for rendering JSON Schema-based forms.
+
+**[View Package Documentation →](./vue-json-form/README.md)**
+
+### [@educorvi/vue-json-form-webcomponent](./webcomponent)
+[![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-webcomponent?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-webcomponent)
+
+A standalone web component wrapper for VueJsonForm. Use it in any HTML page without Vue.js.
+
+**[View Package Documentation →](./webcomponent/README.md)**
+
+### [@educorvi/vue-json-form-schemas](./schemas)
+[![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-schemas?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-schemas)
+
+JSON Schema definitions and TypeScript types for VueJsonForm. Contains the UI schema specification.
+
+**[View Package Documentation →](./schemas/README.md)**
+
+### [@educorvi/vue-json-form-ajv-validator](./ajv-validator)
+[![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-ajv-validator?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-ajv-validator)
+
+Ajv-based validator for VueJsonForm that validates the schemas passed as props.
+
+**[View Package Documentation →](./ajv-validator/README.md)**
+
+## Quick Start
+
+Install the main package:
+
+```bash
+npm install @educorvi/vue-json-form
 ```
 
-Also, make sure that bootstrap 5 is set up for your site.
+Basic usage example:
 
-### Use in VueJS-Component
-
-``` vue
+```vue
 <script setup lang="ts">
-import { type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
+import { VueJsonForm } from '@educorvi/vue-json-form';
+import '@educorvi/vue-json-form/dist/vue-json-form.css';
 
-async function submitMethod(data: Record<string, any>, customSubmitOptions: SubmitOptions, evt: SubmitEvent) {
-    emit("viewCode", "Form Results", data);
+const jsonSchema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    email: { type: 'string', format: 'email' }
+  },
+  required: ['name', 'email']
+};
+
+const uiSchema = {
+  type: 'VerticalLayout',
+  elements: [
+    { type: 'Control', scope: '#/properties/name' },
+    { type: 'Control', scope: '#/properties/email' }
+  ]
+};
+
+function handleSubmit(data: Record<string, any>) {
+  console.log('Form submitted:', data);
 }
-
 </script>
 
 <template>
-    <vue-json-form 
-        :jsonSchema="json" 
-        :uiSchema="ui"
-        :onSubmitForm="submitMethod"
-    ></vue-json-form>
+  <vue-json-form 
+    :jsonSchema="jsonSchema" 
+    :uiSchema="uiSchema"
+    :onSubmitForm="handleSubmit"
+  />
 </template>
-
-<style scoped>
-
-</style>
-
 ```
 
-The slot of the vue-json-form component will be rendered inside the form tag at the end.
-It can, for example, be used to add buttons if you don't want to add them to the ui-schema.
-
-### Props
-
-| Name               | Description                                                                                                          | Type       | Required | Default |
-|--------------------|----------------------------------------------------------------------------------------------------------------------|------------|----------|---------|
-| jsonSchema         | The form's JSON Schema                                                                                               | `Object`   | `true`   | -       |
-| onSubmitForm       | Method that is called, when the Form is submitted. Passes the formdata as first Argument                             | `Function` | `true`   | -       |
-| uiSchema           | The form's UI-Schema. If not specified, a default UI-Schema will be generated                                        | `Object`   | `false`  | -       |
-| renderInterface    | Change the forms UI components                                                                                       | `Object`   | `false`  | -       |
-| presetData         | Data that should be loaded into the form.                                                                            | `Object`   | `false`  | -       |
-| generationOptions  | Options for the generation of the UI-Schema if no UI-Schema is provided                                              | `Object`   | `false`  | -       |
-| returnDataAsScopes | Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data | `Object`   | `false`  | -       |
-| mappers            | Functions to change JSON- and UI-Schema of fields before rendering                                                   | `Object`   | `false`  | -       |
-| hideValidationState | Hide the Bootstrap validation state                                                                                  | `Boolean`  | `false`  | `false` |
-| validator          | The validator to use for validating the input schemas                                                                 | `Object`   | `false`  | -       |
-| languageProvider   | Provides internationalized strings, for example for validation errors                                                 | `Object`   | `false`  | -       |
-
-
-### Use as a Web Component
-VJF can be used as a webcomponent.
-Bootstrap needs to be set up on the surrounding page.
-If you set `action === 'request'` and `request.url` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
-If one of those options is not set, the data and the submit options will be emitted as an event with the name `submit`.
-
-Supported options are:
-- `jsonSchema`
-- `uiSchema`
-- `presetData`
-- `returnDataAsScopes`
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/style.css">
-</head>
-<body>
-<!-- json: Your JSON Schema   -->
-<!-- ui: Your UI Schema       -->
-<vue-json-form
-    jsonSchema='{...}'
-    uiSchema='{...}'
-></vue-json-form>
-
-
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@^3/dist/vue-json-form.umd.js"></script>
-</body>
-</html>
-```
-
-A working example can be found in the file `webcomponent/webcomponent_test.html`.
-
-### About the Schemas
-
-The form fields themselves are defined in the JSON-Schema. In the UI-Schema, the layout of the form is defined. Fields
-are inserted into the form by creating a `Control` in the UI-Schema and referring to the field in the JSON-Schema with a
-json pointer.
-[Examples](https://github.com/educorvi/vue-json-form/tree/master/vue-json-form/src/exampleSchemas)
-
-#### JSON-Schema
-
-The JSON-Schema must be a valid JSON-Schema.
-More details on the json-schema can be found [here](https://json-schema.org/).
-
-#### UI-Schema
-
-The UI-schema must conform
-to [https://educorvi.github.io/vue-json-form/schemas/ui.schema.json](https://educorvi.github.io/vue-json-form/schemas/ui.schema.json).
-Its documentation can be found [here](https://educorvi.github.io/vue-json-form/ui-schema/).
+**Note:** Bootstrap 5 is required. See the [full documentation](https://educorvi.github.io/vue-json-form/) for detailed setup instructions.
 
 ## Development
 
 ### Project setup
 
-```
+```bash
 yarn install
 ```
 
 ### Type-Check and Build for Production
 
-```
+```bash
 yarn run build
 ```
 
-### Generates the documentation
+### Generate Documentation
 
-```
+```bash
 yarn run doc
 ```
 
-Needs python package `json-schema-for-humans`
+Requires Python package `json-schema-for-humans`.
+
+## License
+
+MIT
+
 
