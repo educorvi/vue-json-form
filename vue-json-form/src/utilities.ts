@@ -16,7 +16,7 @@ export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key,
     defaultValue?: NonNullable<Options[Key]>
-): Options[Key] {
+): Options[Key] | undefined {
     if (hasOption(layoutElement, key)) {
         const value = layoutElement.options[key] as Options[Key];
         if (value !== undefined) return value;
