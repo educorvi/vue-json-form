@@ -2,7 +2,7 @@
 import {
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
-import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
+import { IfThenElseMapper, OneOfToEnumMapper, RitaDependentOptionsMapper } from '@educorvi/vue-json-form';
 import { getComputed, getSubmitFunc, type Props, type Emits } from './vueComponentCommons.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
@@ -12,13 +12,14 @@ const emit = defineEmits<Emits>()
 
 const { jsonSchema, uiSchema, presetData, returnDataAsScopes } = getComputed(props)
 
-const mappers = [OneOfToEnumMapper, IfThenElseMapper];
+const mappers = [OneOfToEnumMapper, IfThenElseMapper, RitaDependentOptionsMapper];
 
 const onSubmitForm = getSubmitFunc(emit)
 </script>
 
 <template>
     <vjf-comp
+        v-if="jsonSchema"
         :json-schema="jsonSchema"
         :ui-schema="uiSchema"
         :preset-data="presetData"
