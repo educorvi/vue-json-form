@@ -204,7 +204,6 @@ onMounted(() => {
                 watchDebounced(
                     () => formData.value[dependency],
                     () => {
-                        // formStructureMapped.trigger();
                         mapFormStructure();
                     },
                     { debounce: 50, deep: false }
@@ -212,7 +211,6 @@ onMounted(() => {
             }
         }
     }
-    // formStructureMapped.trigger();
     mapFormStructure();
 });
 
