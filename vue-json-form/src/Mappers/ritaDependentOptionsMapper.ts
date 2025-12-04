@@ -100,11 +100,11 @@ export class RitaDependentOptionsMapper extends MapperWithData {
                         RitaDependentOptionsMapper.parser.parseRule(rule);
                     depsRuleMap[key] = parsedRule;
                     const atoms = getAtoms([parsedRule]);
-                    for (let path of atoms.pathSet) {
-                        path =
+                    for (const path of atoms.pathSet) {
+                        const mappedPath =
                             '/properties/' +
                             path.split('[')[0]?.split('.').join('/properties/');
-                        depsSet.add(path);
+                        depsSet.add(mappedPath);
                     }
                 } catch (e) {
                     console.warn(`Invalid rule ${rule.id} for option ${key}`);
