@@ -66,6 +66,8 @@ export abstract class MapperWithData {
      * @param uiSchema - Root UI schema layout (read-only).
      * @param scope - Json-pointer-like path to the current field.
      * @param savePath - Data addressing base for the current field/siblings.
+     * @param jsonElement - The JSON Schema fragment describing the current field.
+     * @param uiElement - The corresponding UI schema for the field.
      */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
