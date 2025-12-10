@@ -54,6 +54,8 @@ export abstract class MapperWithData {
     protected uiSchema: Readonly<Layout | Wizard> | undefined;
     protected savePath: string | undefined;
     protected scope: string | undefined;
+    protected jsonElement: JSONSchema | undefined;
+    protected uiElement: Control | undefined;
 
     /**
      * Provide schema context for the mapper.
@@ -81,6 +83,8 @@ export abstract class MapperWithData {
         this.uiSchema = uiSchema;
         this.scope = scope;
         this.savePath = savePath;
+        this.jsonElement = jsonElement;
+        this.uiElement = uiElement;
     }
 
     /**
