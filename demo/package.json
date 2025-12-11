@@ -8,11 +8,9 @@
     "pre-commit": "echo 'No pre commit configured for demo'",
     "build": "vite build",
     "preview": "vite preview",
-    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
-    "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
-    "test:unit": "cypress run --component",
-    "test:unit:dev": "cypress open --component",
-    "check-types": "vue-tsc --noEmit -p tsconfig.cypress-ct.json --composite false"
+    "test:e2e": "playwright test",
+    "test:e2e:dev": "playwright test --ui",
+    "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
   },
   "publishConfig": {
     "access": "public"
@@ -29,6 +27,7 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@semantic-release/exec": "^7.1.0",
     "@tsconfig/node18": "^18.2.4",
     "@types/node": "^24.9.2",
@@ -36,6 +35,7 @@
     "@vue/tsconfig": "^0.8.1",
     "cypress": "^15.5.0",
     "npm-run-all": "^4.1.5",
+    "playwright": "^1.57.0",
     "semantic-release": "^25.0.1",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",

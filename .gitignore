@@ -149,3 +149,7 @@ dist
 # and uncomment the following lines
 .pnp.*
 
+# Playwright
+playwright-report/
+test-results/
+playwright/.cache/
