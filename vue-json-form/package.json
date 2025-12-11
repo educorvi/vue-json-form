@@ -67,7 +67,6 @@
     },
     "devDependencies": {
         "@axe-core/playwright": "^4.11.0",
-        "@cypress/grep": "^5.0.0",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@playwright/test": "^1.57.0",
         "@rushstack/eslint-patch": "^1.14.1",
@@ -86,8 +85,6 @@
         "@vue/test-utils": "^2.4.6",
         "@vue/tsconfig": "^0.8.1",
         "axe-core": "^4.11.0",
-        "cypress": "^15.5.0",
-        "cypress-axe": "^1.7.0",
         "eslint": "^9.38.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-vue": "^10.5.1",
