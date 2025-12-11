@@ -1,6 +1,6 @@
 Project-specific development guidelines for vue-json-form (monorepo)
 
-Audience: Advanced contributors familiar with Yarn workspaces, Vite, Vue 3, TypeScript, Vitest, and Cypress.
+Audience: Advanced contributors familiar with Yarn workspaces, Vite, Vue 3, TypeScript, Vitest, and Playwright.
 
 1) Monorepo overview and prerequisites
 - Package manager: Yarn 4 (Berry). Confirm with node -v (CI uses Node 20/22/24). Use the same major Node versions for reproducibility.
@@ -45,22 +45,22 @@ Audience: Advanced contributors familiar with Yarn workspaces, Vite, Vue 3, Type
     - Run: yarn workspace @educorvi/vue-json-form vitest run src/MapperFunctions/yourFunction.test.ts
     - Remove temporary files when done if they are only for demonstration.
 
-4) Testing: end-to-end (Cypress)
-- Location: vue-json-form/cypress/e2e/*.cy.ts
-- Dev server + Cypress (CI parity):
-  - CI does: build deps, then in ./vue-json-form runs build, starts dev, wait-on http://localhost:5173, then runs Cypress.
+4) Testing: end-to-end (Playwright)
+- Location: vue-json-form/tests/e2e/*.spec.ts
+- Dev server + Playwright (CI parity):
+  - CI does: build deps, then in ./vue-json-form installs Playwright browsers, runs Playwright tests.
   - Local equivalent from repo root:
     - yarn install --immutable
     - yarn build:vue-json-form
     - cd vue-json-form
-    - yarn build
-    - In one terminal: yarn dev  # Vite at http://localhost:5173
-    - In another terminal: yarn cypress  # Opens Cypress runner
-  - Headless run:
-    - From vue-json-form: npx cypress run
+    - npx playwright install --with-deps chromium  # First time only
+    - yarn test:e2e  # Runs tests headless
+  - Interactive mode:
+    - From vue-json-form: yarn playwright  # Opens Playwright UI
 - Tips
-  - Keep e2e fixtures and example schemas under vue-json-form/src/exampleSchemas for reproducible scenarios; CI records and uploads screenshots on failures.
-  - When adjusting ports/hosts, update wait-on in .github/workflows/buildAndTest.yaml and local commands accordingly.
+  - Playwright automatically starts the dev server before running tests (configured in playwright.config.ts).
+  - Keep e2e fixtures and example schemas under vue-json-form/src/exampleSchemas for reproducible scenarios; CI uploads test reports on failures.
+  - When adjusting ports/hosts, update baseURL in playwright.config.ts and webServer settings accordingly.
 
 5) Coding standards and project conventions
 - Languages/stack: TypeScript, Vue 3, Vite, Pinia, Sass. Typings for schemas are provided by @educorvi/vue-json-form-schemas.
@@ -93,5 +93,5 @@ Audience: Advanced contributors familiar with Yarn workspaces, Vite, Vue 3, Type
   - yarn install --immutable && yarn build
 - Iterate on vue-json-form only:
   - yarn build:vue-json-form && yarn workspace @educorvi/vue-json-form dev
-- Run Cypress like CI does:
-  - yarn build:vue-json-form && (cd vue-json-form && yarn build && yarn dev) in one terminal, and in another terminal run yarn cypress from vue-json-form
+- Run Playwright like CI does:
+  - yarn build:vue-json-form && (cd vue-json-form && yarn test:e2e)
