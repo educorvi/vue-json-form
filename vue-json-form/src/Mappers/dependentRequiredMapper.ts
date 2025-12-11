@@ -8,6 +8,20 @@ import type {
 import { sliceScope } from '@/Commons.ts';
 import { getJsonPointerSafe } from '@/computedProperties/json.ts';
 
+/**
+ * DependentRequiredMapper
+ *
+ * Implements the JSON Schema `dependentRequired` keyword, which makes the current field
+ * required if a specific other field (the dependency) is present in the data.
+ *
+ * Mapper behavior in short:
+ * - During `registerSchemata`, it inspects the parent object's `dependentRequired` keyword.
+ * - It identifies if the current field is listed as a required field for any other property (the dependency).
+ * - During `map`, it checks if any of those dependencies are present in the `data`.
+ * - If a dependency is present, it sets `forceRequired = true` in the UI element options,
+ *   making the field required in the form.
+ * - `getDependencies` returns the paths of the fields that this field depends on.
+ */
 export class DependentRequiredMapper extends MapperWithData {
     private dependencies: string[] = [];
     getDependencies(): string[] {
