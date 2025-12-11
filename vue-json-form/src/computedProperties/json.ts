@@ -26,7 +26,7 @@ export function injectJsonData() {
     return { jsonElement, layoutElement: uiElement, savePath };
 }
 
-function getJsonPointerSafe(
+export function getJsonPointerSafe(
     ...args: Parameters<typeof jsonPointer.get>
 ): ReturnType<typeof jsonPointer.get> {
     if (!jsonPointer.has(...args)) {
@@ -95,34 +95,6 @@ export function getComputedRequired(layout: Ref<Control, Control>) {
         ) {
             if (jsonElement.value.includes(fieldName)) {
                 return true;
-            }
-        }
-
-        // Check if the field is dependentRequired
-        jsonElement = getComputedJsonElement(
-            grandParentPath.value + '/dependentRequired',
-            true
-        );
-
-        if (!jsonElement.value || typeof jsonElement !== 'object') return false;
-
-        for (const [dependentOf, dependentChildren] of Object.entries(
-            jsonElement.value
-        )) {
-            if (!Array.isArray(dependentChildren)) {
-                continue;
-            }
-            if (dependentChildren.includes(fieldName)) {
-                const savePath =
-                    inject(savePathOverrideProviderKey, undefined) ||
-                    layout.value.scope;
-                const formDataPath =
-                    savePath.split('/').slice(0, -1).join('/') +
-                    '/' +
-                    dependentOf;
-                if (useFormDataStore().formData[formDataPath]) {
-                    return true;
-                }
             }
         }
 

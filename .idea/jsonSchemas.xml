@@ -31,6 +31,9 @@
                   <Item>
                     <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_7.json" />
                   </Item>
+                  <Item>
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_10.json" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>

@@ -7,7 +7,11 @@
         :ui-schema="ui"
         :presetData="presetData"
         :validator="AjvValidator"
-        :mappers="[IfThenElseMapper, RitaDependentOptionsMapper]"
+        :mappers="[
+            IfThenElseMapper,
+            RitaDependentOptionsMapper,
+            DependentRequiredMapper,
+        ]"
     >
     </VueJsonForm>
     <hr />
@@ -32,6 +36,7 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
+import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';
 
 const presetData: Ref<Record<string, any> | undefined> = ref({
     'jso-39-multiselect': ['option 2', 'option 3'],
