@@ -52,14 +52,14 @@ export class DependentRequiredMapper extends MapperWithData {
         if (!depReq) {
             return;
         }
-        const deqReqsForThisField = Object.entries(depReq)
+        const depReqsForThisField = Object.entries(depReq)
             .map(([key, reqs]) => ({
                 key,
                 requiresThis: reqs.includes(scope.split('/').pop() || ''),
             }))
             .filter(({ requiresThis }) => requiresThis)
             .map(({ key }) => key);
-        this.dependencies = deqReqsForThisField.map(
+        this.dependencies = depReqsForThisField.map(
             (key) => sliceScope(savePath, -1) + '/' + key
         );
     }
