@@ -3,6 +3,6 @@
     "exclude": [],
     "compilerOptions": {
         "composite": true,
-        "types": ["node", "jsdom", "cypress", "cypress-axe"]
+        "types": ["node", "jsdom"]
     }
 }

@@ -14,6 +14,12 @@ on:
       - checks_requested
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -60,22 +66,21 @@ jobs:
       - run: yarn run build:vue-json-form
       - run: yarn test:unit
         working-directory: ./vue-json-form
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./vue-json-form
-          build: yarn run build
-          start: yarn dev
-          wait-on: 'http://localhost:5173'
-          record: true
-        env:
-          # pass GitHub token to allow accurately detecting a build vs a re-run build
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Cypress
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+      - name: Install Playwright Browsers
+        run: yarn playwright install --with-deps chromium
+        working-directory: ./vue-json-form
+      - name: Run Playwright tests
+        run: yarn test:e2e
+        working-directory: ./vue-json-form
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-screenshots
-          path: cypress/screenshots
+          name: playwright-report
+          path: vue-json-form/playwright-report/
+          retention-days: 30
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: (!cancelled())
+        with:
+          files: |
+            vue-json-form/test-results/**/*.xml
