@@ -4,6 +4,8 @@ const reporter: PlaywrightTestConfig['reporter'] = [['list'], ['html']];
 const reporterCI: PlaywrightTestConfig['reporter'] = [
     ['github'],
     ['junit', { outputFile: 'test-results/results.xml' }],
+    ['dot'],
+    ['html', { open: 'never' }],
 ];
 
 /**
