@@ -41,13 +41,13 @@
         "test": "run-p 'test:**'",
         "test:unit": "vitest --run",
         "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
         "build": "vite build",
         "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
         "pre-commit": "echo ''",
         "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
         "format": "prettier --write src/",
-        "prepare": "husky",
-        "playwright": "playwright test --ui"
+        "prepare": "husky"
     },
     "dependencies": {
         "@educorvi/rita": "^5.5.0",
