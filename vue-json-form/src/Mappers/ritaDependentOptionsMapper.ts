@@ -4,13 +4,8 @@ import type {
     JSONSchema,
     Layout,
     Wizard,
-    Rule,
 } from '@educorvi/vue-json-form-schemas';
-import {
-    hasOption,
-    type IndexType,
-    isLayout,
-} from '@/typings/typeValidators.ts';
+import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
 import { getOption } from '@/utilities.ts';
 import { cleanData } from '@/stores/formData.ts';

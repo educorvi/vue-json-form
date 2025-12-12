@@ -2,7 +2,6 @@ import { computed, type ComputedRef, inject, type Ref, toRef } from 'vue';
 import {
     formStructureProviderKey,
     savePathProviderKey,
-    savePathOverrideProviderKey,
 } from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
 import pointer from 'json-pointer';
@@ -12,7 +11,6 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
 import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
 import { isDefined } from '@/typings/typeValidators.ts';
-import { useFormDataStore } from '@/stores/formData.ts';
 
 export function injectJsonData() {
     const fs = inject(formStructureProviderKey);
