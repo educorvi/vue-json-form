@@ -1,53 +1,9 @@
 {
   "name": "@educorvi/vue-json-form",
+  "version": "0.0.0",
   "author": {
     "email": "julian.pollinger@educorvi.de",
     "name": "Julian Pollinger"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "license": "MIT",
-  "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form",
-    "directory": "vue-json-form"
-  },
-  "files": [
-    "dist",
-    "src/exampleSchemas",
-    "package.json",
-    "README.md"
-  ],
-  "main": "dist/vue-json-form.cjs",
-  "module": "dist/vue-json-form.js",
-  "types": "dist/vue-json-form.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/vue-json-form.d.ts",
-      "import": "./dist/vue-json-form.js",
-      "default": "./dist/vue-json-form.js"
-    },
-    "./dist/*": "./dist/*",
-    "./src/exampleSchemas/*": "./src/exampleSchemas/*"
-  },
-  "scripts": {
-    "prepack": "yarn workspace vue-json-form run build:vue-json-form",
-    "release:alpha": "yarn npm publish --access public --tag alpha",
-    "dev": "vite -c vite.dev.config.ts --host",
-    "preview": "vite preview",
-    "test": "run-p 'test:**'",
-    "test:unit": "vitest --run",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "build": "vite build",
-    "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "pre-commit": "echo ''",
-    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
-    "format": "prettier --write src/",
-    "prepare": "husky"
   },
   "dependencies": {
     "@educorvi/rita": "^5.5.0",
@@ -106,5 +62,49 @@
     "vue-eslint-parser": "^10.2.0",
     "vue-router": "4",
     "vue-tsc": "^3.1.2"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/vue-json-form.d.ts",
+      "import": "./dist/vue-json-form.js",
+      "default": "./dist/vue-json-form.js"
+    },
+    "./dist/*": "./dist/*",
+    "./src/exampleSchemas/*": "./src/exampleSchemas/*"
+  },
+  "files": [
+    "dist",
+    "src/exampleSchemas",
+    "package.json",
+    "README.md"
+  ],
+  "license": "MIT",
+  "main": "dist/vue-json-form.cjs",
+  "module": "dist/vue-json-form.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form",
+    "directory": "vue-json-form"
+  },
+  "scripts": {
+    "build": "vite build",
+    "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
+    "dev": "vite -c vite.dev.config.ts --host",
+    "format": "prettier --write src/",
+    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
+    "pre-commit": "echo ''",
+    "prepack": "yarn workspace vue-json-form run build:vue-json-form",
+    "prepare": "husky",
+    "preview": "vite preview",
+    "release:alpha": "yarn npm publish --access public --tag alpha",
+    "test": "run-p 'test:**'",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:unit": "vitest --run"
+  },
+  "type": "module",
+  "types": "dist/vue-json-form.d.ts"
 }

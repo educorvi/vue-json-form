@@ -1,45 +1,7 @@
 {
   "name": "@educorvi/vue-json-form-webcomponent",
-  "version": "0.0.0",
   "description": "Vue JSON Form Webcomponent",
-  "type": "commonjs",
-  "main": "dist/default/vue-json-form.umd.js",
-  "module": "dist/default/vue-json-form.mjs",
-  "exports": {
-    ".": {
-      "import": "./dist/default/vue-json-form.mjs",
-      "require": "./dist/default/vue-json-form.umd.js"
-    },
-    "./shadowDom": {
-      "import": "./dist/shadowDom/vue-json-form.mjs",
-      "require": "./dist/shadowDom/vue-json-form.umd.js"
-    },
-    "./ajvValidator": {
-      "import": "./dist/ajvValidator/vue-json-form.mjs",
-      "require": "./dist/ajvValidator/vue-json-form.umd.js"
-    },
-    "./vue-json-form.css": "./dist/default/vue-json-form.css"
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "prepack": "yarn workspace vue-json-form run build",
-    "build:default": "BUILD_TARGET=default vite build",
-    "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
-    "build:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
-    "build": "run-p 'build:*'",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "check-types": "vue-tsc --noEmit"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/educorvi/vue-json-form.git"
-  },
+  "version": "0.0.0",
   "dependencies": {
     "@educorvi/vue-json-form": "workspace:^",
     "@educorvi/vue-json-form-ajv-validator": "workspace:^",
@@ -61,5 +23,40 @@
     "typescript": "~5.9.3",
     "vite": "^7.1.12",
     "vue-tsc": "^3.1.2"
-  }
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/default/vue-json-form.mjs",
+      "require": "./dist/default/vue-json-form.umd.js"
+    },
+    "./shadowDom": {
+      "import": "./dist/shadowDom/vue-json-form.mjs",
+      "require": "./dist/shadowDom/vue-json-form.umd.js"
+    },
+    "./ajvValidator": {
+      "import": "./dist/ajvValidator/vue-json-form.mjs",
+      "require": "./dist/ajvValidator/vue-json-form.umd.js"
+    },
+    "./vue-json-form.css": "./dist/default/vue-json-form.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "dist/default/vue-json-form.umd.js",
+  "module": "dist/default/vue-json-form.mjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "educorvi/vue-json-form.git",
+  "scripts": {
+    "build": "run-p 'build:*'",
+    "build:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
+    "build:default": "BUILD_TARGET=default vite build",
+    "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
+    "check-types": "vue-tsc --noEmit",
+    "prepack": "yarn workspace vue-json-form run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "commonjs"
 }

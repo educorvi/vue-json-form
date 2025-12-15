@@ -1,30 +1,7 @@
 {
   "name": "@educorvi/vue-json-form-ajv-validator",
-  "version": "0.0.0",
   "description": "ajv-validator for Vue JSON Form",
-  "main": "./dist/vue-json-form-ajv-validator.cjs",
-  "module": "./dist/vue-json-form-ajv-validator.js",
-  "types": "./dist/vue-json-form-ajv-validator.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/vue-json-form-ajv-validator.d.ts",
-      "import": "./dist/vue-json-form-ajv-validator.js",
-      "require": "./dist/vue-json-form-ajv-validator.cjs",
-      "default": "./dist/vue-json-form-ajv-validator.js"
-    }
-  },
-  "type": "module",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "prepack": "yarn run build",
-    "build": "yarn run build:ajvStandalone && vite build",
-    "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
-    "check-types": "tsc --noEmit"
-  },
-  "packageManager": "yarn@4.4.0",
+  "version": "0.0.0",
   "dependencies": {
     "@educorvi/vue-json-form-schemas": "workspace:^",
     "ajv": "^8.17.1",
@@ -46,7 +23,30 @@
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-static-copy": "^3.1.4"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/vue-json-form-ajv-validator.d.ts",
+      "import": "./dist/vue-json-form-ajv-validator.js",
+      "require": "./dist/vue-json-form-ajv-validator.cjs",
+      "default": "./dist/vue-json-form-ajv-validator.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/vue-json-form-ajv-validator.cjs",
+  "module": "./dist/vue-json-form-ajv-validator.js",
+  "packageManager": "yarn@4.4.0",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "scripts": {
+    "build": "yarn run build:ajvStandalone && vite build",
+    "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
+    "check-types": "tsc --noEmit",
+    "prepack": "yarn run build"
+  },
+  "type": "module",
+  "types": "./dist/vue-json-form-ajv-validator.d.ts"
 }
