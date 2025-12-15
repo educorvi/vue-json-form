@@ -206,8 +206,7 @@ test('JSO-79-IV', async ({ page }) => {
 
 test('JSO-68', async ({ page }) => {
     const ARRAY_CONTAINER = '#vjf_control_for__properties_multiFileUpload1';
-    const SINGLE_UPLOAD = '#vjf_control_for__properties_multiFileUpload2';
-
+    const SINGLE_UPLOAD = "input[name='/properties/multiFileUpload2']";
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 
     await expect(page.locator(ARRAY_CONTAINER)).toBeVisible();
@@ -216,7 +215,11 @@ test('JSO-68', async ({ page }) => {
         page.locator(`${ARRAY_CONTAINER} button[aria-label="Add Item"]`)
     ).toBeVisible();
 
-    await expect(page.locator(SINGLE_UPLOAD)).toBeVisible();
+    await expect(
+        page.locator(
+            "label[for='vjf_control_for__properties_multiFileUpload2']"
+        )
+    ).toBeVisible();
     await expect(page.locator(SINGLE_UPLOAD)).toHaveAttribute('type', 'file');
     await expect(page.locator(SINGLE_UPLOAD)).toHaveAttribute('multiple', '');
 
@@ -580,7 +583,7 @@ test('JSO-11', async ({ page }) => {
         .fill('abc');
     await expect(
         page.locator(
-            'input[name="/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc"]'
+            'label[for="vjf_control_for__properties_upload-field-in-formcd69370e0708472482997b3da12ad3cc"]'
         )
     ).toBeVisible();
 
@@ -598,7 +601,7 @@ test('JSO-11', async ({ page }) => {
         .check();
     await expect(
         page.locator(
-            'input[name="/properties/upload-field-in-formcd69370e0708472482997b3da12ad3cc"]'
+            'label[for="vjf_control_for__properties_upload-field-in-formcd69370e0708472482997b3da12ad3cc"]'
         )
     ).toBeVisible();
 });
