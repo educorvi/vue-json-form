@@ -1,10 +1,26 @@
 {
   "name": "@educorvi/vue-json-form-schemas",
-  "version": "0.0.0",
   "description": "Schemas for Vue JSON Form",
-  "main": "./dist/vue-json-form-schemas.cjs",
-  "module": "./dist/vue-json-form-schemas.js",
-  "types": "./dist/vue-json-form-schemas.d.ts",
+  "version": "0.0.0",
+  "dependencies": {
+    "@educorvi/rita": "^5.5.1",
+    "json-schema-typed": "^8.0.2"
+  },
+  "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^15.1.3",
+    "@semantic-release/exec": "^7.1.0",
+    "json-schema-to-typescript": "^15.0.4",
+    "npm-run-all": "^4.1.5",
+    "rollup-plugin-copy": "^3.5.0",
+    "semantic-release": "^25.0.2",
+    "semantic-release-monorepo": "^8.0.2",
+    "semantic-release-yarn": "^3.0.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-externalize-deps": "^0.10.0",
+    "vite-plugin-static-copy": "^3.1.4"
+  },
   "exports": {
     ".": {
       "types": "./dist/vue-json-form-schemas.d.ts",
@@ -16,39 +32,23 @@
     "./dist/json-2019.schema.json": "./dist/json-2019.schema.json",
     "./package.json": "./package.json"
   },
-  "type": "module",
   "files": [
     "dist",
     "README.md"
   ],
-  "scripts": {
-    "prepack": "yarn run build",
-    "build": "yarn run generateTypings && yarn run mergeSchema && tsc --noEmit && vite build",
-    "mergeSchema": "node mergeSchema.cjs",
-    "generateTypings": "run-p 'generateTypings:*'",
-    "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts"
-  },
+  "main": "./dist/vue-json-form-schemas.cjs",
+  "module": "./dist/vue-json-form-schemas.js",
   "packageManager": "yarn@4.4.0",
-  "dependencies": {
-    "@educorvi/rita": "^5.4.4",
-    "json-schema-typed": "^8.0.1"
-  },
-  "devDependencies": {
-    "@apidevtools/json-schema-ref-parser": "^14.2.1",
-    "@semantic-release/exec": "^7.1.0",
-    "json-schema-to-typescript": "^15.0.4",
-    "npm-run-all": "^4.1.5",
-    "rollup-plugin-copy": "^3.5.0",
-    "semantic-release": "^25.0.1",
-    "semantic-release-monorepo": "^8.0.2",
-    "semantic-release-yarn": "^3.0.2",
-    "typescript": "~5.9.3",
-    "vite": "^7.1.12",
-    "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-externalize-deps": "^0.10.0",
-    "vite-plugin-static-copy": "^3.1.4"
-  },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "scripts": {
+    "build": "yarn run generateTypings && yarn run mergeSchema && tsc --noEmit && vite build",
+    "generateTypings": "run-p 'generateTypings:*'",
+    "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
+    "mergeSchema": "node mergeSchema.cjs",
+    "prepack": "yarn run build"
+  },
+  "type": "module",
+  "types": "./dist/vue-json-form-schemas.d.ts"
 }

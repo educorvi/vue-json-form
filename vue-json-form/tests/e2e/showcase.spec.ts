@@ -61,9 +61,12 @@ test.describe('Structure', () => {
     });
 
     test('Fileupload', async ({ page }) => {
-        const id = 'input#vjf_control_for__properties_fileupload';
-        await expect(page.locator(id)).toBeVisible();
-        await expect(page.locator(id)).toHaveAttribute('type', 'file');
+        await expect(
+            page.locator('label[for="vjf_control_for__properties_fileupload"]')
+        ).toBeVisible();
+        await expect(
+            page.locator('input[name="/properties/fileupload"]')
+        ).toHaveAttribute('type', 'file');
     });
 
     test('Group selector', async ({ page }) => {
