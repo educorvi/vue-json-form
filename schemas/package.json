@@ -30,7 +30,7 @@
   },
   "packageManager": "yarn@4.4.0",
   "dependencies": {
-    "@educorvi/rita": "^5.4.4",
+    "@educorvi/rita": "^5.5.0",
     "json-schema-typed": "^8.0.1"
   },
   "devDependencies": {
