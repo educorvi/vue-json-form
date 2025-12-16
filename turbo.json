@@ -11,6 +11,13 @@
     "dev": {
       "persistent": true,
       "cache": false
+    },
+    "doc": {
+      "outputs": ["docs-dist"],
+      "dependsOn": ["build"]
+    },
+    "//#doc:root": {
+      "dependsOn": ["demo#build", "@educorvi/vue-json-form-schemas#doc"]
     }
   }
 }
