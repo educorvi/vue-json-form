@@ -5,6 +5,18 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-94"
+                },
+                "elements": [
+                    {
+                        "type": "HTML",
+                        "htmlData": "I am a <a href=\"https://educorvi.de\">Link</a>"
+                    }
+                ]
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/jso-87",
                 "options": {
