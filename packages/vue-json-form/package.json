@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@educorvi/rita": "^5.5.1",
-    "@educorvi/vue-json-form-schemas": "workspace:*",
+    "@educorvi/vue-json-form-schemas": "workspace:^",
     "@vueuse/core": "^14.1.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",

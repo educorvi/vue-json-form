@@ -13,33 +13,33 @@ Automatically generates forms from a JSON schema and an optional UI schema.
 
 This monorepo contains several packages that make up VueJsonForm:
 
-### [@educorvi/vue-json-form](./vue-json-form)
+### [@educorvi/vue-json-form](./packages/vue-json-form)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form)
 
 The main Vue.js component for rendering JSON Schema-based forms.
 
-**[View Package Documentation →](./vue-json-form/README.md)**
+**[View Package Documentation →](./packages/vue-json-form/README.md)**
 
-### [@educorvi/vue-json-form-webcomponent](./webcomponent)
+### [@educorvi/vue-json-form-webcomponent](./packages/webcomponent)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-webcomponent?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-webcomponent)
 
 A standalone web component wrapper for VueJsonForm. Use it in any HTML page without Vue.js.
 
-**[View Package Documentation →](./webcomponent/README.md)**
+**[View Package Documentation →](./packages/webcomponent/README.md)**
 
-### [@educorvi/vue-json-form-schemas](./schemas)
+### [@educorvi/vue-json-form-schemas](./packages/schemas)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-schemas?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-schemas)
 
 JSON Schema definitions and TypeScript types for VueJsonForm. Contains the UI schema specification.
 
-**[View Package Documentation →](./schemas/README.md)**
+**[View Package Documentation →](./packages/schemas/README.md)**
 
-### [@educorvi/vue-json-form-ajv-validator](./ajv-validator)
+### [@educorvi/vue-json-form-ajv-validator](./packages/ajv-validator)
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-ajv-validator?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-ajv-validator)
 
 Ajv-based validator for VueJsonForm that validates the schemas passed as props.
 
-**[View Package Documentation →](./ajv-validator/README.md)**
+**[View Package Documentation →](./packages/ajv-validator/README.md)**
 
 ## Quick Start
 
