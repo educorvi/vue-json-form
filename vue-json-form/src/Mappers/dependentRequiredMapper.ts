@@ -80,7 +80,7 @@ export class DependentRequiredMapper extends MapperWithData {
             }
         }
         if (required) {
-            const newUiElement: Control = JSON.parse(JSON.stringify(uiElement));
+            const newUiElement: Control = this.cloneUiElement(uiElement);
             if (!newUiElement.options) {
                 newUiElement.options = {};
             }

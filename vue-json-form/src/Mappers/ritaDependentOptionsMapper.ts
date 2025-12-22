@@ -49,9 +49,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         if (Object.keys(this.depsRuleMap).length === 0) {
             return { jsonElement, uiElement };
         }
-        const newJsonElement: JSONSchema = JSON.parse(
-            JSON.stringify(jsonElement)
-        );
+        const newJsonElement: JSONSchema = this.cloneJsonElement(jsonElement);
         const cleanedData = {
             $selfIndices: getArrayItemIndices(uiElement),
             ...cleanData(data).json,

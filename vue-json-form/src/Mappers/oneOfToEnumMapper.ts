@@ -52,16 +52,15 @@ export class OneOfToEnumMapper extends MapperWithoutData {
                 console.warn('No values found in oneOf element');
                 return null;
             } else {
-                const newJsonElement: JSONSchema = JSON.parse(
-                    JSON.stringify(jsonElement)
+                const { newJsonElement, newUiElement } = this.cloneElements(
+                    jsonElement,
+                    uiElement
                 );
+
                 // Replace the `oneOf` with the simpler `enum` array in the JSON Schema
                 newJsonElement.enum = values;
                 delete newJsonElement.oneOf;
 
-                const newUiElement: Control = JSON.parse(
-                    JSON.stringify(uiElement)
-                );
                 // Store the human-readable titles in the UI Schema's options
                 newUiElement.options = {
                     enumTitles: titles,
