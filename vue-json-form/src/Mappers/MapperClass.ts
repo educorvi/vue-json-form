@@ -26,8 +26,8 @@ export abstract class MapperWithoutData {
      * @returns the mapped pair.
      */
     abstract map(
-        jsonElement: JSONSchema,
-        uiElement: Control
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -66,18 +66,18 @@ export abstract class MapperWithData {
      *
      * @param jsonSchema - Root JSON Schema (read-only).
      * @param uiSchema - Root UI schema layout (read-only).
-     * @param scope - Json-pointer-like path to the current field.
-     * @param savePath - Data addressing base for the current field/siblings.
-     * @param jsonElement - The JSON Schema fragment describing the current field.
-     * @param uiElement - The corresponding UI schema for the field.
+     * @param scope - Json-pointer-like path to the current field (read-only).
+     * @param savePath - Data addressing base for the current field/siblings (read-only).
+     * @param jsonElement - The JSON Schema fragment describing the current field (read-only).
+     * @param uiElement - The corresponding UI schema for the field (read-only).
      */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
-        scope: string,
-        savePath: string,
-        jsonElement: JSONSchema,
-        uiElement: Control
+        scope: Readonly<string>,
+        savePath: Readonly<string>,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): void {
         this.jsonSchema = jsonSchema;
         this.uiSchema = uiSchema;
@@ -99,8 +99,8 @@ export abstract class MapperWithData {
      * @returns `null` if the mapper does not apply; otherwise the resulting pair.
      */
     abstract map(
-        jsonElement: JSONSchema,
-        uiElement: Control,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>,
         data: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;

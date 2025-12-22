@@ -23,8 +23,8 @@ function isCustomOneOfElement(
 
 export class OneOfToEnumMapper extends MapperWithoutData {
     map(
-        jsonElement: JSONSchema,
-        uiElement: Control
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -52,13 +52,21 @@ export class OneOfToEnumMapper extends MapperWithoutData {
                 console.warn('No values found in oneOf element');
                 return null;
             } else {
+                const newJsonElement: JSONSchema = JSON.parse(
+                    JSON.stringify(jsonElement)
+                );
                 // Replace the `oneOf` with the simpler `enum` array in the JSON Schema
-                jsonElement.enum = values;
-                delete (jsonElement as JSONSchema).oneOf;
+                newJsonElement.enum = values;
+                delete newJsonElement.oneOf;
+
+                const newUiElement: Control = JSON.parse(
+                    JSON.stringify(uiElement)
+                );
                 // Store the human-readable titles in the UI Schema's options
-                uiElement.options = {
+                newUiElement.options = {
                     enumTitles: titles,
                 };
+                return { jsonElement: newJsonElement, uiElement: newUiElement };
             }
         }
         return { jsonElement, uiElement };

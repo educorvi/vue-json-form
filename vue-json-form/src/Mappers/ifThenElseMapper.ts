@@ -86,10 +86,10 @@ export class IfThenElseMapper extends MapperWithData {
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
-        scope: string,
-        savePath: string,
-        jsonElement: JSONSchema,
-        uiElement: Control
+        scope: Readonly<string>,
+        savePath: Readonly<string>,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): void {
         super.registerSchemata(
             jsonSchema,
@@ -241,8 +241,8 @@ export class IfThenElseMapper extends MapperWithData {
     }
 
     async map(
-        jsonElement: JSONSchema,
-        uiElement: Control,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>,
         data: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;
