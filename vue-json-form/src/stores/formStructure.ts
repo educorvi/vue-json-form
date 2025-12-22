@@ -6,7 +6,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
-import type { Mapper, MapperClass } from '@/typings/customTypes.ts';
+import type { MapperClass } from '@/typings/customTypes.ts';
 
 const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 

@@ -84,14 +84,14 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import {
     hasItems,
     hasOption,
-    hasProperty,
+    isMapperWithData,
     isMapperWithoutData,
 } from '@/typings/typeValidators';
 import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
-import { computedWithControl, watchDebounced } from '@vueuse/core';
-import type { Mapper } from '@/typings/customTypes.ts';
+import { watchDebounced } from '@vueuse/core';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
+import { Mapper } from '@/Mappers';
 
 const {
     jsonSchema,
@@ -146,7 +146,7 @@ async function mapFormStructure() {
         let mapped;
         if (isMapperWithoutData(mapper)) {
             mapped = mapper.map(localJsonElement || {}, localUiElement);
-        } else {
+        } else if (isMapperWithData(mapper)) {
             mapped = await mapper.map(
                 localJsonElement || {},
                 localUiElement,
@@ -184,7 +184,7 @@ onMounted(() => {
         return new mapperClass();
     });
     for (const mapper of mappers.value) {
-        if (!isMapperWithoutData(mapper)) {
+        if (isMapperWithData(mapper)) {
             mapper.registerSchemata(
                 jsonSchema.value,
                 uiSchema.value,

@@ -69,11 +69,7 @@ import {
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import { generateUISchema } from '@/Commons';
-import type {
-    GenerationOptions,
-    Mapper,
-    MapperClass,
-} from '@/typings/customTypes';
+import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
     AutoLanguageProvider,
