@@ -750,7 +750,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-schemas@workspace:*, @educorvi/vue-json-form-schemas@workspace:^, @educorvi/vue-json-form-schemas@workspace:packages/schemas":
+"@educorvi/vue-json-form-schemas@workspace:^, @educorvi/vue-json-form-schemas@workspace:packages/schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:packages/schemas"
   dependencies:
@@ -806,7 +806,7 @@ __metadata:
     "@axe-core/playwright": "npm:^4.11.0"
     "@educorvi/rita": "npm:^5.5.1"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
-    "@educorvi/vue-json-form-schemas": "workspace:*"
+    "@educorvi/vue-json-form-schemas": "workspace:^"
     "@playwright/test": "npm:^1.57.0"
     "@rushstack/eslint-patch": "npm:^1.15.0"
     "@semantic-release/exec": "npm:^7.1.0"
