@@ -27,9 +27,9 @@
     "build:webcomponent": "turbo run check-types build --filter @educorvi/vue-json-form-webcomponent",
     "commitlint": "commitlint --edit",
     "doc": "turbo doc:root && echo 'Copying files...' && run-p -l \"doc:copy:**\"",
-    "doc:copy:demo": "rimraf ./docs/demo && mkdirp ./docs/demo && cp -r ./demo/dist/* ./docs/demo",
-    "doc:copy:ui": "rimraf ./docs/ui-schema && mkdirp ./docs/ui-schema && cp -r ./schemas/docs-dist/* ./docs/ui-schema",
-    "doc:copy:ui-schema-files": "rimraf ./docs/schemas && cp -r ./schemas/src/ui ./docs/schemas",
+    "doc:copy:demo": "rimraf ./docs/demo && mkdirp ./docs/demo && cp -r ./apps/demo/dist/* ./docs/demo",
+    "doc:copy:ui": "rimraf ./docs/ui-schema && mkdirp ./docs/ui-schema && cp -r ./packages/schemas/docs-dist/* ./docs/ui-schema",
+    "doc:copy:ui-schema-files": "rimraf ./docs/schemas && cp -r ./packages/schemas/src/ui ./docs/schemas",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
     "prepare": "husky",
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
@@ -38,10 +38,7 @@
     "size": "size-limit"
   },
   "workspaces": [
-    "demo",
-    "vue-json-form",
-    "webcomponent",
-    "schemas",
-    "ajv-validator"
+    "apps/*",
+    "packages/*"
   ]
 }
