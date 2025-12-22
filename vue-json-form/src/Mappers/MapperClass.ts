@@ -11,15 +11,33 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 
 export abstract class Mapper {
+    /**
+     * Creates a deep clone of the provided element.
+     *
+     * @param el The element to be deep-cloned.
+     * @return A deep clone of the provided element.
+     */
     private clone<T>(el: T): T {
         return structuredClone(el);
     }
 
-    cloneUiElement(uiElement: Readonly<Control>) {
+    /**
+     * Clones the provided UI element and returns a new instance.
+     *
+     * @param {Readonly<Control>} uiElement - The read-only UI element to be cloned.
+     * @return {Control} A new instance of the cloned UI element.
+     */
+    cloneUiElement(uiElement: Readonly<Control>): Control {
         return this.clone(uiElement);
     }
 
-    cloneJsonElement(jsonElement: Readonly<JSONSchema>) {
+    /**
+     * Creates a deep copy of the provided JSON element.
+     *
+     * @param {Readonly<JSONSchema>} jsonElement - The read-only JSON element to be cloned.
+     * @return {JSONSchema} A new instance of the cloned JSON element.
+     */
+    cloneJsonElement(jsonElement: Readonly<JSONSchema>): JSONSchema {
         return this.clone(jsonElement);
     }
     /**
