@@ -10,6 +10,54 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 
+export abstract class Mapper {
+    /**
+     * Creates a deep clone of the provided element.
+     *
+     * @param el The element to be deep-cloned.
+     * @return A deep clone of the provided element.
+     */
+    private clone<T>(el: T): T {
+        return JSON.parse(JSON.stringify(el));
+    }
+
+    /**
+     * Clones the provided UI element and returns a new instance.
+     *
+     * @param {Readonly<Control>} uiElement - The read-only UI element to be cloned.
+     * @return {Control} A new instance of the cloned UI element.
+     */
+    cloneUiElement(uiElement: Readonly<Control>): Control {
+        return this.clone(uiElement);
+    }
+
+    /**
+     * Creates a deep copy of the provided JSON element.
+     *
+     * @param {Readonly<JSONSchema>} jsonElement - The read-only JSON element to be cloned.
+     * @return {JSONSchema} A new instance of the cloned JSON element.
+     */
+    cloneJsonElement(jsonElement: Readonly<JSONSchema>): JSONSchema {
+        return this.clone(jsonElement);
+    }
+    /**
+     * Clones the provided JSON schema and UI control elements, returning new instances of both.
+     *
+     * @param {Readonly<JSONSchema>} jsonElement - The JSON schema element to be cloned.
+     * @param {Readonly<Control>} uiElement - The UI control element to be cloned.
+     * @return {{ newJsonElement: JSONSchema; newUiElement: Control }} An object containing the cloned JSON schema (`newJsonElement`) and UI control (`newUiElement`) elements.
+     */
+    cloneElements(
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
+    ): { newJsonElement: JSONSchema; newUiElement: Control } {
+        return {
+            newJsonElement: this.cloneJsonElement(jsonElement),
+            newUiElement: this.cloneUiElement(uiElement),
+        };
+    }
+}
+
 /**
  * Base class for mappers that do not depend on runtime form data.
  *
@@ -17,7 +65,7 @@ import type {
  * - Implementations must be side-effect free.
  * - They must not mutate the input objects.
  */
-export abstract class MapperWithoutData {
+export abstract class MapperWithoutData extends Mapper {
     /**
      * Transform a field's JSON Schema and/or its UI schema.
      *
@@ -26,8 +74,8 @@ export abstract class MapperWithoutData {
      * @returns the mapped pair.
      */
     abstract map(
-        jsonElement: JSONSchema,
-        uiElement: Control
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -49,7 +97,7 @@ export abstract class MapperWithoutData {
  * - `scope`: Json-pointer-like path of the current field (e.g. `/properties/x`).
  * - `savePath`: Data addressing base used to build keys into the `data` map.
  */
-export abstract class MapperWithData {
+export abstract class MapperWithData extends Mapper {
     protected jsonSchema: Readonly<JSONSchema> | undefined;
     protected uiSchema: Readonly<Layout | Wizard> | undefined;
     protected savePath: string | undefined;
@@ -66,18 +114,18 @@ export abstract class MapperWithData {
      *
      * @param jsonSchema - Root JSON Schema (read-only).
      * @param uiSchema - Root UI schema layout (read-only).
-     * @param scope - Json-pointer-like path to the current field.
-     * @param savePath - Data addressing base for the current field/siblings.
-     * @param jsonElement - The JSON Schema fragment describing the current field.
-     * @param uiElement - The corresponding UI schema for the field.
+     * @param scope - Json-pointer-like path to the current field (read-only).
+     * @param savePath - Data addressing base for the current field/siblings (read-only).
+     * @param jsonElement - The JSON Schema fragment describing the current field (read-only).
+     * @param uiElement - The corresponding UI schema for the field (read-only).
      */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
-        scope: string,
-        savePath: string,
-        jsonElement: JSONSchema,
-        uiElement: Control
+        scope: Readonly<string>,
+        savePath: Readonly<string>,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): void {
         this.jsonSchema = jsonSchema;
         this.uiSchema = uiSchema;
@@ -99,8 +147,8 @@ export abstract class MapperWithData {
      * @returns `null` if the mapper does not apply; otherwise the resulting pair.
      */
     abstract map(
-        jsonElement: JSONSchema,
-        uiElement: Control,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>,
         data: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;

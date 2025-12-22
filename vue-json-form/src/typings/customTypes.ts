@@ -5,7 +5,7 @@ import type {
     Options,
     JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
-import { MapperWithData, type MapperWithoutData } from '@/Mappers';
+import { Mapper, MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
  * A layout element with child elements
@@ -45,8 +45,6 @@ export type GenerationOptions = {
           groupDescription?: string;
       }
 );
-
-export type Mapper = MapperWithoutData | MapperWithData;
 
 export type MapperClass = new () => Mapper;
 

@@ -86,10 +86,10 @@ export class IfThenElseMapper extends MapperWithData {
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
-        scope: string,
-        savePath: string,
-        jsonElement: JSONSchema,
-        uiElement: Control
+        scope: Readonly<string>,
+        savePath: Readonly<string>,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): void {
         super.registerSchemata(
             jsonSchema,
@@ -241,8 +241,8 @@ export class IfThenElseMapper extends MapperWithData {
     }
 
     async map(
-        jsonElement: JSONSchema,
-        uiElement: Control,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>,
         data: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;
@@ -258,10 +258,10 @@ export class IfThenElseMapper extends MapperWithData {
             return { jsonElement, uiElement };
         }
 
-        let newJsonElement: JSONSchema = JSON.parse(
-            JSON.stringify(jsonElement)
+        const { newJsonElement, newUiElement } = this.cloneElements(
+            jsonElement,
+            uiElement
         );
-        let newUiElement: Control = JSON.parse(JSON.stringify(uiElement));
         let hasChanges = false;
         let uiHasChanges = false;
 
@@ -302,10 +302,8 @@ export class IfThenElseMapper extends MapperWithData {
                                 { arrayMerge: overwriteMerge }
                             );
                             if (
-                                JSON.parse(JSON.stringify(merged)) !==
-                                JSON.parse(
-                                    JSON.stringify(newJsonElement[key] || {})
-                                )
+                                JSON.stringify(merged) !==
+                                JSON.stringify(newJsonElement[key] || {})
                             ) {
                                 newJsonElement[key] = merged;
                                 hasChanges = true;

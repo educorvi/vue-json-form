@@ -39,8 +39,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
      * @returns The mapped JSON schema and UI element, or null if no rules are present.
      */
     async map(
-        jsonElement: JSONSchema,
-        uiElement: Control,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>,
         data: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;
@@ -49,9 +49,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         if (Object.keys(this.depsRuleMap).length === 0) {
             return { jsonElement, uiElement };
         }
-        const newJsonElement: JSONSchema = JSON.parse(
-            JSON.stringify(jsonElement)
-        );
+        const newJsonElement: JSONSchema = this.cloneJsonElement(jsonElement);
         const cleanedData = {
             $selfIndices: getArrayItemIndices(uiElement),
             ...cleanData(data).json,
@@ -89,10 +87,10 @@ export class RitaDependentOptionsMapper extends MapperWithData {
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
-        scope: string,
-        savePath: string,
-        jsonElement: JSONSchema,
-        uiElement: Control
+        scope: Readonly<string>,
+        savePath: Readonly<string>,
+        jsonElement: Readonly<JSONSchema>,
+        uiElement: Readonly<Control>
     ): void {
         super.registerSchemata(
             jsonSchema,

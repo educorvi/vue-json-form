@@ -16,12 +16,11 @@ import type {
     DependentElement,
     elementWithCssClass,
     elementWithElements,
-    Mapper,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type { InputType } from 'bootstrap-vue-next';
 import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
-import { MapperWithoutData } from '@/Mappers';
+import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
 
 export type IndexType = string | number | symbol;
 
@@ -169,6 +168,10 @@ export function isMapperWithoutData(
     mapper: Mapper
 ): mapper is MapperWithoutData {
     return mapper instanceof MapperWithoutData;
+}
+
+export function isMapperWithData(mapper: Mapper): mapper is MapperWithData {
+    return mapper instanceof MapperWithData;
 }
 
 export function isIfThenAllOf(
