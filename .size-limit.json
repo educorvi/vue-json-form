@@ -1,54 +1,61 @@
 [
   {
-    "path": "vue-json-form/dist/vue-json-form.cjs",
+    "path": "packages/vue-json-form/dist/vue-json-form.cjs",
     "name": "VueJsonForm",
     "limit": "300 kB",
     "running": false,
     "webpack": false
   },
   {
-    "path": "vue-json-form/dist/vue-json-form.css",
+    "path": "packages/vue-json-form/dist/vue-json-form.js",
+    "name": "VueJsonForm Module",
+    "limit": "300 kB",
+    "running": false,
+    "webpack": false
+  },
+  {
+    "path": "packages/vue-json-form/dist/vue-json-form.css",
     "name": "VueJsonForm CSS",
     "running": false,
     "webpack": false
   },
   {
-    "path": "webcomponent/dist/default/vue-json-form.mjs",
+    "path": "packages/webcomponent/dist/default/vue-json-form.mjs",
     "name": "WebComponent Module",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/shadowDom/vue-json-form.umd.js",
+    "path": "packages/webcomponent/dist/shadowDom/vue-json-form.umd.js",
     "name": "WebComponent Shadow DOM",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/shadowDom/vue-json-form.mjs",
+    "path": "packages/webcomponent/dist/shadowDom/vue-json-form.mjs",
     "name": "WebComponent Shadow DOM Module",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/ajvValidator/vue-json-form.umd.js",
+    "path": "packages/webcomponent/dist/ajvValidator/vue-json-form.umd.js",
     "name": "WebComponent AjvValidator",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/ajvValidator/vue-json-form.mjs",
+    "path": "packages/webcomponent/dist/ajvValidator/vue-json-form.mjs",
     "name": "WebComponent AjvValidator Module",
     "limit": "300 kB"
   },
   {
-    "path": "webcomponent/dist/default/vue-json-form.css",
+    "path": "packages/webcomponent/dist/default/vue-json-form.css",
     "name": "WebComponent CSS",
     "running": false,
     "webpack": false
   },
   {
-    "path": "ajv-validator/dist/vue-json-form-ajv-validator.js",
+    "path": "packages/ajv-validator/dist/vue-json-form-ajv-validator.js",
     "name": "AjvValidator Module"
   },
   {
-    "path": "schemas/dist/vue-json-form-schemas.js",
+    "path": "packages/schemas/dist/vue-json-form-schemas.js",
     "name": "Schema Package Module"
   }
 ]
