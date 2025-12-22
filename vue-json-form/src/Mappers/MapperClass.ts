@@ -18,7 +18,7 @@ export abstract class Mapper {
      * @return A deep clone of the provided element.
      */
     private clone<T>(el: T): T {
-        return structuredClone(el);
+        return JSON.parse(JSON.stringify(el));
     }
 
     /**
