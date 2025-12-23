@@ -357,7 +357,7 @@ watch(jsonElement, () => {
 });
 
 onMounted(() => {
-    if (defaultFormData.value[savePath]) {
+    if (defaultFormData.value[savePath] !== undefined) {
         formData.value[savePath] = defaultFormData.value[savePath];
     }
 });
