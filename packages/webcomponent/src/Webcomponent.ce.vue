@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    bootstrapComponents,
     DependentRequiredMapper,
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
@@ -26,6 +27,7 @@ const onSubmitForm = getSubmitFunc(emit)
         :return-data-as-scopes="returnDataAsScopes"
         :mappers="mappers"
         :onSubmitForm="onSubmitForm"
+        :render-interface="bootstrapComponents"
     >
         <slot />
     </vjf-comp>

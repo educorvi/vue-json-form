@@ -55,8 +55,7 @@
     "build:default": "BUILD_TARGET=default vite build",
     "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "check-types": "vue-tsc --noEmit",
-    "prepack": "yarn workspace vue-json-form run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepack": "yarn workspace vue-json-form run build"
   },
   "type": "commonjs"
 }

@@ -12,6 +12,9 @@
       "persistent": true,
       "cache": false
     },
+    "test": {
+      "cache": false
+    },
     "doc": {
       "outputs": ["docs-dist"],
       "dependsOn": ["build"]

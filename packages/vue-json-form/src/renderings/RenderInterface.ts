@@ -14,39 +14,39 @@ export interface RenderInterface {
     /**
      * Wrapper component for showOn
      */
-    showOnWrapper?: ShowOnWrapperComponent;
+    showOnWrapper: ShowOnWrapperComponent;
 
-    FormFieldWrapper?: FormFieldWrapperComponent;
+    FormFieldWrapper: FormFieldWrapperComponent;
 
-    ArrayButton?: ArrayButtonComponent;
+    ArrayButton: ArrayButtonComponent;
 
-    ErrorViewer?: ErrorViewerComponent;
+    ErrorViewer: ErrorViewerComponent;
 
-    Button?: VjfButtonComponent;
+    Button: VjfButtonComponent;
 
-    Buttongroup?: ButtonGroupComponent;
+    Buttongroup: ButtonGroupComponent;
 
-    HelpPopover?: ControlComponent;
+    HelpPopover: ControlComponent;
 
-    WizardProgress?: WizardProgressComponent;
+    WizardProgress: WizardProgressComponent;
 
-    CheckboxControl?: ControlComponent;
+    CheckboxControl: ControlComponent;
 
-    CheckboxGroupControl?: ControlComponent;
+    CheckboxGroupControl: ControlComponent;
 
-    DefaultControl?: ControlComponent;
+    DefaultControl: ControlComponent;
 
-    FileControl?: ControlComponent;
+    FileControl: ControlComponent;
 
-    NumberControl?: ControlComponent;
+    NumberControl: ControlComponent;
 
-    ObjectControl?: ControlComponent;
+    ObjectControl: ControlComponent;
 
-    RadiobuttonControl?: ControlComponent;
+    RadiobuttonControl: ControlComponent;
 
-    SelectControl?: ControlComponent;
+    SelectControl: ControlComponent;
 
-    StringControl?: ControlComponent;
+    StringControl: ControlComponent;
 
-    TagsControl?: ControlComponent;
+    TagsControl: ControlComponent;
 }

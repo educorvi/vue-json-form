@@ -1,58 +1,42 @@
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import { defineAsyncComponent } from 'vue';
 import './styling.scss';
 import 'bootstrap-vue-next/src/styles/styles.scss';
 import ArrayButton from '@/renderings/bootstrap/controls/ArrayButton.vue';
 import ShowOnWrapper from '@/renderings/bootstrap/showOnWrapper.vue';
 import WizardProgress from '@/renderings/bootstrap/WizardProgress.vue';
+import CheckboxControl from '@/renderings/bootstrap/controls/CheckboxControl.vue';
+import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import ErrorViewer from '@/renderings/bootstrap/ErrorViewer.vue';
+import DefaultControl from '@/renderings/bootstrap/controls/DefaultControl.vue';
+import ButtonGroup from '@/renderings/bootstrap/Buttons/ButtonGroup.vue';
+import NumberControl from '@/renderings/bootstrap/controls/NumberControl.vue';
+import ObjectControl from '@/renderings/bootstrap/controls/ObjectControl.vue';
+import TagsControl from '@/renderings/bootstrap/controls/TagsControl.vue';
+import CheckboxGroupControl from '@/renderings/bootstrap/controls/CheckboxGroupControl.vue';
+import RadiobuttonControl from '@/renderings/bootstrap/controls/RadiobuttonControl.vue';
+import SelectControl from '@/renderings/bootstrap/controls/SelectControl.vue';
+import StringControl from '@/renderings/bootstrap/controls/StringControl.vue';
+import FormFieldWrapper from '@/renderings/bootstrap/FormFieldWrapper.vue';
+import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
+import FileControl from '@/renderings/bootstrap/controls/FileControl.vue';
 
-export const bootstrapComponents: Required<RenderInterface> = {
+export const bootstrapComponents: RenderInterface = {
     showOnWrapper: ShowOnWrapper,
-    CheckboxControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/CheckboxControl.vue')
-    ),
-    CheckboxGroupControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/CheckboxGroupControl.vue')
-    ),
-    FileControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/FileControl.vue')
-    ),
-    NumberControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/NumberControl.vue')
-    ),
-    ObjectControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/ObjectControl.vue')
-    ),
-    RadiobuttonControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/RadiobuttonControl.vue')
-    ),
-    SelectControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/SelectControl.vue')
-    ),
-    StringControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/StringControl.vue')
-    ),
-    TagsControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/TagsControl.vue')
-    ),
-    FormFieldWrapper: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/FormFieldWrapper.vue')
-    ),
-    ErrorViewer: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/ErrorViewer.vue')
-    ),
-    Button: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/Buttons/VJFButton.vue')
-    ),
-    Buttongroup: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/Buttons/ButtonGroup.vue')
-    ),
-    HelpPopover: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/HelpPopover.vue')
-    ),
-    DefaultControl: defineAsyncComponent(
-        () => import('@/renderings/bootstrap/controls/DefaultControl.vue')
-    ),
+    CheckboxControl: CheckboxControl,
+    CheckboxGroupControl: CheckboxGroupControl,
+    FileControl: FileControl,
+    NumberControl: NumberControl,
+    ObjectControl: ObjectControl,
+    RadiobuttonControl: RadiobuttonControl,
+    SelectControl: SelectControl,
+    StringControl: StringControl,
+    TagsControl: TagsControl,
+    FormFieldWrapper: FormFieldWrapper,
+    ErrorViewer: ErrorViewer,
+    Button: VJFButton,
+    Buttongroup: ButtonGroup,
+    HelpPopover: HelpPopover,
+    DefaultControl: DefaultControl,
     ArrayButton: ArrayButton,
     WizardProgress: WizardProgress,
 };

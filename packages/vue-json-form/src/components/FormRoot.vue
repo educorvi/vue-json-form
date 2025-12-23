@@ -30,14 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-    type Component,
-    computed,
-    type ComputedRef,
-    markRaw,
-    type Ref,
-    useTemplateRef,
-} from 'vue';
+import { computed, type ComputedRef, markRaw, type Ref } from 'vue';
 import { onBeforeMount, provide, ref, toRaw, watch } from 'vue';
 import {
     createPinia,
@@ -45,7 +38,7 @@ import {
     setActivePinia,
     storeToRefs,
 } from 'pinia';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { useFormStructureStore } from '@/stores/formStructure';
 import {
     type JSONSchema,
     EmptyValidator,
@@ -103,7 +96,7 @@ const props = defineProps<{
      * The Render Interface
      * Changes the form's UI components
      */
-    renderInterface?: RenderInterface;
+    renderInterface: RenderInterface;
 
     /**
      * Data that should be loaded into the form.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
+import { bootstrapComponents, type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
 import showcaseSchema from '@educorvi/vue-json-form/src/exampleSchemas/showcase/schema.json';
 import showcaseUISchema from '@educorvi/vue-json-form/src/exampleSchemas/showcase/ui.json';
 import { BButton, BButtonGroup, BFormCheckbox } from 'bootstrap-vue-next';
@@ -10,7 +10,7 @@ const emit = defineEmits<{
 }>();
 
 async function submitMethod(data: Record<string, any>, customSubmitOptions: SubmitOptions, evt: SubmitEvent) {
-    emit("viewCode", "Form Results", data);
+    emit('viewCode', 'Form Results', data);
 }
 
 const submitAsScopes = ref(false);
@@ -23,12 +23,15 @@ const submitAsScopes = ref(false);
         <b-form-checkbox v-model="submitAsScopes">Submit as scopes</b-form-checkbox>
     </div>
     <b-button-group class="w-100">
-        <b-button variant="outline-primary" @click="emit('viewCode', 'JSON Schema', showcaseSchema)">Show JSON Schema</b-button>
-        <b-button variant="outline-primary" @click="emit('viewCode', 'UI Schema', showcaseUISchema)">Show UI Schema</b-button>
+        <b-button variant="outline-primary" @click="emit('viewCode', 'JSON Schema', showcaseSchema)">Show JSON Schema
+        </b-button>
+        <b-button variant="outline-primary" @click="emit('viewCode', 'UI Schema', showcaseUISchema)">Show UI Schema
+        </b-button>
     </b-button-group>
     <hr>
     <vue-json-form :jsonSchema="showcaseSchema" :uiSchema="showcaseUISchema"
-                   :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"></vue-json-form>
+                   :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"
+                   :render-interface="bootstrapComponents"></vue-json-form>
 </template>
 
 <style scoped>

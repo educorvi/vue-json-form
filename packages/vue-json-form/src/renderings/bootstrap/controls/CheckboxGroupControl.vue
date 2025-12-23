@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import {
-    BFormCheckboxGroup,
-    type ButtonVariant,
-    type CheckboxOption,
-} from 'bootstrap-vue-next';
+import { BFormCheckboxGroup, type CheckboxOption } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
-import { hasEnumValuesForItems, isDefined } from '@/typings/typeValidators';
+import { hasEnumValuesForItems } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
-import type {
-    ColorVariants,
-    JSONSchema,
-} from '@educorvi/vue-json-form-schemas';
-import { computed, type ComputedRef, inject, ref, toRefs, watch } from 'vue';
+import { computed, type ComputedRef, ref, watch } from 'vue';
 import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());

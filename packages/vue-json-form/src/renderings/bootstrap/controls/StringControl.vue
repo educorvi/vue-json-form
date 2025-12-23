@@ -2,9 +2,8 @@
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
-import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, inject, type Ref, toRefs } from 'vue';
+import { computed, type ComputedRef, type Ref } from 'vue';
 import type {
     ControlFormattingOptions,
     InputOptions,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IfThenElseMapper, VueJsonForm } from '../main';
+import { bootstrapComponents, IfThenElseMapper, VueJsonForm } from '../main';
 import jsonSchema from '../exampleSchemas/wizard/schema.json';
 import uiSchema from '../exampleSchemas/wizard/ui.json';
 import { ref } from 'vue';
@@ -30,6 +30,7 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         :on-submit-form="onSubmitForm"
         :validator="AjvValidator"
         :mappers="[IfThenElseMapper]"
+        :render-interface="bootstrapComponents"
     />
     <hr />
     <h2>Results</h2>

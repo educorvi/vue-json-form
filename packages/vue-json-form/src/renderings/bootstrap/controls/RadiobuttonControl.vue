@@ -10,7 +10,6 @@ import {
 } from '@/typings/typeValidators';
 import { computed, watch } from 'vue';
 import { getOption } from '@/utilities';
-import type { ColorVariants } from '@educorvi/vue-json-form-schemas';
 import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { computed, inject, onMounted, ref, toRefs, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { generateUISchema } from '@/Commons';
 import FormWrap from '@/components/FormWrap.vue';
-import type { Layout, UISchema } from '@educorvi/vue-json-form-schemas';
+import type { Layout } from '@educorvi/vue-json-form-schemas';
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);

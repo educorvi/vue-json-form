@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, inject, toRefs, useSlots } from 'vue';
+import { computed, type ComputedRef, useSlots } from 'vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';

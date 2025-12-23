@@ -50,10 +50,10 @@ export function setDescendantControlOverride(
     scope: string,
     overrides: DescendantControlOverride
 ) {
-    const overridesMap: DescendantControlOverrides = inject(
-        descendantControlOverridesProviderKey,
-        {}
-    );
+    let overridesMap = inject(descendantControlOverridesProviderKey);
+    if (!overridesMap) {
+        overridesMap = {};
+    }
     let oldOverrides = overridesMap[scope];
     if (oldOverrides) {
         overridesMap[scope] = {

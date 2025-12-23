@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
-import { type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
+import { bootstrapComponents, type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 
@@ -109,7 +109,8 @@ function clear() {
     <hr>
     <vue-json-form v-if="jsonSchema" :jsonSchema="jsonSchema" :uiSchema="uiSchema"
                    :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"
-                   :mappers="[OneOfToEnumMapper, IfThenElseMapper]" :validator="AjvValidator">
+                   :mappers="[OneOfToEnumMapper, IfThenElseMapper]" :validator="AjvValidator"
+                   :render-interface="bootstrapComponents">
         <b-button v-if="submitButton" type="submit" class="mt-3 w-100" variant="primary">Submit</b-button>
     </vue-json-form>
     <div v-else>
