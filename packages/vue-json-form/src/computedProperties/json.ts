@@ -145,7 +145,7 @@ export function getComputedJsonElement(
         ) as JSONSchema | null;
         if (!data) {
             if (!failSilently) {
-                console.error('No data under scope ' + scope);
+                console.error('No json data under scope ' + scope);
             }
             return null;
         }

@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import { inject, watch, computed, toRefs } from 'vue';
+import { inject, watch, computed } from 'vue';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';
 
@@ -20,11 +20,11 @@ const multiple = computed(() => {
 });
 
 const minNumberOfFiles = computed(() => {
-    return jsonElement.value.minItems;
+    return jsonElement.value.minItems ?? 0;
 });
 
 const maxNumberOfFiles = computed(() => {
-    return jsonElement.value.maxItems;
+    return jsonElement.value.maxItems ?? Number.MAX_SAFE_INTEGER;
 });
 
 watch(
@@ -36,6 +36,9 @@ watch(
 );
 
 function validateInput(data: any) {
+    if (data === undefined) {
+        return;
+    }
     const { maxFileSize } = layoutElement.value.options || {};
     const el = document.getElementById(id.value) as HTMLInputElement;
 
@@ -43,7 +46,7 @@ function validateInput(data: any) {
     if (multiple.value) {
         if (
             maxNumberOfFiles.value &&
-            (data.length || 0) > maxNumberOfFiles.value
+            (data?.length || 0) > maxNumberOfFiles.value
         ) {
             el?.setCustomValidity(
                 languageProvider?.getStringTemplate(

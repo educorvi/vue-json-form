@@ -5,10 +5,7 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import type { MapperClass } from '@/typings/customTypes.ts';
-
-const defaultComponents: Required<RenderInterface> = bootstrapComponents;
 
 function getDefaultData(
     schema: JSONSchema,
@@ -96,8 +93,9 @@ export const useFormStructureStore: FormStructureStore = defineStore(
 export function getComponent<E extends keyof RenderInterface>(
     componentName: E
 ): NonNullable<RenderInterface[E]> {
-    return (
-        useFormStructureStore().components?.[componentName] ||
-        defaultComponents[componentName]
-    );
+    const components = useFormStructureStore().components;
+    if (!components) {
+        throw new Error('Components not initialized yet');
+    }
+    return components[componentName];
 }

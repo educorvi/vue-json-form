@@ -13,7 +13,7 @@ import type {
     DescendantControlOverrides,
     LayoutElement,
 } from '@educorvi/vue-json-form-schemas';
-import { computed, shallowRef, markRaw, watch, inject, onMounted } from 'vue';
+import { markRaw, inject } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
