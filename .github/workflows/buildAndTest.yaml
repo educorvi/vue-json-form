@@ -89,11 +89,11 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: vue-json-form/playwright-report/
+          path: packages/vue-json-form/playwright-report/
           retention-days: 30
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: (!cancelled())
         with:
           files: |
-            vue-json-form/test-results/**/*.xml
+            packages/vue-json-form/test-results/**/*.xml
