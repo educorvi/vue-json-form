@@ -43,10 +43,39 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn run build
-  test:
+  test-unit:
     needs: build
     runs-on: ubuntu-latest
-    name: Test
+    name: Unit Tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn run build:vue-json-form
+      - run: yarn test:unit
+        working-directory: ./packages/vue-json-form
+  test-e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    name: e2e Tests
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -76,15 +105,47 @@ jobs:
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
       - run: yarn install --immutable
       - run: yarn run build:vue-json-form
-      - run: yarn test:unit
-        working-directory: ./packages/vue-json-form
       - name: Install Playwright Browsers
         if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
         working-directory: ./packages/vue-json-form
       - name: Run Playwright tests
-        run: yarn test:e2e
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
         working-directory: ./packages/vue-json-form
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: ./packages/vue-json-form/blob-report
+          retention-days: 1
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [ test-e2e ]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+      - run: yarn install --immutable
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ./packages/vue-json-form/all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
+        working-directory: ./packages/vue-json-form
+
       - uses: actions/upload-artifact@v6
         if: always()
         with:
