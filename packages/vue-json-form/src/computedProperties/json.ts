@@ -132,13 +132,7 @@ export function getComputedJsonElement(
         let internal_scope = scope;
         const { jsonSchema } = storeToRefs(useFormStructureStore());
         if (!jsonSchema.value) return null;
-        internal_scope = internal_scope.replace(
-            new RegExp(
-                `\\.${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`,
-                'g'
-            ),
-            '/items'
-        );
+        internal_scope = cleanScope(internal_scope);
         const data = getJsonPointerSafe(
             jsonSchema.value || {},
             internal_scope

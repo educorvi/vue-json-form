@@ -6,6 +6,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import type { MapperClass } from '@/typings/customTypes.ts';
+import { flattenArray } from '@/stores/formData.ts';
 
 function getDefaultData(
     schema: JSONSchema,
@@ -79,7 +80,13 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                 if (!state.jsonSchema) {
                     return {};
                 }
-                return getDefaultData(state.jsonSchema);
+                let data = getDefaultData(state.jsonSchema);
+                Object.entries(data).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        flattenArray(value, data, key);
+                    }
+                });
+                return data;
             },
         },
     }
