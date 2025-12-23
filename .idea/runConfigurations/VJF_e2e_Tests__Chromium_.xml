@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Tests in e2e (Chromium)" type="JavaScriptTestRunnerPlaywright">
+  <configuration default="false" name="VJF e2e Tests (Chromium)" type="JavaScriptTestRunnerPlaywright">
     <node-interpreter value="project" />
     <playwright-package value="$PROJECT_DIR$/node_modules/@playwright/test" />
     <working-dir value="$PROJECT_DIR$/packages/vue-json-form" />
