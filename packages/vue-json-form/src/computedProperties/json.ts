@@ -110,11 +110,19 @@ function titleCase(string: string) {
     return sentence.join(' ');
 }
 
+/**
+ * Cleans the given scope string by replacing the array item placeholders
+ *
+ * @param {string} scope The input scope string to process.
+ * @param {string|number} [replaceValue='items'] The value to replace the array item placeholders with.
+ * @param {string} [arrayName=''] Limit the replacements to the specified array name.
+ * @return {string} The processed scope string with the specified replacements applied.
+ */
 export function cleanScope(
     scope: string,
     replaceValue: string | number = 'items',
-    arrayName = ''
-) {
+    arrayName: string = ''
+): string {
     return scope.replace(
         new RegExp(
             `(?<=${arrayName})\\.${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`,
