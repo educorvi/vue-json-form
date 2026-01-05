@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 function submitForm(page) {
     return page.locator('button[type="submit"]').nth(-3).click();
@@ -22,33 +22,57 @@ const expectSelectOptions = async (
     }
 };
 
+async function expectIsRequiredField(page: Page, requiredFieldId: string) {
+    await expect(page.locator('#' + requiredFieldId)).toBeVisible();
+    await expect(page.locator('#' + requiredFieldId)).toHaveAttribute(
+        'required',
+        ''
+    );
+    await expect(page.locator(`label[for="${requiredFieldId}"]`)).toContainText(
+        '*'
+    );
+}
+
+test('JSO-96', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-96_properties_objekt_properties_feld-4'
+        )
+    ).not.toBeVisible();
+    await page
+        .locator(
+            'input[name="/properties/jso-96/properties/ja-oder-nein"][value="ja"]'
+        )
+        .check();
+    await expectIsRequiredField(
+        page,
+        'vjf_control_for__properties_jso-96_properties_objekt_properties_feld-4'
+    );
+});
+
 test('JSO-43', async ({ page }) => {
     const BOOL_FIELD = '#vjf_control_for__properties_jso-43_properties_bool';
     const HALLO_FIELD =
         '#vjf_control_for__properties_jso-43_properties_hallo input[value="du"]';
     const HALLO_FIELD_ICH =
         '#vjf_control_for__properties_jso-43_properties_hallo input[value="ich"]';
-    const REQUIRED_FIELD =
-        '#vjf_control_for__properties_jso-43_properties_abhaengiges-feld';
-    const REQUIRED_LABEL =
-        'label[for="vjf_control_for__properties_jso-43_properties_abhaengiges-feld"]';
+    const REQUIRED_FIELD_ID =
+        'vjf_control_for__properties_jso-43_properties_abhaengiges-feld';
+    const REQUIRED_FIELD = '#' + REQUIRED_FIELD_ID;
 
     await page.goto('http://localhost:5173/reproduce?nonav=true');
     await expect(page.locator(REQUIRED_FIELD)).not.toBeVisible();
 
     await page.locator(BOOL_FIELD).check({ force: true });
-    await expect(page.locator(REQUIRED_FIELD)).toBeVisible();
-    await expect(page.locator(REQUIRED_FIELD)).toHaveAttribute('required', '');
-    await expect(page.locator(REQUIRED_LABEL)).toContainText('*');
+    await expectIsRequiredField(page, REQUIRED_FIELD_ID);
 
     await page.locator(BOOL_FIELD).uncheck({ force: true });
     await page.locator(HALLO_FIELD_ICH).check({ force: true });
     await expect(page.locator(REQUIRED_FIELD)).not.toBeVisible();
 
     await page.locator(HALLO_FIELD).check({ force: true });
-    await expect(page.locator(REQUIRED_FIELD)).toBeVisible();
-    await expect(page.locator(REQUIRED_FIELD)).toHaveAttribute('required', '');
-    await expect(page.locator(REQUIRED_LABEL)).toContainText('*');
+    await expectIsRequiredField(page, REQUIRED_FIELD_ID);
 
     await page.locator(REQUIRED_FIELD).fill('Hallo Pflichtfeld');
     await submitForm(page);
