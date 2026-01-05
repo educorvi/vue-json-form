@@ -200,7 +200,12 @@ function isSupportedIfPropertyOrCondition(
     return (
         isSupportedIfCondition(json) ||
         (hasProperty(json, 'properties') &&
-            isSupportedIfPropertyOrCondition(json.properties))
+            Object.values(json.properties).every(
+                (value) =>
+                    typeof value === 'object' &&
+                    value !== null &&
+                    isSupportedIfPropertyOrCondition(value)
+            ))
     );
 }
 

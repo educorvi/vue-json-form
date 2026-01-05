@@ -19,14 +19,6 @@
                         }
                     },
                     {
-                        "type": "Control",
-                        "scope": "/properties/jso-96/properties/feld-1"
-                    },
-                    {
-                        "type": "Control",
-                        "scope": "/properties/jso-96/properties/feld-2"
-                    },
-                    {
                         "type": "Group",
                         "options": {
                             "label": "Abhängige Feldgruppe",

@@ -236,13 +236,13 @@ export class IfThenElseMapper extends MapperWithData {
                         ifThen.then,
                         parentDeltaPath + '/required',
                         '/',
-                        []
+                        null
                     );
                     const elseRequired = getPropertyByString(
                         ifThen.else,
                         parentDeltaPath + '/required',
                         '/',
-                        []
+                        null
                     );
 
                     if (
@@ -257,7 +257,7 @@ export class IfThenElseMapper extends MapperWithData {
                     return {
                         conditions: this.parseConditions(
                             ifThen.if.properties,
-                            '/properties'
+                            sliceScope(allOfScope, -1) + '/properties'
                         ),
                         then: thenResult,
                         else: elseResult,

@@ -14,20 +14,12 @@
                     "type": "string",
                     "enum": ["ja", "nein"]
                 },
-                "feld-1": {
-                    "title": "Feld 1",
-                    "type": "string"
-                },
-                "feld-2": {
-                    "title": "Feld 2",
-                    "type": "string"
-                },
                 "objekt": {
                     "type": "object",
                     "title": "Objekt",
                     "properties": {
                         "feld-4": {
-                            "title": "Feld 4",
+                            "title": "Feld",
                             "type": "string"
                         }
                     },
