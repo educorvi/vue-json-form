@@ -1,9 +1,0 @@
-services:
-  demo:
-    image: vjf_demo
-    build:
-      context: ..
-      target: demo
-      dockerfile: docker/Dockerfile
-    ports:
-      - "80:80"

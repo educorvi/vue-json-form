@@ -1,0 +1,375 @@
+<template>
+    <div :class="cssClass" v-if="!invalidJsonPointer">
+        <html-renderer
+            v-if="htmlMessages.pre"
+            :layout-element="htmlMessages.pre"
+        />
+        <component
+            :is="FormFieldWrapper"
+            :label="label"
+            :label-for="control_id_string"
+        >
+            <template #prepend v-if="$slots.prepend">
+                <slot name="prepend" />
+            </template>
+            <component
+                :is="controlType"
+                :name="formStructureMapped.uiElement.scope"
+                :disabled="formStructureMapped.uiElement.options?.disabled"
+                :placeholder="
+                    formStructureMapped.uiElement.options?.placeholder
+                "
+                :autocomplete="
+                    getOption(
+                        formStructureMapped.uiElement,
+                        'autocomplete',
+                        'on'
+                    )
+                "
+                :required="required || inArrayItem"
+                :style="style"
+                :aria-label="inArrayItem ? 'List item' : undefined"
+            />
+            <template #append v-if="$slots.append">
+                <slot name="append" />
+            </template>
+        </component>
+        <html-renderer
+            v-if="htmlMessages.post"
+            :layout-element="htmlMessages.post"
+        />
+    </div>
+    <div v-else>
+        <error-viewer header="Error">
+            Invalid Json Pointer: {{ invalidJsonPointer }}
+        </error-viewer>
+    </div>
+</template>
+
+<script setup lang="ts">
+import type {
+    Control,
+    DescendantControlOverrides,
+} from '@educorvi/vue-json-form-schemas';
+import { storeToRefs } from 'pinia';
+import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { getOption } from '@/utilities';
+import {
+    computed,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+    provide,
+    ref,
+    watch,
+    type Ref,
+} from 'vue';
+import {
+    savePathProviderKey,
+    savePathOverrideProviderKey,
+    mergeDescendantControlOptionsOverrides,
+    setDescendantControlOverrides,
+    formStructureProviderKey,
+    descendantControlOverridesProviderKey,
+} from '@/components/ProviderKeys';
+import {
+    cleanScope,
+    computedLabel,
+    getComputedJsonElement,
+    getComputedRequired,
+} from '@/computedProperties/json';
+import { controlID } from '@/computedProperties/misc';
+import { computedCssClass } from '@/computedProperties/css';
+import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
+
+import {
+    hasItems,
+    hasOption,
+    isMapperWithData,
+    isMapperWithoutData,
+} from '@/typings/typeValidators';
+import { useFormDataStore } from '@/stores/formData';
+import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
+import { watchDebounced } from '@vueuse/core';
+import ArrayControl from '@/components/Array/ArrayControl.vue';
+import { Mapper } from '@/Mappers';
+
+const {
+    jsonSchema,
+    mappers: mapperClasses,
+    uiSchema,
+} = storeToRefs(useFormStructureStore());
+
+const FormFieldWrapper = getComponent('FormFieldWrapper');
+const ErrorViewer = getComponent('ErrorViewer');
+
+const props = defineProps<{
+    /** The UI Schema of this Element */
+    layoutElement: Control;
+
+    /** Is this control in an array item */
+    inArrayItem?: boolean;
+}>();
+
+const jsonElement = getComputedJsonElement(props.layoutElement.scope);
+
+const { formData, defaultFormData, cleanedFormData } =
+    storeToRefs(useFormDataStore());
+
+const invalidJsonPointer = ref(false as false | string);
+
+setDescendantControlOverrides(
+    props.layoutElement.options?.descendantControlOverrides
+);
+
+const overridesMap: DescendantControlOverrides | undefined = inject(
+    descendantControlOverridesProviderKey
+);
+
+const savePath =
+    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+
+const mappers: Ref<Mapper[]> = ref([]);
+
+const formStructureMapped = ref({
+    jsonElement: jsonElement.value || ({} as Record<string, any>),
+    uiElement: props.layoutElement,
+});
+
+async function mapFormStructure() {
+    let localJsonElement = jsonElement.value || {};
+    let localUiElement: Control = props.layoutElement;
+    localUiElement = mergeDescendantControlOptionsOverrides(
+        localUiElement,
+        overridesMap
+    );
+    for (const mapper of mappers.value) {
+        let mapped;
+        if (isMapperWithoutData(mapper)) {
+            mapped = mapper.map(localJsonElement || {}, localUiElement);
+        } else if (isMapperWithData(mapper)) {
+            mapped = await mapper.map(
+                localJsonElement || {},
+                localUiElement,
+                formData.value
+            );
+        }
+        if (mapped) {
+            localJsonElement = mapped.jsonElement;
+            localUiElement = mapped.uiElement;
+        } else {
+            console.warn('Mapper failed', mapper);
+        }
+    }
+    formStructureMapped.value = {
+        jsonElement: localJsonElement || {},
+        uiElement: localUiElement,
+    };
+}
+
+watch([() => jsonElement.value, () => props.layoutElement], mapFormStructure, {
+    immediate: true,
+});
+
+onMounted(() => {
+    if (
+        !jsonElement.value ||
+        !props.layoutElement ||
+        !jsonSchema.value ||
+        !uiSchema.value
+    ) {
+        return;
+    }
+    const registeredDependencies = new Set<string>();
+    mappers.value = mapperClasses.value.map((mapperClass) => {
+        return new mapperClass();
+    });
+    for (const mapper of mappers.value) {
+        if (isMapperWithData(mapper)) {
+            mapper.registerSchemata(
+                jsonSchema.value,
+                uiSchema.value,
+                cleanScope(props.layoutElement.scope),
+                savePath,
+                jsonElement.value,
+                mergeDescendantControlOptionsOverrides(
+                    props.layoutElement,
+                    overridesMap
+                )
+            );
+            for (const dependency of mapper.getDependencies()) {
+                if (registeredDependencies.has(dependency)) {
+                    continue;
+                }
+                registeredDependencies.add(dependency);
+                watchDebounced(
+                    () => formData.value[dependency],
+                    () => {
+                        mapFormStructure();
+                    },
+                    { debounce: 50, deep: false }
+                );
+            }
+        }
+    }
+    mapFormStructure();
+});
+
+const htmlMessages = computed(() => {
+    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
+    const layoutElement = formStructureMapped.value.uiElement;
+    if (layoutElement.options?.preHtml) {
+        messages.pre = {
+            type: 'HTML',
+            htmlData: layoutElement.options.preHtml,
+        };
+    }
+    if (layoutElement.options?.postHtml) {
+        messages.post = {
+            type: 'HTML',
+            htmlData: layoutElement.options.postHtml,
+        };
+    }
+
+    return messages;
+});
+
+const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
+const required = getComputedRequired(mappedUiElement);
+
+let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
+    ? 'hiddenControl'
+    : '';
+
+const style = computed(() => {
+    if (
+        props.layoutElement.options &&
+        'textAlign' in props.layoutElement.options &&
+        props.layoutElement.options.textAlign
+    ) {
+        return `text-align: ${props.layoutElement.options.textAlign}`;
+    }
+    return undefined;
+});
+
+const cssClass = computedCssClass(
+    formStructureMapped.value.uiElement,
+    'vjf_control mb-3',
+    additionalHiddenClass
+);
+
+provide(formStructureProviderKey, formStructureMapped);
+provide(savePathProviderKey, savePath);
+provide(savePathOverrideProviderKey, undefined);
+
+const control_id_string = controlID(savePath);
+
+const label = computedLabel(mappedUiElement);
+
+/**
+ * The type of the control
+ */
+const controlType = computed(() => {
+    /**
+     * Display enums as Radiobuttons or Select
+     */
+    if (
+        formStructureMapped.value.jsonElement?.enum !== undefined &&
+        formStructureMapped.value.jsonElement.type !== 'array'
+    ) {
+        if (
+            getOption(formStructureMapped.value.uiElement, 'displayAs') ===
+                'radiobuttons' ||
+            getOption(formStructureMapped.value.uiElement, 'displayAs') ===
+                'buttons'
+        ) {
+            return getComponent('RadiobuttonControl');
+        } else {
+            return getComponent('SelectControl');
+        }
+    }
+
+    /**
+     * Display arrays with item enums as CheckboxGroup
+     */
+    if (
+        typeof formStructureMapped.value.jsonElement?.items === 'object' &&
+        'enum' in formStructureMapped.value.jsonElement.items &&
+        formStructureMapped.value.jsonElement.type === 'array'
+    ) {
+        return getComponent('CheckboxGroupControl');
+    }
+
+    /**
+     * Display arrays as Tags if enabled
+     */
+    if (
+        formStructureMapped.value.jsonElement?.type === 'array' &&
+        hasOption(formStructureMapped.value.uiElement, 'tags') &&
+        formStructureMapped.value.uiElement.options?.tags?.enabled
+    ) {
+        return getComponent('TagsControl');
+    }
+
+    /**
+     * Display strings with format uri as FileControl
+     */
+    if (
+        formStructureMapped.value.jsonElement?.type === 'string' &&
+        formStructureMapped.value.jsonElement.format === 'uri'
+    ) {
+        return getComponent('FileControl');
+    }
+
+    /**
+     * Display an array of file uploads as multiple file upload if options is set
+     */
+    if (
+        formStructureMapped.value.jsonElement?.type === 'array' &&
+        hasItems(formStructureMapped.value.jsonElement) &&
+        formStructureMapped.value.jsonElement.items.type === 'string' &&
+        formStructureMapped.value.jsonElement.items.format === 'uri' &&
+        formStructureMapped.value.uiElement.options?.displayAsSingleUploadField
+    ) {
+        return getComponent('FileControl');
+    }
+
+    switch (formStructureMapped.value.jsonElement?.type) {
+        case 'boolean':
+            return getComponent('CheckboxControl');
+        case 'number':
+        case 'integer':
+            return getComponent('NumberControl');
+        case 'object':
+            return getComponent('ObjectControl');
+        case 'string':
+            return getComponent('StringControl');
+        case 'array':
+            return ArrayControl;
+        default:
+            return getComponent('DefaultControl');
+    }
+});
+
+watch(jsonElement, () => {
+    if (jsonElement.value === undefined) {
+        invalidJsonPointer.value = props.layoutElement.scope;
+    }
+});
+
+onMounted(() => {
+    if (defaultFormData.value[savePath] !== undefined) {
+        formData.value[savePath] = defaultFormData.value[savePath];
+    }
+});
+
+onBeforeUnmount(() => {
+    formData.value[savePath] = undefined;
+});
+</script>
+
+<style>
+.hiddenControl {
+    display: none;
+}
+</style>
