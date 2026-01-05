@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
-import 'bootstrap/dist/css/bootstrap.css';
+import './_DevViews/main.scss';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 import { vBColorMode } from 'bootstrap-vue-next/directives/BColorMode';

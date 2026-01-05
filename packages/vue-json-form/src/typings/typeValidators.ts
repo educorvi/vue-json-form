@@ -16,6 +16,8 @@ import type {
     DependentElement,
     elementWithCssClass,
     elementWithElements,
+    IfConditions,
+    IfProperty,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type { InputType } from 'bootstrap-vue-next';
@@ -180,16 +182,41 @@ export function isIfThenAllOf(
     return Array.isArray(json) && json.every(isSupportedIfThenElse);
 }
 
+export function isSupportedIfCondition(
+    json: Record<string, any>
+): json is IfConditions {
+    return (
+        hasProperty(json, 'const') ||
+        hasProperty(json, 'enum') ||
+        (hasProperty(json, 'contains') &&
+            (hasProperty(json.contains, 'const') ||
+                hasProperty(json.contains, 'enum')))
+    );
+}
+
+function isSupportedIfPropertyOrCondition(
+    json: Record<string, any>
+): json is IfProperty['properties'][string] {
+    return (
+        isSupportedIfCondition(json) ||
+        (hasProperty(json, 'properties') &&
+            Object.values(json.properties).every(
+                (value) =>
+                    typeof value === 'object' &&
+                    value !== null &&
+                    isSupportedIfPropertyOrCondition(value)
+            ))
+    );
+}
+
 export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
     return (
         hasProperty(json, 'properties') &&
         Object.values(json.properties).every(
             (value) =>
-                hasProperty(value, 'const') ||
-                hasProperty(value, 'enum') ||
-                (hasProperty(value, 'contains') &&
-                    (hasProperty(value.contains, 'const') ||
-                        hasProperty(value.contains, 'enum')))
+                typeof value === 'object' &&
+                value !== null &&
+                isSupportedIfPropertyOrCondition(value)
         )
     );
 }

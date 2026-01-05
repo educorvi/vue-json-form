@@ -92,3 +92,51 @@ export function generateUISchema(
 
     return uiSchema;
 }
+
+/**
+ * Get the value of an object property or array by a path that is passed as string
+ * @param object object
+ * @param path path
+ * @param separator separator
+ * @param defaultVal default value to return if path is not found
+ */
+export function getPropertyByString(
+    object: any,
+    path: string,
+    separator: string = '.',
+    defaultVal?: any
+): any {
+    const escapePCRE = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    path = path.replace(/\[(\w+)]/g, `${separator}$1`); // convert indexes to properties
+    path = path.replace(new RegExp(`^${escapePCRE(separator)}`), ''); // strip a leading separator
+    const a = path.split(separator);
+    for (let i = 0, n = a.length; i < n; ++i) {
+        const k = a[i];
+        if (k === undefined) {
+            return defaultVal;
+        }
+        if (typeof object !== 'object') {
+            if (defaultVal !== undefined) {
+                return defaultVal;
+            } else {
+                throw new Error(
+                    'Invalid path in data: ' +
+                        path +
+                        ' is of invalid type ' +
+                        typeof object +
+                        ' with value ' +
+                        object
+                );
+            }
+        }
+        if (k in object) {
+            object = object[k];
+        } else if (defaultVal !== undefined) {
+            return defaultVal;
+        } else {
+            throw new Error('Undefined path in data: ' + path);
+        }
+    }
+    return object;
+}

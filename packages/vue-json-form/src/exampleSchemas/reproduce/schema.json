@@ -6,6 +6,81 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-96": {
+            "type": "object",
+            "properties": {
+                "ja-oder-nein": {
+                    "title": "Ja oder Nein",
+                    "type": "string",
+                    "enum": ["ja", "nein"]
+                },
+                "objekt": {
+                    "type": "object",
+                    "title": "Objekt",
+                    "properties": {
+                        "feld-4": {
+                            "title": "Feld",
+                            "type": "string"
+                        }
+                    },
+                    "required": [],
+                    "dependentRequired": {}
+                },
+                "array": {
+                    "type": "array",
+                    "title": "Array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "check": {
+                                "type": "boolean"
+                            },
+                            "feld": {
+                                "title": "Feld",
+                                "type": "string"
+                            }
+                        },
+                        "allOf": [
+                            {
+                                "if": {
+                                    "properties": {
+                                        "check": {
+                                            "const": true
+                                        }
+                                    },
+                                    "required": ["check"]
+                                },
+                                "then": {
+                                    "required": ["feld"]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "required": [],
+            "dependentRequired": {},
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "ja-oder-nein": {
+                                "const": "ja"
+                            }
+                        },
+                        "required": ["ja-oder-nein"]
+                    },
+                    "then": {
+                        "properties": {
+                            "objekt": {
+                                "required": ["feld-4"]
+                            }
+                        },
+                        "required": ["objekt"]
+                    }
+                }
+            ]
+        },
         "jso-87": {
             "type": "object",
             "properties": {
