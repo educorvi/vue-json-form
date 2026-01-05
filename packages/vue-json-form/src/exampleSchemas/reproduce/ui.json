@@ -48,6 +48,10 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-96/properties/array"
                     }
                 ]
             },

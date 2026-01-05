@@ -73,6 +73,7 @@ import {
     descendantControlOverridesProviderKey,
 } from '@/components/ProviderKeys';
 import {
+    cleanScope,
     computedLabel,
     getComputedJsonElement,
     getComputedRequired,
@@ -188,7 +189,7 @@ onMounted(() => {
             mapper.registerSchemata(
                 jsonSchema.value,
                 uiSchema.value,
-                props.layoutElement.scope,
+                cleanScope(props.layoutElement.scope),
                 savePath,
                 jsonElement.value,
                 mergeDescendantControlOptionsOverrides(

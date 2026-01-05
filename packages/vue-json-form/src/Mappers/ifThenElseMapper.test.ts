@@ -497,4 +497,98 @@ describe('IfThenElseMapper', () => {
         expect(result).not.toBeNull();
         expect(result!.jsonElement.minLength).toBe(5);
     });
+
+    it('handles objects in array items', async () => {
+        const data = {
+            '/properties/jso-96/properties/ja-oder-nein': undefined,
+            '/properties/jso-96/properties/array': [
+                'vjf_array-item_6645b28f-b52d-4d0d-914e-c66f5cb4d5e1',
+                'vjf_array-item_3089b7c0-05d0-407c-b699-d3cf877ae369',
+            ],
+            '/properties/jso-96/properties/array.vjf_array-item_6645b28f-b52d-4d0d-914e-c66f5cb4d5e1':
+                '',
+            '/properties/jso-96/properties/array.vjf_array-item_6645b28f-b52d-4d0d-914e-c66f5cb4d5e1/properties/check': false,
+            '/properties/jso-96/properties/array.vjf_array-item_3089b7c0-05d0-407c-b699-d3cf877ae369':
+                '',
+            '/properties/jso-96/properties/array.vjf_array-item_3089b7c0-05d0-407c-b699-d3cf877ae369/properties/check': true,
+        };
+
+        const fieldScope =
+            '/properties/jso-96/properties/array/items/properties/feld';
+        const savePathTrue =
+            '/properties/jso-96/properties/array.vjf_array-item_3089b7c0-05d0-407c-b699-d3cf877ae369/properties/feld';
+        const savePathFalse =
+            '/properties/jso-96/properties/array.vjf_array-item_6645b28f-b52d-4d0d-914e-c66f5cb4d5e1/properties/feld';
+
+        const jsonSchema: JSONSchema = {
+            properties: {
+                'jso-96': {
+                    type: 'object',
+                    properties: {
+                        array: {
+                            type: 'array',
+                            title: 'Array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    check: {
+                                        type: 'boolean',
+                                    },
+                                    feld: {
+                                        title: 'Feld',
+                                        type: 'string',
+                                    },
+                                },
+                                allOf: [
+                                    {
+                                        if: {
+                                            properties: {
+                                                check: {
+                                                    const: true,
+                                                },
+                                            },
+                                            required: ['check'],
+                                        },
+                                        then: {
+                                            required: ['feld'],
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePathFalse,
+            initialJson,
+            ui
+        );
+
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePathTrue,
+            initialJson,
+            ui
+        );
+
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+    });
 });

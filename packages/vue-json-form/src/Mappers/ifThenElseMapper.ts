@@ -150,7 +150,7 @@ export class IfThenElseMapper extends MapperWithData {
         let conditionSavePath = key;
         let splitSavePath = this.savePath?.split('/');
         for (let i = splitSavePath?.length ?? 0; i >= 0; --i) {
-            const remainingSavePath = splitSavePath?.slice(i).join('/');
+            const remainingSavePath = splitSavePath?.slice(0, i).join('/');
             if (!remainingSavePath) {
                 break;
             }

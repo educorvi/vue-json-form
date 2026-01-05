@@ -25,6 +25,37 @@
                     },
                     "required": [],
                     "dependentRequired": {}
+                },
+                "array": {
+                    "type": "array",
+                    "title": "Array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "check": {
+                                "type": "boolean"
+                            },
+                            "feld": {
+                                "title": "Feld",
+                                "type": "string"
+                            }
+                        },
+                        "allOf": [
+                            {
+                                "if": {
+                                    "properties": {
+                                        "check": {
+                                            "const": true
+                                        }
+                                    },
+                                    "required": ["check"]
+                                },
+                                "then": {
+                                    "required": ["feld"]
+                                }
+                            }
+                        ]
+                    }
                 }
             },
             "required": [],
