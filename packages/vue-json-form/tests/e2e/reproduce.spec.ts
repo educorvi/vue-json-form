@@ -33,6 +33,16 @@ async function expectIsRequiredField(page: Page, requiredFieldId: string) {
     );
 }
 
+async function expectIsNotRequiredField(page: Page, requiredFieldId: string) {
+    await expect(page.locator('#' + requiredFieldId)).not.toHaveAttribute(
+        'required',
+        ''
+    );
+    await expect(
+        page.locator(`label[for="${requiredFieldId}"]`)
+    ).not.toContainText('*');
+}
+
 test('JSO-96', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
     await expect(
@@ -49,6 +59,47 @@ test('JSO-96', async ({ page }) => {
         page,
         'vjf_control_for__properties_jso-96_properties_objekt_properties_feld-4'
     );
+});
+
+test('JSO-96 (array)', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-96_properties_array > button'
+        )
+        .click();
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-96_properties_array > button'
+        )
+        .click();
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-96_properties_array > .list-group > *:first-child input[type=text]'
+        )
+    ).not.toHaveAttribute('required', '');
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-96_properties_array > .list-group > *:last-child input[type=text]'
+        )
+    ).not.toHaveAttribute('required', '');
+
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-96_properties_array > .list-group > *:first-child input[type=checkbox]'
+        )
+        .check();
+
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-96_properties_array > .list-group > *:first-child input[type=text]'
+        )
+    ).toHaveAttribute('required', '');
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-96_properties_array > .list-group > *:last-child input[type=text]'
+        )
+    ).not.toHaveAttribute('required', '');
 });
 
 test('JSO-43', async ({ page }) => {
@@ -194,38 +245,28 @@ test('JSO-79-III', async ({ page }) => {
 test('JSO-79-IV', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 
-    await expect(
-        page.locator('#vjf_control_for__properties_string-dep-required-2')
-    ).not.toHaveAttribute('required', '');
-    await expect(
-        page.locator(
-            'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-        )
-    ).not.toContainText('*');
+    await expectIsNotRequiredField(
+        page,
+        'vjf_control_for__properties_string-dep-required-2'
+    );
 
     await page
         .locator('#vjf_control_for__properties_string-dep-required')
         .fill('Test');
-    await expect(
-        page.locator('#vjf_control_for__properties_string-dep-required-2')
-    ).toHaveAttribute('required', '');
-    await expect(
-        page.locator(
-            'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-        )
-    ).toContainText('*');
+
+    await expectIsRequiredField(
+        page,
+        'vjf_control_for__properties_string-dep-required-2'
+    );
 
     await page
         .locator('#vjf_control_for__properties_string-dep-required')
         .clear();
-    await expect(
-        page.locator('#vjf_control_for__properties_string-dep-required-2')
-    ).not.toHaveAttribute('required', '');
-    await expect(
-        page.locator(
-            'label[for="vjf_control_for__properties_string-dep-required-2"] span'
-        )
-    ).not.toContainText('*');
+
+    await expectIsNotRequiredField(
+        page,
+        'vjf_control_for__properties_string-dep-required-2'
+    );
 });
 
 test('JSO-68', async ({ page }) => {
