@@ -11,7 +11,7 @@ const buildTargets = {
         outDir: './dist/shadowDom',
     },
     ajvValidator: {
-        entry: './src/Webcomponent.AjvValidator.ce.vue',
+        entry: './src/mainWithAjvValidator.ce.ts',
         outDir: './dist/ajvValidator',
     },
 };

@@ -3,19 +3,24 @@ import {
     bootstrapComponents,
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
-import { IfThenElseMapper, OneOfToEnumMapper, RitaDependentOptionsMapper, DependentRequiredMapper } from '@educorvi/vue-json-form';
+import {
+    IfThenElseMapper,
+    OneOfToEnumMapper,
+    RitaDependentOptionsMapper,
+    DependentRequiredMapper,
+} from '@educorvi/vue-json-form';
 import { getComputed, getSubmitFunc, type Props, type Emits } from './vueComponentCommons.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
-const props = defineProps<Props>();
+const props = defineProps<Props & { noValidate?: boolean }>();
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
-const { jsonSchema, uiSchema, presetData, returnDataAsScopes } = getComputed(props)
+const { jsonSchema, uiSchema, presetData, returnDataAsScopes } = getComputed(props);
 
 const mappers = [OneOfToEnumMapper, IfThenElseMapper, RitaDependentOptionsMapper, DependentRequiredMapper];
 
-const onSubmitForm = getSubmitFunc(emit)
+const onSubmitForm = getSubmitFunc(emit);
 </script>
 
 <template>
@@ -26,7 +31,7 @@ const onSubmitForm = getSubmitFunc(emit)
         :preset-data="presetData"
         :return-data-as-scopes="returnDataAsScopes"
         :mappers="mappers"
-        :validator="AjvValidator"
+        :validator="noValidate?undefined:AjvValidator"
         :onSubmitForm="onSubmitForm"
         :render-interface="bootstrapComponents"
     >

@@ -25,6 +25,7 @@ Supported options are:
 - `uiSchema`
 - `presetData`
 - `returnDataAsScopes`
+- `noValidate` (only for `vue-json-form-ajv-validator`, disables validation)
 
 ```html
 <!DOCTYPE html>
