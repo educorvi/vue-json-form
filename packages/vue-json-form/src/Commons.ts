@@ -135,7 +135,7 @@ export function getPropertyByString(
         } else if (defaultVal !== undefined) {
             return defaultVal;
         } else {
-            throw new Error('Undefinded path in data: ' + path);
+            throw new Error('Undefined path in data: ' + path);
         }
     }
     return object;
