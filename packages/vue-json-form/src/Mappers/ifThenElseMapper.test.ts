@@ -30,9 +30,12 @@ describe('IfThenElseMapper', () => {
 
     it('applies "then" properties when conditions are fulfilled', async () => {
         const fieldScope = '/properties/x';
-        const savePath = '/properties';
+        const savePath = '/properties/x';
 
         const jsonSchema: JSONSchema = {
+            properties: {
+                country: { type: 'string' },
+            },
             allOf: [
                 {
                     if: {
@@ -76,7 +79,7 @@ describe('IfThenElseMapper', () => {
         );
 
         const data: Record<string, any> = {
-            '/country': 'DE',
+            '/properties/country': 'DE',
         };
         const result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
@@ -91,7 +94,7 @@ describe('IfThenElseMapper', () => {
 
     it('applies "else" properties when conditions are not fulfilled', async () => {
         const fieldScope = '/properties/x';
-        const savePath = '/properties';
+        const savePath = '/properties/x';
 
         const jsonSchema: JSONSchema = {
             allOf: [
@@ -137,7 +140,7 @@ describe('IfThenElseMapper', () => {
         );
 
         const data: Record<string, any> = {
-            '/country': 'US',
+            '/properties/country': 'US',
         };
         const result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
@@ -150,7 +153,7 @@ describe('IfThenElseMapper', () => {
 
     it('merges results of multiple matching "if-then" rules in order', async () => {
         const fieldScope = '/properties/x';
-        const savePath = '/properties';
+        const savePath = '/properties/x';
 
         const jsonSchema: JSONSchema = {
             allOf: [
@@ -197,8 +200,8 @@ describe('IfThenElseMapper', () => {
         );
 
         const data: Record<string, any> = {
-            '/country': 'DE',
-            '/role': 'admin',
+            '/properties/country': 'DE',
+            '/properties/role': 'admin',
         };
         const result = (await mapper.map(initialJson, ui, data))!;
         const { jsonElement } = result;
@@ -215,7 +218,7 @@ describe('IfThenElseMapper', () => {
 
     it('collects dependencies for all referenced condition keys and deduplicates them', () => {
         const fieldScope = '/properties/x';
-        const savePath = '/properties';
+        const savePath = '/properties/x';
 
         const jsonSchema: JSONSchema = {
             allOf: [
@@ -245,13 +248,12 @@ describe('IfThenElseMapper', () => {
         );
 
         const deps = mapper.getDependencies();
-        // sliceScope(savePath, -1) is '' for '/properties', therefore deps are '/<key>'
-        expect(deps.sort()).toEqual(['/a', '/b']);
+        expect(deps.sort()).toEqual(['/properties/a', '/properties/b']);
     });
 
     it('passes through unchanged when no matching allOf with supported if/then[/else] exists', async () => {
         const fieldScope = '/properties/x';
-        const savePath = '/properties';
+        const savePath = '/properties/x';
 
         const jsonSchema: JSONSchema = {
             // allOf missing entirely
@@ -275,5 +277,224 @@ describe('IfThenElseMapper', () => {
         // Should be exact same references when nothing changed
         expect(result!.jsonElement).toBe(initialJson);
         expect(result!.uiElement).toBe(ui);
+    });
+
+    it('correctly applies required', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            country: { const: 'DE' },
+                        },
+                    },
+                    then: {
+                        required: ['x'],
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+
+        const initialJson: JSONSchema = {};
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        const data: Record<string, any> = {
+            '/properties/country': 'DE',
+        };
+        const result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        const { uiElement } = result!;
+
+        expect(uiElement.options?.forceRequired).toBe(true);
+    });
+
+    it('handles deep conditions for shallow fields', async () => {
+        const fieldScope = '/properties/target';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            properties: {
+                target: { type: 'string' },
+                nested: {
+                    type: 'object',
+                    properties: {
+                        trigger: { type: 'string' },
+                    },
+                },
+            },
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            nested: {
+                                properties: {
+                                    trigger: { const: 'ON' },
+                                },
+                            },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            target: { minLength: 5 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        const data: Record<string, any> = {
+            '/properties/nested/properties/trigger': 'ON',
+        };
+
+        const result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(5);
+    });
+
+    it('handles shallow conditions for deep fields', async () => {
+        const fieldScope = '/properties/nested/properties/target';
+        const savePath = '/properties/nested/properties/target';
+
+        const jsonSchema: JSONSchema = {
+            properties: {
+                trigger: { type: 'string' },
+                nested: {
+                    type: 'object',
+                    properties: {
+                        target: { type: 'string' },
+                    },
+                },
+            },
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            trigger: { const: 'ON' },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            nested: {
+                                properties: {
+                                    target: { minLength: 5 },
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        const data: Record<string, any> = {
+            '/properties/trigger': 'ON',
+        };
+
+        const result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(5);
+    });
+
+    it('handles deep conditions for deep fields (sibling branches)', async () => {
+        const fieldScope = '/properties/branchB/properties/target';
+        const savePath = '/properties/branchB/properties/target';
+
+        const jsonSchema: JSONSchema = {
+            properties: {
+                branchA: {
+                    type: 'object',
+                    properties: {
+                        trigger: { type: 'string' },
+                    },
+                },
+                branchB: {
+                    type: 'object',
+                    properties: {
+                        target: { type: 'string' },
+                    },
+                },
+            },
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            branchA: {
+                                properties: {
+                                    trigger: { const: 'ON' },
+                                },
+                            },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            branchB: {
+                                properties: {
+                                    target: { minLength: 5 },
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        const data: Record<string, any> = {
+            '/properties/branchA/properties/trigger': 'ON',
+        };
+
+        const result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(5);
     });
 });

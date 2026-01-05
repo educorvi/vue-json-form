@@ -5,6 +5,61 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-96"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-96/properties/ja-oder-nein",
+                        "options": {
+                            "displayAs": "radiobuttons",
+                            "stacked": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-96/properties/feld-1"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-96/properties/feld-2"
+                    },
+                    {
+                        "type": "Group",
+                        "options": {
+                            "label": "Abhängige Feldgruppe",
+                            "description": ""
+                        },
+                        "showOn": {
+                            "id": "ritaRule-abhaengige-feldgruppe",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-96.ja-oder-nein",
+                                        "default": ""
+                                    },
+                                    "ja"
+                                ]
+                            }
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/jso-96/properties/objekt",
+                                "options": {
+                                    "descendantControlOverrides": {}
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/jso-87",
                 "options": {

@@ -6,6 +6,58 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-96": {
+            "type": "object",
+            "properties": {
+                "ja-oder-nein": {
+                    "title": "Ja oder Nein",
+                    "type": "string",
+                    "enum": ["ja", "nein"]
+                },
+                "feld-1": {
+                    "title": "Feld 1",
+                    "type": "string"
+                },
+                "feld-2": {
+                    "title": "Feld 2",
+                    "type": "string"
+                },
+                "objekt": {
+                    "type": "object",
+                    "title": "Objekt",
+                    "properties": {
+                        "feld-4": {
+                            "title": "Feld 4",
+                            "type": "string"
+                        }
+                    },
+                    "required": [],
+                    "dependentRequired": {}
+                }
+            },
+            "required": [],
+            "dependentRequired": {},
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "ja-oder-nein": {
+                                "const": "ja"
+                            }
+                        },
+                        "required": ["ja-oder-nein"]
+                    },
+                    "then": {
+                        "properties": {
+                            "objekt": {
+                                "required": ["feld-4"]
+                            }
+                        },
+                        "required": ["objekt"]
+                    }
+                }
+            ]
+        },
         "jso-87": {
             "type": "object",
             "properties": {

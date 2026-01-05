@@ -21,10 +21,11 @@ import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
     isIfThenAllOf,
+    isSupportedIfCondition,
     isSupportedIfThenElse,
     isValidJsonSchemaKey,
 } from '@/typings/typeValidators.ts';
-import { sliceScope } from '@/Commons.ts';
+import { getPropertyByString, sliceScope } from '@/Commons.ts';
 import type {
     Control,
     JSONSchema,
@@ -34,6 +35,7 @@ import type {
 import { MapperWithData } from '@/Mappers/index.ts';
 import type {
     IfConditions,
+    IfProperty,
     SupportedIfThenElse,
 } from '@/typings/customTypes.ts';
 
@@ -48,6 +50,7 @@ enum ConditionType {
  *  the sibling property `key` must equal the constant `value`. */
 type Condition = {
     key: string;
+    savePath: string;
     value: any;
     type: ConditionType;
 };
@@ -64,7 +67,6 @@ type ConditionsAndResults = {
     elseRequired?: string[];
 };
 
-// todo: support other depth than own one
 /**
  * Mapper that conditionally augments a field’s JSON Schema based on sibling values.
  *
@@ -75,9 +77,6 @@ type ConditionsAndResults = {
  * properties into the field’s schema.
  *
  * Notes and limitations:
- * - Depth: currently only supports conditions defined at the immediate parent level
- *   of the current field (see `todo` above).
- * - Const: only supports `const` conditions.
  * - Merge strategy: later matching rules may overwrite keys from earlier ones.
  */
 export class IfThenElseMapper extends MapperWithData {
@@ -104,12 +103,10 @@ export class IfThenElseMapper extends MapperWithData {
     }
 
     private setDependencies() {
-        if (!this.savePath) return;
         const deps = new Set<string>();
         for (const cr of this.conditionsAndResults) {
             for (const c of cr.conditions) {
-                const depSavePath = sliceScope(this.savePath, -1) + '/' + c.key;
-                deps.add(depSavePath);
+                deps.add(c.savePath);
             }
         }
         this.dependencies = Array.from(deps);
@@ -150,29 +147,61 @@ export class IfThenElseMapper extends MapperWithData {
             throw new Error('Invalid condition');
         }
 
+        let conditionSavePath = key;
+        let splitSavePath = this.savePath?.split('/');
+        for (let i = splitSavePath?.length ?? 0; i >= 0; --i) {
+            const remainingSavePath = splitSavePath?.slice(i).join('/');
+            if (!remainingSavePath) {
+                break;
+            }
+            if (conditionSavePath.includes(cleanScope(remainingSavePath))) {
+                conditionSavePath = conditionSavePath.replace(
+                    cleanScope(remainingSavePath),
+                    remainingSavePath
+                );
+                break;
+            }
+        }
+
         return {
             value: conditionValue,
             type: conditionType,
             key,
+            savePath: conditionSavePath,
         };
     }
 
     private parseConditions(
-        ifJson: SupportedIfThenElse['if']['properties']
+        ifJson: IfProperty['properties'],
+        scope: string
     ): Condition[] {
-        return Object.entries(ifJson).map(this.parseCondition);
+        let conditions: Condition[] = [];
+        for (const [key, value] of Object.entries(ifJson)) {
+            const newScope = scope + '/' + key;
+            if (isSupportedIfCondition(value)) {
+                conditions.push(this.parseCondition([newScope, value]));
+            } else {
+                conditions = conditions.concat(
+                    this.parseConditions(
+                        value.properties,
+                        newScope + '/properties'
+                    )
+                );
+            }
+        }
+        return conditions;
     }
 
-    private getConditionsAndResults(): ConditionsAndResults[] {
-        const fieldName = this.getFieldName();
-        if (!fieldName || !this.scope || !this.jsonSchema || !this.uiSchema) {
+    private getConditionsAndResultsFromAllOf(
+        allOfScope: string,
+        fieldScope: string
+    ) {
+        if (!this.jsonSchema) {
             return [];
         }
-        let parentAllOfPath = sliceScope(this.scope, -2) + '/' + 'allOf';
-        parentAllOfPath = cleanScope(parentAllOfPath);
         let parentAllOf;
-        if (jsonPointer.has(this.jsonSchema, parentAllOfPath)) {
-            parentAllOf = jsonPointer.get(this.jsonSchema, parentAllOfPath);
+        if (jsonPointer.has(this.jsonSchema, allOfScope)) {
+            parentAllOf = jsonPointer.get(this.jsonSchema, allOfScope);
         } else {
             return [];
         }
@@ -181,14 +210,40 @@ export class IfThenElseMapper extends MapperWithData {
             return [];
         }
 
+        const deltaPath = fieldScope.replace(
+            sliceScope(allOfScope, -1) + '/',
+            ''
+        );
+
         return parentAllOf
             .map((ifThen) => {
                 if (isSupportedIfThenElse(ifThen)) {
-                    const thenResult = ifThen.then.properties?.[fieldName];
-                    const elseResult = ifThen.else?.properties?.[fieldName];
+                    const thenResult = getPropertyByString(
+                        ifThen.then,
+                        deltaPath,
+                        '/',
+                        null
+                    );
+                    const elseResult = getPropertyByString(
+                        ifThen.else,
+                        deltaPath,
+                        '/',
+                        null
+                    );
 
-                    const thenRequired = ifThen.then.required;
-                    const elseRequired = ifThen.else?.required;
+                    const parentDeltaPath = sliceScope(deltaPath, -2);
+                    const thenRequired = getPropertyByString(
+                        ifThen.then,
+                        parentDeltaPath + '/required',
+                        '/',
+                        []
+                    );
+                    const elseRequired = getPropertyByString(
+                        ifThen.else,
+                        parentDeltaPath + '/required',
+                        '/',
+                        []
+                    );
 
                     if (
                         !thenResult &&
@@ -200,7 +255,10 @@ export class IfThenElseMapper extends MapperWithData {
                     }
 
                     return {
-                        conditions: this.parseConditions(ifThen.if.properties),
+                        conditions: this.parseConditions(
+                            ifThen.if.properties,
+                            '/properties'
+                        ),
                         then: thenResult,
                         else: elseResult,
                         thenRequired,
@@ -211,16 +269,32 @@ export class IfThenElseMapper extends MapperWithData {
             .filter((c) => c !== undefined);
     }
 
+    private getConditionsAndResults(): ConditionsAndResults[] {
+        let conditionsAndResults: ConditionsAndResults[] = [];
+        if (!this.scope || !this.jsonSchema || !this.uiSchema) {
+            return conditionsAndResults;
+        }
+        for (let i = -2; this.scope.split('/').length + i >= 0; i -= 2) {
+            let parentAllOfPath = sliceScope(this.scope, i) + '/' + 'allOf';
+            parentAllOfPath = cleanScope(parentAllOfPath);
+            conditionsAndResults = conditionsAndResults.concat(
+                this.getConditionsAndResultsFromAllOf(
+                    parentAllOfPath,
+                    this.scope
+                )
+            );
+        }
+        return conditionsAndResults;
+    }
+
     checkConditionFulfilled(
         condition: Condition,
         data: Readonly<Record<string, any>>
     ): boolean {
-        const actualValue = this.savePath
-            ? data[sliceScope(this.savePath, -1) + '/' + condition.key]
-            : undefined;
-        if (actualValue === undefined) {
+        if (!this.savePath || !this.scope) {
             return false;
         }
+        const actualValue = data[condition.savePath];
         switch (condition.type) {
             case ConditionType.CONST:
                 // return actualValue === condition.value;
