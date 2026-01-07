@@ -22,10 +22,10 @@
   "private": true,
   "scripts": {
     "build": "turbo check-types build:internal",
-    "build:demo": "turbo run check-types build --filter demo",
-    "build:schemas": "turbo run check-types build --filter @educorvi/vue-json-form-schemas",
-    "build:vue-json-form": "turbo run check-types build --filter @educorvi/vue-json-form",
-    "build:webcomponent": "turbo run check-types build --filter @educorvi/vue-json-form-webcomponent",
+    "build:demo": "turbo run check-types build:internal --filter demo",
+    "build:schemas": "turbo run check-types build:internal --filter @educorvi/vue-json-form-schemas",
+    "build:vue-json-form": "turbo run check-types build:internal --filter @educorvi/vue-json-form",
+    "build:webcomponent": "turbo run check-types build:internal --filter @educorvi/vue-json-form-webcomponent",
     "commitlint": "commitlint --edit",
     "doc": "turbo doc:root && echo 'Copying files...' && run-p -l \"doc:copy:**\"",
     "doc:copy:demo": "rimraf ./docs/demo && mkdirp ./docs/demo && cp -r ./apps/demo/dist/* ./docs/demo",
@@ -36,7 +36,6 @@
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
     "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
     "publish": "yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish",
-    "publish:dry-run": "yarn workspaces foreach --topological-dev -Av --no-private --dry-run --exclude . npm publish --access public --tolerate-republish",
     "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.sh",
     "size": "size-limit"
   },

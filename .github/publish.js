@@ -39,7 +39,7 @@ if (branchConfig && branchConfig.channel) {
 console.log(`Publishing with tag: ${tag}`);
 
 // Run yarn command
-const command = `yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish --tag ${tag} --dry-run`;
+const command = `yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish --tag ${tag}`;
 
 try {
   execSync(command, { cwd: rootDir, stdio: 'inherit' });
