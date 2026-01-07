@@ -5,6 +5,12 @@
         "email": "julian.pollinger@educorvi.de",
         "name": "Julian Pollinger"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/educorvi/vue-json-form.git",
+        "directory": "packages/vue-json-form"
+    },
+    "private": false,
     "dependencies": {
         "@educorvi/rita": "^5.5.1",
         "@educorvi/vue-json-form-schemas": "workspace:^",
@@ -86,19 +92,15 @@
     "publishConfig": {
         "access": "public"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/educorvi/vue-json-form",
-        "directory": "vue-json-form"
-    },
     "scripts": {
-        "build": "vite build",
+        "build": "turbo build:internal check-types",
+        "build:internal": "vite build",
         "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
         "dev": "vite -c vite.dev.config.ts --host",
         "format": "prettier --write src/",
         "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
         "pre-commit": "echo ''",
-        "prepack": "yarn workspace vue-json-form run build:vue-json-form",
+        "prepack": "yarn run build",
         "prepare": "husky",
         "preview": "vite preview",
         "release:alpha": "yarn npm publish --access public --tag alpha",

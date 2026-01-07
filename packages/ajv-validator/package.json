@@ -2,6 +2,12 @@
   "name": "@educorvi/vue-json-form-ajv-validator",
   "description": "ajv-validator for Vue JSON Form",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form.git",
+    "directory": "packages/ajv-validator"
+  },
+  "private": false,
   "dependencies": {
     "@educorvi/vue-json-form-schemas": "workspace:^",
     "ajv": "^8.17.1",
@@ -42,7 +48,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn run build:ajvStandalone && vite build",
+    "build": "turbo build:internal check-types",
+    "build:internal": "yarn run build:ajvStandalone && vite build",
     "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
     "check-types": "tsc --noEmit",
     "prepack": "yarn run build"
