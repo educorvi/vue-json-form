@@ -591,4 +591,165 @@ describe('IfThenElseMapper', () => {
         expect(result).not.toBeNull();
         expect(result!.uiElement.options?.forceRequired).toBe(true);
     });
+
+    it('supports "enum" condition', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            country: { enum: ['DE', 'AT'] },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 5 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Match DE
+        let data: Record<string, any> = { '/properties/country': 'DE' };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(5);
+
+        // Match AT
+        data = { '/properties/country': 'AT' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(5);
+
+        // No match US
+        data = { '/properties/country': 'US' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('supports "contains" with "const" condition', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            tags: { contains: { const: 'urgent' } },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 5 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Match
+        let data: Record<string, any> = {
+            '/properties/tags': ['work', 'urgent'],
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(5);
+
+        // No match
+        data = { '/properties/tags': ['work'] };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+
+        // Not an array
+        data = { '/properties/tags': 'urgent' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('supports "contains" with "enum" condition', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            tags: {
+                                contains: { enum: ['urgent', 'important'] },
+                            },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 5 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Match urgent
+        let data: Record<string, any> = {
+            '/properties/tags': ['work', 'urgent'],
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(5);
+
+        // Match important
+        data = { '/properties/tags': ['important', 'home'] };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(5);
+
+        // No match
+        data = { '/properties/tags': ['work', 'home'] };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+
+        // Not an array
+        data = { '/properties/tags': 'urgent' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
 });

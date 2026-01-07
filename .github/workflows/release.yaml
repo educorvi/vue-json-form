@@ -6,6 +6,9 @@ on:
       - 'release/*'
   workflow_dispatch:
 
+permissions:
+  id-token: write  # Required for OIDC
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -20,6 +23,7 @@ jobs:
         with:
           cache: 'yarn'
           node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
       - run: yarn install
       - run: yarn run build
         name: Build all workspaces
@@ -28,8 +32,6 @@ jobs:
       - run: yarn run release
         name: Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   rebuild-doc-and-demo:
     needs:
