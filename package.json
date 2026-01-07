@@ -35,7 +35,7 @@
     "prepare": "husky",
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
     "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
-    "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec ../.github/findAndSetOldVersion.sh",
+    "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.sh",
     "size": "size-limit"
   },
   "workspaces": [
