@@ -22,12 +22,6 @@
       {
         "assets": []
       }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "analyzeCommitsCmd": "./../.github/setOldVersion.sh ${lastRelease.version}"
-      }
     ]
   ]
 }
