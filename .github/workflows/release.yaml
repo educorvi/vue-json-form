@@ -12,6 +12,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  packages: write
 
 jobs:
   release:
@@ -27,7 +28,6 @@ jobs:
         with:
           cache: 'yarn'
           node-version: 'lts/*'
-          registry-url: 'https://registry.npmjs.org'
       - run: yarn install
       - name: Set old versions
         run: yarn run setOldVersions
@@ -37,10 +37,39 @@ jobs:
         name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          #          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_PUBLISH_REGISTRY: 'https://npm.pkg.github.com'
   rebuild-doc-and-demo:
     needs:
       - release
     uses: ./.github/workflows/doc.yaml
     secrets: inherit
+  publish-on-npm:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: 'true'
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          cache: 'yarn'
+          node-version: 'lts/*'
+      - run: yarn install
+      - name: Set old versions
+        run: yarn run setOldVersions
+      - run: yarn run build
+        name: Build all workspaces
+      - run: ./.github/publish.js

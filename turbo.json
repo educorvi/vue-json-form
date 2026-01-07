@@ -1,12 +1,12 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "tasks": {
-    "build": {
+    "build:internal": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build:internal"]
     },
     "check-types": {
-      "dependsOn": ["^check-types", "^build"]
+      "dependsOn": ["^check-types", "^build:internal"]
     },
     "dev": {
       "persistent": true,
@@ -17,10 +17,10 @@
     },
     "doc": {
       "outputs": ["docs-dist"],
-      "dependsOn": ["build"]
+      "dependsOn": ["build:internal"]
     },
     "//#doc:root": {
-      "dependsOn": ["demo#build", "@educorvi/vue-json-form-schemas#doc"]
+      "dependsOn": ["demo#build:internal", "@educorvi/vue-json-form-schemas#doc"]
     }
   }
 }

@@ -2,6 +2,12 @@
   "name": "@educorvi/vue-json-form-webcomponent",
   "description": "Vue JSON Form Webcomponent",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form.git",
+    "directory": "packages/webcomponent"
+  },
+  "private": false,
   "dependencies": {
     "@educorvi/vue-json-form": "workspace:^",
     "@educorvi/vue-json-form-ajv-validator": "workspace:^",
@@ -48,14 +54,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "educorvi/vue-json-form.git",
   "scripts": {
-    "build": "run-p 'build:*'",
-    "build:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
-    "build:default": "BUILD_TARGET=default vite build",
-    "build:shadowDom": "BUILD_TARGET=shadowDom vite build",
+    "build": "turbo build:internal check-types",
+    "build:internal": "run-p 'build:internal:*'",
+    "build:internal:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
+    "build:internal:default": "BUILD_TARGET=default vite build",
+    "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "check-types": "vue-tsc --noEmit",
-    "prepack": "yarn workspace vue-json-form run build"
+    "prepack": "yarn run build"
   },
   "type": "commonjs"
 }
