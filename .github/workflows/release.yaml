@@ -36,6 +36,8 @@ jobs:
       - run: yarn run release
         name: Release
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   rebuild-doc-and-demo:
     needs:
