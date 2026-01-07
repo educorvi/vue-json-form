@@ -1,12 +1,26 @@
 import type {
     JSONSchema,
     UISchema,
-    LayoutElement,
     Layout,
 } from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Prefix for array item keys.
+ */
+export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
+
+/**
+ * Supported UI Schema Version
+ */
+export const SUPPORTED_UISCHEMA_VERSION = '2.0';
+
+/**
+ * Generates a universally unique identifier (UUID).
+ *
+ * @return {string} A UUID string.
+ */
 export function generateUUID(): string {
     let id: string;
     try {
@@ -16,8 +30,6 @@ export function generateUUID(): string {
     }
     return id;
 }
-
-export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 
 /**
  * Checks if the given key has the format of an array item key.
@@ -48,6 +60,18 @@ export function sliceScope(scope: string, length: number): string {
 }
 
 /**
+ * Extracts the name of a field from a given scope.
+ *
+ * @param {string} [scope] - The input scope.
+ * @return {string|undefined} The field's name.
+ */
+export function getFieldName(scope: string): string;
+export function getFieldName(scope?: string): string | undefined;
+export function getFieldName(scope?: string): string | undefined {
+    return scope?.split('/').pop();
+}
+
+/**
  * This function is used to map an array of elements to a new array where each element in the new array will have all the properties of the original element plus a 'uuid' property.
  * The 'uuid' property is generated using the `crypto.randomUUID()` or the `makeid()` function.
  *
@@ -58,8 +82,13 @@ export function mapUUID<T>(element: T[]): Array<T & { uuid: string }> {
     return element.map((el) => ({ ...el, uuid: generateUUID() }));
 }
 
-export const SUPPORTED_UISCHEMA_VERSION = '2.0';
-
+/**
+ * Generates a UI schema based on the provided JSON schema and generation options.
+ *
+ * @param {JSONSchema} json - The JSON schema to generate the UI schema from.
+ * @param {GenerationOptions} [generationOptions={}] - Options to customize the generation process.
+ * @return {UISchema & { layout: Layout }} The generated UI schema with layout details.
+ */
 export function generateUISchema(
     json: JSONSchema,
     generationOptions: GenerationOptions = {}

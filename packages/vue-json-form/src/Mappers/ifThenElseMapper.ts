@@ -25,7 +25,7 @@ import {
     isSupportedIfThenElse,
     isValidJsonSchemaKey,
 } from '@/typings/typeValidators.ts';
-import { getPropertyByString, sliceScope } from '@/Commons.ts';
+import { getPropertyByString, sliceScope, getFieldName } from '@/Commons.ts';
 import type {
     Control,
     JSONSchema,
@@ -33,11 +33,7 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
-import type {
-    IfConditions,
-    IfProperty,
-    SupportedIfThenElse,
-} from '@/typings/customTypes.ts';
+import type { IfConditions, IfProperty } from '@/typings/customTypes.ts';
 
 enum ConditionType {
     CONST = 'const',
@@ -116,7 +112,7 @@ export class IfThenElseMapper extends MapperWithData {
     }
 
     private getFieldName() {
-        return this.scope?.split('/').pop();
+        return getFieldName(this.scope);
     }
 
     private parseCondition([key, condition]: [

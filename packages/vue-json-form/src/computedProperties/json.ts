@@ -4,15 +4,32 @@ import {
     savePathProviderKey,
 } from '@/components/ProviderKeys';
 import type { Control } from '@educorvi/vue-json-form-schemas';
-import pointer from 'json-pointer';
 import { storeToRefs } from 'pinia';
 import { useFormStructureStore } from '@/stores/formStructure';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import jsonPointer from 'json-pointer';
-import { isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import {
+    getFieldName,
+    isArrayItemKey,
+    sliceScope,
+    VJF_ARRAY_ITEM_PREFIX,
+} from '@/Commons';
 import { isDefined } from '@/typings/typeValidators.ts';
 
-export function injectJsonData() {
+/**
+ * Injects JSON data, related UI element, and save path.
+ *
+ * @return {Object} An object containing the following properties:
+ * - `jsonElement` (Ref<JSONSchema>): A reference to the JSON element from the injected form structure.
+ * - `layoutElement` (Ref<Control>): A reference to the UI element from the injected form structure.
+ * - `savePath` (string): A string representing the save path for the data.
+ * @throws {Error} If the required dependencies ('fs' or 'savePath') are not provided or undefined.
+ */
+export function injectJsonData(): {
+    jsonElement: Readonly<Ref<JSONSchema>>;
+    layoutElement: Readonly<Ref<Control>>;
+    savePath: Readonly<string>;
+} {
     const fs = inject(formStructureProviderKey);
     const savePath = inject(savePathProviderKey);
     if (!isDefined(fs) || !isDefined(savePath)) {
@@ -24,6 +41,13 @@ export function injectJsonData() {
     return { jsonElement, layoutElement: uiElement, savePath };
 }
 
+/**
+ * Safely retrieves the value at the specified JSON Pointer path within a JSON object.
+ * If the path does not exist, returns null instead of throwing an error.
+ *
+ * @param {...Parameters<typeof jsonPointer.get>} args - The arguments to be passed to the `jsonPointer.get` function, including the JSON object and the pointer path.
+ * @return {ReturnType<typeof jsonPointer.get>} The value at the specified JSON Pointer path, or null if the path does not exist.
+ */
 export function getJsonPointerSafe(
     ...args: Parameters<typeof jsonPointer.get>
 ): ReturnType<typeof jsonPointer.get> {
@@ -33,60 +57,48 @@ export function getJsonPointerSafe(
     return jsonPointer.get(...args);
 }
 
-export function getParentJsonPath(scope: string): string | null {
-    let path = pointer.parse(scope);
-
-    if (path.length < 1) return null;
-
-    path = path.slice(0, -1);
-    return pointer.compile(path);
-}
-
-export function getComputedParentJsonPath(layout: Control) {
-    return computed((): string | null => {
-        if (!layout) throw new Error('No layout found');
-
-        let path = pointer.parse(layout.scope);
-
-        if (path.length < 1) return null;
-
-        path = path.slice(0, -1);
-        return pointer.compile(path);
+/**
+ * Computes the JSON path of the grandparent scope from the provided layout.
+ *
+ * @param {Ref<Control, Control>} layout - A reactive reference to the Control object containing the scope property.
+ * @return {ComputedRef<string>} A computed reference containing the JSON path of the grandparent.
+ */
+export function getComputedGrandparentJsonPath(
+    layout: Ref<Control, Control>
+): ComputedRef<string> {
+    return computed((): string => {
+        return sliceScope(layout.value.scope, -2);
     });
 }
 
-export function getComputedGrandparentJsonPath(layout: Ref<Control, Control>) {
-    return computed((): string | null => {
-        if (!layout) throw new Error('No layout found');
+/**
+ * Determines if a field is required.
+ *
+ * This function calculates whether a specific field is marked as required by
+ * examining the layout's configuration, the grandparent JSON path, and any
+ * corresponding `required` property.
+ *
+ * @param {Ref<Control, Control>} layout - A reference to the layout control.
+ * @return {ComputedRef<boolean>} A computed reference that resolves to `true` if the field is determined
+ * to be required; otherwise, `false`.
+ */
+export function getComputedRequired(
+    layout: Ref<Control, Control>
+): ComputedRef<boolean> {
+    const grandParentPath = getComputedGrandparentJsonPath(layout);
+    let jsonElement = getComputedJsonElement(
+        grandParentPath.value + '/required',
+        true
+    );
 
-        let path = pointer.parse(layout.value.scope);
-
-        if (path.length < 2) return null;
-
-        path = path.slice(0, -2);
-        return pointer.compile(path);
-    });
-}
-
-export function getComputedRequired(layout: Ref<Control, Control>) {
     return computed(() => {
         if (layout.value.options?.forceRequired) {
             return true;
         }
 
-        const grandParentPath = getComputedGrandparentJsonPath(layout);
-        if (grandParentPath.value === null) {
-            return false;
-        }
-
-        const fieldName = layout.value.scope.split('/').pop() || '';
+        const fieldName = getFieldName(layout.value.scope);
 
         // Check if the field is required
-        let jsonElement = getComputedJsonElement(
-            grandParentPath.value + '/required',
-            true
-        );
-
         if (
             jsonElement.value !== undefined &&
             Array.isArray(jsonElement.value)
@@ -100,7 +112,14 @@ export function getComputedRequired(layout: Ref<Control, Control>) {
     });
 }
 
-function titleCase(string: string) {
+/**
+ * Converts a given string with words separated by underscores into title case.
+ * Each word is capitalized, and underscores are replaced with spaces.
+ *
+ * @param {string} string - The input string where words are separated by underscores.
+ * @return {string} The converted string in title case with spaces separating words.
+ */
+function titleCase(string: string): string {
     const sentence = string.toLowerCase().split('_');
     sentence.forEach((part: string, index: number) => {
         if (part) {
@@ -132,9 +151,16 @@ export function cleanScope(
     );
 }
 
+/**
+ * Retrieves a computed JSON element from a JSON schema based on the provided scope.
+ *
+ * @param {string} scope The scope path used to locate the JSON element within the JSON schema.
+ * @param {boolean} [failSilently=false] A flag indicating whether to suppress error messages if the JSON element is not found.
+ * @return {ComputedRef<JSONSchema | null>} A computed reference to the JSON schema element if found, otherwise null.
+ */
 export function getComputedJsonElement(
     scope: string,
-    failSilently = false
+    failSilently: boolean = false
 ): ComputedRef<JSONSchema | null> {
     return computed(() => {
         let internal_scope = scope;
@@ -169,6 +195,13 @@ export function isArray(scope: string) {
     return element?.type === 'array';
 }
 
+/**
+ * Checks if the provided array contains at least one value that is either
+ * not a string or not an array item key.
+ *
+ * @param {any[]} array - The array to check for the presence of a value.
+ * @return {boolean} Returns `true` if the array contains a value meeting the condition; otherwise, `false`.
+ */
 export function arrayContainsValue(array: any[]): boolean {
     return array.reduce((prev, curr) => {
         const isValue = !(typeof curr === 'string' && isArrayItemKey(curr));
@@ -176,7 +209,16 @@ export function arrayContainsValue(array: any[]): boolean {
     }, false);
 }
 
-export function computedLabel(layout: Ref<Control, Control>) {
+/**
+ * Computes and returns the label for a given control layout, including optional indicators such as
+ * asterisks for required fields.
+ *
+ * @param {Ref<Control, Control>} layout - A ref object containing the control layout.
+ * @return {ComputedRef<string>} A computed reference of the formatted label string.
+ */
+export function computedLabel(
+    layout: Ref<Control, Control>
+): ComputedRef<string> {
     const { jsonSchema } = storeToRefs(useFormStructureStore());
     const jsonElement = getComputedJsonElement(layout.value.scope);
     return computed(() => {
