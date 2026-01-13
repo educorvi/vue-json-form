@@ -7,7 +7,6 @@
     "url": "git+https://github.com/educorvi/vue-json-form.git",
     "directory": "packages/ajv-validator"
   },
-  "private": false,
   "dependencies": {
     "@educorvi/vue-json-form-schemas": "workspace:^",
     "ajv": "^8.17.1",

@@ -7,7 +7,6 @@
     "url": "git+https://github.com/educorvi/vue-json-form.git",
     "directory": "packages/schemas"
   },
-  "private": false,
   "dependencies": {
     "@educorvi/rita": "^5.5.1",
     "json-schema-typed": "^8.0.2"
