@@ -1,19 +1,10 @@
 /**
- * IfThenElseMapper
+ * `IfThenElseMapper` is a data-dependent mapper that implements conditional JSON Schema logic.
  *
- * Applies conditional JSON Schema fragments (then/else) to a single field based on
- * sibling data using JSON Schema style `if`/`then`/`else` blocks that are
- * collected via an `allOf` on the parent object.
- *
- *
- * Mapper behavior in short:
- * - During `registerSchemata`, the mapper reads the parent `allOf` and extracts every
- *   supported `{ if: { properties: ... }, then: { properties: ... }, else?: ... }` block
- *   that touches the current field (by `fieldName`).
- * - During `map`, it evaluates the conditions against sibling values in `data` and
- *   merges the corresponding `then` or `else` properties into the current field’s
- *   JSON Schema. Later rules overwrite earlier ones when they define the same keys.
- * - `getDependencies` returns the list of sibling data paths this field depends on.
+ * This mapper scans the schema's `allOf` blocks for `if`/`then`/`else` structures.
+ * It identifies rules that affect the current field and monitors changes in data
+ * to dynamically augment the field's JSON Schema (e.g., changing `enum` values) or
+ * UI Schema (e.g., forcing a field to be `required`).
  */
 import jsonPointer from 'json-pointer';
 import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
