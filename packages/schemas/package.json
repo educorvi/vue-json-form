@@ -56,7 +56,7 @@
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
     "mergeSchema": "node mergeSchema.cjs",
-    "prepack": "yarn run build"
+    "prepack": "yarn run build:internal"
   },
   "type": "module",
   "types": "./dist/vue-json-form-schemas.d.ts"

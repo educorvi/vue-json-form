@@ -39,7 +39,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "yarn run build",
+    "prepack": "yarn run build:internal",
     "build": "turbo build:internal check-types",
     "build:internal": "vite build",
     "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",

@@ -60,7 +60,7 @@
     "build:internal:default": "BUILD_TARGET=default vite build",
     "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "check-types": "vue-tsc --noEmit",
-    "prepack": "yarn run build"
+    "prepack": "yarn run build:internal"
   },
   "type": "commonjs"
 }

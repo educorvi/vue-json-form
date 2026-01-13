@@ -99,7 +99,7 @@
         "format": "prettier --write src/",
         "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
         "pre-commit": "echo ''",
-        "prepack": "yarn run build",
+        "prepack": "yarn run build:internal",
         "prepare": "husky",
         "preview": "vite preview",
         "release:alpha": "yarn npm publish --access public --tag alpha",
