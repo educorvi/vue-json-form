@@ -2,26 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import type { ErrorObject } from 'ajv';
-import ValidationError from '@/components/Errors/ValidationError.vue';
-import ParsingError from '@/components/Errors/ParsingError.vue';
-
-// Define the ValidationErrors type locally to avoid schema dependency
-interface ValidationErrors {
-    general: Error[];
-    jsonSchema: {
-        parsing: Error[];
-        validation: ErrorObject[];
-    };
-    uiSchema: {
-        parsing: Error[];
-        validation: ErrorObject[];
-    };
-}
-
-import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
-import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
-import type { ErrorObject } from 'ajv';
 
 // Define the ValidationErrors type locally to avoid schema dependency
 interface ValidationErrors {
