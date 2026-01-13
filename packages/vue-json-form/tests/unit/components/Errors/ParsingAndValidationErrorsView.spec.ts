@@ -3,7 +3,10 @@ import { mount } from '@vue/test-utils';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import type { ErrorObject } from 'ajv';
 
-// Define the ValidationErrors type locally to avoid schema dependency
+// Define the ValidationErrors type locally to avoid schema dependency.
+// Note: This mirrors the ValidationErrors type from @educorvi/vue-json-form-schemas
+// but is duplicated here to avoid requiring the schemas package to be built for tests.
+// If the ValidationErrors interface changes, this should be updated accordingly.
 interface ValidationErrors {
     general: Error[];
     jsonSchema: {

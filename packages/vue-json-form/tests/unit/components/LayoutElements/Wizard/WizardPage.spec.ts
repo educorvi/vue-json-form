@@ -18,10 +18,6 @@ vi.mock('@/stores/formStructure.ts', () => {
 });
 
 describe('WizardPage', () => {
-    beforeEach(() => {
-        // Clear the DOM between tests
-        document.body.innerHTML = '';
-    });
 
     it('renders page name as h2', () => {
         const page = {
