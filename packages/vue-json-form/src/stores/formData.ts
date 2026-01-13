@@ -238,11 +238,16 @@ export function flattenData(
 
 function readFileDataAsDataUrl(file: File): Promise<string> {
     return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            resolve(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        try {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } catch (e) {
+            console.error('Error reading file', file);
+            resolve('');
+        }
     });
 }
 

@@ -1,7 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 test.describe('Structure', () => {
-    async function checkRadios(page, containerID: string, values: string[]) {
+    async function checkRadios(
+        page: Page,
+        containerID: string,
+        values: string[]
+    ) {
         const container = page.locator(containerID);
         await expect(container.locator('> *')).toHaveCount(values.length);
 
@@ -257,11 +267,7 @@ test.describe('Button functions', () => {
             .locator('button[type="submit"]:not([formnovalidate])')
             .click();
 
-        const resultText = await page
-            .locator('#result-container')
-            .textContent();
-        const json = JSON.parse(resultText || '');
-        expect(json).toEqual({});
+        await expect(page.locator('#result-container')).not.toBeAttached();
     });
 
     test('submit with missing fields and novalidate', async ({ page }) => {
@@ -334,6 +340,12 @@ test.describe('Button functions', () => {
             .locator('#vjf_control_for__properties_testArray input')
             .nth(2)
             .fill('I am third!');
+
+        // await page.locator('input[name="/properties/fileupload"]').click();
+        await page
+            .locator('input[name="/properties/fileupload"]')
+            .setInputFiles(path.join(__dirname, 'assets', 'testUpload.txt'));
+
         await page.locator('.btn-primary').click();
 
         const resultText = await page
@@ -353,6 +365,7 @@ test.describe('Button functions', () => {
         expect(json['weekdays']).toEqual(['Monday', 'Friday']);
         expect(json['recurrence_interval']).toEqual(4);
         expect(json['testArray']).toEqual(['Hello', 'World', 'I am third!']);
+        expect(json['fileupload']).toEqual(undefined);
     });
 
     test('submit with data (object)', async ({ page }) => {
@@ -390,6 +403,10 @@ test.describe('Button functions', () => {
             )
             .check();
 
+        await page
+            .locator('input[name="/properties/fileupload"]')
+            .setInputFiles(path.join(__dirname, 'assets', 'testUpload.pdf'));
+
         await page.locator('.btn-primary').click();
 
         const resultText = await page
@@ -406,5 +423,12 @@ test.describe('Button functions', () => {
             age: 15,
             flauschig: true,
         });
+
+        const fileHash = createHash('sha256')
+            .update(json['fileupload'])
+            .digest('base64');
+        expect(fileHash).toEqual(
+            '1GW+tQlX6j/o+hU/18VW33uDoKfkWyA9AcCmSvKWhQw='
+        );
     });
 });

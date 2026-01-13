@@ -835,7 +835,7 @@ __metadata:
     axe-core: "npm:^4.11.0"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
-    bootstrap-vue-next: "npm:0.41.0"
+    bootstrap-vue-next: "npm:0.42.0"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^9.39.2"
     eslint-config-prettier: "npm:^10.1.8"
@@ -4227,6 +4227,25 @@ __metadata:
     vue-router:
       optional: true
   checksum: 10/6743c9d3db0367ec103afaf21f4c8950a30e00300ff3154f2965c57f2a5cf5915e6e96a8d45f47494e7f43f48639b21fa896ea86d6891a7dc38108010df671cf
+  languageName: node
+  linkType: hard
+
+"bootstrap-vue-next@npm:0.42.0":
+  version: 0.42.0
+  resolution: "bootstrap-vue-next@npm:0.42.0"
+  peerDependencies:
+    "@floating-ui/vue": "*"
+    "@vueuse/core": "*"
+    vue: ^3.5.13
+    vue-router: "*"
+  peerDependenciesMeta:
+    "@floating-ui/vue":
+      optional: true
+    "@vueuse/core":
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10/7e38459344432d3f09c075be00f5fe8bcddd221e19962b71fa65571b463cec08009c5b619ce3e68395864f9437846c432e9ac85c4cedd992d7fb9833a0243a65
   languageName: node
   linkType: hard
 
@@ -12248,58 +12267,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-64@npm:2.7.2"
+"turbo-darwin-64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-darwin-64@npm:2.7.4"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-darwin-arm64@npm:2.7.2"
+"turbo-darwin-arm64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-darwin-arm64@npm:2.7.4"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-64@npm:2.7.2"
+"turbo-linux-64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-linux-64@npm:2.7.4"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-linux-arm64@npm:2.7.2"
+"turbo-linux-arm64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-linux-arm64@npm:2.7.4"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-64@npm:2.7.2"
+"turbo-windows-64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-windows-64@npm:2.7.4"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.7.2":
-  version: 2.7.2
-  resolution: "turbo-windows-arm64@npm:2.7.2"
+"turbo-windows-arm64@npm:2.7.4":
+  version: 2.7.4
+  resolution: "turbo-windows-arm64@npm:2.7.4"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:^2.7.2":
-  version: 2.7.2
-  resolution: "turbo@npm:2.7.2"
+"turbo@npm:^2.7.4":
+  version: 2.7.4
+  resolution: "turbo@npm:2.7.4"
   dependencies:
-    turbo-darwin-64: "npm:2.7.2"
-    turbo-darwin-arm64: "npm:2.7.2"
-    turbo-linux-64: "npm:2.7.2"
-    turbo-linux-arm64: "npm:2.7.2"
-    turbo-windows-64: "npm:2.7.2"
-    turbo-windows-arm64: "npm:2.7.2"
+    turbo-darwin-64: "npm:2.7.4"
+    turbo-darwin-arm64: "npm:2.7.4"
+    turbo-linux-64: "npm:2.7.4"
+    turbo-linux-arm64: "npm:2.7.4"
+    turbo-windows-64: "npm:2.7.4"
+    turbo-windows-arm64: "npm:2.7.4"
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -12315,7 +12334,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10/a0fb2c34ddd68bbe0fe763ef87131c687edf8caafa8b50be8df1606d82a586bd8362276f99bf34e905c9217521634b5a7c2926bad08228b29b84d54d9b4ad49b
+  checksum: 10/fbb901da0f576aadac57168f365913b8cd07fd22874c4bfedc736bcd18a5888c2897882e03d87ba451b2dcd21b376a44b0245622260b08bc1bbc36f70345a19b
   languageName: node
   linkType: hard
 
@@ -13066,7 +13085,7 @@ __metadata:
     semantic-release-yarn: "npm:^3.0.2"
     size-limit: "npm:^12.0.0"
     syncpack: "npm:^14.0.0-alpha.32"
-    turbo: "npm:^2.7.2"
+    turbo: "npm:^2.7.4"
     typedoc: "npm:^0.28.15"
   languageName: unknown
   linkType: soft
