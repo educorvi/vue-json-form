@@ -17,7 +17,9 @@
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>
-    <pre id="result-container">{{ JSON.stringify(formData, null, 2) }}</pre>
+    <pre id="result-container" v-if="formData">{{
+        JSON.stringify(formData, null, 2)
+    }}</pre>
 </template>
 
 <script setup lang="ts">
@@ -52,7 +54,7 @@ const presetData: Ref<Record<string, any> | undefined> = ref({
     ],
 });
 
-const formData = ref({});
+const formData: Ref<undefined | Record<string, any>> = ref(undefined);
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     formData.value = data;

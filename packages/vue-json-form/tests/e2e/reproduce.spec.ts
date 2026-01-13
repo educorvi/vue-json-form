@@ -1,13 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
 
-function submitForm(page) {
+function submitForm(page: Page) {
     return page.locator('button[type="submit"]').nth(-3).click();
 }
 
 const WAIT_TIME = 150;
 
 const expectSelectOptions = async (
-    page,
+    page: Page,
     selector: string,
     expectedValues: string[]
 ) => {
@@ -300,9 +300,7 @@ test('Pattern string', async ({ page }) => {
     await page.locator('input[name="/properties/patternString"]').fill('abc');
     await submitForm(page);
 
-    let resultText = await page.locator('#result-container').textContent();
-    let res = JSON.parse(resultText || '');
-    expect('patternString' in res).toEqual(false);
+    await expect(page.locator('#result-container')).not.toBeAttached();
 
     await page.locator('input[name="/properties/patternString"]').clear();
     await page
@@ -310,8 +308,8 @@ test('Pattern string', async ({ page }) => {
         .fill('mystring-abc');
     await submitForm(page);
 
-    resultText = await page.locator('#result-container').textContent();
-    res = JSON.parse(resultText || '');
+    let resultText = await page.locator('#result-container').textContent();
+    let res = JSON.parse(resultText || '');
     expect(res['patternString']).toEqual('mystring-abc');
 });
 
@@ -677,9 +675,7 @@ test('JSO-7', async ({ page }) => {
     await page.locator('input[name="/properties/email"]').fill('test');
     await submitForm(page);
 
-    let resultText = await page.locator('#result-container').textContent();
-    let res = JSON.parse(resultText || '');
-    expect('email' in res).toEqual(false);
+    await expect(page.locator('#result-container')).not.toBeAttached();
 
     await page.locator('input[name="/properties/email"]').clear();
     await page
@@ -687,7 +683,7 @@ test('JSO-7', async ({ page }) => {
         .fill('test@example.com');
     await submitForm(page);
 
-    resultText = await page.locator('#result-container').textContent();
-    res = JSON.parse(resultText || '');
+    let resultText = await page.locator('#result-container').textContent();
+    let res = JSON.parse(resultText || '');
     expect(res['email']).toEqual('test@example.com');
 });

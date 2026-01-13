@@ -23,7 +23,11 @@ export default defineConfig({
         trace: 'retain-on-first-failure',
 
         screenshot: 'on-first-failure',
-        video: 'retain-on-failure',
+        video: {
+            mode: 'retain-on-failure',
+            size: { width: 1920, height: 1080 },
+        },
+        viewport: { width: 1920, height: 1080 },
     },
 
     /* Configure projects for major browsers */

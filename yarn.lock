@@ -835,7 +835,7 @@ __metadata:
     axe-core: "npm:^4.11.0"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
-    bootstrap-vue-next: "npm:0.41.0"
+    bootstrap-vue-next: "npm:0.42.0"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^9.39.2"
     eslint-config-prettier: "npm:^10.1.8"
@@ -4227,6 +4227,25 @@ __metadata:
     vue-router:
       optional: true
   checksum: 10/6743c9d3db0367ec103afaf21f4c8950a30e00300ff3154f2965c57f2a5cf5915e6e96a8d45f47494e7f43f48639b21fa896ea86d6891a7dc38108010df671cf
+  languageName: node
+  linkType: hard
+
+"bootstrap-vue-next@npm:0.42.0":
+  version: 0.42.0
+  resolution: "bootstrap-vue-next@npm:0.42.0"
+  peerDependencies:
+    "@floating-ui/vue": "*"
+    "@vueuse/core": "*"
+    vue: ^3.5.13
+    vue-router: "*"
+  peerDependenciesMeta:
+    "@floating-ui/vue":
+      optional: true
+    "@vueuse/core":
+      optional: true
+    vue-router:
+      optional: true
+  checksum: 10/7e38459344432d3f09c075be00f5fe8bcddd221e19962b71fa65571b463cec08009c5b619ce3e68395864f9437846c432e9ac85c4cedd992d7fb9833a0243a65
   languageName: node
   linkType: hard
 

@@ -10,7 +10,7 @@ import ui from '../exampleSchemas/showcase/ui.json';
 import { nextTick, ref, type Ref, watch } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 
-const formData = ref({});
+const formData: Ref<undefined | Record<string, any>> = ref(undefined);
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     formData.value = data;
@@ -41,7 +41,9 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>
-    <pre id="result-container">{{ JSON.stringify(formData, null, 2) }}</pre>
+    <pre id="result-container" v-if="formData">{{
+        JSON.stringify(formData, null, 2)
+    }}</pre>
 </template>
 
 <style scoped></style>
