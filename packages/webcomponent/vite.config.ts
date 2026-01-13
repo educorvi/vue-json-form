@@ -49,4 +49,11 @@ export default defineConfig({
         'process.env.NODE_ENV': JSON.stringify('production'),
         // "process.env.NODE_ENV": JSON.stringify("development"),
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true,
+            },
+        },
+    },
 });
