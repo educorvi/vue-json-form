@@ -86,6 +86,10 @@
                   "additionalProperties": {
                     "type": "string"
                   }
+                },
+                "onSuccessRedirect": {
+                  "type": "string",
+                  "description": "URL to redirect to after successful request"
                 }
               },
               "additionalProperties": false,

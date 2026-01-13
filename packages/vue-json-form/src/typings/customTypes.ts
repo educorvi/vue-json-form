@@ -1,11 +1,5 @@
-import type {
-    Control,
-    Layout,
-    LayoutElement,
-    Options,
-    JSONSchema,
-} from '@educorvi/vue-json-form-schemas';
-import { Mapper, MapperWithData, type MapperWithoutData } from '@/Mappers';
+import type { Layout, LayoutElement } from '@educorvi/vue-json-form-schemas';
+import { type MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
  * A layout element with child elements
@@ -46,7 +40,7 @@ export type GenerationOptions = {
       }
 );
 
-export type MapperClass = new () => Mapper;
+export type MapperClass = new () => MapperWithData | MapperWithoutData;
 
 export type IfBaseConditions =
     | {
