@@ -21,5 +21,5 @@ yarn run dev
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-turbo run check-types build
+yarn run build
 ```
