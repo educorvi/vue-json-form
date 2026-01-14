@@ -22,7 +22,7 @@ Instead of starting with any layout, the root object of the schema now needs to 
 ### Button
 
 - `variant` was moved into `options`.
-- `ǹativeSubmitSettings` were removed since native submit is not supported anymore. Instead, `options.submitOptions` allows to pass submit options to the surrounding app.
+- `nativeSubmitSettings` were removed since native submit is not supported anymore. Instead, `options.submitOptions` allows to pass submit options to the surrounding app.
 
 ### Control
 
