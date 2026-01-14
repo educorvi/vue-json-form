@@ -48,7 +48,6 @@ import {
     type Validator,
     type ValidatorClass,
 } from '@educorvi/vue-json-form-schemas';
-import type { ErrorObject } from 'ajv';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import {
@@ -128,7 +127,7 @@ const props = defineProps<{
      * Defaults to no validation.
      * Validators can be found in the `@educorvi/vue-json-form-schemas` package.
      */
-    validator?: ValidatorClass<ErrorObject>;
+    validator?: ValidatorClass<unknown>;
 
     /**
      * Provides internationalized string, for example for validation errors
@@ -157,19 +156,19 @@ const {
 const { formData, defaultFormData, cleanedFormData } =
     storeToRefs(useFormDataStore());
 
-const validationErrors: Ref<ValidationErrors> = ref({
+const validationErrors: Ref<ValidationErrors<unknown>> = ref({
     general: [],
     jsonSchema: {
-        validation: [] as ErrorObject[],
-        parsing: [] as Error[],
+        validation: [],
+        parsing: [],
     },
     uiSchema: {
-        validation: [] as ErrorObject[],
-        parsing: [] as Error[],
+        validation: [],
+        parsing: [],
     },
 });
 
-const validator: ComputedRef<Validator<ErrorObject>> = computed(() => {
+const validator: ComputedRef<Validator<unknown>> = computed(() => {
     if (props.validator) {
         return new props.validator();
     } else {
