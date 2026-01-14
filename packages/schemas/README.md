@@ -25,11 +25,5 @@ yarn install
 ### Type-Check and Build
 
 ```sh
-turbo run check-types build
-```
-
-### Build Only
-
-```sh
 yarn run build
 ```

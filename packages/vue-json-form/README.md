@@ -102,5 +102,5 @@ yarn run dev
 ### Type-Check and Build for Production
 
 ```
-turbo run check-types build
+yarn run build
 ```

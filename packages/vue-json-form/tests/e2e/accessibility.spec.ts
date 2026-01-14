@@ -2,27 +2,35 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('Check for accessibility issues', () => {
-  const axeOptions = {
-    rules: {
-      'page-has-heading-one': { enabled: false },
-    },
-  };
+    const axeOptions = {
+        rules: {
+            'page-has-heading-one': { enabled: false },
+        },
+    };
 
-  test('Showcase', async ({ page }) => {
-    await page.goto('http://localhost:5173/showcase?nonav=true');
-    const accessibilityScanResults = await new AxeBuilder({ page })
-      .options(axeOptions)
-      .analyze();
+    test('Showcase', async ({ page }) => {
+        await page.goto('http://localhost:5173/showcase?nonav=true');
+        // Wait for page to render
+        await expect(
+            page.locator('input#vjf_control_for__properties_name')
+        ).toBeAttached();
+        const accessibilityScanResults = await new AxeBuilder({ page })
+            .options(axeOptions)
+            .analyze();
 
-    expect(accessibilityScanResults.violations).toEqual([]);
-  });
+        expect(accessibilityScanResults.violations).toEqual([]);
+    });
 
-  test('Reproduce', async ({ page }) => {
-    await page.goto('http://localhost:5173/reproduce?nonav=true');
-    const accessibilityScanResults = await new AxeBuilder({ page })
-      .options(axeOptions)
-      .analyze();
+    test('Reproduce', async ({ page }) => {
+        await page.goto('http://localhost:5173/reproduce?nonav=true');
+        // Wait for page to render
+        await expect(
+            page.locator('input#vjf_control_for__properties_patternString')
+        ).toBeAttached();
+        const accessibilityScanResults = await new AxeBuilder({ page })
+            .options(axeOptions)
+            .analyze();
 
-    expect(accessibilityScanResults.violations).toEqual([]);
-  });
+        expect(accessibilityScanResults.violations).toEqual([]);
+    });
 });
