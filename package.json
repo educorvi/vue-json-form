@@ -13,6 +13,7 @@
     "semantic-release": "^25.0.2",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
+    "semver": "^7.7.3",
     "size-limit": "^12.0.0",
     "syncpack": "^14.0.0-alpha.37",
     "turbo": "^2.7.4",
@@ -36,7 +37,7 @@
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
     "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
     "publish": "yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish",
-    "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.sh",
+    "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.mjs",
     "size": "size-limit"
   },
   "workspaces": [

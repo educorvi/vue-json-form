@@ -13149,6 +13149,7 @@ __metadata:
     semantic-release: "npm:^25.0.2"
     semantic-release-monorepo: "npm:^8.0.2"
     semantic-release-yarn: "npm:^3.0.2"
+    semver: "npm:^7.7.3"
     size-limit: "npm:^12.0.0"
     syncpack: "npm:^14.0.0-alpha.37"
     turbo: "npm:^2.7.4"
