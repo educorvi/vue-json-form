@@ -23,7 +23,7 @@
         <h6>Validation errors</h6>
         <ValidationError
             v-for="error in validationErrors.jsonSchema.validation"
-            :key="error.message + error.instancePath"
+            :key="error.message + error.path"
             :error="error"
         />
     </div>
@@ -40,7 +40,7 @@
         <h6>Validation errors</h6>
         <ValidationError
             v-for="error in validationErrors.uiSchema.validation"
-            :key="error.message + error.instancePath"
+            :key="error.message + error.path"
             :error="error"
         />
     </div>
@@ -52,7 +52,7 @@ import { computed } from 'vue';
 import ParsingError from '@/components/Errors/ParsingError.vue';
 
 const props = defineProps<{
-    validationErrors: ValidationErrors;
+    validationErrors: ValidationErrors<unknown>;
 }>();
 
 const jsonError = computed(() => {

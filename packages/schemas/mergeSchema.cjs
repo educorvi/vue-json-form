@@ -2,6 +2,7 @@
 const RefParser = require('@apidevtools/json-schema-ref-parser');
 const fs = require('fs');
 const { join } = require('path');
+const { mkdirp } = require('mkdirp');
 
 process.chdir(join(__dirname, 'src/ui'));
 
@@ -35,6 +36,7 @@ async function merge() {
         },
     });
     await deleteIds(schema);
+    await mkdirp(join(__dirname, 'src/generated'));
     fs.writeFileSync(join(__dirname, 'src/generated/ui-merged.schema.json'), JSON.stringify(schema, null, 2));
 }
 

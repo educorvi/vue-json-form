@@ -1,0 +1,17 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "build:internal": {
+      "dependsOn": ["^build:internal", "generateTypings", "mergeSchema"]
+    },
+    "generateTypings": {
+      "outputs": ["src/generated/*.d.ts"]
+    },
+    "check-types": {
+      "dependsOn": ["generateTypings","mergeSchema", "^check-types"]
+    },
+    "mergeSchema": {
+      "outputs": ["src/generated/*.schema.json"]
+    }
+  }
+}
