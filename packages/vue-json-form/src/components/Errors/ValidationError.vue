@@ -6,7 +6,7 @@
         </p>
         <p>{{ error.message }}</p>
         <hr />
-        <pre>{{ JSON.stringify(error.originalError, null, 2) }}</pre>
+        <pre>{{ JSON.stringify(error.internalError, null, 2) }}</pre>
     </component>
 </template>
 <script setup lang="ts">
