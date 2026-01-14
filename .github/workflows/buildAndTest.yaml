@@ -3,12 +3,10 @@ name: Build And Test
 on:
   push:
     branches:
-      - 'master'
-      - 'feat/rewrite'
+      - 'main'
   pull_request:
     branches:
-      - 'master'
-      - 'feat/rewrite'
+      - 'main'
   merge_group:
     types:
       - checks_requested
