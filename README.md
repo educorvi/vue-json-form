@@ -53,7 +53,7 @@ Basic usage example:
 
 ```vue
 <script setup lang="ts">
-import { VueJsonForm } from '@educorvi/vue-json-form';
+import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 import '@educorvi/vue-json-form/dist/vue-json-form.css';
 
 const jsonSchema = {
@@ -83,6 +83,7 @@ function handleSubmit(data: Record<string, any>) {
     :jsonSchema="jsonSchema" 
     :uiSchema="uiSchema"
     :onSubmitForm="handleSubmit"
+    :renderInterface="bootstrapComponents"
   />
 </template>
 ```
