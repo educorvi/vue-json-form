@@ -54,7 +54,7 @@
     "build:internal": "vite build",
     "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && generate-schema-doc ./src/generated/ui-merged.schema.json ./docs-dist/index.html",
     "generateTypings": "run-p 'generateTypings:*'",
-    "generateTypings:uiSchema": "cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
+    "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
     "mergeSchema": "node mergeSchema.cjs",
     "prepack": "yarn run build:internal",
     "check-types": "tsc --noEmit"
