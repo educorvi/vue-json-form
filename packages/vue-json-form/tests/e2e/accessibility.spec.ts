@@ -11,7 +11,9 @@ test.describe('Check for accessibility issues', () => {
     test('Showcase', async ({ page }) => {
         await page.goto('http://localhost:5173/showcase?nonav=true');
         // Wait for page to render
-        expect(await page.locator('input').count()).toBeGreaterThan(0);
+        await expect(
+            page.locator('input#vjf_control_for__properties_name')
+        ).toBeAttached();
         const accessibilityScanResults = await new AxeBuilder({ page })
             .options(axeOptions)
             .analyze();
@@ -22,7 +24,9 @@ test.describe('Check for accessibility issues', () => {
     test('Reproduce', async ({ page }) => {
         await page.goto('http://localhost:5173/reproduce?nonav=true');
         // Wait for page to render
-        expect(await page.locator('input').count()).toBeGreaterThan(0);
+        await expect(
+            page.locator('input#vjf_control_for__properties_patternString')
+        ).toBeAttached();
         const accessibilityScanResults = await new AxeBuilder({ page })
             .options(axeOptions)
             .analyze();
