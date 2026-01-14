@@ -33,7 +33,7 @@ Supported options are:
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.css">
+    <link rel="stylesheet" href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@3/dist/default/vue-json-form.css">
 </head>
 <body>
 <!-- json: Your JSON Schema   -->
@@ -44,7 +44,7 @@ Supported options are:
 ></vue-json-form>
 
 
-<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@beta/dist/default/vue-json-form.umd.js"></script>
+<script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@3/dist/default/vue-json-form.umd.js"></script>
 </body>
 </html>
 ```
