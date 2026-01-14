@@ -24,7 +24,7 @@ Also, make sure that bootstrap 5 is set up for your app.
 
 ``` vue
 <script setup lang="ts">
-import { type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
+import { type SubmitOptions, VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 
 async function submitMethod(data: Record<string, any>, customSubmitOptions: SubmitOptions, evt: SubmitEvent) {
     emit("viewCode", "Form Results", data);
@@ -37,6 +37,7 @@ async function submitMethod(data: Record<string, any>, customSubmitOptions: Subm
         :jsonSchema="json" 
         :uiSchema="ui"
         :onSubmitForm="submitMethod"
+        :renderInterface="bootstrapComponents"
     ></vue-json-form>
 </template>
 
@@ -55,8 +56,8 @@ It can, for example, be used to add buttons if you don't want to add them to the
 |--------------------|----------------------------------------------------------------------------------------------------------------------|------------|----------|---------|
 | jsonSchema         | The form's JSON Schema                                                                                               | `Object`   | `true`   | -       |
 | onSubmitForm       | Method that is called, when the Form is submitted. Passes the formdata as first Argument                             | `Function` | `true`   | -       |
+| renderInterface    | Change the forms UI components                                                                                       | `Object`   | `true`   | -       |
 | uiSchema           | The form's UI-Schema. If not specified, a default UI-Schema will be generated                                        | `Object`   | `false`  | -       |
-| renderInterface    | Change the forms UI components                                                                                       | `Object`   | `false`  | -       |
 | presetData         | Data that should be loaded into the form.                                                                            | `Object`   | `false`  | -       |
 | generationOptions  | Options for the generation of the UI-Schema if no UI-Schema is provided                                              | `Object`   | `false`  | -       |
 | returnDataAsScopes | Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data | `Object`   | `false`  | -       |
