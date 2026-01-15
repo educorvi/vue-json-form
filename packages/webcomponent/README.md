@@ -20,12 +20,19 @@ Bootstrap needs to be set up on the surrounding page.
 If you set `action === 'request'` and `request.url` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
 If one of those options is not set, the data and the submit options will be emitted as an event with the name `submit`.
 
+There are three variants of the webcomponent:
+- default
+- shadowDom (where the webcomponent is inside of a schadow dom)
+- ajvValidator (validates the provided schemas)
+
 Supported options are:
 - `jsonSchema`
 - `uiSchema`
 - `presetData`
 - `returnDataAsScopes`
-- `noValidate` (only for `vue-json-form-ajv-validator`, disables validation)
+- `noValidate` (only for `ajvValidator` variant, disables validation)
+
+The submission of results is controlled via the submit buttons in the UI Schema.
 
 ```html
 <!DOCTYPE html>
