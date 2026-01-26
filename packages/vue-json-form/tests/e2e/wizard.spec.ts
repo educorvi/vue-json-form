@@ -47,9 +47,6 @@ test.describe('Wizard Page 1 - Personal Data', () => {
         // Fill age as under 18
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('16');
         
-        // Wait a bit for the conditional field to appear
-        await page.waitForTimeout(500);
-        
         // Guardian agreement should be visible
         const guardianCheckbox = page.locator('input[name="/properties/personalData/properties/guardianAgrees"]');
         await expect(guardianCheckbox).toBeVisible();
@@ -77,9 +74,6 @@ test.describe('Wizard Page 1 - Personal Data', () => {
         const nextButton = page.locator('button:has-text("Next")');
         await nextButton.click();
         
-        // Wait for page 2 to appear
-        await page.waitForTimeout(500);
-        
         // Should be on page 2 (message field should be visible)
         const messageField = page.locator('textarea[name="/properties/message/properties/yourMessage"]');
         await expect(messageField).toBeVisible();
@@ -92,7 +86,6 @@ test.describe('Wizard Page 2 - Message', () => {
         // Navigate to page 2
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
     });
 
     test('Important checkbox is visible with default value', async ({ page }) => {
@@ -117,7 +110,6 @@ test.describe('Wizard Page 2 - Message', () => {
         
         // Go to page 2
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Parents field should not be visible
         const parentsField = page.locator('[name="/properties/message/properties/parents"]');
@@ -134,7 +126,6 @@ test.describe('Wizard Page 2 - Message', () => {
         
         // Go to page 2
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Parents field should be visible
         const parentsContainer = page.locator('[name="/properties/message/properties/parents"]');
@@ -155,7 +146,6 @@ test.describe('Wizard Page 2 - Message', () => {
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Test message');
         
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Should be on page 3
         const submitButton = page.locator('button:has-text("Submit")');
@@ -169,10 +159,8 @@ test.describe('Wizard Page 3 - Credentials', () => {
         // Navigate to page 3
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Test message');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
     });
 
     test('Credentials field is visible', async ({ page }) => {
@@ -204,12 +192,10 @@ test.describe('Wizard Navigation Flow', () => {
         // Page 1
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 2
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Test message');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 3
         const submitButton = page.locator('button:has-text("Submit")');
@@ -220,10 +206,8 @@ test.describe('Wizard Navigation Flow', () => {
         // Go to page 3 first
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Test message');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Navigate back to page 2
         await page.locator('button:has-text("Previous")').click();
@@ -243,12 +227,10 @@ test.describe('Wizard Navigation Flow', () => {
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Jane Smith');
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('30');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Fill data on page 2
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('My test message');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Navigate back to page 1
         await page.locator('button:has-text("Previous")').click();
@@ -272,13 +254,11 @@ test.describe('Wizard Form Submission', () => {
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Alice Johnson');
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('25');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 2 - Message
         await page.locator('input[name="/properties/message/properties/important"]').uncheck();
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('This is my message');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 3 - Credentials
         await page.locator('button:has-text("Submit")').click();
@@ -304,7 +284,6 @@ test.describe('Wizard Form Submission', () => {
         await guardianCheckbox.check();
         
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 2 - Message
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Minor message');
@@ -322,7 +301,6 @@ test.describe('Wizard Form Submission', () => {
         await parentInputs.nth(0).fill('Parent One');
         
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Page 3 - Submit
         await page.locator('button:has-text("Submit")').click();
@@ -344,11 +322,9 @@ test.describe('Wizard Form Submission', () => {
         // Fill and submit form
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Test User');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         await page.locator('textarea[name="/properties/message/properties/yourMessage"]').fill('Test');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         await page.locator('button:has-text("Submit")').click();
         await page.waitForTimeout(500);
@@ -402,7 +378,6 @@ test.describe('Wizard Conditional Fields', () => {
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Test');
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('16');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Parents field should be visible on page 2
         const parentsContainer = page.locator('[name="/properties/message/properties/parents"]');
@@ -413,7 +388,6 @@ test.describe('Wizard Conditional Fields', () => {
         await page.waitForTimeout(500);
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('25');
         await page.locator('button:has-text("Next")').click();
-        await page.waitForTimeout(500);
         
         // Parents field should not be visible
         await expect(parentsContainer).not.toBeVisible();
