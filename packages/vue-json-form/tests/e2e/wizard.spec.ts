@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Wizard Structure', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
     });
 
     test('Wizard form renders', async ({ page }) => {
@@ -18,7 +18,7 @@ test.describe('Wizard Structure', () => {
 
 test.describe('Wizard Page 1 - Personal Data', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
     });
 
     test('Name field is visible and required', async ({ page }) => {
@@ -82,7 +82,7 @@ test.describe('Wizard Page 1 - Personal Data', () => {
 
 test.describe('Wizard Page 2 - Message', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
         // Navigate to page 2
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
@@ -152,7 +152,7 @@ test.describe('Wizard Page 2 - Message', () => {
 
 test.describe('Wizard Page 3 - Credentials', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
         // Navigate to page 3
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('John Doe');
         await page.locator('button:has-text("Next")').click();
@@ -181,7 +181,7 @@ test.describe('Wizard Page 3 - Credentials', () => {
 
 test.describe('Wizard Navigation Flow', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
     });
 
     test('Can navigate forward through all pages', async ({ page }) => {
@@ -238,7 +238,7 @@ test.describe('Wizard Navigation Flow', () => {
 
 test.describe('Wizard Form Submission', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
     });
 
     test('Submit form with complete adult data', async ({ page }) => {
@@ -326,7 +326,7 @@ test.describe('Wizard Form Submission', () => {
 
 test.describe('Wizard Conditional Fields', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/wizard');
+        await page.goto('http://localhost:5173/wizard');
     });
 
     test('Changing age from minor to adult hides guardian agreement', async ({ page }) => {
