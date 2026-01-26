@@ -103,7 +103,6 @@ test.describe('Wizard Page 2 - Message', () => {
     test('Parents field is not visible for adults', async ({ page }) => {
         // Navigate back to page 1
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         
         // Set age as adult
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('25');
@@ -119,7 +118,6 @@ test.describe('Wizard Page 2 - Message', () => {
     test('Parents field is visible for minors', async ({ page }) => {
         // Navigate back to page 1
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         
         // Set age as minor
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('15');
@@ -134,7 +132,6 @@ test.describe('Wizard Page 2 - Message', () => {
 
     test('Previous button navigates back to page 1', async ({ page }) => {
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         
         // Should be back on page 1
         const nameInput = page.locator('input[name="/properties/personalData/properties/name"]');
@@ -170,7 +167,6 @@ test.describe('Wizard Page 3 - Credentials', () => {
 
     test('Previous button navigates back to page 2', async ({ page }) => {
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         
         // Should be back on page 2
         const messageField = page.locator('textarea[name="/properties/message/properties/yourMessage"]');
@@ -211,13 +207,11 @@ test.describe('Wizard Navigation Flow', () => {
         
         // Navigate back to page 2
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         const messageField = page.locator('textarea[name="/properties/message/properties/yourMessage"]');
         await expect(messageField).toBeVisible();
         
         // Navigate back to page 1
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         const nameInput = page.locator('input[name="/properties/personalData/properties/name"]');
         await expect(nameInput).toBeVisible();
     });
@@ -234,9 +228,7 @@ test.describe('Wizard Navigation Flow', () => {
         
         // Navigate back to page 1
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         
         // Check that data persists
         await expect(page.locator('input[name="/properties/personalData/properties/name"]')).toHaveValue('Jane Smith');
@@ -263,12 +255,10 @@ test.describe('Wizard Form Submission', () => {
         // Page 3 - Credentials
         await page.locator('button:has-text("Submit")').click();
         
-        // Wait for results to update
-        await page.waitForTimeout(500);
-        
         // Check results container has data
-        const resultsText = await page.locator('#result-container').textContent();
-        expect(resultsText).toContain('Alice Johnson');
+        const resultsContainer = page.locator('#result-container');
+        await expect(resultsContainer).toContainText('Alice Johnson');
+        const resultsText = await resultsContainer.textContent();
         expect(resultsText).toContain('This is my message');
     });
 
@@ -276,7 +266,6 @@ test.describe('Wizard Form Submission', () => {
         // Page 1 - Personal Data
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Bobby Brown');
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('15');
-        await page.waitForTimeout(500);
         
         // Guardian agreement should appear
         const guardianCheckbox = page.locator('input[name="/properties/personalData/properties/guardianAgrees"]');
@@ -295,9 +284,9 @@ test.describe('Wizard Form Submission', () => {
         // Add parent name
         const addButton = parentsContainer.locator('button[aria-label="Add Item"]');
         await addButton.click();
-        await page.waitForTimeout(300);
         
         const parentInputs = parentsContainer.locator('input[type="text"]');
+        await expect(parentInputs.nth(0)).toBeVisible();
         await parentInputs.nth(0).fill('Parent One');
         
         await page.locator('button:has-text("Next")').click();
@@ -305,12 +294,10 @@ test.describe('Wizard Form Submission', () => {
         // Page 3 - Submit
         await page.locator('button:has-text("Submit")').click();
         
-        // Wait for results to update
-        await page.waitForTimeout(500);
-        
         // Check results container has data
-        const resultsText = await page.locator('#result-container').textContent();
-        expect(resultsText).toContain('Bobby Brown');
+        const resultsContainer = page.locator('#result-container');
+        await expect(resultsContainer).toContainText('Bobby Brown');
+        const resultsText = await resultsContainer.textContent();
         expect(resultsText).toContain('Minor message');
         expect(resultsText).toContain('Parent One');
     });
@@ -327,12 +314,12 @@ test.describe('Wizard Form Submission', () => {
         await page.locator('button:has-text("Next")').click();
         
         await page.locator('button:has-text("Submit")').click();
-        await page.waitForTimeout(500);
         
         // Check results have updated
-        const updatedResults = await page.locator('#result-container').textContent();
-        expect(updatedResults).not.toBe(initialResults);
-        expect(updatedResults).toContain('Test User');
+        const updatedResults = page.locator('#result-container');
+        await expect(updatedResults).toContainText('Test User');
+        const updatedResultsText = await updatedResults.textContent();
+        expect(updatedResultsText).not.toBe(initialResults);
     });
 });
 
@@ -344,14 +331,12 @@ test.describe('Wizard Conditional Fields', () => {
     test('Changing age from minor to adult hides guardian agreement', async ({ page }) => {
         // Set age as minor
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('16');
-        await page.waitForTimeout(500);
         
         const guardianCheckbox = page.locator('input[name="/properties/personalData/properties/guardianAgrees"]');
         await expect(guardianCheckbox).toBeVisible();
         
         // Change age to adult
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('20');
-        await page.waitForTimeout(500);
         
         // Guardian agreement should no longer be visible
         await expect(guardianCheckbox).not.toBeVisible();
@@ -360,14 +345,12 @@ test.describe('Wizard Conditional Fields', () => {
     test('Changing age from adult to minor shows guardian agreement', async ({ page }) => {
         // Set age as adult
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('25');
-        await page.waitForTimeout(500);
         
         const guardianCheckbox = page.locator('input[name="/properties/personalData/properties/guardianAgrees"]');
         await expect(guardianCheckbox).not.toBeVisible();
         
         // Change age to minor
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('14');
-        await page.waitForTimeout(500);
         
         // Guardian agreement should now be visible
         await expect(guardianCheckbox).toBeVisible();
@@ -385,7 +368,6 @@ test.describe('Wizard Conditional Fields', () => {
         
         // Go back and change age to adult
         await page.locator('button:has-text("Previous")').click();
-        await page.waitForTimeout(500);
         await page.locator('input[name="/properties/personalData/properties/age"]').fill('25');
         await page.locator('button:has-text("Next")').click();
         
