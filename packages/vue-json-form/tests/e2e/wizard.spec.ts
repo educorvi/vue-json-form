@@ -258,8 +258,7 @@ test.describe('Wizard Form Submission', () => {
         // Check results container has data
         const resultsContainer = page.locator('#result-container');
         await expect(resultsContainer).toContainText('Alice Johnson');
-        const resultsText = await resultsContainer.textContent();
-        expect(resultsText).toContain('This is my message');
+        await expect(resultsContainer).toContainText('This is my message');
     });
 
     test('Submit form with complete minor data', async ({ page }) => {
@@ -297,14 +296,14 @@ test.describe('Wizard Form Submission', () => {
         // Check results container has data
         const resultsContainer = page.locator('#result-container');
         await expect(resultsContainer).toContainText('Bobby Brown');
-        const resultsText = await resultsContainer.textContent();
-        expect(resultsText).toContain('Minor message');
-        expect(resultsText).toContain('Parent One');
+        await expect(resultsContainer).toContainText('Minor message');
+        await expect(resultsContainer).toContainText('Parent One');
     });
 
     test('Results update on submission', async ({ page }) => {
         // Get initial results
-        const initialResults = await page.locator('#result-container').textContent();
+        const resultsContainer = page.locator('#result-container');
+        const initialResults = await resultsContainer.textContent();
         
         // Fill and submit form
         await page.locator('input[name="/properties/personalData/properties/name"]').fill('Test User');
@@ -316,10 +315,12 @@ test.describe('Wizard Form Submission', () => {
         await page.locator('button:has-text("Submit")').click();
         
         // Check results have updated
-        const updatedResults = page.locator('#result-container');
-        await expect(updatedResults).toContainText('Test User');
-        const updatedResultsText = await updatedResults.textContent();
-        expect(updatedResultsText).not.toBe(initialResults);
+        await expect(resultsContainer).toContainText('Test User');
+        const updatedResults = await resultsContainer.textContent();
+        // Results should be different from initial (even if initial was empty)
+        if (initialResults && initialResults.trim()) {
+            expect(updatedResults).not.toBe(initialResults);
+        }
     });
 });
 
