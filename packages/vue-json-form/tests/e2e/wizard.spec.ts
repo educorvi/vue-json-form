@@ -180,6 +180,19 @@ test.describe('Wizard Page 2 - Message', () => {
         await expect(nameInput).toBeVisible();
     });
 
+    test('Cannot navigate to next page without filling required fields', async ({
+        page,
+    }) => {
+        const nextButton = page.getByRole('button', { name: 'Next' });
+        await nextButton.click();
+
+        // Should still be on page 2 (message field should still be visible)
+        const messageField = page.locator(
+            'textarea[name="/properties/message/properties/yourMessage"]'
+        );
+        await expect(messageField).toBeVisible();
+    });
+
     test('Next button navigates to page 3', async ({ page }) => {
         // Fill required message field
         await page
@@ -308,11 +321,20 @@ test.describe('Wizard Navigation Flow', () => {
             .fill('My test message');
         await page.getByRole('button', { name: 'Next' }).click();
 
-        // Navigate back to page 1
-        await page.getByRole('button', { name: 'Previous' }).click();
+        // Navigate back to page 2
         await page.getByRole('button', { name: 'Previous' }).click();
 
-        // Check that data persists
+        // Check that data persists on page 2
+        await expect(
+            page.locator(
+                'textarea[name="/properties/message/properties/yourMessage"]'
+            )
+        ).toHaveValue('My test message');
+
+        // Navigate back to page 1
+        await page.getByRole('button', { name: 'Previous' }).click();
+
+        // Check that data persists on page 1
         await expect(
             page.locator(
                 'input[name="/properties/personalData/properties/name"]'
