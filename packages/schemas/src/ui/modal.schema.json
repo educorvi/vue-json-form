@@ -16,12 +16,17 @@
         "text": {
           "type": "string",
           "title": "Text",
-          "description": "The buttons text"
+          "description": "The buttons text",
+          "minLength": 1
         },
         "variant": {
           "$ref": "variants.schema.json"
         }
-      }
+      },
+      "additionalProperties": false,
+      "required": [
+        "text"
+      ]
     },
     "modal": {
       "type": "object",
@@ -47,7 +52,12 @@
             ],
           "default": "medium"
         }
-      }
+      },
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "content"
+      ]
     },
     "showOn": {
       "$ref": "show_on.schema.json"
@@ -55,6 +65,8 @@
   },
   "additionalProperties": false,
   "required": [
-    "type"
+    "type",
+    "button",
+    "modal"
   ]
 }
