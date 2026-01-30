@@ -1,9 +1,28 @@
 {
-    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
+    "$schema": "../../../../schemas/dist/ui.schema.json",
     "version": "2.0",
     "layout": {
         "type": "VerticalLayout",
         "elements": [
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-91"
+                },
+                "elements": [
+                    {
+                        "type": "Modal",
+                        "button": {
+                            "text": "Show additional information in Modal"
+                        },
+                        "modal": {
+                            "title": "Additional information",
+                            "content": "This is some additional information that can be shown in a modal. It supports <strong class=\"text-success\">HTML</strong>.",
+                            "size": "medium"
+                        }
+                    }
+                ]
+            },
             {
                 "type": "Group",
                 "options": {
