@@ -19,6 +19,7 @@ import StringControl from '@/renderings/bootstrap/controls/StringControl.vue';
 import FormFieldWrapper from '@/renderings/bootstrap/FormFieldWrapper.vue';
 import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
 import FileControl from '@/renderings/bootstrap/controls/FileControl.vue';
+import Modal from '@/renderings/bootstrap/Modal.vue';
 
 export const bootstrapComponents: RenderInterface = {
     showOnWrapper: ShowOnWrapper,
@@ -39,4 +40,5 @@ export const bootstrapComponents: RenderInterface = {
     DefaultControl: DefaultControl,
     ArrayButton: ArrayButton,
     WizardProgress: WizardProgress,
+    Modal: Modal,
 };

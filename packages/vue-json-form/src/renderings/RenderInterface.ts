@@ -1,10 +1,10 @@
-import type { Component } from 'vue';
 import type {
     ArrayButtonComponent,
     ButtonGroupComponent,
     ControlComponent,
     ErrorViewerComponent,
     FormFieldWrapperComponent,
+    ModalComponent,
     ShowOnWrapperComponent,
     VjfButtonComponent,
     WizardProgressComponent,
@@ -29,6 +29,8 @@ export interface RenderInterface {
     HelpPopover: ControlComponent;
 
     WizardProgress: WizardProgressComponent;
+
+    Modal: ModalComponent;
 
     CheckboxControl: ControlComponent;
 

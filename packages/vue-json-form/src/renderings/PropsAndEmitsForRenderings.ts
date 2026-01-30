@@ -1,6 +1,10 @@
 import type { DefineComponent } from 'vue';
 import type { ButtonVariant } from 'bootstrap-vue-next';
-import type { Button, Buttongroup } from '@educorvi/vue-json-form-schemas';
+import type {
+    Button,
+    Buttongroup,
+    Modal,
+} from '@educorvi/vue-json-form-schemas';
 
 type ToRuntimeEmits<T> = {
     [K in keyof T]: T[K] extends any[] ? (...args: T[K]) => boolean : any;
@@ -101,5 +105,12 @@ export type WizardProgressComponent = ComponentWithPropsEmitsAndSlots<
     {},
     WizardProgressEmits
 >;
+
+export type ModalProps = {
+    /** The UI Schema of this Element */
+    layoutElement: Modal;
+};
+
+export type ModalComponent = ComponentWithPropsEmitsAndSlots<ModalProps>;
 
 export type ControlComponent = ComponentWithPropsEmitsAndSlots;
