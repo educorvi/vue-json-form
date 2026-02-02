@@ -43,6 +43,26 @@ async function expectIsNotRequiredField(page: Page, requiredFieldId: string) {
     ).not.toContainText('*');
 }
 
+test('JSO-91 (Modal)', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+
+    const triggerButton = page.getByRole('button', {
+        name: 'Show additional information in Modal',
+    });
+    await expect(triggerButton).toBeVisible();
+    await triggerButton.click();
+
+    const modal = page.getByRole('dialog', { name: 'Additional information' });
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(
+        'This is some additional information that can be shown in a modal.'
+    );
+    await expect(modal.locator('strong.text-success')).toHaveText('HTML');
+
+    await modal.locator('button.btn').click();
+    await expect(modal).not.toBeVisible();
+});
+
 test('JSO-96', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
     await expect(
