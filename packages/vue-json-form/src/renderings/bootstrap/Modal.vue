@@ -34,9 +34,11 @@ const languageProvider = inject(languageProviderKey);
 </script>
 
 <template>
-    <BButton @click="modal = true" :variant="layoutElement.button.variant">{{
-        layoutElement.button.text
-    }}</BButton>
+    <BButton
+        @click="modal = true"
+        :variant="layoutElement.button?.variant || 'info'"
+        >{{ layoutElement.button.text }}</BButton
+    >
     <BModal
         v-model="modal"
         :size="size"
