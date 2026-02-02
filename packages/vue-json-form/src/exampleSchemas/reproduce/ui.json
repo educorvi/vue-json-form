@@ -13,8 +13,7 @@
                     {
                         "type": "Modal",
                         "button": {
-                            "text": "Show additional information in Modal",
-                            "variant": "outline-info"
+                            "text": "Show additional information in Modal"
                         },
                         "modal": {
                             "title": "Additional information",
