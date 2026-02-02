@@ -8,6 +8,7 @@
     },
     "buttons": {
         "previous": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "close": "Close"
     }
 }
