@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ref, type ComputedRef } from 'vue';
-import { validateFileInput } from './UploadValidation';
+import { validateFileInput } from '@/formControlInputValidation/UploadValidation';
 import type { LanguageProvider } from '@/intl/LanguageProvider';
 
 function createInput(): HTMLInputElement {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import type { JSONSchema, Control, Layout } from '@educorvi/vue-json-form-schemas';
-import { RitaDependentOptionsMapper } from './ritaDependentOptionsMapper';
+import { RitaDependentOptionsMapper } from '@/Mappers/ritaDependentOptionsMapper';
 import * as utilities from '@/utilities';
 import * as formData from '@/stores/formData';
 import { Rule as RitaRule, Parser } from '@educorvi/rita';
