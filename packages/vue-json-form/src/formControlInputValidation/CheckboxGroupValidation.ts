@@ -1,4 +1,4 @@
-import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import {
     hasEnumValuesForItems,
     isElementWithCustomValidity,
@@ -16,7 +16,7 @@ function resetErrors(savePath: string) {
 }
 
 function setErrorMessage(
-    string: string,
+    message: string,
     savePath: string,
     useChecked: boolean = false
 ) {
@@ -28,7 +28,7 @@ function setErrorMessage(
     }
     const el = document.querySelector(selector);
     if (isElementWithCustomValidity(el)) {
-        el.setCustomValidity(string);
+        el.setCustomValidity(message);
     }
 }
 
