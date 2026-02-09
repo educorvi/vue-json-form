@@ -96,6 +96,7 @@ test('JSO-108 (checkbox group validation)', async ({ page }) => {
     await checkbox(DEFAULT_REQUIRED, 'a').check();
     await submitForm(page);
 
+    await expect(page.locator('#result-container')).toBeVisible();
     const resultText = await page.locator('#result-container').textContent();
     const res = JSON.parse(resultText || '');
     expect(res['jso-108']['defaultRequired']).toEqual(['a']);
