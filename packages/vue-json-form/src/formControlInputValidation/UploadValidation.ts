@@ -20,7 +20,7 @@ export function validateFileInput(
             maxNumberOfFiles.value &&
             (data?.length || 0) > maxNumberOfFiles.value
         ) {
-            el?.setCustomValidity(
+            el.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.tooManyFiles',
                     maxNumberOfFiles.value
@@ -31,7 +31,7 @@ export function validateFileInput(
             minNumberOfFiles.value &&
             (data?.length || 0) < minNumberOfFiles.value
         ) {
-            el?.setCustomValidity(
+            el.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.tooFewFiles',
                     minNumberOfFiles.value
@@ -46,7 +46,7 @@ export function validateFileInput(
             (file: File) => file.size > maxFileSize
         );
         if (tooLargeFiles.length > 0) {
-            el?.setCustomValidity(
+            el.setCustomValidity(
                 languageProvider?.getStringTemplate(
                     'errors.fileUpload.fileTooLarge',
                     (maxFileSize / 1024 / 1024).toFixed(2),
@@ -57,6 +57,6 @@ export function validateFileInput(
         }
     }
 
-    el?.setCustomValidity('');
+    el.setCustomValidity('');
     return true;
 }
