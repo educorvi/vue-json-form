@@ -9,7 +9,7 @@ import {
 } from 'vitest';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { Control } from '@educorvi/vue-json-form-schemas';
-import { OneOfToEnumMapper } from '.';
+import { OneOfToEnumMapper } from '@/Mappers';
 
 const mapper = new OneOfToEnumMapper();
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { validateCheckboxGroupInput } from './CheckboxGroupValidation';
+import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation';
 import type { LanguageProvider } from '@/intl/LanguageProvider';
 
 const savePath = 'choices';

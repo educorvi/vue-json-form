@@ -64,6 +64,13 @@ jobs:
       - run: yarn run build:vue-json-form
       - run: yarn test:unit
         working-directory: ./packages/vue-json-form
+      - name: Upload report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-report
+          path: ./packages/vue-json-form/test-results/*.xml
+          retention-days: 1
   test-e2e:
     needs: build
     runs-on: ubuntu-latest
@@ -138,6 +145,12 @@ jobs:
           path: ./packages/vue-json-form/all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
+
+      - name: Download unit report from GitHub Actions Artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: ./packages/vue-json-form/test-results
+          name: unit-report
 
       - name: Merge into HTML Report
         run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
