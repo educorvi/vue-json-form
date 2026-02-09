@@ -260,7 +260,6 @@ export function isValidateableElement(
 ): el is Element & {
     checkValidity: () => boolean;
     reportValidity: () => void;
-    setCustomValidity: (message: string) => void;
 } {
     if (!el) {
         return false;
@@ -269,7 +268,19 @@ export function isValidateableElement(
         'checkValidity' in el &&
         typeof el.checkValidity === 'function' &&
         'reportValidity' in el &&
-        typeof el.reportValidity === 'function' &&
+        typeof el.reportValidity === 'function'
+    );
+}
+
+export function isElementWithCustomValidity(
+    el: Element | undefined | null
+): el is Element & {
+    checkValidity: () => boolean;
+    reportValidity: () => void;
+    setCustomValidity: (message: string) => void;
+} {
+    return (
+        isValidateableElement(el) &&
         'setCustomValidity' in el &&
         typeof el.setCustomValidity === 'function'
     );

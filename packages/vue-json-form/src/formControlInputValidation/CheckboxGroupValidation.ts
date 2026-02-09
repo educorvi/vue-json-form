@@ -1,7 +1,7 @@
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import {
     hasEnumValuesForItems,
-    isValidateableElement,
+    isElementWithCustomValidity,
 } from '@/typings/typeValidators.ts';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
@@ -9,7 +9,7 @@ function resetErrors(savePath: string) {
     let selector = `input[type='checkbox'][name='${savePath}']`;
     const el = document.querySelectorAll(selector);
     el.forEach((e) => {
-        if (isValidateableElement(e)) {
+        if (isElementWithCustomValidity(e)) {
             e.setCustomValidity('');
         }
     });
@@ -27,7 +27,7 @@ function setErrorMessage(
         selector += ':not(:checked)';
     }
     const el = document.querySelector(selector);
-    if (isValidateableElement(el)) {
+    if (isElementWithCustomValidity(el)) {
         el.setCustomValidity(string);
     }
 }
