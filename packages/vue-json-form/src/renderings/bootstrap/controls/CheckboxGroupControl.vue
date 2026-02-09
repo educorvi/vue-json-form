@@ -55,7 +55,7 @@ watch(
     { immediate: true }
 );
 
-watch(values, () => {
+const validate = () => {
     valid.value = validateCheckboxGroupInput(
         props.required,
         values.value,
@@ -63,17 +63,11 @@ watch(values, () => {
         savePath,
         languageProvider
     );
-});
+};
 
-onMounted(() => {
-    valid.value = validateCheckboxGroupInput(
-        props.required,
-        values.value,
-        jsonElement.value,
-        savePath,
-        languageProvider
-    );
-});
+watch(values, validate, { immediate: true });
+
+onMounted(validate);
 
 const state = computed(() => {
     if (formStateWasValidated.value) {
