@@ -5,9 +5,9 @@ import {
   GermanLanguageProvider,
   EnglishLanguageProvider,
   AutoLanguageProvider,
-} from './LanguageProvider';
-import english from './english.json';
-import german from './german.json';
+} from '@/intl/LanguageProvider';
+import english from '@/intl/english.json';
+import german from '@/intl/german.json';
 
 class TestProvider extends JSONLanguageProvider {
   data = {
