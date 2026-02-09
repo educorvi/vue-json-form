@@ -150,7 +150,7 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           path: ./packages/vue-json-form/test-results
-          pattern: unit-report
+          name: unit-report
 
       - name: Merge into HTML Report
         run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
