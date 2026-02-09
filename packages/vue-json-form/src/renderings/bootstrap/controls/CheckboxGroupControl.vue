@@ -5,10 +5,22 @@ import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
-import { computed, type ComputedRef, ref, watch } from 'vue';
+import { computed, type ComputedRef, inject, onMounted, ref, watch } from 'vue';
 import { injectJsonData } from '@/computedProperties/json.ts';
+import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation.ts';
+import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import { useFormStructureStore } from '@/stores/formStructure.ts';
+
+// accept prop so it does not overwrite the required=false below
+const props = defineProps<{
+    required?: boolean;
+}>();
 
 const { formData } = storeToRefs(useFormDataStore());
+
+const { formStateWasValidated } = storeToRefs(useFormStructureStore());
+
+const languageProvider = inject(languageProviderKey);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
@@ -28,13 +40,47 @@ let options: ComputedRef<CheckboxOption[]> = computed(() => {
     }
 });
 
+const valid = ref(true);
+
 // this is done because v-model writes the values in the order they are clicked, not the order they are defined in the schema
 const values = ref<any[]>([]);
-watch(values, (newVal) => {
-    if (!hasEnumValuesForItems(jsonElement.value)) return;
-    formData.value[savePath] = jsonElement.value.items.enum.filter((e) =>
-        newVal.includes(e)
+watch(
+    values,
+    (newVal) => {
+        if (!hasEnumValuesForItems(jsonElement.value)) return;
+        formData.value[savePath] = jsonElement.value.items.enum.filter((e) =>
+            newVal.includes(e)
+        );
+    },
+    { immediate: true }
+);
+
+watch(values, () => {
+    valid.value = validateCheckboxGroupInput(
+        props.required,
+        values.value,
+        jsonElement.value,
+        savePath,
+        languageProvider
     );
+});
+
+onMounted(() => {
+    valid.value = validateCheckboxGroupInput(
+        props.required,
+        values.value,
+        jsonElement.value,
+        savePath,
+        languageProvider
+    );
+});
+
+const state = computed(() => {
+    if (formStateWasValidated.value) {
+        return valid.value;
+    } else {
+        return undefined;
+    }
 });
 </script>
 
@@ -44,6 +90,8 @@ watch(values, (newVal) => {
         :options="options"
         class="vjf_checkboxGroup"
         :id="id"
+        :required="false"
+        :state="state"
         :stacked="getOption(layoutElement, 'stacked')"
         :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
         :switches="getOption(layoutElement, 'displayAs') === 'switches'"

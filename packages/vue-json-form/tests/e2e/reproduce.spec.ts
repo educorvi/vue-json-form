@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 
 function submitForm(page: Page) {
     return page.locator('button[type="submit"]').nth(-3).click();
@@ -42,6 +42,67 @@ async function expectIsNotRequiredField(page: Page, requiredFieldId: string) {
         page.locator(`label[for="${requiredFieldId}"]`)
     ).not.toContainText('*');
 }
+
+async function expectInvalid(locator: Locator) {
+    await expect
+        .poll(() => locator.evaluate((el) => el.matches(':invalid')))
+        .toBe(true);
+}
+
+async function expectValid(locator: Locator) {
+    await expect
+        .poll(() => locator.evaluate((el) => el.matches(':valid')))
+        .toBe(true);
+}
+
+test('JSO-108 (checkbox group validation)', async ({ page }) => {
+    const SHOW_TOGGLE = '#vjf_control_for__properties_showJso-108';
+    const BASE = '#vjf_control_for__properties_jso-108_properties';
+    const DEFAULT_REQUIRED = `${BASE}_defaultRequired`;
+    const ONE_REQUIRED = `${BASE}_oneRequired`;
+    const TWO_REQUIRED = `${BASE}_twoRequired`;
+    const MAX_TWO_REQUIRED = `${BASE}_maxTwoRequired`;
+
+    const checkbox = (groupId: string, value: string) =>
+        page.locator(`${groupId} input[type="checkbox"][value="${value}"]`);
+    const firstCheckbox = (groupId: string) =>
+        page.locator(`${groupId} input[type="checkbox"]`).first();
+
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await page.locator(SHOW_TOGGLE).check();
+    await expect(page.locator(DEFAULT_REQUIRED)).toBeVisible();
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(firstCheckbox(ONE_REQUIRED));
+    await expectInvalid(firstCheckbox(TWO_REQUIRED));
+
+    await checkbox(ONE_REQUIRED, 'a').check();
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectValid(firstCheckbox(ONE_REQUIRED));
+    await expectInvalid(firstCheckbox(TWO_REQUIRED));
+
+    await checkbox(TWO_REQUIRED, 'a').check();
+    await checkbox(TWO_REQUIRED, 'b').check();
+    await checkbox(MAX_TWO_REQUIRED, 'a').check();
+    await checkbox(MAX_TWO_REQUIRED, 'b').check();
+    await checkbox(MAX_TWO_REQUIRED, 'c').check();
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(checkbox(MAX_TWO_REQUIRED, 'a'));
+
+    await checkbox(MAX_TWO_REQUIRED, 'c').uncheck();
+    await checkbox(DEFAULT_REQUIRED, 'a').check();
+    await submitForm(page);
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['jso-108']['defaultRequired']).toEqual(['a']);
+    expect(res['jso-108']['oneRequired']).toEqual(['a']);
+    expect(res['jso-108']['twoRequired']).toEqual(['a', 'b']);
+    expect(res['jso-108']['maxTwoRequired']).toEqual(['a', 'b']);
+});
 
 test('JSO-91 (Modal)', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
