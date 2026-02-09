@@ -6,6 +6,53 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "showJso-108": {
+            "type": "boolean",
+            "title": "Show JSO-108"
+        },
+        "jso-108": {
+            "type": "object",
+            "title": "Reproduce",
+            "properties": {
+                "defaultRequired": {
+                    "title": "Required no min/max",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    }
+                },
+                "oneRequired": {
+                    "title": "One Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "minItems": 1
+                },
+                "twoRequired": {
+                    "title": "Two Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "minItems": 2
+                },
+                "maxTwoRequired": {
+                    "title": "Max Two Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "maxItems": 2
+                }
+            },
+            "required": [
+                "defaultRequired",
+                "oneRequired",
+                "twoRequired",
+                "maxTwoRequired"
+            ]
+        },
         "jso-96": {
             "type": "object",
             "properties": {

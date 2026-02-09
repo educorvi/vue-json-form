@@ -1,17 +1,15 @@
 import type {
-    Control,
     EnumOptions,
+    JSONSchema,
+    Layout,
     LayoutElement,
     LegacyShowOnProperty,
     Options,
     ShowOnProperty,
-    TagOptions,
-    TitlesForEnum,
-    JSONSchema,
     UISchema,
-    Layout,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
+import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 import type {
     DependentElement,
     elementWithCssClass,
@@ -21,7 +19,6 @@ import type {
     SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type { InputType } from 'bootstrap-vue-next';
-import { keywords as JsonSchemaKeywords } from '@educorvi/vue-json-form-schemas';
 import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
 
 export type IndexType = string | number | symbol;
@@ -141,7 +138,7 @@ export function hasItems(jsonSchema: JSONSchema): jsonSchema is JSONSchema & {
 
 export function hasEnumValuesForItems(
     json: JSONSchema
-): json is JSONSchema & { items: { enum: any[] } } {
+): json is Extract<JSONSchema, Record<any, any>> & { items: { enum: any[] } } {
     return hasProperty(json, 'items') && hasProperty(json.items, 'enum');
 }
 
@@ -257,4 +254,34 @@ export function isWizard(element: UISchema['layout']): element is Wizard {
 
 export function isLayout(element: UISchema['layout']): element is Layout {
     return !isWizard(element);
+}
+export function isValidateableElement(
+    el: Element | undefined | null
+): el is Element & {
+    checkValidity: () => boolean;
+    reportValidity: () => void;
+} {
+    if (!el) {
+        return false;
+    }
+    return (
+        'checkValidity' in el &&
+        typeof el.checkValidity === 'function' &&
+        'reportValidity' in el &&
+        typeof el.reportValidity === 'function'
+    );
+}
+
+export function isElementWithCustomValidity(
+    el: Element | undefined | null
+): el is Element & {
+    checkValidity: () => boolean;
+    reportValidity: () => void;
+    setCustomValidity: (message: string) => void;
+} {
+    return (
+        isValidateableElement(el) &&
+        'setCustomValidity' in el &&
+        typeof el.setCustomValidity === 'function'
+    );
 }

@@ -7,6 +7,42 @@
             {
                 "type": "Group",
                 "options": {
+                    "label": "JSO-108"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/showJso-108"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-108",
+                        "showOn": {
+                            "type": "EQUALS",
+                            "referenceValue": true,
+                            "path": "showJso-108"
+                        }
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "submit",
+                                "text": "Submit"
+                            }
+                        ],
+                        "showOn": {
+                            "type": "EQUALS",
+                            "referenceValue": true,
+                            "path": "showJso-108"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
                     "label": "JSO-91"
                 },
                 "elements": [
@@ -227,7 +263,6 @@
                         "type": "Control",
                         "scope": "/properties/singleUpload",
                         "options": {
-                            "acceptedFileType": "*",
                             "maxFileSize": 1000000
                         }
                     },
@@ -235,7 +270,6 @@
                         "type": "Control",
                         "scope": "/properties/multipleUpload",
                         "options": {
-                            "acceptedFileType": "*",
                             "maxFileSize": 1000000
                         }
                     }

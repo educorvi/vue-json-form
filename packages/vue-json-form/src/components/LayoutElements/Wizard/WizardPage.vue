@@ -4,6 +4,7 @@ import FormWrap from '@/components/FormWrap.vue';
 import { getRandomId } from '@/computedProperties/misc.ts';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
 import { onUnmounted } from 'vue';
+import { isValidateableElement } from '@/typings/typeValidators.ts';
 
 const props = defineProps<{
     page: Layout;
@@ -11,18 +12,6 @@ const props = defineProps<{
     index: number;
 }>();
 const id = getRandomId();
-
-function isValidateableElement(el: Element): el is Element & {
-    checkValidity: () => boolean;
-    reportValidity: () => void;
-} {
-    return (
-        'checkValidity' in el &&
-        typeof el.checkValidity === 'function' &&
-        'reportValidity' in el &&
-        typeof el.reportValidity === 'function'
-    );
-}
 
 function validate() {
     const validatable = [

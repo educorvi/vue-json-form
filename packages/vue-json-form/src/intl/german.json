@@ -4,6 +4,12 @@
             "tooManyFiles": "Sie können nur !&data&! Dateien hochladen.",
             "tooFewFiles": "Sie müssen mindestens !&data&! Dateien hochladen.",
             "fileTooLarge": "Die folgenden Dateien überschreiten die Dateigrößenbeschränkung von !&data&! MB: !&data&!"
+        },
+        "checkboxGroup": {
+            "selectAtLeastOne": "Bitte wählen Sie mindestens eine Option aus.",
+            "selectAtMostOne": "Bitte wählen Sie höchstens eine Option aus.",
+            "selectAtLeast": "Bitte wählen Sie mindestens !&data&! Optionen aus.",
+            "selectAtMost": "Bitte wählen Sie höchstens !&data&! Optionen aus."
         }
     },
     "buttons": {

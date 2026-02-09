@@ -20,4 +20,6 @@ export * from '@/intl/LanguageProvider';
 export * from '@/renderings/RenderInterface.ts';
 export * from '@/renderings/PropsAndEmitsForRenderings.ts';
 
+export * from '@/formControlInputValidation';
+
 export const version: string = import.meta.env.PACKAGE_VERSION as string;

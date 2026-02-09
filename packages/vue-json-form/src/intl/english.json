@@ -4,6 +4,12 @@
             "tooManyFiles": "You can only upload !&data&! files.",
             "tooFewFiles": "You need to upload at least !&data&! files.",
             "fileTooLarge": "The following files exceed the file size limit of !&data&! MB: !&data&!"
+        },
+        "checkboxGroup": {
+            "selectAtLeastOne": "Please select at least one option.",
+            "selectAtMostOne": "Please select at most one option.",
+            "selectAtLeast": "Please select at least !&data&! options.",
+            "selectAtMost": "Please select at most !&data&! options."
         }
     },
     "buttons": {
