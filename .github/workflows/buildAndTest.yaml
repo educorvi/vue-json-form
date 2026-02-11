@@ -140,14 +140,14 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./packages/vue-json-form/all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
 
       - name: Download unit report from GitHub Actions Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7
         with:
           path: ./packages/vue-json-form/test-results
           name: unit-report
