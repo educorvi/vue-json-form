@@ -15,7 +15,7 @@ jobs:
     env:
       CI_JOB_NUMBER: 1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Cache turbo build setup
         uses: actions/cache@v4
         with:
