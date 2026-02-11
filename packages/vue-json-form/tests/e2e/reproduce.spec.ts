@@ -58,6 +58,8 @@ async function expectValid(locator: Locator) {
 test('JSO-112 (acceptedFileType)', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 
+    await page.locator('#vjf_control_for__properties_uploooad button').click();
+
     const fileInput = page.locator(
         '#vjf_control_for__properties_uploooad input[type="file"]'
     );

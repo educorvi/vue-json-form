@@ -71,6 +71,7 @@ import {
     setDescendantControlOverrides,
     formStructureProviderKey,
     descendantControlOverridesProviderKey,
+    inArrayItemProviderKey,
 } from '@/components/ProviderKeys';
 import {
     cleanScope,
@@ -261,6 +262,7 @@ const cssClass = computedCssClass(
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
 provide(savePathOverrideProviderKey, undefined);
+provide(inArrayItemProviderKey, props.inArrayItem ?? false);
 
 const control_id_string = controlID(savePath);
 
