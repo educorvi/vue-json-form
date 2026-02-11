@@ -13,10 +13,27 @@ import { useFormStructureStore } from '@/stores/formStructure.ts';
 const { formData } = storeToRefs(useFormDataStore());
 const { formStateWasValidated } = storeToRefs(useFormStructureStore());
 
-const { jsonElement, layoutElement, savePath } = injectJsonData();
+const {
+    jsonElement,
+    layoutElement: rawLayoutElement,
+    savePath,
+} = injectJsonData();
 const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
+
+const layoutElement = computed(() => {
+    return {
+        ...rawLayoutElement.value,
+        options: {
+            ...rawLayoutElement.value.options,
+            ...(getOption(
+                rawLayoutElement.value,
+                'descendantControlOverrides'
+            )?.[savePath + '/items']?.options || {}),
+        },
+    };
+});
 
 const multiple = computed(() => {
     return jsonElement.value.type === 'array';

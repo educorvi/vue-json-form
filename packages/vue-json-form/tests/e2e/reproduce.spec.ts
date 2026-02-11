@@ -55,6 +55,18 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('JSO-112 (acceptedFileType)', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+
+    const fileInput = page.locator(
+        '#vjf_control_for__properties_uploooad input[type="file"]'
+    );
+    await expect(fileInput).toHaveAttribute(
+        'accept',
+        'application/pdf,image/png'
+    );
+});
+
 test('JSO-108 (checkbox group validation)', async ({ page }) => {
     const SHOW_TOGGLE = '#vjf_control_for__properties_showJso-108';
     const BASE = '#vjf_control_for__properties_jso-108_properties';

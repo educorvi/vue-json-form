@@ -7,6 +7,32 @@
             {
                 "type": "Group",
                 "options": {
+                    "label": "JSO-112"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/uploooad",
+                        "options": {
+                            "displayAsSingleUploadField": false,
+                            "descendantControlOverrides": {
+                                "/properties/uploooad/items": {
+                                    "options": {
+                                        "acceptedFileType": [
+                                            "application/pdf",
+                                            "image/png"
+                                        ],
+                                        "maxFileSize": 5242880
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
                     "label": "JSO-108"
                 },
                 "elements": [
