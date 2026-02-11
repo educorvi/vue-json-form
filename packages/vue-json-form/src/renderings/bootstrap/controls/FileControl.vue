@@ -5,7 +5,10 @@ import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
 import { inject, watch, computed, ref, useTemplateRef } from 'vue';
-import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import {
+    inArrayItemProviderKey,
+    languageProviderKey,
+} from '@/components/ProviderKeys.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';
 import { validateFileInput } from '@/formControlInputValidation';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
@@ -21,6 +24,7 @@ const {
 const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
+const inArrayItem = inject(inArrayItemProviderKey);
 
 const layoutElement = computed(() => {
     return {
@@ -82,10 +86,21 @@ watch(
         :id="id"
         :state="state"
         ref="fileUpload"
-        class="vjf_file"
+        :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
         :accept="getOption(layoutElement, 'acceptedFileType')"
     />
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.noBorderRadius {
+    & * {
+        border-radius: 0;
+    }
+
+    & > *,
+    & > * > * {
+        height: 100%;
+    }
+}
+</style>
