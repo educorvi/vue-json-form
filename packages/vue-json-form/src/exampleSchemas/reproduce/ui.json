@@ -5,6 +5,24 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Control",
+                "scope": "/properties/requiredUploadFiled",
+                "options": {
+                    "descendantControlOverrides": {
+                        "/properties/requiredUploadFiled/properties/upload": {
+                            "options": {
+                                "displayAsSingleUploadField": true
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "type": "Button",
+                "buttonType": "submit",
+                "text": "Submit"
+            },
+            {
                 "type": "Group",
                 "options": {
                     "label": "JSO-112"

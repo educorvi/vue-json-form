@@ -6,6 +6,36 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "requiredUploadFiled": {
+            "type": "object",
+            "properties": {
+                "upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "required": {
+                    "type": "boolean"
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "required": {
+                                "const": true
+                            }
+                        },
+                        "required": ["required"]
+                    },
+                    "then": {
+                        "required": ["upload"]
+                    }
+                }
+            ]
+        },
         "uploooad": {
             "title": "uploooad",
             "type": "array",
