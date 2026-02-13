@@ -12,6 +12,7 @@ import {
     useTemplateRef,
     onMounted,
     onBeforeMount,
+    nextTick,
 } from 'vue';
 import {
     inArrayItemProviderKey,
@@ -89,6 +90,9 @@ watch(
         () => formData.value[savePath],
         () => jsonElement.value,
         () => layoutElement.value,
+        () => multiple.value,
+        () => minNumberOfFiles.value,
+        () => maxNumberOfFiles.value,
     ],
     validate,
     { deep: true }

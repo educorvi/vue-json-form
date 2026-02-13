@@ -11,7 +11,7 @@ export function validateFileInput(
     el: HTMLInputElement
 ): boolean {
     if (data === undefined) {
-        return true;
+        data = [];
     }
 
     // Validate number of files
