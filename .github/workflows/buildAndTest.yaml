@@ -66,7 +66,7 @@ jobs:
         working-directory: ./packages/vue-json-form
       - name: Upload report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: unit-report
           path: ./packages/vue-json-form/test-results/*.xml
@@ -118,7 +118,7 @@ jobs:
         working-directory: ./packages/vue-json-form
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: blob-report-${{ matrix.shardIndex }}
           path: ./packages/vue-json-form/blob-report
