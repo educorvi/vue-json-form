@@ -35,7 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: yarn
@@ -57,7 +57,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: yarn
       - run: yarn install --immutable
@@ -93,7 +93,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: yarn
       - name: Store Playwright's Version
@@ -131,11 +131,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: yarn
       - run: yarn install --immutable
