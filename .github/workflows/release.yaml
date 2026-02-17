@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'yarn'
           node-version: 'lts/*'
@@ -70,7 +70,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: 'yarn'
           node-version: 'lts/*'
