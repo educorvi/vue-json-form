@@ -2,7 +2,9 @@
     "errors": {
         "fileUpload": {
             "tooManyFiles": "You can only upload !&data&! files.",
+            "onlyOne": "You can only upload one file.",
             "tooFewFiles": "You need to upload at least !&data&! files.",
+            "atLeastOne": "You need to upload at least one file.",
             "fileTooLarge": "The following files exceed the file size limit of !&data&! MB: !&data&!"
         },
         "checkboxGroup": {
