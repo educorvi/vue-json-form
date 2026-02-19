@@ -6,7 +6,7 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
-        "requiredUploadFiled": {
+        "requiredUploadField": {
             "type": "object",
             "properties": {
                 "upload": {
