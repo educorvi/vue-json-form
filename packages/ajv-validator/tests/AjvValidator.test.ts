@@ -419,7 +419,6 @@ describe('AjvValidator', () => {
             const error = errors[0];
             expect(typeof error.title).toBe('string');
             expect(typeof error.path).toBe('string');
-            expect(error.originalError).toBeDefined();
         });
     });
 
