@@ -15,6 +15,7 @@
   "devDependencies": {
     "@semantic-release/exec": "^7.1.0",
     "@types/node": "^25.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
     "npm-run-all": "^4.1.5",
     "rollup-plugin-copy": "^3.5.0",
     "semantic-release": "^25.0.3",
@@ -26,7 +27,8 @@
     "vite": "^7.3.1",
     "vite-bundle-analyzer": "^1.3.6",
     "vite-plugin-dts": "^4.5.4",
-    "vite-plugin-static-copy": "^3.2.0"
+    "vite-plugin-static-copy": "^3.2.0",
+    "vitest": "^4.0.18"
   },
   "exports": {
     ".": {
@@ -51,7 +53,8 @@
     "build:internal": "yarn run build:ajvStandalone && vite build",
     "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
     "check-types": "tsc --noEmit",
-    "prepack": "yarn run build:internal"
+    "prepack": "yarn run build:internal",
+    "test": "vitest --run"
   },
   "type": "module",
   "types": "./dist/vue-json-form-ajv-validator.d.ts"
