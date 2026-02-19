@@ -6,10 +6,10 @@
         "elements": [
             {
                 "type": "Control",
-                "scope": "/properties/requiredUploadFiled",
+                "scope": "/properties/requiredUploadField",
                 "options": {
                     "descendantControlOverrides": {
-                        "/properties/requiredUploadFiled/properties/upload": {
+                        "/properties/requiredUploadField/properties/upload": {
                             "options": {
                                 "displayAsSingleUploadField": true
                             }
