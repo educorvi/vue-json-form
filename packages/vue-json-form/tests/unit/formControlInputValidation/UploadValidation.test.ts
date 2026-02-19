@@ -105,6 +105,60 @@ describe('validateFileInput', () => {
         expect(spy).toHaveBeenCalledWith('too few files');
     });
 
+    it('sets singular error when maxNumberOfFiles is 1', () => {
+        const el = createInput();
+        const spy = vi.spyOn(el, 'setCustomValidity');
+        const isMultipleUpload = ref(true) as ComputedRef<boolean>;
+        const minNumberOfFiles = ref(0) as ComputedRef<number>;
+        const maxNumberOfFiles = ref(1) as ComputedRef<number>;
+        const languageProvider = {
+            getStringTemplate: vi.fn(() => 'only one file allowed'),
+        } as unknown as LanguageProvider;
+
+        const result = validateFileInput(
+            [createFile('a.txt', 1), createFile('b.txt', 1)],
+            undefined,
+            isMultipleUpload,
+            minNumberOfFiles,
+            maxNumberOfFiles,
+            languageProvider,
+            el
+        );
+
+        expect(result).toBe(false);
+        expect(languageProvider.getStringTemplate).toHaveBeenCalledWith(
+            'errors.fileUpload.onlyOne'
+        );
+        expect(spy).toHaveBeenCalledWith('only one file allowed');
+    });
+
+    it('sets singular error when minNumberOfFiles is 1', () => {
+        const el = createInput();
+        const spy = vi.spyOn(el, 'setCustomValidity');
+        const isMultipleUpload = ref(true) as ComputedRef<boolean>;
+        const minNumberOfFiles = ref(1) as ComputedRef<number>;
+        const maxNumberOfFiles = ref(0) as ComputedRef<number>;
+        const languageProvider = {
+            getStringTemplate: vi.fn(() => 'at least one file required'),
+        } as unknown as LanguageProvider;
+
+        const result = validateFileInput(
+            [],
+            undefined,
+            isMultipleUpload,
+            minNumberOfFiles,
+            maxNumberOfFiles,
+            languageProvider,
+            el
+        );
+
+        expect(result).toBe(false);
+        expect(languageProvider.getStringTemplate).toHaveBeenCalledWith(
+            'errors.fileUpload.atLeastOne'
+        );
+        expect(spy).toHaveBeenCalledWith('at least one file required');
+    });
+
     it('sets an error when a file is too large', () => {
         const el = createInput();
         const spy = vi.spyOn(el, 'setCustomValidity');
