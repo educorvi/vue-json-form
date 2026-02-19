@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import { inject, watch, computed, ref, onMounted } from 'vue';
+import { inject, watch, computed, ref, useTemplateRef } from 'vue';
 import {
     inArrayItemProviderKey,
     languageProviderKey,
@@ -12,10 +12,6 @@ import {
 import { injectJsonData } from '@/computedProperties/json.ts';
 import { validateFileInput } from '@/formControlInputValidation';
 import { useFormStructureStore } from '@/stores/formStructure.ts';
-
-const props = defineProps<{
-    required?: boolean;
-}>();
 
 const { formData } = storeToRefs(useFormDataStore());
 const { formStateWasValidated } = storeToRefs(useFormStructureStore());
@@ -48,7 +44,7 @@ const multiple = computed(() => {
 });
 
 const minNumberOfFiles = computed(() => {
-    return Math.max(jsonElement.value.minItems ?? 0, props.required ? 1 : 0);
+    return jsonElement.value.minItems ?? 0;
 });
 
 const maxNumberOfFiles = computed(() => {
@@ -65,38 +61,23 @@ const state = computed(() => {
     }
 });
 
-const validate = () => {
-    valid.value = validateFileInput(
-        formData.value[savePath],
-        props.required,
-        layoutElement.value.options?.maxFileSize,
-        multiple,
-        minNumberOfFiles,
-        maxNumberOfFiles,
-        languageProvider,
-        document.querySelector(`input[name='${savePath}']`) as HTMLInputElement
-    );
-};
 watch(
-    [
-        () => formData.value[savePath],
-        () => jsonElement.value,
-        () => layoutElement.value,
-        () => multiple.value,
-        () => minNumberOfFiles.value,
-        () => maxNumberOfFiles.value,
-        () => props.required,
-    ],
-    validate,
+    () => formData.value[savePath],
+    (newVal) => {
+        valid.value = validateFileInput(
+            newVal,
+            layoutElement.value.options?.maxFileSize,
+            multiple,
+            minNumberOfFiles,
+            maxNumberOfFiles,
+            languageProvider,
+            document.querySelector(
+                `input[name='${savePath}']`
+            ) as HTMLInputElement
+        );
+    },
     { deep: true }
 );
-
-onMounted(() => {
-    if (multiple.value) {
-        formData.value[savePath] = formData.value[savePath] || [];
-    }
-    validate();
-});
 </script>
 
 <template>
@@ -104,10 +85,10 @@ onMounted(() => {
         v-model="formData[savePath]"
         :id="id"
         :state="state"
+        ref="fileUpload"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
         :accept="getOption(layoutElement, 'acceptedFileType')"
-        :required="required"
     />
 </template>
 

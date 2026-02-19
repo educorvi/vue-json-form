@@ -3,7 +3,6 @@ import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export function validateFileInput(
     data: any,
-    required: boolean,
     maxFileSize: number | undefined,
     isMultipleUpload: ComputedRef<boolean>,
     minNumberOfFiles: ComputedRef<number>,
@@ -12,7 +11,7 @@ export function validateFileInput(
     el: HTMLInputElement
 ): boolean {
     if (data === undefined) {
-        data = [];
+        return true;
     }
 
     // Validate number of files
@@ -21,40 +20,23 @@ export function validateFileInput(
             maxNumberOfFiles.value &&
             (data?.length || 0) > maxNumberOfFiles.value
         ) {
-            if (maxNumberOfFiles.value === 1) {
-                el.setCustomValidity(
-                    languageProvider?.getStringTemplate(
-                        'errors.fileUpload.onlyOne'
-                    ) || ''
-                );
-            } else {
-                el.setCustomValidity(
-                    languageProvider?.getStringTemplate(
-                        'errors.fileUpload.tooManyFiles',
-                        maxNumberOfFiles.value
-                    ) || ''
-                );
-            }
+            el.setCustomValidity(
+                languageProvider?.getStringTemplate(
+                    'errors.fileUpload.tooManyFiles',
+                    maxNumberOfFiles.value
+                ) || ''
+            );
             return false;
         } else if (
             minNumberOfFiles.value &&
-            (data?.length || 0) < minNumberOfFiles.value &&
-            required
+            (data?.length || 0) < minNumberOfFiles.value
         ) {
-            if (minNumberOfFiles.value === 1) {
-                el.setCustomValidity(
-                    languageProvider?.getStringTemplate(
-                        'errors.fileUpload.atLeastOne'
-                    ) || ''
-                );
-            } else {
-                el.setCustomValidity(
-                    languageProvider?.getStringTemplate(
-                        'errors.fileUpload.tooFewFiles',
-                        minNumberOfFiles.value
-                    ) || ''
-                );
-            }
+            el.setCustomValidity(
+                languageProvider?.getStringTemplate(
+                    'errors.fileUpload.tooFewFiles',
+                    minNumberOfFiles.value
+                ) || ''
+            );
             return false;
         }
     }
