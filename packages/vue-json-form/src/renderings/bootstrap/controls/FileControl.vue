@@ -4,13 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import {
-    inject,
-    watch,
-    computed,
-    ref,
-    onMounted,
-} from 'vue';
+import { inject, watch, computed, ref, onMounted } from 'vue';
 import {
     inArrayItemProviderKey,
     languageProviderKey,
@@ -108,7 +102,6 @@ onMounted(() => {
         v-model="formData[savePath]"
         :id="id"
         :state="state"
-        ref="fileUpload"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
         :accept="getOption(layoutElement, 'acceptedFileType')"
