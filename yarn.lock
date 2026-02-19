@@ -783,8 +783,8 @@ __metadata:
   dependencies:
     "@educorvi/vue-json-form-schemas": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
-    "@vitest/coverage-v8": "npm:^4.0.18"
     "@types/node": "npm:^25.3.0"
+    "@vitest/coverage-v8": "npm:^4.0.18"
     ajv: "npm:^8.18.0"
     ajv-formats: "npm:^3.0.1"
     npm-run-all: "npm:^4.1.5"

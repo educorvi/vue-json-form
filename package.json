@@ -34,9 +34,9 @@
     "doc:copy:ui-schema-files": "rimraf ./docs/schemas && cp -r ./packages/schemas/src/ui ./docs/schemas",
     "pre-commit": "yarn run doc && yarn workspaces foreach run pre-commit",
     "prepare": "husky",
+    "publish": "yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish",
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
     "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
-    "publish": "yarn workspaces foreach --topological-dev -Av --no-private --exclude . npm publish --access public --tolerate-republish",
     "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.mjs",
     "size": "size-limit"
   },
