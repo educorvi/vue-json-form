@@ -6,7 +6,7 @@
     <vitest-options value="--run" />
     <envs />
     <scope-kind value="DIRECTORY" />
-    <test-directory value="$PROJECT_DIR$/packages/vue-json-form/src" />
+    <test-directory value="$PROJECT_DIR$/packages/vue-json-form/tests/unit" />
     <method v="2" />
   </configuration>
 </component>
