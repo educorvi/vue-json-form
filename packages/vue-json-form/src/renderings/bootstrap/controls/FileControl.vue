@@ -9,10 +9,7 @@ import {
     watch,
     computed,
     ref,
-    useTemplateRef,
     onMounted,
-    onBeforeMount,
-    nextTick,
 } from 'vue';
 import {
     inArrayItemProviderKey,
