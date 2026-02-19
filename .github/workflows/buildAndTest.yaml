@@ -63,13 +63,13 @@ jobs:
       - run: yarn install --immutable
       - run: yarn run build:vue-json-form
       - run: yarn test:unit
-        working-directory: ./packages/vue-json-form
       - name: Upload report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
           name: unit-report
-          path: ./packages/vue-json-form/test-results/*.xml
+          path: |
+            ./packages/*/test-results/*.xml
           retention-days: 1
   test-e2e:
     needs: build

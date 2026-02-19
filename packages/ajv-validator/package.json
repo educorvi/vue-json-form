@@ -54,7 +54,7 @@
     "build:internal": "yarn run build:ajvStandalone && vite build",
     "check-types": "tsc --noEmit",
     "prepack": "yarn run build:internal",
-    "test": "vitest --run"
+    "test:unit": "vitest --run"
   },
   "type": "module",
   "types": "./dist/vue-json-form-ajv-validator.d.ts"
