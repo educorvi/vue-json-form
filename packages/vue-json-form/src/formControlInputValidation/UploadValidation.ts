@@ -20,23 +20,39 @@ export function validateFileInput(
             maxNumberOfFiles.value &&
             (data?.length || 0) > maxNumberOfFiles.value
         ) {
-            el.setCustomValidity(
-                languageProvider?.getStringTemplate(
-                    'errors.fileUpload.tooManyFiles',
-                    maxNumberOfFiles.value
-                ) || ''
-            );
+            if (maxNumberOfFiles.value === 1) {
+                el.setCustomValidity(
+                    languageProvider?.getStringTemplate(
+                        'errors.fileUpload.onlyOne'
+                    ) || ''
+                );
+            } else {
+                el.setCustomValidity(
+                    languageProvider?.getStringTemplate(
+                        'errors.fileUpload.tooManyFiles',
+                        maxNumberOfFiles.value
+                    ) || ''
+                );
+            }
             return false;
         } else if (
             minNumberOfFiles.value &&
             (data?.length || 0) < minNumberOfFiles.value
         ) {
-            el.setCustomValidity(
-                languageProvider?.getStringTemplate(
-                    'errors.fileUpload.tooFewFiles',
-                    minNumberOfFiles.value
-                ) || ''
-            );
+            if (minNumberOfFiles.value === 1) {
+                el.setCustomValidity(
+                    languageProvider?.getStringTemplate(
+                        'errors.fileUpload.atLeastOne'
+                    ) || ''
+                );
+            } else {
+                el.setCustomValidity(
+                    languageProvider?.getStringTemplate(
+                        'errors.fileUpload.tooFewFiles',
+                        minNumberOfFiles.value
+                    ) || ''
+                );
+            }
             return false;
         }
     }
