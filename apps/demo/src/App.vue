@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterView } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import { ref } from 'vue';
 import VueJsonPretty from 'vue-json-pretty';
-import {BApp, BModal} from 'bootstrap-vue-next';
 
 const show = ref(false);
 const modalData = ref({
