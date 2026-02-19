@@ -3,6 +3,7 @@ import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export function validateFileInput(
     data: any,
+    required: boolean,
     maxFileSize: number | undefined,
     isMultipleUpload: ComputedRef<boolean>,
     minNumberOfFiles: ComputedRef<number>,
@@ -37,7 +38,8 @@ export function validateFileInput(
             return false;
         } else if (
             minNumberOfFiles.value &&
-            (data?.length || 0) < minNumberOfFiles.value
+            (data?.length || 0) < minNumberOfFiles.value &&
+            required
         ) {
             if (minNumberOfFiles.value === 1) {
                 el.setCustomValidity(

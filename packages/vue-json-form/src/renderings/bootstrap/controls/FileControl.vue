@@ -68,6 +68,7 @@ const state = computed(() => {
 const validate = () => {
     valid.value = validateFileInput(
         formData.value[savePath],
+        props.required,
         layoutElement.value.options?.maxFileSize,
         multiple,
         minNumberOfFiles,
@@ -84,6 +85,7 @@ watch(
         () => multiple.value,
         () => minNumberOfFiles.value,
         () => maxNumberOfFiles.value,
+        () => props.required,
     ],
     validate,
     { deep: true }

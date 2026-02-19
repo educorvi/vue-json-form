@@ -33,6 +33,7 @@ describe('validateFileInput', () => {
 
         const result = validateFileInput(
             undefined,
+            false,
             undefined,
             isMultipleUpload,
             minNumberOfFiles,
@@ -61,6 +62,7 @@ describe('validateFileInput', () => {
                 createFile('b.txt', 1),
                 createFile('c.txt', 1),
             ],
+            false,
             undefined,
             isMultipleUpload,
             minNumberOfFiles,
@@ -89,6 +91,7 @@ describe('validateFileInput', () => {
 
         const result = validateFileInput(
             [createFile('a.txt', 1)],
+            true,
             undefined,
             isMultipleUpload,
             minNumberOfFiles,
@@ -117,6 +120,7 @@ describe('validateFileInput', () => {
 
         const result = validateFileInput(
             [createFile('a.txt', 1), createFile('b.txt', 1)],
+            false,
             undefined,
             isMultipleUpload,
             minNumberOfFiles,
@@ -144,6 +148,7 @@ describe('validateFileInput', () => {
 
         const result = validateFileInput(
             [],
+            true,
             undefined,
             isMultipleUpload,
             minNumberOfFiles,
@@ -172,6 +177,7 @@ describe('validateFileInput', () => {
         const maxFileSize = 1024 * 1024;
         const result = validateFileInput(
             createFile('big.txt', maxFileSize + 1),
+            false,
             maxFileSize,
             isMultipleUpload,
             minNumberOfFiles,
@@ -198,6 +204,7 @@ describe('validateFileInput', () => {
 
         const result = validateFileInput(
             [createFile('ok.txt', 1)],
+            true,
             1024 * 1024,
             isMultipleUpload,
             minNumberOfFiles,
@@ -207,6 +214,32 @@ describe('validateFileInput', () => {
         );
 
         expect(result).toBe(true);
+        expect(spy).toHaveBeenCalledWith('');
+    });
+
+    it('does not validate minNumberOfFiles when field is not required', () => {
+        const el = createInput();
+        const spy = vi.spyOn(el, 'setCustomValidity');
+        const isMultipleUpload = ref(true) as ComputedRef<boolean>;
+        const minNumberOfFiles = ref(2) as ComputedRef<number>;
+        const maxNumberOfFiles = ref(0) as ComputedRef<number>;
+        const languageProvider = {
+            getStringTemplate: vi.fn(() => 'too few files'),
+        } as unknown as LanguageProvider;
+
+        const result = validateFileInput(
+            [createFile('a.txt', 1)],
+            false,
+            undefined,
+            isMultipleUpload,
+            minNumberOfFiles,
+            maxNumberOfFiles,
+            languageProvider,
+            el
+        );
+
+        expect(result).toBe(true);
+        expect(languageProvider.getStringTemplate).not.toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith('');
     });
 });
