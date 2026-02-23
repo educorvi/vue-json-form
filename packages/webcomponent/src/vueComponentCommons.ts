@@ -1,5 +1,5 @@
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
-import { computed, defineProps, defineEmits, type PropType, type DefineProps } from 'vue';
+import { computed } from 'vue';
 import axios from 'axios';
 
 export type Props = {
