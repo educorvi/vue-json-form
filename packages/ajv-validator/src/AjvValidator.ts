@@ -33,7 +33,7 @@ export class AjvValidator extends Validator<ErrorObject> {
     }
 
     protected async initializeInternal(): Promise<void> {
-        const { JsonSchema, UiSchema } = await import('./generated/validatorCode.cjs');
+        const { JsonSchema, UiSchema } = await import('@/generated/validatorCode.cjs');
         this.jsonValidationFunc = JsonSchema;
         this.uiValidationFunc = UiSchema;
     }

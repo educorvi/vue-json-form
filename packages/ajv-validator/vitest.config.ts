@@ -6,7 +6,6 @@ import {
     TestUserConfig,
 } from 'vitest/config';
 import viteConfig from './vite.config';
-import { resolve } from 'node:path';
 
 let reporters: TestUserConfig['reporters'];
 if (process.env.CI) {
@@ -21,11 +20,6 @@ if (process.env.CI) {
 export default mergeConfig(
     viteConfig,
     defineConfig({
-        resolve: {
-            alias: {
-                './generated/validatorCode.cjs': resolve(__dirname, 'src/generated/validatorCode.cjs'),
-            },
-        },
         test: {
             environment: 'node',
             exclude: [...configDefaults.exclude],
