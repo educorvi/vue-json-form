@@ -6,6 +6,96 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-126": {
+            "title": "minItems von Array und Uploadfield",
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "boolean-to-depend-on": {
+                                "const": true
+                            }
+                        },
+                        "required": ["boolean-to-depend-on"]
+                    },
+                    "then": {
+                        "required": [
+                            "uploadfield-with-minitems-and-required-and-dependent"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "boolean-to-depend-on": {
+                                "const": true
+                            }
+                        },
+                        "required": ["boolean-to-depend-on"]
+                    },
+                    "then": {
+                        "required": ["array-required-and-dependent"],
+                        "properties": {
+                            "array-required-and-dependent": {
+                                "minItems": 1
+                            }
+                        }
+                    }
+                }
+            ],
+            "required": ["uploadfield-with-minitems-and-required"],
+            "properties": {
+                "boolean-to-depend-on": {
+                    "title": "boolean to depend on",
+                    "type": "boolean"
+                },
+                "uploadfield-with-minitems-and-not-required-but-not-shown-as-array": {
+                    "title": "uploadfield with minitems and not required (but not shown as array)",
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "uploadfield-with-minitems": {
+                    "title": "uploadfield with minitems and not required",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "uploadfield-with-minitems-and-required": {
+                    "title": "uploadfield with minitems and required",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "uploadfield-with-minitems-and-required-and-dependent": {
+                    "title": "uploadfield with minitems and required and dependent",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "array-required-and-dependent": {
+                    "title": "array required and dependent",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object"
+                    }
+                }
+            }
+        },
         "requiredUploadField": {
             "type": "object",
             "properties": {

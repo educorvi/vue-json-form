@@ -4,32 +4,53 @@ import { useFormDataStore } from '@/stores/formData.ts';
 import {
     arrayContainsValue,
     computedLabel,
+    getComputedRequired,
     injectJsonData,
 } from '@/computedProperties/json.ts';
 import { controlID } from '@/computedProperties/misc.ts';
 import {
     generateUUID,
+    getArrayItemSavePath,
     isArrayItemKey,
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons.ts';
 import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
 import draggable from 'vuedraggable/src/vuedraggable';
-import { ref, nextTick, computed, onBeforeMount, watch } from 'vue';
+import {
+    ref,
+    nextTick,
+    computed,
+    onBeforeMount,
+    watch,
+    useTemplateRef,
+    inject,
+} from 'vue';
 import ArrayItem from '@/components/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import { getOption } from '@/utilities.ts';
-import { setDescendantControlOverride } from '@/components/ProviderKeys.ts';
+import {
+    languageProviderKey,
+    setDescendantControlOverride,
+} from '@/components/ProviderKeys.ts';
 import { isDefined } from '@/typings/typeValidators.ts';
+import { BModal } from 'bootstrap-vue-next';
+import { type ComponentExposed } from 'vue-component-type-helpers';
 
 const ErrorViewer = getComponent('ErrorViewer');
 const HelpPopover = getComponent('HelpPopover');
 const ArrayButton = getComponent('ArrayButton');
 
+const deleteItemsModal = useTemplateRef<ComponentExposed<typeof BModal>>(
+    'delete-remaining-items-modal'
+);
+
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
+const languageProvider = inject(languageProviderKey);
 const id = controlID(savePath);
+const required = getComputedRequired(layoutElement);
 
 function addField(skipFocus = false, value?: any) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
@@ -56,6 +77,17 @@ function addField(skipFocus = false, value?: any) {
         });
     }
 }
+function ensureMinNumberOfFields(diff: number = 0) {
+    const num = (jsonElement.value.minItems || 0) + diff;
+    for (let i = formData.value[savePath].length; i < num; i++) {
+        addField(true);
+    }
+}
+
+function onAddFieldButton() {
+    ensureMinNumberOfFields(-1);
+    addField();
+}
 
 const label = computedLabel(layoutElement);
 
@@ -67,7 +99,22 @@ const dragOptions = ref({
     ghostClass: 'ghost',
 });
 
+function deleteAllItems() {
+    for (const value of formData.value[savePath]) {
+        delete formData.value[getArrayItemSavePath(savePath, value)];
+    }
+    formData.value[savePath] = [];
+}
+
 function deleteItemWithID(id: string, itemSavePath: string) {
+    if (formData.value[savePath].length <= (jsonElement.value.minItems || 0)) {
+        if (required.value) {
+            return;
+        } else {
+            deleteItemsModal.value?.show();
+            return;
+        }
+    }
     const index = formData.value[savePath].indexOf(id);
     if (index > -1) {
         formData.value[savePath].splice(index, 1);
@@ -82,6 +129,14 @@ function deleteItemWithID(id: string, itemSavePath: string) {
     delete formData.value[itemSavePath];
 }
 
+function setGlobalArrayRegister() {
+    arrays.value[savePath] = {
+        key: savePath,
+        jsonSchema: jsonElement.value,
+        required: required.value,
+    };
+}
+
 function initArray() {
     if (!formData.value[savePath]) {
         formData.value[savePath] = [];
@@ -92,13 +147,15 @@ function initArray() {
             addField(true, value);
         }
     }
-    arrays.value.push(savePath);
-    for (
-        let i = formData.value[savePath].length;
-        i < (jsonElement.value.minItems || 0);
-        i++
-    ) {
-        addField(true);
+    setGlobalArrayRegister();
+    if (required.value) {
+        for (
+            let i = formData.value[savePath].length;
+            i < (jsonElement.value.minItems || 0);
+            i++
+        ) {
+            addField(true);
+        }
     }
 
     if (layoutElement.value.options?.maxFileSize) {
@@ -118,6 +175,9 @@ watch(
         }
     }
 );
+watch(required, () => ensureMinNumberOfFields());
+
+watch([() => required.value, () => jsonElement.value], setGlobalArrayRegister);
 
 const allowAddField = computed(() => {
     return (
@@ -127,7 +187,10 @@ const allowAddField = computed(() => {
 });
 
 const allowRemoveField = computed(() => {
-    return formData.value[savePath].length > (jsonElement.value.minItems || 0);
+    return (
+        !required.value ||
+        formData.value[savePath].length > (jsonElement.value.minItems || 0)
+    );
 });
 
 const isArrayItem = computed(() => {
@@ -194,7 +257,7 @@ onBeforeMount(initArray);
             <array-button
                 variant="outline-primary"
                 class="w-100"
-                @click="() => addField()"
+                @click="onAddFieldButton"
                 :disabled="!allowAddField"
                 aria-label="Add Item"
             >
@@ -208,6 +271,29 @@ onBeforeMount(initArray);
             The type of the array's items is missing in the schema
         </error-viewer>
     </div>
+
+    <BModal
+        ref="delete-remaining-items-modal"
+        :title="
+            languageProvider?.getString('modals.delete-remaining-items.title')
+        "
+        :ok-title="
+            languageProvider?.getString('modals.delete-remaining-items.confirm')
+        "
+        ok-variant="danger"
+        @ok="deleteAllItems"
+        :cancel-title="
+            languageProvider?.getString('modals.delete-remaining-items.cancel')
+        "
+        centered
+    >
+        {{
+            languageProvider?.getStringTemplate(
+                'modals.delete-remaining-items.text',
+                jsonElement.minItems
+            )
+        }}
+    </BModal>
 </template>
 
 <style lang="scss">

@@ -6,6 +6,7 @@ import type { Control as ControlType } from '@educorvi/vue-json-form-schemas';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';
 import { getComponent } from '@/stores/formStructure.ts';
+import { getArrayItemSavePath } from '@/Commons.ts';
 
 const props = defineProps<{
     scope: string;
@@ -15,7 +16,7 @@ const props = defineProps<{
     allowRemove: boolean;
     uiSchema?: ControlType;
 }>();
-const savePath = props.baseSavePath + '.' + props.itemID;
+const savePath = getArrayItemSavePath(props.baseSavePath, props.itemID);
 provide(savePathOverrideProviderKey, savePath);
 const layoutElement = computed(() => {
     const uiSchema = props.uiSchema || {

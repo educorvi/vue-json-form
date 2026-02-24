@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { isArray } from '@/computedProperties/json';
 import { toRaw, isProxy } from 'vue';
 import { generateUUID, isArrayItemKey, VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
+import { useFormStructureStore } from '@/stores/formStructure.ts';
 
 /**
  * Sets a property on an object based on a scoped key.
@@ -188,6 +189,20 @@ export function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
     for (const [key, value] of Object.entries(obj)) {
         if (!isArray(key) && value !== undefined) {
             scopes[cleanKey(arrayIndices, key)] = value;
+        }
+    }
+
+    const arraysFromStructureStore = useFormStructureStore().arrays;
+    for (const array of Object.values(arraysFromStructureStore)) {
+        const data = obj[array.key];
+        if (data && Array.isArray(data)) {
+            if (
+                data.length === 0 &&
+                (array.jsonSchema.minItems || 0) > 0 &&
+                !array.required
+            ) {
+                delete scopes[cleanKey(arrayIndices, array.key)];
+            }
         }
     }
 
