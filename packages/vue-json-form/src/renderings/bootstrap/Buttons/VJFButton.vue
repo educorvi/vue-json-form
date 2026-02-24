@@ -56,6 +56,7 @@ function emitWizardButton() {
         :type="buttonType"
         :class="cssClass"
         @click="emitWizardButton"
+        :disabled="layoutElement.options?.disabled"
     >
         <span v-if="!waiting">
             {{ layoutElement.text }}
