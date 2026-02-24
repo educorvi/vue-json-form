@@ -10,12 +10,12 @@
     "@educorvi/vue-json-form": "workspace:^",
     "@educorvi/vue-json-form-ajv-validator": "workspace:^",
     "bootstrap": "^5.3.8",
-    "bootstrap-vue-next": "0.43.4",
+    "bootstrap-vue-next": "0.43.6",
     "bootswatch": "^5.3.8",
     "sass-embedded": "^1.97.3",
     "vue": "^3.5.28",
     "vue-json-pretty": "^2.6.0",
-    "vue-router": "^5.0.2"
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

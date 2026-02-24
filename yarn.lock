@@ -879,7 +879,7 @@ __metadata:
     axe-core: "npm:^4.11.1"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
-    bootstrap-vue-next: "npm:0.43.4"
+    bootstrap-vue-next: "npm:0.43.6"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^10.0.0"
     eslint-config-prettier: "npm:^10.1.8"
@@ -907,7 +907,7 @@ __metadata:
     vitest: "npm:^4.0.18"
     vue: "npm:^3.5.28"
     vue-eslint-parser: "npm:^10.4.0"
-    vue-router: "npm:^5.0.2"
+    vue-router: "npm:^5.0.3"
     vue-tsc: "npm:^3.2.4"
     vuedraggable: "npm:^4.1.0"
   languageName: unknown
@@ -3292,12 +3292,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-api@npm:^8.0.0":
-  version: 8.0.5
-  resolution: "@vue/devtools-api@npm:8.0.5"
+"@vue/devtools-api@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@vue/devtools-api@npm:8.0.6"
   dependencies:
-    "@vue/devtools-kit": "npm:^8.0.5"
-  checksum: 10/fd57c99d4028bee22cc8ebd34565d7f3c1a45737573336979874c4ad4daf55c4c1c9448cf9684ae2faac7db6d311852479ef97956eb9df2ec16e6c55c70c3886
+    "@vue/devtools-kit": "npm:^8.0.6"
+  checksum: 10/296c2d15903b284597b089b44e23963256fef6994394fb6f89e96efa94c9d8a658628409b7e1629b706ee262bb8d3f5ff98f735048ae84a71dc13070a849ec50
   languageName: node
   linkType: hard
 
@@ -3332,21 +3332,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-kit@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "@vue/devtools-kit@npm:8.0.5"
-  dependencies:
-    "@vue/devtools-shared": "npm:^8.0.5"
-    birpc: "npm:^2.6.1"
-    hookable: "npm:^5.5.3"
-    mitt: "npm:^3.0.1"
-    perfect-debounce: "npm:^2.0.0"
-    speakingurl: "npm:^14.0.1"
-    superjson: "npm:^2.2.2"
-  checksum: 10/c0f6d4c3945fd88f4aa08d8ec1a49aee4e518a575c01f0c592146d64fad0a6f013d4d7e1f5d32291d9a35ef958baa0b1d274dda4ea3cfe8b5c496cf0f19c6eea
-  languageName: node
-  linkType: hard
-
 "@vue/devtools-kit@npm:^8.0.6":
   version: 8.0.6
   resolution: "@vue/devtools-kit@npm:8.0.6"
@@ -3368,15 +3353,6 @@ __metadata:
   dependencies:
     rfdc: "npm:^1.4.1"
   checksum: 10/0d722ce0cb6d70036adcf3b6a7a235dcc7f170bde64ace49e9f7b714d8d8ab72a9cefbefdefa05c8a3d5df4b1e08e00a2d9aa5e65b9de723f907bed3f255ba8a
-  languageName: node
-  linkType: hard
-
-"@vue/devtools-shared@npm:^8.0.5":
-  version: 8.0.5
-  resolution: "@vue/devtools-shared@npm:8.0.5"
-  dependencies:
-    rfdc: "npm:^1.4.1"
-  checksum: 10/bd91bb9946c12bb6bc16030669b6b3458ad0d0ca653ac8f5e88a0bb33b19ae74cd207ad04bf16d72fdb4792b24b596e1513c891c8db16b2fe6c6c82f63d67380
   languageName: node
   linkType: hard
 
@@ -4372,9 +4348,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.43.4":
-  version: 0.43.4
-  resolution: "bootstrap-vue-next@npm:0.43.4"
+"bootstrap-vue-next@npm:0.43.6":
+  version: 0.43.6
+  resolution: "bootstrap-vue-next@npm:0.43.6"
   peerDependencies:
     "@floating-ui/vue": "*"
     "@vueuse/core": "*"
@@ -4387,7 +4363,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/8d71ba731d918aa7bfb232bf57b82638bfc418bad4fdd7e74656f5f713c367257c8b5a80db3028ce251b24276d1584c3c1c8ec90435008a11c96fe6dc4edd7db
+  checksum: 10/76bf6e03de8f0b4bd2135ff8b71340496e184c5a8b4e1ec172418a5411c8f60db8f2d3fb23066471529d2002d3576821d73e806b1cd99e4544f30b3b2c818be3
   languageName: node
   linkType: hard
 
@@ -5317,7 +5293,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.4"
     "@vue/tsconfig": "npm:^0.8.1"
     bootstrap: "npm:^5.3.8"
-    bootstrap-vue-next: "npm:0.43.4"
+    bootstrap-vue-next: "npm:0.43.6"
     bootswatch: "npm:^5.3.8"
     npm-run-all: "npm:^4.1.5"
     playwright: "npm:^1.58.2"
@@ -5331,7 +5307,7 @@ __metadata:
     vite-bundle-analyzer: "npm:^1.3.6"
     vue: "npm:^3.5.28"
     vue-json-pretty: "npm:^2.6.0"
-    vue-router: "npm:^5.0.2"
+    vue-router: "npm:^5.0.3"
     vue-tsc: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
@@ -13286,13 +13262,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "vue-router@npm:5.0.2"
+"vue-router@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "vue-router@npm:5.0.3"
   dependencies:
     "@babel/generator": "npm:^7.28.6"
     "@vue-macros/common": "npm:^3.1.1"
-    "@vue/devtools-api": "npm:^8.0.0"
+    "@vue/devtools-api": "npm:^8.0.6"
     ast-walker-scope: "npm:^0.8.3"
     chokidar: "npm:^5.0.0"
     json5: "npm:^2.2.3"
@@ -13319,7 +13295,7 @@ __metadata:
       optional: true
     pinia:
       optional: true
-  checksum: 10/d6232a429be9b901be84389fa5bf4ef8827c6232b03815a21a26e27d10246fc75f3b58e0f0f5e7469a72ea1275a52f3435841547e1bd610bcd4f5941fce21157
+  checksum: 10/548ee0674fb350c7da8fe9b1bc9ef64d1c972d0ea3143e3141ef85c20bbdf6d207d3bb4032823591316b62d0e804ac4bbe13644c03ad53aeab15531bb4307fd0
   languageName: node
   linkType: hard
 
