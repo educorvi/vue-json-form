@@ -5,6 +5,16 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Button",
+                "buttonType": "submit",
+                "text": "Submit",
+                "options": {
+                    "disabled": true,
+                    "variant": "primary",
+                    "cssClass": "disabled-submit-button-test-class"
+                }
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/requiredUploadField",
                 "options": {
