@@ -42,9 +42,21 @@
                             }
                         }
                     }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "makeRequired": {
+                                "const": true
+                            }
+                        },
+                        "required": ["boolean-to-depend-on"]
+                    },
+                    "then": {
+                        "required": ["uploadfield-with-minitems-and-required"]
+                    }
                 }
             ],
-            "required": ["uploadfield-with-minitems-and-required"],
             "properties": {
                 "boolean-to-depend-on": {
                     "title": "boolean to depend on",
@@ -67,6 +79,10 @@
                         "type": "string",
                         "format": "uri"
                     }
+                },
+                "makeRequired": {
+                    "type": "boolean",
+                    "title": "Make required"
                 },
                 "uploadfield-with-minitems-and-required": {
                     "title": "uploadfield with minitems and required",

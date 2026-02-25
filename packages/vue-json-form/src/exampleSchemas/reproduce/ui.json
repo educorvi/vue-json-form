@@ -32,6 +32,10 @@
                     },
                     {
                         "type": "Control",
+                        "scope": "/properties/jso-126/properties/makeRequired"
+                    },
+                    {
+                        "type": "Control",
                         "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-required",
                         "options": {
                             "acceptedFileType": "*",
