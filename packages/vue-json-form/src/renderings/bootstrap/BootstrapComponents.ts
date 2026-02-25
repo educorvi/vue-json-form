@@ -19,6 +19,7 @@ import FormFieldWrapper from '@/renderings/bootstrap/FormFieldWrapper.vue';
 import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
 import FileControl from '@/renderings/bootstrap/controls/FileControl.vue';
 import Modal from '@/renderings/bootstrap/Modal.vue';
+import ConfirmationModal from '@/renderings/bootstrap/ConfirmationModal.vue';
 
 export const bootstrapComponents: RenderInterface = {
     showOnWrapper: ShowOnWrapper,
@@ -40,4 +41,5 @@ export const bootstrapComponents: RenderInterface = {
     ArrayButton: ArrayButton,
     WizardProgress: WizardProgress,
     Modal: Modal,
+    ConfirmationModal: ConfirmationModal,
 };

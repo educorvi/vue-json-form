@@ -1,6 +1,7 @@
 import type {
     ArrayButtonComponent,
     ButtonGroupComponent,
+    ConfirmationModalComponent,
     ControlComponent,
     ErrorViewerComponent,
     FormFieldWrapperComponent,
@@ -51,4 +52,6 @@ export interface RenderInterface {
     StringControl: ControlComponent;
 
     TagsControl: ControlComponent;
+
+    ConfirmationModal: ConfirmationModalComponent;
 }

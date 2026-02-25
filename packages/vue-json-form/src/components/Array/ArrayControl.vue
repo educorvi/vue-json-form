@@ -33,16 +33,16 @@ import {
     setDescendantControlOverride,
 } from '@/components/ProviderKeys.ts';
 import { isDefined } from '@/typings/typeValidators.ts';
-import { BModal } from 'bootstrap-vue-next';
 import { type ComponentExposed } from 'vue-component-type-helpers';
 
 const ErrorViewer = getComponent('ErrorViewer');
 const HelpPopover = getComponent('HelpPopover');
 const ArrayButton = getComponent('ArrayButton');
+const ConfirmationModal = getComponent('ConfirmationModal');
 
-const deleteItemsModal = useTemplateRef<ComponentExposed<typeof BModal>>(
-    'delete-remaining-items-modal'
-);
+const deleteItemsModal = useTemplateRef<
+    ComponentExposed<typeof ConfirmationModal>
+>('delete-remaining-items-modal');
 
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
@@ -272,20 +272,21 @@ onBeforeMount(initArray);
         </error-viewer>
     </div>
 
-    <BModal
+    <confirmation-modal
         ref="delete-remaining-items-modal"
         :title="
-            languageProvider?.getString('modals.delete-remaining-items.title')
+            languageProvider?.getString(
+                'modals.delete-remaining-items.title'
+            ) || ''
         "
-        :ok-title="
+        :confirmButtonText="
             languageProvider?.getString('modals.delete-remaining-items.confirm')
         "
-        ok-variant="danger"
-        @ok="deleteAllItems"
-        :cancel-title="
+        confirmButtonVariant="danger"
+        @confirm="deleteAllItems"
+        :cancelButtonText="
             languageProvider?.getString('modals.delete-remaining-items.cancel')
         "
-        centered
     >
         {{
             languageProvider?.getStringTemplate(
@@ -293,7 +294,7 @@ onBeforeMount(initArray);
                 jsonElement.minItems
             )
         }}
-    </BModal>
+    </confirmation-modal>
 </template>
 
 <style lang="scss">
