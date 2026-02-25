@@ -57,6 +57,9 @@ export function validateFileInput(
             }
             return false;
         }
+    } else if (required && !data) {
+        el.setCustomValidity('');
+        return false;
     }
     if (maxFileSize) {
         let dataArray = (Array.isArray(data) ? data : [data]) || [];
