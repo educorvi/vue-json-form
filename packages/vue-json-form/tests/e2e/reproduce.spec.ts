@@ -5,6 +5,9 @@ function submitForm(page: Page) {
 }
 
 const WAIT_TIME = 150;
+const REPRODUCE_URL = 'http://localhost:5173/reproduce?nonav=true';
+const TEST_FILE_TXT = 'tests/e2e/assets/testUpload.txt';
+const TEST_FILE_PDF = 'tests/e2e/assets/testUpload.pdf';
 
 const expectSelectOptions = async (
     page: Page,
@@ -398,7 +401,7 @@ test('JSO-68', async ({ page }) => {
 });
 
 test('Non-required multi-upload with minItems validation', async ({ page }) => {
-    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await page.goto(REPRODUCE_URL);
     
     const fileInput = page.locator("input[name='/properties/multiFileUpload2']");
     
@@ -407,20 +410,17 @@ test('Non-required multi-upload with minItems validation', async ({ page }) => {
     await expect(page.locator('#result-container')).toBeVisible();
     
     // Reload page for clean state
-    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await page.goto(REPRODUCE_URL);
     
     // Test 2: Upload 1 file (less than minItems=2) should fail validation
-    await fileInput.setInputFiles('tests/e2e/assets/testUpload.txt');
+    await fileInput.setInputFiles(TEST_FILE_TXT);
     await page.waitForTimeout(WAIT_TIME);
     await submitForm(page);
     await expect(page.locator('#result-container')).not.toBeAttached();
     await expectInvalid(fileInput);
     
     // Test 3: Upload 2 files (meets minItems=2) should pass validation
-    await fileInput.setInputFiles([
-        'tests/e2e/assets/testUpload.txt',
-        'tests/e2e/assets/testUpload.pdf'
-    ]);
+    await fileInput.setInputFiles([TEST_FILE_TXT, TEST_FILE_PDF]);
     await page.waitForTimeout(WAIT_TIME);
     await expectValid(fileInput);
     await submitForm(page);
