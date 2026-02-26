@@ -92,6 +92,19 @@ test('JSO-126 - Uploadfield', async ({ page }) => {
     expect(res['multiFileUpload2'].length).toBe(2);
 });
 
+test('JSO-126 - Array with minItems=1 (not required)', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+
+    // Test 1: Empty array should pass validation (field is not required)
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+    
+    let resultText = await page.locator('#result-container').textContent();
+    let res = JSON.parse(resultText || '');
+    // Array should either be undefined or empty
+    expect(res['jso-51-arr'] === undefined || res['jso-51-arr'].length === 0).toBe(true);
+});
+
 test('Disabled Button', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
     await expect(
