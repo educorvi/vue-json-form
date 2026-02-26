@@ -532,7 +532,9 @@ test('JSO-58', async ({ page }) => {
 
 test('JSO-51', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
-
+    await page
+        .locator('#vjf_control_for__properties_jso-51-arr > button')
+        .click();
     await expect(
         page
             .locator('div[name="/properties/jso-51-arr"] .vjf_htmlRenderer')
@@ -571,6 +573,10 @@ test('JSO-44', async ({ page }) => {
     await expect(
         page.locator('div[name="/properties/abhaengiges-array"]')
     ).toBeVisible();
+    await page
+        .locator('div[name="/properties/abhaengiges-array"] button')
+        .click();
+
     await expect(
         page.locator(
             'div[name="/properties/abhaengiges-array"] input[type="text"]'

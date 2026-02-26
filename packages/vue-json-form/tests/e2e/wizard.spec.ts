@@ -414,6 +414,8 @@ test.describe('Wizard Form Submission', () => {
         );
         await expect(parentsContainer).toBeVisible();
 
+        await parentsContainer.locator('button').click();
+
         // Add parent name
         const parentInputs = parentsContainer.locator('input[type="text"]');
         await expect(parentInputs.nth(0)).toBeVisible();

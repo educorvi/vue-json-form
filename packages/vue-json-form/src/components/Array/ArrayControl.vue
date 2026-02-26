@@ -107,7 +107,10 @@ function deleteAllItems() {
 }
 
 function deleteItemWithID(id: string, itemSavePath: string) {
-    if (formData.value[savePath].length <= (jsonElement.value.minItems || 0)) {
+    if (
+        formData.value[savePath].length <= (jsonElement.value.minItems || 0) &&
+        formData.value[savePath].length > 1
+    ) {
         if (required.value) {
             return;
         } else {
@@ -270,31 +273,35 @@ onBeforeMount(initArray);
         <error-viewer v-else header="Error" :id="id">
             The type of the array's items is missing in the schema
         </error-viewer>
-    </div>
 
-    <confirmation-modal
-        ref="delete-remaining-items-modal"
-        :title="
-            languageProvider?.getString(
-                'modals.delete-remaining-items.title'
-            ) || ''
-        "
-        :confirmButtonText="
-            languageProvider?.getString('modals.delete-remaining-items.confirm')
-        "
-        confirmButtonVariant="danger"
-        @confirm="deleteAllItems"
-        :cancelButtonText="
-            languageProvider?.getString('modals.delete-remaining-items.cancel')
-        "
-    >
-        {{
-            languageProvider?.getStringTemplate(
-                'modals.delete-remaining-items.text',
-                jsonElement.minItems
-            )
-        }}
-    </confirmation-modal>
+        <confirmation-modal
+            ref="delete-remaining-items-modal"
+            :title="
+                languageProvider?.getString(
+                    'modals.delete-remaining-items.title'
+                ) || ''
+            "
+            :confirmButtonText="
+                languageProvider?.getString(
+                    'modals.delete-remaining-items.confirm'
+                )
+            "
+            confirmButtonVariant="danger"
+            @confirm="deleteAllItems"
+            :cancelButtonText="
+                languageProvider?.getString(
+                    'modals.delete-remaining-items.cancel'
+                )
+            "
+        >
+            {{
+                languageProvider?.getStringTemplate(
+                    'modals.delete-remaining-items.text',
+                    jsonElement.minItems
+                )
+            }}
+        </confirmation-modal>
+    </div>
 </template>
 
 <style lang="scss">
