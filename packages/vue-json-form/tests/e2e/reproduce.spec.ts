@@ -397,6 +397,41 @@ test('JSO-68', async ({ page }) => {
     await expect(parent.locator('.vjf_array')).not.toBeVisible();
 });
 
+test('Non-required multi-upload with minItems validation', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    
+    const fileInput = page.locator("input[name='/properties/multiFileUpload2']");
+    
+    // Test 1: Empty field should pass validation (field is not required)
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+    
+    // Reload page for clean state
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    
+    // Test 2: Upload 1 file (less than minItems=2) should fail validation
+    await fileInput.setInputFiles('tests/e2e/assets/testUpload.txt');
+    await page.waitForTimeout(WAIT_TIME);
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(fileInput);
+    
+    // Test 3: Upload 2 files (meets minItems=2) should pass validation
+    await fileInput.setInputFiles([
+        'tests/e2e/assets/testUpload.txt',
+        'tests/e2e/assets/testUpload.pdf'
+    ]);
+    await page.waitForTimeout(WAIT_TIME);
+    await expectValid(fileInput);
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+    
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['multiFileUpload2']).toBeDefined();
+    expect(res['multiFileUpload2'].length).toBe(2);
+});
+
 test('Pattern string', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 
