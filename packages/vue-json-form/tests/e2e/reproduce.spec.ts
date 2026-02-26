@@ -92,17 +92,51 @@ test('JSO-126 - Uploadfield', async ({ page }) => {
     expect(res['multiFileUpload2'].length).toBe(2);
 });
 
-test('JSO-126 - Array with minItems=1 (not required)', async ({ page }) => {
+test('JSO-126 - Array with minItems (not required)', async ({ page }) => {
     await page.goto(REPRODUCE_URL);
 
     // Test 1: Empty array should pass validation (field is not required)
     await submitForm(page);
     await expect(page.locator('#result-container')).toBeVisible();
-    
+
     let resultText = await page.locator('#result-container').textContent();
     let res = JSON.parse(resultText || '');
-    // Array should either be undefined or empty
-    expect(res['jso-51-arr'] === undefined || res['jso-51-arr'].length === 0).toBe(true);
+    expect(res['jso-51-arr'] === undefined).toBe(true);
+
+    await page.goto(REPRODUCE_URL);
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+        )
+    ).toBeHidden();
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems > button'
+        )
+        .click();
+    expect(
+        await page
+            .locator(
+                '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+            )
+            .all()
+    ).toHaveLength(2);
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems button.btn-outline-danger'
+        )
+        .first()
+        .click();
+
+    await expect(page.locator('.modal.show .modal-body')).toBeVisible();
+    await page
+        .locator('.modal.show .modal-footer button:text("Delete")')
+        .click();
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+        )
+    ).toBeHidden();
 });
 
 test('Disabled Button', async ({ page }) => {
