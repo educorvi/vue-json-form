@@ -50,7 +50,7 @@
                                 "const": true
                             }
                         },
-                        "required": ["boolean-to-depend-on"]
+                        "required": ["makeRequired"]
                     },
                     "then": {
                         "required": ["uploadfield-with-minitems-and-required"]

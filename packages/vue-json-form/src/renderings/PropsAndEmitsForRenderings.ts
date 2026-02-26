@@ -115,7 +115,6 @@ export type ConfirmationModalProps = {
     title: string;
     confirmButtonText?: string;
     cancelButtonText?: string;
-    hideConfirmButton?: boolean;
     hideCancelButton?: boolean;
     confirmButtonVariant?: ButtonVariant;
     cancelButtonVariant?: ButtonVariant;

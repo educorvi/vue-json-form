@@ -22,7 +22,7 @@
     "modals": {
         "delete-remaining-items": {
             "title": "Löschen der übrigen Elemente",
-            "text": "Da diese Array mindestens !&data&! Elemente erfordert, werden alle übrigen Elemente aus dem Array gelöscht. Sind Sie sicher?",
+            "text": "Da dieses Array mindestens !&data&! Elemente erfordert, werden alle übrigen Elemente aus dem Array gelöscht. Sind Sie sicher?",
             "confirm": "Löschen",
             "cancel": "Abbrechen"
         }

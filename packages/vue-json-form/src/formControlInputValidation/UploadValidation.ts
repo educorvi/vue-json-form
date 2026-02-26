@@ -58,6 +58,7 @@ export function validateFileInput(
             return false;
         }
     } else if (required && !data) {
+        // Show the default error message for required file input
         el.setCustomValidity('');
         return false;
     }

@@ -77,7 +77,15 @@ function addField(skipFocus = false, value?: any) {
         });
     }
 }
-function ensureMinNumberOfFields(diff: number = 0) {
+
+/**
+ * Ensures that the form data contains a minimum number of fields by adding
+ * the minimal number of fields if necessary.
+ *
+ * @param {number} diff - An optional value to raise or lower the minimum number of fields. Defaults to 0.
+ * @return {void} This method does not return a value.
+ */
+function ensureMinNumberOfFields(diff: number = 0): void {
     const num = (jsonElement.value.minItems || 0) + diff;
     for (let i = formData.value[savePath].length; i < num; i++) {
         addField(true);

@@ -101,7 +101,7 @@ test('JSO-126 - Array with minItems (not required)', async ({ page }) => {
 
     let resultText = await page.locator('#result-container').textContent();
     let res = JSON.parse(resultText || '');
-    expect(res['jso-51-arr'] === undefined).toBe(true);
+    expect(res['jso-126']).toBeUndefined();
 
     await page.goto(REPRODUCE_URL);
     await expect(
