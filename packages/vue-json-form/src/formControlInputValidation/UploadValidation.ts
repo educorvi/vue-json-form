@@ -39,7 +39,7 @@ export function validateFileInput(
         } else if (
             minNumberOfFiles.value &&
             (data?.length || 0) < minNumberOfFiles.value &&
-            required
+            (required || data?.length > 0)
         ) {
             if (minNumberOfFiles.value === 1) {
                 el.setCustomValidity(
