@@ -1,3 +1,4 @@
 src/generated/validatorCode.*js
 dist
 node_modules
+test-results

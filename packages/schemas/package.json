@@ -2,11 +2,6 @@
   "name": "@educorvi/vue-json-form-schemas",
   "description": "Schemas for Vue JSON Form",
   "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form.git",
-    "directory": "packages/schemas"
-  },
   "dependencies": {
     "@educorvi/rita": "^5.5.1",
     "json-schema-typed": "^8.0.2"
@@ -49,15 +44,20 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form.git",
+    "directory": "packages/schemas"
+  },
   "scripts": {
     "build": "turbo build:internal check-types",
     "build:internal": "vite build",
+    "check-types": "tsc --noEmit",
     "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && generate-schema-doc ./src/generated/ui-merged.schema.json ./docs-dist/index.html",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
     "mergeSchema": "node mergeSchema.cjs",
-    "prepack": "yarn run build:internal",
-    "check-types": "tsc --noEmit"
+    "prepack": "yarn run build:internal"
   },
   "type": "module",
   "types": "./dist/vue-json-form-schemas.d.ts"
