@@ -38,6 +38,11 @@
           "type": "string",
           "description": "The layout's CSS classes"
         },
+        "disabled": {
+          "type": "boolean",
+          "description": "Whether the button is disabled",
+          "default": false
+        },
         "variant": {
           "$ref": "variants.schema.json"
         },

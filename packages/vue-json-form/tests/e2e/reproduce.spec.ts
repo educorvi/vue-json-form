@@ -55,6 +55,13 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('Disabled Button', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await expect(
+        page.locator('button[type="submit"].disabled-submit-button-test-class')
+    ).toBeDisabled();
+});
+
 test('JSO-112 (acceptedFileType)', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 
