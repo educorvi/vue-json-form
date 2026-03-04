@@ -25,6 +25,7 @@
     "build": "turbo check-types build:internal",
     "build:demo": "turbo run check-types build:internal --filter demo",
     "build:schemas": "turbo run check-types build:internal --filter @educorvi/vue-json-form-schemas",
+    "build:storybook": "turbo run build:internal --filter @educorvi/vue-json-form-storybook",
     "build:vue-json-form": "turbo run check-types build:internal --filter @educorvi/vue-json-form",
     "build:webcomponent": "turbo run check-types build:internal --filter @educorvi/vue-json-form-webcomponent",
     "commitlint": "commitlint --edit",

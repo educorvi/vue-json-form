@@ -1,0 +1,22 @@
+{
+  "name": "@educorvi/vue-json-form-storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build:internal": "storybook build"
+  },
+  "dependencies": {
+    "@educorvi/vue-json-form": "workspace:^",
+    "bootstrap": "^5.3.8",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.28"
+  },
+  "devDependencies": {
+    "@storybook/vue3": "^10.2.15",
+    "@storybook/vue3-vite": "^10.2.15",
+    "storybook": "^10.2.15",
+    "vite": "^6.1.1"
+  }
+}
