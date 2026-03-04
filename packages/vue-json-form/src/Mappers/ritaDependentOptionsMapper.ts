@@ -8,8 +8,8 @@ import type {
 import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
 import { getOption } from '@/utilities.ts';
-import { cleanData } from '@/stores/formData.ts';
 import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
+import { cleanData } from '@/stores/helpers/cleanData.ts';
 
 /**
  * A mapper that filters enum options based on RITA rules defined in the UI schema.

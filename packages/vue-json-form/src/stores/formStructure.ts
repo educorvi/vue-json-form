@@ -6,7 +6,8 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import type { MapperClass } from '@/typings/customTypes.ts';
-import { flattenArray } from '@/stores/formData.ts';
+
+import { flattenArray } from '@/stores/helpers/flattenData.ts';
 
 function getDefaultData(
     schema: JSONSchema,
