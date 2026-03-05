@@ -877,7 +877,7 @@ __metadata:
     "@vue/tsconfig": "npm:^0.8.1"
     "@vueuse/core": "npm:^14.2.1"
     axe-core: "npm:^4.11.1"
-    bootstrap: "npm:^5.3.3"
+    bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:0.43.8"
     deepmerge: "npm:^4.3.1"
@@ -4388,7 +4388,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:^5.3.3, bootstrap@npm:^5.3.8":
+"bootstrap@npm:^5.3.8":
   version: 5.3.8
   resolution: "bootstrap@npm:5.3.8"
   peerDependencies:
