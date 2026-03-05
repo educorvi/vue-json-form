@@ -6,6 +6,22 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-135": {
+            "type": "object",
+            "properties": {
+                "checkbox": {
+                    "type": "boolean"
+                },
+                "radio1": {
+                    "type": "string",
+                    "enum": ["option1", "option2"]
+                },
+                "radio2": {
+                    "type": "string",
+                    "enum": ["option1", "option2"]
+                }
+            }
+        },
         "requiredUploadField": {
             "type": "object",
             "properties": {
