@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BFormRadioGroup } from 'bootstrap-vue-next';
+import { BFormRadioGroup, type CheckboxOptionRaw } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
@@ -8,14 +8,14 @@ import {
     hasProperty,
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
-import { computed, watch } from 'vue';
+import { computed, type ComputedRef, watch } from 'vue';
 import { getOption } from '@/utilities';
 import { injectJsonData } from '@/computedProperties/json.ts';
 
 const { formData } = storeToRefs(useFormDataStore());
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
-const options = computed(() => {
+const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {
     if (
         !hasProperty(jsonElement.value, 'enum') ||
         !Array.isArray(jsonElement.value.enum)
@@ -24,12 +24,12 @@ const options = computed(() => {
     }
     return (
         jsonElement.value.enum.map((key: any) => {
-            const textVals: Record<any, any> =
+            const textVals =
                 (hasOption(layoutElement.value, 'enumTitles') &&
                     layoutElement.value.options.enumTitles) ||
                 {};
             const text = textVals[key] || key;
-            return { value: key, text };
+            return { value: key.toString(), text };
         }) || []
     );
 });
@@ -75,4 +75,9 @@ watch(
     />
 </template>
 
-<style></style>
+<style scoped>
+.vjf_radioGroup {
+    position: relative;
+    display: block;
+}
+</style>

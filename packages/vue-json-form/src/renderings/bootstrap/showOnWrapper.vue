@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { BCollapse } from 'bootstrap-vue-next';
 import type {
     ShowOnWrapperProps,
     ShowOnWrapperSlots,
@@ -10,9 +9,7 @@ defineSlots<ShowOnWrapperSlots>();
 </script>
 
 <template>
-    <BCollapse class="vjf_showOnWrapper" :visible="visible">
+    <div class="vjf_showOnWrapper" v-if="visible">
         <slot />
-    </BCollapse>
+    </div>
 </template>
-
-<style scoped></style>

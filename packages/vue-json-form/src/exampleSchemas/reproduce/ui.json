@@ -5,6 +5,47 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-135"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-135/properties/checkbox"
+                    },
+                    {
+                        "type": "Group",
+                        "showOn": {
+                            "id": "jso-135",
+                            "rule": {
+                                "type": "atom",
+                                "path": "jso-135.checkbox",
+                                "default": false
+                            }
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/jso-135/properties/radio1",
+                                "options": {
+                                    "displayAs": "radiobuttons",
+                                    "stacked": true
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/jso-135/properties/radio2",
+                                "options": {
+                                    "displayAs": "radiobuttons",
+                                    "stacked": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "type": "Button",
                 "buttonType": "submit",
                 "text": "Submit",
