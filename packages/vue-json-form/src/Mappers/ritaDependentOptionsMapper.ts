@@ -9,7 +9,6 @@ import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
 import { getOption } from '@/utilities.ts';
 import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
-import { cleanData } from '@/stores/helpers/cleanData.ts';
 
 /**
  * A mapper that filters enum options based on RITA rules defined in the UI schema.
@@ -30,18 +29,11 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         return this.dependencies;
     }
 
-    /**
-     * Maps the JSON schema element by filtering enum options based on evaluated rules.
-     *
-     * @param jsonElement - The JSON schema element.
-     * @param uiElement - The UI control element.
-     * @param data - The current form data.
-     * @returns The mapped JSON schema and UI element, or null if no rules are present.
-     */
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        _: Readonly<Record<string, any>>,
+        cleanedFormData: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -52,7 +44,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         const newJsonElement: JSONSchema = this.cloneJsonElement(jsonElement);
         const cleanedData = {
             $selfIndices: getArrayItemIndices(uiElement),
-            ...cleanData(data).json,
+            ...cleanedFormData,
         };
         let hasChanges = false;
         const evaluatedRules: [string, boolean][] = [];

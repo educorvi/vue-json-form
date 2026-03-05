@@ -19,7 +19,12 @@ import type {
     SupportedIfThenElse,
 } from '@/typings/customTypes';
 import type { InputType } from 'bootstrap-vue-next';
-import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
+import {
+    Mapper,
+    MapperWithCleanedData,
+    MapperWithData,
+    MapperWithoutData,
+} from '@/Mappers';
 
 export type IndexType = string | number | symbol;
 
@@ -171,6 +176,12 @@ export function isMapperWithoutData(
 
 export function isMapperWithData(mapper: Mapper): mapper is MapperWithData {
     return mapper instanceof MapperWithData;
+}
+
+export function isMapperWithCleanedData(
+    mapper: Mapper
+): mapper is MapperWithCleanedData {
+    return mapper instanceof MapperWithCleanedData;
 }
 
 export function isIfThenAllOf(

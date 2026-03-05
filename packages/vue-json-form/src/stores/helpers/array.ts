@@ -20,5 +20,5 @@ export function getArrayAliasIndices(obj: Readonly<Record<string, any>>) {
             }
         }
     }
-    return { arrayIndices, arrays };
+    return { arrayIndices, arrays: arrays };
 }

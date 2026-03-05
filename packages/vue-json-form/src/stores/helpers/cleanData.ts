@@ -1,8 +1,8 @@
 import { isArray } from '@/computedProperties/json.ts';
 import { isArrayItemKey } from '@/Commons.ts';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 import { setPropertyByScope } from '@/stores/helpers/setPropertyByScope.ts';
 import { getArrayAliasIndices } from '@/stores/helpers/array.ts';
+import type { FormArrays } from '@/stores/formData.ts';
 
 /**
  * Converts a flat object with scoped keys into a nested object.
@@ -60,18 +60,22 @@ function cleanKey(arrayIndices: Map<string, number>, key: string): string {
 /**
  * Cleans the data by mapping the array entry values to their indices
  * @param obj - The object to clean
+ * @param arrays - The arrays in the form
  * @returns The cleaned data in scopes formatting and as json object
  */
-export function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
+export function cleanData(
+    obj: Readonly<Record<string, any>>,
+    arrays: Readonly<FormArrays>
+): CleanedData {
     /**
      * The scopes with their values
      */
     const scopes: Record<string, any> = {};
 
-    const { arrayIndices, arrays } = getArrayAliasIndices(obj);
+    const { arrayIndices, arrays: arrayNames } = getArrayAliasIndices(obj);
 
     // If an array has an array value and does not contain placeholder keys, it can be assigned as is
-    for (const arrayKey of arrays) {
+    for (const arrayKey of arrayNames) {
         const value = obj[arrayKey];
         if (
             Array.isArray(value) &&
@@ -89,8 +93,7 @@ export function cleanData(obj: Readonly<Record<string, any>>): CleanedData {
         }
     }
 
-    const arraysFromStructureStore = useFormStructureStore().arrays;
-    for (const array of Object.values(arraysFromStructureStore)) {
+    for (const array of Object.values(arrays)) {
         const data = obj[array.key];
         if (data && Array.isArray(data)) {
             if (

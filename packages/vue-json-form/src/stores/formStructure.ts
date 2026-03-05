@@ -34,17 +34,10 @@ function getDefaultData(
     return data;
 }
 
-export type ArrayData = {
-    key: string;
-    jsonSchema: JSONSchema;
-    required: boolean;
-};
-
 type FormStructureStoreState = {
     jsonSchema: JSONSchema | undefined;
     uiSchema: Layout | Wizard | undefined;
     components: RenderInterface | undefined;
-    arrays: Record<string, ArrayData>;
     mappers: MapperClass[];
     buttonWaiting: Record<string, boolean>;
     currentWizardPage: number;
@@ -67,10 +60,6 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                 jsonSchema: undefined,
                 uiSchema: undefined,
                 components: undefined,
-                /**
-                 * List of all arrays in the schema that were written to
-                 */
-                arrays: {},
                 mappers: [],
                 /**
                  * List of all buttons that are waiting for a response
