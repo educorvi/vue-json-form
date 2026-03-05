@@ -29,7 +29,7 @@ const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {
                     layoutElement.value.options.enumTitles) ||
                 {};
             const text = textVals[key] || key;
-            return { value: key.toString(), text };
+            return { value: key, text };
         }) || []
     );
 });
