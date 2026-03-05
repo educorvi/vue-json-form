@@ -879,7 +879,7 @@ __metadata:
     axe-core: "npm:^4.11.1"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
-    bootstrap-vue-next: "npm:0.43.6"
+    bootstrap-vue-next: "npm:0.43.8"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^10.0.0"
     eslint-config-prettier: "npm:^10.1.8"
@@ -4369,9 +4369,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.43.6":
-  version: 0.43.6
-  resolution: "bootstrap-vue-next@npm:0.43.6"
+"bootstrap-vue-next@npm:0.43.8":
+  version: 0.43.8
+  resolution: "bootstrap-vue-next@npm:0.43.8"
   peerDependencies:
     "@floating-ui/vue": "*"
     "@vueuse/core": "*"
@@ -4384,7 +4384,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/76bf6e03de8f0b4bd2135ff8b71340496e184c5a8b4e1ec172418a5411c8f60db8f2d3fb23066471529d2002d3576821d73e806b1cd99e4544f30b3b2c818be3
+  checksum: 10/e4563231a255a57e0bb83e6640a3fd1a80e36693737c168df1fbc00562b6e6e3d87055fea67a7896dc5c66eccad3aa3507cd7876ec3b1f7c8289c3251e033334
   languageName: node
   linkType: hard
 
@@ -5314,7 +5314,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.4"
     "@vue/tsconfig": "npm:^0.8.1"
     bootstrap: "npm:^5.3.8"
-    bootstrap-vue-next: "npm:0.43.6"
+    bootstrap-vue-next: "npm:0.43.8"
     bootswatch: "npm:^5.3.8"
     npm-run-all: "npm:^4.1.5"
     playwright: "npm:^1.58.2"
