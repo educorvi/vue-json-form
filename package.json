@@ -19,7 +19,7 @@
     "turbo": "^2.8.10",
     "typedoc": "^0.28.17"
   },
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.13.0",
   "private": true,
   "scripts": {
     "build": "turbo check-types build:internal",
