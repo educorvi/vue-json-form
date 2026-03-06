@@ -76,3 +76,16 @@ export type SupportedIfThenElse = {
         required?: string[];
     };
 };
+
+export type InvertOptionality<T> = {
+    // 1. Find keys that ARE optional and make them REQUIRED
+    [K in keyof T as undefined extends T[K] ? K : never]-?: T[K];
+} & {
+    // 2. Find keys that ARE REQUIRED and make them OPTIONAL
+    [K in keyof T as undefined extends T[K] ? never : K]?: T[K];
+};
+
+// Simplified version for cleaner IntelliSense
+export type Prettify<T> = {
+    [K in keyof T]: T[K];
+} & {};

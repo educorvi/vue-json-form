@@ -8,6 +8,7 @@ import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import type { MapperClass } from '@/typings/customTypes.ts';
 
 import { flattenArray } from '@/stores/helpers/flattenData.ts';
+import { defaultComponents } from '@/renderings/default/DefaultComponents.ts';
 
 function getDefaultData(
     schema: JSONSchema,
@@ -100,5 +101,14 @@ export function getComponent<E extends keyof RenderInterface>(
     if (!components) {
         throw new Error('Components not initialized yet');
     }
-    return components[componentName];
+    let component: RenderInterface[E] | undefined = components[componentName];
+    if (!component) {
+        component = (defaultComponents as Partial<RenderInterface>)[
+            componentName
+        ];
+    }
+    if (!component) {
+        throw new Error(`Component ${componentName} not found`);
+    }
+    return component;
 }

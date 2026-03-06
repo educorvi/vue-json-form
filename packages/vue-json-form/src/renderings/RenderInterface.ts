@@ -53,5 +53,6 @@ export interface RenderInterface {
 
     TagsControl: ControlComponent;
 
-    ConfirmationModal: ConfirmationModalComponent;
+    // TODO: Breaking Change: Make required
+    ConfirmationModal?: ConfirmationModalComponent;
 }
