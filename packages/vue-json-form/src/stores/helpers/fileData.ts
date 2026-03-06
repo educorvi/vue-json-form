@@ -20,7 +20,10 @@ export async function addFilesToFormdata(data: any) {
         return await readFileDataAsDataUrl(data);
     } else if (isProxy(data)) {
         return await addFilesToFormdata(toRaw(data));
-    } else if (typeof data === 'object' || Array.isArray(data)) {
+    } else if (
+        data !== null &&
+        (typeof data === 'object' || Array.isArray(data))
+    ) {
         for (const [key, value] of Object.entries(data)) {
             data[key] = await addFilesToFormdata(value);
         }

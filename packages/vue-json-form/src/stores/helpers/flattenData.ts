@@ -11,7 +11,12 @@ export function flattenArray(
     }));
     into[arrayKey] = mappedArray.map((item) => item.id);
     mappedArray.forEach((item) => {
-        if (typeof item.item === 'object') {
+        if (
+            item.item !== null &&
+            typeof item.item === 'object' &&
+            !(item.item instanceof Date) &&
+            !(typeof File !== 'undefined' && item.item instanceof File)
+        ) {
             flattenData(item.item, into, `${arrayKey}.${item.id}`);
         } else {
             into[`${arrayKey}.${item.id}`] = item.item;

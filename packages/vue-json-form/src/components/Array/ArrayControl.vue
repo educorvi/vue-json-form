@@ -166,13 +166,7 @@ function initArray() {
     }
     setGlobalArrayRegister();
     if (required.value) {
-        for (
-            let i = formData.value[savePath].length;
-            i < (jsonElement.value.minItems || 0);
-            i++
-        ) {
-            addField(true);
-        }
+        ensureMinNumberOfFields();
     }
 
     if (layoutElement.value.options?.maxFileSize) {
@@ -192,7 +186,11 @@ watch(
         }
     }
 );
-watch(required, () => ensureMinNumberOfFields());
+watch([() => required.value, () => jsonElement.value.minItems], () => {
+    if (required.value) {
+        ensureMinNumberOfFields();
+    }
+});
 
 watch([() => required.value, () => jsonElement.value], setGlobalArrayRegister);
 

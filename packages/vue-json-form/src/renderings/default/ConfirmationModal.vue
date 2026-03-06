@@ -5,12 +5,11 @@ import type {
     ConfirmationModalSlots,
 } from '@/renderings/PropsAndEmitsForRenderings.ts';
 
-const props = defineProps<ConfirmationModalProps>();
+defineProps<ConfirmationModalProps>();
 const emit = defineEmits<ConfirmationModalEmits>();
 const slots = defineSlots<ConfirmationModalSlots>();
 
 const show = () => {
-
     const result = confirm(slots.default({})[0]?.children);
     if (result) {
         emit('confirm');
