@@ -86,7 +86,7 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import {
     hasItems,
     hasOption,
-    isMapperWithCleanedData,
+
     isMapperWithData,
     isMapperWithoutData,
 } from '@/typings/typeValidators';
@@ -154,7 +154,7 @@ async function mapFormStructure() {
                 localJsonElement || {},
                 localUiElement,
                 formData.value,
-                cleanedFormData.value
+                cleanedFormData.value.json
             );
         }
         if (mapped) {

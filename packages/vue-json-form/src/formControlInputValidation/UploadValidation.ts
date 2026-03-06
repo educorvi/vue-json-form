@@ -59,9 +59,9 @@ export function validateFileInput(
         return false;
     }
     if (maxFileSize) {
-        let dataArray = (Array.isArray(data) ? data : [data]) || [];
-        if (data === undefined || data === null) {
-            dataArray = [];
+        let dataArray: File[] = [];
+        if (data !== undefined && data !== null) {
+            dataArray = Array.isArray(data) ? data : [data];
         }
         const tooLargeFiles = dataArray.filter(
             (file: File) => file.size > maxFileSize

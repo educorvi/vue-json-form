@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { cleanData } from '@/stores/helpers/cleanData.ts';
 import { getArrayAliasIndices } from '@/stores/helpers/array.ts';
-import type { JSONSchema, Layout } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 
 export type ArrayData = {
     key: string;

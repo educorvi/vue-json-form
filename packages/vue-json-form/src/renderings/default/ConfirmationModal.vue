@@ -10,7 +10,7 @@ const emit = defineEmits<ConfirmationModalEmits>();
 const slots = defineSlots<ConfirmationModalSlots>();
 
 const show = () => {
-    console.log(slots.default({})[0]?.children);
+
     const result = confirm(slots.default({})[0]?.children);
     if (result) {
         emit('confirm');
