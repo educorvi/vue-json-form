@@ -906,6 +906,7 @@ __metadata:
     vite-plugin-vue-devtools: "npm:^8.0.6"
     vitest: "npm:^4.0.18"
     vue: "npm:^3.5.28"
+    vue-component-type-helpers: "npm:^3.2.5"
     vue-eslint-parser: "npm:^10.4.0"
     vue-router: "npm:^5.0.3"
     vue-tsc: "npm:^3.2.4"
@@ -13231,6 +13232,13 @@ __metadata:
   version: 2.2.12
   resolution: "vue-component-type-helpers@npm:2.2.12"
   checksum: 10/985ca9564966919f5a009514a46fd0b90c7a167795d9f2f58072f5f4a4eaffb8f94bcf70376504f171441827c624b723224acac41ce6a2cd39d2fff13df08d7a
+  languageName: node
+  linkType: hard
+
+"vue-component-type-helpers@npm:^3.2.5":
+  version: 3.2.5
+  resolution: "vue-component-type-helpers@npm:3.2.5"
+  checksum: 10/010dc3db731129e3f74a655d93cf065fe5bc028fe18387970ba43b5f8f22725f2d0d87b0df2cd092ee7c5aea4d519768dd0cff323295275188f3201f7293e1fe
   languageName: node
   linkType: hard
 

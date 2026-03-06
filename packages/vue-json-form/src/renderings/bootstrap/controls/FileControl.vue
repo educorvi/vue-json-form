@@ -55,6 +55,21 @@ const maxNumberOfFiles = computed(() => {
     return jsonElement.value.maxItems ?? Number.MAX_SAFE_INTEGER;
 });
 
+const acceptedFileTypes = computed(() => {
+    const acceptedFileType = getOption(
+        layoutElement.value,
+        'acceptedFileType',
+        '*'
+    );
+    if (
+        acceptedFileType === '*' ||
+        (Array.isArray(acceptedFileType) && acceptedFileType.includes('*'))
+    ) {
+        return undefined;
+    }
+    return acceptedFileType;
+});
+
 const valid = ref(true);
 
 const state = computed(() => {
@@ -106,7 +121,7 @@ onMounted(() => {
         :state="state"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
-        :accept="getOption(layoutElement, 'acceptedFileType')"
+        :accept="acceptedFileTypes"
         :required="required"
     />
 </template>

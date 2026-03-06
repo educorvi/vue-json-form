@@ -6,7 +6,9 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import type { MapperClass } from '@/typings/customTypes.ts';
-import { flattenArray } from '@/stores/formData.ts';
+
+import { flattenArray } from '@/stores/helpers/flattenData.ts';
+import { defaultComponents } from '@/renderings/default/DefaultComponents.ts';
 
 function getDefaultData(
     schema: JSONSchema,
@@ -37,7 +39,6 @@ type FormStructureStoreState = {
     jsonSchema: JSONSchema | undefined;
     uiSchema: Layout | Wizard | undefined;
     components: RenderInterface | undefined;
-    arrays: string[];
     mappers: MapperClass[];
     buttonWaiting: Record<string, boolean>;
     currentWizardPage: number;
@@ -60,10 +61,6 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                 jsonSchema: undefined,
                 uiSchema: undefined,
                 components: undefined,
-                /**
-                 * List of all arrays in the schema that were written to
-                 */
-                arrays: [] as string[],
                 mappers: [],
                 /**
                  * List of all buttons that are waiting for a response
@@ -104,5 +101,14 @@ export function getComponent<E extends keyof RenderInterface>(
     if (!components) {
         throw new Error('Components not initialized yet');
     }
-    return components[componentName];
+    let component: RenderInterface[E] | undefined = components[componentName];
+    if (!component) {
+        component = (defaultComponents as Partial<RenderInterface>)[
+            componentName
+        ];
+    }
+    if (!component) {
+        throw new Error(`Component ${componentName} not found`);
+    }
+    return component;
 }

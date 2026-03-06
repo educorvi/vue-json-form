@@ -48,6 +48,10 @@ export function isArrayItemKey(key: any): boolean {
     );
 }
 
+export function getArrayItemSavePath(arraySavePath: string, itemId: string) {
+    return `${arraySavePath}.${itemId}`;
+}
+
 /**
  * Extracts a portion of a scope string based on the specified length.
  *

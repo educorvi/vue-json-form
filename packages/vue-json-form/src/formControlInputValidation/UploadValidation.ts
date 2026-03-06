@@ -11,10 +11,6 @@ export function validateFileInput(
     languageProvider: LanguageProvider | undefined,
     el: HTMLInputElement
 ): boolean {
-    if (data === undefined) {
-        data = [];
-    }
-
     // Validate number of files
     if (isMultipleUpload.value) {
         if (
@@ -39,7 +35,7 @@ export function validateFileInput(
         } else if (
             minNumberOfFiles.value &&
             (data?.length || 0) < minNumberOfFiles.value &&
-            required
+            (required || data?.length > 0)
         ) {
             if (minNumberOfFiles.value === 1) {
                 el.setCustomValidity(
@@ -57,9 +53,16 @@ export function validateFileInput(
             }
             return false;
         }
+    } else if (required && !data) {
+        // Show the default error message for required file input
+        el.setCustomValidity('');
+        return false;
     }
     if (maxFileSize) {
-        let dataArray = (Array.isArray(data) ? data : [data]) || [];
+        let dataArray: File[] = [];
+        if (data !== undefined && data !== null) {
+            dataArray = Array.isArray(data) ? data : [data];
+        }
         const tooLargeFiles = dataArray.filter(
             (file: File) => file.size > maxFileSize
         );

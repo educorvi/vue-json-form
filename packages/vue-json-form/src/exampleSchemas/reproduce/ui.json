@@ -46,6 +46,91 @@
                 ]
             },
             {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-126"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/boolean-to-depend-on"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-not-required-but-not-shown-as-array",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/makeRequired"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-required",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-required-and-dependent",
+                        "showOn": {
+                            "id": "ritaRule-uploadfield-with-minitems-and-required-and-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-126.boolean-to-depend-on",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        },
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/array-required-and-dependent",
+                        "showOn": {
+                            "id": "ritaRule-array-required-and-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-126.boolean-to-depend-on",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        },
+                        "options": {
+                            "descendantControlOverrides": {}
+                        }
+                    }
+                ]
+            },
+            {
                 "type": "Button",
                 "buttonType": "submit",
                 "text": "Submit",

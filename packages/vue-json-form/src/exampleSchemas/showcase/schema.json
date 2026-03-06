@@ -115,5 +115,5 @@
             "default": "$now"
         }
     },
-    "required": ["done", "name", "fanciness"]
+    "required": ["done", "name", "fanciness", "testArray"]
 }

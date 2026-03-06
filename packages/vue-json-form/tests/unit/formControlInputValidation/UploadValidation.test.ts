@@ -217,7 +217,7 @@ describe('validateFileInput', () => {
         expect(spy).toHaveBeenCalledWith('');
     });
 
-    it('does not validate minNumberOfFiles when field is not required', () => {
+    it('does not validate minNumberOfFiles when field is not required and array is empty', () => {
         const el = createInput();
         const spy = vi.spyOn(el, 'setCustomValidity');
         const isMultipleUpload = ref(true) as ComputedRef<boolean>;
@@ -228,7 +228,7 @@ describe('validateFileInput', () => {
         } as unknown as LanguageProvider;
 
         const result = validateFileInput(
-            [createFile('a.txt', 1)],
+            [],
             false,
             undefined,
             isMultipleUpload,
