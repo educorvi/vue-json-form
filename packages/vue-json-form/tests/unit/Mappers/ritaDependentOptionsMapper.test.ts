@@ -467,7 +467,8 @@ describe('RitaDependentOptionsMapper', () => {
             const result = await mapper.map(
                 initialJsonElement,
                 uiElement,
-                data
+                data,
+                cleanedData
             );
 
             expect(result).not.toBeNull();
@@ -512,7 +513,8 @@ describe('RitaDependentOptionsMapper', () => {
             const result = await mapper.map(
                 initialJsonElement,
                 uiElement,
-                data
+                data,
+                cleanedData
             );
 
             expect(result).not.toBeNull();
