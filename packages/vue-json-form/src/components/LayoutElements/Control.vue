@@ -376,4 +376,8 @@ onBeforeUnmount(() => {
 .hiddenControl {
     display: none;
 }
+
+.vjf_control {
+    display: block;
+}
 </style>
