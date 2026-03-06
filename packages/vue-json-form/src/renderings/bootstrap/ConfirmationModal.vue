@@ -5,7 +5,7 @@ import type {
     ConfirmationModalSlots,
 } from '@/renderings/PropsAndEmitsForRenderings.ts';
 import { BModal } from 'bootstrap-vue-next';
-import { computed, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 
 const props = defineProps<ConfirmationModalProps>();
 const emit = defineEmits<ConfirmationModalEmits>();

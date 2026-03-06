@@ -144,12 +144,14 @@ export abstract class MapperWithData extends Mapper {
      * @param jsonElement - Current field's JSON Schema fragment.
      * @param uiElement - Current field's UI schema control.
      * @param data - Flat map of json-pointer-like keys to values.
+     * @param cleanedData - Cleaned form data
      * @returns `null` if the mapper does not apply; otherwise the resulting pair.
      */
     abstract map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        data: Readonly<Record<string, any>>,
+        cleanedData: Readonly<Record<string, any>>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;

@@ -44,8 +44,8 @@ const deleteItemsModal = useTemplateRef<
     ComponentExposed<typeof ConfirmationModal>
 >('delete-remaining-items-modal');
 
-const { formData } = storeToRefs(useFormDataStore());
-const { jsonSchema, arrays } = storeToRefs(useFormStructureStore());
+const { formData, arrays } = storeToRefs(useFormDataStore());
+const { jsonSchema } = storeToRefs(useFormStructureStore());
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const languageProvider = inject(languageProviderKey);

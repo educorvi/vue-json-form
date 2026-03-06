@@ -11,10 +11,6 @@ export function validateFileInput(
     languageProvider: LanguageProvider | undefined,
     el: HTMLInputElement
 ): boolean {
-    if (data === undefined) {
-        data = [];
-    }
-
     // Validate number of files
     if (isMultipleUpload.value) {
         if (
@@ -63,7 +59,10 @@ export function validateFileInput(
         return false;
     }
     if (maxFileSize) {
-        let dataArray = (Array.isArray(data) ? data : [data]) || [];
+        let dataArray: File[] = [];
+        if (data !== undefined && data !== null) {
+            dataArray = Array.isArray(data) ? data : [data];
+        }
         const tooLargeFiles = dataArray.filter(
             (file: File) => file.size > maxFileSize
         );
