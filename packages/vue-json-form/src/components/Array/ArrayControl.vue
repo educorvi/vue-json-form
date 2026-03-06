@@ -109,7 +109,13 @@ const dragOptions = ref({
 
 function deleteAllItems() {
     for (const value of formData.value[savePath]) {
-        delete formData.value[getArrayItemSavePath(savePath, value)];
+        const itemSavePath = getArrayItemSavePath(savePath, value);
+        const descendents = Object.keys(formData.value).filter((key) =>
+            key.startsWith(itemSavePath)
+        );
+        for (const descendent of descendents) {
+            delete formData.value[descendent];
+        }
     }
     formData.value[savePath] = [];
 }
