@@ -52,6 +52,8 @@ function getControlComponent(name: string | undefined) {
             return Buttons.vjfButton;
         case 'Buttongroup':
             return Buttons.vjfButtonGroup;
+        case 'Modal':
+            return getComponent('Modal');
         default:
             return UnknownComponent;
     }

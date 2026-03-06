@@ -37,6 +37,8 @@ export const languageProviderKey = Symbol() as InjectionKey<
     LanguageProvider | undefined
 >;
 
+export const inArrayItemProviderKey = Symbol() as InjectionKey<boolean>;
+
 export function setDescendantControlOverrides(
     overrides?: DescendantControlOverrides
 ) {

@@ -4,7 +4,7 @@ import type {
     Control,
     Layout,
 } from '@educorvi/vue-json-form-schemas';
-import { DependentRequiredMapper } from './dependentRequiredMapper';
+import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper';
 
 function makeControl(scope = '/properties/myField'): Control {
     return {

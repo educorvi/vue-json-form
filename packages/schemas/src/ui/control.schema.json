@@ -257,12 +257,27 @@
           "default": false
         },
         "acceptedFileType": {
-          "type": "string",
-          "description": "The accepted File Types",
-          "examples": [
-            "image/*",
-            "image/jpeg, image/png, image/gif",
-            ".jpg, .png, .gif"
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "The accepted File Types",
+              "examples": [
+                "image/*",
+                "image/jpeg, image/png, image/gif",
+                ".jpg, .png, .gif"
+              ]
+            },
+            {
+              "type": "array",
+              "description": "The accepted File Types",
+              "items": {
+                "type": "string"
+              },
+              "examples": [
+                ["image/*"],
+                ["image/*", "application/pdf"]
+              ]
+            }
           ]
         }
       }

@@ -1,0 +1,72 @@
+{
+  "title": "Modal",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://educorvi.github.io/vue-json-form/schemas/modal.schema.json",
+  "type": "object",
+  "description": "Display Information in a Modal",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "Modal"
+    },
+    "button": {
+      "type": "object",
+      "description": "The button that opens the modal",
+      "properties": {
+        "text": {
+          "type": "string",
+          "title": "Text",
+          "description": "The buttons text",
+          "minLength": 1
+        },
+        "variant": {
+          "$ref": "variants.schema.json"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "text"
+      ]
+    },
+    "modal": {
+      "type": "object",
+      "description": "The modal",
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Title",
+          "description": "The modal title"
+        },
+        "content": {
+          "type": "string",
+          "title": "Content",
+          "description": "The modal content (html is supported)"
+        },
+        "size": {
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large",
+            "x-large"
+            ],
+          "default": "medium"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "content"
+      ]
+    },
+    "showOn": {
+      "$ref": "show_on.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "button",
+    "modal"
+  ]
+}

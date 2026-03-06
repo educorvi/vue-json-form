@@ -1,10 +1,11 @@
-import type { Component } from 'vue';
 import type {
     ArrayButtonComponent,
     ButtonGroupComponent,
+    ConfirmationModalComponent,
     ControlComponent,
     ErrorViewerComponent,
     FormFieldWrapperComponent,
+    ModalComponent,
     ShowOnWrapperComponent,
     VjfButtonComponent,
     WizardProgressComponent,
@@ -30,6 +31,8 @@ export interface RenderInterface {
 
     WizardProgress: WizardProgressComponent;
 
+    Modal: ModalComponent;
+
     CheckboxControl: ControlComponent;
 
     CheckboxGroupControl: ControlComponent;
@@ -49,4 +52,7 @@ export interface RenderInterface {
     StringControl: ControlComponent;
 
     TagsControl: ControlComponent;
+
+    // TODO: Breaking Change: Make required
+    ConfirmationModal?: ConfirmationModalComponent;
 }

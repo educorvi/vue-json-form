@@ -6,6 +6,212 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-135": {
+            "type": "object",
+            "properties": {
+                "checkbox": {
+                    "type": "boolean"
+                },
+                "radio1": {
+                    "type": "string",
+                    "enum": ["option1", "option2"]
+                },
+                "radio2": {
+                    "type": "string",
+                    "enum": ["option1", "option2"]
+                }
+            }
+        },
+        "jso-126": {
+            "title": "minItems von Array und Uploadfield",
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "boolean-to-depend-on": {
+                                "const": true
+                            }
+                        },
+                        "required": ["boolean-to-depend-on"]
+                    },
+                    "then": {
+                        "required": [
+                            "uploadfield-with-minitems-and-required-and-dependent"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "boolean-to-depend-on": {
+                                "const": true
+                            }
+                        },
+                        "required": ["boolean-to-depend-on"]
+                    },
+                    "then": {
+                        "required": ["array-required-and-dependent"],
+                        "properties": {
+                            "array-required-and-dependent": {
+                                "minItems": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "makeRequired": {
+                                "const": true
+                            }
+                        },
+                        "required": ["makeRequired"]
+                    },
+                    "then": {
+                        "required": ["uploadfield-with-minitems-and-required"]
+                    }
+                }
+            ],
+            "properties": {
+                "boolean-to-depend-on": {
+                    "title": "boolean to depend on",
+                    "type": "boolean"
+                },
+                "uploadfield-with-minitems-and-not-required-but-not-shown-as-array": {
+                    "title": "uploadfield with minitems and not required (but not shown as array)",
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "uploadfield-with-minitems": {
+                    "title": "uploadfield with minitems and not required",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "makeRequired": {
+                    "type": "boolean",
+                    "title": "Make required"
+                },
+                "uploadfield-with-minitems-and-required": {
+                    "title": "uploadfield with minitems and required",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "uploadfield-with-minitems-and-required-and-dependent": {
+                    "title": "uploadfield with minitems and required and dependent",
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "array-required-and-dependent": {
+                    "title": "array required and dependent",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "requiredUploadField": {
+            "type": "object",
+            "properties": {
+                "upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "required": {
+                    "type": "boolean"
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "required": {
+                                "const": true
+                            }
+                        },
+                        "required": ["required"]
+                    },
+                    "then": {
+                        "required": ["upload"]
+                    }
+                }
+            ]
+        },
+        "uploooad": {
+            "title": "uploooad",
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 2,
+            "items": { "type": "string", "format": "uri" }
+        },
+        "showJso-108": {
+            "type": "boolean",
+            "title": "Show JSO-108"
+        },
+        "jso-108": {
+            "type": "object",
+            "title": "Reproduce",
+            "properties": {
+                "defaultRequired": {
+                    "title": "Required no min/max",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    }
+                },
+                "oneRequired": {
+                    "title": "One Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "minItems": 1
+                },
+                "twoRequired": {
+                    "title": "Two Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "minItems": 2
+                },
+                "maxTwoRequired": {
+                    "title": "Max Two Required",
+                    "type": "array",
+                    "items": {
+                        "enum": ["a", "b", "c", "d"]
+                    },
+                    "maxItems": 2
+                }
+            },
+            "required": [
+                "defaultRequired",
+                "oneRequired",
+                "twoRequired",
+                "maxTwoRequired"
+            ]
+        },
         "jso-96": {
             "type": "object",
             "properties": {

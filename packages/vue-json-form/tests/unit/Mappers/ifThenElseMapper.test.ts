@@ -4,7 +4,7 @@ import type {
     Control,
     Layout,
 } from '@educorvi/vue-json-form-schemas';
-import { IfThenElseMapper } from '.';
+import { IfThenElseMapper } from '@/Mappers';
 
 function makeControl(scope = '/properties/x'): Control {
     return {

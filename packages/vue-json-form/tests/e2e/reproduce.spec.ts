@@ -1,10 +1,13 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 
 function submitForm(page: Page) {
     return page.locator('button[type="submit"]').nth(-3).click();
 }
 
 const WAIT_TIME = 150;
+const REPRODUCE_URL = 'http://localhost:5173/reproduce?nonav=true';
+const TEST_FILE_TXT = 'tests/e2e/assets/testUpload.txt';
+const TEST_FILE_PDF = 'tests/e2e/assets/testUpload.pdf';
 
 const expectSelectOptions = async (
     page: Page,
@@ -42,6 +45,190 @@ async function expectIsNotRequiredField(page: Page, requiredFieldId: string) {
         page.locator(`label[for="${requiredFieldId}"]`)
     ).not.toContainText('*');
 }
+
+async function expectInvalid(locator: Locator) {
+    await expect
+        .poll(() => locator.evaluate((el) => el.matches(':invalid')))
+        .toBe(true);
+}
+
+async function expectValid(locator: Locator) {
+    await expect
+        .poll(() => locator.evaluate((el) => el.matches(':valid')))
+        .toBe(true);
+}
+
+test('JSO-126 - Uploadfield', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+
+    const fileInput = page.locator(
+        "input[name='/properties/multiFileUpload2']"
+    );
+
+    // Test 1: Empty field should pass validation (field is not required)
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    // Reload page for clean state
+    await page.goto(REPRODUCE_URL);
+
+    // Test 2: Upload 1 file (less than minItems=2) should fail validation
+    await fileInput.setInputFiles(TEST_FILE_TXT);
+    await page.waitForTimeout(WAIT_TIME);
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(fileInput);
+
+    // Test 3: Upload 2 files (meets minItems=2) should pass validation
+    await fileInput.setInputFiles([TEST_FILE_TXT, TEST_FILE_PDF]);
+    await page.waitForTimeout(WAIT_TIME);
+    await expectValid(fileInput);
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['multiFileUpload2']).toBeDefined();
+    expect(res['multiFileUpload2'].length).toBe(2);
+});
+
+test('JSO-126 - Array with minItems (not required)', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+
+    // Test 1: Empty array should pass validation (field is not required)
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    let resultText = await page.locator('#result-container').textContent();
+    let res = JSON.parse(resultText || '');
+    expect(res['jso-126']).toBeUndefined();
+
+    await page.goto(REPRODUCE_URL);
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+        )
+    ).toBeHidden();
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems > button'
+        )
+        .click();
+    expect(
+        await page
+            .locator(
+                '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+            )
+            .all()
+    ).toHaveLength(2);
+    await page
+        .locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems button.btn-outline-danger'
+        )
+        .first()
+        .click();
+
+    await expect(page.locator('.modal.show .modal-body')).toBeVisible();
+    await page
+        .locator('.modal.show .modal-footer button:text("Delete")')
+        .click();
+    await expect(
+        page.locator(
+            '#vjf_control_for__properties_jso-126_properties_uploadfield-with-minitems input'
+        )
+    ).toBeHidden();
+});
+
+test('Disabled Button', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await expect(
+        page.locator('button[type="submit"].disabled-submit-button-test-class')
+    ).toBeDisabled();
+});
+
+test('JSO-112 (acceptedFileType)', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+
+    await page.locator('#vjf_control_for__properties_uploooad button').click();
+
+    const fileInput = page.locator(
+        '#vjf_control_for__properties_uploooad input[type="file"]'
+    );
+    await expect(fileInput).toHaveAttribute(
+        'accept',
+        'application/pdf,image/png'
+    );
+});
+
+test('JSO-108 (checkbox group validation)', async ({ page }) => {
+    const SHOW_TOGGLE = '#vjf_control_for__properties_showJso-108';
+    const BASE = '#vjf_control_for__properties_jso-108_properties';
+    const DEFAULT_REQUIRED = `${BASE}_defaultRequired`;
+    const ONE_REQUIRED = `${BASE}_oneRequired`;
+    const TWO_REQUIRED = `${BASE}_twoRequired`;
+    const MAX_TWO_REQUIRED = `${BASE}_maxTwoRequired`;
+
+    const checkbox = (groupId: string, value: string) =>
+        page.locator(`${groupId} input[type="checkbox"][value="${value}"]`);
+    const firstCheckbox = (groupId: string) =>
+        page.locator(`${groupId} input[type="checkbox"]`).first();
+
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+    await page.locator(SHOW_TOGGLE).check();
+    await expect(page.locator(DEFAULT_REQUIRED)).toBeVisible();
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(firstCheckbox(ONE_REQUIRED));
+    await expectInvalid(firstCheckbox(TWO_REQUIRED));
+
+    await checkbox(ONE_REQUIRED, 'a').check();
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectValid(firstCheckbox(ONE_REQUIRED));
+    await expectInvalid(firstCheckbox(TWO_REQUIRED));
+
+    await checkbox(TWO_REQUIRED, 'a').check();
+    await checkbox(TWO_REQUIRED, 'b').check();
+    await checkbox(MAX_TWO_REQUIRED, 'a').check();
+    await checkbox(MAX_TWO_REQUIRED, 'b').check();
+    await checkbox(MAX_TWO_REQUIRED, 'c').check();
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(checkbox(MAX_TWO_REQUIRED, 'a'));
+
+    await checkbox(MAX_TWO_REQUIRED, 'c').uncheck();
+    await checkbox(DEFAULT_REQUIRED, 'a').check();
+    await submitForm(page);
+
+    await expect(page.locator('#result-container')).toBeVisible();
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['jso-108']['defaultRequired']).toEqual(['a']);
+    expect(res['jso-108']['oneRequired']).toEqual(['a']);
+    expect(res['jso-108']['twoRequired']).toEqual(['a', 'b']);
+    expect(res['jso-108']['maxTwoRequired']).toEqual(['a', 'b']);
+});
+
+test('JSO-91 (Modal)', async ({ page }) => {
+    await page.goto('http://localhost:5173/reproduce?nonav=true');
+
+    const triggerButton = page.getByRole('button', {
+        name: 'Show additional information in Modal',
+    });
+    await expect(triggerButton).toBeVisible();
+    await triggerButton.click();
+
+    const modal = page.getByRole('dialog', { name: 'Additional information' });
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(
+        'This is some additional information that can be shown in a modal.'
+    );
+    await expect(modal.locator('strong.text-success')).toHaveText('HTML');
+
+    await modal.locator('button.btn').click();
+    await expect(modal).not.toBeVisible();
+});
 
 test('JSO-96', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
@@ -345,7 +532,9 @@ test('JSO-58', async ({ page }) => {
 
 test('JSO-51', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
-
+    await page
+        .locator('#vjf_control_for__properties_jso-51-arr > button')
+        .click();
     await expect(
         page
             .locator('div[name="/properties/jso-51-arr"] .vjf_htmlRenderer')
@@ -384,6 +573,10 @@ test('JSO-44', async ({ page }) => {
     await expect(
         page.locator('div[name="/properties/abhaengiges-array"]')
     ).toBeVisible();
+    await page
+        .locator('div[name="/properties/abhaengiges-array"] button')
+        .click();
+
     await expect(
         page.locator(
             'div[name="/properties/abhaengiges-array"] input[type="text"]'

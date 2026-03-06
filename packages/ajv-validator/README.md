@@ -17,7 +17,7 @@ npm install @educorvi/vue-json-form-ajv-validator
 
 <script setup>
     import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
-    import { VueJsonForm } from '@educorvi/vue-json-form';
+    import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 </script>
 
 <template>
@@ -27,6 +27,7 @@ npm install @educorvi/vue-json-form-ajv-validator
         :uiSchema="uiSchema"
         :validator="AjvValidator"
         :onSubmitForm="handleSubmit"
+        :renderInterface="bootstrapComponents"
     />
 </template>
 ```

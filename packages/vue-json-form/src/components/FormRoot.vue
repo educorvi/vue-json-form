@@ -50,11 +50,7 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import {
-    addFilesToFormdata,
-    flattenData,
-    useFormDataStore,
-} from '@/stores/formData';
+import { useFormDataStore } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
     languageProviderKey,
@@ -69,6 +65,8 @@ import {
 } from '@/intl/LanguageProvider.ts';
 import { isLayout, isWizard } from '@/typings/typeValidators';
 import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
+import { flattenData } from '@/stores/helpers/flattenData.ts';
+import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
 
 const props = defineProps<{
     /**

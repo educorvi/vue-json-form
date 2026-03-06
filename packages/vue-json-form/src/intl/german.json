@@ -2,12 +2,29 @@
     "errors": {
         "fileUpload": {
             "tooManyFiles": "Sie können nur !&data&! Dateien hochladen.",
+            "onlyOne": "Sie können nur eine Datei hochladen.",
             "tooFewFiles": "Sie müssen mindestens !&data&! Dateien hochladen.",
+            "atLeastOne": "Sie müssen mindestens eine Datei hochladen.",
             "fileTooLarge": "Die folgenden Dateien überschreiten die Dateigrößenbeschränkung von !&data&! MB: !&data&!"
+        },
+        "checkboxGroup": {
+            "selectAtLeastOne": "Bitte wählen Sie mindestens eine Option aus.",
+            "selectAtMostOne": "Bitte wählen Sie höchstens eine Option aus.",
+            "selectAtLeast": "Bitte wählen Sie mindestens !&data&! Optionen aus.",
+            "selectAtMost": "Bitte wählen Sie höchstens !&data&! Optionen aus."
         }
     },
     "buttons": {
         "previous": "Zurück",
-        "next": "Weiter"
+        "next": "Weiter",
+        "close": "Schließen"
+    },
+    "modals": {
+        "delete-remaining-items": {
+            "title": "Löschen der übrigen Elemente",
+            "text": "Da dieses Array mindestens !&data&! Elemente erfordert, werden alle übrigen Elemente aus dem Array gelöscht. Sind Sie sicher?",
+            "confirm": "Löschen",
+            "cancel": "Abbrechen"
+        }
     }
 }
