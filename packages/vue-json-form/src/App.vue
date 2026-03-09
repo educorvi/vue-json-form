@@ -13,6 +13,9 @@
                     <BNavItem :to="{ name: 'showcase' }">Showcase</BNavItem>
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
                     <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
+                    <BNavForm v-b-color-mode="theme" class="ms-auto">
+                        <BFormSelect :options="themeOptions" v-model="theme" />
+                    </BNavForm>
                 </BNavbarNav>
             </BCollapse>
         </BNavbar>
@@ -36,8 +39,30 @@ import {
     BNavbarNav,
     BNavItem,
     BNavbarToggle,
+    BNavForm,
+    BFormSelect,
 } from 'bootstrap-vue-next';
 import { useRoute } from 'vue-router';
+import { ref, watch } from 'vue';
+
+const themeOptions = [
+    {
+        value: 'light',
+        text: 'Light mode',
+    },
+    {
+        value: 'dark',
+        text: 'Dark mode',
+    },
+];
+
+const theme = ref('light');
+
+const html = document.querySelector('html');
+
+watch(theme, (newValue) => {
+    html?.setAttribute('data-bs-theme', newValue);
+});
 </script>
 
 <style scoped></style>
