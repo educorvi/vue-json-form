@@ -14,7 +14,11 @@
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
                     <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
                     <BNavForm v-b-color-mode="theme" class="ms-auto">
-                        <BFormSelect :options="themeOptions" v-model="theme" />
+                        <BFormSelect
+                            :options="themeOptions"
+                            v-model="theme"
+                            aria-label="Theme selection"
+                        />
                     </BNavForm>
                 </BNavbarNav>
             </BCollapse>
