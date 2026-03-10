@@ -11,6 +11,7 @@ import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
 import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
+    hasProperty,
     isIfThenAllOf,
     isSupportedIfCondition,
     isSupportedIfThenElse,
@@ -31,6 +32,7 @@ enum ConditionType {
     ENUM = 'enum',
     CONTAINS_CONST = 'containsConst',
     CONTAINS_ENUM = 'containsEnum',
+    MIN_LENGTH = 'minLength',
 }
 
 /** Describes a single condition coming from `if.properties` where
@@ -129,6 +131,9 @@ export class IfThenElseMapper extends MapperWithData {
                 // This should only ever happen if type checking is wrong
                 throw new Error('Invalid contains condition');
             }
+        } else if ('minLength' in condition) {
+            conditionType = ConditionType.MIN_LENGTH;
+            conditionValue = condition.minLength;
         } else {
             // This should only ever happen if type checking is wrong
             throw new Error('Invalid condition');
@@ -298,6 +303,8 @@ export class IfThenElseMapper extends MapperWithData {
                     return false;
                 }
                 return actualValue.some((a) => condition.value.includes(a));
+            case ConditionType.MIN_LENGTH:
+                return (actualValue?.length ?? 0) >= condition.value;
         }
     }
 

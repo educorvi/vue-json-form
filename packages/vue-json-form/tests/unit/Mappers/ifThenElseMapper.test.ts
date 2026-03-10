@@ -752,4 +752,59 @@ describe('IfThenElseMapper', () => {
         result = await mapper.map(initialJson, ui, data);
         expect(result!.jsonElement.minLength).toBeUndefined();
     });
+
+    it('supports "minLength" condition', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            password: { minLength: 5 },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { title: 'Strong Password' },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Match (length 5)
+        let data: Record<string, any> = { '/properties/password': '12345' };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBe('Strong Password');
+
+        // Match (length 6)
+        data = { '/properties/password': '123456' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBe('Strong Password');
+
+        // No match (length 4)
+        data = { '/properties/password': '1234' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+
+        // No match (undefined)
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+    });
 });

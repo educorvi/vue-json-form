@@ -185,6 +185,7 @@ export function isSupportedIfCondition(
     return (
         hasProperty(json, 'const') ||
         hasProperty(json, 'enum') ||
+        hasProperty(json, 'minLength') ||
         (hasProperty(json, 'contains') &&
             (hasProperty(json.contains, 'const') ||
                 hasProperty(json.contains, 'enum')))
