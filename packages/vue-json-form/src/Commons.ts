@@ -14,7 +14,17 @@ export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 /**
  * Supported UI Schema Version
  */
-export const SUPPORTED_UISCHEMA_VERSION = '2.0';
+export const SUPPORTED_UISCHEMA_VERSION = '2.1';
+
+export function checkUiSchemaVersion(uiSchema: UISchema): boolean {
+    const [major, minor] = uiSchema.version.split('.').map(Number);
+    const [supportedMajor, supportedMinor] =
+        SUPPORTED_UISCHEMA_VERSION.split('.').map(Number);
+    return !(
+        major !== supportedMajor ||
+        (minor ?? Number.MAX_SAFE_INTEGER) > (supportedMinor ?? 0)
+    );
+}
 
 /**
  * Generates a universally unique identifier (UUID).

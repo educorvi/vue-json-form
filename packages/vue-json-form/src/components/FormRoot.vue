@@ -56,7 +56,11 @@ import {
     languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
-import { generateUISchema } from '@/Commons';
+import {
+    checkUiSchemaVersion,
+    generateUISchema,
+    SUPPORTED_UISCHEMA_VERSION,
+} from '@/Commons';
 import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
@@ -243,6 +247,16 @@ async function parseUiSchema(
 ): Promise<UISchema | null> {
     if (uiSchema) {
         if (validator.value.validateUiSchema(uiSchema)) {
+            if (!checkUiSchemaVersion(uiSchema)) {
+                validationErrors.value.uiSchema.validation = [
+                    {
+                        title: 'Invalid UI Schema Version',
+                        path: '/version',
+                        message: `Invalid UI Schema version '${uiSchema.version}' is incompatible with this parsers version '${SUPPORTED_UISCHEMA_VERSION}`,
+                    },
+                ];
+                return null;
+            }
             return uiSchema;
         } else {
             validationErrors.value.uiSchema.validation =
