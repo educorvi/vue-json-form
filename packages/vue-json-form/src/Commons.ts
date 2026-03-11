@@ -17,6 +17,7 @@ export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 export const SUPPORTED_UISCHEMA_VERSION = '2.1';
 
 export function checkUiSchemaVersion(uiSchema: UISchema): boolean {
+    if (uiSchema.version?.split?.('.')?.length !== 2) return false;
     const [major, minor] = uiSchema.version.split('.').map(Number);
     const [supportedMajor, supportedMinor] =
         SUPPORTED_UISCHEMA_VERSION.split('.').map(Number);
