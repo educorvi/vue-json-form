@@ -252,6 +252,26 @@ test.describe('Structure', () => {
             'background-image:linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);-webkit-background-clip:text;color:transparent'
         );
     });
+
+    test('Hidden form fields', async ({ page }) => {
+        const hiddenFields = [
+            '/properties/hiddenDateTime',
+            '/properties/hiddenDate',
+            '/properties/hiddenTime',
+        ];
+        for (const hiddenField of hiddenFields) {
+            await expect(
+                page.locator(`input[name="${hiddenField}"]`)
+            ).not.toBeVisible();
+            const inputId = await page
+                .locator(`input[name="${hiddenField}"]`)
+                .getAttribute('id');
+            expect(inputId).not.toBeNull();
+            await expect(
+                page.locator(`label[for="${inputId}"]`)
+            ).not.toBeVisible();
+        }
+    });
 });
 
 test.describe('Button functions', () => {
