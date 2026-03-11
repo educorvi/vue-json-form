@@ -86,7 +86,6 @@ import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import {
     hasItems,
     hasOption,
-
     isMapperWithData,
     isMapperWithoutData,
 } from '@/typings/typeValidators';
@@ -372,12 +371,11 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style>
-.hiddenControl {
-    display: none;
-}
-
+<style lang="scss">
 .vjf_control {
     display: block;
+    &.hiddenControl {
+        display: none;
+    }
 }
 </style>

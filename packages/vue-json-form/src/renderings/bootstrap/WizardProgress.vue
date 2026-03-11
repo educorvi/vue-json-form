@@ -135,18 +135,18 @@ $bar-size: 13px;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bs-primary);
-    mix-blend-mode: lighten;
 
-    &::after {
+    &::before {
         content: '';
         position: absolute;
-        top: 0;
-        left: var(--progress);
-        width: calc(100% - var(--progress));
-        height: 100%;
-        background: var(--bs-secondary-bg);
-        transition: all 0.4s ease-in-out;
+        top: 50%;
+        left: 0;
+        width: var(--progress);
+        height: $bar-size;
+        border-radius: 8px;
+        background: var(--bs-primary);
+        transform: translateY(-50%);
+        transition: width 0.4s ease-in-out;
     }
 }
 
@@ -160,7 +160,7 @@ $bar-size: 13px;
     z-index: -1;
 
     & .stepNumber {
-        background: black;
+        background: var(--bs-secondary-bg);
         border: none;
     }
 
@@ -171,7 +171,7 @@ $bar-size: 13px;
         width: 100%;
         border-radius: 8px;
         height: $bar-size;
-        background: black;
+        background: var(--bs-secondary-bg);
         transform: translateY(-50%);
     }
 }
@@ -199,6 +199,15 @@ $bar-size: 13px;
     border-radius: $step-border-radius;
     border: 4px solid transparent;
     background-clip: content-box;
+    transition: border-color 0.4s ease-in-out;
+
+    &.filled {
+        border-color: var(--bs-primary);
+    }
+
+    &.active {
+        border-color: var(--bs-primary);
+    }
 
     & > button {
         background: transparent;

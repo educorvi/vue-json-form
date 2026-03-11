@@ -6,7 +6,7 @@ test.describe('Wizard Structure', () => {
     });
 
     test('Wizard form renders', async ({ page }) => {
-        const form = page.locator('form');
+        const form = page.locator('form.vjf_form');
         await expect(form).toBeVisible();
     });
 
