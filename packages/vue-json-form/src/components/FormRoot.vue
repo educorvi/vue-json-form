@@ -252,7 +252,7 @@ async function parseUiSchema(
                     {
                         title: 'Invalid UI Schema Version',
                         path: '/version',
-                        message: `Invalid UI Schema version '${uiSchema.version}' is incompatible with this parsers version '${SUPPORTED_UISCHEMA_VERSION}`,
+                        message: `Invalid UI Schema version '${uiSchema.version}' is incompatible with this parser's supported version '${SUPPORTED_UISCHEMA_VERSION}'`,
                     },
                 ];
                 return null;
