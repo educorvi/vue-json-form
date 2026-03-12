@@ -214,7 +214,7 @@ export class IfThenElseMapper extends MapperWithData {
             ifThenElses.length !== parentAllOf.length
         ) {
             console.warn(
-                `Invalid if/then/else structure(s) detected in ${allOfScope}`,
+                `Unsupported if/then/else structure(s) detected in ${allOfScope}`,
                 parentAllOf.filter((i) => !isSupportedIfThenElse(i))
             );
         }
