@@ -25,7 +25,11 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
-import type { IfConditions, IfProperty } from '@/typings/customTypes.ts';
+import type {
+    IfConditions,
+    IfProperty,
+    SupportedIfThenElse,
+} from '@/typings/customTypes.ts';
 
 enum ConditionType {
     CONST = 'const',
@@ -198,8 +202,21 @@ export class IfThenElseMapper extends MapperWithData {
             return [];
         }
 
-        if (!parentAllOf || !isIfThenAllOf(parentAllOf)) {
+        if (!parentAllOf || !Array.isArray(parentAllOf)) {
             return [];
+        }
+        const ifThenElses: SupportedIfThenElse[] = parentAllOf.filter(
+            isSupportedIfThenElse
+        );
+
+        if (
+            ifThenElses.length > 0 &&
+            ifThenElses.length !== parentAllOf.length
+        ) {
+            console.warn(
+                `Invalid if/then/else structure(s) detected in ${allOfScope}`,
+                parentAllOf.filter((i) => !isSupportedIfThenElse(i))
+            );
         }
 
         const deltaPath = fieldScope.replace(
@@ -207,56 +224,54 @@ export class IfThenElseMapper extends MapperWithData {
             ''
         );
 
-        return parentAllOf
+        return ifThenElses
             .map((ifThen) => {
-                if (isSupportedIfThenElse(ifThen)) {
-                    const thenResult = getPropertyByString(
-                        ifThen.then,
-                        deltaPath,
-                        '/',
-                        null
-                    );
-                    const elseResult = getPropertyByString(
-                        ifThen.else,
-                        deltaPath,
-                        '/',
-                        null
-                    );
+                const thenResult = getPropertyByString(
+                    ifThen.then,
+                    deltaPath,
+                    '/',
+                    null
+                );
+                const elseResult = getPropertyByString(
+                    ifThen.else,
+                    deltaPath,
+                    '/',
+                    null
+                );
 
-                    const parentDeltaPath = sliceScope(deltaPath, -2);
-                    const thenRequired = getPropertyByString(
-                        ifThen.then,
-                        parentDeltaPath + '/required',
-                        '/',
-                        null
-                    );
-                    const elseRequired = getPropertyByString(
-                        ifThen.else,
-                        parentDeltaPath + '/required',
-                        '/',
-                        null
-                    );
+                const parentDeltaPath = sliceScope(deltaPath, -2);
+                const thenRequired = getPropertyByString(
+                    ifThen.then,
+                    parentDeltaPath + '/required',
+                    '/',
+                    null
+                );
+                const elseRequired = getPropertyByString(
+                    ifThen.else,
+                    parentDeltaPath + '/required',
+                    '/',
+                    null
+                );
 
-                    if (
-                        !thenResult &&
-                        !elseResult &&
-                        !thenRequired &&
-                        !elseRequired
-                    ) {
-                        return undefined;
-                    }
-
-                    return {
-                        conditions: this.parseConditions(
-                            ifThen.if.properties,
-                            sliceScope(allOfScope, -1) + '/properties'
-                        ),
-                        then: thenResult,
-                        else: elseResult,
-                        thenRequired,
-                        elseRequired,
-                    };
+                if (
+                    !thenResult &&
+                    !elseResult &&
+                    !thenRequired &&
+                    !elseRequired
+                ) {
+                    return undefined;
                 }
+
+                return {
+                    conditions: this.parseConditions(
+                        ifThen.if.properties,
+                        sliceScope(allOfScope, -1) + '/properties'
+                    ),
+                    then: thenResult,
+                    else: elseResult,
+                    thenRequired,
+                    elseRequired,
+                };
             })
             .filter((c) => c !== undefined);
     }

@@ -753,6 +753,295 @@ describe('IfThenElseMapper', () => {
         expect(result!.jsonElement.minLength).toBeUndefined();
     });
 
+    it('mjrz is conditionally required when kghjkjh is true', async () => {
+        const fieldScope = '/properties/mjrz';
+        const savePath = '/properties/mjrz';
+
+        const jsonSchema: JSONSchema = {
+            title: 'problem required in if then ändert parent',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            kghjkjh: {
+                                const: true,
+                            },
+                        },
+                        required: ['kghjkjh'],
+                    },
+                    then: {
+                        properties: {
+                            mjrz: {
+                                minLength: 1,
+                            },
+                        },
+                        required: ['mjrz'],
+                    },
+                },
+            ],
+            properties: {
+                kghjkjh: {
+                    title: 'kghjkjh',
+                    type: 'boolean',
+                },
+                mjrz: {
+                    title: 'mjrz',
+                    type: 'string',
+                    minLength: 1,
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: kghjkjh is true - mjrz should be required
+        let data: Record<string, any> = {
+            '/properties/kghjkjh': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: kghjkjh is false - mjrz should not be required
+        data = {
+            '/properties/kghjkjh': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        // When condition is not met, forceRequired should not be set or should be falsy
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: kghjkjh is undefined/missing - mjrz should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('mjrz is conditionally required when kghjkjh is true (long)', async () => {
+        const fieldScope = '/properties/mjrz';
+        const savePath = '/properties/mjrz';
+
+        const jsonSchema: JSONSchema = {
+            title: 'problem required in if then ändert parent',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            kghjkjh: {
+                                const: true,
+                            },
+                        },
+                        required: ['kghjkjh'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'immer-pflichtfeld': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: ['immer-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'optionales-feld-mit-abhaengigkeiten': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: [
+                                        'optionales-feld-mit-abhaengigkeiten',
+                                    ],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: ['abhaengiges-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            'optionales-objekt': {
+                                properties: {
+                                    'optionales-feld-mit-abhaengigkeiten': {
+                                        minLength: 1,
+                                    },
+                                },
+                                required: [
+                                    'optionales-feld-mit-abhaengigkeiten',
+                                ],
+                            },
+                        },
+                        required: ['optionales-objekt'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-objekt': {
+                                properties: {
+                                    'abhaengiges-pflichtfeld': {
+                                        minLength: 1,
+                                    },
+                                },
+                                required: ['abhaengiges-pflichtfeld'],
+                            },
+                        },
+                        required: ['optionales-objekt'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            kghjkjh: {
+                                const: true,
+                            },
+                        },
+                        required: ['kghjkjh'],
+                    },
+                    then: {
+                        properties: {
+                            mjrz: {
+                                minLength: 1,
+                            },
+                        },
+                        required: ['mjrz'],
+                    },
+                },
+            ],
+            properties: {
+                kghjkjh: {
+                    title: 'kghjkjh',
+                    type: 'boolean',
+                },
+                'optionales-array': {
+                    title: 'optionales array',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            'immer-pflichtfeld': {
+                                title: 'immer pflichtfeld',
+                                type: 'string',
+                                minLength: 1,
+                            },
+                            'optionales-feld-mit-abhaengigkeiten': {
+                                title: 'optionales feld mit abhängigkeiten',
+                                type: 'string',
+                            },
+                            'abhaengiges-pflichtfeld': {
+                                title: 'abhängiges pflichtfeld',
+                                type: 'string',
+                                minLength: 1,
+                            },
+                        },
+                    },
+                },
+                'optionales-objekt': {
+                    title: 'optionales objekt',
+                    type: 'object',
+                    required: ['pflichfeld'],
+                    properties: {
+                        pflichfeld: {
+                            title: 'pflichfeld',
+                            type: 'string',
+                            minLength: 1,
+                        },
+                        'optionales-feld-mit-abhaengigkeiten': {
+                            title: 'optionales feld mit abhängigkeiten',
+                            type: 'string',
+                        },
+                        'abhaengiges-pflichtfeld': {
+                            title: 'abhängiges pflichtfeld',
+                            type: 'string',
+                            minLength: 1,
+                        },
+                    },
+                },
+                mjrz: {
+                    title: 'mjrz',
+                    type: 'string',
+                    minLength: 1,
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: kghjkjh is true - mjrz should be required
+        let data: Record<string, any> = {
+            '/properties/kghjkjh': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: kghjkjh is false - mjrz should not be required
+        data = {
+            '/properties/kghjkjh': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        // When condition is not met, forceRequired should not be set or should be falsy
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: kghjkjh is undefined/missing - mjrz should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
     it('supports "minLength" condition', async () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties/x';
