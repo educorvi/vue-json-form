@@ -1,4 +1,4 @@
-import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
+import type { SubmitOptions,SubmitRequestOptions } from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
 import axios from 'axios';
 
@@ -66,20 +66,37 @@ export function getComputed(props: Props) {
     return { jsonSchema, uiSchema, presetData, returnDataAsScopes };
 }
 
+async function request(url: string, method: SubmitRequestOptions['method'], headers: SubmitRequestOptions['headers'], data: Record<string, any>) {
+    let success = true;
+    try {
+        await axios(url, {
+            method,
+            headers,
+            data,
+        });
+    } catch (e) {
+        success = false;
+        console.error('Failed to submit form');
+        console.error(e);
+    }
+
+    return success;
+}
+
 export function getSubmitFunc(emit: Emits) {
     return async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         let success = true;
-        if (options.action === 'request' && options.request?.url) {
-            try {
-                await axios(options.request.url, {
-                    method: options.request.method || 'POST',
-                    headers: options.request.headers,
-                    data,
-                });
-            } catch (e) {
-                success = false;
-                console.error('Failed to submit form');
-                console.error(e);
+        if (options.action === 'request') {
+            if (Array.isArray(options.request?.url)) {
+                for (const url of options.request.url) {
+                    const res =await request(url, options.request.method, options.request.headers, data);
+                    if (!res) {
+                        success = false;
+                        break;
+                    }
+                }
+            } else if (options.request?.url) {
+                success = await request(options.request.url, options.request.method, options.request.headers, data);
             }
         } else {
             emit('submit', data, options);
