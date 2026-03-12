@@ -4,6 +4,12 @@
   "title": "Button",
   "description": "Used to put a button into the form",
   "type": "object",
+  "definitions": {
+    "url": {
+      "type": "string",
+      "description": "An URL to send a request to"
+    }
+  } ,
   "properties": {
     "type": {
       "type": "string",
@@ -68,11 +74,23 @@
             },
             "request": {
               "type": "object",
+              "title": "SubmitRequestOptions",
               "description": "Settings for request actions",
               "properties": {
                 "url": {
-                  "type": "string",
-                  "description": "The URL to send the request to"
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/url"
+                    },
+                    {
+                      "type": "array",
+                      "description": "An array of URLs to send the request to",
+                      "items": {
+                        "$ref": "#/definitions/url"
+                      },
+                      "minItems": 1
+                    }
+                  ]
                 },
                 "method": {
                   "type": "string",
