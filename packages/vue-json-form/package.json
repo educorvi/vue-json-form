@@ -104,7 +104,6 @@
     "prepare": "husky",
     "preview": "vite preview",
     "release:alpha": "yarn npm publish --access public --tag alpha",
-    "test": "run-s 'test:*'",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:unit": "vitest --run"
