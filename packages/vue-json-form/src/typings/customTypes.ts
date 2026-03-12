@@ -63,11 +63,17 @@ export type IfConditions =
           contains: IfBaseConditions;
       };
 
-export type IfProperty = {
-    properties: {
-        [key: string]: IfConditions | IfProperty;
-    };
-};
+export type IfProperty =
+    | {
+          properties: {
+              [key: string]: IfConditions | IfProperty;
+          };
+      }
+    | {
+          items: {
+              [key: string]: IfConditions | IfProperty;
+          };
+      };
 export type SupportedIfThenElse = {
     if: IfProperty;
     then: {
