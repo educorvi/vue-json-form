@@ -19,4 +19,4 @@ let moduleCode = standaloneCode(ajv, {
 });
 
 fs.mkdirSync('./src/generated', { recursive: true });
-fs.writeFileSync('./src/generated/validatorCode.cjs', moduleCode);
+fs.writeFileSync('./src/generated/validatorCode.js', moduleCode);
