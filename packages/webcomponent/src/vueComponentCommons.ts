@@ -66,7 +66,7 @@ export function getComputed(props: Props) {
     return { jsonSchema, uiSchema, presetData, returnDataAsScopes };
 }
 
-async function request(url: string, method: SubmitRequestOptions['method'], headers: SubmitRequestOptions['headers'], data: Record<string, any>) {
+async function request(url: string, method: NonNullable<SubmitRequestOptions['method']>, headers: SubmitRequestOptions['headers'], data: Record<string, any>) {
     let success = true;
     try {
         await axios(url, {
@@ -89,14 +89,14 @@ export function getSubmitFunc(emit: Emits) {
         if (options.action === 'request') {
             if (Array.isArray(options.request?.url)) {
                 for (const url of options.request.url) {
-                    const res =await request(url, options.request.method, options.request.headers, data);
+                    const res =await request(url, options.request.method || 'POST', options.request.headers, data);
                     if (!res) {
                         success = false;
                         break;
                     }
                 }
             } else if (options.request?.url) {
-                success = await request(options.request.url, options.request.method, options.request.headers, data);
+                success = await request(options.request.url, options.request.method || 'POST', options.request.headers, data);
             }
         } else {
             emit('submit', data, options);
