@@ -7,7 +7,7 @@ import {
     afterEach,
     type Mock,
 } from 'vitest';
-import type { SubmitOptions, SubmitRequestOptions } from '@educorvi/vue-json-form-schemas';
+import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 import { getSubmitFunc, getComputed, type Props, type Emits } from '../../src/vueComponentCommons';
 import axios from 'axios';
 

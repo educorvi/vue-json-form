@@ -88,15 +88,23 @@ export function getSubmitFunc(emit: Emits) {
         let success = true;
         if (options.action === 'request') {
             if (Array.isArray(options.request?.url)) {
-                for (const url of options.request.url) {
-                    const res =await request(url, options.request.method || 'POST', options.request.headers, data);
-                    if (!res) {
-                        success = false;
-                        break;
+                if (options.request.url.length === 0) {
+                    // Fallback to normal submit when no URLs are configured
+                    emit('submit', data, options);
+                } else {
+                    for (const url of options.request.url) {
+                        const res = await request(url, options.request.method || 'POST', options.request.headers, data);
+                        if (!res) {
+                            success = false;
+                            break;
+                        }
                     }
                 }
             } else if (options.request?.url) {
                 success = await request(options.request.url, options.request.method || 'POST', options.request.headers, data);
+            } else {
+                // Fallback to normal submit when request or request.url is missing
+                emit('submit', data, options);
             }
         } else {
             emit('submit', data, options);
