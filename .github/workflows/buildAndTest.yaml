@@ -60,6 +60,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           cache: yarn
+          node-version: lts/*
       - run: yarn install --immutable
       - run: yarn run build
       - run: yarn test:unit
@@ -96,6 +97,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           cache: yarn
+          node-version: lts/*
       - name: Store Playwright's Version
         run: |
           PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
@@ -138,6 +140,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           cache: yarn
+          node-version: lts/*
       - run: yarn install --immutable
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v8
