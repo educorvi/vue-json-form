@@ -65,7 +65,7 @@ jobs:
       - run: yarn test:unit
       - name: Upload report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: unit-report
           path: |
@@ -118,7 +118,7 @@ jobs:
         working-directory: ./packages/vue-json-form
       - name: Upload blob report to GitHub Actions Artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: blob-report-${{ matrix.shardIndex }}
           path: ./packages/vue-json-form/blob-report
@@ -140,14 +140,14 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./packages/vue-json-form/all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
 
       - name: Download unit report from GitHub Actions Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./packages/vue-json-form/test-results
           name: unit-report
@@ -156,13 +156,13 @@ jobs:
         run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
         working-directory: ./packages/vue-json-form
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-report
           path: packages/vue-json-form/playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-test-results

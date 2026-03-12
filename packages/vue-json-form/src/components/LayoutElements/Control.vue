@@ -152,7 +152,8 @@ async function mapFormStructure() {
             mapped = await mapper.map(
                 localJsonElement || {},
                 localUiElement,
-                formData.value
+                formData.value,
+                cleanedFormData.value.json
             );
         }
         if (mapped) {
@@ -370,8 +371,11 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style>
-.hiddenControl {
-    display: none;
+<style lang="scss">
+.vjf_control {
+    display: block;
+    &.hiddenControl {
+        display: none;
+    }
 }
 </style>

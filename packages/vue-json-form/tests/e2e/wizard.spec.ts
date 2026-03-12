@@ -6,7 +6,7 @@ test.describe('Wizard Structure', () => {
     });
 
     test('Wizard form renders', async ({ page }) => {
-        const form = page.locator('form');
+        const form = page.locator('form.vjf_form');
         await expect(form).toBeVisible();
     });
 
@@ -413,6 +413,8 @@ test.describe('Wizard Form Submission', () => {
             '[name="/properties/message/properties/parents"]'
         );
         await expect(parentsContainer).toBeVisible();
+
+        await parentsContainer.locator('button').click();
 
         // Add parent name
         const parentInputs = parentsContainer.locator('input[type="text"]');

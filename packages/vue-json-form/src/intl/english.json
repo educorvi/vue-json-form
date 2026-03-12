@@ -18,5 +18,13 @@
         "previous": "Previous",
         "next": "Next",
         "close": "Close"
+    },
+    "modals": {
+        "delete-remaining-items": {
+            "title": "Delete the remaining items",
+            "text": "Since this array requires at least !&data&! items, this will delete all remaining items from the array. Are you sure?",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        }
     }
 }

@@ -5,18 +5,13 @@
     "email": "julian.pollinger@educorvi.de",
     "name": "Julian Pollinger"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form.git",
-    "directory": "packages/vue-json-form"
-  },
   "dependencies": {
     "@educorvi/rita": "^5.5.1",
     "@educorvi/vue-json-form-schemas": "workspace:^",
     "@vueuse/core": "^14.2.1",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
-    "bootstrap-vue-next": "0.43.6",
+    "bootstrap-vue-next": "0.43.8",
     "deepmerge": "^4.3.1",
     "fast-deep-equal": "^3.1.3",
     "json-pointer": "^0.6.2",
@@ -24,7 +19,8 @@
     "sanitize-html": "^2.17.1",
     "sass-embedded": "^1.97.3",
     "uuid": "^13.0.0",
-    "vue": "^3.5.28",
+    "vue": "^3.5.30",
+    "vue-component-type-helpers": "^3.2.5",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
@@ -90,6 +86,11 @@
   "module": "dist/vue-json-form.js",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form.git",
+    "directory": "packages/vue-json-form"
   },
   "scripts": {
     "build": "turbo build:internal check-types",
