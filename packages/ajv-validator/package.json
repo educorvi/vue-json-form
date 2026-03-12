@@ -29,17 +29,17 @@
   "exports": {
     ".": {
       "types": "./dist/vue-json-form-ajv-validator.d.ts",
-      "import": "./dist/vue-json-form-ajv-validator.mjs",
-      "require": "./dist/vue-json-form-ajv-validator.js",
-      "default": "./dist/vue-json-form-ajv-validator.mjs"
+      "import": "./dist/vue-json-form-ajv-validator.js",
+      "require": "./dist/vue-json-form-ajv-validator.cjs",
+      "default": "./dist/vue-json-form-ajv-validator.js"
     }
   },
   "files": [
     "dist",
     "README.md"
   ],
-  "main": "./dist/vue-json-form-ajv-validator.js",
-  "module": "./dist/vue-json-form-ajv-validator.mjs",
+  "main": "./dist/vue-json-form-ajv-validator.cjs",
+  "module": "./dist/vue-json-form-ajv-validator.js",
   "packageManager": "yarn@4.4.0",
   "publishConfig": {
     "access": "public"
@@ -57,6 +57,6 @@
     "prepack": "yarn run build:internal",
     "test:unit": "vitest --run"
   },
-  "type": "commonjs",
+  "type": "module",
   "types": "./dist/vue-json-form-ajv-validator.d.ts"
 }
