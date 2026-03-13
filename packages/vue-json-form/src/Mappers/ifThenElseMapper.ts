@@ -13,6 +13,7 @@ import { cleanScope } from '@/computedProperties/json.ts';
 import {
     hasProperty,
     isIfThenAllOf,
+    isSupportedIf,
     isSupportedIfCondition,
     isSupportedIfThenElse,
     isValidJsonSchemaKey,
@@ -168,23 +169,36 @@ export class IfThenElseMapper extends MapperWithData {
     }
 
     private parseConditions(
-        ifJson: IfProperty['properties'],
+        ifJson: NonNullable<IfProperty>,
         scope: string
     ): Condition[] {
         let conditions: Condition[] = [];
-        for (const [key, value] of Object.entries(ifJson)) {
-            const newScope = scope + '/' + key;
-            if (isSupportedIfCondition(value)) {
-                conditions.push(this.parseCondition([newScope, value]));
-            } else {
+        if ('properties' in ifJson) {
+            const newScope = scope + '/properties';
+            const ifJsonProperties = ifJson.properties;
+            for (const [key, value] of Object.entries(ifJsonProperties)) {
+                const localNewScope = newScope + '/' + key;
+                if (isSupportedIfCondition(value)) {
+                    conditions.push(
+                        this.parseCondition([localNewScope, value])
+                    );
+                } else {
+                    conditions = conditions.concat(
+                        this.parseConditions(value, localNewScope)
+                    );
+                }
+            }
+        } else {
+            const newScope = scope + '/items';
+            if (isSupportedIfCondition(ifJson.items)) {
+                conditions.push(this.parseCondition([newScope, ifJson.items]));
+            } else if (isSupportedIf(ifJson.items)) {
                 conditions = conditions.concat(
-                    this.parseConditions(
-                        value.properties,
-                        newScope + '/properties'
-                    )
+                    this.parseConditions(ifJson.items, newScope)
                 );
             }
         }
+
         return conditions;
     }
 
@@ -264,8 +278,8 @@ export class IfThenElseMapper extends MapperWithData {
 
                 return {
                     conditions: this.parseConditions(
-                        ifThen.if.properties,
-                        sliceScope(allOfScope, -1) + '/properties'
+                        ifThen.if,
+                        sliceScope(allOfScope, -1)
                     ),
                     then: thenResult,
                     else: elseResult,

@@ -209,7 +209,6 @@ function isSupportedIfProperty(json: Record<string, any>): boolean {
 function isSupportedIfPropertyOrCondition(
     json: Record<string, any>
 ): json is IfConditions | IfProperty {
-    console.log('isSupportedIfPropertyOrCondition', json);
     return isSupportedIfCondition(json) || isSupportedIfProperty(json);
 }
 

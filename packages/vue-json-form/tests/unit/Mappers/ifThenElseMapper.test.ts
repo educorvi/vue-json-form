@@ -4,7 +4,7 @@ import type {
     Control,
     Layout,
 } from '@educorvi/vue-json-form-schemas';
-import { IfThenElseMapper } from '@/Mappers';
+import { IfThenElseMapper } from '../../../src/Mappers';
 
 function makeControl(scope = '/properties/x'): Control {
     return {
@@ -1039,6 +1039,122 @@ describe('IfThenElseMapper', () => {
         data = {};
         result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('supports if/then/else for array items using long-schema style', async () => {
+        const fieldScope =
+            '/properties/optionales-array/items/properties/abhaengiges-pflichtfeld';
+        const savePath =
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/abhaengiges-pflichtfeld';
+
+        const jsonSchema: JSONSchema = {
+            title: 'if-then-else for array items',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        check: {
+                                            const: true,
+                                        },
+                                    },
+                                    required: ['check'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 3,
+                                        },
+                                    },
+                                    required: ['abhaengiges-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    else: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 0,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+            ],
+            properties: {
+                'optionales-array': {
+                    title: 'optionales array',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            check: {
+                                type: 'boolean',
+                            },
+                            'abhaengiges-pflichtfeld': {
+                                type: 'string',
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/optionales-array': [
+                'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2',
+            ],
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2':
+                '',
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/check': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(3);
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+
+        data = {
+            '/properties/optionales-array': [
+                'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2',
+            ],
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2':
+                '',
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/check': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(0);
         expect(result!.uiElement.options?.forceRequired).not.toBe(true);
     });
 
