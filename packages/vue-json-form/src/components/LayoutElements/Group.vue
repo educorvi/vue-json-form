@@ -3,6 +3,7 @@ import type { Layout } from '@educorvi/vue-json-form-schemas';
 import VerticalLayout from '@/components/LayoutElements/VerticalLayout.vue';
 import { computedCssClass } from '@/computedProperties/css';
 import { getComponent } from '@/stores/formStructure.ts';
+import { computed } from 'vue';
 
 const props = defineProps<{
     /**
@@ -28,7 +29,7 @@ const cssClass = computedCssClass(props.layoutElement, 'vjf_group');
             {{ layoutElement.options.description }}
         </p>
         <vertical-layout
-            class="vjf_fieldset-content"
+            class="vjf_fieldset-content vjf_indented"
             :layout-element="{ ...layoutElement, type: 'VerticalLayout' }"
         />
     </fieldset>
