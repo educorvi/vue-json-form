@@ -8,7 +8,9 @@
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^15.2.2",
+    "@educorvi/eslint-config": "workspace:^",
     "@semantic-release/exec": "^7.1.0",
+    "eslint": "^10.0.0",
     "json-schema-to-typescript": "^15.0.4",
     "mkdirp": "^3.0.1",
     "npm-run-all": "^4.1.5",
@@ -53,6 +55,7 @@
     "build": "turbo build:internal check-types",
     "build:internal": "vite build",
     "check-types": "tsc --noEmit",
+    "lint": "eslint . --fix",
     "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && generate-schema-doc ./src/generated/ui-merged.schema.json ./docs-dist/index.html",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",

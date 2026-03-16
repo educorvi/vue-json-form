@@ -8,10 +8,12 @@
     "ajv-formats": "^3.0.1"
   },
   "devDependencies": {
+    "@educorvi/eslint-config": "workspace:^",
     "@semantic-release/exec": "^7.1.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^25.3.0",
     "@vitest/coverage-v8": "^4.0.18",
+    "eslint": "^10.0.0",
     "npm-run-all": "^4.1.5",
     "rollup-plugin-copy": "^3.5.0",
     "semantic-release": "^25.0.3",
@@ -54,6 +56,7 @@
     "build:ajvStandalone": "tsx src/buildStandaloneAjv.ts",
     "build:internal": "yarn run build:ajvStandalone && vite build",
     "check-types": "tsc --noEmit",
+    "lint": "eslint . --fix",
     "prepack": "yarn run build:internal",
     "test:unit": "vitest --run"
   },

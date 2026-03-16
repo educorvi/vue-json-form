@@ -765,6 +765,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@educorvi/eslint-config@workspace:^, @educorvi/eslint-config@workspace:packages/eslint-config":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/eslint-config@workspace:packages/eslint-config"
+  dependencies:
+    "@vue/eslint-config-prettier": "npm:^10.2.0"
+    "@vue/eslint-config-typescript": "npm:^14.7.0"
+    eslint-plugin-unused-imports: "npm:^4.4.1"
+    eslint-plugin-vue: "npm:^10.8.0"
+  peerDependencies:
+    eslint: ">=10.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@educorvi/rita@npm:^5.5.1":
   version: 5.5.1
   resolution: "@educorvi/rita@npm:5.5.1"
@@ -781,6 +794,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-ajv-validator@workspace:packages/ajv-validator"
   dependencies:
+    "@educorvi/eslint-config": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node24": "npm:^24.0.4"
@@ -788,6 +802,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^4.0.18"
     ajv: "npm:^8.18.0"
     ajv-formats: "npm:^3.0.1"
+    eslint: "npm:^10.0.0"
     npm-run-all: "npm:^4.1.5"
     rollup-plugin-copy: "npm:^3.5.0"
     semantic-release: "npm:^25.0.3"
@@ -809,8 +824,10 @@ __metadata:
   resolution: "@educorvi/vue-json-form-schemas@workspace:packages/schemas"
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:^15.2.2"
+    "@educorvi/eslint-config": "workspace:^"
     "@educorvi/rita": "npm:^5.5.1"
     "@semantic-release/exec": "npm:^7.1.0"
+    eslint: "npm:^10.0.0"
     json-schema-to-typescript: "npm:^15.0.4"
     json-schema-typed: "npm:^8.0.2"
     mkdirp: "npm:^3.0.1"
@@ -832,6 +849,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-webcomponent@workspace:packages/webcomponent"
   dependencies:
+    "@educorvi/eslint-config": "workspace:^"
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
@@ -842,6 +860,7 @@ __metadata:
     "@vue/tsconfig": "npm:^0.8.1"
     "@vueuse/core": "npm:^14.2.1"
     axios: "npm:^1.13.6"
+    eslint: "npm:^10.0.0"
     jsdom: "npm:^28.1.0"
     npm-run-all: "npm:^4.1.5"
     sass-embedded: "npm:^1.97.3"
@@ -862,6 +881,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:packages/vue-json-form"
   dependencies:
     "@axe-core/playwright": "npm:^4.11.1"
+    "@educorvi/eslint-config": "workspace:^"
     "@educorvi/rita": "npm:^5.5.1"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:^"
@@ -5320,6 +5340,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "demo@workspace:apps/demo"
   dependencies:
+    "@educorvi/eslint-config": "workspace:^"
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@playwright/test": "npm:^1.58.2"
@@ -5331,6 +5352,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-vue-next: "npm:0.43.8"
     bootswatch: "npm:^5.3.8"
+    eslint: "npm:^10.0.0"
     npm-run-all: "npm:^4.1.5"
     playwright: "npm:^1.58.2"
     sass-embedded: "npm:^1.97.3"
@@ -5905,6 +5927,19 @@ __metadata:
     eslint-config-prettier:
       optional: true
   checksum: 10/5e39e3b7046d4ba0e1111cc2048630ee9d0aa5d5bb00d6230bef56893fdae37cbe2261babfb26db350cc2ad517c81d283b3f8b04cfee4e5aef7cd4bee72f90de
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-unused-imports@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "eslint-plugin-unused-imports@npm:4.4.1"
+  peerDependencies:
+    "@typescript-eslint/eslint-plugin": ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
+    eslint: ^10.0.0 || ^9.0.0 || ^8.0.0
+  peerDependenciesMeta:
+    "@typescript-eslint/eslint-plugin":
+      optional: true
+  checksum: 10/b420fd55c393a6fdacfdbd0d1adf4cd44bed9a6584f05245091a6716272c57f38154d04b76f253619d8bf22823c0b9d630ef6b5b09edad6e51b8a1f7aec56c22
   languageName: node
   linkType: hard
 
@@ -13292,6 +13327,7 @@ __metadata:
     "@size-limit/file": "npm:^12.0.0"
     "@size-limit/preset-big-lib": "npm:^12.0.0"
     "@yarnpkg/types": "npm:^4.0.1"
+    eslint: "npm:^10.0.0"
     husky: "npm:^9.1.7"
     mkdirp: "npm:^3.0.1"
     npm-run-all: "npm:^4.1.5"

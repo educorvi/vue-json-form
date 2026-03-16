@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
+    "@educorvi/eslint-config": "workspace:^",
     "@educorvi/vue-json-form-ajv-validator": "workspace:^",
     "@playwright/test": "^1.58.2",
     "@rushstack/eslint-patch": "^1.16.0",
@@ -98,7 +99,7 @@
     "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "dev": "vite -c vite.dev.config.ts --host",
     "format": "prettier --write src/",
-    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore --exit-on-fatal-error",
+    "lint": "eslint . --fix",
     "pre-commit": "echo ''",
     "prepack": "yarn run build:internal",
     "prepare": "husky",

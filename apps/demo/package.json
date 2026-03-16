@@ -13,12 +13,14 @@
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
+    "@educorvi/eslint-config": "workspace:^",
     "@playwright/test": "^1.58.2",
     "@semantic-release/exec": "^7.1.0",
     "@tsconfig/node18": "^18.2.6",
     "@types/node": "^25.3.0",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
+    "eslint": "^10.0.0",
     "npm-run-all": "^4.1.5",
     "playwright": "^1.58.2",
     "semantic-release": "^25.0.3",
@@ -44,6 +46,7 @@
     "build:internal": "vite build",
     "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "dev": "vite",
+    "lint": "eslint . --fix",
     "pre-commit": "echo 'No pre commit configured for demo'",
     "prepack": "yarn run build:internal",
     "preview": "vite preview",
