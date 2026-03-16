@@ -19,5 +19,4 @@ export function computedCssClass(
         }
         return getOption(layoutElement, 'cssClass', '') + defaultClassString;
     });
-});
 }
