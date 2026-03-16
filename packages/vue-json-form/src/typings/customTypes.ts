@@ -65,9 +65,10 @@ export type IfConditions =
 
 export type IfProperty =
     | {
-          properties: {
+          properties?: {
               [key: string]: IfConditions | IfProperty;
           };
+          required?: string[];
       }
     | {
           items: {

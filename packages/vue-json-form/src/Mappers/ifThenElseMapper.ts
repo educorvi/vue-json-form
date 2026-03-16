@@ -31,6 +31,7 @@ import type {
     IfProperty,
     SupportedIfThenElse,
 } from '@/typings/customTypes.ts';
+import { isNotNullOrUndefined } from '../typings/typeValidators';
 
 enum ConditionType {
     CONST = 'const',
@@ -38,6 +39,7 @@ enum ConditionType {
     CONTAINS_CONST = 'containsConst',
     CONTAINS_ENUM = 'containsEnum',
     MIN_LENGTH = 'minLength',
+    REQUIRED = 'required',
 }
 
 /** Describes a single condition coming from `if.properties` where
@@ -144,7 +146,18 @@ export class IfThenElseMapper extends MapperWithData {
             throw new Error('Invalid condition');
         }
 
-        let conditionSavePath = key;
+        let conditionSavePath = this.scopeToSavePath(key);
+
+        return {
+            value: conditionValue,
+            type: conditionType,
+            key,
+            savePath: conditionSavePath,
+        };
+    }
+
+    private scopeToSavePath(scope: string) {
+        let conditionSavePath = scope;
         let splitSavePath = this.savePath?.split('/');
         for (let i = splitSavePath?.length ?? 0; i >= 0; --i) {
             const remainingSavePath = splitSavePath?.slice(0, i).join('/');
@@ -159,13 +172,31 @@ export class IfThenElseMapper extends MapperWithData {
                 break;
             }
         }
+        return conditionSavePath;
+    }
 
-        return {
-            value: conditionValue,
-            type: conditionType,
-            key,
-            savePath: conditionSavePath,
-        };
+    private addRequiredConditions(
+        ifJson: NonNullable<IfProperty>,
+        existingConditions: Condition[],
+        objectScope: string
+    ) {
+        const conditions: Condition[] = [];
+        let requireds: string[] =
+            'required' in ifJson ? ifJson.required || [] : [];
+        if (requireds) {
+            for (let required of requireds) {
+                const scope = objectScope + '/properties/' + required;
+                const savePath = this.scopeToSavePath(scope);
+                if (!existingConditions.some((c) => c.savePath === savePath))
+                    conditions.push({
+                        key: required,
+                        savePath: savePath,
+                        value: null,
+                        type: ConditionType.REQUIRED,
+                    });
+            }
+        }
+        return conditions;
     }
 
     private parseConditions(
@@ -176,7 +207,7 @@ export class IfThenElseMapper extends MapperWithData {
         if ('properties' in ifJson) {
             const newScope = scope + '/properties';
             const ifJsonProperties = ifJson.properties;
-            for (const [key, value] of Object.entries(ifJsonProperties)) {
+            for (const [key, value] of Object.entries(ifJsonProperties || {})) {
                 const localNewScope = newScope + '/' + key;
                 if (isSupportedIfCondition(value)) {
                     conditions.push(
@@ -188,7 +219,10 @@ export class IfThenElseMapper extends MapperWithData {
                     );
                 }
             }
-        } else {
+            conditions = conditions.concat(
+                this.addRequiredConditions(ifJson, conditions, scope)
+            );
+        } else if ('items' in ifJson) {
             const newScope = scope + '/items';
             if (isSupportedIfCondition(ifJson.items)) {
                 conditions.push(this.parseCondition([newScope, ifJson.items]));
@@ -197,6 +231,8 @@ export class IfThenElseMapper extends MapperWithData {
                     this.parseConditions(ifJson.items, newScope)
                 );
             }
+        } else {
+            conditions = this.addRequiredConditions(ifJson, conditions, scope);
         }
 
         return conditions;
@@ -334,6 +370,8 @@ export class IfThenElseMapper extends MapperWithData {
                 return actualValue.some((a) => condition.value.includes(a));
             case ConditionType.MIN_LENGTH:
                 return (actualValue?.length ?? 0) >= condition.value;
+            case ConditionType.REQUIRED:
+                return isNotNullOrUndefined(actualValue);
         }
     }
 

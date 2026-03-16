@@ -39,41 +39,7 @@
                     },
                     {
                         "type": "Control",
-                        "scope": "/properties/jso-116/properties/number-dependent",
-                        "showOn": {
-                            "id": "ritaRule-number-dependent",
-                            "rule": {
-                                "type": "or",
-                                "arguments": [
-                                    {
-                                        "type": "comparison",
-                                        "allowDifferentTypes": true,
-                                        "operation": "greater",
-                                        "arguments": [
-                                            {
-                                                "type": "atom",
-                                                "path": "jso-116.number",
-                                                "default": 0
-                                            },
-                                            0
-                                        ]
-                                    },
-                                    {
-                                        "type": "comparison",
-                                        "allowDifferentTypes": true,
-                                        "operation": "smaller",
-                                        "arguments": [
-                                            {
-                                                "type": "atom",
-                                                "path": "jso-116.number",
-                                                "default": 0
-                                            },
-                                            0
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
+                        "scope": "/properties/jso-116/properties/number-dependent"
                     }
                 ]
             },

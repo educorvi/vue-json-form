@@ -321,6 +321,241 @@ describe('IfThenElseMapper', () => {
         expect(uiElement.options?.forceRequired).toBe(true);
     });
 
+    it('supports required-only conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 2 },
+                        },
+                    },
+                    else: {
+                        properties: {
+                            x: { minLength: 0 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/flag': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(2);
+
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(0);
+    });
+
+    it('treats undefined and null as not fulfilled for required conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { title: 'required matched' },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/flag': undefined,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+
+        data = {
+            '/properties/flag': null,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+    });
+
+    it('combines required and const conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['mode'],
+                        properties: {
+                            mode: { const: 'strict' },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 4 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/mode': 'strict',
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(4);
+
+        data = {
+            '/properties/mode': 'lenient',
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('supports nested required conditions in if properties', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            group: {
+                                required: ['toggle'],
+                            },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 6 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/group/properties/toggle': 'present',
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(6);
+
+        data = {
+            '/properties/group/properties/toggle': null,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('adds dependencies for keys introduced by required conditions in if', () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 2 },
+                        },
+                    },
+                },
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { maxLength: 10 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        mapper.registerSchemata(
+            jsonSchema,
+            makeLayout(),
+            fieldScope,
+            savePath,
+            {},
+            makeControl(fieldScope)
+        );
+
+        expect(mapper.getDependencies()).toEqual(['/properties/flag']);
+    });
+
     it('handles deep conditions for shallow fields', async () => {
         const fieldScope = '/properties/target';
         const savePath = '/properties/x';

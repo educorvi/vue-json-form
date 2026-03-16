@@ -202,7 +202,8 @@ function isSupportedIfProperty(json: Record<string, any>): boolean {
                     isSupportedIfPropertyOrCondition(value)
             )) ||
         (hasProperty(json, 'items') &&
-            isSupportedIfPropertyOrCondition(json.items))
+            isSupportedIfPropertyOrCondition(json.items)) ||
+        (hasProperty(json, 'required') && isNotNullOrUndefined(json.required))
     );
 }
 
@@ -244,6 +245,10 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
  */
 export function allDefined<T>(values: T[]): values is Exclude<T, undefined>[] {
     return values.every(isDefined);
+}
+
+export function isNotNullOrUndefined<T>(value: T): value is NonNullable<T> {
+    return value !== null && value !== undefined;
 }
 
 export function isWizard(element: UISchema['layout']): element is Wizard {
