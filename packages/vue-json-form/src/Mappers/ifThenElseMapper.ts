@@ -371,7 +371,7 @@ export class IfThenElseMapper extends MapperWithData {
             case ConditionType.MIN_LENGTH:
                 return (actualValue?.length ?? 0) >= condition.value;
             case ConditionType.REQUIRED:
-                return isNotNullOrUndefined(actualValue);
+                return isNotNullOrUndefined(actualValue) && actualValue !== '';
         }
     }
 
