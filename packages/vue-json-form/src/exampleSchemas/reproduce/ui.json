@@ -7,6 +7,45 @@
             {
                 "type": "Group",
                 "options": {
+                    "label": "JSO-116"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/test"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/dependent",
+                        "showOn": {
+                            "id": "ritaRule-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-116.test",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/number"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/number-dependent"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
                     "label": "JSO-135"
                 },
                 "elements": [

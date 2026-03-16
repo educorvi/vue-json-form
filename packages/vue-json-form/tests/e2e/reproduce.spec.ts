@@ -289,6 +289,67 @@ test('JSO-96 (array)', async ({ page }) => {
     ).not.toHaveAttribute('required', '');
 });
 
+test('JSO-116 (if/then required for dependent)', async ({ page }) => {
+    const TEST_FIELD = '#vjf_control_for__properties_jso-116_properties_test';
+    const DEPENDENT_FIELD_ID =
+        'vjf_control_for__properties_jso-116_properties_dependent';
+    const DEPENDENT_FIELD = '#' + DEPENDENT_FIELD_ID;
+
+    await page.goto(REPRODUCE_URL);
+
+    await expect(page.locator(DEPENDENT_FIELD)).not.toBeVisible();
+
+    await page.locator(TEST_FIELD).check({ force: true });
+    await expectIsRequiredField(page, DEPENDENT_FIELD_ID);
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+
+    await page.locator(DEPENDENT_FIELD).fill('required-by-test');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['jso-116']['test']).toBe(true);
+    expect(res['jso-116']['dependent']).toBe('required-by-test');
+
+    await page.locator(TEST_FIELD).uncheck({ force: true });
+    await expect(page.locator(DEPENDENT_FIELD)).not.toBeVisible();
+});
+
+test('JSO-116 (if.required number makes number-dependent required)', async ({
+    page,
+}) => {
+    const NUMBER_FIELD =
+        '#vjf_control_for__properties_jso-116_properties_number';
+    const NUMBER_DEPENDENT_FIELD_ID =
+        'vjf_control_for__properties_jso-116_properties_number-dependent';
+    const NUMBER_DEPENDENT_FIELD = '#' + NUMBER_DEPENDENT_FIELD_ID;
+
+    await page.goto(REPRODUCE_URL);
+
+    await expectIsNotRequiredField(page, NUMBER_DEPENDENT_FIELD_ID);
+
+    await page.locator(NUMBER_FIELD).fill('0');
+    await expectIsRequiredField(page, NUMBER_DEPENDENT_FIELD_ID);
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+
+    await page.locator(NUMBER_DEPENDENT_FIELD).fill('required-by-number');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['jso-116']['number']).toBe(0);
+    expect(res['jso-116']['number-dependent']).toBe('required-by-number');
+
+    await page.locator(NUMBER_FIELD).clear();
+    await expectIsNotRequiredField(page, NUMBER_DEPENDENT_FIELD_ID);
+});
+
 test('JSO-43', async ({ page }) => {
     const BOOL_FIELD = '#vjf_control_for__properties_jso-43_properties_bool';
     const HALLO_FIELD =
