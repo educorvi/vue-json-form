@@ -1,5 +1,4 @@
 import { computed, isRef, type Ref } from 'vue';
-import { hasCssClass } from '@/typings/typeValidators';
 import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
 import { getOption } from '@/utilities.ts';
 
@@ -20,4 +19,5 @@ export function computedCssClass(
         }
         return getOption(layoutElement, 'cssClass', '') + defaultClassString;
     });
+});
 }

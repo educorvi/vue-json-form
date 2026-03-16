@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { generateUISchema } from '@/Commons';
 import FormWrap from '@/components/FormWrap.vue';
-import type { Control, Layout } from '@educorvi/vue-json-form-schemas';
-import VerticalLayout from '@/components/LayoutElements/VerticalLayout.vue';
 import { computedCssClass } from '@/computedProperties/css.ts';
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
@@ -24,7 +22,7 @@ const controlElements = computed(() => {
 
 <template>
     <fieldset :class="cssClass" :id="id">
-        <legend v-show="label">
+        <legend v-if="layoutElement.options?.label !== false && label">
             {{ label }}
         </legend>
         <p v-if="jsonElement.description">
