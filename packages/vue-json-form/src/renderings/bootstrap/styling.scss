@@ -1,6 +1,6 @@
 @import "bootstrap-vue-next/src/styles/styles.scss";
 
-.vjf_fieldset-content {
+.vjf_indented {
   border-left: 3px solid gray !important;
   padding-left: 10px !important;
   margin-left: 5px !important;
@@ -19,25 +19,36 @@
   }
 }
 
-.vjf_arrayItem > * > * > .input-group> *:nth-child(2) {
+.vjf_arrayItem > * > * > .input-group > *:nth-child(2) {
   flex-grow: 1;
-  &>.vjf_array {
-    padding: 0 5px 5px;
+
+  & > .vjf_array {
+    padding: 5px;
 
     // reduce spacing between array items in 2d array
-    & > * > * > * > * {
+    & > * > * > * {
       margin-bottom: 4px !important;
     }
   }
 }
 
-.vjf_arrayItem > * > * > * > * > fieldset.vjf_group {
-  margin-top: 4px;
-  margin-bottom: 2px;
-  width: 100%;
+.vjf_arrayItem > .vjf_control {
+  margin-bottom: 4px !important;
+}
+
+.draggable-array-item:last-child > .vjf_arrayItem > .vjf_control {
+  margin-bottom: 12px !important;
+}
+
+.vjf_arrayItem > * > * > * > fieldset {
+  width: 70%;
   height: min-content;
 
-  & > .vjf_fieldset-content {
+  & > legend {
+    display: none;
+  }
+
+  & > .vjf_indented {
     border: none !important;
     margin-right: 5px;
     padding-right: 10px;

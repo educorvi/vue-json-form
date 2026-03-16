@@ -256,7 +256,7 @@ onBeforeMount(initArray);
                 }"
             >
                 <template #item="{ element, index }">
-                    <div :key="element">
+                    <div :key="element" class="draggable-array-item">
                         <ArrayItem
                             :scope="layoutElement.scope"
                             :baseSavePath="savePath"

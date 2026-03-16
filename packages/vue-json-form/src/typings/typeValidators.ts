@@ -185,37 +185,35 @@ export function isSupportedIfCondition(
     return (
         hasProperty(json, 'const') ||
         hasProperty(json, 'enum') ||
+        hasProperty(json, 'minLength') ||
         (hasProperty(json, 'contains') &&
             (hasProperty(json.contains, 'const') ||
                 hasProperty(json.contains, 'enum')))
     );
 }
 
-function isSupportedIfPropertyOrCondition(
-    json: Record<string, any>
-): json is IfProperty['properties'][string] {
+function isSupportedIfProperty(json: Record<string, any>): boolean {
     return (
-        isSupportedIfCondition(json) ||
         (hasProperty(json, 'properties') &&
             Object.values(json.properties).every(
                 (value) =>
                     typeof value === 'object' &&
                     value !== null &&
                     isSupportedIfPropertyOrCondition(value)
-            ))
+            )) ||
+        (hasProperty(json, 'items') &&
+            isSupportedIfPropertyOrCondition(json.items))
     );
 }
 
+function isSupportedIfPropertyOrCondition(
+    json: Record<string, any>
+): json is IfConditions | IfProperty {
+    return isSupportedIfCondition(json) || isSupportedIfProperty(json);
+}
+
 export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
-    return (
-        hasProperty(json, 'properties') &&
-        Object.values(json.properties).every(
-            (value) =>
-                typeof value === 'object' &&
-                value !== null &&
-                isSupportedIfPropertyOrCondition(value)
-        )
-    );
+    return isSupportedIfProperty(json);
 }
 
 export function isSupportedThenOrElse(

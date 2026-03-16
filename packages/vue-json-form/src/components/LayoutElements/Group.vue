@@ -28,7 +28,7 @@ const cssClass = computedCssClass(props.layoutElement, 'vjf_group');
             {{ layoutElement.options.description }}
         </p>
         <vertical-layout
-            class="vjf_fieldset-content"
+            class="vjf_fieldset-content vjf_indented"
             :layout-element="{ ...layoutElement, type: 'VerticalLayout' }"
         />
     </fieldset>
