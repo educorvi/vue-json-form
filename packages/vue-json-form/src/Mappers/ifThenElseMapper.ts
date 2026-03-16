@@ -11,12 +11,11 @@ import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
 import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
-    hasProperty,
-    isIfThenAllOf,
     isSupportedIf,
     isSupportedIfCondition,
     isSupportedIfThenElse,
     isValidJsonSchemaKey,
+    isNotNullOrUndefined,
 } from '@/typings/typeValidators.ts';
 import { getPropertyByString, sliceScope, getFieldName } from '@/Commons.ts';
 import type {
@@ -31,7 +30,6 @@ import type {
     IfProperty,
     SupportedIfThenElse,
 } from '@/typings/customTypes.ts';
-import { isNotNullOrUndefined } from '../typings/typeValidators';
 
 enum ConditionType {
     CONST = 'const',
@@ -183,18 +181,16 @@ export class IfThenElseMapper extends MapperWithData {
         const conditions: Condition[] = [];
         let requireds: string[] =
             'required' in ifJson ? ifJson.required || [] : [];
-        if (requireds) {
-            for (let required of requireds) {
-                const scope = objectScope + '/properties/' + required;
-                const savePath = this.scopeToSavePath(scope);
-                if (!existingConditions.some((c) => c.savePath === savePath))
-                    conditions.push({
-                        key: required,
-                        savePath: savePath,
-                        value: null,
-                        type: ConditionType.REQUIRED,
-                    });
-            }
+        for (let required of requireds) {
+            const scope = objectScope + '/properties/' + required;
+            const savePath = this.scopeToSavePath(scope);
+            if (!existingConditions.some((c) => c.savePath === savePath))
+                conditions.push({
+                    key: required,
+                    savePath: savePath,
+                    value: null,
+                    type: ConditionType.REQUIRED,
+                });
         }
         return conditions;
     }
