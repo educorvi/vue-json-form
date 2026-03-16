@@ -6,6 +6,62 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-116": {
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "test": {
+                                "const": true
+                            }
+                        },
+                        "required": ["test"]
+                    },
+                    "then": {
+                        "properties": {
+                            "dependent": {
+                                "minLength": 1
+                            }
+                        },
+                        "required": ["dependent"]
+                    }
+                },
+                {
+                    "if": {
+                        "required": ["number"]
+                    },
+                    "then": {
+                        "properties": {
+                            "number-dependent": {
+                                "minLength": 1
+                            }
+                        },
+                        "required": ["number-dependent"]
+                    }
+                }
+            ],
+            "properties": {
+                "test": {
+                    "title": "Test",
+                    "type": "boolean"
+                },
+                "dependent": {
+                    "title": "Dependent",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "number": {
+                    "title": "Number",
+                    "type": "integer"
+                },
+                "number-dependent": {
+                    "title": "Number Dependent",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
         "jso-135": {
             "type": "object",
             "properties": {
