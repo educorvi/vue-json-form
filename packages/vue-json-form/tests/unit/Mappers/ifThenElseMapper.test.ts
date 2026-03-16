@@ -753,9 +753,9 @@ describe('IfThenElseMapper', () => {
         expect(result!.jsonElement.minLength).toBeUndefined();
     });
 
-    it('mjrz is conditionally required when kghjkjh is true', async () => {
-        const fieldScope = '/properties/mjrz';
-        const savePath = '/properties/mjrz';
+    it('dependentField is conditionally required when isEnabled is true', async () => {
+        const fieldScope = '/properties/dependentField';
+        const savePath = '/properties/dependentField';
 
         const jsonSchema: JSONSchema = {
             title: 'problem required in if then ändert parent',
@@ -764,29 +764,29 @@ describe('IfThenElseMapper', () => {
                 {
                     if: {
                         properties: {
-                            kghjkjh: {
+                            isEnabled: {
                                 const: true,
                             },
                         },
-                        required: ['kghjkjh'],
+                        required: ['isEnabled'],
                     },
                     then: {
                         properties: {
-                            mjrz: {
+                            dependentField: {
                                 minLength: 1,
                             },
                         },
-                        required: ['mjrz'],
+                        required: ['dependentField'],
                     },
                 },
             ],
             properties: {
-                kghjkjh: {
-                    title: 'kghjkjh',
+                isEnabled: {
+                    title: 'isEnabled',
                     type: 'boolean',
                 },
-                mjrz: {
-                    title: 'mjrz',
+                dependentField: {
+                    title: 'dependentField',
                     type: 'string',
                     minLength: 1,
                 },
@@ -806,34 +806,34 @@ describe('IfThenElseMapper', () => {
             ui
         );
 
-        // Test case 1: kghjkjh is true - mjrz should be required
+        // Test case 1: isEnabled is true - dependentField should be required
         let data: Record<string, any> = {
-            '/properties/kghjkjh': true,
+            '/properties/isEnabled': true,
         };
         let result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         expect(result!.uiElement.options?.forceRequired).toBe(true);
         expect(result!.jsonElement.minLength).toBe(1);
 
-        // Test case 2: kghjkjh is false - mjrz should not be required
+        // Test case 2: isEnabled is false - dependentField should not be required
         data = {
-            '/properties/kghjkjh': false,
+            '/properties/isEnabled': false,
         };
         result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         // When condition is not met, forceRequired should not be set or should be falsy
         expect(result!.uiElement.options?.forceRequired).not.toBe(true);
 
-        // Test case 3: kghjkjh is undefined/missing - mjrz should not be required
+        // Test case 3: isEnabled is undefined/missing - dependentField should not be required
         data = {};
         result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         expect(result!.uiElement.options?.forceRequired).not.toBe(true);
     });
 
-    it('mjrz is conditionally required when kghjkjh is true (long)', async () => {
-        const fieldScope = '/properties/mjrz';
-        const savePath = '/properties/mjrz';
+    it('dependentField is conditionally required when isEnabled is true (long)', async () => {
+        const fieldScope = '/properties/dependentField';
+        const savePath = '/properties/dependentField';
 
         const jsonSchema: JSONSchema = {
             title: 'problem required in if then ändert parent',
@@ -842,11 +842,11 @@ describe('IfThenElseMapper', () => {
                 {
                     if: {
                         properties: {
-                            kghjkjh: {
+                            isEnabled: {
                                 const: true,
                             },
                         },
-                        required: ['kghjkjh'],
+                        required: ['isEnabled'],
                     },
                     then: {
                         properties: {
@@ -931,25 +931,25 @@ describe('IfThenElseMapper', () => {
                 {
                     if: {
                         properties: {
-                            kghjkjh: {
+                            isEnabled: {
                                 const: true,
                             },
                         },
-                        required: ['kghjkjh'],
+                        required: ['isEnabled'],
                     },
                     then: {
                         properties: {
-                            mjrz: {
+                            dependentField: {
                                 minLength: 1,
                             },
                         },
-                        required: ['mjrz'],
+                        required: ['dependentField'],
                     },
                 },
             ],
             properties: {
-                kghjkjh: {
-                    title: 'kghjkjh',
+                isEnabled: {
+                    title: 'isEnabled',
                     type: 'boolean',
                 },
                 'optionales-array': {
@@ -996,8 +996,8 @@ describe('IfThenElseMapper', () => {
                         },
                     },
                 },
-                mjrz: {
-                    title: 'mjrz',
+                dependentField: {
+                    title: 'dependentField',
                     type: 'string',
                     minLength: 1,
                 },
@@ -1017,25 +1017,25 @@ describe('IfThenElseMapper', () => {
             ui
         );
 
-        // Test case 1: kghjkjh is true - mjrz should be required
+        // Test case 1: isEnabled is true - dependentField should be required
         let data: Record<string, any> = {
-            '/properties/kghjkjh': true,
+            '/properties/isEnabled': true,
         };
         let result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         expect(result!.uiElement.options?.forceRequired).toBe(true);
         expect(result!.jsonElement.minLength).toBe(1);
 
-        // Test case 2: kghjkjh is false - mjrz should not be required
+        // Test case 2: isEnabled is false - dependentField should not be required
         data = {
-            '/properties/kghjkjh': false,
+            '/properties/isEnabled': false,
         };
         result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
         // When condition is not met, forceRequired should not be set or should be falsy
         expect(result!.uiElement.options?.forceRequired).not.toBe(true);
 
-        // Test case 3: kghjkjh is undefined/missing - mjrz should not be required
+        // Test case 3: isEnabled is undefined/missing - dependentField should not be required
         data = {};
         result = await mapper.map(initialJson, ui, data);
         expect(result).not.toBeNull();
