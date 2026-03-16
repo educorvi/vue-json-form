@@ -43,7 +43,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         }
         const newJsonElement: JSONSchema = this.cloneJsonElement(jsonElement);
         const cleanedData = {
-            $selfIndices: getArrayItemIndices(uiElement),
+            $selfIndices: getArrayItemIndices(uiElement, this.formId as string),
+            ...cleanedFormData,
             ...cleanedFormData,
         };
         let hasChanges = false;
@@ -66,23 +67,14 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         };
     }
 
-    /**
-     * Registers the schema and processes option filters to determine dependencies.
-     *
-     * @param jsonSchema - The root JSON schema.
-     * @param uiSchema - The root UI schema.
-     * @param scope - The scope of the current element.
-     * @param savePath - The save path of the current element.
-     * @param jsonElement - The JSON schema of the current element.
-     * @param uiElement - The UI control of the current element.
-     */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
         scope: Readonly<string>,
         savePath: Readonly<string>,
         jsonElement: Readonly<JSONSchema>,
-        uiElement: Readonly<Control>
+        uiElement: Readonly<Control>,
+        formId: Readonly<string>
     ): void {
         super.registerSchemata(
             jsonSchema,
@@ -90,7 +82,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
             scope,
             savePath,
             jsonElement,
-            uiElement
+            uiElement,
+            formId
         );
         const depsSet = new Set<string>();
         this.depsRuleMap = this.getOptionFilterDependencies(

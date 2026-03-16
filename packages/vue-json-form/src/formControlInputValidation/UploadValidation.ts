@@ -9,8 +9,11 @@ export function validateFileInput(
     minNumberOfFiles: ComputedRef<number>,
     maxNumberOfFiles: ComputedRef<number>,
     languageProvider: LanguageProvider | undefined,
-    el: HTMLInputElement
+    el: HTMLInputElement | null
 ): boolean {
+    if (!el) {
+        return true;
+    }
     // Validate number of files
     if (isMultipleUpload.value) {
         if (

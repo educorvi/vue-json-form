@@ -5,8 +5,8 @@ import Control from '@/components/LayoutElements/Control.vue';
 import type { Control as ControlType } from '@educorvi/vue-json-form-schemas';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';
-import { getComponent } from '@/stores/formStructure.ts';
 import { getArrayItemSavePath } from '@/Commons.ts';
+import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     scope: string;
@@ -32,7 +32,7 @@ const layoutElement = computed(() => {
 const emit = defineEmits<{
     (e: 'delete', id: string, savePath: string): void;
 }>();
-const ArrayButton = getComponent('ArrayButton');
+const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
 </script>
 
 <template>

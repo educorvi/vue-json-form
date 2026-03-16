@@ -2,7 +2,6 @@
 import type { Layout } from '@educorvi/vue-json-form-schemas';
 import VerticalLayout from '@/components/LayoutElements/VerticalLayout.vue';
 import { computedCssClass } from '@/computedProperties/css';
-import { getComponent } from '@/stores/formStructure.ts';
 
 const props = defineProps<{
     /**

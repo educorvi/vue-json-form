@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Button } from '@educorvi/vue-json-form-schemas';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { useFormStructureStore } from '@/stores/formStructure';
 import { computed } from 'vue';
 import { BButton } from 'bootstrap-vue-next';
 import { generateUUID } from '@/Commons';
 import { storeToRefs } from 'pinia';
+import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     /**
@@ -15,11 +16,13 @@ const props = defineProps<{
 
 const id = generateUUID();
 
-const { buttonWaiting } = storeToRefs(useFormStructureStore());
+const { formStructureStore } = getStores();
+
+const { buttonWaiting } = storeToRefs(formStructureStore);
 
 buttonWaiting.value[id] = false;
 
-const buttonComponent = getComponent('Button');
+const buttonComponent = formStructureStore.getComponent('Button');
 const submitOptions = computed(() => {
     const json = JSON.stringify({
         ...props.layoutElement.options?.submitOptions,

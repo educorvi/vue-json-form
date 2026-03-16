@@ -2,13 +2,16 @@
 import { computed, ref } from 'vue';
 import WizardPage from '@/components/LayoutElements/Wizard/WizardPage.vue';
 import { storeToRefs } from 'pinia';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
+import { useFormStructureStore } from '@/stores/formStructure.ts';
 import type { Wizard as WizardType } from '@educorvi/vue-json-form-schemas';
+import { getStores } from '@/computedProperties/json';
 
-const WizardProgress = getComponent('WizardProgress');
+const { formStructureStore } = getStores();
+
+const WizardProgress = formStructureStore.getComponent('WizardProgress');
 
 const props = defineProps<{ wizardElement: WizardType }>();
-const { currentWizardPage: currentStep } = storeToRefs(useFormStructureStore());
+const { currentWizardPage: currentStep } = storeToRefs(formStructureStore);
 const visible = computed(() => {
     return props.wizardElement.pages.map((_, i) => i === currentStep.value);
 });

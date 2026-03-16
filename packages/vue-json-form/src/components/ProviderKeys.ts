@@ -14,8 +14,8 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
-// export const layoutProviderKey = Symbol() as InjectionKey<Control>;
-// export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
+export const formIdProviderKey = Symbol() as InjectionKey<string>;
+
 export const formStructureProviderKey = Symbol() as InjectionKey<
     Ref<{
         jsonElement: JSONSchema;

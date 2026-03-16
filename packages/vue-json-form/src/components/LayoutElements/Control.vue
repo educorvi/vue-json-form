@@ -52,7 +52,7 @@ import type {
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
+import { useFormStructureStore } from '@/stores/formStructure';
 import { getOption } from '@/utilities';
 import {
     computed,
@@ -72,12 +72,14 @@ import {
     formStructureProviderKey,
     descendantControlOverridesProviderKey,
     inArrayItemProviderKey,
+    formIdProviderKey,
 } from '@/components/ProviderKeys';
 import {
     cleanScope,
     computedLabel,
     getComputedJsonElement,
     getComputedRequired,
+    getStores,
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
@@ -95,14 +97,16 @@ import { watchDebounced } from '@vueuse/core';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
 import { Mapper } from '@/Mappers';
 
+const { formStructureStore, formDataStore } = getStores();
+
 const {
     jsonSchema,
     mappers: mapperClasses,
     uiSchema,
-} = storeToRefs(useFormStructureStore());
+} = storeToRefs(formStructureStore);
 
-const FormFieldWrapper = getComponent('FormFieldWrapper');
-const ErrorViewer = getComponent('ErrorViewer');
+const FormFieldWrapper = formStructureStore.getComponent('FormFieldWrapper');
+const ErrorViewer = formStructureStore.getComponent('ErrorViewer');
 
 const props = defineProps<{
     /** The UI Schema of this Element */
@@ -115,7 +119,7 @@ const props = defineProps<{
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
 
 const { formData, defaultFormData, cleanedFormData } =
-    storeToRefs(useFormDataStore());
+    storeToRefs(formDataStore);
 
 const invalidJsonPointer = ref(false as false | string);
 
@@ -173,6 +177,9 @@ watch([() => jsonElement.value, () => props.layoutElement], mapFormStructure, {
     immediate: true,
 });
 
+const formId = inject(formIdProviderKey);
+if (!formId) throw new Error('formId is not provided');
+
 onMounted(() => {
     if (
         !jsonElement.value ||
@@ -197,7 +204,8 @@ onMounted(() => {
                 mergeDescendantControlOptionsOverrides(
                     props.layoutElement,
                     overridesMap
-                )
+                ),
+                formId
             );
             for (const dependency of mapper.getDependencies()) {
                 if (registeredDependencies.has(dependency)) {
@@ -286,9 +294,9 @@ const controlType = computed(() => {
             getOption(formStructureMapped.value.uiElement, 'displayAs') ===
                 'buttons'
         ) {
-            return getComponent('RadiobuttonControl');
+            return formStructureStore.getComponent('RadiobuttonControl');
         } else {
-            return getComponent('SelectControl');
+            return formStructureStore.getComponent('SelectControl');
         }
     }
 
@@ -300,7 +308,7 @@ const controlType = computed(() => {
         'enum' in formStructureMapped.value.jsonElement.items &&
         formStructureMapped.value.jsonElement.type === 'array'
     ) {
-        return getComponent('CheckboxGroupControl');
+        return formStructureStore.getComponent('CheckboxGroupControl');
     }
 
     /**
@@ -311,7 +319,7 @@ const controlType = computed(() => {
         hasOption(formStructureMapped.value.uiElement, 'tags') &&
         formStructureMapped.value.uiElement.options?.tags?.enabled
     ) {
-        return getComponent('TagsControl');
+        return formStructureStore.getComponent('TagsControl');
     }
 
     /**
@@ -321,7 +329,7 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement?.type === 'string' &&
         formStructureMapped.value.jsonElement.format === 'uri'
     ) {
-        return getComponent('FileControl');
+        return formStructureStore.getComponent('FileControl');
     }
 
     /**
@@ -334,23 +342,23 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement.items.format === 'uri' &&
         formStructureMapped.value.uiElement.options?.displayAsSingleUploadField
     ) {
-        return getComponent('FileControl');
+        return formStructureStore.getComponent('FileControl');
     }
 
     switch (formStructureMapped.value.jsonElement?.type) {
         case 'boolean':
-            return getComponent('CheckboxControl');
+            return formStructureStore.getComponent('CheckboxControl');
         case 'number':
         case 'integer':
-            return getComponent('NumberControl');
+            return formStructureStore.getComponent('NumberControl');
         case 'object':
-            return getComponent('ObjectControl');
+            return formStructureStore.getComponent('ObjectControl');
         case 'string':
-            return getComponent('StringControl');
+            return formStructureStore.getComponent('StringControl');
         case 'array':
             return ArrayControl;
         default:
-            return getComponent('DefaultControl');
+            return formStructureStore.getComponent('DefaultControl');
     }
 });
 
