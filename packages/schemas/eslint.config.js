@@ -1,3 +1,3 @@
-import baseConfig from "@educorvi/eslint-config/base";
+import baseConfig from '@educorvi/eslint-config/base';
 
 export default baseConfig;

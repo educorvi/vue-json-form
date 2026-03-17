@@ -13,7 +13,7 @@ const ajv = new Ajv({
 });
 addFormats(ajv, ['json-pointer', 'date-time']);
 
-let moduleCode = standaloneCode(ajv, {
+const moduleCode = standaloneCode(ajv, {
     UiSchema: 'https://educorvi.github.io/vue-json-form/schemas/ui.schema.json',
     JsonSchema: 'https://json-schema.org/draft/2019-09/schema#',
 });

@@ -1,34 +1,34 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const router = createRouter({
-    history: createWebHashHistory(import.meta.env.BASE_URL),
-    routes: [
-        {
-            path: '/',
-            name: 'home',
-            component: () => import("../views/HomeView.vue"),
-        },
-        {
-            path: '/showcase',
-            name: 'showcase',
-            component: () => import('../views/showcase.vue'),
-        },
-        {
-            path: '/custom',
-            name: 'custom',
-            component: () => import('../views/custom.vue'),
-        },
-        {
-            path: '/ui-generator',
-            name: 'ui-generator',
-            component: () => import('../views/ui-generator.vue'),
-        },
-        {
-            path: "/wizard",
-            name: "wizard",
-            component: () => import('../views/wizard.vue')
-        }
-    ],
+  history: createWebHashHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: () => import("../views/HomeView.vue"),
+    },
+    {
+      path: "/showcase",
+      name: "showcase",
+      component: () => import("../views/showcase.vue"),
+    },
+    {
+      path: "/custom",
+      name: "custom",
+      component: () => import("../views/custom.vue"),
+    },
+    {
+      path: "/ui-generator",
+      name: "ui-generator",
+      component: () => import("../views/ui-generator.vue"),
+    },
+    {
+      path: "/wizard",
+      name: "wizard",
+      component: () => import("../views/wizard.vue"),
+    },
+  ],
 });
 
 export default router;

@@ -1,3 +1,3 @@
-import eslintConfig from '@educorvi/eslint-config'
+import eslintConfig from '@educorvi/eslint-config';
 
-export default eslintConfig
+export default eslintConfig;

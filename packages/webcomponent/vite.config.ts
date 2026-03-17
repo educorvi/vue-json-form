@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
@@ -20,7 +21,9 @@ const target = process.env.BUILD_TARGET || 'default';
 const config = buildTargets[target as keyof typeof buildTargets];
 
 if (!config) {
-    throw new Error(`Unknown build target: ${target}. Available targets: ${Object.keys(buildTargets).join(', ')}`);
+    throw new Error(
+        `Unknown build target: ${target}. Available targets: ${Object.keys(buildTargets).join(', ')}`
+    );
 }
 
 export default defineConfig({
@@ -28,7 +31,8 @@ export default defineConfig({
         vue({
             template: {
                 compilerOptions: {
-                    isCustomElement: (tag: any) => tag.includes('vue-json-form'),
+                    isCustomElement: (tag: any) =>
+                        tag.includes('vue-json-form'),
                 },
             },
         }),

@@ -8,7 +8,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 /** @type {import('eslint').Linter.Config[]} */
 export default defineConfigWithVueTs(
     {
-        ignores: ['dist/**', 'coverage/**', 'tests/**'],
+        ignores: ['dist/**', 'coverage/**', 'tests/**', 'src/generated/**'],
     },
     vueTsConfigs.recommended,
     prettierConfig,

@@ -4,18 +4,33 @@ import {
     DependentRequiredMapper,
     VueJsonForm as vjfComp,
 } from '@educorvi/vue-json-form';
-import { IfThenElseMapper, OneOfToEnumMapper, RitaDependentOptionsMapper } from '@educorvi/vue-json-form';
-import { getComputed, getSubmitFunc, type Props, type Emits } from './vueComponentCommons.ts';
+import {
+    IfThenElseMapper,
+    OneOfToEnumMapper,
+    RitaDependentOptionsMapper,
+} from '@educorvi/vue-json-form';
+import {
+    getComputed,
+    getSubmitFunc,
+    type Props,
+    type Emits,
+} from './vueComponentCommons.ts';
 
 const props = defineProps<Props>();
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
-const { jsonSchema, uiSchema, presetData, returnDataAsScopes } = getComputed(props)
+const { jsonSchema, uiSchema, presetData, returnDataAsScopes } =
+    getComputed(props);
 
-const mappers = [OneOfToEnumMapper, IfThenElseMapper, RitaDependentOptionsMapper, DependentRequiredMapper];
+const mappers = [
+    OneOfToEnumMapper,
+    IfThenElseMapper,
+    RitaDependentOptionsMapper,
+    DependentRequiredMapper,
+];
 
-const onSubmitForm = getSubmitFunc(emit)
+const onSubmitForm = getSubmitFunc(emit);
 </script>
 
 <template>

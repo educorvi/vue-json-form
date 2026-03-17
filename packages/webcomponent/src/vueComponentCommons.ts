@@ -1,4 +1,8 @@
-import type { SubmitOptions,SubmitRequestOptions } from '@educorvi/vue-json-form-schemas';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type {
+    SubmitOptions,
+    SubmitRequestOptions,
+} from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
 import axios from 'axios';
 
@@ -22,14 +26,26 @@ export type Props = {
      * Return data as key value pairs with the keys being the scopes as used in the ui schema and the values being the data
      */
     returnDataAsScopes?: boolean | string;
-}
+};
 
 export type Emits = {
     (e: 'submit', data: Record<string, any>, options: SubmitOptions): void;
-    (e: 'submitSucceeded', data: Record<string, any>, options: SubmitOptions): void;
-    (e: 'submitFailed', data: Record<string, any>, options: SubmitOptions): void;
-    (e: 'afterSubmitted', data: Record<string, any>, options: SubmitOptions): void;
-}
+    (
+        e: 'submitSucceeded',
+        data: Record<string, any>,
+        options: SubmitOptions
+    ): void;
+    (
+        e: 'submitFailed',
+        data: Record<string, any>,
+        options: SubmitOptions
+    ): void;
+    (
+        e: 'afterSubmitted',
+        data: Record<string, any>,
+        options: SubmitOptions
+    ): void;
+};
 
 export function getComputed(props: Props) {
     const jsonSchema = computed(() => {
@@ -62,11 +78,20 @@ export function getComputed(props: Props) {
             return undefined;
         }
     });
-    const returnDataAsScopes = computed(() => props.returnDataAsScopes === true || props.returnDataAsScopes === 'true');
+    const returnDataAsScopes = computed(
+        () =>
+            props.returnDataAsScopes === true ||
+            props.returnDataAsScopes === 'true'
+    );
     return { jsonSchema, uiSchema, presetData, returnDataAsScopes };
 }
 
-async function request(url: string, method: NonNullable<SubmitRequestOptions['method']>, headers: SubmitRequestOptions['headers'], data: Record<string, any>) {
+async function request(
+    url: string,
+    method: NonNullable<SubmitRequestOptions['method']>,
+    headers: SubmitRequestOptions['headers'],
+    data: Record<string, any>
+) {
     let success = true;
     try {
         await axios(url, {
@@ -84,7 +109,10 @@ async function request(url: string, method: NonNullable<SubmitRequestOptions['me
 }
 
 export function getSubmitFunc(emit: Emits) {
-    return async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+    return async function onSubmitForm(
+        data: Record<string, any>,
+        options: SubmitOptions
+    ) {
         let success = true;
         if (options.action === 'request') {
             if (Array.isArray(options.request?.url)) {
@@ -93,7 +121,12 @@ export function getSubmitFunc(emit: Emits) {
                     emit('submit', data, options);
                 } else {
                     for (const url of options.request.url) {
-                        const res = await request(url, options.request.method || 'POST', options.request.headers, data);
+                        const res = await request(
+                            url,
+                            options.request.method || 'POST',
+                            options.request.headers,
+                            data
+                        );
                         if (!res) {
                             success = false;
                             break;
@@ -101,7 +134,12 @@ export function getSubmitFunc(emit: Emits) {
                     }
                 }
             } else if (options.request?.url) {
-                success = await request(options.request.url, options.request.method || 'POST', options.request.headers, data);
+                success = await request(
+                    options.request.url,
+                    options.request.method || 'POST',
+                    options.request.headers,
+                    data
+                );
             } else {
                 // Fallback to normal submit when request or request.url is missing
                 emit('submit', data, options);

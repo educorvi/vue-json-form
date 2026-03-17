@@ -1,32 +1,31 @@
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath, URL } from "node:url";
 
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import Components from 'unplugin-vue-components/vite';
-import {BootstrapVueNextResolver} from 'bootstrap-vue-next/resolvers'
-import { analyzer } from 'vite-bundle-analyzer';
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import Components from "unplugin-vue-components/vite";
+import { BootstrapVueNextResolver } from "bootstrap-vue-next/resolvers";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        vue(),
-        Components({
-            resolvers: [BootstrapVueNextResolver()],
-        }),
-        // analyzer()
-    ],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
-        },
+  plugins: [
+    vue(),
+    Components({
+      resolvers: [BootstrapVueNextResolver()],
+    }),
+    // analyzer()
+  ],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
-    base: './',
-    css: {
-        preprocessorOptions: {
-            scss: {
-                quietDeps: true,
-                silenceDeprecations: ['import'],
-            },
-        },
+  },
+  base: "./",
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ["import"],
+      },
     },
+  },
 });
