@@ -1,24 +1,22 @@
 <script setup lang="ts">
 import { BFormCheckboxGroup, type CheckboxOption } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
 import { getOption } from '@/utilities';
 import { computed, type ComputedRef, inject, onMounted, ref, watch } from 'vue';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation.ts';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
-
+const { formDataStore, formStructureStore } = getStores();
 // accept prop so it does not overwrite the required=false below
 const props = defineProps<{
     required?: boolean;
 }>();
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formData } = storeToRefs(formDataStore);
 
-const { formStateWasValidated } = storeToRefs(useFormStructureStore());
+const { formStateWasValidated } = storeToRefs(formStructureStore);
 
 const languageProvider = inject(languageProviderKey);
 

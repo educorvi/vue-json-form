@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData.ts';
 import {
     arrayContainsValue,
     computedLabel,
     getComputedRequired,
+    getStores,
     injectJsonData,
 } from '@/computedProperties/json.ts';
 import { controlID } from '@/computedProperties/misc.ts';
@@ -14,7 +14,6 @@ import {
     isArrayItemKey,
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons.ts';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
 import draggable from 'vuedraggable/src/vuedraggable';
 import {
     ref,
@@ -35,17 +34,19 @@ import {
 import { isDefined } from '@/typings/typeValidators.ts';
 import { type ComponentExposed } from 'vue-component-type-helpers';
 
-const ErrorViewer = getComponent('ErrorViewer');
-const HelpPopover = getComponent('HelpPopover');
-const ArrayButton = getComponent('ArrayButton');
-const ConfirmationModal = getComponent('ConfirmationModal');
+const { formStructureStore, formDataStore } = getStores();
+
+const ErrorViewer = formStructureStore.getComponent('ErrorViewer');
+const HelpPopover = formStructureStore.getComponent('HelpPopover');
+const ArrayButton = formStructureStore.getComponent('ArrayButton');
+const ConfirmationModal = formStructureStore.getComponent('ConfirmationModal');
 
 const deleteItemsModal = useTemplateRef<
     ComponentExposed<typeof ConfirmationModal>
 >('delete-remaining-items-modal');
 
-const { formData, arrays } = storeToRefs(useFormDataStore());
-const { jsonSchema } = storeToRefs(useFormStructureStore());
+const { formData, arrays } = storeToRefs(formDataStore);
+const { jsonSchema } = storeToRefs(formStructureStore);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const languageProvider = inject(languageProviderKey);

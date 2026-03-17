@@ -1,5 +1,6 @@
 import { computed, type ComputedRef, inject, type Ref, toRef } from 'vue';
 import {
+    formIdProviderKey,
     formStructureProviderKey,
     savePathProviderKey,
 } from '@/components/ProviderKeys';
@@ -15,6 +16,7 @@ import {
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons';
 import { isDefined } from '@/typings/typeValidators.ts';
+import { useFormDataStore } from '@/stores/formData.ts';
 
 /**
  * Injects JSON data, related UI element, and save path.
@@ -151,6 +153,14 @@ export function cleanScope(
     );
 }
 
+export function getStores(inputId?: string) {
+    const id = inputId || inject(formIdProviderKey);
+    if (!id) throw new Error('Form ID provider not found');
+    const formStructureStore = useFormStructureStore(id);
+    const formDataStore = useFormDataStore(id);
+    return { formStructureStore, formDataStore };
+}
+
 /**
  * Retrieves a computed JSON element from a JSON schema based on the provided scope.
  *
@@ -164,7 +174,7 @@ export function getComputedJsonElement(
 ): ComputedRef<JSONSchema | null> {
     return computed(() => {
         let internal_scope = scope;
-        const { jsonSchema } = storeToRefs(useFormStructureStore());
+        const { jsonSchema } = storeToRefs(getStores().formStructureStore);
         if (!jsonSchema.value) return null;
         internal_scope = cleanScope(internal_scope);
         const data = getJsonPointerSafe(
@@ -184,9 +194,10 @@ export function getComputedJsonElement(
 /**
  * Checks if the given scope has the type `array` in the JSON schema.
  * @param scope
+ * @param formId
  */
-export function isArray(scope: string) {
-    const { jsonSchema } = storeToRefs(useFormStructureStore());
+export function isArray(scope: string, formId: string) {
+    const { jsonSchema } = storeToRefs(getStores(formId).formStructureStore);
     const cleaned_scope = cleanScope(scope);
     const element = getJsonPointerSafe(
         jsonSchema.value || {},
@@ -219,13 +230,14 @@ export function arrayContainsValue(array: any[]): boolean {
 export function computedLabel(
     layout: Ref<Control, Control>
 ): ComputedRef<string> {
-    const { jsonSchema } = storeToRefs(useFormStructureStore());
+    const { jsonSchema } = storeToRefs(getStores().formStructureStore);
     const jsonElement = getComputedJsonElement(layout.value.scope);
+    const required = getComputedRequired(layout);
     return computed(() => {
         if (!jsonSchema.value) return '';
         return (
             jsonElement.value?.title ||
             titleCase(layout.value.scope.split('/').pop() || '')
-        ).concat(getComputedRequired(layout).value ? '*' : '');
+        ).concat(required.value ? '*' : '');
     });
 }

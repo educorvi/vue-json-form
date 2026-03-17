@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { BFormSelect } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { computed, watch } from 'vue';
 import type { TitlesForEnum } from '@educorvi/vue-json-form-schemas';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { hasOption } from '@/typings/typeValidators.ts';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formDataStore } = getStores();
+
+const { formData } = storeToRefs(formDataStore);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 

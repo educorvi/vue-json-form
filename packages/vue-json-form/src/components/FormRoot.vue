@@ -3,6 +3,7 @@
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         @invalid.capture="formStateWasValidated = true"
+        :id="id"
         v-if="storedUiSchema && storedJsonSchema"
         :class="formClass"
     >
@@ -38,7 +39,6 @@ import {
     setActivePinia,
     storeToRefs,
 } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure';
 import {
     type JSONSchema,
     EmptyValidator,
@@ -50,15 +50,16 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import { useFormDataStore } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
+    formIdProviderKey,
     languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import {
     checkUiSchemaVersion,
     generateUISchema,
+    generateUUID,
     SUPPORTED_UISCHEMA_VERSION,
 } from '@/Commons';
 import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
@@ -71,6 +72,7 @@ import { isLayout, isWizard } from '@/typings/typeValidators';
 import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
 import { flattenData } from '@/stores/helpers/flattenData.ts';
 import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
+import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     /**
@@ -135,7 +137,16 @@ const props = defineProps<{
      * Provides internationalized string, for example for validation errors
      */
     languageProvider?: LanguageProvider;
+
+    /**
+     * Optional stable identifier for this form instance.
+     * If not provided, a UUID will be generated.
+     */
+    formId?: string;
 }>();
+
+const id = props.formId ?? generateUUID();
+provide(formIdProviderKey, id);
 
 setActivePinia(getActivePinia() || createPinia());
 
@@ -145,6 +156,8 @@ provide(
     props.languageProvider || new AutoLanguageProvider()
 );
 
+const { formStructureStore, formDataStore } = getStores(id);
+
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
@@ -153,10 +166,10 @@ const {
     defaultData,
     buttonWaiting,
     formStateWasValidated,
-} = storeToRefs(useFormStructureStore());
+} = storeToRefs(formStructureStore);
 
 const { formData, defaultFormData, cleanedFormData } =
-    storeToRefs(useFormDataStore());
+    storeToRefs(formDataStore);
 
 const validationErrors: Ref<ValidationErrors<unknown>> = ref({
     general: [],

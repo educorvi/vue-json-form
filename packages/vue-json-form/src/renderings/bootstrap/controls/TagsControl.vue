@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { BFormTags } from 'bootstrap-vue-next';
 
 import { hasOption } from '@/typings/typeValidators';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formDataStore } = getStores();
+const { formData } = storeToRefs(formDataStore);
 
 const { layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);

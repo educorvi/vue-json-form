@@ -61,18 +61,23 @@ function cleanKey(arrayIndices: Map<string, number>, key: string): string {
  * Cleans the data by mapping the array entry values to their indices
  * @param obj - The object to clean
  * @param arrays - The arrays in the form
+ * @param formId - The form id
  * @returns The cleaned data in scopes formatting and as json object
  */
 export function cleanData(
     obj: Readonly<Record<string, any>>,
-    arrays: Readonly<FormArrays>
+    arrays: Readonly<FormArrays>,
+    formId: string
 ): CleanedData {
     /**
      * The scopes with their values
      */
     const scopes: Record<string, any> = {};
 
-    const { arrayIndices, arrays: arrayNames } = getArrayAliasIndices(obj);
+    const { arrayIndices, arrays: arrayNames } = getArrayAliasIndices(
+        obj,
+        formId
+    );
 
     // If an array has an array value and does not contain placeholder keys, it can be assigned as is
     for (const arrayKey of arrayNames) {
@@ -88,7 +93,7 @@ export function cleanData(
 
     // Replace the placeholders in the scopes with the actual index
     for (const [key, value] of Object.entries(obj)) {
-        if (!isArray(key) && value !== undefined) {
+        if (!isArray(key, formId) && value !== undefined) {
             scopes[cleanKey(arrayIndices, key)] = value;
         }
     }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
 import { inject, watch, computed, ref, onMounted } from 'vue';
@@ -9,16 +8,17 @@ import {
     inArrayItemProviderKey,
     languageProviderKey,
 } from '@/components/ProviderKeys.ts';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateFileInput } from '@/formControlInputValidation';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 
 const props = defineProps<{
     required?: boolean;
 }>();
 
-const { formData } = storeToRefs(useFormDataStore());
-const { formStateWasValidated } = storeToRefs(useFormStructureStore());
+const { formDataStore, formStructureStore } = getStores();
+
+const { formData } = storeToRefs(formDataStore);
+const { formStateWasValidated } = storeToRefs(formStructureStore);
 
 const {
     jsonElement,
@@ -89,7 +89,7 @@ const validate = () => {
         minNumberOfFiles,
         maxNumberOfFiles,
         languageProvider,
-        document.querySelector(`input[name='${savePath}']`) as HTMLInputElement
+        document.querySelector(`input[name='${savePath}']`)
     );
 };
 watch(
