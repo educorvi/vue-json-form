@@ -3,8 +3,8 @@ import { ref } from "vue";
 import { generateUISchema } from "@educorvi/vue-json-form";
 import VueJsonPretty from "vue-json-pretty";
 
-const emit = defineEmits<{
-  viewCode: [title: string, object: Record<any, any>];
+defineEmits<{
+  viewCode: [title: string, object: Record<string, unknown>];
 }>();
 
 function download() {
@@ -20,8 +20,8 @@ function download() {
 
 const rawJsonSchema = ref(undefined as File | undefined);
 
-const jsonSchema = ref(undefined as Record<string, any> | undefined);
-const uiSchema = ref(undefined as Record<string, any> | undefined);
+const jsonSchema = ref(undefined as Record<string, unknown> | undefined);
+const uiSchema = ref(undefined as Record<string, unknown> | undefined);
 
 async function generate(evt: Event) {
   evt.preventDefault();

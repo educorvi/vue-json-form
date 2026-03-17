@@ -7,10 +7,10 @@ import VueJsonPretty from "vue-json-pretty";
 const show = ref(false);
 const modalData = ref({
   title: "",
-  json: null as Record<any, any> | null,
+  json: null as Record<string, unknown> | null,
 });
 
-function viewCode(title: string, code: Record<string, any>) {
+function viewCode(title: string, code: Record<string, unknown>) {
   modalData.value = {
     title: title,
     json: code,

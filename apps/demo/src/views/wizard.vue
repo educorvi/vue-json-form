@@ -10,13 +10,13 @@ import uiSchema from "@educorvi/vue-json-form/src/exampleSchemas/wizard/ui.json"
 import { BButton, BButtonGroup, BFormCheckbox } from "bootstrap-vue-next";
 
 const emit = defineEmits<{
-  viewCode: [title: string, object: Record<any, any>];
+  viewCode: [title: string, object: Record<string, unknown>];
 }>();
 
 async function submitMethod(
-  data: Record<string, any>,
-  customSubmitOptions: SubmitOptions,
-  evt: SubmitEvent,
+  data: Record<string, unknown>,
+  _customSubmitOptions: SubmitOptions,
+  _evt: SubmitEvent,
 ) {
   emit("viewCode", "Form Results", data);
 }

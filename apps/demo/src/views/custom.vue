@@ -9,13 +9,13 @@ import { AjvValidator } from "@educorvi/vue-json-form-ajv-validator";
 import { IfThenElseMapper, OneOfToEnumMapper } from "@educorvi/vue-json-form";
 
 const emit = defineEmits<{
-  viewCode: [title: string, object: Record<any, any>];
+  viewCode: [title: string, object: Record<string, unknown>];
 }>();
 
 async function submitMethod(
-  data: Record<string, any>,
-  customSubmitOptions: SubmitOptions,
-  evt: SubmitEvent,
+  data: Record<string, unknown>,
+  _customSubmitOptions: SubmitOptions,
+  _evt: SubmitEvent,
 ) {
   emit("viewCode", "Form Results", data);
 }
@@ -62,8 +62,8 @@ const rawUiSchema = ref(undefined as File | undefined);
 const rawJsonSchemaInput = ref(undefined as string | undefined);
 const rawUiSchemaInput = ref(undefined as string | undefined);
 
-const jsonSchema = ref(undefined as Record<string, any> | undefined);
-const uiSchema = ref(undefined as Record<string, any> | undefined);
+const jsonSchema = ref(undefined as Record<string, unknown> | undefined);
+const uiSchema = ref(undefined as Record<string, unknown> | undefined);
 
 function clear() {
   rawJsonSchema.value = undefined;
