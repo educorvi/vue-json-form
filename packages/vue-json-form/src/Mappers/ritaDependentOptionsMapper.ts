@@ -45,7 +45,6 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         const cleanedData = {
             $selfIndices: getArrayItemIndices(uiElement, this.formId as string),
             ...cleanedFormData,
-            ...cleanedFormData,
         };
         let hasChanges = false;
         const evaluatedRules: [string, boolean][] = [];
