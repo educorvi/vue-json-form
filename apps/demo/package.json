@@ -1,50 +1,51 @@
 {
   "name": "demo",
   "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form.git",
-    "directory": "apps/demo"
-  },
   "dependencies": {
     "@educorvi/vue-json-form": "workspace:^",
     "@educorvi/vue-json-form-ajv-validator": "workspace:^",
     "bootstrap": "^5.3.8",
-    "bootstrap-vue-next": "0.42.0",
+    "bootstrap-vue-next": "0.43.8",
     "bootswatch": "^5.3.8",
-    "sass-embedded": "^1.97.2",
-    "vue": "^3.5.26",
+    "sass-embedded": "^1.97.3",
+    "vue": "^3.5.30",
     "vue-json-pretty": "^2.6.0",
-    "vue-router": "4"
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.2",
     "@semantic-release/exec": "^7.1.0",
     "@tsconfig/node18": "^18.2.6",
-    "@types/node": "^25.0.8",
-    "@vitejs/plugin-vue": "^6.0.3",
+    "@types/node": "^25.3.0",
+    "@vitejs/plugin-vue": "^6.0.4",
     "@vue/tsconfig": "^0.8.1",
     "npm-run-all": "^4.1.5",
-    "playwright": "^1.57.0",
-    "semantic-release": "^25.0.2",
+    "playwright": "^1.58.2",
+    "semantic-release": "^25.0.3",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
     "typescript": "~5.9.3",
-    "unplugin-vue-components": "^30.0.0",
+    "unplugin-vue-components": "^31.0.0",
     "vite": "^7.3.1",
-    "vue-tsc": "^3.2.2"
+    "vite-bundle-analyzer": "^1.3.6",
+    "vue-tsc": "^3.2.4"
   },
   "private": true,
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/educorvi/vue-json-form.git",
+    "directory": "apps/demo"
+  },
   "scripts": {
-    "prepack": "yarn run build:internal",
     "build": "turbo build:internal check-types",
     "build:internal": "vite build",
     "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "dev": "vite",
     "pre-commit": "echo 'No pre commit configured for demo'",
+    "prepack": "yarn run build:internal",
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "test:e2e:dev": "playwright test --ui"

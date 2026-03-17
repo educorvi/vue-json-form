@@ -50,17 +50,17 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import {
-    addFilesToFormdata,
-    flattenData,
-    useFormDataStore,
-} from '@/stores/formData';
+import { useFormDataStore } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
     languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
-import { generateUISchema } from '@/Commons';
+import {
+    checkUiSchemaVersion,
+    generateUISchema,
+    SUPPORTED_UISCHEMA_VERSION,
+} from '@/Commons';
 import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
@@ -69,6 +69,8 @@ import {
 } from '@/intl/LanguageProvider.ts';
 import { isLayout, isWizard } from '@/typings/typeValidators';
 import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
+import { flattenData } from '@/stores/helpers/flattenData.ts';
+import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
 
 const props = defineProps<{
     /**
@@ -245,6 +247,16 @@ async function parseUiSchema(
 ): Promise<UISchema | null> {
     if (uiSchema) {
         if (validator.value.validateUiSchema(uiSchema)) {
+            if (!checkUiSchemaVersion(uiSchema)) {
+                validationErrors.value.uiSchema.validation = [
+                    {
+                        title: 'Invalid UI Schema Version',
+                        path: '/version',
+                        message: `Invalid UI Schema version '${uiSchema.version}' is incompatible with this parser's supported version '${SUPPORTED_UISCHEMA_VERSION}'`,
+                    },
+                ];
+                return null;
+            }
             return uiSchema;
         } else {
             validationErrors.value.uiSchema.validation =

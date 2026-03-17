@@ -1,6 +1,6 @@
 # VueJsonForm
 
-[![Build And Test](https://img.shields.io/github/actions/workflow/status/educorvi/vue-json-form/buildAndTest.yaml?branch=master&style=for-the-badge&label=Build%20And%20Test)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
+[![Build And Test](https://img.shields.io/github/actions/workflow/status/educorvi/vue-json-form/buildAndTest.yaml?branch=main&style=for-the-badge&label=Build%20And%20Test)](https://github.com/educorvi/vue-json-form/actions/workflows/buildAndTest.yaml)
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 
@@ -53,7 +53,7 @@ Basic usage example:
 
 ```vue
 <script setup lang="ts">
-import { VueJsonForm } from '@educorvi/vue-json-form';
+import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 import '@educorvi/vue-json-form/dist/vue-json-form.css';
 
 const jsonSchema = {
@@ -83,6 +83,7 @@ function handleSubmit(data: Record<string, any>) {
     :jsonSchema="jsonSchema" 
     :uiSchema="uiSchema"
     :onSubmitForm="handleSubmit"
+    :renderInterface="bootstrapComponents"
   />
 </template>
 ```

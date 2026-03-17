@@ -1,9 +1,244 @@
 {
-    "$schema": "https://educorvi.github.io/vue-json-form/schemas/ui.schema.json",
-    "version": "2.0",
+    "$schema": "../../../../schemas/dist/ui.schema.json",
+    "version": "2.1",
     "layout": {
         "type": "VerticalLayout",
         "elements": [
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-135"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-135/properties/checkbox"
+                    },
+                    {
+                        "type": "Group",
+                        "showOn": {
+                            "id": "jso-135",
+                            "rule": {
+                                "type": "atom",
+                                "path": "jso-135.checkbox",
+                                "default": false
+                            }
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/jso-135/properties/radio1",
+                                "options": {
+                                    "displayAs": "radiobuttons",
+                                    "stacked": true
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/jso-135/properties/radio2",
+                                "options": {
+                                    "displayAs": "radiobuttons",
+                                    "stacked": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-126"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/boolean-to-depend-on"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-not-required-but-not-shown-as-array",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": true
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/makeRequired"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-required",
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/uploadfield-with-minitems-and-required-and-dependent",
+                        "showOn": {
+                            "id": "ritaRule-uploadfield-with-minitems-and-required-and-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-126.boolean-to-depend-on",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        },
+                        "options": {
+                            "acceptedFileType": "*",
+                            "displayAsSingleUploadField": false
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-126/properties/array-required-and-dependent",
+                        "showOn": {
+                            "id": "ritaRule-array-required-and-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-126.boolean-to-depend-on",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        },
+                        "options": {
+                            "descendantControlOverrides": {}
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Button",
+                "buttonType": "submit",
+                "text": "Submit",
+                "options": {
+                    "disabled": true,
+                    "variant": "primary",
+                    "cssClass": "disabled-submit-button-test-class"
+                }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/requiredUploadField",
+                "options": {
+                    "descendantControlOverrides": {
+                        "/properties/requiredUploadField/properties/upload": {
+                            "options": {
+                                "displayAsSingleUploadField": true
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "type": "Button",
+                "buttonType": "submit",
+                "text": "Submit"
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-112"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/uploooad",
+                        "options": {
+                            "displayAsSingleUploadField": false,
+                            "descendantControlOverrides": {
+                                "/properties/uploooad/items": {
+                                    "options": {
+                                        "acceptedFileType": [
+                                            "application/pdf",
+                                            "image/png"
+                                        ],
+                                        "maxFileSize": 5242880
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-108"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/showJso-108"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-108",
+                        "showOn": {
+                            "type": "EQUALS",
+                            "referenceValue": true,
+                            "path": "showJso-108"
+                        }
+                    },
+                    {
+                        "type": "Buttongroup",
+                        "buttons": [
+                            {
+                                "type": "Button",
+                                "buttonType": "submit",
+                                "text": "Submit"
+                            }
+                        ],
+                        "showOn": {
+                            "type": "EQUALS",
+                            "referenceValue": true,
+                            "path": "showJso-108"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-91"
+                },
+                "elements": [
+                    {
+                        "type": "Modal",
+                        "button": {
+                            "text": "Show additional information in Modal"
+                        },
+                        "modal": {
+                            "title": "Additional information",
+                            "content": "This is some additional information that can be shown in a modal. It supports <strong class=\"text-success\">HTML</strong>.",
+                            "size": "medium"
+                        }
+                    }
+                ]
+            },
             {
                 "type": "Group",
                 "options": {
@@ -208,7 +443,6 @@
                         "type": "Control",
                         "scope": "/properties/singleUpload",
                         "options": {
-                            "acceptedFileType": "*",
                             "maxFileSize": 1000000
                         }
                     },
@@ -216,7 +450,6 @@
                         "type": "Control",
                         "scope": "/properties/multipleUpload",
                         "options": {
-                            "acceptedFileType": "*",
                             "maxFileSize": 1000000
                         }
                     }

@@ -71,6 +71,7 @@ import {
     setDescendantControlOverrides,
     formStructureProviderKey,
     descendantControlOverridesProviderKey,
+    inArrayItemProviderKey,
 } from '@/components/ProviderKeys';
 import {
     cleanScope,
@@ -151,7 +152,8 @@ async function mapFormStructure() {
             mapped = await mapper.map(
                 localJsonElement || {},
                 localUiElement,
-                formData.value
+                formData.value,
+                cleanedFormData.value.json
             );
         }
         if (mapped) {
@@ -261,6 +263,7 @@ const cssClass = computedCssClass(
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
 provide(savePathOverrideProviderKey, undefined);
+provide(inArrayItemProviderKey, props.inArrayItem ?? false);
 
 const control_id_string = controlID(savePath);
 
@@ -368,8 +371,11 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style>
-.hiddenControl {
-    display: none;
+<style lang="scss">
+.vjf_control {
+    display: block;
+    &.hiddenControl {
+        display: none;
+    }
 }
 </style>

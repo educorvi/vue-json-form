@@ -1,6 +1,5 @@
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
 import './styling.scss';
-import 'bootstrap-vue-next/src/styles/styles.scss';
 import ArrayButton from '@/renderings/bootstrap/controls/ArrayButton.vue';
 import ShowOnWrapper from '@/renderings/bootstrap/showOnWrapper.vue';
 import WizardProgress from '@/renderings/bootstrap/WizardProgress.vue';
@@ -19,6 +18,8 @@ import StringControl from '@/renderings/bootstrap/controls/StringControl.vue';
 import FormFieldWrapper from '@/renderings/bootstrap/FormFieldWrapper.vue';
 import VJFButton from '@/renderings/bootstrap/Buttons/VJFButton.vue';
 import FileControl from '@/renderings/bootstrap/controls/FileControl.vue';
+import Modal from '@/renderings/bootstrap/Modal.vue';
+import ConfirmationModal from '@/renderings/bootstrap/ConfirmationModal.vue';
 
 export const bootstrapComponents: RenderInterface = {
     showOnWrapper: ShowOnWrapper,
@@ -39,4 +40,6 @@ export const bootstrapComponents: RenderInterface = {
     DefaultControl: DefaultControl,
     ArrayButton: ArrayButton,
     WizardProgress: WizardProgress,
+    Modal: Modal,
+    ConfirmationModal: ConfirmationModal,
 };

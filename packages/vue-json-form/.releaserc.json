@@ -1,7 +1,8 @@
 {
     "branches": [
         {
-            "name": "release/latest"
+            "name": "release/latest",
+            "channel": "latest"
         },
         {
             "name": "release/2.x",

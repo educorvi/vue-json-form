@@ -35,6 +35,9 @@
             "$ref": "divider.schema.json"
           },
           {
+            "$ref": "modal.schema.json"
+          },
+          {
             "$ref": "button.schema.json"
           },
           {

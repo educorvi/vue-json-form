@@ -4,100 +4,137 @@ import { storeToRefs } from 'pinia';
 import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { getOption } from '@/utilities';
-import { inject, watch, computed } from 'vue';
-import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import { inject, watch, computed, ref, onMounted } from 'vue';
+import {
+    inArrayItemProviderKey,
+    languageProviderKey,
+} from '@/components/ProviderKeys.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';
+import { validateFileInput } from '@/formControlInputValidation';
+import { useFormStructureStore } from '@/stores/formStructure.ts';
+
+const props = defineProps<{
+    required?: boolean;
+}>();
 
 const { formData } = storeToRefs(useFormDataStore());
+const { formStateWasValidated } = storeToRefs(useFormStructureStore());
 
-const { jsonElement, layoutElement, savePath } = injectJsonData();
+const {
+    jsonElement,
+    layoutElement: rawLayoutElement,
+    savePath,
+} = injectJsonData();
 const id = controlID(savePath);
 
 const languageProvider = inject(languageProviderKey);
+const inArrayItem = inject(inArrayItemProviderKey);
+
+const layoutElement = computed(() => {
+    return {
+        ...rawLayoutElement.value,
+        options: {
+            ...rawLayoutElement.value.options,
+            ...(getOption(
+                rawLayoutElement.value,
+                'descendantControlOverrides'
+            )?.[savePath + '/items']?.options || {}),
+        },
+    };
+});
 
 const multiple = computed(() => {
     return jsonElement.value.type === 'array';
 });
 
 const minNumberOfFiles = computed(() => {
-    return jsonElement.value.minItems ?? 0;
+    return Math.max(jsonElement.value.minItems ?? 0, props.required ? 1 : 0);
 });
 
 const maxNumberOfFiles = computed(() => {
     return jsonElement.value.maxItems ?? Number.MAX_SAFE_INTEGER;
 });
 
+const acceptedFileTypes = computed(() => {
+    const acceptedFileType = getOption(
+        layoutElement.value,
+        'acceptedFileType',
+        '*'
+    );
+    if (
+        acceptedFileType === '*' ||
+        (Array.isArray(acceptedFileType) && acceptedFileType.includes('*'))
+    ) {
+        return undefined;
+    }
+    return acceptedFileType;
+});
+
+const valid = ref(true);
+
+const state = computed(() => {
+    if (formStateWasValidated.value) {
+        return valid.value;
+    } else {
+        return undefined;
+    }
+});
+
+const validate = () => {
+    valid.value = validateFileInput(
+        formData.value[savePath],
+        props.required,
+        layoutElement.value.options?.maxFileSize,
+        multiple,
+        minNumberOfFiles,
+        maxNumberOfFiles,
+        languageProvider,
+        document.querySelector(`input[name='${savePath}']`) as HTMLInputElement
+    );
+};
 watch(
-    () => formData.value[savePath],
-    (newVal) => {
-        validateInput(newVal);
-    },
+    [
+        () => formData.value[savePath],
+        () => jsonElement.value,
+        () => layoutElement.value,
+        () => multiple.value,
+        () => minNumberOfFiles.value,
+        () => maxNumberOfFiles.value,
+        () => props.required,
+    ],
+    validate,
     { deep: true }
 );
 
-function validateInput(data: any) {
-    if (data === undefined) {
-        return;
-    }
-    const { maxFileSize } = layoutElement.value.options || {};
-    const el = document.getElementById(id.value) as HTMLInputElement;
-
-    // Validate number of files
+onMounted(() => {
     if (multiple.value) {
-        if (
-            maxNumberOfFiles.value &&
-            (data?.length || 0) > maxNumberOfFiles.value
-        ) {
-            el?.setCustomValidity(
-                languageProvider?.getStringTemplate(
-                    'errors.fileUpload.tooManyFiles',
-                    maxNumberOfFiles.value
-                ) || ''
-            );
-            return;
-        } else if (
-            minNumberOfFiles.value &&
-            (data?.length || 0) < minNumberOfFiles.value
-        ) {
-            el?.setCustomValidity(
-                languageProvider?.getStringTemplate(
-                    'errors.fileUpload.tooFewFiles',
-                    minNumberOfFiles.value
-                ) || ''
-            );
-            return;
-        }
+        formData.value[savePath] = formData.value[savePath] || [];
     }
-    if (maxFileSize) {
-        let dataArray = (Array.isArray(data) ? data : [data]) || [];
-        const tooLargeFiles = dataArray.filter(
-            (file: File) => file.size > maxFileSize
-        );
-        if (tooLargeFiles.length > 0) {
-            el?.setCustomValidity(
-                languageProvider?.getStringTemplate(
-                    'errors.fileUpload.fileTooLarge',
-                    (maxFileSize / 1024 / 1024).toFixed(2),
-                    tooLargeFiles.map((file: File) => file.name).join(', ')
-                ) || ''
-            );
-            return;
-        }
-    }
-
-    el?.setCustomValidity('');
-}
+    validate();
+});
 </script>
 
 <template>
     <BFormFile
         v-model="formData[savePath]"
         :id="id"
-        ref="fileUpload"
-        class="vjf_file"
+        :state="state"
+        :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
-        :accept="getOption(layoutElement, 'acceptedFileType')"
+        :accept="acceptedFileTypes"
+        :required="required"
     />
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.noBorderRadius {
+    & * {
+        border-radius: 0;
+    }
+
+    & > *,
+    & > * > * {
+        height: 100%;
+    }
+}
+</style>

@@ -1,18 +1,22 @@
 import type { DefineComponent } from 'vue';
 import type { ButtonVariant } from 'bootstrap-vue-next';
-import type { Button, Buttongroup } from '@educorvi/vue-json-form-schemas';
+import type {
+    Button,
+    Buttongroup,
+    Modal,
+} from '@educorvi/vue-json-form-schemas';
 
 type ToRuntimeEmits<T> = {
     [K in keyof T]: T[K] extends any[] ? (...args: T[K]) => boolean : any;
 };
 
-type ComponentWithPropsEmitsAndSlots<
+type GenericComponentType<
     Props = {},
     Slots extends Record<string, any> = {},
     Emits extends Record<string, any[]> = {},
+    Exposed extends Record<string, any> = {},
 > = DefineComponent<Props, {}, {}, {}, {}, {}, {}, ToRuntimeEmits<Emits>> & {
-    // This forces strict slot typing on the component instance
-    new (): { $slots: Slots };
+    new (): { $slots: Slots } & Exposed;
 };
 
 export interface ArrayButtonProps {
@@ -29,7 +33,7 @@ export type ArrayButtonSlots = {
     default: (props: {}) => any;
 };
 
-export type ArrayButtonComponent = ComponentWithPropsEmitsAndSlots<
+export type ArrayButtonComponent = GenericComponentType<
     ArrayButtonProps,
     ArrayButtonSlots,
     ArrayButtonEmits
@@ -37,7 +41,7 @@ export type ArrayButtonComponent = ComponentWithPropsEmitsAndSlots<
 
 export type ShowOnWrapperProps = { visible: boolean };
 export type ShowOnWrapperSlots = { default: (props: {}) => any };
-export type ShowOnWrapperComponent = ComponentWithPropsEmitsAndSlots<
+export type ShowOnWrapperComponent = GenericComponentType<
     ShowOnWrapperProps,
     ShowOnWrapperSlots
 >;
@@ -51,14 +55,14 @@ export type FormFieldWrapperSlots = {
     prepend?: (props: {}) => any;
     append?: (props: {}) => any;
 };
-export type FormFieldWrapperComponent = ComponentWithPropsEmitsAndSlots<
+export type FormFieldWrapperComponent = GenericComponentType<
     FormFieldWrapperProps,
     FormFieldWrapperSlots
 >;
 
 export type ErrorViewerProps = { header?: string };
 export type ErrorViewerSlots = { default: (props: {}) => any };
-export type ErrorViewerComponent = ComponentWithPropsEmitsAndSlots<
+export type ErrorViewerComponent = GenericComponentType<
     ErrorViewerProps,
     ErrorViewerSlots
 >;
@@ -75,8 +79,7 @@ export type VjfButtonProps = {
     waiting?: boolean;
 };
 
-export type VjfButtonComponent =
-    ComponentWithPropsEmitsAndSlots<VjfButtonProps>;
+export type VjfButtonComponent = GenericComponentType<VjfButtonProps>;
 
 export type ButtonGroupProps = {
     /**
@@ -84,8 +87,7 @@ export type ButtonGroupProps = {
      */
     layoutElement: Buttongroup;
 };
-export type ButtonGroupComponent =
-    ComponentWithPropsEmitsAndSlots<ButtonGroupProps>;
+export type ButtonGroupComponent = GenericComponentType<ButtonGroupProps>;
 
 export type WizardProgessProps = {
     /** Number of steps in the wizard */
@@ -96,10 +98,42 @@ export type WizardProgessProps = {
 export type WizardProgressEmits = {
     'update:currentStep': [value: number];
 };
-export type WizardProgressComponent = ComponentWithPropsEmitsAndSlots<
+export type WizardProgressComponent = GenericComponentType<
     WizardProgessProps,
     {},
     WizardProgressEmits
 >;
 
-export type ControlComponent = ComponentWithPropsEmitsAndSlots;
+export type ModalProps = {
+    /** The UI Schema of this Element */
+    layoutElement: Modal;
+};
+
+export type ModalComponent = GenericComponentType<ModalProps>;
+
+export type ConfirmationModalProps = {
+    title: string;
+    confirmButtonText?: string;
+    cancelButtonText?: string;
+    hideCancelButton?: boolean;
+    confirmButtonVariant?: ButtonVariant;
+    cancelButtonVariant?: ButtonVariant;
+};
+
+export type ConfirmationModalEmits = {
+    confirm: [];
+    cancel: [];
+};
+
+export type ConfirmationModalSlots = {
+    default: (props: {}) => any;
+};
+
+export type ConfirmationModalComponent = GenericComponentType<
+    ConfirmationModalProps,
+    ConfirmationModalSlots,
+    ConfirmationModalEmits,
+    { show: () => void }
+>;
+
+export type ControlComponent = GenericComponentType;
