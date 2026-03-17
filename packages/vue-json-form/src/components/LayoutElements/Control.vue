@@ -135,7 +135,7 @@ const savePath =
 const mappers: Ref<Mapper[]> = ref([]);
 
 const formStructureMapped = ref({
-    jsonElement: jsonElement.value || ({} as Record<string, any>),
+    jsonElement: jsonElement.value || ({} as Record<string, unknown>),
     uiElement: props.layoutElement,
 });
 
@@ -245,7 +245,8 @@ const htmlMessages = computed(() => {
 const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
 const required = getComputedRequired(mappedUiElement);
 
-let additionalHiddenClass = formStructureMapped.value.uiElement.options?.hidden
+const additionalHiddenClass = formStructureMapped.value.uiElement.options
+    ?.hidden
     ? 'hiddenControl'
     : '';
 
@@ -303,6 +304,7 @@ const controlType = computed(() => {
      */
     if (
         typeof formStructureMapped.value.jsonElement?.items === 'object' &&
+        formStructureMapped.value.jsonElement.items &&
         'enum' in formStructureMapped.value.jsonElement.items &&
         formStructureMapped.value.jsonElement.type === 'array'
     ) {

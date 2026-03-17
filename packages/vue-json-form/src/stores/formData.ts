@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { defineStore } from 'pinia';
 import { cleanData } from '@/stores/helpers/cleanData.ts';
 import { getArrayAliasIndices } from '@/stores/helpers/array.ts';

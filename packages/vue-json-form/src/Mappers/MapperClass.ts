@@ -155,8 +155,8 @@ export abstract class MapperWithData extends Mapper {
     abstract map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>,
-        cleanedData: Readonly<Record<string, any>>
+        data: Readonly<Record<string, unknown>>,
+        cleanedData: Readonly<Record<string, unknown>>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;

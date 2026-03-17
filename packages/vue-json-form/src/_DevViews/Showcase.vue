@@ -7,12 +7,15 @@ import { VueJsonForm } from '@/main.ts';
 import json from '../exampleSchemas/showcase/schema.json';
 import ui from '../exampleSchemas/showcase/ui.json';
 
-import { nextTick, ref, type Ref, watch } from 'vue';
+import { ref, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | Record<string, unknown>> = ref(undefined);
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(
+    data: Record<string, unknown>,
+    options: SubmitOptions
+) {
     formData.value = data;
     switch (options.action) {
         case 'console':

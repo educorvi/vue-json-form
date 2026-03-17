@@ -1,10 +1,4 @@
-import {
-    type ComputedRef,
-    inject,
-    type InjectionKey,
-    provide,
-    type Ref,
-} from 'vue';
+import { inject, type InjectionKey, provide, type Ref } from 'vue';
 import type {
     Control,
     DescendantControlOverride,
@@ -56,7 +50,7 @@ export function setDescendantControlOverride(
     if (!overridesMap) {
         overridesMap = {};
     }
-    let oldOverrides = overridesMap[scope];
+    const oldOverrides = overridesMap[scope];
     if (oldOverrides) {
         overridesMap[scope] = {
             showOn: overrides.showOn || oldOverrides.showOn,

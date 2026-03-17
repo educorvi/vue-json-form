@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isArray } from '@/computedProperties/json.ts';
 import { isArrayItemKey } from '@/Commons.ts';
 import { setPropertyByScope } from '@/stores/helpers/setPropertyByScope.ts';

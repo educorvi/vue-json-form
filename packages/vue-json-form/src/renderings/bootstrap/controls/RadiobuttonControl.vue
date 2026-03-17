@@ -24,6 +24,7 @@ const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {
         return [];
     }
     return (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         jsonElement.value.enum.map((key: any) => {
             const textVals =
                 (hasOption(layoutElement.value, 'enumTitles') &&
@@ -36,7 +37,7 @@ const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {
 });
 
 const displaySettings = computed(() => {
-    let stacked: boolean = getOption(layoutElement.value, 'stacked', false);
+    const stacked: boolean = getOption(layoutElement.value, 'stacked', false);
     if (isEnumButtonsConfig(layoutElement.value.options)) {
         return {
             displayAs: 'buttons',

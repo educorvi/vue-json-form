@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Button } from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
-import { BButton } from 'bootstrap-vue-next';
 import { generateUUID } from '@/Commons';
 import { storeToRefs } from 'pinia';
 import { getStores } from '@/computedProperties/json.ts';

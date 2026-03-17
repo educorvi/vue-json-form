@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import {
-    EnglishLanguageProvider,
     RitaDependentOptionsMapper,
     type SubmitOptions,
     VueJsonForm,
@@ -35,12 +34,12 @@ import ui from '../exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
+import { ref, type Ref } from 'vue';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
 import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';
 
-const presetData: Ref<Record<string, any> | undefined> = ref({
+const presetData: Ref<Record<string, unknown> | undefined> = ref({
     'jso-39-multiselect': ['option 2', 'option 3'],
     'jso-39-string': 'Test',
     'jso-39-array': ['Hello', 'World'],
@@ -54,9 +53,12 @@ const presetData: Ref<Record<string, any> | undefined> = ref({
     ],
 });
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | Record<string, unknown>> = ref(undefined);
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(
+    data: Record<string, unknown>,
+    options: SubmitOptions
+) {
     formData.value = data;
     switch (options.action) {
         case 'console':

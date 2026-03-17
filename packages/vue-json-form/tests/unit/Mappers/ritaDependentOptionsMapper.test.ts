@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import type {
     JSONSchema,
     Control,
@@ -8,6 +7,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { RitaDependentOptionsMapper } from '@/Mappers/ritaDependentOptionsMapper';
 import * as utilities from '@/utilities';
+import { getStores } from '@/computedProperties/json.ts';
 
 // Mock utilities only - formData mock is no longer needed
 vi.mock('@/utilities', () => ({
@@ -40,7 +40,7 @@ describe('RitaDependentOptionsMapper', () => {
         setActivePinia(pinia);
 
         // Create a fresh store instance for each test
-        const formDataStore = useFormDataStore();
+        const { formDataStore } = getStores('test');
 
         // Mock the arrayAliasIndices getter to return a simple map
         vi.spyOn(formDataStore, 'arrayAliasIndices', 'get').mockReturnValue(
@@ -110,7 +110,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 jsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             expect(mockGetOption).toHaveBeenCalledWith(
@@ -167,7 +168,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 jsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             expect(consoleWarnSpy).toHaveBeenCalledWith(
@@ -197,7 +199,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 jsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             expect(mockGetOption).toHaveBeenCalledWith(
@@ -285,7 +288,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             // Test Case 1: field1 active, field2 not 123
@@ -358,7 +362,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const data = { dataRoot: { field1: 'inactive' } };
@@ -408,7 +413,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const data = { dataRoot: { field1: 'active' } };
@@ -458,7 +464,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const data = { dataRoot: { field1: 'inactive' } };
@@ -504,7 +511,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const data = { dataRoot: { field1: 'inactive' } };
@@ -552,7 +560,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 initialJsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const data = { dataRoot: { field1: 'inactive' } };
@@ -629,7 +638,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 jsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             const dependencies = mapper.getDependencies();
@@ -659,7 +669,8 @@ describe('RitaDependentOptionsMapper', () => {
                 scope,
                 savePath,
                 jsonElement,
-                uiElement
+                uiElement,
+                'test'
             );
 
             expect(mapper.getDependencies()).toEqual([]);

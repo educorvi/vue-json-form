@@ -6,7 +6,7 @@ import {
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 function resetErrors(savePath: string) {
-    let selector = `input[type='checkbox'][name='${savePath}']`;
+    const selector = `input[type='checkbox'][name='${savePath}']`;
     const el = document.querySelectorAll(selector);
     el.forEach((e) => {
         if (isElementWithCustomValidity(e)) {

@@ -11,7 +11,7 @@ import type {
 
 const props = defineProps<FormFieldWrapperProps>();
 
-const { jsonElement, layoutElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement } = injectJsonData();
 
 const isObjectOrArrayView = getIsObjectOrArrayViewComputed(
     jsonElement,

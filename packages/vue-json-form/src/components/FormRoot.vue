@@ -80,6 +80,7 @@ const props = defineProps<{
      * @param data The data of the form
      */
     onSubmitForm: (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data: Record<string, any>,
         customSubmitOptions: SubmitOptions,
         evt: SubmitEvent
@@ -88,12 +89,12 @@ const props = defineProps<{
     /**
      * The JSON Schema of the form
      */
-    jsonSchema: Record<string, any>;
+    jsonSchema: Record<string, unknown>;
 
     /**
      * The UI Schema of the form
      */
-    uiSchema?: Record<string, any>;
+    uiSchema?: Record<string, unknown>;
 
     /**
      * The Render Interface
@@ -104,7 +105,7 @@ const props = defineProps<{
     /**
      * Data that should be loaded into the form.
      */
-    presetData?: Record<string, any>;
+    presetData?: Record<string, unknown>;
 
     /**
      * Options for the generation of the UI-Schema if no UI-Schema is provided
@@ -161,7 +162,7 @@ const { formStructureStore, formDataStore } = getStores(id);
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
-    mappers,
+    mappers: storedMappers,
     components,
     defaultData,
     buttonWaiting,
@@ -243,7 +244,7 @@ function resetForm(evt: Event) {
 }
 
 async function parseJsonSchema(
-    jsonSchema: Record<string, any>
+    jsonSchema: Record<string, unknown>
 ): Promise<JSONSchema | null> {
     if (validator.value.validateJsonSchema(jsonSchema)) {
         return jsonSchema;
@@ -255,7 +256,7 @@ async function parseJsonSchema(
 }
 
 async function parseUiSchema(
-    uiSchema: Record<string, any> | undefined,
+    uiSchema: Record<string, unknown> | undefined,
     jsonSchema: JSONSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
@@ -283,16 +284,16 @@ async function parseUiSchema(
 
 async function assignStoreData(
     obj: {
-        jsonSchema: Record<string, any>;
-        uiSchema: Record<string, any> | undefined;
+        jsonSchema: Record<string, unknown>;
+        uiSchema: Record<string, unknown> | undefined;
         renderInterface: RenderInterface | undefined;
-    } & Record<string, any>
+    } & Record<string, unknown>
 ) {
     components.value = obj.renderInterface
         ? markRaw(obj.renderInterface)
         : undefined;
 
-    mappers.value = props.mappers || [];
+    storedMappers.value = props.mappers || [];
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);
@@ -314,10 +315,10 @@ provide(requiredProviderKey, true);
 onBeforeMount(async () => {
     try {
         await validator.value.initialize();
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('Failed to initialize validator');
         console.error(e);
-        validationErrors.value.general = [e];
+        validationErrors.value.general = [e as Error];
     }
     await assignStoreData({
         jsonSchema: props.jsonSchema,

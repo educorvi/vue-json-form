@@ -99,8 +99,8 @@ test('JSO-126 - Array with minItems (not required)', async ({ page }) => {
     await submitForm(page);
     await expect(page.locator('#result-container')).toBeVisible();
 
-    let resultText = await page.locator('#result-container').textContent();
-    let res = JSON.parse(resultText || '');
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
     expect(res['jso-126']).toBeUndefined();
 
     await page.goto(REPRODUCE_URL);
@@ -556,8 +556,8 @@ test('Pattern string', async ({ page }) => {
         .fill('mystring-abc');
     await submitForm(page);
 
-    let resultText = await page.locator('#result-container').textContent();
-    let res = JSON.parse(resultText || '');
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
     expect(res['patternString']).toEqual('mystring-abc');
 });
 
@@ -937,7 +937,7 @@ test('JSO-7', async ({ page }) => {
         .fill('test@example.com');
     await submitForm(page);
 
-    let resultText = await page.locator('#result-container').textContent();
-    let res = JSON.parse(resultText || '');
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
     expect(res['email']).toEqual('test@example.com');
 });

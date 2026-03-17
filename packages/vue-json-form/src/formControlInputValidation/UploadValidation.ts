@@ -2,7 +2,7 @@ import type { ComputedRef } from 'vue';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export function validateFileInput(
-    data: any,
+    data: unknown,
     required: boolean,
     maxFileSize: number | undefined,
     isMultipleUpload: ComputedRef<boolean>,
@@ -18,7 +18,8 @@ export function validateFileInput(
     if (isMultipleUpload.value) {
         if (
             maxNumberOfFiles.value &&
-            (data?.length || 0) > maxNumberOfFiles.value
+            Array.isArray(data) &&
+            (data.length || 0) > maxNumberOfFiles.value
         ) {
             if (maxNumberOfFiles.value === 1) {
                 el.setCustomValidity(
@@ -37,8 +38,9 @@ export function validateFileInput(
             return false;
         } else if (
             minNumberOfFiles.value &&
-            (data?.length || 0) < minNumberOfFiles.value &&
-            (required || data?.length > 0)
+            Array.isArray(data) &&
+            (data.length || 0) < minNumberOfFiles.value &&
+            (required || data.length > 0)
         ) {
             if (minNumberOfFiles.value === 1) {
                 el.setCustomValidity(

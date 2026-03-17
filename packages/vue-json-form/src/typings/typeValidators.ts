@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
     EnumOptions,
     JSONSchema,
@@ -30,7 +31,7 @@ export type IndexType = string | number | symbol;
  * @param obj - The object in which to check for the key.
  * @return A boolean indicating whether the key exists in the object.
  */
-export function isKeyOf<T extends Object>(
+export function isKeyOf<T extends object>(
     key: IndexType,
     obj: T
 ): key is keyof T {

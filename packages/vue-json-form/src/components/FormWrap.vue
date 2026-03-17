@@ -66,7 +66,7 @@ function getControlComponent(name: string | undefined) {
 
 const layoutComponent = markRaw(getControlComponent(props.layoutElement.type));
 
-let localLayoutElement: LayoutElement = props.layoutElement;
+const localLayoutElement: LayoutElement = props.layoutElement;
 
 const overridesMap: DescendantControlOverrides | undefined = inject(
     descendantControlOverridesProviderKey

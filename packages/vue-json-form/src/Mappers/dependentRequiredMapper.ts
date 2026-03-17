@@ -67,7 +67,7 @@ export class DependentRequiredMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        data: Readonly<Record<string, unknown>>
     ): Promise<{
         jsonElement: JSONSchema;
         uiElement: Control;

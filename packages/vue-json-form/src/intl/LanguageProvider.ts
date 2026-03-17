@@ -3,21 +3,26 @@ import English from './english.json';
 
 export abstract class LanguageProvider {
     abstract getString(key: string): string;
-    getStringTemplate(key: string, ...data: any[]): string {
+    getStringTemplate(key: string, ...data: unknown[]): string {
         let value = this.getString(key);
         const placeholders = value.match(/!&data&!/g) || [];
         placeholders.forEach((_, i) => {
-            value = value.replace(/!&data&!/, data[i] || '');
+            value = value.replace(/!&data&!/, String(data[i]) || '');
         });
         return value;
     }
 }
 
+type ValueOrRecord<T> = { [key: string]: T | ValueOrRecord<T> };
+
 export abstract class JSONLanguageProvider extends LanguageProvider {
     abstract data: typeof English;
     getString(key: string): string {
-        let obj: any = this.data;
-        for (let subKey of key.split('.')) {
+        let obj: ValueOrRecord<string> | string | undefined = this.data;
+        for (const subKey of key.split('.')) {
+            if (typeof obj !== 'object') {
+                return key;
+            }
             obj = obj?.[subKey];
             if (obj === undefined) {
                 return key;

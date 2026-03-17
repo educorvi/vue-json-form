@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { BFormCheckboxGroup, type CheckboxOption } from 'bootstrap-vue-next';
+import {
+    BFormCheckboxGroup,
+    type CheckboxOption,
+    type CheckboxValue,
+} from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
@@ -23,13 +27,14 @@ const languageProvider = inject(languageProviderKey);
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
-let options: ComputedRef<CheckboxOption[]> = computed(() => {
+const options: ComputedRef<CheckboxOption[]> = computed(() => {
     if (!hasEnumValuesForItems(jsonElement.value)) {
         return [];
     } else {
         return (
             jsonElement.value.items.enum.map((key) => {
-                const textVals: Record<any, any> =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const textVals: Record<any, unknown> =
                     getOption(layoutElement.value, 'enumTitles') || {};
                 const text = textVals[key] || key;
                 return { value: key, text };
@@ -41,7 +46,7 @@ let options: ComputedRef<CheckboxOption[]> = computed(() => {
 const valid = ref(true);
 
 // this is done because v-model writes the values in the order they are clicked, not the order they are defined in the schema
-const values = ref<any[]>([]);
+const values = ref<CheckboxValue[]>([]);
 watch(
     values,
     (newVal) => {

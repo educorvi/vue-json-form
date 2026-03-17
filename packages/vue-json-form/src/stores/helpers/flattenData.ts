@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons.ts';
 
 export function flattenArray(

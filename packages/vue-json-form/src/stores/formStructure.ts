@@ -1,4 +1,5 @@
-import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { defineStore } from 'pinia';
 import type {
     Layout,
     JSONSchema,
@@ -69,7 +70,7 @@ export function createUseFormStructureStore(formId: string) {
                 if (!state.jsonSchema) {
                     return {};
                 }
-                let data = getDefaultData(state.jsonSchema);
+                const data = getDefaultData(state.jsonSchema);
                 Object.entries(data).forEach(([key, value]) => {
                     if (Array.isArray(value)) {
                         flattenArray(value, data, key);

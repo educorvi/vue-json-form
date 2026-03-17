@@ -32,8 +32,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        _: Readonly<Record<string, any>>,
-        cleanedFormData: Readonly<Record<string, any>>
+        _: Readonly<Record<string, unknown>>,
+        cleanedFormData: Readonly<Record<string, unknown>>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -52,8 +52,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
             evaluatedRules.push([key, await rule.evaluate(cleanedData)]);
         }
         const hiddenOptions = evaluatedRules
-            .filter(([_, value]) => !value)
-            .map(([key, _]) => key);
+            .filter(([, value]) => !value)
+            .map(([key]) => key);
         if (hiddenOptions.length > 0) {
             newJsonElement.enum = newJsonElement.enum?.filter(
                 (i) => !hiddenOptions.includes(i)
@@ -85,11 +85,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
             formId
         );
         const depsSet = new Set<string>();
-        this.depsRuleMap = this.getOptionFilterDependencies(
-            uiElement,
-            depsSet,
-            savePath
-        );
+        this.depsRuleMap = this.getOptionFilterDependencies(uiElement, depsSet);
         this.dependencies = Array.from(depsSet);
     }
 
@@ -98,13 +94,11 @@ export class RitaDependentOptionsMapper extends MapperWithData {
      *
      * @param uiElement - The UI control element containing option filters.
      * @param depsSet - A set to collect dependency paths.
-     * @param savePath - The save path (unused in current implementation but available).
      * @returns A map of rule IDs to parsed RITA rules.
      */
     private getOptionFilterDependencies(
         uiElement: Control,
-        depsSet: Set<string>,
-        savePath: string
+        depsSet: Set<string>
     ) {
         const depsRuleMap: Record<IndexType, ParsedRule> = {};
         const optionFilters = getOption(uiElement, 'optionFilters');
@@ -123,7 +117,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
                             path.split('[')[0]?.split('.').join('/properties/');
                         depsSet.add(mappedPath);
                     }
-                } catch (e) {
+                } catch {
                     console.warn(`Invalid rule ${rule.id} for option ${key}`);
                 }
             }

@@ -7,7 +7,7 @@
  * UI Schema (e.g., forcing a field to be `required`).
  */
 import jsonPointer from 'json-pointer';
-import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
+import deepmerge from 'deepmerge';
 import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
@@ -45,7 +45,7 @@ enum ConditionType {
 type Condition = {
     key: string;
     savePath: string;
-    value: any;
+    value: unknown;
     type: ConditionType;
 };
 
@@ -118,7 +118,7 @@ export class IfThenElseMapper extends MapperWithData {
         IfConditions,
     ]): Condition {
         let conditionType: ConditionType;
-        let conditionValue: any;
+        let conditionValue: Condition['value'];
         if ('const' in condition) {
             conditionType = ConditionType.CONST;
             conditionValue = condition.const;
@@ -144,7 +144,7 @@ export class IfThenElseMapper extends MapperWithData {
             throw new Error('Invalid condition');
         }
 
-        let conditionSavePath = this.scopeToSavePath(key);
+        const conditionSavePath = this.scopeToSavePath(key);
 
         return {
             value: conditionValue,
@@ -156,7 +156,7 @@ export class IfThenElseMapper extends MapperWithData {
 
     private scopeToSavePath(scope: string) {
         let conditionSavePath = scope;
-        let splitSavePath = this.savePath?.split('/');
+        const splitSavePath = this.savePath?.split('/');
         for (let i = splitSavePath?.length ?? 0; i >= 0; --i) {
             const remainingSavePath = splitSavePath?.slice(0, i).join('/');
             if (!remainingSavePath) {
@@ -179,9 +179,9 @@ export class IfThenElseMapper extends MapperWithData {
         objectScope: string
     ) {
         const conditions: Condition[] = [];
-        let requireds: string[] =
+        const requireds: string[] =
             'required' in ifJson ? ifJson.required || [] : [];
-        for (let required of requireds) {
+        for (const required of requireds) {
             const scope = objectScope + '/properties/' + required;
             const savePath = this.scopeToSavePath(scope);
             if (!existingConditions.some((c) => c.savePath === savePath))
@@ -272,31 +272,27 @@ export class IfThenElseMapper extends MapperWithData {
 
         return ifThenElses
             .map((ifThen) => {
-                const thenResult = getPropertyByString(
+                const thenResult = getPropertyByString<JSONSchema>(
                     ifThen.then,
                     deltaPath,
-                    '/',
-                    null
+                    '/'
                 );
-                const elseResult = getPropertyByString(
+                const elseResult = getPropertyByString<JSONSchema>(
                     ifThen.else,
                     deltaPath,
-                    '/',
-                    null
+                    '/'
                 );
 
                 const parentDeltaPath = sliceScope(deltaPath, -2);
-                const thenRequired = getPropertyByString(
+                const thenRequired = getPropertyByString<string[]>(
                     ifThen.then,
                     parentDeltaPath + '/required',
-                    '/',
-                    null
+                    '/'
                 );
-                const elseRequired = getPropertyByString(
+                const elseRequired = getPropertyByString<string[]>(
                     ifThen.else,
                     parentDeltaPath + '/required',
-                    '/',
-                    null
+                    '/'
                 );
 
                 if (
@@ -342,7 +338,7 @@ export class IfThenElseMapper extends MapperWithData {
 
     checkConditionFulfilled(
         condition: Condition,
-        data: Readonly<Record<string, any>>
+        data: Readonly<Record<string, unknown>>
     ): boolean {
         if (!this.savePath || !this.scope) {
             return false;
@@ -353,7 +349,10 @@ export class IfThenElseMapper extends MapperWithData {
                 // return actualValue === condition.value;
                 return deepEqual(actualValue, condition.value);
             case ConditionType.ENUM:
-                return condition.value.includes(actualValue);
+                return (
+                    Array.isArray(condition.value) &&
+                    condition.value.includes(actualValue)
+                );
             case ConditionType.CONTAINS_CONST:
                 if (!Array.isArray(actualValue)) {
                     return false;
@@ -363,9 +362,16 @@ export class IfThenElseMapper extends MapperWithData {
                 if (!Array.isArray(actualValue)) {
                     return false;
                 }
-                return actualValue.some((a) => condition.value.includes(a));
+                return actualValue.some(
+                    (a) =>
+                        Array.isArray(condition.value) &&
+                        condition.value.includes(a)
+                );
             case ConditionType.MIN_LENGTH:
-                return (actualValue?.length ?? 0) >= condition.value;
+                return (
+                    (Array.isArray(actualValue) ? actualValue.length : 0) >=
+                    (typeof condition.value === 'number' ? condition.value : 0)
+                );
             case ConditionType.REQUIRED:
                 return isNotNullOrUndefined(actualValue) && actualValue !== '';
         }
@@ -374,7 +380,7 @@ export class IfThenElseMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        data: Readonly<Record<string, unknown>>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -412,7 +418,7 @@ export class IfThenElseMapper extends MapperWithData {
 
             const props = fulfilled ? thenResult || {} : elseResult || {};
 
-            for (let [key, val] of Object.entries(props)) {
+            for (const [key, val] of Object.entries(props)) {
                 if (isValidJsonSchemaKey(key)) {
                     if (typeof val !== 'object') {
                         // Only update if the value actually changed
@@ -423,9 +429,8 @@ export class IfThenElseMapper extends MapperWithData {
                     } else {
                         if (val) {
                             const overwriteMerge = (
-                                destinationArray: any[],
-                                sourceArray: any[],
-                                options: ArrayMergeOptions
+                                _destinationArray: unknown[],
+                                sourceArray: unknown[]
                             ) => sourceArray;
                             const merged = deepmerge(
                                 newJsonElement[key] || {},

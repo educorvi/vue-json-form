@@ -53,7 +53,7 @@ const languageProvider = inject(languageProviderKey);
 const id = controlID(savePath);
 const required = getComputedRequired(layoutElement);
 
-function addField(skipFocus = false, value?: any) {
+function addField(skipFocus = false, value?: unknown) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');

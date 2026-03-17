@@ -1,11 +1,14 @@
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import prettierConfig from '@vue/eslint-config-prettier'
-import unusedImports from 'eslint-plugin-unused-imports'
+import {
+    defineConfigWithVueTs,
+    vueTsConfigs,
+} from '@vue/eslint-config-typescript';
+import prettierConfig from '@vue/eslint-config-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default defineConfigWithVueTs(
     {
-        ignores: ['dist/**', 'coverage/**'],
+        ignores: ['dist/**', 'coverage/**', 'tests/**'],
     },
     vueTsConfigs.recommended,
     prettierConfig,
@@ -31,5 +34,5 @@ export default defineConfigWithVueTs(
         rules: {
             '@typescript-eslint/no-require-imports': 'off',
         },
-    },
-)
+    }
+);

@@ -4,6 +4,7 @@ import type {
     WizardProgessProps,
     WizardProgressEmits,
 } from '@/renderings/PropsAndEmitsForRenderings.ts';
+import { generateUUID } from '@/Commons.ts';
 
 const props = defineProps<WizardProgessProps>();
 const emit = defineEmits<WizardProgressEmits>();
@@ -65,6 +66,7 @@ watch(
     },
     { immediate: true }
 );
+const id = generateUUID();
 </script>
 <template>
     <div class="wrappers-parent">
@@ -80,6 +82,7 @@ watch(
                         { length: props.numberOfPages },
                         (_, i) => i + 1
                     )"
+                    :key="id + stepNumber"
                 >
                     <button
                         :disabled="stepNumber > currentStep"
@@ -105,6 +108,7 @@ watch(
                         { length: props.numberOfPages },
                         (_, i) => i + 1
                     )"
+                    :key="id + stepNumber + 'bg'"
                 ></div>
             </div>
             <!--        <BProgress class="stepProgress" :value="currentStep" :max="max - 1" />-->

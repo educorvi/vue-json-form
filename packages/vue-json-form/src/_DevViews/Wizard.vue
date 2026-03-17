@@ -8,7 +8,10 @@ import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const formData = ref({});
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(
+    data: Record<string, unknown>,
+    options: SubmitOptions
+) {
     formData.value = data;
     switch (options.action) {
         case 'console':

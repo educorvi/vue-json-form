@@ -88,7 +88,7 @@ export function getComputedRequired(
     layout: Ref<Control, Control>
 ): ComputedRef<boolean> {
     const grandParentPath = getComputedGrandparentJsonPath(layout);
-    let jsonElement = getComputedJsonElement(
+    const jsonElement = getComputedJsonElement(
         grandParentPath.value + '/required',
         true
     );
@@ -210,11 +210,11 @@ export function isArray(scope: string, formId: string) {
  * Checks if the provided array contains at least one value that is either
  * not a string or not an array item key.
  *
- * @param {any[]} array - The array to check for the presence of a value.
+ * @param {unknown[]} array - The array to check for the presence of a value.
  * @return {boolean} Returns `true` if the array contains a value meeting the condition; otherwise, `false`.
  */
-export function arrayContainsValue(array: any[]): boolean {
-    return array.reduce((prev, curr) => {
+export function arrayContainsValue(array: unknown[]): boolean {
+    return array.reduce<boolean>((prev, curr) => {
         const isValue = !(typeof curr === 'string' && isArrayItemKey(curr));
         return prev || isValue;
     }, false);

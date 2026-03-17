@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isProxy, toRaw } from 'vue';
 
 function readFileDataAsDataUrl(file: File): Promise<string> {
@@ -8,7 +9,7 @@ function readFileDataAsDataUrl(file: File): Promise<string> {
                 resolve(reader.result as string);
             };
             reader.readAsDataURL(file);
-        } catch (e) {
+        } catch {
             console.error('Error reading file', file);
             resolve('');
         }

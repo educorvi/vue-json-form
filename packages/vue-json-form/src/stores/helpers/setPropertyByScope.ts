@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Sets a property on an object based on a scoped key.
  *
