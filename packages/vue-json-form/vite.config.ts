@@ -7,7 +7,6 @@ import dts from 'vite-plugin-dts';
 import pkg from './package.json';
 import { externalizeDeps } from 'vite-plugin-externalize-deps';
 // import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
     define: {

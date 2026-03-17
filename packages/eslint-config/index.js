@@ -1,15 +1,15 @@
 import pluginVue from 'eslint-plugin-vue'
-import vueTsEslintConfig from '@vue/eslint-config-typescript'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import prettierConfig from '@vue/eslint-config-prettier'
 import unusedImports from 'eslint-plugin-unused-imports'
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
+export default defineConfigWithVueTs(
     {
         ignores: ['dist/**', 'coverage/**'],
     },
-    ...pluginVue.configs['flat/essential'],
-    ...vueTsEslintConfig(),
+    pluginVue.configs['flat/essential'],
+    vueTsConfigs.recommended,
     prettierConfig,
     {
         plugins: {
@@ -35,4 +35,4 @@ export default [
             '@typescript-eslint/no-require-imports': 'off',
         },
     },
-]
+)
