@@ -17,6 +17,7 @@
     "semantic-release": "^25.0.3",
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
+    "turbo": "^2.8.17",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4",
@@ -57,7 +58,7 @@
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
     "mergeSchema": "node mergeSchema.cjs",
-    "prepack": "yarn run build:internal"
+    "prepack": "yarn run build"
   },
   "type": "module",
   "types": "./dist/vue-json-form-schemas.d.ts"

@@ -23,6 +23,7 @@
     "semantic-release-monorepo": "^8.0.2",
     "semantic-release-yarn": "^3.0.2",
     "terser": "^5.46.0",
+    "turbo": "^2.8.17",
     "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18",
@@ -64,7 +65,7 @@
     "build:internal:default": "BUILD_TARGET=default vite build",
     "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "check-types": "vue-tsc --noEmit",
-    "prepack": "yarn run build:internal",
+    "prepack": "yarn run build",
     "test:unit": "vitest --run",
     "test:unit:ui": "vitest --ui"
   },
