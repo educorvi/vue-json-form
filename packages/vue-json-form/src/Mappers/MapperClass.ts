@@ -128,7 +128,8 @@ export abstract class MapperWithData extends Mapper {
         savePath: Readonly<string>,
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        formId: Readonly<string>
+        // TODO Breaking Change: remove default
+        formId: Readonly<string> = 'default'
     ): void {
         this.jsonSchema = jsonSchema;
         this.uiSchema = uiSchema;
