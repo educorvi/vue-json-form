@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData.ts';
 import {
     arrayContainsValue,
     computedLabel,
@@ -15,7 +14,6 @@ import {
     isArrayItemKey,
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons.ts';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 import draggable from 'vuedraggable/src/vuedraggable';
 import {
     ref,

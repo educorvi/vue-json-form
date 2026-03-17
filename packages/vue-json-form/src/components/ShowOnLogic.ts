@@ -6,8 +6,6 @@ import type {
     LegacyShowOnProperty,
     ShowOnFunctionType,
 } from '@educorvi/vue-json-form-schemas';
-import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import {
     Atom,
     HasNoLengthError,

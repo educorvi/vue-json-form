@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue';
 import WizardPage from '@/components/LayoutElements/Wizard/WizardPage.vue';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 import type { Wizard as WizardType } from '@educorvi/vue-json-form-schemas';
 import { getStores } from '@/computedProperties/json';
 

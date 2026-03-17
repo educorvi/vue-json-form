@@ -74,9 +74,6 @@ import { flattenData } from '@/stores/helpers/flattenData.ts';
 import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
 import { getStores } from '@/computedProperties/json.ts';
 
-const id = generateUUID();
-provide(formIdProviderKey, id);
-
 const props = defineProps<{
     /**
      * This function will be called when the form is submitted.
@@ -140,7 +137,16 @@ const props = defineProps<{
      * Provides internationalized string, for example for validation errors
      */
     languageProvider?: LanguageProvider;
+
+    /**
+     * Optional stable identifier for this form instance.
+     * If not provided, a UUID will be generated.
+     */
+    formId?: string;
 }>();
+
+const id = props.formId ?? generateUUID();
+provide(formIdProviderKey, id);
 
 setActivePinia(getActivePinia() || createPinia());
 

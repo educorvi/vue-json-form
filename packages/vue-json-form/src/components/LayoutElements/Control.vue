@@ -52,7 +52,6 @@ import type {
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure';
 import { getOption } from '@/utilities';
 import {
     computed,
@@ -91,7 +90,6 @@ import {
     isMapperWithData,
     isMapperWithoutData,
 } from '@/typings/typeValidators';
-import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import { watchDebounced } from '@vueuse/core';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
