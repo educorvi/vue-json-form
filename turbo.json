@@ -13,8 +13,17 @@
       "persistent": true,
       "cache": false
     },
-    "test": {
-      "cache": false
+    "test:all": {
+      "cache": false,
+      "dependsOn": ["test:unit", "test:e2e"]
+    },
+    "test:unit": {
+      "cache": false,
+      "dependsOn": ["^build:internal"]
+    },
+    "test:e2e": {
+      "cache": false,
+      "dependsOn": ["^build:internal"]
     },
     "doc": {
       "outputs": ["docs-dist"],

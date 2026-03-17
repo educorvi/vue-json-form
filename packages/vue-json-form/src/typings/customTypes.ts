@@ -1,4 +1,8 @@
-import type { Layout, LayoutElement } from '@educorvi/vue-json-form-schemas';
+import type {
+    JSONSchema,
+    Layout,
+    LayoutElement,
+} from '@educorvi/vue-json-form-schemas';
 import { type MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
@@ -44,10 +48,13 @@ export type MapperClass = new () => MapperWithData | MapperWithoutData;
 
 export type IfBaseConditions =
     | {
-          const: any;
+          const: NonNullable<JSONSchema['const']>;
       }
     | {
-          enum: any[];
+          enum: NonNullable<JSONSchema['enum']>;
+      }
+    | {
+          minLength: NonNullable<JSONSchema['minLength']>;
       };
 
 export type IfConditions =
@@ -56,11 +63,18 @@ export type IfConditions =
           contains: IfBaseConditions;
       };
 
-export type IfProperty = {
-    properties: {
-        [key: string]: IfConditions | IfProperty;
-    };
-};
+export type IfProperty =
+    | {
+          properties?: {
+              [key: string]: IfConditions | IfProperty;
+          };
+          required?: string[];
+      }
+    | {
+          items: {
+              [key: string]: IfConditions | IfProperty;
+          };
+      };
 export type SupportedIfThenElse = {
     if: IfProperty;
     then: {

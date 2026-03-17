@@ -6,8 +6,6 @@ import type {
     LegacyShowOnProperty,
     ShowOnFunctionType,
 } from '@educorvi/vue-json-form-schemas';
-import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import {
     Atom,
     HasNoLengthError,
@@ -18,7 +16,7 @@ import {
 import type { DependentElement } from '@/typings/customTypes';
 import { mergeDescendantControlOptionsOverrides } from '@/components/ProviderKeys';
 import { VJF_ARRAY_ITEM_PREFIX } from '@/Commons';
-import { cleanScope } from '@/computedProperties/json';
+import { cleanScope, getStores } from '@/computedProperties/json';
 
 function getComparisonFunction<T>(functionName: ShowOnFunctionType) {
     switch (functionName) {
@@ -45,8 +43,11 @@ export const arrayAliasRegex = new RegExp(
     `^([^.\\s]+)\\.(${VJF_ARRAY_ITEM_PREFIX}[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})`
 );
 
-export function getArrayItemIndices(dependentElement: LayoutElement) {
-    const formDataStore = useFormDataStore();
+export function getArrayItemIndices(
+    dependentElement: LayoutElement,
+    formId: string
+) {
+    const { formDataStore } = getStores(formId);
     const arrayItemIndices: Record<string, number> = {};
 
     if (dependentElement.type === 'Control') {
@@ -77,9 +78,10 @@ export function getArrayItemIndices(dependentElement: LayoutElement) {
 }
 
 function checkDependentElement(
-    dependentElement: DependentElement
+    dependentElement: DependentElement,
+    formId: string
 ): Ref<boolean> {
-    const formDataStore = useFormDataStore();
+    const { formDataStore } = getStores(formId);
     if (isLegacyShowOn(dependentElement.showOn)) {
         return computed(() => {
             if (!isLegacyShowOn(dependentElement.showOn)) {
@@ -122,7 +124,10 @@ function checkDependentElement(
             return show;
         }
         formDataStore.$subscribe(() => {
-            const arrayItemIndices = getArrayItemIndices(dependentElement);
+            const arrayItemIndices = getArrayItemIndices(
+                dependentElement,
+                formId
+            );
             // if (Object.keys(arrayItemIndices).length > 0) {
             //     console.log(arrayItemIndices);
             // }
@@ -162,7 +167,8 @@ function checkDependentElement(
 
 export function computedShowOnLogic(
     layoutElement: LayoutElement,
-    descendantControlOverrides: DescendantControlOverrides | undefined
+    descendantControlOverrides: DescendantControlOverrides | undefined,
+    formId: string
 ): Ref<boolean> {
     let localLayoutElement = layoutElement;
     if (layoutElement.type === 'Control') {
@@ -175,6 +181,6 @@ export function computedShowOnLogic(
     if (!isDependentElement(localLayoutElement)) {
         return ref(true);
     } else {
-        return checkDependentElement(localLayoutElement);
+        return checkDependentElement(localLayoutElement, formId);
     }
 }

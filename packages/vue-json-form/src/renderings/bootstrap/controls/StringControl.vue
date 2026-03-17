@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
 import { computed, type ComputedRef, type Ref } from 'vue';
@@ -9,9 +8,11 @@ import type {
     InputOptions,
 } from '@educorvi/vue-json-form-schemas';
 import { isInputType } from '@/typings/typeValidators';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formDataStore } = getStores();
+
+const { formData } = storeToRefs(formDataStore);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);

@@ -38,7 +38,10 @@
     "release": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release -e semantic-release-monorepo",
     "release:dry-run": "yarn workspaces foreach --topological-dev -Av --exclude . run semantic-release --dry-run -e semantic-release-monorepo",
     "setOldVersions": "yarn workspaces foreach -Apv --exclude . exec $(git rev-parse --show-toplevel)/.github/findAndSetOldVersion.mjs",
-    "size": "size-limit"
+    "size": "size-limit",
+    "test": "turbo run test:all",
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "turbo run test:e2e"
   },
   "workspaces": [
     "apps/*",

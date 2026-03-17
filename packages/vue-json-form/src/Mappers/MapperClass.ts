@@ -104,6 +104,7 @@ export abstract class MapperWithData extends Mapper {
     protected scope: string | undefined;
     protected jsonElement: JSONSchema | undefined;
     protected uiElement: Control | undefined;
+    protected formId: string | undefined;
 
     /**
      * Provide schema context for the mapper.
@@ -118,6 +119,7 @@ export abstract class MapperWithData extends Mapper {
      * @param savePath - Data addressing base for the current field/siblings (read-only).
      * @param jsonElement - The JSON Schema fragment describing the current field (read-only).
      * @param uiElement - The corresponding UI schema for the field (read-only).
+     * @param formId - The form ID
      */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
@@ -125,7 +127,9 @@ export abstract class MapperWithData extends Mapper {
         scope: Readonly<string>,
         savePath: Readonly<string>,
         jsonElement: Readonly<JSONSchema>,
-        uiElement: Readonly<Control>
+        uiElement: Readonly<Control>,
+        // TODO Breaking Change: remove default
+        formId: Readonly<string> = 'default'
     ): void {
         this.jsonSchema = jsonSchema;
         this.uiSchema = uiSchema;
@@ -133,6 +137,7 @@ export abstract class MapperWithData extends Mapper {
         this.savePath = savePath;
         this.jsonElement = jsonElement;
         this.uiElement = uiElement;
+        this.formId = formId;
     }
 
     /**

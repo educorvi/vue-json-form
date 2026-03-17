@@ -13,19 +13,24 @@ import type {
     DescendantControlOverrides,
     LayoutElement,
 } from '@educorvi/vue-json-form-schemas';
-import { markRaw, inject } from 'vue';
+import { inject, markRaw } from 'vue';
 import LayoutElements from '@/components/LayoutElements';
 import UnknownComponent from '@/components/UnknownComponent.vue';
 import Buttons from '@/components/Buttons';
-import { getComponent } from '@/stores/formStructure';
 import { computedShowOnLogic } from '@/components/ShowOnLogic';
 import {
     descendantControlOverridesProviderKey,
+    formIdProviderKey,
     mergeDescendantControlOptionsOverrides,
 } from '@/components/ProviderKeys';
-import type { Control } from '@educorvi/vue-json-form-schemas';
+import { getStores } from '@/computedProperties/json.ts';
 
-const showOnWrapper = getComponent('showOnWrapper');
+const { formStructureStore } = getStores();
+
+const showOnWrapper = formStructureStore.getComponent('showOnWrapper');
+
+const formId = inject(formIdProviderKey);
+if (!formId) throw new Error('`formIdProviderKey` is not provided.');
 
 const props = defineProps<{
     /**
@@ -53,7 +58,7 @@ function getControlComponent(name: string | undefined) {
         case 'Buttongroup':
             return Buttons.vjfButtonGroup;
         case 'Modal':
-            return getComponent('Modal');
+            return formStructureStore.getComponent('Modal');
         default:
             return UnknownComponent;
     }
@@ -71,7 +76,7 @@ if (localLayoutElement.type === 'Control') {
     mergeDescendantControlOptionsOverrides(localLayoutElement, overridesMap);
 }
 
-const show = computedShowOnLogic(localLayoutElement, overridesMap);
+const show = computedShowOnLogic(localLayoutElement, overridesMap, formId);
 </script>
 
 <style scoped></style>

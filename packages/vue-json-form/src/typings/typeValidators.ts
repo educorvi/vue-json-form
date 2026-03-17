@@ -185,37 +185,36 @@ export function isSupportedIfCondition(
     return (
         hasProperty(json, 'const') ||
         hasProperty(json, 'enum') ||
+        hasProperty(json, 'minLength') ||
         (hasProperty(json, 'contains') &&
             (hasProperty(json.contains, 'const') ||
                 hasProperty(json.contains, 'enum')))
     );
 }
 
-function isSupportedIfPropertyOrCondition(
-    json: Record<string, any>
-): json is IfProperty['properties'][string] {
+function isSupportedIfProperty(json: Record<string, any>): boolean {
     return (
-        isSupportedIfCondition(json) ||
         (hasProperty(json, 'properties') &&
             Object.values(json.properties).every(
                 (value) =>
                     typeof value === 'object' &&
                     value !== null &&
                     isSupportedIfPropertyOrCondition(value)
-            ))
+            )) ||
+        (hasProperty(json, 'items') &&
+            isSupportedIfPropertyOrCondition(json.items)) ||
+        (hasProperty(json, 'required') && isNotNullOrUndefined(json.required))
     );
 }
 
+function isSupportedIfPropertyOrCondition(
+    json: Record<string, any>
+): json is IfConditions | IfProperty {
+    return isSupportedIfCondition(json) || isSupportedIfProperty(json);
+}
+
 export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
-    return (
-        hasProperty(json, 'properties') &&
-        Object.values(json.properties).every(
-            (value) =>
-                typeof value === 'object' &&
-                value !== null &&
-                isSupportedIfPropertyOrCondition(value)
-        )
-    );
+    return isSupportedIfProperty(json);
 }
 
 export function isSupportedThenOrElse(
@@ -246,6 +245,10 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
  */
 export function allDefined<T>(values: T[]): values is Exclude<T, undefined>[] {
     return values.every(isDefined);
+}
+
+export function isNotNullOrUndefined<T>(value: T): value is NonNullable<T> {
+    return value !== null && value !== undefined;
 }
 
 export function isWizard(element: UISchema['layout']): element is Wizard {

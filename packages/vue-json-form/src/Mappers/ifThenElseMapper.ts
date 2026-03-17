@@ -11,10 +11,11 @@ import deepmerge, { type ArrayMergeOptions } from 'deepmerge';
 import deepEqual from 'fast-deep-equal';
 import { cleanScope } from '@/computedProperties/json.ts';
 import {
-    isIfThenAllOf,
+    isSupportedIf,
     isSupportedIfCondition,
     isSupportedIfThenElse,
     isValidJsonSchemaKey,
+    isNotNullOrUndefined,
 } from '@/typings/typeValidators.ts';
 import { getPropertyByString, sliceScope, getFieldName } from '@/Commons.ts';
 import type {
@@ -24,13 +25,19 @@ import type {
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import { MapperWithData } from '@/Mappers/index.ts';
-import type { IfConditions, IfProperty } from '@/typings/customTypes.ts';
+import type {
+    IfConditions,
+    IfProperty,
+    SupportedIfThenElse,
+} from '@/typings/customTypes.ts';
 
 enum ConditionType {
     CONST = 'const',
     ENUM = 'enum',
     CONTAINS_CONST = 'containsConst',
     CONTAINS_ENUM = 'containsEnum',
+    MIN_LENGTH = 'minLength',
+    REQUIRED = 'required',
 }
 
 /** Describes a single condition coming from `if.properties` where
@@ -129,12 +136,26 @@ export class IfThenElseMapper extends MapperWithData {
                 // This should only ever happen if type checking is wrong
                 throw new Error('Invalid contains condition');
             }
+        } else if ('minLength' in condition) {
+            conditionType = ConditionType.MIN_LENGTH;
+            conditionValue = condition.minLength;
         } else {
             // This should only ever happen if type checking is wrong
             throw new Error('Invalid condition');
         }
 
-        let conditionSavePath = key;
+        let conditionSavePath = this.scopeToSavePath(key);
+
+        return {
+            value: conditionValue,
+            type: conditionType,
+            key,
+            savePath: conditionSavePath,
+        };
+    }
+
+    private scopeToSavePath(scope: string) {
+        let conditionSavePath = scope;
         let splitSavePath = this.savePath?.split('/');
         for (let i = splitSavePath?.length ?? 0; i >= 0; --i) {
             const remainingSavePath = splitSavePath?.slice(0, i).join('/');
@@ -149,33 +170,67 @@ export class IfThenElseMapper extends MapperWithData {
                 break;
             }
         }
+        return conditionSavePath;
+    }
 
-        return {
-            value: conditionValue,
-            type: conditionType,
-            key,
-            savePath: conditionSavePath,
-        };
+    private addRequiredConditions(
+        ifJson: NonNullable<IfProperty>,
+        existingConditions: Condition[],
+        objectScope: string
+    ) {
+        const conditions: Condition[] = [];
+        let requireds: string[] =
+            'required' in ifJson ? ifJson.required || [] : [];
+        for (let required of requireds) {
+            const scope = objectScope + '/properties/' + required;
+            const savePath = this.scopeToSavePath(scope);
+            if (!existingConditions.some((c) => c.savePath === savePath))
+                conditions.push({
+                    key: required,
+                    savePath: savePath,
+                    value: null,
+                    type: ConditionType.REQUIRED,
+                });
+        }
+        return conditions;
     }
 
     private parseConditions(
-        ifJson: IfProperty['properties'],
+        ifJson: NonNullable<IfProperty>,
         scope: string
     ): Condition[] {
         let conditions: Condition[] = [];
-        for (const [key, value] of Object.entries(ifJson)) {
-            const newScope = scope + '/' + key;
-            if (isSupportedIfCondition(value)) {
-                conditions.push(this.parseCondition([newScope, value]));
-            } else {
+        if ('properties' in ifJson) {
+            const newScope = scope + '/properties';
+            const ifJsonProperties = ifJson.properties;
+            for (const [key, value] of Object.entries(ifJsonProperties || {})) {
+                const localNewScope = newScope + '/' + key;
+                if (isSupportedIfCondition(value)) {
+                    conditions.push(
+                        this.parseCondition([localNewScope, value])
+                    );
+                } else {
+                    conditions = conditions.concat(
+                        this.parseConditions(value, localNewScope)
+                    );
+                }
+            }
+            conditions = conditions.concat(
+                this.addRequiredConditions(ifJson, conditions, scope)
+            );
+        } else if ('items' in ifJson) {
+            const newScope = scope + '/items';
+            if (isSupportedIfCondition(ifJson.items)) {
+                conditions.push(this.parseCondition([newScope, ifJson.items]));
+            } else if (isSupportedIf(ifJson.items)) {
                 conditions = conditions.concat(
-                    this.parseConditions(
-                        value.properties,
-                        newScope + '/properties'
-                    )
+                    this.parseConditions(ifJson.items, newScope)
                 );
             }
+        } else {
+            conditions = this.addRequiredConditions(ifJson, conditions, scope);
         }
+
         return conditions;
     }
 
@@ -193,8 +248,21 @@ export class IfThenElseMapper extends MapperWithData {
             return [];
         }
 
-        if (!parentAllOf || !isIfThenAllOf(parentAllOf)) {
+        if (!parentAllOf || !Array.isArray(parentAllOf)) {
             return [];
+        }
+        const ifThenElses: SupportedIfThenElse[] = parentAllOf.filter(
+            isSupportedIfThenElse
+        );
+
+        if (
+            ifThenElses.length > 0 &&
+            ifThenElses.length !== parentAllOf.length
+        ) {
+            console.warn(
+                `Unsupported if/then/else structure(s) detected in ${allOfScope}`,
+                parentAllOf.filter((i) => !isSupportedIfThenElse(i))
+            );
         }
 
         const deltaPath = fieldScope.replace(
@@ -202,56 +270,54 @@ export class IfThenElseMapper extends MapperWithData {
             ''
         );
 
-        return parentAllOf
+        return ifThenElses
             .map((ifThen) => {
-                if (isSupportedIfThenElse(ifThen)) {
-                    const thenResult = getPropertyByString(
-                        ifThen.then,
-                        deltaPath,
-                        '/',
-                        null
-                    );
-                    const elseResult = getPropertyByString(
-                        ifThen.else,
-                        deltaPath,
-                        '/',
-                        null
-                    );
+                const thenResult = getPropertyByString(
+                    ifThen.then,
+                    deltaPath,
+                    '/',
+                    null
+                );
+                const elseResult = getPropertyByString(
+                    ifThen.else,
+                    deltaPath,
+                    '/',
+                    null
+                );
 
-                    const parentDeltaPath = sliceScope(deltaPath, -2);
-                    const thenRequired = getPropertyByString(
-                        ifThen.then,
-                        parentDeltaPath + '/required',
-                        '/',
-                        null
-                    );
-                    const elseRequired = getPropertyByString(
-                        ifThen.else,
-                        parentDeltaPath + '/required',
-                        '/',
-                        null
-                    );
+                const parentDeltaPath = sliceScope(deltaPath, -2);
+                const thenRequired = getPropertyByString(
+                    ifThen.then,
+                    parentDeltaPath + '/required',
+                    '/',
+                    null
+                );
+                const elseRequired = getPropertyByString(
+                    ifThen.else,
+                    parentDeltaPath + '/required',
+                    '/',
+                    null
+                );
 
-                    if (
-                        !thenResult &&
-                        !elseResult &&
-                        !thenRequired &&
-                        !elseRequired
-                    ) {
-                        return undefined;
-                    }
-
-                    return {
-                        conditions: this.parseConditions(
-                            ifThen.if.properties,
-                            sliceScope(allOfScope, -1) + '/properties'
-                        ),
-                        then: thenResult,
-                        else: elseResult,
-                        thenRequired,
-                        elseRequired,
-                    };
+                if (
+                    !thenResult &&
+                    !elseResult &&
+                    !thenRequired &&
+                    !elseRequired
+                ) {
+                    return undefined;
                 }
+
+                return {
+                    conditions: this.parseConditions(
+                        ifThen.if,
+                        sliceScope(allOfScope, -1)
+                    ),
+                    then: thenResult,
+                    else: elseResult,
+                    thenRequired,
+                    elseRequired,
+                };
             })
             .filter((c) => c !== undefined);
     }
@@ -298,6 +364,10 @@ export class IfThenElseMapper extends MapperWithData {
                     return false;
                 }
                 return actualValue.some((a) => condition.value.includes(a));
+            case ConditionType.MIN_LENGTH:
+                return (actualValue?.length ?? 0) >= condition.value;
+            case ConditionType.REQUIRED:
+                return isNotNullOrUndefined(actualValue) && actualValue !== '';
         }
     }
 

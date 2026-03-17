@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { BFormRadioGroup, type CheckboxOptionRaw } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
 import {
     hasOption,
@@ -10,9 +9,11 @@ import {
 } from '@/typings/typeValidators';
 import { computed, type ComputedRef, watch } from 'vue';
 import { getOption } from '@/utilities';
-import { injectJsonData } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formDataStore } = getStores();
+
+const { formData } = storeToRefs(formDataStore);
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {

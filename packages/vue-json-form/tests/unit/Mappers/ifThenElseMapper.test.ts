@@ -321,6 +321,241 @@ describe('IfThenElseMapper', () => {
         expect(uiElement.options?.forceRequired).toBe(true);
     });
 
+    it('supports required-only conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 2 },
+                        },
+                    },
+                    else: {
+                        properties: {
+                            x: { minLength: 0 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/flag': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(2);
+
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(0);
+    });
+
+    it('treats undefined and null as not fulfilled for required conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { title: 'required matched' },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/flag': undefined,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+
+        data = {
+            '/properties/flag': null,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+    });
+
+    it('combines required and const conditions in if', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['mode'],
+                        properties: {
+                            mode: { const: 'strict' },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 4 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/mode': 'strict',
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(4);
+
+        data = {
+            '/properties/mode': 'lenient',
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('supports nested required conditions in if properties', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            group: {
+                                required: ['toggle'],
+                            },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 6 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/group/properties/toggle': 'present',
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBe(6);
+
+        data = {
+            '/properties/group/properties/toggle': null,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('adds dependencies for keys introduced by required conditions in if', () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { minLength: 2 },
+                        },
+                    },
+                },
+                {
+                    if: {
+                        required: ['flag'],
+                    },
+                    then: {
+                        properties: {
+                            x: { maxLength: 10 },
+                        },
+                    },
+                },
+            ],
+        };
+
+        mapper.registerSchemata(
+            jsonSchema,
+            makeLayout(),
+            fieldScope,
+            savePath,
+            {},
+            makeControl(fieldScope)
+        );
+
+        expect(mapper.getDependencies()).toEqual(['/properties/flag']);
+    });
+
     it('handles deep conditions for shallow fields', async () => {
         const fieldScope = '/properties/target';
         const savePath = '/properties/x';
@@ -751,5 +986,465 @@ describe('IfThenElseMapper', () => {
         data = { '/properties/tags': 'urgent' };
         result = await mapper.map(initialJson, ui, data);
         expect(result!.jsonElement.minLength).toBeUndefined();
+    });
+
+    it('dependentField is conditionally required when isEnabled is true', async () => {
+        const fieldScope = '/properties/dependentField';
+        const savePath = '/properties/dependentField';
+
+        const jsonSchema: JSONSchema = {
+            title: 'problem required in if then ändert parent',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            isEnabled: {
+                                const: true,
+                            },
+                        },
+                        required: ['isEnabled'],
+                    },
+                    then: {
+                        properties: {
+                            dependentField: {
+                                minLength: 1,
+                            },
+                        },
+                        required: ['dependentField'],
+                    },
+                },
+            ],
+            properties: {
+                isEnabled: {
+                    title: 'isEnabled',
+                    type: 'boolean',
+                },
+                dependentField: {
+                    title: 'dependentField',
+                    type: 'string',
+                    minLength: 1,
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: isEnabled is true - dependentField should be required
+        let data: Record<string, any> = {
+            '/properties/isEnabled': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: isEnabled is false - dependentField should not be required
+        data = {
+            '/properties/isEnabled': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        // When condition is not met, forceRequired should not be set or should be falsy
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: isEnabled is undefined/missing - dependentField should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('dependentField is conditionally required when isEnabled is true (long)', async () => {
+        const fieldScope = '/properties/dependentField';
+        const savePath = '/properties/dependentField';
+
+        const jsonSchema: JSONSchema = {
+            title: 'problem required in if then ändert parent',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            isEnabled: {
+                                const: true,
+                            },
+                        },
+                        required: ['isEnabled'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'immer-pflichtfeld': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: ['immer-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'optionales-feld-mit-abhaengigkeiten': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: [
+                                        'optionales-feld-mit-abhaengigkeiten',
+                                    ],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 1,
+                                        },
+                                    },
+                                    required: ['abhaengiges-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            'optionales-objekt': {
+                                properties: {
+                                    'optionales-feld-mit-abhaengigkeiten': {
+                                        minLength: 1,
+                                    },
+                                },
+                                required: [
+                                    'optionales-feld-mit-abhaengigkeiten',
+                                ],
+                            },
+                        },
+                        required: ['optionales-objekt'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-objekt': {
+                                properties: {
+                                    'abhaengiges-pflichtfeld': {
+                                        minLength: 1,
+                                    },
+                                },
+                                required: ['abhaengiges-pflichtfeld'],
+                            },
+                        },
+                        required: ['optionales-objekt'],
+                    },
+                },
+                {
+                    if: {
+                        properties: {
+                            isEnabled: {
+                                const: true,
+                            },
+                        },
+                        required: ['isEnabled'],
+                    },
+                    then: {
+                        properties: {
+                            dependentField: {
+                                minLength: 1,
+                            },
+                        },
+                        required: ['dependentField'],
+                    },
+                },
+            ],
+            properties: {
+                isEnabled: {
+                    title: 'isEnabled',
+                    type: 'boolean',
+                },
+                'optionales-array': {
+                    title: 'optionales array',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            'immer-pflichtfeld': {
+                                title: 'immer pflichtfeld',
+                                type: 'string',
+                                minLength: 1,
+                            },
+                            'optionales-feld-mit-abhaengigkeiten': {
+                                title: 'optionales feld mit abhängigkeiten',
+                                type: 'string',
+                            },
+                            'abhaengiges-pflichtfeld': {
+                                title: 'abhängiges pflichtfeld',
+                                type: 'string',
+                                minLength: 1,
+                            },
+                        },
+                    },
+                },
+                'optionales-objekt': {
+                    title: 'optionales objekt',
+                    type: 'object',
+                    required: ['pflichfeld'],
+                    properties: {
+                        pflichfeld: {
+                            title: 'pflichfeld',
+                            type: 'string',
+                            minLength: 1,
+                        },
+                        'optionales-feld-mit-abhaengigkeiten': {
+                            title: 'optionales feld mit abhängigkeiten',
+                            type: 'string',
+                        },
+                        'abhaengiges-pflichtfeld': {
+                            title: 'abhängiges pflichtfeld',
+                            type: 'string',
+                            minLength: 1,
+                        },
+                    },
+                },
+                dependentField: {
+                    title: 'dependentField',
+                    type: 'string',
+                    minLength: 1,
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: isEnabled is true - dependentField should be required
+        let data: Record<string, any> = {
+            '/properties/isEnabled': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: isEnabled is false - dependentField should not be required
+        data = {
+            '/properties/isEnabled': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        // When condition is not met, forceRequired should not be set or should be falsy
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: isEnabled is undefined/missing - dependentField should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('supports if/then/else for array items using long-schema style', async () => {
+        const fieldScope =
+            '/properties/optionales-array/items/properties/abhaengiges-pflichtfeld';
+        const savePath =
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/abhaengiges-pflichtfeld';
+
+        const jsonSchema: JSONSchema = {
+            title: 'if-then-else for array items',
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        check: {
+                                            const: true,
+                                        },
+                                    },
+                                    required: ['check'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    then: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 3,
+                                        },
+                                    },
+                                    required: ['abhaengiges-pflichtfeld'],
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                    else: {
+                        properties: {
+                            'optionales-array': {
+                                items: {
+                                    properties: {
+                                        'abhaengiges-pflichtfeld': {
+                                            minLength: 0,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        required: ['optionales-array'],
+                    },
+                },
+            ],
+            properties: {
+                'optionales-array': {
+                    title: 'optionales array',
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            check: {
+                                type: 'boolean',
+                            },
+                            'abhaengiges-pflichtfeld': {
+                                type: 'string',
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/optionales-array': [
+                'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2',
+            ],
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2':
+                '',
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/check': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(3);
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+
+        data = {
+            '/properties/optionales-array': [
+                'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2',
+            ],
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2':
+                '',
+            '/properties/optionales-array.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/check': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(0);
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('supports "minLength" condition', async () => {
+        const fieldScope = '/properties/x';
+        const savePath = '/properties/x';
+
+        const jsonSchema: JSONSchema = {
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            password: { minLength: 5 },
+                        },
+                    },
+                    then: {
+                        properties: {
+                            x: { title: 'Strong Password' },
+                        },
+                    },
+                },
+            ],
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Match (length 5)
+        let data: Record<string, any> = { '/properties/password': '12345' };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBe('Strong Password');
+
+        // Match (length 6)
+        data = { '/properties/password': '123456' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBe('Strong Password');
+
+        // No match (length 4)
+        data = { '/properties/password': '1234' };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
+
+        // No match (undefined)
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result!.jsonElement.title).toBeUndefined();
     });
 });

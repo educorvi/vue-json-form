@@ -3,16 +3,17 @@ import { BButton, BSpinner, type ButtonType } from 'bootstrap-vue-next';
 import { computedCssClass } from '@/computedProperties/css';
 import { computed, type ComputedRef } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 import type { VjfButtonProps } from '@/renderings/PropsAndEmitsForRenderings.ts';
+import { getStores } from '@/computedProperties/json.ts';
 
+const { formStructureStore } = getStores();
 const props = defineProps<VjfButtonProps>();
 const {
     currentWizardPage,
     uiSchema,
     wizardValidateFunctions,
     formStateWasValidated,
-} = storeToRefs(useFormStructureStore());
+} = storeToRefs(formStructureStore);
 
 const cssClass = computedCssClass(props.layoutElement);
 const buttonType: ComputedRef<ButtonType | undefined> = computed(() => {
