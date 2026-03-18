@@ -2,7 +2,7 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { getOption } from '@/utilities';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { inject, watch, computed, ref, onMounted } from 'vue';
 import {
     inArrayItemProviderKey,

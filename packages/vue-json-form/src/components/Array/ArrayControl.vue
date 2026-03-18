@@ -26,7 +26,7 @@ import {
 } from 'vue';
 import ArrayItem from '@/components/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
-import { getOption } from '@/utilities.ts';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import {
     languageProviderKey,
     setDescendantControlOverride,

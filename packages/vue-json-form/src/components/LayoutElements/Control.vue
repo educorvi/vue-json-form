@@ -52,7 +52,7 @@ import type {
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getOption } from '@/utilities';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import {
     computed,
     inject,

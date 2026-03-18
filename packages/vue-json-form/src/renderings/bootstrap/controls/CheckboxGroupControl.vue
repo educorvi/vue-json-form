@@ -3,7 +3,7 @@ import { BFormCheckboxGroup, type CheckboxOption } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
 import { hasEnumValuesForItems } from '@/typings/typeValidators';
-import { getOption } from '@/utilities';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { computed, type ComputedRef, inject, onMounted, ref, watch } from 'vue';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation.ts';
