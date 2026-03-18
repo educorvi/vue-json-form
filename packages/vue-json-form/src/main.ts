@@ -22,6 +22,6 @@ export * from '@/renderings/PropsAndEmitsForRenderings.ts';
 
 export * from '@/formControlInputValidation';
 
-export * from '@/renderings/renderHelpers';
+export * as RenderHelpers from '@/renderings/renderHelpers';
 
 export const version: string = import.meta.env.PACKAGE_VERSION as string;
