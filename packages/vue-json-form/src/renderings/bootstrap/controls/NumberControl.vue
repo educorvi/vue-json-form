@@ -5,18 +5,14 @@ import { BFormInput } from 'bootstrap-vue-next';
 import { computed } from 'vue';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
+import { getStep } from '@/renderings/renderHelpers/NumberControl.ts';
 const { formDataStore } = getStores();
 const { formData } = storeToRefs(formDataStore);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
-const step = computed(() => {
-    if (jsonElement.value.type === 'integer') {
-        return jsonElement.value.multipleOf || 1;
-    }
-    return jsonElement.value.multipleOf || 0.0000000000000000000001;
-});
+const step = getStep(jsonElement);
 </script>
 
 <template>
