@@ -1,6 +1,12 @@
 export type { RenderInterface } from './renderings/RenderInterface.ts';
 
+// TODO Remove direct export
+/**
+ * @deprecated Import from `RenderInterfaces` instead
+ */
 export * from '@/renderings/bootstrap/BootstrapComponents';
+
+export * as RenderInterfaces from '@/renderings';
 
 import VueJsonForm from '@/components/FormRoot.vue';
 export { VueJsonForm };
