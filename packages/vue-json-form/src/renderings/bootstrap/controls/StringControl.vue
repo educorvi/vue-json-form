@@ -13,14 +13,17 @@ const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const type = StringControl.getType(jsonElement, layoutElement);
+const isMultiLine = StringControl.getIsMultiLine(layoutElement);
+const numberOfLines = StringControl.getNumberOfLines(layoutElement);
 </script>
 
 <template>
     <BFormTextarea
-        v-if="layoutElement.options?.multi"
+        v-if="isMultiLine"
         v-model="formData[savePath]"
         class="vjf_textarea"
         :id="id"
+        :rows="numberOfLines"
         :minlength="jsonElement.minLength"
         :maxlength="jsonElement.maxLength"
     />

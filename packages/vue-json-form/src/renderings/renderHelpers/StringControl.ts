@@ -25,3 +25,25 @@ export function getType(
         return str;
     });
 }
+
+export function getIsMultiLine(layoutElement: Readonly<Ref<Control>>) {
+    return computed(() => {
+        const multi = layoutElement.value.options?.multi;
+        if (typeof multi !== 'number') {
+            return !!multi;
+        } else {
+            return multi > 1;
+        }
+    });
+}
+
+export function getNumberOfLines(layoutElement: Readonly<Ref<Control>>) {
+    return computed(() => {
+        const multi = layoutElement.value.options?.multi;
+        if (typeof multi !== 'number') {
+            return undefined;
+        } else {
+            return multi;
+        }
+    });
+}
