@@ -1,9 +1,11 @@
 import type {
+    InputOptions,
     JSONSchema,
     Layout,
     LayoutElement,
 } from '@educorvi/vue-json-form-schemas';
 import { type MapperWithData, type MapperWithoutData } from '@/Mappers';
+import { isInputTypeWithoutHidden } from '@/typings/typeValidators.ts';
 
 /**
  * A layout element with child elements
@@ -103,3 +105,5 @@ export type InvertOptionality<T> = {
 export type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
+
+export type InputTypeWithoutHidden = Exclude<InputOptions['format'], 'hidden'>;
