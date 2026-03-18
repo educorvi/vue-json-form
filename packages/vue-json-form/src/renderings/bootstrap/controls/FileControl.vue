@@ -10,6 +10,7 @@ import {
 } from '@/components/ProviderKeys.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateFileInput } from '@/formControlInputValidation';
+import { getEnrichedLayoutElement } from '@/renderings/renderHelpers/FileControl.ts';
 
 const props = defineProps<{
     required?: boolean;
@@ -30,18 +31,7 @@ const id = controlID(savePath);
 const languageProvider = inject(languageProviderKey);
 const inArrayItem = inject(inArrayItemProviderKey);
 
-const layoutElement = computed(() => {
-    return {
-        ...rawLayoutElement.value,
-        options: {
-            ...rawLayoutElement.value.options,
-            ...(getOption(
-                rawLayoutElement.value,
-                'descendantControlOverrides'
-            )?.[savePath + '/items']?.options || {}),
-        },
-    };
-});
+const layoutElement = getEnrichedLayoutElement(rawLayoutElement, savePath);
 
 const multiple = FileControl.getMultiple(jsonElement);
 const minNumberOfFiles = FileControl.getMinNumberOfFiles(
