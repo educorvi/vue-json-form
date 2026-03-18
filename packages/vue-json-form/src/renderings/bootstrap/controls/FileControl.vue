@@ -2,8 +2,8 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { getOption } from '@/renderings/renderHelpers/utilities.ts';
-import { inject, watch, computed, ref, onMounted } from 'vue';
+import { FileControl, getOption } from '@/renderings/renderHelpers';
+import { inject, watch, computed, ref, onMounted, toRef } from 'vue';
 import {
     inArrayItemProviderKey,
     languageProviderKey,
@@ -43,32 +43,13 @@ const layoutElement = computed(() => {
     };
 });
 
-const multiple = computed(() => {
-    return jsonElement.value.type === 'array';
-});
-
-const minNumberOfFiles = computed(() => {
-    return Math.max(jsonElement.value.minItems ?? 0, props.required ? 1 : 0);
-});
-
-const maxNumberOfFiles = computed(() => {
-    return jsonElement.value.maxItems ?? Number.MAX_SAFE_INTEGER;
-});
-
-const acceptedFileTypes = computed(() => {
-    const acceptedFileType = getOption(
-        layoutElement.value,
-        'acceptedFileType',
-        '*'
-    );
-    if (
-        acceptedFileType === '*' ||
-        (Array.isArray(acceptedFileType) && acceptedFileType.includes('*'))
-    ) {
-        return undefined;
-    }
-    return acceptedFileType;
-});
+const multiple = FileControl.getMultiple(jsonElement);
+const minNumberOfFiles = FileControl.getMinNumberOfFiles(
+    jsonElement,
+    props.required
+);
+const maxNumberOfFiles = FileControl.getMaxNumberOfFiles(jsonElement);
+const acceptedFileTypes = FileControl.getAcceptedFileTypes(layoutElement);
 
 const valid = ref(true);
 
