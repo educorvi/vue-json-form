@@ -7,3 +7,4 @@ export * as FormfieldWrapper from './FormfieldWrapper';
 export * as StringControl from './StringControl';
 export * as SelectControl from './SelectControl.ts';
 export * as CheckboxGroupControl from './CheckboxGroupControl';
+export * as ProviderKeys from '@/components/ProviderKeys';
