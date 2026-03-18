@@ -8,6 +8,7 @@ import { computed, type ComputedRef, inject, onMounted, ref, watch } from 'vue';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation.ts';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import { CheckboxGroupControl } from '@/renderings/renderHelpers';
 const { formDataStore, formStructureStore } = getStores();
 // accept prop so it does not overwrite the required=false below
 const props = defineProps<{
@@ -23,20 +24,10 @@ const languageProvider = inject(languageProviderKey);
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
-let options: ComputedRef<CheckboxOption[]> = computed(() => {
-    if (!hasEnumValuesForItems(jsonElement.value)) {
-        return [];
-    } else {
-        return (
-            jsonElement.value.items.enum.map((key) => {
-                const textVals: Record<any, any> =
-                    getOption(layoutElement.value, 'enumTitles') || {};
-                const text = textVals[key] || key;
-                return { value: key, text };
-            }) || []
-        );
-    }
-});
+let options: ComputedRef<CheckboxOption[]> = CheckboxGroupControl.getOptions(
+    jsonElement,
+    layoutElement
+);
 
 const valid = ref(true);
 
