@@ -1,4 +1,4 @@
-import { test, expect, Page, Locator } from '@playwright/test';
+import { test, expect, type Page, type Locator } from '@playwright/test';
 
 function submitForm(page: Page) {
     return page.locator('button[type="submit"]').nth(-3).click();
@@ -20,7 +20,7 @@ const expectSelectOptions = async (
     for (let index = 0; index < expectedValues.length; index++) {
         await expect(options.nth(index)).toHaveAttribute(
             'value',
-            expectedValues[index]
+            expectedValues[index] || 'failedGet'
         );
     }
 };
@@ -57,6 +57,50 @@ async function expectValid(locator: Locator) {
         .poll(() => locator.evaluate((el) => el.matches(':valid')))
         .toBe(true);
 }
+
+test('JSO-146 (nested required mapping in optional object)', async ({
+    page,
+}) => {
+    const ROOT_FIELD = '#vjf_control_for__properties_jso-146_properties_feld';
+    const OBJECT_CONTAINER = page.locator(
+        '*[name="/properties/jso-146/properties/objekt"]'
+    );
+    const INDEPENDENT_FIELD =
+        '#vjf_control_for__properties_jso-146_properties_objekt_properties_unabhaengiges-feld-in-objekt';
+    const DEPENDENT_FIELD_ID =
+        'vjf_control_for__properties_jso-146_properties_objekt_properties_abhaengiges-pflichtfeld-in-objekt';
+    const DEPENDENT_FIELD = '#' + DEPENDENT_FIELD_ID;
+
+    await page.goto(REPRODUCE_URL);
+
+    await expect(OBJECT_CONTAINER).not.toBeVisible();
+    await expect(page.locator(DEPENDENT_FIELD)).not.toBeVisible();
+
+    await page.locator(ROOT_FIELD).fill('show-object');
+    await expect(OBJECT_CONTAINER).toBeVisible();
+    await expect(page.locator(INDEPENDENT_FIELD)).toBeVisible();
+    await expect(page.locator(DEPENDENT_FIELD)).not.toBeVisible();
+
+    await page.locator(INDEPENDENT_FIELD).fill('trigger-required');
+    await expectIsRequiredField(page, DEPENDENT_FIELD_ID);
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+
+    await page.locator(DEPENDENT_FIELD).fill('required-value');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['jso-146']['feld']).toBe('show-object');
+    expect(res['jso-146']['objekt']['unabhaengiges-feld-in-objekt']).toBe(
+        'trigger-required'
+    );
+    expect(res['jso-146']['objekt']['abhaengiges-pflichtfeld-in-objekt']).toBe(
+        'required-value'
+    );
+});
 
 test('JSO-126 - Uploadfield', async ({ page }) => {
     await page.goto(REPRODUCE_URL);

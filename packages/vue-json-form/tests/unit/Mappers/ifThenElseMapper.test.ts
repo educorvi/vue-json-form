@@ -515,6 +515,105 @@ describe('IfThenElseMapper', () => {
         expect(result!.jsonElement.minLength).toBeUndefined();
     });
 
+    it('maps nested requireds for JSO-146 reproduce schema without a parent object value', async () => {
+        const fieldScope =
+            '/properties/jso-146/properties/objekt/properties/abhaengiges-pflichtfeld-in-objekt';
+        const savePath = fieldScope;
+
+        const jsonSchema: JSONSchema = {
+            type: 'object',
+            properties: {
+                'jso-146': {
+                    type: 'object',
+                    allOf: [
+                        {
+                            if: {
+                                properties: {
+                                    objekt: {
+                                        properties: {
+                                            'unabhaengiges-feld-in-objekt': {
+                                                minLength: 1,
+                                            },
+                                        },
+                                        required: [
+                                            'unabhaengiges-feld-in-objekt',
+                                        ],
+                                    },
+                                },
+                                required: ['objekt'],
+                            },
+                            then: {
+                                properties: {
+                                    objekt: {
+                                        properties: {
+                                            'abhaengiges-pflichtfeld-in-objekt': {
+                                                minLength: 1,
+                                            },
+                                        },
+                                        required: [
+                                            'abhaengiges-pflichtfeld-in-objekt',
+                                        ],
+                                    },
+                                },
+                                required: ['objekt'],
+                            },
+                        },
+                    ],
+                    properties: {
+                        objekt: {
+                            type: 'object',
+                            properties: {
+                                'unabhaengiges-feld-in-objekt': {
+                                    type: 'string',
+                                },
+                                'abhaengiges-pflichtfeld-in-objekt': {
+                                    type: 'string',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        let data: Record<string, any> = {
+            '/properties/jso-146/properties/objekt/properties/unabhaengiges-feld-in-objekt':
+                'triggered',
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBe(1);
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+
+        data = {
+            '/properties/jso-146/properties/objekt/properties/unabhaengiges-feld-in-objekt':
+                '',
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBeUndefined();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.jsonElement.minLength).toBeUndefined();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
     it('adds dependencies for keys introduced by required conditions in if', () => {
         const fieldScope = '/properties/x';
         const savePath = '/properties/x';
