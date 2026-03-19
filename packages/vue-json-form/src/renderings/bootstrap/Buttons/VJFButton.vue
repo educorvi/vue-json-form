@@ -5,6 +5,11 @@ import { computed, type ComputedRef } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { VjfButtonProps } from '@/renderings/PropsAndEmitsForRenderings.ts';
 import { getStores } from '@/computedProperties/json.ts';
+import {
+    getHtmlButtonType,
+    getMaxPages,
+    getWizardHandler,
+} from '@/renderings/renderHelpers/Button.ts';
 
 const { formStructureStore } = getStores();
 const props = defineProps<VjfButtonProps>();
@@ -16,39 +21,17 @@ const {
 } = storeToRefs(formStructureStore);
 
 const cssClass = computedCssClass(props.layoutElement);
-const buttonType: ComputedRef<ButtonType | undefined> = computed(() => {
-    if (
-        ['submit', 'reset', 'button'].includes(props.layoutElement.buttonType)
-    ) {
-        return props.layoutElement.buttonType as ButtonType;
-    } else {
-        return undefined;
-    }
-});
+const buttonType = getHtmlButtonType(props.layoutElement);
 
-const maxPages = computed(() => {
-    if (uiSchema.value?.type !== 'Wizard') return Number.MAX_SAFE_INTEGER;
+const maxPages = getMaxPages(uiSchema);
 
-    return uiSchema.value.pages.length - 1;
-});
-
-function emitWizardButton() {
-    if (props.layoutElement.buttonType === 'previousWizardPage') {
-        currentWizardPage.value = Math.max(currentWizardPage.value - 1, 0);
-    } else if (props.layoutElement.buttonType === 'nextWizardPage') {
-        const valid =
-            wizardValidateFunctions.value[currentWizardPage.value]?.() || false;
-        if (!valid) {
-            return;
-        } else {
-            formStateWasValidated.value = false;
-        }
-        currentWizardPage.value = Math.min(
-            currentWizardPage.value + 1,
-            maxPages.value
-        );
-    }
-}
+const emitWizardButton = getWizardHandler(
+    props.layoutElement,
+    currentWizardPage,
+    wizardValidateFunctions,
+    formStateWasValidated,
+    maxPages
+);
 </script>
 
 <template>
