@@ -20,7 +20,7 @@ const expectSelectOptions = async (
     for (let index = 0; index < expectedValues.length; index++) {
         await expect(options.nth(index)).toHaveAttribute(
             'value',
-            expectedValues[index] || 'failedGet'
+            expectedValues[index]
         );
     }
 };

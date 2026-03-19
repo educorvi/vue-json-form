@@ -515,7 +515,7 @@ describe('IfThenElseMapper', () => {
         expect(result!.jsonElement.minLength).toBeUndefined();
     });
 
-    it('maps nested requireds for JSO-146 reproduce schema without a parent object value', async () => {
+    it('maps nested required fields for JSO-146 reproduce schema without a parent object value', async () => {
         const fieldScope =
             '/properties/jso-146/properties/objekt/properties/abhaengiges-pflichtfeld-in-objekt';
         const savePath = fieldScope;
