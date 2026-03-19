@@ -11,3 +11,7 @@ export * as CheckboxGroupControl from './CheckboxGroupControl';
 export * as NumberControl from './NumberControl';
 
 export * as ProviderKeys from '@/components/ProviderKeys';
+
+import FormWrap from '@/components/FormWrap.vue';
+
+export { FormWrap };
