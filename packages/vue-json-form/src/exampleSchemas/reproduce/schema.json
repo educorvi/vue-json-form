@@ -6,6 +6,64 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "jso-146": {
+            "title": "Fragebogen Test für Julian",
+            "description": "abhängiges pflichtfeld in abhängigem objekt",
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "objekt": {
+                                "properties": {
+                                    "unabhaengiges-feld-in-objekt": {
+                                        "minLength": 1
+                                    }
+                                },
+                                "required": ["unabhaengiges-feld-in-objekt"]
+                            }
+                        },
+                        "required": ["objekt"]
+                    },
+                    "then": {
+                        "properties": {
+                            "objekt": {
+                                "properties": {
+                                    "abhaengiges-pflichtfeld-in-objekt": {
+                                        "minLength": 1
+                                    }
+                                },
+                                "required": [
+                                    "abhaengiges-pflichtfeld-in-objekt"
+                                ]
+                            }
+                        },
+                        "required": ["objekt"]
+                    }
+                }
+            ],
+            "properties": {
+                "feld": {
+                    "title": "feld",
+                    "type": "string"
+                },
+                "objekt": {
+                    "title": "objekt",
+                    "type": "object",
+                    "properties": {
+                        "unabhaengiges-feld-in-objekt": {
+                            "title": "unabhängiges feld in objekt",
+                            "type": "string"
+                        },
+                        "abhaengiges-pflichtfeld-in-objekt": {
+                            "title": "abhängiges pflichtfeld in objekt",
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            }
+        },
         "jso-116": {
             "type": "object",
             "allOf": [

@@ -7,6 +7,70 @@
             {
                 "type": "Group",
                 "options": {
+                    "label": "JSO-146"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-146/properties/feld"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-146/properties/objekt",
+                        "showOn": {
+                            "id": "ritaRule-objekt",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "greater",
+                                "arguments": [
+                                    {
+                                        "type": "macro",
+                                        "macro": {
+                                            "type": "length",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "jso-146.feld",
+                                                "default": ""
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/jso-146/properties/objekt/properties/abhaengiges-pflichtfeld-in-objekt": {
+                                    "showOn": {
+                                        "id": "ritaRule-abhaengiges-pflichtfeld-in-objekt",
+                                        "rule": {
+                                            "type": "comparison",
+                                            "operation": "greater",
+                                            "arguments": [
+                                                {
+                                                    "type": "macro",
+                                                    "macro": {
+                                                        "type": "length",
+                                                        "array": {
+                                                            "type": "atom",
+                                                            "path": "jso-146.objekt.unabhaengiges-feld-in-objekt",
+                                                            "default": ""
+                                                        }
+                                                    }
+                                                },
+                                                0
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
                     "label": "JSO-116"
                 },
                 "elements": [
