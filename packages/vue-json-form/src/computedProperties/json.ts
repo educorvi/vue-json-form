@@ -233,11 +233,14 @@ export function computedLabel(
     const { jsonSchema } = storeToRefs(getStores().formStructureStore);
     const jsonElement = getComputedJsonElement(layout.value.scope);
     const required = getComputedRequired(layout);
+    const requiredAndNotObject = computed(
+        () => required.value && jsonElement.value?.type !== 'object'
+    );
     return computed(() => {
         if (!jsonSchema.value) return '';
         return (
             jsonElement.value?.title ||
             titleCase(layout.value.scope.split('/').pop() || '')
-        ).concat(required.value ? '*' : '');
+        ).concat(requiredAndNotObject.value ? '*' : '');
     });
 }
