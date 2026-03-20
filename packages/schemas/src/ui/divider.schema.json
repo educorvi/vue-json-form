@@ -1,20 +1,18 @@
 {
-  "title": "Divider",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://educorvi.github.io/vue-json-form/schemas/divider.schema.json",
-  "type": "object",
-  "description": "inserts a simple divider",
-  "properties": {
-    "type": {
-      "type": "string",
-      "const": "Divider"
+    "title": "Divider",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/divider.schema.json",
+    "type": "object",
+    "description": "inserts a simple divider",
+    "properties": {
+        "type": {
+            "type": "string",
+            "const": "Divider"
+        },
+        "showOn": {
+            "$ref": "show_on.schema.json"
+        }
     },
-    "showOn": {
-      "$ref": "show_on.schema.json"
-    }
-  },
-  "additionalProperties": false,
-  "required": [
-    "type"
-  ]
+    "additionalProperties": false,
+    "required": ["type"]
 }

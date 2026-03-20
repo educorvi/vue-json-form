@@ -1,40 +1,40 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://educorvi.github.io/vue-json-form/schemas/variants.schema.json",
-  "title": "Color Variants",
-  "description": "Different color variants",
-  "definitions": {
-    "baseVariants": {
-      "type": "string",
-      "title": "Base Variants",
-      "enum": [
-        "primary",
-        "secondary",
-        "success",
-        "warning",
-        "danger",
-        "info",
-        "light",
-        "dark"
-      ]
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/variants.schema.json",
+    "title": "Color Variants",
+    "description": "Different color variants",
+    "definitions": {
+        "baseVariants": {
+            "type": "string",
+            "title": "Base Variants",
+            "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "warning",
+                "danger",
+                "info",
+                "light",
+                "dark"
+            ]
+        },
+        "outlineVariants": {
+            "type": "string",
+            "title": "Outline Variants",
+            "enum": [
+                "outline-primary",
+                "outline-secondary",
+                "outline-success",
+                "outline-warning",
+                "outline-danger",
+                "outline-info",
+                "outline-light",
+                "outline-dark"
+            ]
+        }
     },
-    "outlineVariants": {
-      "type": "string",
-      "title": "Outline Variants",
-      "enum": [
-        "outline-primary",
-        "outline-secondary",
-        "outline-success",
-        "outline-warning",
-        "outline-danger",
-        "outline-info",
-        "outline-light",
-        "outline-dark"
-      ]
-    }
-  },
-  "oneOf": [
-    { "$ref": "#/definitions/baseVariants" },
-    { "$ref": "#/definitions/outlineVariants" }
-  ]
+    "oneOf": [
+        { "$ref": "#/definitions/baseVariants" },
+        { "$ref": "#/definitions/outlineVariants" }
+    ]
 }

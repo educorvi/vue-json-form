@@ -546,9 +546,10 @@ describe('IfThenElseMapper', () => {
                                 properties: {
                                     objekt: {
                                         properties: {
-                                            'abhaengiges-pflichtfeld-in-objekt': {
-                                                minLength: 1,
-                                            },
+                                            'abhaengiges-pflichtfeld-in-objekt':
+                                                {
+                                                    minLength: 1,
+                                                },
                                         },
                                         required: [
                                             'abhaengiges-pflichtfeld-in-objekt',

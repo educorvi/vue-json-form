@@ -1,180 +1,180 @@
 name: Build And Test
 
 on:
-  push:
-    branches:
-      - 'main'
-  pull_request:
-    branches:
-      - 'main'
-  merge_group:
-    types:
-      - checks_requested
-  workflow_dispatch:
+    push:
+        branches:
+            - 'main'
+    pull_request:
+        branches:
+            - 'main'
+    merge_group:
+        types:
+            - checks_requested
+    workflow_dispatch:
 
 permissions:
-  contents: read
-  issues: read
-  checks: write
-  pull-requests: write
+    contents: read
+    issues: read
+    checks: write
+    pull-requests: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [ 20, 22, 24 ]
-    name: Build on Node ${{ matrix.node }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Cache turbo build setup
-        uses: actions/cache@v5
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node }}
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn run lint
-      - run: yarn run build
-  test-unit:
-    needs: build
-    runs-on: ubuntu-latest
-    name: Unit Tests
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          submodules: recursive
-      - name: Cache turbo build setup
-        uses: actions/cache@v5
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          cache: yarn
-          node-version: lts/*
-      - run: yarn install --immutable
-      - run: yarn run build
-      - run: yarn test:unit
-      - name: Upload report to GitHub Actions Artifacts
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [20, 22, 24]
+        name: Build on Node ${{ matrix.node }}
+        steps:
+            - uses: actions/checkout@v6
+            - name: Cache turbo build setup
+              uses: actions/cache@v5
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+            - name: Setup node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: yarn
+            - run: yarn install --immutable
+            - run: yarn run lint
+            - run: yarn run build
+    test-unit:
+        needs: build
+        runs-on: ubuntu-latest
+        name: Unit Tests
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  submodules: recursive
+            - name: Cache turbo build setup
+              uses: actions/cache@v5
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+            - name: Setup node
+              uses: actions/setup-node@v6
+              with:
+                  cache: yarn
+                  node-version: lts/*
+            - run: yarn install --immutable
+            - run: yarn run build
+            - run: yarn test:unit
+            - name: Upload report to GitHub Actions Artifacts
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v7
+              with:
+                  name: unit-report
+                  path: |
+                      ./packages/*/test-results/*.xml
+                  retention-days: 1
+    test-e2e:
+        needs: build
+        runs-on: ubuntu-latest
+        name: e2e Tests
+        timeout-minutes: 60
+        strategy:
+            fail-fast: false
+            matrix:
+                shardIndex: [1, 2, 3, 4]
+                shardTotal: [4]
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  submodules: recursive
+            - name: Cache turbo build setup
+              uses: actions/cache@v5
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+            - name: Setup node
+              uses: actions/setup-node@v6
+              with:
+                  cache: yarn
+                  node-version: lts/*
+            - name: Store Playwright's Version
+              run: |
+                  PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
+                  echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+                  echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+            - name: Cache Playwright Browsers for Playwright's Version
+              id: cache-playwright-browsers
+              uses: actions/cache@v5
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+            - run: yarn install --immutable
+            - run: yarn run build
+            - name: Install Playwright Browsers
+              run: yarn playwright install --with-deps
+              working-directory: ./packages/vue-json-form
+            - name: Run Playwright tests
+              run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+              working-directory: ./packages/vue-json-form
+            - name: Upload blob report to GitHub Actions Artifacts
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v7
+              with:
+                  name: blob-report-${{ matrix.shardIndex }}
+                  path: ./packages/vue-json-form/blob-report
+                  retention-days: 1
+    merge-reports:
+        # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: unit-report
-          path: |
-            ./packages/*/test-results/*.xml
-          retention-days: 1
-  test-e2e:
-    needs: build
-    runs-on: ubuntu-latest
-    name: e2e Tests
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        shardIndex: [ 1, 2, 3, 4 ]
-        shardTotal: [ 4 ]
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          submodules: recursive
-      - name: Cache turbo build setup
-        uses: actions/cache@v5
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          cache: yarn
-          node-version: lts/*
-      - name: Store Playwright's Version
-        run: |
-          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
-          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+        needs: [test-e2e]
 
-      - name: Cache Playwright Browsers for Playwright's Version
-        id: cache-playwright-browsers
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-      - run: yarn install --immutable
-      - run: yarn run build
-      - name: Install Playwright Browsers
-        run: yarn playwright install --with-deps
-        working-directory: ./packages/vue-json-form
-      - name: Run Playwright tests
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-        working-directory: ./packages/vue-json-form
-      - name: Upload blob report to GitHub Actions Artifacts
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: ./packages/vue-json-form/blob-report
-          retention-days: 1
-  merge-reports:
-    # Merge reports after playwright-tests, even if some shards have failed
-    if: ${{ !cancelled() }}
-    needs: [ test-e2e ]
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: lts/*
+            - name: Setup node
+              uses: actions/setup-node@v6
+              with:
+                  cache: yarn
+                  node-version: lts/*
+            - run: yarn install --immutable
+            - name: Download blob reports from GitHub Actions Artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  path: ./packages/vue-json-form/all-blob-reports
+                  pattern: blob-report-*
+                  merge-multiple: true
 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-      - name: Setup node
-        uses: actions/setup-node@v6
-        with:
-          cache: yarn
-          node-version: lts/*
-      - run: yarn install --immutable
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v8
-        with:
-          path: ./packages/vue-json-form/all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
+            - name: Download unit report from GitHub Actions Artifacts
+              uses: actions/download-artifact@v8
+              with:
+                  path: ./packages/vue-json-form/test-results
+                  name: unit-report
 
-      - name: Download unit report from GitHub Actions Artifacts
-        uses: actions/download-artifact@v8
-        with:
-          path: ./packages/vue-json-form/test-results
-          name: unit-report
+            - name: Merge into HTML Report
+              run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
+              working-directory: ./packages/vue-json-form
 
-      - name: Merge into HTML Report
-        run: npx playwright merge-reports --config=./playwright.merge.config.ts ./all-blob-reports
-        working-directory: ./packages/vue-json-form
-
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: playwright-report
-          path: packages/vue-json-form/playwright-report/
-          retention-days: 30
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: playwright-test-results
-          path: packages/vue-json-form/test-results/
-          retention-days: 30
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: (!cancelled())
-        with:
-          files: |
-            packages/vue-json-form/test-results/**/*.xml
+            - uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: playwright-report
+                  path: packages/vue-json-form/playwright-report/
+                  retention-days: 30
+            - uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: playwright-test-results
+                  path: packages/vue-json-form/test-results/
+                  retention-days: 30
+            - name: Publish Test Results
+              uses: EnricoMi/publish-unit-test-result-action@v2
+              if: (!cancelled())
+              with:
+                  files: |
+                      packages/vue-json-form/test-results/**/*.xml

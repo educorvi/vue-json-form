@@ -13,12 +13,16 @@ process.chdir(join(__dirname, 'src/ui'));
  */
 async function deleteIds(schema) {
     if (Array.isArray(schema)) {
-        schema.forEach(it => deleteIds(it));
+        schema.forEach((it) => deleteIds(it));
     } else if (typeof schema === 'object') {
-        if (schema.$id && schema.$id !== 'https://educorvi.github.io/vue-json-form/schemas/ui.schema.json') {
+        if (
+            schema.$id &&
+            schema.$id !==
+                'https://educorvi.github.io/vue-json-form/schemas/ui.schema.json'
+        ) {
             delete schema.$id;
         }
-        Object.values(schema).forEach(value => deleteIds(value));
+        Object.values(schema).forEach((value) => deleteIds(value));
     }
 }
 
@@ -37,17 +41,21 @@ async function merge() {
     });
     await deleteIds(schema);
     await mkdirp(join(__dirname, 'src/generated'));
-    fs.writeFileSync(join(__dirname, 'src/generated/ui-merged.schema.json'), JSON.stringify(schema, null, 2));
+    fs.writeFileSync(
+        join(__dirname, 'src/generated/ui-merged.schema.json'),
+        JSON.stringify(schema, null, 2)
+    );
 }
 
 async function mergeJsonSchema() {
-    let schema = await RefParser.bundle('https://json-schema.org/draft/2019-09/schema#');
+    let schema = await RefParser.bundle(
+        'https://json-schema.org/draft/2019-09/schema#'
+    );
     schema = await RefParser.dereference(schema);
-    fs.writeFileSync(join(__dirname, 'src/generated/json-merged.schema.json'), JSON.stringify(schema, null, 2));
+    fs.writeFileSync(
+        join(__dirname, 'src/generated/json-merged.schema.json'),
+        JSON.stringify(schema, null, 2)
+    );
 }
 
-Promise.all([
-    merge(),
-    mergeJsonSchema(),
-]).then(() => process.exit(0));
-
+Promise.all([merge(), mergeJsonSchema()]).then(() => process.exit(0));

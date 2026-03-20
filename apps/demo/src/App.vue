@@ -38,7 +38,8 @@ function viewCode(title: string, code: Record<string, any>) {
             scrollable
             centered
             no-footer
-            size="lg">
+            size="lg"
+        >
             <vue-json-pretty :data="modalData.json" />
         </BModal>
     </BApp>

@@ -1,9 +1,5 @@
 import { computed, type Ref } from 'vue';
-import type {
-    Button,
-    Layout,
-    Wizard,
-} from '@educorvi/vue-json-form-schemas';
+import type { Button, Layout, Wizard } from '@educorvi/vue-json-form-schemas';
 
 export function getHtmlButtonType(layoutElement: Button) {
     return computed(() => {
