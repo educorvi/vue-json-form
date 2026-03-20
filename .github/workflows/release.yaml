@@ -80,3 +80,10 @@ jobs:
             - run: yarn run build
               name: Build all workspaces
             - run: ./.github/publish.js
+    merge-release-latest:
+        if: github.ref == 'refs/heads/release/latest'
+        needs:
+            - rebuild-doc-and-demo
+            - publish-on-npm
+        uses: ./.github/workflows/merge-release-latest.yaml
+        secrets: inherit
