@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { analyzer } from 'vite-bundle-analyzer';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
@@ -8,7 +7,16 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
-        extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json', '.cjs'],
+        extensions: [
+            '.mjs',
+            '.js',
+            '.mts',
+            '.ts',
+            '.jsx',
+            '.tsx',
+            '.json',
+            '.cjs',
+        ],
     },
     build: {
         sourcemap: true,

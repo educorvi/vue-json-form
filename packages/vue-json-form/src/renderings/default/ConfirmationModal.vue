@@ -21,6 +21,4 @@ const show = () => {
 defineExpose({ show });
 </script>
 
-<template></template>
-
 <style scoped></style>

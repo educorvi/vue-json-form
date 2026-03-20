@@ -1,64 +1,58 @@
 {
-  "$id": "https://educorvi.github.io/vue-json-form/schemas/show_on.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ShowOn property",
-  "type": "object",
-  "description": "Show field depending on value of other field",
-  "definitions": {
-    "legacyShowOn": {
-      "title": "Legacy ShowOn property",
-      "type": "object",
-      "description": "Legacy Variant of defining ShowOn property",
-      "properties": {
-        "path": {
-          "type": "string",
-          "description": "The field this field depends on in object notation",
-          "examples": [
-            "files[0].name"
-          ]
-        },
-        "type": {
-          "type": "string",
-          "description": "Condition to be applied",
-          "title": "ShowOn function type",
-          "enum": [
-            "EQUALS",
-            "NOT_EQUALS",
-            "GREATER",
-            "GREATER_OR_EQUAL",
-            "SMALLER_OR_EQUAL",
-            "SMALLER"
-          ]
-        },
-        "referenceValue": {
-          "description": "The value the field from scope is compared against",
-          "oneOf": [
-            {
-              "type": "boolean"
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/show_on.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "ShowOn property",
+    "type": "object",
+    "description": "Show field depending on value of other field",
+    "definitions": {
+        "legacyShowOn": {
+            "title": "Legacy ShowOn property",
+            "type": "object",
+            "description": "Legacy Variant of defining ShowOn property",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "The field this field depends on in object notation",
+                    "examples": ["files[0].name"]
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Condition to be applied",
+                    "title": "ShowOn function type",
+                    "enum": [
+                        "EQUALS",
+                        "NOT_EQUALS",
+                        "GREATER",
+                        "GREATER_OR_EQUAL",
+                        "SMALLER_OR_EQUAL",
+                        "SMALLER"
+                    ]
+                },
+                "referenceValue": {
+                    "description": "The value the field from scope is compared against",
+                    "oneOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ]
+                }
             },
-            {
-              "type": "string"
-            },
-            {
-              "type": "number"
-            }
-          ]
+            "required": ["type", "path", "referenceValue"],
+            "unevaluatedProperties": false
         }
-      },
-      "required": [
-        "type",
-        "path",
-        "referenceValue"
-      ],
-      "unevaluatedProperties": false
-    }
-  },
-  "oneOf": [
-    {
-      "$ref": "#/definitions/legacyShowOn"
     },
-    {
-      "$ref": "rita_rule.schema.json"
-    }
-  ]
+    "oneOf": [
+        {
+            "$ref": "#/definitions/legacyShowOn"
+        },
+        {
+            "$ref": "rita_rule.schema.json"
+        }
+    ]
 }

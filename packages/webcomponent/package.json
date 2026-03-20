@@ -1,72 +1,75 @@
 {
-  "name": "@educorvi/vue-json-form-webcomponent",
-  "description": "Vue JSON Form Webcomponent",
-  "version": "0.0.0",
-  "dependencies": {
-    "@educorvi/vue-json-form": "workspace:^",
-    "@educorvi/vue-json-form-ajv-validator": "workspace:^",
-    "@vueuse/core": "^14.2.1",
-    "axios": "^1.13.6",
-    "sass-embedded": "^1.97.3",
-    "vue": "^3.5.30"
-  },
-  "devDependencies": {
-    "@semantic-release/exec": "^7.1.0",
-    "@tsconfig/node18": "^18.2.6",
-    "@types/jsdom": "^27.0.0",
-    "@vitejs/plugin-vue": "^6.0.4",
-    "@vitest/ui": "^4.1.0",
-    "@vue/tsconfig": "^0.8.1",
-    "jsdom": "^28.1.0",
-    "npm-run-all": "^4.1.5",
-    "semantic-release": "^25.0.3",
-    "semantic-release-monorepo": "^8.0.2",
-    "semantic-release-yarn": "^3.0.2",
-    "terser": "^5.46.0",
-    "typescript": "~5.9.3",
-    "vite": "^8.0.0",
-    "vitest": "^4.1.0",
-    "vue-tsc": "^3.2.4"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/default/vue-json-form.mjs",
-      "require": "./dist/default/vue-json-form.umd.js"
+    "name": "@educorvi/vue-json-form-webcomponent",
+    "description": "Vue JSON Form Webcomponent",
+    "version": "0.0.0",
+    "dependencies": {
+        "@educorvi/vue-json-form": "workspace:^",
+        "@educorvi/vue-json-form-ajv-validator": "workspace:^",
+        "@vueuse/core": "^14.2.1",
+        "axios": "^1.13.6",
+        "vue": "^3.5.30"
     },
-    "./shadowDom": {
-      "import": "./dist/shadowDom/vue-json-form.mjs",
-      "require": "./dist/shadowDom/vue-json-form.umd.js"
+    "devDependencies": {
+        "@semantic-release/exec": "^7.1.0",
+        "@tsconfig/node18": "^18.2.6",
+        "@types/jsdom": "^27.0.0",
+        "@vitejs/plugin-vue": "^6.0.4",
+        "@vitest/ui": "^4.1.0",
+        "@vue/tsconfig": "^0.8.1",
+        "jsdom": "^28.1.0",
+        "npm-run-all": "^4.1.5",
+        "sass-embedded": "^1.97.3",
+        "semantic-release": "^25.0.3",
+        "semantic-release-monorepo": "^8.0.2",
+        "semantic-release-yarn": "^3.0.2",
+        "terser": "^5.46.0",
+        "turbo": "^2.8.17",
+        "typescript": "~5.9.3",
+        "vite": "^8.0.0",
+        "vitest": "^4.1.0",
+        "vue-tsc": "^3.2.4"
     },
-    "./ajvValidator": {
-      "import": "./dist/ajvValidator/vue-json-form.mjs",
-      "require": "./dist/ajvValidator/vue-json-form.umd.js"
+    "exports": {
+        ".": {
+            "import": "./dist/default/vue-json-form.mjs",
+            "require": "./dist/default/vue-json-form.umd.js"
+        },
+        "./shadowDom": {
+            "import": "./dist/shadowDom/vue-json-form.mjs",
+            "require": "./dist/shadowDom/vue-json-form.umd.js"
+        },
+        "./ajvValidator": {
+            "import": "./dist/ajvValidator/vue-json-form.mjs",
+            "require": "./dist/ajvValidator/vue-json-form.umd.js"
+        },
+        "./vue-json-form.css": "./dist/default/vue-json-form.css"
     },
-    "./vue-json-form.css": "./dist/default/vue-json-form.css"
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "main": "dist/default/vue-json-form.umd.js",
-  "module": "dist/default/vue-json-form.mjs",
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form.git",
-    "directory": "packages/webcomponent"
-  },
-  "scripts": {
-    "build": "turbo build:internal check-types",
-    "build:internal": "run-p 'build:internal:*'",
-    "build:internal:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
-    "build:internal:default": "BUILD_TARGET=default vite build",
-    "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
-    "check-types": "vue-tsc --noEmit",
-    "prepack": "yarn run build:internal",
-    "test:unit": "vitest --run",
-    "test:unit:ui": "vitest --ui"
-  },
-  "type": "commonjs"
+    "files": [
+        "dist",
+        "README.md"
+    ],
+    "main": "dist/default/vue-json-form.umd.js",
+    "module": "dist/default/vue-json-form.mjs",
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/educorvi/vue-json-form.git",
+        "directory": "packages/webcomponent"
+    },
+    "scripts": {
+        "build": "turbo build:internal check-types",
+        "build:internal": "run-p 'build:internal:*'",
+        "build:internal:ajvValidator": "BUILD_TARGET=ajvValidator vite build",
+        "build:internal:default": "BUILD_TARGET=default vite build",
+        "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
+        "check-types": "vue-tsc --noEmit",
+        "lint": "yarn run -T eslint .",
+        "lint:fix": "yarn run -T eslint . --fix",
+        "prepack": "yarn run build",
+        "test:unit": "vitest --run",
+        "test:unit:ui": "vitest --ui"
+    },
+    "type": "commonjs"
 }

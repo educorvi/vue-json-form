@@ -2,7 +2,7 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { getOption } from '@/utilities';
+import { FileControl } from '@/renderings/renderHelpers';
 import { inject, watch, computed, ref, onMounted } from 'vue';
 import {
     inArrayItemProviderKey,
@@ -30,45 +30,18 @@ const id = controlID(savePath);
 const languageProvider = inject(languageProviderKey);
 const inArrayItem = inject(inArrayItemProviderKey);
 
-const layoutElement = computed(() => {
-    return {
-        ...rawLayoutElement.value,
-        options: {
-            ...rawLayoutElement.value.options,
-            ...(getOption(
-                rawLayoutElement.value,
-                'descendantControlOverrides'
-            )?.[savePath + '/items']?.options || {}),
-        },
-    };
-});
+const layoutElement = FileControl.getEnrichedLayoutElement(
+    rawLayoutElement,
+    savePath
+);
 
-const multiple = computed(() => {
-    return jsonElement.value.type === 'array';
-});
-
-const minNumberOfFiles = computed(() => {
-    return Math.max(jsonElement.value.minItems ?? 0, props.required ? 1 : 0);
-});
-
-const maxNumberOfFiles = computed(() => {
-    return jsonElement.value.maxItems ?? Number.MAX_SAFE_INTEGER;
-});
-
-const acceptedFileTypes = computed(() => {
-    const acceptedFileType = getOption(
-        layoutElement.value,
-        'acceptedFileType',
-        '*'
-    );
-    if (
-        acceptedFileType === '*' ||
-        (Array.isArray(acceptedFileType) && acceptedFileType.includes('*'))
-    ) {
-        return undefined;
-    }
-    return acceptedFileType;
-});
+const multiple = FileControl.getMultiple(jsonElement);
+const minNumberOfFiles = FileControl.getMinNumberOfFiles(
+    jsonElement,
+    props.required
+);
+const maxNumberOfFiles = FileControl.getMaxNumberOfFiles(jsonElement);
+const acceptedFileTypes = FileControl.getAcceptedFileTypes(layoutElement);
 
 const valid = ref(true);
 
@@ -116,8 +89,8 @@ onMounted(() => {
 
 <template>
     <BFormFile
-        v-model="formData[savePath]"
         :id="id"
+        v-model="formData[savePath]"
         :state="state"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"

@@ -14,9 +14,9 @@ defineSlots<ArrayButtonSlots>();
 <template>
     <b-button
         :variant="props.variant"
-        @click="emit('click')"
         :disabled="props.disabled"
         :aria-label="props.ariaLabel"
+        @click="emit('click')"
     >
         <slot />
     </b-button>

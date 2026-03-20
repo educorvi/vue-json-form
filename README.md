@@ -14,6 +14,7 @@ Automatically generates forms from a JSON schema and an optional UI schema.
 This monorepo contains several packages that make up VueJsonForm:
 
 ### [@educorvi/vue-json-form](./packages/vue-json-form)
+
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form)
 
 The main Vue.js component for rendering JSON Schema-based forms.
@@ -21,6 +22,7 @@ The main Vue.js component for rendering JSON Schema-based forms.
 **[View Package Documentation →](./packages/vue-json-form/README.md)**
 
 ### [@educorvi/vue-json-form-webcomponent](./packages/webcomponent)
+
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-webcomponent?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-webcomponent)
 
 A standalone web component wrapper for VueJsonForm. Use it in any HTML page without Vue.js.
@@ -28,6 +30,7 @@ A standalone web component wrapper for VueJsonForm. Use it in any HTML page with
 **[View Package Documentation →](./packages/webcomponent/README.md)**
 
 ### [@educorvi/vue-json-form-schemas](./packages/schemas)
+
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-schemas?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-schemas)
 
 JSON Schema definitions and TypeScript types for VueJsonForm. Contains the UI schema specification.
@@ -35,6 +38,7 @@ JSON Schema definitions and TypeScript types for VueJsonForm. Contains the UI sc
 **[View Package Documentation →](./packages/schemas/README.md)**
 
 ### [@educorvi/vue-json-form-ajv-validator](./packages/ajv-validator)
+
 [![npm](https://img.shields.io/npm/v/@educorvi/vue-json-form-ajv-validator?style=for-the-badge)](https://www.npmjs.com/package/@educorvi/vue-json-form-ajv-validator)
 
 Ajv-based validator for VueJsonForm that validates the schemas passed as props.
@@ -57,34 +61,34 @@ import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 import '@educorvi/vue-json-form/dist/vue-json-form.css';
 
 const jsonSchema = {
-  type: 'object',
-  properties: {
-    name: { type: 'string' },
-    email: { type: 'string', format: 'email' }
-  },
-  required: ['name', 'email']
+    type: 'object',
+    properties: {
+        name: { type: 'string' },
+        email: { type: 'string', format: 'email' },
+    },
+    required: ['name', 'email'],
 };
 
 const uiSchema = {
-  type: 'VerticalLayout',
-  elements: [
-    { type: 'Control', scope: '#/properties/name' },
-    { type: 'Control', scope: '#/properties/email' }
-  ]
+    type: 'VerticalLayout',
+    elements: [
+        { type: 'Control', scope: '#/properties/name' },
+        { type: 'Control', scope: '#/properties/email' },
+    ],
 };
 
 function handleSubmit(data: Record<string, any>) {
-  console.log('Form submitted:', data);
+    console.log('Form submitted:', data);
 }
 </script>
 
 <template>
-  <vue-json-form 
-    :jsonSchema="jsonSchema" 
-    :uiSchema="uiSchema"
-    :onSubmitForm="handleSubmit"
-    :renderInterface="bootstrapComponents"
-  />
+    <vue-json-form
+        :jsonSchema="jsonSchema"
+        :uiSchema="uiSchema"
+        :onSubmitForm="handleSubmit"
+        :renderInterface="bootstrapComponents"
+    />
 </template>
 ```
 
@@ -115,5 +119,3 @@ Requires Python package `json-schema-for-humans`.
 ## License
 
 MIT
-
-

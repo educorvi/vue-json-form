@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { BFormGroup, BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
-import { computed, type ComputedRef, useSlots } from 'vue';
+import { computed, useSlots } from 'vue';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
-import { getIsObjectOrArrayViewComputed } from '@/renderings/bootstrap/common.ts';
 import { injectJsonData } from '@/computedProperties/json.ts';
+import { FormfieldWrapper } from '@/renderings/renderHelpers';
 import type {
     FormFieldWrapperProps,
     FormFieldWrapperSlots,
@@ -11,29 +11,25 @@ import type {
 
 const props = defineProps<FormFieldWrapperProps>();
 
+const slots = useSlots();
+defineSlots<FormFieldWrapperSlots>();
+
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 
-const isObjectOrArrayView = getIsObjectOrArrayViewComputed(
+const isObjectOrArrayView = FormfieldWrapper.getIsObjectOrArrayViewComputed(
     jsonElement,
     layoutElement
 );
+const hasPrependOrAppend = FormfieldWrapper.getHasPrependOrAppend(
+    slots,
+    layoutElement
+);
+
 const hideLabel = computed(() => {
     return (
         jsonElement.value.type === 'boolean' ||
         layoutElement.value.options?.label === false ||
         isObjectOrArrayView.value
-    );
-});
-
-const slots = useSlots();
-defineSlots<FormFieldWrapperSlots>();
-
-const hasPrependOrAppend: ComputedRef<boolean> = computed(() => {
-    return !!(
-        slots.prepend ||
-        slots.append ||
-        layoutElement.value.options?.prepend ||
-        layoutElement.value.options?.append
     );
 });
 </script>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Layout, LayoutElement } from '@educorvi/vue-json-form-schemas';
+import type { Layout } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import { computedCssClass } from '@/computedProperties/css';
-import { computed, type ComputedRef } from 'vue';
+import { computed } from 'vue';
 import { hasElements } from '@/typings/typeValidators';
 import { mapUUID } from '@/Commons';
 
@@ -24,8 +24,8 @@ const elementsWithUUID = computed(() => {
     <div :class="cssClass">
         <form-wrap
             v-for="element in elementsWithUUID"
-            :layout-element="element"
             :key="element.uuid"
+            :layout-element="element"
         />
     </div>
 </template>

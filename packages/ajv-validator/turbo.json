@@ -1,12 +1,12 @@
 {
-  "extends": ["//"],
-  "tasks": {
-    "build:internal": {
-      "outputs": ["dist/**", "src/generated/validatorCode.*"]
-    },
-    "test:unit": {
-      "cache": false,
-      "dependsOn": ["build:internal"]
+    "extends": ["//"],
+    "tasks": {
+        "build:internal": {
+            "outputs": ["dist/**", "src/generated/validatorCode.*"]
+        },
+        "test:unit": {
+            "cache": false,
+            "dependsOn": ["build:internal"]
+        }
     }
-  }
 }

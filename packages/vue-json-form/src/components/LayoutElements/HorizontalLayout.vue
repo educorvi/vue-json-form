@@ -24,8 +24,8 @@ const elementsWithUUID = computed(() => {
     <div :class="cssClass">
         <form-wrap
             v-for="element in elementsWithUUID"
-            :layout-element="element"
             :key="element.uuid"
+            :layout-element="element"
         />
     </div>
 </template>

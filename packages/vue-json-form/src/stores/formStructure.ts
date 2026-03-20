@@ -1,4 +1,4 @@
-import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
+import { defineStore } from 'pinia';
 import type {
     Layout,
     JSONSchema,

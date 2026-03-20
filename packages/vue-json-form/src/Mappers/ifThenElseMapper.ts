@@ -340,7 +340,23 @@ export class IfThenElseMapper extends MapperWithData {
         return conditionsAndResults;
     }
 
-    checkConditionFulfilled(
+    private checkRequiredConditionFulfilled(
+        actualValue: Readonly<unknown>,
+        data: Readonly<Record<string, any>>,
+        conditionSavePath: Readonly<string>
+    ): boolean {
+        if (isNotNullOrUndefined(actualValue) && actualValue !== '') {
+            return true;
+        } else {
+            return Object.keys(data)
+                .filter((k) => k.startsWith(conditionSavePath + '/'))
+                .some((k) => {
+                    return isNotNullOrUndefined(data[k]) && data[k] !== '';
+                });
+        }
+    }
+
+    private checkConditionFulfilled(
         condition: Condition,
         data: Readonly<Record<string, any>>
     ): boolean {
@@ -367,7 +383,11 @@ export class IfThenElseMapper extends MapperWithData {
             case ConditionType.MIN_LENGTH:
                 return (actualValue?.length ?? 0) >= condition.value;
             case ConditionType.REQUIRED:
-                return isNotNullOrUndefined(actualValue) && actualValue !== '';
+                return this.checkRequiredConditionFulfilled(
+                    actualValue,
+                    data,
+                    condition.savePath
+                );
         }
     }
 

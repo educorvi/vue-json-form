@@ -8,8 +8,10 @@ import {
     isEnumButtonsConfig,
 } from '@/typings/typeValidators';
 import { computed, type ComputedRef, watch } from 'vue';
-import { getOption } from '@/utilities';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
+
+// TODO Refactor using extracted Select Render Helpers
 
 const { formDataStore } = getStores();
 
@@ -66,10 +68,10 @@ watch(
 
 <template>
     <BFormRadioGroup
+        :id="id"
         v-model="formData[savePath]"
         :options="options"
         class="vjf_radioGroup w-100"
-        :id="id"
         :buttons="displaySettings.displayAs === 'buttons'"
         :button-variant="displaySettings.buttonVariant || 'primary'"
         :stacked="displaySettings.stacked"

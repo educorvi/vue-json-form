@@ -1,5 +1,6 @@
 import type {
     EnumOptions,
+    InputOptions,
     JSONSchema,
     Layout,
     LayoutElement,
@@ -16,9 +17,9 @@ import type {
     elementWithElements,
     IfConditions,
     IfProperty,
+    InputTypeWithoutHidden,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
-import type { InputType } from 'bootstrap-vue-next';
 import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
 
 export type IndexType = string | number | symbol;
@@ -30,7 +31,7 @@ export type IndexType = string | number | symbol;
  * @param obj - The object in which to check for the key.
  * @return A boolean indicating whether the key exists in the object.
  */
-export function isKeyOf<T extends Object>(
+export function isKeyOf<T extends object>(
     key: IndexType,
     obj: T
 ): key is keyof T {
@@ -142,25 +143,27 @@ export function hasEnumValuesForItems(
     return hasProperty(json, 'items') && hasProperty(json.items, 'enum');
 }
 
-export function isInputType(value: any): value is InputType {
-    const validInputTypes: InputType[] = [
+export function isInputType(value: any): value is InputOptions['format'] {
+    const validInputTypes: InputOptions['format'][] = [
         'text',
-        'number',
+        'time',
+        'date',
+        'datetime-local',
         'email',
         'password',
         'search',
         'url',
         'tel',
-        'date',
-        'time',
-        'range',
         'color',
-        'datetime',
-        'datetime-local',
-        'month',
-        'week',
+        'hidden',
     ];
     return validInputTypes.includes(value);
+}
+
+export function isInputTypeWithoutHidden(
+    value: any
+): value is InputTypeWithoutHidden {
+    return isInputType(value) && value !== 'hidden';
 }
 
 export function isMapperWithoutData(
