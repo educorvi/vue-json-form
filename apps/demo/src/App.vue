@@ -27,7 +27,7 @@ function viewCode(title: string, code: Record<string, any>) {
 
         <div id="content">
             <main>
-                <RouterView @viewCode="viewCode" />
+                <RouterView @view-code="viewCode" />
             </main>
         </div>
 

@@ -68,10 +68,10 @@ watch(
 
 <template>
     <BFormRadioGroup
+        :id="id"
         v-model="formData[savePath]"
         :options="options"
         class="vjf_radioGroup w-100"
-        :id="id"
         :buttons="displaySettings.displayAs === 'buttons'"
         :button-variant="displaySettings.buttonVariant || 'primary'"
         :stacked="displaySettings.stacked"

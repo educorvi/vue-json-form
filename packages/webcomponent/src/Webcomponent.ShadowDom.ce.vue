@@ -27,7 +27,7 @@ const onSubmitForm = getSubmitFunc(emit);
         :preset-data="presetData"
         :return-data-as-scopes="returnDataAsScopes"
         :mappers="mappers"
-        :onSubmitForm="onSubmitForm"
+        :on-submit-form="onSubmitForm"
         :render-interface="bootstrapComponents"
     >
         <slot />

@@ -1,5 +1,5 @@
 <template>
-    <div :class="cssClass" v-if="!invalidJsonPointer">
+    <div v-if="!invalidJsonPointer" :class="cssClass">
         <html-renderer
             v-if="htmlMessages.pre"
             :layout-element="htmlMessages.pre"
@@ -9,7 +9,7 @@
             :label="label"
             :label-for="control_id_string"
         >
-            <template #prepend v-if="$slots.prepend">
+            <template v-if="$slots.prepend" #prepend>
                 <slot name="prepend" />
             </template>
             <component
@@ -30,7 +30,7 @@
                 :style="style"
                 :aria-label="inArrayItem ? 'List item' : undefined"
             />
-            <template #append v-if="$slots.append">
+            <template v-if="$slots.append" #append>
                 <slot name="append" />
             </template>
         </component>

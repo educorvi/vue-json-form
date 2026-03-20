@@ -20,7 +20,7 @@ const label = computedLabel(layoutElement);
 </script>
 
 <template>
-    <BFormCheckbox v-model="formData[savePath]" class="vjf_checkbox" :id="id">
+    <BFormCheckbox :id="id" v-model="formData[savePath]" class="vjf_checkbox">
         {{ label }} <HelpPopover />
     </BFormCheckbox>
 </template>

@@ -1,10 +1,7 @@
 import { computed, type ComputedRef, type Ref } from 'vue';
-import type {
-    Control,
-    InputOptions,
-    JSONSchema,
-} from '@educorvi/vue-json-form-schemas';
+import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { InputTypeWithoutHidden } from '@/typings/customTypes.ts';
+import { isInputTypeWithoutHidden } from '@/typings/typeValidators.ts';
 
 export function getType(
     jsonElement: Readonly<Ref<JSONSchema>>,

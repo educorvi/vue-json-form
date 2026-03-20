@@ -220,9 +220,9 @@ onBeforeMount(initArray);
     <div>
         <div class="vjf_label_wrapper">
             <label
-                :for="id"
                 v-if="!isArrayItem"
                 v-show="getOption(layoutElement, 'label', true)"
+                :for="id"
             >
                 <span class="large-label">{{ label }}</span>
             </label>
@@ -234,37 +234,37 @@ onBeforeMount(initArray);
             {{ jsonElement.description }}
         </p>
         <div
-            class="vjf_array"
             v-if="
                 typeof jsonElement.items === 'object' &&
                 'type' in jsonElement.items
             "
             :id="id"
+            class="vjf_array"
         >
             <draggable
-                class="list-group"
-                v-model="formData[savePath]"
-                handle=".handle"
-                :itemKey="(elemId: string) => elemId"
                 key="draggable"
-                @start="drag = true"
-                @end="drag = false"
+                v-model="formData[savePath]"
+                class="list-group"
+                handle=".handle"
+                :item-key="(elemId: string) => elemId"
                 v-bind="dragOptions"
-                :componentData="{
+                :component-data="{
                     tag: 'div',
                     type: 'transition-group',
                     name: !drag ? 'flip-list' : null,
                 }"
+                @start="drag = true"
+                @end="drag = false"
             >
                 <template #item="{ element, index }">
                     <div :key="element" class="draggable-array-item">
                         <ArrayItem
                             :scope="layoutElement.scope"
-                            :baseSavePath="savePath"
+                            :base-save-path="savePath"
                             :index="index"
-                            :itemID="element"
+                            :item-i-d="element"
+                            :allow-remove="allowRemoveField"
                             @delete="deleteItemWithID"
-                            :allowRemove="allowRemoveField"
                         />
                     </div>
                 </template>
@@ -273,9 +273,9 @@ onBeforeMount(initArray);
             <array-button
                 variant="outline-primary"
                 class="w-100"
-                @click="onAddFieldButton"
                 :disabled="!allowAddField"
                 aria-label="Add Item"
+                @click="onAddFieldButton"
             >
                 <span v-if="getOption(layoutElement, 'addButtonText')">
                     {{ getOption(layoutElement, 'addButtonText') }}
@@ -283,7 +283,7 @@ onBeforeMount(initArray);
                 <PlusIcon v-else />
             </array-button>
         </div>
-        <error-viewer v-else header="Error" :id="id">
+        <error-viewer v-else :id="id" header="Error">
             The type of the array's items is missing in the schema
         </error-viewer>
 
@@ -294,18 +294,18 @@ onBeforeMount(initArray);
                     'modals.delete-remaining-items.title'
                 ) || ''
             "
-            :confirmButtonText="
+            :confirm-button-text="
                 languageProvider?.getString(
                     'modals.delete-remaining-items.confirm'
                 )
             "
-            confirmButtonVariant="danger"
-            @confirm="deleteAllItems"
-            :cancelButtonText="
+            confirm-button-variant="danger"
+            :cancel-button-text="
                 languageProvider?.getString(
                     'modals.delete-remaining-items.cancel'
                 )
             "
+            @confirm="deleteAllItems"
         >
             {{
                 languageProvider?.getStringTemplate(

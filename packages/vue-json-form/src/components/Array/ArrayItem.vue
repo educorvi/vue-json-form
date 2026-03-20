@@ -36,7 +36,7 @@ const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
 </script>
 
 <template>
-    <div class="vjf_arrayItem" :id="itemID">
+    <div :id="itemID" class="vjf_arrayItem">
         <Control :layout-element="layoutElement" in-array-item>
             <template #prepend>
                 <div class="handle">
@@ -46,9 +46,9 @@ const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
             <template #append>
                 <ArrayButton
                     variant="outline-danger"
-                    @click="emit('delete', itemID, savePath)"
                     :disabled="!allowRemove"
                     aria-label="Delete Item"
+                    @click="emit('delete', itemID, savePath)"
                 >
                     <XIcon />
                 </ArrayButton>

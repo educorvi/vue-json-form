@@ -15,16 +15,16 @@ const id = controlID(savePath);
 
 <template>
     <b-form-tags
-        variant
-        v-model="formData[savePath]"
-        separator=" "
         :id="id"
+        v-model="formData[savePath]"
+        variant
+        separator=" "
         class="vjf_tags"
-        :tagPills="
+        :tag-pills="
             hasOption(layoutElement, 'tags') &&
             layoutElement.options?.tags?.pills
         "
-        :tagVariant="
+        :tag-variant="
             hasOption(layoutElement, 'tags')
                 ? layoutElement.options?.tags?.variant
                 : undefined

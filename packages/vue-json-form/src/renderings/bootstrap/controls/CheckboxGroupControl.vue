@@ -69,10 +69,10 @@ const state = computed(() => {
 
 <template>
     <BFormCheckboxGroup
+        :id="id"
         v-model="values"
         :options="options"
         class="vjf_checkboxGroup"
-        :id="id"
         :required="false"
         :state="state"
         :stacked="getOption(layoutElement, 'stacked')"

@@ -20,18 +20,18 @@ const numberOfLines = StringControl.getNumberOfLines(layoutElement);
 <template>
     <BFormTextarea
         v-if="isMultiLine"
+        :id="id"
         v-model="formData[savePath]"
         class="vjf_textarea"
-        :id="id"
         :rows="numberOfLines"
         :minlength="jsonElement.minLength"
         :maxlength="jsonElement.maxLength"
     />
     <b-form-input
         v-else
+        :id="id"
         v-model="formData[savePath]"
         class="vjf_input"
-        :id="id"
         :minlength="jsonElement.minLength"
         :maxlength="jsonElement.maxLength"
         :step="jsonElement.multipleOf"

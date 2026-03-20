@@ -14,7 +14,7 @@ const buttongroupComponent =
 </script>
 
 <template>
-    <component :is="buttongroupComponent" :layoutElement="layoutElement" />
+    <component :is="buttongroupComponent" :layout-element="layoutElement" />
 </template>
 
 <style scoped></style>

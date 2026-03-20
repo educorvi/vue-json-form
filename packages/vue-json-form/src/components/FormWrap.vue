@@ -2,8 +2,8 @@
     <show-on-wrapper :visible="show">
         <component
             :is="layoutComponent"
-            :layoutElement="layoutElement"
             v-if="show"
+            :layout-element="layoutElement"
         ></component>
     </show-on-wrapper>
 </template>

@@ -16,9 +16,9 @@ const step = getStep(jsonElement);
 
 <template>
     <b-form-input
+        :id="id"
         v-model.number="formData[savePath]"
         class="vjf_input"
-        :id="id"
         :step="step"
         :min="jsonElement.minimum"
         :max="jsonElement.maximum"

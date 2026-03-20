@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BButton, BSpinner, type ButtonType } from 'bootstrap-vue-next';
+import { BButton, BSpinner } from 'bootstrap-vue-next';
 import { computedCssClass } from '@/computedProperties/css';
 import { storeToRefs } from 'pinia';
 import type { VjfButtonProps } from '@/renderings/PropsAndEmitsForRenderings.ts';
@@ -38,8 +38,8 @@ const emitWizardButton = getWizardHandler(
         :variant="layoutElement.options?.variant"
         :type="buttonType"
         :class="cssClass"
-        @click="emitWizardButton"
         :disabled="layoutElement.options?.disabled"
+        @click="emitWizardButton"
     >
         <span v-if="!waiting">
             {{ layoutElement.text }}

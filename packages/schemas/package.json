@@ -57,6 +57,8 @@
     "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && generate-schema-doc ./src/generated/ui-merged.schema.json ./docs-dist/index.html",
     "generateTypings": "run-p 'generateTypings:*'",
     "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
+    "lint": "yarn run -T eslint .",
+    "lint:fix": "yarn run -T eslint . --fix",
     "mergeSchema": "node mergeSchema.cjs",
     "prepack": "yarn run build"
   },

@@ -13,6 +13,12 @@
       "persistent": true,
       "cache": false
     },
+    "lint": {
+      "cache": false
+    },
+    "lint:fix": {
+      "cache": false
+    },
     "test:all": {
       "cache": false,
       "dependsOn": ["test:unit", "test:e2e"]

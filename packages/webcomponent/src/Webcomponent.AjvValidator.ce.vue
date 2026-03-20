@@ -32,7 +32,7 @@ const onSubmitForm = getSubmitFunc(emit);
         :return-data-as-scopes="returnDataAsScopes"
         :mappers="mappers"
         :validator="noValidate?undefined:AjvValidator"
-        :onSubmitForm="onSubmitForm"
+        :on-submit-form="onSubmitForm"
         :render-interface="bootstrapComponents"
     >
         <slot />

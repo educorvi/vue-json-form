@@ -23,10 +23,10 @@ createInvalidValueWatch(jsonElement, formData, savePath);
 
 <template>
     <BFormSelect
+        :id="id"
         v-model="formData[savePath]"
         :options="options"
         class="vjf_select"
-        :id="id"
     />
 </template>
 

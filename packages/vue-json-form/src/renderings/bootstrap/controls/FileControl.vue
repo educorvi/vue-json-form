@@ -89,8 +89,8 @@ onMounted(() => {
 
 <template>
     <BFormFile
-        v-model="formData[savePath]"
         :id="id"
+        v-model="formData[savePath]"
         :state="state"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
