@@ -1,6 +1,12 @@
 export type { RenderInterface } from './renderings/RenderInterface.ts';
 
+// TODO Remove direct export
+/**
+ * @deprecated Import from `RenderInterfaces` instead
+ */
 export * from '@/renderings/bootstrap/BootstrapComponents';
+
+export * as RenderInterfaces from '@/renderings';
 
 import VueJsonForm from '@/components/FormRoot.vue';
 export { VueJsonForm };
@@ -22,6 +28,6 @@ export * from '@/renderings/PropsAndEmitsForRenderings.ts';
 
 export * from '@/formControlInputValidation';
 
-export * from '@/renderings/renderHelpers';
+export * as RenderHelpers from '@/renderings/renderHelpers';
 
 export const version: string = import.meta.env.PACKAGE_VERSION as string;

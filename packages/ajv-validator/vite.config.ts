@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { analyzer } from 'vite-bundle-analyzer';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({

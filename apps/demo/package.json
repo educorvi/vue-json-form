@@ -45,6 +45,8 @@
     "build:internal": "vite build",
     "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "dev": "vite",
+    "lint": "yarn run -T eslint .",
+    "lint:fix": "yarn run -T eslint . --fix",
     "pre-commit": "echo 'No pre commit configured for demo'",
     "prepack": "yarn run build",
     "preview": "vite preview",

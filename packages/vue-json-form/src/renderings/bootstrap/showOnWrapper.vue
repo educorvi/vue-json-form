@@ -9,7 +9,7 @@ defineSlots<ShowOnWrapperSlots>();
 </script>
 
 <template>
-    <div class="vjf_showOnWrapper" v-if="visible">
+    <div v-if="visible" class="vjf_showOnWrapper">
         <slot />
     </div>
 </template>

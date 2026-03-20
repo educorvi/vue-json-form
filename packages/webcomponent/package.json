@@ -65,6 +65,8 @@
     "build:internal:default": "BUILD_TARGET=default vite build",
     "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
     "check-types": "vue-tsc --noEmit",
+    "lint": "yarn run -T eslint .",
+    "lint:fix": "yarn run -T eslint . --fix",
     "prepack": "yarn run build",
     "test:unit": "vitest --run",
     "test:unit:ui": "vitest --ui"
