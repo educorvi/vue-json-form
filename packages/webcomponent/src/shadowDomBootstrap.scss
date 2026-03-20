@@ -1,2 +1,5 @@
 @import 'bootstrap';
-:root, :host { @extend :root; }
+:root,
+:host {
+    @extend :root;
+}

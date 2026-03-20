@@ -1,19 +1,19 @@
 <template>
     <form
+        v-if="storedUiSchema && storedJsonSchema"
+        :id="id"
+        :class="formClass"
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         @invalid.capture="formStateWasValidated = true"
-        :id="id"
-        v-if="storedUiSchema && storedJsonSchema"
-        :class="formClass"
     >
         <FormWrap
             v-if="isLayout(storedUiSchema)"
-            :layoutElement="storedUiSchema"
+            :layout-element="storedUiSchema"
         />
         <Wizard
             v-else-if="isWizard(storedUiSchema)"
-            :wizardElement="storedUiSchema"
+            :wizard-element="storedUiSchema"
         />
         <slot />
     </form>
@@ -26,7 +26,7 @@
                 validationErrors.general.length >
             0
         "
-        :validationErrors="validationErrors"
+        :validation-errors="validationErrors"
     />
 </template>
 
@@ -161,7 +161,7 @@ const { formStructureStore, formDataStore } = getStores(id);
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
-    mappers,
+    mappers: storeMappers,
     components,
     defaultData,
     buttonWaiting,
@@ -292,7 +292,7 @@ async function assignStoreData(
         ? markRaw(obj.renderInterface)
         : undefined;
 
-    mappers.value = props.mappers || [];
+    storeMappers.value = props.mappers || [];
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);

@@ -2,7 +2,7 @@ import { Validator } from './Validator';
 import { UISchema } from '../generated/ui-schema';
 import { JSONSchema } from '../index';
 
-export class EmptyValidator extends Validator<never>{
+export class EmptyValidator extends Validator<never> {
     protected async initializeInternal(): Promise<void> {
         return;
     }
@@ -28,5 +28,4 @@ export class EmptyValidator extends Validator<never>{
     getUiSchemaValidationErrors(): never[] {
         return [];
     }
-
 }

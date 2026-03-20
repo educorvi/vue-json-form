@@ -26,7 +26,7 @@ const html = computed(() => {
 </script>
 
 <template>
-    <span v-html="html" class="vjf_htmlRenderer"></span>
+    <span class="vjf_htmlRenderer" v-html="html"></span>
 </template>
 
 <style scoped></style>

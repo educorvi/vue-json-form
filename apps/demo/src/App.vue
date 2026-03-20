@@ -27,7 +27,7 @@ function viewCode(title: string, code: Record<string, any>) {
 
         <div id="content">
             <main>
-                <RouterView @viewCode="viewCode" />
+                <RouterView @view-code="viewCode" />
             </main>
         </div>
 
@@ -38,7 +38,8 @@ function viewCode(title: string, code: Record<string, any>) {
             scrollable
             centered
             no-footer
-            size="lg">
+            size="lg"
+        >
             <vue-json-pretty :data="modalData.json" />
         </BModal>
     </BApp>

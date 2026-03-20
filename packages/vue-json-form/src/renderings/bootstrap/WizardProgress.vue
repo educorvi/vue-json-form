@@ -71,15 +71,16 @@ watch(
         <div class="stepWrapper">
             <div class="d-flex justify-content-between">
                 <div
+                    v-for="stepNumber in Array.from(
+                        { length: props.numberOfPages },
+                        (_, i) => i + 1
+                    )"
+                    :key="'wizard-fg-' + stepNumber"
                     :class="{
                         'stepNumber d-flex justify-content-center align-items-center': true,
                         active: stepNumber - 1 === currentStep,
                         filled: stepNumber - 1 < currentStep,
                     }"
-                    v-for="stepNumber in Array.from(
-                        { length: props.numberOfPages },
-                        (_, i) => i + 1
-                    )"
                 >
                     <button
                         :disabled="stepNumber > currentStep"
@@ -96,15 +97,16 @@ watch(
         <div class="stepWrapperBg">
             <div class="d-flex justify-content-between">
                 <div
+                    v-for="stepNumber in Array.from(
+                        { length: props.numberOfPages },
+                        (_, i) => i + 1
+                    )"
+                    :key="'wizard-bg-' + stepNumber"
                     :class="{
                         'stepNumber d-flex justify-content-center align-items-center': true,
                         active: stepNumber - 1 === currentStep,
                         filled: stepNumber - 1 < currentStep,
                     }"
-                    v-for="stepNumber in Array.from(
-                        { length: props.numberOfPages },
-                        (_, i) => i + 1
-                    )"
                 ></div>
             </div>
             <!--        <BProgress class="stepProgress" :value="currentStep" :max="max - 1" />-->

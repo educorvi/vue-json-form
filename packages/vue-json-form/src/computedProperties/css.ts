@@ -1,6 +1,6 @@
 import { computed, isRef, type Ref } from 'vue';
 import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
-import { getOption } from '@/utilities.ts';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 
 /**
  * Computed CSS class for the given element

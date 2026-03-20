@@ -1,54 +1,57 @@
 {
-  "name": "demo",
-  "version": "0.0.0",
-  "dependencies": {
-    "@educorvi/vue-json-form": "workspace:^",
-    "@educorvi/vue-json-form-ajv-validator": "workspace:^",
-    "bootstrap": "^5.3.8",
-    "bootstrap-vue-next": "0.43.8",
-    "bootswatch": "^5.3.8",
-    "sass-embedded": "^1.97.3",
-    "vue": "^3.5.30",
-    "vue-json-pretty": "^2.6.0",
-    "vue-router": "^5.0.3"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.58.2",
-    "@semantic-release/exec": "^7.1.0",
-    "@tsconfig/node18": "^18.2.6",
-    "@types/node": "^25.3.0",
-    "@vitejs/plugin-vue": "^6.0.4",
-    "@vue/tsconfig": "^0.8.1",
-    "npm-run-all": "^4.1.5",
-    "playwright": "^1.58.2",
-    "semantic-release": "^25.0.3",
-    "semantic-release-monorepo": "^8.0.2",
-    "semantic-release-yarn": "^3.0.2",
-    "typescript": "~5.9.3",
-    "unplugin-vue-components": "^31.0.0",
-    "vite": "^7.3.1",
-    "vite-bundle-analyzer": "^1.3.6",
-    "vue-tsc": "^3.2.4"
-  },
-  "private": true,
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/educorvi/vue-json-form.git",
-    "directory": "apps/demo"
-  },
-  "scripts": {
-    "build": "turbo build:internal check-types",
-    "build:internal": "vite build",
-    "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
-    "dev": "vite",
-    "pre-commit": "echo 'No pre commit configured for demo'",
-    "prepack": "yarn run build:internal",
-    "preview": "vite preview",
-    "test:e2e": "playwright test",
-    "test:e2e:dev": "playwright test --ui"
-  },
-  "type": "module"
+    "name": "demo",
+    "version": "0.0.0",
+    "dependencies": {
+        "@educorvi/vue-json-form": "workspace:^",
+        "@educorvi/vue-json-form-ajv-validator": "workspace:^",
+        "bootstrap": "^5.3.8",
+        "bootstrap-vue-next": "0.44.0",
+        "bootswatch": "^5.3.8",
+        "vue": "^3.5.30",
+        "vue-json-pretty": "^2.6.0",
+        "vue-router": "^5.0.4"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.58.2",
+        "@semantic-release/exec": "^7.1.0",
+        "@tsconfig/node18": "^18.2.6",
+        "@types/node": "^25.3.0",
+        "@vitejs/plugin-vue": "^6.0.4",
+        "@vue/tsconfig": "^0.8.1",
+        "npm-run-all": "^4.1.5",
+        "playwright": "^1.58.2",
+        "sass-embedded": "^1.97.3",
+        "semantic-release": "^25.0.3",
+        "semantic-release-monorepo": "^8.0.2",
+        "semantic-release-yarn": "^3.0.2",
+        "turbo": "^2.8.17",
+        "typescript": "~5.9.3",
+        "unplugin-vue-components": "^31.0.0",
+        "vite": "^7.3.1",
+        "vite-bundle-analyzer": "^1.3.6",
+        "vue-tsc": "^3.2.4"
+    },
+    "private": true,
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/educorvi/vue-json-form.git",
+        "directory": "apps/demo"
+    },
+    "scripts": {
+        "build": "turbo build:internal check-types",
+        "build:internal": "vite build",
+        "check-types": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
+        "dev": "vite",
+        "lint": "yarn run -T eslint .",
+        "lint:fix": "yarn run -T eslint . --fix",
+        "pre-commit": "echo 'No pre commit configured for demo'",
+        "prepack": "yarn run build",
+        "preview": "vite preview",
+        "test:e2e": "playwright test",
+        "test:e2e:dev": "playwright test --ui"
+    },
+    "type": "module"
 }

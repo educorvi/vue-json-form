@@ -1,40 +1,37 @@
 {
-  "$id": "https://educorvi.github.io/vue-json-form/schemas/buttongroup.schema.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Buttongroup",
-  "description": "Used to group buttons",
-  "type": "object",
-  "properties": {
-    "type": {
-      "type": "string",
-      "const": "Buttongroup"
-    },
-    "buttons": {
-      "type": "array",
-      "description": "The buttons in the button group",
-      "items": {
-        "$ref": "button.schema.json"
-      },
-      "minItems": 1
-    },
-    "options": {
-      "type": "object",
-      "properties": {
-        "vertical": {
-          "type": "boolean",
-          "default": false,
-          "description": "Display the buttons vertical"
+    "$id": "https://educorvi.github.io/vue-json-form/schemas/buttongroup.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Buttongroup",
+    "description": "Used to group buttons",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "const": "Buttongroup"
+        },
+        "buttons": {
+            "type": "array",
+            "description": "The buttons in the button group",
+            "items": {
+                "$ref": "button.schema.json"
+            },
+            "minItems": 1
+        },
+        "options": {
+            "type": "object",
+            "properties": {
+                "vertical": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Display the buttons vertical"
+                }
+            },
+            "additionalProperties": false
+        },
+        "showOn": {
+            "$ref": "show_on.schema.json"
         }
-      },
-      "additionalProperties": false
     },
-    "showOn": {
-      "$ref": "show_on.schema.json"
-    }
-  },
-  "required": [
-    "buttons",
-    "type"
-  ],
-  "additionalProperties": false
+    "required": ["buttons", "type"],
+    "additionalProperties": false
 }

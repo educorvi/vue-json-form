@@ -4,11 +4,14 @@ import { JSONSchema, ValidationError } from '../index';
 export abstract class Validator<E> {
     private initialized = false;
     protected abstract initializeInternal(): Promise<void>;
-    protected abstract validateJsonSchemaInternal(data: unknown): data is JSONSchema;
-    protected abstract validateUiSchemaInternal(data: unknown): data is UISchema;
-    abstract getUiSchemaValidationErrors(): ValidationError<E>[]
-    abstract getJsonSchemaValidationErrors(): ValidationError<E>[]
-
+    protected abstract validateJsonSchemaInternal(
+        data: unknown
+    ): data is JSONSchema;
+    protected abstract validateUiSchemaInternal(
+        data: unknown
+    ): data is UISchema;
+    abstract getUiSchemaValidationErrors(): ValidationError<E>[];
+    abstract getJsonSchemaValidationErrors(): ValidationError<E>[];
 
     async initialize(): Promise<void> {
         if (!this.initialized) {

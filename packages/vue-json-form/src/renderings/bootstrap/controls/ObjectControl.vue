@@ -21,7 +21,7 @@ const controlElements = computed(() => {
 </script>
 
 <template>
-    <fieldset :class="cssClass" :id="id">
+    <fieldset :id="id" :class="cssClass">
         <legend v-if="layoutElement.options?.label !== false && label">
             {{ label }}
         </legend>
@@ -31,8 +31,8 @@ const controlElements = computed(() => {
         <div class="vjf_indented">
             <form-wrap
                 v-for="element in controlElements"
-                :layout-element="element"
                 :key="element.scope"
+                :layout-element="element"
             />
         </div>
     </fieldset>

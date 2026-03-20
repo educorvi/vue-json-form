@@ -469,7 +469,9 @@ describe('AjvValidator', () => {
 
             expect(errors.length).toBeGreaterThan(0);
             // Error path might be empty string or '/' for root level required field
-            const versionError = errors.find(e => e.title === 'required' || e.message?.includes('version'));
+            const versionError = errors.find(
+                (e) => e.title === 'required' || e.message?.includes('version')
+            );
             expect(versionError).toBeDefined();
         });
     });
@@ -516,7 +518,9 @@ describe('AjvValidator', () => {
                 },
             };
 
-            expect(() => uninitializedValidator.validateJsonSchema(validSchema)).toThrow('Validator not initialized');
+            expect(() =>
+                uninitializedValidator.validateJsonSchema(validSchema)
+            ).toThrow('Validator not initialized');
         });
 
         it('throws error when validating UI schema before initialization', () => {
@@ -530,7 +534,9 @@ describe('AjvValidator', () => {
                 },
             };
 
-            expect(() => uninitializedValidator.validateUiSchema(validUiSchema)).toThrow('Validator not initialized');
+            expect(() =>
+                uninitializedValidator.validateUiSchema(validUiSchema)
+            ).toThrow('Validator not initialized');
         });
     });
 

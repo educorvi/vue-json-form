@@ -8,7 +8,12 @@ import {
     type Mock,
 } from 'vitest';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
-import { getSubmitFunc, getComputed, type Props, type Emits } from '../../src/vueComponentCommons';
+import {
+    getSubmitFunc,
+    getComputed,
+    type Props,
+    type Emits,
+} from '../../src/vueComponentCommons';
 import axios from 'axios';
 
 vi.mock('axios');
@@ -61,7 +66,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
         });
 
         it('should emit afterSubmitted event after successful emit action', async () => {
@@ -71,7 +80,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('afterSubmitted', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'afterSubmitted',
+                data,
+                options
+            );
         });
 
         it('should emit events in correct order for emit action', async () => {
@@ -147,7 +160,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
         });
 
         it('should emit submitFailed when single URL request fails', async () => {
@@ -166,13 +183,19 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitFailed', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitFailed',
+                data,
+                options
+            );
         });
 
         it('should not emit submitSucceeded when single URL request fails', async () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockRejectedValueOnce(new Error('Network error'));
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
@@ -186,7 +209,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).not.toHaveBeenCalledWith('submitSucceeded', expect.anything(), expect.anything());
+            expect(mockEmit).not.toHaveBeenCalledWith(
+                'submitSucceeded',
+                expect.anything(),
+                expect.anything()
+            );
             consoleErrorSpy.mockRestore();
         });
     });
@@ -199,7 +226,10 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
-            const urls = ['https://api.example.com/submit1', 'https://api.example.com/submit2'];
+            const urls = [
+                'https://api.example.com/submit1',
+                'https://api.example.com/submit2',
+            ];
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
@@ -242,32 +272,47 @@ describe('vueComponentCommons', () => {
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
-                    url: ['https://api.example.com/submit1', 'https://api.example.com/submit2'],
+                    url: [
+                        'https://api.example.com/submit1',
+                        'https://api.example.com/submit2',
+                    ],
                     method: 'POST',
                 },
             };
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
         });
 
         it('should stop processing URLs after first failure', async () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
-            mockedAxios.mockRejectedValueOnce(new Error('Second request failed'));
+            mockedAxios.mockRejectedValueOnce(
+                new Error('Second request failed')
+            );
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
-                    url: ['https://api.example.com/submit1', 'https://api.example.com/submit2', 'https://api.example.com/submit3'],
+                    url: [
+                        'https://api.example.com/submit1',
+                        'https://api.example.com/submit2',
+                        'https://api.example.com/submit3',
+                    ],
                     method: 'POST',
                 },
             };
 
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
             await onSubmitForm(data, options);
             consoleErrorSpy.mockRestore();
 
@@ -278,22 +323,33 @@ describe('vueComponentCommons', () => {
         it('should emit submitFailed after first URL fails in array', async () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
-            mockedAxios.mockRejectedValueOnce(new Error('Second request failed'));
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            mockedAxios.mockRejectedValueOnce(
+                new Error('Second request failed')
+            );
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
-                    url: ['https://api.example.com/submit1', 'https://api.example.com/submit2'],
+                    url: [
+                        'https://api.example.com/submit1',
+                        'https://api.example.com/submit2',
+                    ],
                     method: 'POST',
                 },
             };
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitFailed', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitFailed',
+                data,
+                options
+            );
             consoleErrorSpy.mockRestore();
         });
     });
@@ -323,7 +379,9 @@ describe('vueComponentCommons', () => {
         it('should not redirect when request fails', async () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockRejectedValueOnce(new Error('Request failed'));
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
@@ -354,7 +412,10 @@ describe('vueComponentCommons', () => {
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
-                    url: ['https://api.example.com/submit1', 'https://api.example.com/submit2'],
+                    url: [
+                        'https://api.example.com/submit1',
+                        'https://api.example.com/submit2',
+                    ],
                     method: 'POST',
                     onSuccessRedirect: redirectUrl,
                 },
@@ -392,7 +453,9 @@ describe('vueComponentCommons', () => {
         it('should emit events in correct order for failed request', async () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockRejectedValueOnce(new Error('Request failed'));
-            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+            const consoleErrorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {});
 
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
@@ -428,7 +491,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
             expect(vi.mocked(axios)).not.toHaveBeenCalled();
         });
 
@@ -445,7 +512,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
             expect(vi.mocked(axios)).not.toHaveBeenCalled();
         });
 
@@ -459,7 +530,11 @@ describe('vueComponentCommons', () => {
 
             await onSubmitForm(data, options);
 
-            expect(mockEmit).toHaveBeenCalledWith('submitSucceeded', data, options);
+            expect(mockEmit).toHaveBeenCalledWith(
+                'submitSucceeded',
+                data,
+                options
+            );
             expect(vi.mocked(axios)).not.toHaveBeenCalled();
         });
 
@@ -496,7 +571,7 @@ describe('vueComponentCommons', () => {
             const options: SubmitOptions = {
                 action: 'request',
                 request: {
-                    url: 'https://api.example.com/submit'
+                    url: 'https://api.example.com/submit',
                 },
             };
 
@@ -517,7 +592,7 @@ describe('vueComponentCommons', () => {
             const onSubmitForm = getSubmitFunc(mockEmit as Emits);
             const data = { name: 'John' };
             const customHeaders = {
-                'Authorization': 'Bearer token123',
+                Authorization: 'Bearer token123',
                 'X-Custom-Header': 'custom-value',
             };
             const options: SubmitOptions = {
@@ -598,7 +673,8 @@ describe('vueComponentCommons', () => {
     describe('getComputed', () => {
         it('should parse valid JSON Schema', () => {
             const props: Props = {
-                jsonSchema: '{"type":"object","properties":{"name":{"type":"string"}}}',
+                jsonSchema:
+                    '{"type":"object","properties":{"name":{"type":"string"}}}',
             };
 
             const computed = getComputed(props);
@@ -611,14 +687,19 @@ describe('vueComponentCommons', () => {
         });
 
         it('should return undefined for invalid JSON Schema with warning', () => {
-            const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const consoleWarnSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {});
             const props: Props = {
                 jsonSchema: 'invalid json',
             };
 
             const computed = getComputed(props);
             expect(computed.jsonSchema.value).toBeUndefined();
-            expect(consoleWarnSpy).toHaveBeenCalledWith('Could not parse JSON Schema', expect.any(Error));
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                'Could not parse JSON Schema',
+                expect.any(Error)
+            );
 
             consoleWarnSpy.mockRestore();
         });
@@ -646,7 +727,9 @@ describe('vueComponentCommons', () => {
         });
 
         it('should return undefined for invalid UI Schema with warning', () => {
-            const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const consoleWarnSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {});
             const props: Props = {
                 jsonSchema: '{}',
                 uiSchema: 'invalid ui schema',
@@ -654,7 +737,10 @@ describe('vueComponentCommons', () => {
 
             const computed = getComputed(props);
             expect(computed.uiSchema.value).toBeUndefined();
-            expect(consoleWarnSpy).toHaveBeenCalledWith('Could not parse UI Schema', expect.any(Error));
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                'Could not parse UI Schema',
+                expect.any(Error)
+            );
 
             consoleWarnSpy.mockRestore();
         });
@@ -682,7 +768,9 @@ describe('vueComponentCommons', () => {
         });
 
         it('should return undefined for invalid preset data with warning', () => {
-            const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const consoleWarnSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {});
             const props: Props = {
                 jsonSchema: '{}',
                 presetData: 'invalid preset data',
@@ -690,7 +778,10 @@ describe('vueComponentCommons', () => {
 
             const computed = getComputed(props);
             expect(computed.presetData.value).toBeUndefined();
-            expect(consoleWarnSpy).toHaveBeenCalledWith('Could not parse pre-set data', expect.any(Error));
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                'Could not parse pre-set data',
+                expect.any(Error)
+            );
 
             consoleWarnSpy.mockRestore();
         });
@@ -745,4 +836,3 @@ describe('vueComponentCommons', () => {
         });
     });
 });
-

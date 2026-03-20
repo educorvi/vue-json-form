@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { nextTick, ref } from 'vue';
-import { VueJsonForm, generateUISchema } from '@educorvi/vue-json-form';
+import { ref } from 'vue';
+import { generateUISchema } from '@educorvi/vue-json-form';
 import VueJsonPretty from 'vue-json-pretty';
 
-const emit = defineEmits<{
+defineEmits<{
     viewCode: [title: string, object: Record<any, any>];
 }>();
 
 function download() {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(
-        new Blob([JSON.stringify(uiSchema.value, null, 2)], { type: 'application/json' }),
+        new Blob([JSON.stringify(uiSchema.value, null, 2)], {
+            type: 'application/json',
+        })
     );
     a.download = 'ui-schema.json';
     a.click();
@@ -39,25 +41,39 @@ async function generate(evt: Event) {
 <template>
     <h1>UI Generator</h1>
     Generate an example UI Schema for your form.
-    <b-form @submit="generate" class="mt-2">
+    <b-form class="mt-2" @submit="generate">
         <label for="json-schema">Upload JSON Schema</label>
-        <b-form-file id="json-schema" v-model="rawJsonSchema" required></b-form-file>
+        <b-form-file
+            id="json-schema"
+            v-model="rawJsonSchema"
+            required
+        ></b-form-file>
 
         <b-button-group class="mt-3 w-100">
-            <b-button type="submit" variant="primary">Generate UI Schema</b-button>
-            <b-button type="reset" @click="() => {jsonSchema = undefined; uiSchema = undefined}">Clear</b-button>
+            <b-button type="submit" variant="primary"
+                >Generate UI Schema</b-button
+            >
+            <b-button
+                type="reset"
+                @click="
+                    () => {
+                        jsonSchema = undefined;
+                        uiSchema = undefined;
+                    }
+                "
+                >Clear</b-button
+            >
         </b-button-group>
-
     </b-form>
-    <hr>
+    <hr />
     <div v-if="uiSchema">
-        <b-button variant="outline-primary" class="w-100 mb-3" @click="download">Download</b-button>
+        <b-button variant="outline-primary" class="w-100 mb-3" @click="download"
+            >Download</b-button
+        >
         <b-card>
             <vue-json-pretty :data="uiSchema" />
         </b-card>
     </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

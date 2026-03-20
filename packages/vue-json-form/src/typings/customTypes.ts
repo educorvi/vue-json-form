@@ -1,4 +1,5 @@
 import type {
+    InputOptions,
     JSONSchema,
     Layout,
     LayoutElement,
@@ -103,3 +104,5 @@ export type InvertOptionality<T> = {
 export type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
+
+export type InputTypeWithoutHidden = Exclude<InputOptions['format'], 'hidden'>;

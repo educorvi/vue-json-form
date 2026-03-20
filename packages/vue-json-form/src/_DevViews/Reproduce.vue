@@ -5,7 +5,7 @@
         :on-submit-form="onSubmitForm"
         :render-interface="bootstrapComponents"
         :ui-schema="ui"
-        :presetData="presetData"
+        :preset-data="presetData"
         :validator="AjvValidator"
         :mappers="[
             IfThenElseMapper,
@@ -17,14 +17,13 @@
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>
-    <pre id="result-container" v-if="formData">{{
+    <pre v-if="formData" id="result-container">{{
         JSON.stringify(formData, null, 2)
     }}</pre>
 </template>
 
 <script setup lang="ts">
 import {
-    EnglishLanguageProvider,
     RitaDependentOptionsMapper,
     type SubmitOptions,
     VueJsonForm,
@@ -35,7 +34,7 @@ import ui from '../exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
+import { ref, type Ref } from 'vue';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
 import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';

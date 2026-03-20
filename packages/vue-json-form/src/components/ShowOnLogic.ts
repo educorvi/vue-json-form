@@ -3,7 +3,6 @@ import { isDependentElement, isLegacyShowOn } from '@/typings/typeValidators';
 import type {
     DescendantControlOverrides,
     LayoutElement,
-    LegacyShowOnProperty,
     ShowOnFunctionType,
 } from '@educorvi/vue-json-form-schemas';
 import {

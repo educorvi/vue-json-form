@@ -7,7 +7,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
-import { getOption } from '@/utilities.ts';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
 
 /**
