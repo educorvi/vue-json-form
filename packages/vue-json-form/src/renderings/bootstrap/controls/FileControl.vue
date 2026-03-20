@@ -2,15 +2,14 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { FileControl, getOption } from '@/renderings/renderHelpers';
-import { inject, watch, computed, ref, onMounted, toRef } from 'vue';
+import { FileControl } from '@/renderings/renderHelpers';
+import { inject, watch, computed, ref, onMounted } from 'vue';
 import {
     inArrayItemProviderKey,
     languageProviderKey,
 } from '@/components/ProviderKeys.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateFileInput } from '@/formControlInputValidation';
-import { getEnrichedLayoutElement } from '@/renderings/renderHelpers/FileControl.ts';
 
 const props = defineProps<{
     required?: boolean;
@@ -31,7 +30,10 @@ const id = controlID(savePath);
 const languageProvider = inject(languageProviderKey);
 const inArrayItem = inject(inArrayItemProviderKey);
 
-const layoutElement = getEnrichedLayoutElement(rawLayoutElement, savePath);
+const layoutElement = FileControl.getEnrichedLayoutElement(
+    rawLayoutElement,
+    savePath
+);
 
 const multiple = FileControl.getMultiple(jsonElement);
 const minNumberOfFiles = FileControl.getMinNumberOfFiles(

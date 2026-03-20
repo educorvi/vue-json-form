@@ -1,8 +1,7 @@
-import { computed, type ComputedRef, type Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 import type {
     Button,
     Layout,
-    UISchema,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 

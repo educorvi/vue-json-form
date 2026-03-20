@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { BFormInput, BFormTextarea, type InputType } from 'bootstrap-vue-next';
+import { BFormInput, BFormTextarea } from 'bootstrap-vue-next';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { StringControl } from '@/renderings/renderHelpers';
 

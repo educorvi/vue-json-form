@@ -2,7 +2,6 @@
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput } from 'bootstrap-vue-next';
-import { computed } from 'vue';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { getStep } from '@/renderings/renderHelpers/NumberControl.ts';

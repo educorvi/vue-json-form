@@ -2,7 +2,6 @@ import { computed, type ComputedRef, type Ref } from 'vue';
 import type {
     Control,
     JSONSchema,
-    LayoutElement,
     Options,
 } from '@educorvi/vue-json-form-schemas';
 import { getOption } from './utilities.ts';

@@ -5,7 +5,6 @@ import type {
     LayoutElement,
 } from '@educorvi/vue-json-form-schemas';
 import { type MapperWithData, type MapperWithoutData } from '@/Mappers';
-import { isInputTypeWithoutHidden } from '@/typings/typeValidators.ts';
 
 /**
  * A layout element with child elements

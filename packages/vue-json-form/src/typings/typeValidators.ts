@@ -20,7 +20,6 @@ import type {
     InputTypeWithoutHidden,
     SupportedIfThenElse,
 } from '@/typings/customTypes';
-import type { InputType } from 'bootstrap-vue-next';
 import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
 
 export type IndexType = string | number | symbol;
