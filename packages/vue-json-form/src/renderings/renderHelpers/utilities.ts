@@ -1,6 +1,16 @@
 import type { LayoutElement, Options } from '@educorvi/vue-json-form-schemas';
 import { hasOption } from '@/typings/typeValidators';
 
+/**
+ * Retrieves a typed option value from a layout element's options object.
+ *
+ *
+ * @param layoutElement - The layout element whose options should be read.
+ * @param key - The option key to look up.
+ * @param defaultValue - Fallback value returned when the option is absent or
+ *   `undefined`. Providing this argument also tightens the return type.
+ * @returns The option value, or `defaultValue` / `undefined` when absent.
+ */
 export function getOption<Key extends keyof Options>(
     layoutElement: LayoutElement,
     key: Key
