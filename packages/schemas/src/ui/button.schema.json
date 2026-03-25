@@ -63,6 +63,18 @@
                             "description": "Action to perform when the button is clicked",
                             "examples": ["request", "save", "print"]
                         },
+                        "summary": {
+                            "properties": {
+                                "field": {
+                                    "type": "string"
+                                },
+                                "apiEndpoint": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["field", "apiEndpoint"],
+                            "additionalProperties": false
+                        },
                         "request": {
                             "type": "object",
                             "title": "SubmitRequestOptions",
