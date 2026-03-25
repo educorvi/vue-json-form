@@ -5,41 +5,35 @@ const { join } = require('path');
 const { mkdirp } = require('mkdirp');
 
 process.chdir(join(__dirname, 'src/ui'));
+const nodeModulesResolver = {
+    name: 'nodeModulesResolver',
+    order: 1,
+    canRead: (file) => {
+        return file.url?.includes('/node_modules');
+    },
 
-/**
- * Delete all $id properties from the schema
- * @param schema
- * @returns {Promise<void>}
- */
-async function deleteIds(schema) {
-    if (Array.isArray(schema)) {
-        schema.forEach((it) => deleteIds(it));
-    } else if (typeof schema === 'object') {
-        if (
-            schema.$id &&
-            schema.$id !==
-                'https://educorvi.github.io/vue-json-form/schemas/ui.schema.json'
-        ) {
-            delete schema.$id;
+    read(file, callback, $refs) {
+        const path = file.url.replace(
+            /.*\/node_modules/i,
+            '../../../../node_modules'
+        );
+        try {
+            console.log('Reading file', file.url, 'from', path);
+            const data = fs.readFileSync(path, 'utf8');
+            callback(null, data);
+        } catch (e) {
+            callback(e);
         }
-        Object.values(schema).forEach((value) => deleteIds(value));
-    }
-}
+    },
+};
 
 async function merge() {
-    let schema = await RefParser.bundle('ui.schema.json');
-    schema = await RefParser.dereference(schema, {
-        dereference: {
-            circular: 'ignore',
-            onDereference: (path, value) => {
-                if (value.$id) {
-                    // For some reason, this does not work
-                    delete value.$id;
-                }
-            },
+    const resolveOptions = {
+        resolve: {
+            nodeModules: nodeModulesResolver,
         },
-    });
-    await deleteIds(schema);
+    };
+    let schema = await RefParser.bundle('ui.schema.json', resolveOptions);
     await mkdirp(join(__dirname, 'src/generated'));
     fs.writeFileSync(
         join(__dirname, 'src/generated/ui-merged.schema.json'),
