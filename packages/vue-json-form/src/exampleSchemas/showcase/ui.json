@@ -245,6 +245,18 @@
                     },
                     {
                         "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit with options",
+                        "options": {
+                            "variant": "secondary",
+                            "submitOptions": {
+                                "action": "myAction",
+                                "customData": "testValue"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Button",
                         "buttonType": "reset",
                         "text": "Reset this form",
                         "options": {
