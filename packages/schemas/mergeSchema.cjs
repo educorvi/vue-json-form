@@ -18,7 +18,6 @@ const nodeModulesResolver = {
             '../../../../node_modules'
         );
         try {
-            console.log('Reading file', file.url, 'from', path);
             const data = fs.readFileSync(path, 'utf8');
             callback(null, data);
         } catch (e) {
