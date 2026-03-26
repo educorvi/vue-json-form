@@ -13,6 +13,9 @@
                     <BNavItem :to="{ name: 'showcase' }">Showcase</BNavItem>
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
                     <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
+                    <BNavItem :to="{ name: 'custom-schema' }"
+                        >Custom Schema</BNavItem
+                    >
                     <BNavForm v-b-color-mode="theme" class="ms-auto">
                         <BFormSelect
                             v-model="theme"
