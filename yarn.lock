@@ -864,6 +864,7 @@ __metadata:
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@iconify-json/bi": "npm:^1.2.7"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node18": "npm:^18.2.6"
     "@types/jsdom": "npm:^28.0.1"
@@ -872,6 +873,7 @@ __metadata:
     "@vue/tsconfig": "npm:^0.9.1"
     "@vueuse/core": "npm:^14.2.1"
     axios: "npm:^1.13.6"
+    bootstrap-vue-next: "npm:^0.44.0"
     jsdom: "npm:^29.0.1"
     npm-run-all: "npm:^4.1.5"
     sass-embedded: "npm:^1.98.0"
@@ -884,6 +886,7 @@ __metadata:
     vite: "npm:^8.0.3"
     vitest: "npm:^4.1.2"
     vue: "npm:^3.5.31"
+    vue-markdown-render: "npm:^2.3.0"
     vue-tsc: "npm:^3.2.6"
   languageName: unknown
   linkType: soft
@@ -1334,6 +1337,22 @@ __metadata:
   version: 0.4.3
   resolution: "@humanwhocodes/retry@npm:0.4.3"
   checksum: 10/0b32cfd362bea7a30fbf80bb38dcaf77fee9c2cae477ee80b460871d03590110ac9c77d654f04ec5beaf71b6f6a89851bdf6c1e34ccdf2f686bd86fcd97d9e61
+  languageName: node
+  linkType: hard
+
+"@iconify-json/bi@npm:^1.2.7":
+  version: 1.2.7
+  resolution: "@iconify-json/bi@npm:1.2.7"
+  dependencies:
+    "@iconify/types": "npm:*"
+  checksum: 10/7ce80a0762033f4c08b6d1ec4eee75df478b25195ea20d6aee59433d78ae82872c7c85dfd3d0f22c6710f9c1a5f7a8b284488b470c9aa5d399de5490595ea6ca
+  languageName: node
+  linkType: hard
+
+"@iconify/types@npm:*":
+  version: 2.0.0
+  resolution: "@iconify/types@npm:2.0.0"
+  checksum: 10/1b3425ecbc0eef44f23d3f27355ae7ef306d5119c566f013ef1849995b016e1fdcc5af6b74c3bc0554485d70cf5179cb9c1095b14d662a55abcae1148e1a13c9
   languageName: node
   linkType: hard
 
@@ -4681,7 +4700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.44.0":
+"bootstrap-vue-next@npm:0.44.0, bootstrap-vue-next@npm:^0.44.0":
   version: 0.44.0
   resolution: "bootstrap-vue-next@npm:0.44.0"
   peerDependencies:
@@ -9035,6 +9054,22 @@ __metadata:
     promise-retry: "npm:^2.0.1"
     ssri: "npm:^13.0.0"
   checksum: 10/78da4fc1df83cb596e2bae25aa0653b8a9c6cbdd6674a104894e03be3acfcd08c70b78f06ef6407fbd6b173f6a60672480d78641e693d05eb71c09c13ee35278
+  languageName: node
+  linkType: hard
+
+"markdown-it@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "markdown-it@npm:14.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+    entities: "npm:^4.4.0"
+    linkify-it: "npm:^5.0.0"
+    mdurl: "npm:^2.0.0"
+    punycode.js: "npm:^2.3.1"
+    uc.micro: "npm:^2.1.0"
+  bin:
+    markdown-it: bin/markdown-it.mjs
+  checksum: 10/f34f921be178ed0607ba9e3e27c733642be445e9bb6b1dba88da7aafe8ba1bc5d2f1c3aa8f3fc33b49a902da4e4c08c2feadfafb290b8c7dda766208bb6483a9
   languageName: node
   linkType: hard
 
@@ -13577,6 +13612,17 @@ __metadata:
   peerDependencies:
     vue: ">=3.0.0"
   checksum: 10/bda0c82bb54a872bbf5ce60f176a78050472596ca595407b42c42150a640d0153443141eab13868229342eb79975ef79be30c4ab615cbd5a497a7aabf0b38c3a
+  languageName: node
+  linkType: hard
+
+"vue-markdown-render@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "vue-markdown-render@npm:2.3.0"
+  dependencies:
+    markdown-it: "npm:^14.1.0"
+  peerDependencies:
+    vue: ^3.3.4
+  checksum: 10/4a94c89248dd5217072a2175900fc4a4d971e334ad5306130cac1d36b8cde095cfb52ba7be8bd5c89506aa9d7e3ffc887ca2b570f4340d15e9f327c74be962ce
   languageName: node
   linkType: hard
 
