@@ -15,6 +15,8 @@ import {
     type Props,
     type Emits,
 } from './vueComponentCommons.ts';
+import ResultModal from '@/ResultModal.vue';
+import { computed, useTemplateRef } from 'vue';
 
 const props = defineProps<Props>();
 
@@ -30,7 +32,11 @@ const mappers = [
     DependentRequiredMapper,
 ];
 
-const onSubmitForm = getSubmitFunc(emit);
+const resultModal = useTemplateRef('resultModal');
+
+const onSubmitForm = computed(() =>
+    getSubmitFunc(emit, resultModal.value?.updateStage)
+);
 </script>
 
 <template>
@@ -46,4 +52,5 @@ const onSubmitForm = getSubmitFunc(emit);
     >
         <slot />
     </vjf-comp>
+    <ResultModal ref="resultModal" />
 </template>

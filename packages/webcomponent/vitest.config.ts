@@ -28,6 +28,11 @@ export default mergeConfig(
             outputFile: {
                 junit: 'test-results/junit-report-unit.xml',
             },
+            environmentMatchGlobs: [
+                // Tests that spin up Node.js HTTP servers must run in node environment
+                ['tests/**/*mock*', 'node'],
+                ['tests/unit/requestSummary.test.ts', 'node'],
+            ],
         },
     })
 );

@@ -16,6 +16,8 @@ import {
     type Emits,
 } from './vueComponentCommons.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
+import { computed, useTemplateRef } from 'vue';
+import ResultModal from '@/ResultModal.vue';
 
 const props = defineProps<Props & { noValidate?: boolean }>();
 
@@ -31,7 +33,11 @@ const mappers = [
     DependentRequiredMapper,
 ];
 
-const onSubmitForm = getSubmitFunc(emit);
+const resultModal = useTemplateRef('resultModal');
+
+const onSubmitForm = computed(() =>
+    getSubmitFunc(emit, resultModal.value?.updateStage)
+);
 </script>
 
 <template>
@@ -48,4 +54,5 @@ const onSubmitForm = getSubmitFunc(emit);
     >
         <slot />
     </vjf-comp>
+    <ResultModal ref="resultModal" />
 </template>

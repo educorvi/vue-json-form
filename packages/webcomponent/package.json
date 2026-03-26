@@ -8,8 +8,11 @@
         "@vueuse/core": "^14.2.1",
         "axios": "^1.13.6",
         "vue": "^3.5.31"
+        "bootstrap-vue-next": "^0.44.0",
+        "vue-markdown-render": "^2.3.0"
     },
     "devDependencies": {
+        "@iconify-json/bi": "^1.2.7",
         "@semantic-release/exec": "^7.1.0",
         "@tsconfig/node18": "^18.2.6",
         "@types/jsdom": "^28.0.1",
@@ -65,6 +68,7 @@
         "build:internal:default": "BUILD_TARGET=default vite build",
         "build:internal:shadowDom": "BUILD_TARGET=shadowDom vite build",
         "check-types": "vue-tsc --noEmit",
+        "dev": "vite -c vite.dev.config.ts --host",
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix",
         "prepack": "yarn run build",
