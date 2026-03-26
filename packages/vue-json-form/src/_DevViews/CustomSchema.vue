@@ -63,6 +63,12 @@ function applySchemas() {
         sessionStorage.setItem(SESSION_KEY_UI, uiSchemaText.value);
         formData.value = undefined;
         showForm.value = true;
+    } else {
+        // Ensure no stale schemas or form are shown when parsing fails
+        parsedJsonSchema.value = null;
+        parsedUiSchema.value = null;
+        formData.value = undefined;
+        showForm.value = false;
     }
 }
 
