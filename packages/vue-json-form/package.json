@@ -111,5 +111,6 @@
         "test:unit": "vitest --run"
     },
     "type": "module",
-    "types": "dist/vue-json-form.d.ts"
+    "types": "dist/vue-json-form.d.ts",
+    "sideEffects": false
 }

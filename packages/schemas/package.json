@@ -63,5 +63,6 @@
         "prepack": "yarn run build"
     },
     "type": "module",
-    "types": "./dist/vue-json-form-schemas.d.ts"
+    "types": "./dist/vue-json-form-schemas.d.ts",
+    "sideEffects": false
 }
