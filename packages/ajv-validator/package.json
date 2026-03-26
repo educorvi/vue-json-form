@@ -61,5 +61,6 @@
         "test:unit": "vitest --run"
     },
     "type": "module",
-    "types": "./dist/vue-json-form-ajv-validator.d.ts"
+    "types": "./dist/vue-json-form-ajv-validator.d.ts",
+    "sideEffects": false
 }
