@@ -6,13 +6,7 @@ import { VueJsonForm } from '@/main.ts';
 
 import { ref, computed, onMounted, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
-import {
-    BAlert,
-    BButton,
-    BFormTextarea,
-    BTabs,
-    BTab,
-} from 'bootstrap-vue-next';
+import { BAlert, BButton, BFormTextarea } from 'bootstrap-vue-next';
 
 const SESSION_KEY_JSON = 'custom-schema-json';
 const SESSION_KEY_UI = 'custom-schema-ui';
@@ -90,11 +84,11 @@ function readFile(file: File): Promise<string> {
         const reader = new FileReader();
         reader.onload = (e) => resolve(e.target?.result as string);
         reader.onerror = () =>
-                reject(
-                    new Error(
-                        `Could not read file: ${reader.error?.message ?? 'unknown error'}`,
-                    ),
-                );
+            reject(
+                new Error(
+                    `Could not read file: ${reader.error?.message ?? 'unknown error'}`
+                )
+            );
         reader.readAsText(file);
     });
 }
@@ -124,7 +118,7 @@ async function onUiFileChange(event: Event) {
 }
 
 const canApply = computed(
-    () => jsonSchemaText.value.trim() !== '' && uiSchemaText.value.trim() !== '',
+    () => jsonSchemaText.value.trim() !== '' && uiSchemaText.value.trim() !== ''
 );
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
@@ -149,8 +143,9 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
         persisted in session storage and survive page reloads.
     </p>
 
-    <BTabs content-class="mt-3">
-        <BTab title="JSON Schema">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>JSON Schema</h3>
             <div class="mb-3">
                 <label class="form-label" for="json-file-input"
                     >Upload JSON Schema file</label
@@ -179,9 +174,10 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
             <BAlert v-if="jsonError" variant="danger" :model-value="true">{{
                 jsonError
             }}</BAlert>
-        </BTab>
+        </div>
 
-        <BTab title="UI Schema">
+        <div class="col-md-6">
+            <h3>UI Schema</h3>
             <div class="mb-3">
                 <label class="form-label" for="ui-file-input"
                     >Upload UI Schema file</label
@@ -210,15 +206,11 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
             <BAlert v-if="uiError" variant="danger" :model-value="true">{{
                 uiError
             }}</BAlert>
-        </BTab>
-    </BTabs>
+        </div>
+    </div>
 
     <div class="d-flex gap-2 mt-3 mb-4">
-        <BButton
-            variant="primary"
-            :disabled="!canApply"
-            @click="applySchemas"
-        >
+        <BButton variant="primary" :disabled="!canApply" @click="applySchemas">
             Apply &amp; Show Form
         </BButton>
         <BButton variant="outline-secondary" @click="resetSchemas">
