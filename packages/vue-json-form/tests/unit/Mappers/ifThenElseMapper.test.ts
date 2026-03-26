@@ -1548,6 +1548,252 @@ describe('IfThenElseMapper', () => {
         expect(result!.jsonElement.title).toBeUndefined();
     });
 
+    it('required-field is required when shown (double-nested in array items, allOf at parent object)', async () => {
+        const outerArrayItemId =
+            'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2';
+        const innerArrayItemId =
+            'vjf_array-item_77b20f7f-f543-4de8-be8d-f04251b5bc3d';
+
+        const fieldScope =
+            '/properties/questionnaire-2/properties/list/items/properties/inner-obj/properties/inner-list/items/properties/required-field';
+        const savePath =
+            `/properties/questionnaire-2/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
+
+        const jsonSchema: JSONSchema = {
+            type: 'object',
+            properties: {
+                'questionnaire-2': {
+                    type: 'object',
+                    allOf: [
+                        {
+                            if: {
+                                properties: {
+                                    enabled: {
+                                        const: true,
+                                    },
+                                },
+                                required: ['enabled'],
+                            },
+                            then: {
+                                properties: {
+                                    list: {
+                                        items: {
+                                            properties: {
+                                                'inner-obj': {
+                                                    properties: {
+                                                        'inner-list': {
+                                                            items: {
+                                                                properties: {
+                                                                    'required-field':
+                                                                        {
+                                                                            minLength: 1,
+                                                                        },
+                                                                },
+                                                                required: [
+                                                                    'required-field',
+                                                                ],
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                    properties: {
+                        enabled: {
+                            type: 'boolean',
+                        },
+                        list: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    'inner-obj': {
+                                        type: 'object',
+                                        properties: {
+                                            'inner-list': {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    properties: {
+                                                        'required-field': {
+                                                            type: 'string',
+                                                            minLength: 1,
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: enabled is true - required-field should be required
+        let data: Record<string, any> = {
+            '/properties/questionnaire-2/properties/enabled': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: enabled is false - required-field should not be required
+        data = {
+            '/properties/questionnaire-2/properties/enabled': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: enabled is undefined/missing - required-field should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
+    it('required-field is required when shown (double-nested in array items, allOf at root)', async () => {
+        const outerArrayItemId =
+            'vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2';
+        const innerArrayItemId =
+            'vjf_array-item_77b20f7f-f543-4de8-be8d-f04251b5bc3d';
+
+        const fieldScope =
+            '/properties/list/items/properties/inner-obj/properties/inner-list/items/properties/required-field';
+        const savePath =
+            `/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
+
+        const jsonSchema: JSONSchema = {
+            type: 'object',
+            allOf: [
+                {
+                    if: {
+                        properties: {
+                            enabled: {
+                                const: true,
+                            },
+                        },
+                        required: ['enabled'],
+                    },
+                    then: {
+                        properties: {
+                            list: {
+                                items: {
+                                    properties: {
+                                        'inner-obj': {
+                                            properties: {
+                                                'inner-list': {
+                                                    items: {
+                                                        properties: {
+                                                            'required-field': {
+                                                                minLength: 1,
+                                                            },
+                                                        },
+                                                        required: [
+                                                            'required-field',
+                                                        ],
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
+            properties: {
+                enabled: {
+                    type: 'boolean',
+                },
+                list: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            'inner-obj': {
+                                type: 'object',
+                                properties: {
+                                    'inner-list': {
+                                        type: 'array',
+                                        items: {
+                                            type: 'object',
+                                            properties: {
+                                                'required-field': {
+                                                    type: 'string',
+                                                    minLength: 1,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: enabled is true - required-field should be required
+        let data: Record<string, any> = {
+            '/properties/enabled': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: enabled is false - required-field should not be required
+        data = {
+            '/properties/enabled': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: enabled is undefined/missing - required-field should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
+
     it('required-field is required when shown (nested in array items based on boolean condition)', async () => {
         const fieldScope =
             '/properties/questionnaire-2/properties/list/items/properties/required-field';
