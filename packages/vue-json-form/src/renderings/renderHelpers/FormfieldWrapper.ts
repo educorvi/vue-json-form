@@ -33,9 +33,9 @@ export function getHasPrependOrAppend(
 /**
  * Determines whether the given JSON schema element should be treated as an object or an array view.
  *
- * @param {JSONSchema} jsonElement - The JSON schema element to evaluate.
- * @param {Control} layoutElement - The layout control element associated with the JSON schema.
- * @return {boolean} Returns true if the JSON schema element should be rendered as an object or array view, false otherwise.
+ * @param jsonElement - The JSON schema element to evaluate.
+ * @param layoutElement - The layout control element associated with the JSON schema.
+ * @returns `true` if the JSON schema element should be rendered as an object or array view, `false` otherwise.
  */
 function isObjectOrArrayViewFunc(
     jsonElement: JSONSchema,

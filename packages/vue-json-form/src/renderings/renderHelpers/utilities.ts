@@ -4,7 +4,6 @@ import { hasOption } from '@/typings/typeValidators';
 /**
  * Retrieves a typed option value from a layout element's options object.
  *
- *
  * @param layoutElement - The layout element whose options should be read.
  * @param key - The option key to look up.
  * @param defaultValue - Fallback value returned when the option is absent or

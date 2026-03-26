@@ -54,7 +54,7 @@ export function getOptions(
  * Sets up a watcher that clears the field's current value whenever the
  * schema's `enum` array changes and the stored value is no longer a valid
  * option.
-
+ *
  * @param jsonElement - Readonly ref to the JSON Schema element.
  * @param formData - Ref to the form's data record.
  * @param savePath - The key in `formData` that holds this field's value.
