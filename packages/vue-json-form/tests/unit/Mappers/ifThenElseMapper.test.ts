@@ -1547,4 +1547,105 @@ describe('IfThenElseMapper', () => {
         result = await mapper.map(initialJson, ui, data);
         expect(result!.jsonElement.title).toBeUndefined();
     });
+
+    it('required-field is required when shown (nested in array items based on boolean condition)', async () => {
+        const fieldScope =
+            '/properties/questionnaire-2/properties/list/items/properties/required-field';
+        const savePath =
+            '/properties/questionnaire-2/properties/list.vjf_array-item_66a10f6e-e43f-4de8-be8d-e93140a4aab2/properties/required-field';
+
+        const jsonSchema: JSONSchema = {
+            title: 'Fragebogen Wizard',
+            type: 'object',
+            properties: {
+                'questionnaire-2': {
+                    title: 'questionnaire 2',
+                    type: 'object',
+                    allOf: [
+                        {
+                            if: {
+                                properties: {
+                                    enabled: {
+                                        const: true,
+                                    },
+                                },
+                                required: ['enabled'],
+                            },
+                            then: {
+                                properties: {
+                                    list: {
+                                        items: {
+                                            properties: {
+                                                'required-field': {
+                                                    minLength: 1,
+                                                },
+                                            },
+                                            required: ['required-field'],
+                                        },
+                                    },
+                                },
+                                required: ['list'],
+                            },
+                        },
+                    ],
+                    properties: {
+                        enabled: {
+                            title: 'enabled',
+                            type: 'boolean',
+                        },
+                        list: {
+                            title: 'list',
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                properties: {
+                                    'required-field': {
+                                        title: 'required-field',
+                                        type: 'string',
+                                        minLength: 1,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        };
+
+        const uiSchema = makeLayout();
+        const ui = makeControl(fieldScope);
+        const initialJson: JSONSchema = {};
+
+        mapper.registerSchemata(
+            jsonSchema,
+            uiSchema,
+            fieldScope,
+            savePath,
+            initialJson,
+            ui
+        );
+
+        // Test case 1: enabled is true - required-field should be required
+        let data: Record<string, any> = {
+            '/properties/questionnaire-2/properties/enabled': true,
+        };
+        let result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).toBe(true);
+        expect(result!.jsonElement.minLength).toBe(1);
+
+        // Test case 2: enabled is false - required-field should not be required
+        data = {
+            '/properties/questionnaire-2/properties/enabled': false,
+        };
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+
+        // Test case 3: enabled is undefined/missing - required-field should not be required
+        data = {};
+        result = await mapper.map(initialJson, ui, data);
+        expect(result).not.toBeNull();
+        expect(result!.uiElement.options?.forceRequired).not.toBe(true);
+    });
 });
