@@ -172,7 +172,6 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
                     id="json-text-input"
                     v-model="jsonSchemaText"
                     rows="10"
-                    placeholder='{"type": "object", "properties": { ... }}'
                     spellcheck="false"
                     class="font-monospace"
                 />
@@ -204,7 +203,6 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
                     id="ui-text-input"
                     v-model="uiSchemaText"
                     rows="10"
-                    placeholder='{"type": "VerticalLayout", "elements": [ ... ]}'
                     spellcheck="false"
                     class="font-monospace"
                 />
