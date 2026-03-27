@@ -213,7 +213,7 @@ async function onSubmitFormLocal(evt: Event) {
     const customSubmitOptions =
         JSON.parse(
             decodeURIComponent(
-                submitEvt.submitter?.attributes?.getNamedItem('submitOptions')
+                submitEvt.submitter?.attributes?.getNamedItem('submit-options')
                     ?.value || 'false'
             )
         ) || {};

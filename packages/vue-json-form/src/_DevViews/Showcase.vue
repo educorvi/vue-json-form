@@ -11,9 +11,11 @@ import { ref, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 
 const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const submitOptionsData: Ref<undefined | SubmitOptions> = ref(undefined);
 
 async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     formData.value = data;
+    submitOptionsData.value = options;
     switch (options.action) {
         case 'console':
             console.log(data);
@@ -43,6 +45,9 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     <p class="text-muted">Press submit to update</p>
     <pre v-if="formData" id="result-container">{{
         JSON.stringify(formData, null, 2)
+    }}</pre>
+    <pre v-if="submitOptionsData" id="submit-options-container">{{
+        JSON.stringify(submitOptionsData, null, 2)
     }}</pre>
 </template>
 

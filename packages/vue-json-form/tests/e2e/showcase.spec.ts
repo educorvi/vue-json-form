@@ -226,10 +226,10 @@ test.describe('Structure', () => {
 
     test('Form Buttons', async ({ page }) => {
         await expect(
-            page.locator('button[type="submit"]:not([formnovalidate])')
+            page.getByRole('button', { name: 'Submit', exact: true })
         ).toBeVisible();
         await expect(
-            page.locator('button[type="submit"][formnovalidate]')
+            page.locator('button[type="submit"][formnovalidate]').first()
         ).toBeVisible();
         await expect(page.locator('button[type="reset"]')).toBeVisible();
     });
@@ -284,7 +284,7 @@ test.describe('Button functions', () => {
             .locator('#vjf_control_for__properties_name')
             .fill('Test User');
         await page
-            .locator('button[type="submit"]:not([formnovalidate])')
+            .getByRole('button', { name: 'Submit', exact: true })
             .click();
 
         await expect(page.locator('#result-container')).not.toBeAttached();
@@ -450,5 +450,104 @@ test.describe('Button functions', () => {
         expect(fileHash).toEqual(
             '1GW+tQlX6j/o+hU/18VW33uDoKfkWyA9AcCmSvKWhQw='
         );
+    });
+});
+
+test.describe('Submit Options', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.goto('http://localhost:5173/showcase?nonav=true');
+    });
+
+    async function fillRequiredFields(page: Page) {
+        await page.locator('#vjf_control_for__properties_done').check();
+        await page
+            .locator('#vjf_control_for__properties_name')
+            .fill('Test User');
+        await page
+            .locator('#vjf_control_for__properties_fanciness input')
+            .nth(0)
+            .check();
+        await page
+            .locator('#vjf_control_for__properties_testArray input')
+            .nth(0)
+            .fill('Item 1');
+        await page
+            .locator('#vjf_control_for__properties_testArray input')
+            .nth(1)
+            .fill('Item 2');
+    }
+
+    test('submit-options attribute is set on button', async ({ page }) => {
+        const button = page.getByRole('button', {
+            name: 'Submit with options',
+            exact: true,
+        });
+        await expect(button).toBeVisible();
+
+        const submitOptionsAttr = await button.getAttribute('submit-options');
+        expect(submitOptionsAttr).toBeTruthy();
+
+        const decoded = JSON.parse(decodeURIComponent(submitOptionsAttr!));
+        expect(decoded.action).toEqual('myAction');
+        expect(decoded.customData).toEqual('testValue');
+        expect(typeof decoded.id).toBe('string');
+    });
+
+    test('submit-options without custom options has only id', async ({
+        page,
+    }) => {
+        const button = page.getByRole('button', { name: 'Submit', exact: true });
+        await expect(button).toBeVisible();
+
+        const submitOptionsAttr = await button.getAttribute('submit-options');
+        expect(submitOptionsAttr).toBeTruthy();
+
+        const decoded = JSON.parse(decodeURIComponent(submitOptionsAttr!));
+        expect(typeof decoded.id).toBe('string');
+        expect(decoded.action).toBeUndefined();
+    });
+
+    test('submit options are read correctly on form submit', async ({
+        page,
+    }) => {
+        await fillRequiredFields(page);
+        await page
+            .getByRole('button', { name: 'Submit with options', exact: true })
+            .click();
+
+        await expect(
+            page.locator('#submit-options-container')
+        ).toBeVisible();
+
+        const optionsText = await page
+            .locator('#submit-options-container')
+            .textContent();
+        const options = JSON.parse(optionsText || '{}');
+        expect(options.action).toEqual('myAction');
+        expect(options.customData).toEqual('testValue');
+        expect(typeof options.id).toBe('string');
+    });
+
+    test('submit options id matches button submit-options attribute id', async ({
+        page,
+    }) => {
+        await fillRequiredFields(page);
+
+        const button = page.getByRole('button', {
+            name: 'Submit with options',
+            exact: true,
+        });
+        const submitOptionsAttr = await button.getAttribute('submit-options');
+        expect(submitOptionsAttr).toBeTruthy();
+        const decodedAttr = JSON.parse(decodeURIComponent(submitOptionsAttr!));
+
+        await button.click();
+
+        await expect(page.locator('#submit-options-container')).toBeVisible();
+        const optionsText = await page
+            .locator('#submit-options-container')
+            .textContent();
+        const receivedOptions = JSON.parse(optionsText || '{}');
+        expect(receivedOptions.id).toEqual(decodedAttr.id);
     });
 });
