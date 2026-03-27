@@ -1,8 +1,6 @@
-import type { SseEvent } from '@/vueComponentCommons.ts';
-
 export type StageStatus = 'WAITING' | 'PROCESSING' | 'DONE' | 'ERROR';
 
-enum SummaryStage {
+export enum SummaryStage {
     PREPROCESSING = 'PREPROCESSING',
     PAGE_COUNTING = 'PAGE_COUNTING',
     IMAGE_CONVERSION = 'IMAGE_CONVERSION',
@@ -30,3 +28,7 @@ export interface SummaryErrorEvent {
     message: string;
     details?: string;
 }
+export type SseEvent =
+    | { event: 'progress'; data: SummaryProgressEvent }
+    | { event: 'result'; data: SummaryResultEvent }
+    | { event: 'error'; data: SummaryErrorEvent };

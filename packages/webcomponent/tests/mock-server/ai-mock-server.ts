@@ -14,7 +14,7 @@ import {
     type Server,
 } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { PromptType, SseEvent } from '../../src/types';
+import { PromptType, SseEvent, SummaryStage } from '../../src/types';
 
 // ── Schema types (mirroring the OpenAPI spec) ─────────────────────────────────
 
@@ -63,17 +63,20 @@ const DEFAULT_PROMPT_TYPES: PromptType[] = [
 const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
-        data: { stage: 'PREPROCESSING', status: 'PROCESSING' },
+        data: { stage: SummaryStage.PREPROCESSING, status: 'PROCESSING' },
     },
-    { event: 'progress', data: { stage: 'PREPROCESSING', status: 'DONE' } },
     {
         event: 'progress',
-        data: { stage: 'PAGE_COUNTING', status: 'PROCESSING' },
+        data: { stage: SummaryStage.PREPROCESSING, status: 'DONE' },
+    },
+    {
+        event: 'progress',
+        data: { stage: SummaryStage.PAGE_COUNTING, status: 'PROCESSING' },
     },
     {
         event: 'progress',
         data: {
-            stage: 'PAGE_COUNTING',
+            stage: SummaryStage.PAGE_COUNTING,
             status: 'DONE',
             message: '3 pages found',
         },
@@ -81,7 +84,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'IMAGE_CONVERSION',
+            stage: SummaryStage.IMAGE_CONVERSION,
             status: 'PROCESSING',
             current: 0,
             total: 3,
@@ -90,7 +93,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'IMAGE_CONVERSION',
+            stage: SummaryStage.IMAGE_CONVERSION,
             status: 'PROCESSING',
             current: 1,
             total: 3,
@@ -99,7 +102,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'IMAGE_CONVERSION',
+            stage: SummaryStage.IMAGE_CONVERSION,
             status: 'PROCESSING',
             current: 2,
             total: 3,
@@ -108,7 +111,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'IMAGE_CONVERSION',
+            stage: SummaryStage.IMAGE_CONVERSION,
             status: 'DONE',
             current: 3,
             total: 3,
@@ -117,7 +120,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'MARKDOWN_CONVERSION',
+            stage: SummaryStage.MARKDOWN_CONVERSION,
             status: 'PROCESSING',
             current: 0,
             total: 3,
@@ -126,7 +129,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'MARKDOWN_CONVERSION',
+            stage: SummaryStage.MARKDOWN_CONVERSION,
             status: 'PROCESSING',
             current: 1,
             total: 3,
@@ -135,7 +138,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'MARKDOWN_CONVERSION',
+            stage: SummaryStage.MARKDOWN_CONVERSION,
             status: 'PROCESSING',
             current: 2,
             total: 3,
@@ -144,14 +147,20 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
     {
         event: 'progress',
         data: {
-            stage: 'MARKDOWN_CONVERSION',
+            stage: SummaryStage.MARKDOWN_CONVERSION,
             status: 'DONE',
             current: 3,
             total: 3,
         },
     },
-    { event: 'progress', data: { stage: 'GENERATING', status: 'PROCESSING' } },
-    { event: 'progress', data: { stage: 'GENERATING', status: 'DONE' } },
+    {
+        event: 'progress',
+        data: { stage: SummaryStage.GENERATING, status: 'PROCESSING' },
+    },
+    {
+        event: 'progress',
+        data: { stage: SummaryStage.GENERATING, status: 'DONE' },
+    },
     {
         event: 'result',
         data: {

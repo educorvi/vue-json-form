@@ -4,6 +4,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
 import axios from 'axios';
+import type { SseEvent, SummaryResultEvent } from '@/types.ts';
 
 export type Props = {
     /**
@@ -84,39 +85,6 @@ export function getComputed(props: Props) {
     );
     return { jsonSchema, uiSchema, presetData, returnDataAsScopes };
 }
-
-// ── SSE types (mirroring the AI Assistant OpenAPI spec) ──────────────────────
-
-export type StageStatus = 'WAITING' | 'PROCESSING' | 'DONE' | 'ERROR';
-
-export type SummaryStage =
-    | 'PREPROCESSING'
-    | 'PAGE_COUNTING'
-    | 'IMAGE_CONVERSION'
-    | 'MARKDOWN_CONVERSION'
-    | 'GENERATING';
-
-export interface SummaryProgressEvent {
-    stage: SummaryStage;
-    status: StageStatus;
-    current?: number;
-    total?: number;
-    message?: string;
-}
-
-export interface SummaryResultEvent {
-    summary: string;
-}
-
-export interface SummaryErrorEvent {
-    message: string;
-    details?: string;
-}
-
-export type SseEvent =
-    | { event: 'progress'; data: SummaryProgressEvent }
-    | { event: 'result'; data: SummaryResultEvent }
-    | { event: 'error'; data: SummaryErrorEvent };
 
 // ── SSE stream parser ─────────────────────────────────────────────────────────
 
