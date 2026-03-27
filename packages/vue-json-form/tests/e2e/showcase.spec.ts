@@ -538,6 +538,7 @@ test.describe('Submit Options', () => {
             exact: true,
         });
         const submitOptionsAttr = await button.getAttribute('submit-options');
+        expect(submitOptionsAttr).toBeTruthy();
         const decodedAttr = JSON.parse(decodeURIComponent(submitOptionsAttr!));
 
         await button.click();
