@@ -267,9 +267,6 @@ export class IfThenElseMapper extends MapperWithData {
                     );
                 }
             }
-            conditions = conditions.concat(
-                this.addRequiredConditions(ifJson, conditions, scope)
-            );
         } else if ('items' in ifJson) {
             // Handle array items: parse the item schema
             const newScope = scope + '/items';
@@ -281,10 +278,10 @@ export class IfThenElseMapper extends MapperWithData {
                     this.parseConditions(ifJson.items, newScope)
                 );
             }
-        } else {
-            // Handle simple if blocks that only specify required fields
-            conditions = this.addRequiredConditions(ifJson, conditions, scope);
         }
+        conditions = conditions.concat(
+            this.addRequiredConditions(ifJson, conditions, scope)
+        );
 
         return conditions;
     }
@@ -403,7 +400,10 @@ export class IfThenElseMapper extends MapperWithData {
         }
         // Iterate up the scope hierarchy in steps of 2 (property levels)
         for (let i = -2; this.scope.split('/').length + i >= 0; i -= 2) {
-            let parentAllOfPath = sliceScope(this.scope, i) + '/' + 'allOf';
+            let parentAllOfPath =
+                sliceScope(this.scope, i).replace(/\/properties$/, '') +
+                '/' +
+                'allOf';
             parentAllOfPath = cleanScope(parentAllOfPath);
             conditionsAndResults = conditionsAndResults.concat(
                 this.getConditionsAndResultsFromAllOf(
