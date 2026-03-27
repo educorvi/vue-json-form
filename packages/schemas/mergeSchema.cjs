@@ -45,6 +45,7 @@ async function mergeJsonSchema() {
         'https://json-schema.org/draft/2019-09/schema#'
     );
     schema = await RefParser.dereference(schema);
+    await mkdirp(join(__dirname, 'src/generated'));
     fs.writeFileSync(
         join(__dirname, 'src/generated/json-merged.schema.json'),
         JSON.stringify(schema, null, 2)
