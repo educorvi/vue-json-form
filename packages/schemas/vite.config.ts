@@ -29,12 +29,12 @@ export default defineConfig({
                 {
                     src: 'src/generated/ui-merged.schema.json',
                     dest: '.',
-                    rename: 'ui.schema.json',
+                    rename: '../../ui.schema.json',
                 },
                 {
                     src: 'src/generated/json-merged.schema.json',
                     dest: '.',
-                    rename: 'json-2019.schema.json',
+                    rename: '../../json-2019.schema.json',
                 },
             ],
         }),

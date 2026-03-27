@@ -7,7 +7,7 @@
         "json-schema-typed": "^8.0.2"
     },
     "devDependencies": {
-        "@apidevtools/json-schema-ref-parser": "^15.3.1",
+        "@apidevtools/json-schema-ref-parser": "^15.3.3",
         "@semantic-release/exec": "^7.1.0",
         "json-schema-to-typescript": "^15.0.4",
         "mkdirp": "^3.0.1",
