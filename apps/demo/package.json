@@ -24,7 +24,7 @@
         "semantic-release": "^25.0.3",
         "semantic-release-monorepo": "^8.0.2",
         "semantic-release-yarn": "^3.0.2",
-        "turbo": "^2.8.20",
+        "turbo": "^2.9.0",
         "typescript": "~6.0.2",
         "unplugin-vue-components": "^32.0.0",
         "vite": "^8.0.3",
