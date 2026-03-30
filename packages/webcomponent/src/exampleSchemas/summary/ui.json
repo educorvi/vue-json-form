@@ -18,7 +18,7 @@
                                 "action": "summary",
                                 "summary": {
                                     "field": "document",
-                                    "apiEndpoint": "http://localhost:44803/ai/summary"
+                                    "apiEndpoint": "http://localhost:8000/ai-summary"
                                 }
                             },
                             "variant": "primary"

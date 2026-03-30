@@ -100,6 +100,7 @@ async function* parseSseStream(
         buffer = blocks.pop() ?? '';
 
         for (const block of blocks) {
+            console.log(block);
             let eventName = '';
             let dataStr = '';
 
@@ -265,7 +266,7 @@ export function getSubmitFunc(
             await requestSummary(
                 options.summary.apiEndpoint,
                 file,
-                'none',
+                'Gutachten',
                 updateStage
             );
             return;
