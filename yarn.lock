@@ -878,6 +878,7 @@ __metadata:
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node18": "npm:^18.2.6"
     "@types/jsdom": "npm:^28.0.1"
+    "@types/node": "npm:^25.5.0"
     "@vitejs/plugin-vue": "npm:^6.0.5"
     "@vitest/ui": "npm:^4.1.2"
     "@vue/tsconfig": "npm:^0.9.1"
