@@ -5,6 +5,7 @@ import type {
 import { computed } from 'vue';
 import axios from 'axios';
 import type { SseEvent, SummaryResultEvent } from '@/types.ts';
+import { getPropertyByString } from '@educorvi/vue-json-form';
 
 export type Props = {
     /**
@@ -210,8 +211,6 @@ export async function requestSummary(
         }
         if (event.event === 'result') {
             result = event.data;
-        } else if (event.event === 'error') {
-            throw new Error(event.data.message);
         }
     }
 
@@ -260,9 +259,11 @@ export function getSubmitFunc(
     ) {
         let success = true;
         if (options.action === 'summary' && options.summary) {
-            const file = await (
-                await fetch(data[options.summary.field])
-            ).blob();
+            const encodedFile = getPropertyByString(
+                data,
+                options.summary.field
+            );
+            const file = await (await fetch(encodedFile)).blob();
             await requestSummary(
                 options.summary.apiEndpoint,
                 file,

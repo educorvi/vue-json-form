@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { StageStatus } from '@/types.ts';
-import type { SseEvent, SummaryStage } from '@/vueComponentCommons.ts';
+import { type SseEvent, type StageStatus, SummaryStage } from '@/types.ts';
 import VueMarkdown from 'vue-markdown-render';
 import { BCard, BProgress, BCollapse, BModal } from 'bootstrap-vue-next';
 //@ts-ignore
@@ -12,10 +11,17 @@ import IBiHourGlassSplit from '~icons/bi/hourglass-split';
 import IBiCheckLg from '~icons/bi/check-lg';
 //@ts-ignore
 import IBiX from '~icons/bi/x';
+import {
+    AutoLanguageProvider,
+    isNotNullOrUndefined,
+} from '@educorvi/vue-json-form';
+
+const intl = new AutoLanguageProvider();
 
 type StageState = {
     status: StageStatus;
     progress?: number;
+    animated?: boolean;
 };
 
 const UI_STRINGS = {
@@ -62,14 +68,25 @@ function updateStage(event: SseEvent) {
     if (event.event === 'progress') {
         const ed = event.data;
         stages.value[ed.stage].status = ed.status;
-        if (ed.current && ed.total) {
+        if (
+            isNotNullOrUndefined(ed.current) &&
+            isNotNullOrUndefined(ed.total)
+        ) {
             stages.value[ed.stage].progress = (ed.current / ed.total) * 100;
+            stages.value[ed.stage].animated = false;
+        } else if (ed.status === 'PROCESSING') {
+            stages.value[ed.stage].progress = 100;
+            stages.value[ed.stage].animated = true;
         }
+
         if (ed.status === 'DONE' || ed.status === 'ERROR') {
             stages.value[ed.stage].progress = 100;
+            stages.value[ed.stage].animated = false;
         }
     } else if (event.event === 'result') {
         summary.value = event.data.summary;
+    } else if (event.event === 'error') {
+        summary.value = intl.getString('errors.generic.temporaryError');
     }
 }
 
@@ -84,12 +101,12 @@ defineExpose({ updateStage });
         :no-header-close="!summary"
         :no-close-on-backdrop="!summary"
         :no-close-on-esc="!summary"
-        ok-title="Schließen"
+        :ok-title="intl.getString('buttons.close')"
         ok-class="w-100"
         ok-variant="outline-primary"
-        title="Zusammenfassung"
+        :title="intl.getString('modals.summary.title')"
         centered
-        size="lg"
+        size="xl"
     >
         <b-collapse :show="!summary">
             <b-card v-for="(stage, key) in stages" :key="key" class="mb-2">
@@ -116,6 +133,7 @@ defineExpose({ updateStage });
                     class="stage-progress"
                     :max="100"
                     :value="stage.progress ?? 0"
+                    :animated="stage.animated ?? false"
                     :variant="
                         stage.status === 'ERROR'
                             ? 'danger'
