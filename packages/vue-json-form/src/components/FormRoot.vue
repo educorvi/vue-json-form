@@ -219,8 +219,14 @@ async function onSubmitFormLocal(evt: Event) {
         ) || {};
 
     buttonWaiting.value[customSubmitOptions['id']] = true;
-    await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
-    buttonWaiting.value[customSubmitOptions['id']] = false;
+    try {
+        await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
+    } catch (e: unknown) {
+        console.error('Failed to submit form');
+        console.error(e);
+    } finally {
+        buttonWaiting.value[customSubmitOptions['id']] = false;
+    }
 }
 
 function initDefaultFormData() {
