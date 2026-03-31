@@ -11,6 +11,7 @@ export * from '@/typings/typeValidators';
 export {
     generateUISchema,
     SUPPORTED_UISCHEMA_VERSION as supportedUiSchemaVersion,
+    getPropertyByString,
 } from '@/Commons';
 
 export * from '@/Mappers';
