@@ -20,7 +20,8 @@
     "buttons": {
         "previous": "Previous",
         "next": "Next",
-        "close": "Close"
+        "close": "Close",
+        "save": "Save"
     },
     "modals": {
         "delete-remaining-items": {
@@ -30,7 +31,9 @@
             "cancel": "Cancel"
         },
         "summary": {
-            "title": "Summary"
+            "title": "Summary",
+            "saveTitle": "Title",
+            "saveInstruction": "Choose a title for the generated page:"
         }
     }
 }

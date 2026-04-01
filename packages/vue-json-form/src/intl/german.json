@@ -20,7 +20,8 @@
     "buttons": {
         "previous": "Zurück",
         "next": "Weiter",
-        "close": "Schließen"
+        "close": "Schließen",
+        "save": "Speichern"
     },
     "modals": {
         "delete-remaining-items": {
@@ -30,7 +31,9 @@
             "cancel": "Abbrechen"
         },
         "summary": {
-            "title": "Zusammenfassung"
+            "title": "Zusammenfassung",
+            "saveTitle": "Titel",
+            "saveInstruction": "Setzen Sie einen Titel für die generierte Seite:"
         }
     }
 }
