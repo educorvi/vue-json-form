@@ -116,7 +116,10 @@ function savePage() {
                     summary: summary.value,
                     title: saveTitle.value,
                 },
-                { withCredentials: true }
+                {
+                    withCredentials: true,
+                    headers: { Accept: 'application/json' },
+                }
             )
             .then(() => {
                 showSaveModal.value = false;

@@ -3,10 +3,11 @@ import type {
     SubmitRequestOptions,
 } from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
-import axios from 'axios';
+import axios, { type AxiosBasicCredentials } from 'axios';
 import type { SseEvent, SummaryResultEvent } from '@/types.ts';
 import { getPropertyByString } from '@educorvi/vue-json-form';
 import ResultModal from '@/ResultModal.vue';
+import Cookies from 'js-cookie';
 
 export type Props = {
     /**
@@ -188,10 +189,16 @@ export async function requestSummary(
     let stream: ReadableStream<Uint8Array>;
 
     try {
+        const auth = Cookies.get('__ac');
+        if (!auth) {
+            console.warn('No authentication cookie found');
+        }
         const response = await axios.post(url, formData, {
             adapter: 'fetch',
             responseType: 'stream',
-            withCredentials: true,
+            headers: {
+                'X-AC-Session-Token': auth,
+            },
         });
         stream = response.data as ReadableStream<Uint8Array>;
     } catch (e) {
