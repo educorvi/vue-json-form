@@ -336,4 +336,4 @@ export class AiMockServer {
     }
 }
 
-new AiMockServer({ eventIntervalMs: 300 }).start().then((r) => console.log(r));
+new AiMockServer({ eventIntervalMs: 1 }).start().then((r) => console.log(r));

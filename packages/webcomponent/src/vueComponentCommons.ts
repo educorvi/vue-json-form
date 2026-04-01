@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import axios from 'axios';
 import type { SseEvent, SummaryResultEvent } from '@/types.ts';
 import { getPropertyByString } from '@educorvi/vue-json-form';
+import ResultModal from '@/ResultModal.vue';
 
 export type Props = {
     /**
@@ -251,7 +252,7 @@ async function request(
 
 export function getSubmitFunc(
     emit: Emits,
-    updateStage?: (event: SseEvent) => void
+    resultModal: InstanceType<typeof ResultModal> | null
 ) {
     return async function onSubmitForm(
         data: Record<string, any>,
@@ -259,6 +260,9 @@ export function getSubmitFunc(
     ) {
         let success = true;
         if (options.action === 'summary' && options.summary) {
+            if (resultModal?.setSaveUrl) {
+                resultModal.setSaveUrl(options.summary.saveUrl);
+            }
             const encodedFile = getPropertyByString(
                 data,
                 options.summary.field
@@ -268,7 +272,7 @@ export function getSubmitFunc(
                 options.summary.apiEndpoint,
                 file,
                 'Gutachten',
-                updateStage
+                resultModal?.updateStage
             );
             return;
         }

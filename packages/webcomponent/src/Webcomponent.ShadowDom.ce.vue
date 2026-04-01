@@ -34,9 +34,7 @@ const mappers = [
 
 const resultModal = useTemplateRef('resultModal');
 
-const onSubmitForm = computed(() =>
-    getSubmitFunc(emit, resultModal.value?.updateStage)
-);
+const onSubmitForm = computed(() => getSubmitFunc(emit, resultModal.value));
 </script>
 
 <template>

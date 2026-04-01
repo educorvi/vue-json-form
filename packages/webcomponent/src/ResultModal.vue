@@ -2,7 +2,15 @@
 import { ref } from 'vue';
 import { type SseEvent, type StageStatus, SummaryStage } from '@/types.ts';
 import VueMarkdown from 'vue-markdown-render';
-import { BCard, BProgress, BCollapse, BModal } from 'bootstrap-vue-next';
+import {
+    BCard,
+    BProgress,
+    BCollapse,
+    BModal,
+    BFormInput,
+    BButton,
+    BAlert,
+} from 'bootstrap-vue-next';
 //@ts-ignore
 import IBiClock from '~icons/bi/clock';
 //@ts-ignore
@@ -15,6 +23,7 @@ import {
     AutoLanguageProvider,
     isNotNullOrUndefined,
 } from '@educorvi/vue-json-form';
+import axios from 'axios';
 
 const intl = new AutoLanguageProvider();
 
@@ -34,6 +43,10 @@ const UI_STRINGS = {
 
 const summary = ref<string | null>(null);
 const showModal = ref(false);
+const showSaveModal = ref(false);
+const saveTitle = ref('');
+const saveUrl = ref<string | undefined>(undefined);
+const saveError = ref<string | null>(null);
 
 const initialState: Record<SummaryStage, StageState> = {
     PREPROCESSING: {
@@ -90,23 +103,50 @@ function updateStage(event: SseEvent) {
     }
 }
 
-defineExpose({ updateStage });
+function setSaveUrl(url: string | undefined) {
+    saveUrl.value = url;
+}
+
+function savePage() {
+    if (saveUrl.value) {
+        axios
+            .post(saveUrl.value, {
+                summary: summary.value,
+                title: saveTitle.value,
+            })
+            .then(() => {
+                showSaveModal.value = false;
+            })
+            .catch((error) => {
+                console.error('Error saving summary:', error);
+                saveError.value = intl.getString(
+                    'errors.generic.temporaryError'
+                );
+            });
+    }
+}
+
+defineExpose({ updateStage, setSaveUrl });
 </script>
 
 <template>
     <b-modal
         v-model="showModal"
-        ok-only
         :ok-disabled="!summary"
+        :cancel-disabled="!summary"
+        :ok-class="!saveUrl ? 'removed-button' : ''"
         :no-header-close="!summary"
         :no-close-on-backdrop="!summary"
         :no-close-on-esc="!summary"
-        :ok-title="intl.getString('buttons.close')"
-        ok-class="w-100"
+        :ok-title="intl.getString('buttons.save')"
         ok-variant="outline-primary"
+        cancel-variant="primary"
+        :cancel-title="intl.getString('buttons.close')"
         :title="intl.getString('modals.summary.title')"
+        scrollable
         centered
         size="xl"
+        @ok="showSaveModal = true"
     >
         <b-collapse :show="!summary">
             <b-card v-for="(stage, key) in stages" :key="key" class="mb-2">
@@ -148,6 +188,25 @@ defineExpose({ updateStage });
             <vue-markdown v-if="summary" :source="summary" />
         </b-collapse>
     </b-modal>
+    <b-modal
+        v-model="showSaveModal"
+        no-footer
+        centered
+        :title="intl.getString('modals.summary.saveTitle')"
+    >
+        <label for="saveTitle" class="form-label">{{
+            intl.getString('modals.summary.saveInstruction')
+        }}</label>
+        <b-form-input id="saveTitle" v-model="saveTitle" class="mb-3" />
+
+        <b-alert :model-value="!!saveError" variant="danger">
+            {{ saveError }}
+        </b-alert>
+
+        <b-button variant="primary" @click="savePage" class="w-100"
+            >Save</b-button
+        >
+    </b-modal>
 </template>
 
 <style scoped>
@@ -161,5 +220,11 @@ defineExpose({ updateStage });
     bottom: 0;
     left: 0;
     right: 0;
+}
+</style>
+
+<style>
+.removed-button {
+    display: none;
 }
 </style>
