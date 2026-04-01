@@ -70,6 +70,9 @@
                                 },
                                 "apiEndpoint": {
                                     "type": "string"
+                                },
+                                "saveUrl": {
+                                    "type": "string"
                                 }
                             },
                             "required": ["field", "apiEndpoint"],
