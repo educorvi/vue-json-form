@@ -110,10 +110,14 @@ function setSaveUrl(url: string | undefined) {
 function savePage() {
     if (saveUrl.value) {
         axios
-            .post(saveUrl.value, {
-                summary: summary.value,
-                title: saveTitle.value,
-            })
+            .post(
+                saveUrl.value,
+                {
+                    summary: summary.value,
+                    title: saveTitle.value,
+                },
+                { withCredentials: true }
+            )
             .then(() => {
                 showSaveModal.value = false;
             })
