@@ -185,25 +185,35 @@ export async function requestSummary(
     formData.append('promptType', promptType);
     formData.append('document', document);
 
-    const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-    });
+    let stream: ReadableStream<Uint8Array>;
 
-    if (!response.ok || !response.body) {
-        let message = `Summary request failed with status ${response.status}`;
-        try {
-            const body = await response.json();
-            if (typeof body.message === 'string') message = body.message;
-        } catch {
-            // ignore parse error, keep generic message
+    try {
+        const response = await axios.post(url, formData, {
+            adapter: 'fetch',
+            responseType: 'stream',
+            withCredentials: true,
+        });
+        stream = response.data as ReadableStream<Uint8Array>;
+    } catch (e) {
+        let message = 'Summary request failed';
+        if (axios.isAxiosError(e)) {
+            const status = e.response?.status ?? 'unknown';
+            message = `Summary request failed with status ${status}`;
+            const body = e.response?.data;
+            if (
+                body &&
+                typeof body === 'object' &&
+                typeof body.message === 'string'
+            ) {
+                message = body.message;
+            }
         }
-        throw new Error(message);
+        throw new Error(message, { cause: e });
     }
 
     let result: SummaryResultEvent | null = null;
 
-    for await (const event of parseSseStream(response.body)) {
+    for await (const event of parseSseStream(stream)) {
         logSseEvent(event);
         if (updateState) {
             updateState(event);
@@ -267,7 +277,9 @@ export function getSubmitFunc(
                 data,
                 options.summary.field
             );
-            const file = await (await fetch(encodedFile)).blob();
+            const file = (
+                await axios.get(encodedFile, { responseType: 'blob' })
+            ).data as Blob;
             await requestSummary(
                 options.summary.apiEndpoint,
                 file,
