@@ -18,8 +18,7 @@
                                 "action": "summary",
                                 "summary": {
                                     "field": "document",
-                                    "apiEndpoint": "http://localhost:44803/ai/summary",
-                                    "saveUrl": "https://webhook.site/c0a75690-e2d9-4866-9a3f-35475475a4dd"
+                                    "apiEndpoint": "http://localhost:44803/ai/summary"
                                 }
                             },
                             "variant": "primary"
