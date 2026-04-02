@@ -6,6 +6,17 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "arrayWithObjectWithPreset": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "jso-146": {
             "title": "Fragebogen Test für Julian",
             "description": "abhängiges pflichtfeld in abhängigem objekt",

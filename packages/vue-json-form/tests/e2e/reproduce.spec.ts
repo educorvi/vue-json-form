@@ -668,6 +668,18 @@ test('JSO-31', async ({ page }) => {
     ]);
 });
 
+test('JSO-151 (arrayWithObjectWithPreset is prefilled)', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+    await submitForm(page);
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['arrayWithObjectWithPreset']).toEqual([
+        { name: 'John' },
+        { name: 'Jane' },
+    ]);
+});
+
 test('JSO-44', async ({ page }) => {
     await page.goto('http://localhost:5173/reproduce?nonav=true');
 

@@ -51,6 +51,7 @@ const presetData: Ref<Record<string, any> | undefined> = ref({
         ['item1', 'item2'],
         ['item3', 'item4'],
     ],
+    arrayWithObjectWithPreset: [{ name: 'John' }, { name: 'Jane' }],
 });
 
 const formData: Ref<undefined | Record<string, any>> = ref(undefined);

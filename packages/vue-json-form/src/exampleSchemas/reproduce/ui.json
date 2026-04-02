@@ -6,6 +6,16 @@
         "elements": [
             {
                 "type": "Group",
+                "options": { "label": "JSO-151" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithObjectWithPreset"
+                    }
+                ]
+            },
+            {
+                "type": "Group",
                 "options": {
                     "label": "JSO-146"
                 },
