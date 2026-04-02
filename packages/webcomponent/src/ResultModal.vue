@@ -121,8 +121,12 @@ function savePage() {
                     headers: { Accept: 'application/json' },
                 }
             )
-            .then(() => {
+            .then((res) => {
                 showSaveModal.value = false;
+                const redirectUrl = res.data?.redirectUrl;
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
             })
             .catch((error) => {
                 console.error('Error saving summary:', error);
