@@ -21,7 +21,7 @@
         "tsx": "^4.21.0",
         "turbo": "^2.8.20",
         "typescript": "~6.0.2",
-        "vite": "^8.0.3",
+        "vite": "^8.0.5",
         "vite-bundle-analyzer": "^1.3.6",
         "vite-plugin-dts": "^4.5.4",
         "vite-plugin-static-copy": "^4.0.0",
