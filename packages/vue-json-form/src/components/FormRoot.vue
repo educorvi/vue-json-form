@@ -334,8 +334,13 @@ onBeforeMount(async () => {
     setDefaultFormData();
 });
 
-watch(props, (newVal) => {
-    assignStoreData({
+watch(validator, async () => {
+    await validator.value.initialize();
+});
+
+watch(props, async (newVal) => {
+    await validator.value.initialize();
+    await assignStoreData({
         jsonSchema: newVal.jsonSchema,
         uiSchema: newVal.uiSchema,
         renderInterface: newVal.renderInterface,
