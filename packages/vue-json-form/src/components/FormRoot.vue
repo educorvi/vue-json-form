@@ -317,10 +317,10 @@ async function assignStoreData(
 
 provide(requiredProviderKey, true);
 
-onBeforeMount(async () => {
+async function init() {
     try {
         await validator.value.initialize();
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('Failed to initialize validator');
         console.error(e);
         validationErrors.value.general = [e];
@@ -332,14 +332,9 @@ onBeforeMount(async () => {
     });
     initDefaultFormData();
     setDefaultFormData();
-});
+}
 
-watch(props, async (newVal) => {
-    await validator.value.initialize();
-    await assignStoreData({
-        jsonSchema: newVal.jsonSchema,
-        uiSchema: newVal.uiSchema,
-        renderInterface: newVal.renderInterface,
-    });
-});
+onBeforeMount(init);
+
+watch(props, init);
 </script>
