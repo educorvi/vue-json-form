@@ -49,6 +49,7 @@ const saveTitle = ref('');
 const saveUrl = ref<string | undefined>(undefined);
 const saveError = ref<string | null>(null);
 const clipboard = ref<boolean>(false);
+const copied = ref<boolean>(false);
 const feedbackUrl = ref<string | null>(null);
 
 const initialState: Record<SummaryStage, StageState> = {
@@ -152,7 +153,12 @@ function setFeedbackUrl(url: string | undefined) {
 
 function writeToClipboard() {
     if (summary.value) {
-        navigator.clipboard.writeText(summary.value);
+        navigator.clipboard.writeText(summary.value).then(() => {
+            copied.value = true;
+            setTimeout(() => {
+                copied.value = false;
+            }, 2000);
+        });
     }
 }
 
@@ -215,15 +221,6 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
         <b-collapse :show="!!summary">
             <vue-markdown v-if="summary" :source="summary" />
         </b-collapse>
-        <!--
-               :ok-disabled="!summary"
-               :cancel-disabled="!summary"
-               :ok-class="!saveUrl ? 'removed-button' : ''"
-               :ok-title="intl.getString('buttons.save')"
-               ok-variant="outline-primary"
-               cancel-variant="primary"
-               :cancel-title="intl.getString('buttons.close')"
-               -->
         <template #footer>
             <BButtonGroup class="w-100">
                 <BButton
@@ -241,7 +238,10 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
                     :disabled="!summary"
                     variant="outline-primary"
                     @click="writeToClipboard"
-                    >{{ intl.getString('buttons.clipboard') }}</BButton
+                    ><span class="btn-clipboard-content">
+                        <IBiCheckLg :style="{ visibility: copied ? 'visible' : 'hidden' }" style="grid-area: 1/1; margin: auto;" />
+                        <span :style="{ visibility: copied ? 'hidden' : 'visible' }" style="grid-area: 1/1;">{{ intl.getString('buttons.clipboard') }}</span>
+                    </span></BButton
                 >
                 <BButton
                     v-if="feedbackUrl"
@@ -276,6 +276,9 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
 </template>
 
 <style scoped>
+.btn-clipboard-content {
+    display: grid;
+}
 .card-content {
     display: flex;
     align-items: center;
