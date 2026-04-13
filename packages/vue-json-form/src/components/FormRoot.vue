@@ -323,7 +323,9 @@ async function init() {
     } catch (e: unknown) {
         console.error('Failed to initialize validator');
         console.error(e);
-        validationErrors.value.general = [e];
+        if (e instanceof Error) {
+            validationErrors.value.general = [e];
+        }
     }
     await assignStoreData({
         jsonSchema: props.jsonSchema,
