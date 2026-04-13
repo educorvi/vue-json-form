@@ -66,13 +66,28 @@
                         "summary": {
                             "properties": {
                                 "field": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "Field (in dot notation) that contains the document to be summarized."
+                                },
+                                "documentTypeField": {
+                                    "type": "string",
+                                    "description": "Field (in dot notation) that contains the type of the document."
                                 },
                                 "apiEndpoint": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "API endpoint for the summary."
                                 },
                                 "saveUrl": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "description": "URL that the summary will be posted to, if the user presses the save button."
+                                },
+                                "feedbackUrl": {
+                                    "type": "string",
+                                    "description": "Shows a Feedback button that redirects to this URL."
+                                },
+                                "copyToClipboard": {
+                                    "type": "boolean",
+                                    "description": "Enable 'Copy to clipboard' button"
                                 }
                             },
                             "required": ["field", "apiEndpoint"],
