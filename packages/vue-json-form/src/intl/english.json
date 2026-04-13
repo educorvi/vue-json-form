@@ -21,7 +21,9 @@
         "previous": "Previous",
         "next": "Next",
         "close": "Close",
-        "save": "Save"
+        "save": "Save",
+        "clipboard": "Copy to clipboard",
+        "feedback": "Feedback"
     },
     "modals": {
         "delete-remaining-items": {

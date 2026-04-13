@@ -21,7 +21,9 @@
         "previous": "Zurück",
         "next": "Weiter",
         "close": "Schließen",
-        "save": "Speichern"
+        "save": "Speichern",
+        "clipboard": "In Zwischenablage kopieren",
+        "feedback": "Feedback"
     },
     "modals": {
         "delete-remaining-items": {
