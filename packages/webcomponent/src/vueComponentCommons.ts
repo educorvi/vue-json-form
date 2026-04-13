@@ -277,16 +277,16 @@ export function getSubmitFunc(
     ) {
         let success = true;
         if (options.action === 'summary' && options.summary) {
-            if (resultModal?.setSaveUrl) {
-                resultModal.setSaveUrl(options.summary.saveUrl);
-            }
+            resultModal?.setSaveUrl(options.summary.saveUrl);
+            resultModal?.setClipboard(options.summary.copyToClipboard || false);
+            resultModal?.setFeedbackUrl(options.summary.feedbackUrl);
             const encodedFile = getPropertyByString(
                 data,
                 options.summary.field
             );
             const promptType = getPropertyByString(
                 data,
-                options.summary.documentTypeField,
+                options.summary.documentTypeField ?? '',
                 undefined,
                 'Gutachten'
             );

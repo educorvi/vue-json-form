@@ -10,6 +10,7 @@ import {
     BFormInput,
     BButton,
     BAlert,
+    BButtonGroup,
 } from 'bootstrap-vue-next';
 //@ts-ignore
 import IBiClock from '~icons/bi/clock';
@@ -47,6 +48,8 @@ const showSaveModal = ref(false);
 const saveTitle = ref('');
 const saveUrl = ref<string | undefined>(undefined);
 const saveError = ref<string | null>(null);
+const clipboard = ref<boolean>(false);
+const feedbackUrl = ref<string | null>(null);
 
 const initialState: Record<SummaryStage, StageState> = {
     PREPROCESSING: {
@@ -137,27 +140,41 @@ function savePage() {
     }
 }
 
-defineExpose({ updateStage, setSaveUrl });
+function setClipboard(value: boolean) {
+    clipboard.value = value;
+}
+
+function setFeedbackUrl(url: string | undefined) {
+    if (url) {
+        feedbackUrl.value = url;
+    }
+}
+
+function writeToClipboard() {
+    if (summary.value) {
+        navigator.clipboard.writeText(summary.value);
+    }
+}
+
+function openFeedback() {
+    if (feedbackUrl.value) {
+        window.open(feedbackUrl.value, '_blank')?.focus();
+    }
+}
+
+defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
 </script>
 
 <template>
     <b-modal
         v-model="showModal"
-        :ok-disabled="!summary"
-        :cancel-disabled="!summary"
-        :ok-class="!saveUrl ? 'removed-button' : ''"
         :no-header-close="!summary"
         :no-close-on-backdrop="!summary"
         :no-close-on-esc="!summary"
-        :ok-title="intl.getString('buttons.save')"
-        ok-variant="outline-primary"
-        cancel-variant="primary"
-        :cancel-title="intl.getString('buttons.close')"
         :title="intl.getString('modals.summary.title')"
         scrollable
         centered
         size="xl"
-        @ok="showSaveModal = true"
     >
         <b-collapse :show="!summary">
             <b-card v-for="(stage, key) in stages" :key="key" class="mb-2">
@@ -198,6 +215,44 @@ defineExpose({ updateStage, setSaveUrl });
         <b-collapse :show="!!summary">
             <vue-markdown v-if="summary" :source="summary" />
         </b-collapse>
+        <!--
+               :ok-disabled="!summary"
+               :cancel-disabled="!summary"
+               :ok-class="!saveUrl ? 'removed-button' : ''"
+               :ok-title="intl.getString('buttons.save')"
+               ok-variant="outline-primary"
+               cancel-variant="primary"
+               :cancel-title="intl.getString('buttons.close')"
+               -->
+        <template #footer>
+            <BButtonGroup class="w-100">
+                <BButton
+                    v-if="saveUrl"
+                    :disabled="!summary"
+                    variant="outline-primary"
+                    @click="
+                        showModal = false;
+                        showSaveModal = true;
+                    "
+                    >{{ intl.getString('buttons.save') }}</BButton
+                >
+                <BButton
+                    v-if="clipboard"
+                    :disabled="!summary"
+                    variant="outline-primary"
+                    @click="writeToClipboard"
+                    >{{ intl.getString('buttons.clipboard') }}</BButton
+                >
+                <BButton
+                    v-if="feedbackUrl"
+                    :disabled="!summary"
+                    variant="outline-primary"
+                    @click="openFeedback"
+                    >{{ intl.getString('buttons.feedback') }}</BButton
+                >
+                <!--                <BButton>{{ intl.getString('buttons.close') }}</BButton>-->
+            </BButtonGroup>
+        </template>
     </b-modal>
     <b-modal
         v-model="showSaveModal"

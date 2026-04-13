@@ -25,7 +25,8 @@
                                     "documentTypeField": "type",
                                     "apiEndpoint": "http://localhost:44803/ai/summary",
                                     "saveUrl": "http://localhost:44803/log",
-                                    "feedbackUrl": "https://educorvi.de"
+                                    "feedbackUrl": "https://educorvi.de",
+                                    "copyToClipboard": true
                                 }
                             },
                             "variant": "primary"
