@@ -239,8 +239,19 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
                     variant="outline-primary"
                     @click="writeToClipboard"
                     ><span class="btn-clipboard-content">
-                        <IBiCheckLg :style="{ visibility: copied ? 'visible' : 'hidden' }" style="grid-area: 1/1; margin: auto;" />
-                        <span :style="{ visibility: copied ? 'hidden' : 'visible' }" style="grid-area: 1/1;">{{ intl.getString('buttons.clipboard') }}</span>
+                        <IBiCheckLg
+                            :style="{
+                                visibility: copied ? 'visible' : 'hidden',
+                            }"
+                            style="grid-area: 1/1; margin: auto"
+                        />
+                        <span
+                            :style="{
+                                visibility: copied ? 'hidden' : 'visible',
+                            }"
+                            style="grid-area: 1/1"
+                            >{{ intl.getString('buttons.clipboard') }}</span
+                        >
                     </span></BButton
                 >
                 <BButton
@@ -269,7 +280,7 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
             {{ saveError }}
         </b-alert>
 
-        <b-button variant="primary" @click="savePage" class="w-100"
+        <b-button variant="primary" class="w-100" @click="savePage"
             >Save</b-button
         >
     </b-modal>
@@ -289,11 +300,5 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
     bottom: 0;
     left: 0;
     right: 0;
-}
-</style>
-
-<style>
-.removed-button {
-    display: none;
 }
 </style>
