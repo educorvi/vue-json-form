@@ -174,7 +174,7 @@ const DEFAULT_SUMMARY_EVENTS: SseEvent[] = [
 const CORS_HEADERS = {
     'Access-Control-Allow-Origin': 'http://localhost:5173',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Credentials': 'true',
 };
 
@@ -275,11 +275,28 @@ export class AiMockServer {
         } else if (method === 'POST' && url === '/ai/summary') {
             this.summaryRequestCount++;
             await this.handleSummary(req, res);
+        } else if (method === 'POST' && url === '/log') {
+            await this.handleLog(req, res);
         } else {
             sendJson(res, 404, {
                 message: `Route not found: ${method} ${url}`,
             });
         }
+    }
+
+    // ── POST /log ─────────────────────────────────────────────────────────────
+
+    private async handleLog(
+        req: IncomingMessage,
+        res: ServerResponse
+    ): Promise<void> {
+        const body = await consumeBody(req);
+        try {
+            console.log('[/log]', JSON.parse(body.toString()));
+        } catch {
+            console.log('[/log]', body.toString());
+        }
+        sendJson(res, 200, {});
     }
 
     // ── GET /ai/prompt-types ──────────────────────────────────────────────────

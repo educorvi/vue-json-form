@@ -284,13 +284,19 @@ export function getSubmitFunc(
                 data,
                 options.summary.field
             );
+            const promptType = getPropertyByString(
+                data,
+                options.summary.documentTypeField,
+                undefined,
+                'Gutachten'
+            );
             const file = (
                 await axios.get(encodedFile, { responseType: 'blob' })
             ).data as Blob;
             await requestSummary(
                 options.summary.apiEndpoint,
                 file,
-                'Gutachten',
+                promptType,
                 resultModal?.updateStage
             );
             return;

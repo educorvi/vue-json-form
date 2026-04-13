@@ -8,6 +8,10 @@
                 "scope": "/properties/document"
             },
             {
+                "type": "Control",
+                "scope": "/properties/type"
+            },
+            {
                 "type": "Buttongroup",
                 "buttons": [
                     {
@@ -18,7 +22,10 @@
                                 "action": "summary",
                                 "summary": {
                                     "field": "document",
-                                    "apiEndpoint": "http://localhost:44803/ai/summary"
+                                    "documentTypeField": "type",
+                                    "apiEndpoint": "http://localhost:44803/ai/summary",
+                                    "saveUrl": "http://localhost:44803/log",
+                                    "feedbackUrl": "https://educorvi.de"
                                 }
                             },
                             "variant": "primary"

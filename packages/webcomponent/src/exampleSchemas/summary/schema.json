@@ -5,6 +5,12 @@
         "document": {
             "type": "string",
             "format": "uri"
+        },
+        "type": {
+            "type": "string",
+            "enum": ["Gutachten", "Allgemein"],
+            "default": "Gutachten"
         }
-    }
+    },
+    "required": ["document", "type"]
 }
