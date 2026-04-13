@@ -3,7 +3,7 @@ import type {
     SubmitRequestOptions,
 } from '@educorvi/vue-json-form-schemas';
 import { computed } from 'vue';
-import axios, { type AxiosBasicCredentials } from 'axios';
+import axios from 'axios';
 import type { SseEvent, SummaryResultEvent } from '@/types.ts';
 import { getPropertyByString } from '@educorvi/vue-json-form';
 import ResultModal from '@/ResultModal.vue';
