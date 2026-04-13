@@ -334,10 +334,6 @@ onBeforeMount(async () => {
     setDefaultFormData();
 });
 
-watch(validator, async () => {
-    await validator.value.initialize();
-});
-
 watch(props, async (newVal) => {
     await validator.value.initialize();
     await assignStoreData({
