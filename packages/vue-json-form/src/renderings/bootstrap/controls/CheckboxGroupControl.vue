@@ -60,9 +60,8 @@ watch(
     () => formData.value[savePath],
     (newVal) => {
         let presetValues: unknown[] | undefined;
-        if (isNotNullOrUndefined(newVal)) {
-            presetValues = newVal;
-            presetValues = presetValues?.map((item) => {
+        if (isNotNullOrUndefined(newVal) && Array.isArray(newVal)) {
+            presetValues = newVal?.map((item) => {
                 if (!isArrayItemKey(item)) {
                     return item;
                 }

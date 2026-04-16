@@ -82,8 +82,7 @@ export class Base64String {
     private destructure(): IBase64Data {
         // Step 1: Separate the base64 data from the metadata header
         const commaIndex = this.b64.indexOf(',');
-        if (commaIndex === -1)
-            throw new Error(`Invalid base64 string: ${this.b64}`);
+        if (commaIndex === -1) throw new Error(`Invalid base64 string`);
 
         const header = this.b64.slice(0, commaIndex); // e.g. "data:image/png;name=foo.png;base64"
         const b64data = this.b64.slice(commaIndex + 1);
@@ -96,11 +95,11 @@ export class Base64String {
             !segments[0].startsWith('data:') ||
             segments[segments.length - 1] !== 'base64'
         ) {
-            throw new Error(`Invalid base64 string: ${this.b64}`);
+            throw new Error(`Invalid base64 string`);
         }
 
         const mimeType = segments[0].slice('data:'.length);
-        if (!mimeType) throw new Error(`Invalid base64 string: ${this.b64}`);
+        if (!mimeType) throw new Error(`Invalid base64 string`);
 
         // Step 3: Look for the optional "name=..." segment
         const nameSegment = segments.find((s) => s.startsWith('name='));
