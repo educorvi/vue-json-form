@@ -71,7 +71,6 @@ import {
 import { isLayout, isWizard } from '@/typings/typeValidators';
 import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
 import { flattenData } from '@/stores/helpers/flattenData.ts';
-import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
 import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
@@ -209,7 +208,6 @@ async function onSubmitFormLocal(evt: Event) {
     } else {
         submitData = toRaw(cleanedFormData.value.json);
     }
-    submitData = await addFilesToFormdata(submitData);
     const customSubmitOptions =
         JSON.parse(
             decodeURIComponent(

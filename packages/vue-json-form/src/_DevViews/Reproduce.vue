@@ -28,6 +28,7 @@ import {
     type SubmitOptions,
     VueJsonForm,
 } from '../main';
+import { presetData } from './presetDataForReproduce.ts';
 
 import json from '../exampleSchemas/reproduce/schema.json';
 import ui from '../exampleSchemas/reproduce/ui.json';
@@ -38,22 +39,6 @@ import { ref, type Ref } from 'vue';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
 import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';
-
-const presetData: Ref<Record<string, any> | undefined> = ref({
-    'jso-39-multiselect': ['option 2', 'option 3'],
-    'jso-39-string': 'Test',
-    'jso-39-array': ['Hello', 'World'],
-    'jso-39-object': {
-        test: 'ABC',
-        number: 14,
-    },
-    arrInArrPres: [
-        ['item1', 'item2'],
-        ['item3', 'item4'],
-    ],
-    arrayWithObjectWithPreset: [{ name: 'John' }, { name: 'Jane' }],
-    checkboxesWithPreset: ['b', 'c'],
-});
 
 const formData: Ref<undefined | Record<string, any>> = ref(undefined);
 
