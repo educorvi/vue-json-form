@@ -58,6 +58,40 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('JSO-151 (checkboxesWithPreset is prefilled correctly)', async ({
+    page,
+}) => {
+    const CHECKBOX_GROUP = '#vjf_control_for__properties_checkboxesWithPreset';
+    await page.goto(REPRODUCE_URL);
+
+    await expect(
+        page.locator(`${CHECKBOX_GROUP} input[value="a"]`)
+    ).not.toBeChecked();
+    await expect(
+        page.locator(`${CHECKBOX_GROUP} input[value="b"]`)
+    ).toBeChecked();
+    await expect(
+        page.locator(`${CHECKBOX_GROUP} input[value="c"]`)
+    ).toBeChecked();
+
+    await submitForm(page);
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['checkboxesWithPreset']).toEqual(['b', 'c']);
+});
+
+test('JSO-151 (arrayWithObjectWithPreset is prefilled)', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+    await submitForm(page);
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['arrayWithObjectWithPreset']).toEqual([
+        { name: 'John' },
+        { name: 'Jane' },
+    ]);
+});
+
 test('JSO-146 (nested required mapping in optional object)', async ({
     page,
 }) => {
@@ -665,18 +699,6 @@ test('JSO-31', async ({ page }) => {
     expect(res['arrInArrDef']).toEqual([
         ['item1', 'item2'],
         ['item3', 'item4'],
-    ]);
-});
-
-test('JSO-151 (arrayWithObjectWithPreset is prefilled)', async ({ page }) => {
-    await page.goto(REPRODUCE_URL);
-    await submitForm(page);
-
-    const resultText = await page.locator('#result-container').textContent();
-    const res = JSON.parse(resultText || '');
-    expect(res['arrayWithObjectWithPreset']).toEqual([
-        { name: 'John' },
-        { name: 'Jane' },
     ]);
 });
 
