@@ -93,6 +93,12 @@ watch(file, async (newVal) => {
             const b64String = await Base64String.fromFile(newVal);
             formData.value[savePath] = b64String.getBase64Uri();
         }
+    } else {
+        if (multiple.value) {
+            formData.value[savePath] = [];
+        } else {
+            formData.value[savePath] = undefined;
+        }
     }
 });
 
