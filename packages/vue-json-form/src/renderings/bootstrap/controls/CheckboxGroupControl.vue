@@ -19,7 +19,7 @@ const props = defineProps<{
     required?: boolean;
 }>();
 
-const { formData, cleanedFormData } = storeToRefs(formDataStore);
+const { formData } = storeToRefs(formDataStore);
 
 const { formStateWasValidated } = storeToRefs(formStructureStore);
 
