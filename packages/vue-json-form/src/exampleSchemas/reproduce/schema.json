@@ -6,6 +6,13 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "checkboxesWithPreset": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["a", "b", "c"]
+            }
+        },
         "arrayWithObjectWithPreset": {
             "type": "array",
             "items": {

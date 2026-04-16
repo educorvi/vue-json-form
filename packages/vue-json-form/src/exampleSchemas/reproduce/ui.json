@@ -11,6 +11,10 @@
                     {
                         "type": "Control",
                         "scope": "/properties/arrayWithObjectWithPreset"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/checkboxesWithPreset"
                     }
                 ]
             },
