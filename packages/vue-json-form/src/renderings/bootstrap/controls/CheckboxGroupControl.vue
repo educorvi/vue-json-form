@@ -7,7 +7,7 @@ import {
     isNotNullOrUndefined,
 } from '@/typings/typeValidators';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
-import { computed, type ComputedRef, inject, ref, watch } from 'vue';
+import { computed, type ComputedRef, inject, onMounted, ref, watch } from 'vue';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { validateCheckboxGroupInput } from '@/formControlInputValidation/CheckboxGroupValidation.ts';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
@@ -75,6 +75,8 @@ watch(
     },
     { immediate: true }
 );
+
+onMounted(validate);
 
 const state = computed(() => {
     if (formStateWasValidated.value) {
