@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { Base64String } from '@/B64File';
+import { Base64String } from '@/renderings/renderHelpers';
 
 // "hello" encoded in base64
 const HELLO_B64 = 'aGVsbG8=';
@@ -51,36 +51,36 @@ describe('Base64String', () => {
     describe('constructor / _destructure', () => {
         it('parses mimeType, filename, extension, and b64data from a valid URL', () => {
             const b64 = new Base64String(VALID_URL);
-            expect(b64.data.mimeType).toBe('text/plain');
-            expect(b64.data.filename).toBe('hello');
-            expect(b64.data.extension).toBe('txt');
-            expect(b64.data.b64data).toBe(HELLO_B64);
+            expect(b64.getMimeType()).toBe('text/plain');
+            expect(b64.getFileName()).toBe('hello');
+            expect(b64.getExtension()).toBe('txt');
+            expect(b64.getBase64Data()).toBe(HELLO_B64);
         });
 
         it('stores the original string in _b64', () => {
             const b64 = new Base64String(VALID_URL);
-            expect(b64._b64).toBe(VALID_URL);
+            expect(b64.getBase64Uri()).toBe(VALID_URL);
         });
 
         it('decodes a URL-encoded filename', () => {
             const url = `data:text/plain;name=hello%20world.txt;base64,${HELLO_B64}`;
             const b64 = new Base64String(url);
-            expect(b64.data.filename).toBe('hello world');
+            expect(b64.getFileName()).toBe('hello world');
         });
 
         it('handles a sub-type MIME type (e.g. application/pdf)', () => {
             const url = `data:application/pdf;name=report.pdf;base64,${HELLO_B64}`;
             const b64 = new Base64String(url);
-            expect(b64.data.mimeType).toBe('application/pdf');
-            expect(b64.data.extension).toBe('pdf');
+            expect(b64.getMimeType()).toBe('application/pdf');
+            expect(b64.getExtension()).toBe('pdf');
         });
 
         it('handles extra semicolon-separated parameters between MIME type and name', () => {
             const url = `data:text/plain;charset=utf-8;name=notes.txt;base64,${HELLO_B64}`;
             const b64 = new Base64String(url);
-            expect(b64.data.mimeType).toBe('text/plain');
-            expect(b64.data.filename).toBe('notes');
-            expect(b64.data.extension).toBe('txt');
+            expect(b64.getMimeType()).toBe('text/plain');
+            expect(b64.getFileName()).toBe('notes');
+            expect(b64.getExtension()).toBe('txt');
         });
 
         it('throws on a plain string that is not a data URL', () => {
@@ -93,14 +93,18 @@ describe('Base64String', () => {
             expect(() => new Base64String('')).toThrow('Invalid base64 string');
         });
 
-        it('throws when the name segment is missing', () => {
+        it('work with name segment missing', () => {
             const url = `data:text/plain;base64,${HELLO_B64}`;
-            expect(() => new Base64String(url)).toThrow('Invalid base64 string');
+            expect(new Base64String(url).getBase64Uri()).toBe(
+                `data:text/plain;base64,${HELLO_B64}`
+            );
         });
 
         it('throws when the base64 segment is missing', () => {
             const url = 'data:text/plain;name=hello.txt';
-            expect(() => new Base64String(url)).toThrow('Invalid base64 string');
+            expect(() => new Base64String(url)).toThrow(
+                'Invalid base64 string'
+            );
         });
     });
 
@@ -171,7 +175,9 @@ describe('Base64String', () => {
         });
 
         it('sets the correct file name (including extension)', () => {
-            expect(new Base64String(VALID_URL).getFile().name).toBe('hello.txt');
+            expect(new Base64String(VALID_URL).getFile().name).toBe(
+                'hello.txt'
+            );
         });
 
         it('sets the correct MIME type on the File', () => {
@@ -194,10 +200,10 @@ describe('Base64String', () => {
             mockFileReader(`data:text/plain;base64,${HELLO_B64}`);
 
             const b64 = await Base64String.fromFile(file);
-            expect(b64.data.mimeType).toBe('text/plain');
-            expect(b64.data.filename).toBe('hello');
-            expect(b64.data.extension).toBe('txt');
-            expect(b64.data.b64data).toBe(HELLO_B64);
+            expect(b64.getMimeType()).toBe('text/plain');
+            expect(b64.getFileName()).toBe('hello');
+            expect(b64.getExtension()).toBe('txt');
+            expect(b64.getBase64Data()).toBe(HELLO_B64);
         });
 
         it('resolves correctly for a file without an extension', async () => {
@@ -205,8 +211,8 @@ describe('Base64String', () => {
             mockFileReader(`data:text/plain;base64,${HELLO_B64}`);
 
             const b64 = await Base64String.fromFile(file);
-            expect(b64.data.filename).toBe('README');
-            expect(b64.data.extension).toBe('');
+            expect(b64.getFileName()).toBe('README');
+            expect(b64.getExtension()).toBe('');
         });
 
         it('URL-encodes special characters in the filename', async () => {
@@ -218,7 +224,7 @@ describe('Base64String', () => {
             const b64 = await Base64String.fromFile(file);
             // After round-tripping through encodeURIComponent / decodeURIComponent
             // the filename must be restored to its original value.
-            expect(b64.data.filename).toBe('my file');
+            expect(b64.getFileName()).toBe('my file');
         });
 
         it('rejects when FileReader fires an error', async () => {

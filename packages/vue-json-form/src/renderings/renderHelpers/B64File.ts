@@ -79,19 +79,45 @@ export class Base64String {
      * @returns The parsed {@link IBase64Data} object.
      * @throws {Error} If the stored string does not match the expected pattern.
      */
-    private destructure() {
-        const groups = new RegExp(
-            /data:(.*?);(?:(?:.*;)*name=(.*)\.(.*?);(?:.*;)*)?base64,(.*)/
-        ).exec(this.b64);
-        if (!groups) throw new Error(`Invalid base64 string: ${this.b64}`);
-        const [_, mimeType, filename, extension, b64data] = groups;
-        return {
-            mimeType,
-            filename:
-                filename != null ? decodeURIComponent(filename) : undefined,
-            extension: extension ?? undefined,
-            b64data,
-        };
+    private destructure(): IBase64Data {
+        // Step 1: Separate the base64 data from the metadata header
+        const commaIndex = this.b64.indexOf(',');
+        if (commaIndex === -1)
+            throw new Error(`Invalid base64 string: ${this.b64}`);
+
+        const header = this.b64.slice(0, commaIndex); // e.g. "data:image/png;name=foo.png;base64"
+        const b64data = this.b64.slice(commaIndex + 1);
+
+        // Step 2: Split the header into semicolon-delimited segments
+        const segments = header.split(';');
+        // segments[0] = "data:image/png", last = "base64"
+
+        if (
+            !segments[0].startsWith('data:') ||
+            segments[segments.length - 1] !== 'base64'
+        ) {
+            throw new Error(`Invalid base64 string: ${this.b64}`);
+        }
+
+        const mimeType = segments[0].slice('data:'.length);
+        if (!mimeType) throw new Error(`Invalid base64 string: ${this.b64}`);
+
+        // Step 3: Look for the optional "name=..." segment
+        const nameSegment = segments.find((s) => s.startsWith('name='));
+        if (!nameSegment) {
+            return { mimeType, b64data };
+        }
+
+        const nameValue = nameSegment.slice('name='.length); // e.g. "foo.png"
+        const lastDot = nameValue.lastIndexOf('.');
+        const filename =
+            lastDot !== -1
+                ? decodeURIComponent(nameValue.slice(0, lastDot))
+                : decodeURIComponent(nameValue);
+        const extension =
+            lastDot !== -1 ? nameValue.slice(lastDot + 1) : undefined;
+
+        return { mimeType, filename, extension, b64data };
     }
 
     /**
@@ -112,31 +138,50 @@ export class Base64String {
         filename: string | undefined,
         extension: string | undefined
     ): string {
-        if (filename && extension) return `${filename}.${extension}`;
-        if (filename) return filename;
-        if (extension) return `.${extension}`;
+        if (filename !== undefined && extension !== undefined)
+            return `${filename}.${extension}`;
+        if (filename !== undefined) return filename;
+        if (extension !== undefined) return `.${extension}`;
         return '';
-    }
-
-    /**
-     * Returns the file name including its extension (e.g. `"report.pdf"`).
-     * Returns an empty string when the data URL contains no `name=` segment.
-     */
-    getFileNameWithExtension(): string {
-        const { filename, extension } = this.data;
-        return Base64String.calculateFileNameWithExtension(filename, extension);
     }
 
     /**
      * Reconstructs the original `File` object from the stored base64 data.
      */
     getFile(): File {
-        return new File([this.getBlob()], this.getFileNameWithExtension(), {
+        return new File([this.getBlob()], this.getFileNameWithextension(), {
             type: this.data.mimeType,
         });
     }
 
-    getBase64String(): string {
+    getMimeType(): string {
+        return this.data.mimeType;
+    }
+
+    /**
+     * Returns the file name including its extension (e.g. `"report.pdf"`).
+     * Returns an empty string when the data URL contains no `name=` segment.
+     */
+    getFileNameWithextension(): string {
+        const { filename, extension } = this.data;
+        return Base64String.calculateFileNameWithExtension(filename, extension);
+    }
+
+    getFileName(): string {
+        const { filename } = this.data;
+        return filename ?? '';
+    }
+
+    getExtension(): string {
+        const { extension } = this.data;
+        return extension ?? '';
+    }
+
+    getBase64Data(): string {
+        return this.data.b64data;
+    }
+
+    getBase64Uri(): string {
         return this.b64;
     }
 

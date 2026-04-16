@@ -87,11 +87,11 @@ watch(file, async (newVal) => {
                 newVal.map((f) => Base64String.fromFile(f))
             );
             formData.value[savePath] = b64Strings.map((b64) =>
-                b64.getBase64String()
+                b64.getBase64Uri()
             );
         } else {
             const b64String = await Base64String.fromFile(newVal);
-            formData.value[savePath] = b64String.getBase64String();
+            formData.value[savePath] = b64String.getBase64Uri();
         }
     }
 });
