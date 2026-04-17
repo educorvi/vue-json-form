@@ -15,7 +15,6 @@ import {
 } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { PromptType, SseEvent, SummaryStage } from '../../src/types';
-
 // ── Schema types (mirroring the OpenAPI spec) ─────────────────────────────────
 
 // ── Configuration ─────────────────────────────────────────────────────────────
@@ -45,6 +44,8 @@ export interface AiMockServerOptions {
      * Defaults to 0.
      */
     eventIntervalMs?: number;
+
+    port?: number;
 }
 
 // ── Defaults ──────────────────────────────────────────────────────────────────
@@ -223,6 +224,7 @@ export class AiMockServer {
             summaryEvents: options.summaryEvents ?? DEFAULT_SUMMARY_EVENTS,
             summaryHttpError: options.summaryHttpError ?? (undefined as any),
             eventIntervalMs: options.eventIntervalMs ?? 0,
+            port: options.port ?? 0,
         };
 
         this.server = createServer((req, res) => {
@@ -233,7 +235,7 @@ export class AiMockServer {
     /** Start listening on an OS-assigned port and return the base URL. */
     start(): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.server.listen(0, '127.0.0.1', () => {
+            this.server.listen(this.options.port, '127.0.0.1', () => {
                 const address = this.server.address() as AddressInfo;
                 resolve(`http://127.0.0.1:${address.port}`);
             });
@@ -345,4 +347,9 @@ export class AiMockServer {
     }
 }
 
-
+// Only run if executed directly
+if (process.argv[1] === new URL(import.meta.url).pathname) {
+    new AiMockServer({ eventIntervalMs: 100, port: 44803 })
+        .start()
+        .then((r) => console.log(r));
+}
