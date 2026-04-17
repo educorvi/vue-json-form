@@ -56,7 +56,7 @@ const state = computed(() => {
 
 const validate = () => {
     valid.value = validateFileInput(
-        formData.value[savePath],
+        file.value,
         props.required,
         layoutElement.value.options?.maxFileSize,
         multiple,
@@ -68,7 +68,7 @@ const validate = () => {
 };
 watch(
     [
-        () => formData.value[savePath],
+        file,
         () => jsonElement.value,
         () => layoutElement.value,
         () => multiple.value,

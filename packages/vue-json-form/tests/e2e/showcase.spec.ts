@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -283,9 +283,7 @@ test.describe('Button functions', () => {
         await page
             .locator('#vjf_control_for__properties_name')
             .fill('Test User');
-        await page
-            .getByRole('button', { name: 'Submit', exact: true })
-            .click();
+        await page.getByRole('button', { name: 'Submit', exact: true }).click();
 
         await expect(page.locator('#result-container')).not.toBeAttached();
     });
@@ -448,7 +446,7 @@ test.describe('Button functions', () => {
             .update(json['fileupload'])
             .digest('base64');
         expect(fileHash).toEqual(
-            '1GW+tQlX6j/o+hU/18VW33uDoKfkWyA9AcCmSvKWhQw='
+            'ntFD28ZRkJ8QjShRgrKxj780CdYzwVC+H5Jn/88C/yQ='
         );
     });
 });
@@ -496,7 +494,10 @@ test.describe('Submit Options', () => {
     test('submit-options without custom options has only id', async ({
         page,
     }) => {
-        const button = page.getByRole('button', { name: 'Submit', exact: true });
+        const button = page.getByRole('button', {
+            name: 'Submit',
+            exact: true,
+        });
         await expect(button).toBeVisible();
 
         const submitOptionsAttr = await button.getAttribute('submit-options');
@@ -515,9 +516,7 @@ test.describe('Submit Options', () => {
             .getByRole('button', { name: 'Submit with options', exact: true })
             .click();
 
-        await expect(
-            page.locator('#submit-options-container')
-        ).toBeVisible();
+        await expect(page.locator('#submit-options-container')).toBeVisible();
 
         const optionsText = await page
             .locator('#submit-options-container')
