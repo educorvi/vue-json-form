@@ -103,7 +103,6 @@ async function* parseSseStream(
         buffer = blocks.pop() ?? '';
 
         for (const block of blocks) {
-            console.log(block);
             let eventName = '';
             let dataStr = '';
 
@@ -224,8 +223,6 @@ export async function requestSummary(
         logSseEvent(event);
         if (updateState) {
             updateState(event);
-        } else {
-            console.warn('updateState is undefined, skipping state update');
         }
         if (event.event === 'result') {
             result = event.data;
