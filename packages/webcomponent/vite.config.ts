@@ -1,5 +1,7 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import Icons from 'unplugin-icons/vite';
 
 const buildTargets = {
     default: {
@@ -26,6 +28,11 @@ if (!config) {
 }
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
+    },
     plugins: [
         vue({
             template: {
@@ -34,6 +41,9 @@ export default defineConfig({
                         tag.includes('vue-json-form'),
                 },
             },
+        }),
+        Icons({
+            compiler: 'vue3',
         }),
     ],
     build: {

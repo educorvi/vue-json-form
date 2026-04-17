@@ -217,8 +217,14 @@ async function onSubmitFormLocal(evt: Event) {
         ) || {};
 
     buttonWaiting.value[customSubmitOptions['id']] = true;
-    await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
-    buttonWaiting.value[customSubmitOptions['id']] = false;
+    try {
+        await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
+    } catch (e: unknown) {
+        console.error('Failed to submit form');
+        console.error(e);
+    } finally {
+        buttonWaiting.value[customSubmitOptions['id']] = false;
+    }
 }
 
 function initDefaultFormData() {
@@ -279,6 +285,10 @@ async function parseUiSchema(
     }
 }
 
+function assignRenderInterface(renderInterface: RenderInterface) {
+    components.value = renderInterface ? markRaw(renderInterface) : undefined;
+}
+
 async function assignStoreData(
     obj: {
         jsonSchema: Record<string, any>;
@@ -286,9 +296,9 @@ async function assignStoreData(
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
-    components.value = obj.renderInterface
-        ? markRaw(obj.renderInterface)
-        : undefined;
+    if (obj.renderInterface) {
+        assignRenderInterface(obj.renderInterface);
+    }
 
     storeMappers.value = props.mappers || [];
 
@@ -309,14 +319,19 @@ async function assignStoreData(
 
 provide(requiredProviderKey, true);
 
-onBeforeMount(async () => {
+async function initValidator() {
     try {
         await validator.value.initialize();
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('Failed to initialize validator');
         console.error(e);
-        validationErrors.value.general = [e];
+        if (e instanceof Error) {
+            validationErrors.value.general = [e];
+        }
     }
+}
+async function init() {
+    await initValidator();
     await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
@@ -324,13 +339,17 @@ onBeforeMount(async () => {
     });
     initDefaultFormData();
     setDefaultFormData();
-});
+}
 
-watch(props, (newVal) => {
-    assignStoreData({
-        jsonSchema: newVal.jsonSchema,
-        uiSchema: newVal.uiSchema,
-        renderInterface: newVal.renderInterface,
-    });
-});
+onBeforeMount(init);
+
+watch([() => props.jsonSchema, () => props.uiSchema], init);
+watch(validator, initValidator);
+
+watch(
+    () => props.renderInterface,
+    (newVal) => {
+        assignRenderInterface(newVal);
+    }
+);
 </script>

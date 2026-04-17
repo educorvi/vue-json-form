@@ -12,12 +12,18 @@
             "selectAtMostOne": "Bitte wählen Sie höchstens eine Option aus.",
             "selectAtLeast": "Bitte wählen Sie mindestens !&data&! Optionen aus.",
             "selectAtMost": "Bitte wählen Sie höchstens !&data&! Optionen aus."
+        },
+        "generic": {
+            "temporaryError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal."
         }
     },
     "buttons": {
         "previous": "Zurück",
         "next": "Weiter",
-        "close": "Schließen"
+        "close": "Schließen",
+        "save": "Speichern",
+        "clipboard": "In Zwischenablage kopieren",
+        "feedback": "Feedback"
     },
     "modals": {
         "delete-remaining-items": {
@@ -25,6 +31,11 @@
             "text": "Da dieses Array mindestens !&data&! Elemente erfordert, werden alle übrigen Elemente aus dem Array gelöscht. Sind Sie sicher?",
             "confirm": "Löschen",
             "cancel": "Abbrechen"
+        },
+        "summary": {
+            "title": "Zusammenfassung",
+            "saveTitle": "Titel",
+            "saveInstruction": "Setzen Sie einen Titel für die generierte Seite:"
         }
     }
 }

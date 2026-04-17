@@ -12,12 +12,18 @@
             "selectAtMostOne": "Please select at most one option.",
             "selectAtLeast": "Please select at least !&data&! options.",
             "selectAtMost": "Please select at most !&data&! options."
+        },
+        "generic": {
+            "temporaryError": "An error occurred. Please try again later."
         }
     },
     "buttons": {
         "previous": "Previous",
         "next": "Next",
-        "close": "Close"
+        "close": "Close",
+        "save": "Save",
+        "clipboard": "Copy to clipboard",
+        "feedback": "Feedback"
     },
     "modals": {
         "delete-remaining-items": {
@@ -25,6 +31,11 @@
             "text": "Since this array requires at least !&data&! items, this will delete all remaining items from the array. Are you sure?",
             "confirm": "Delete",
             "cancel": "Cancel"
+        },
+        "summary": {
+            "title": "Summary",
+            "saveTitle": "Title",
+            "saveInstruction": "Choose a title for the generated page:"
         }
     }
 }

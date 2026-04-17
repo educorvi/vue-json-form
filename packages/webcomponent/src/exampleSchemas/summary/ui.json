@@ -1,0 +1,40 @@
+{
+    "version": "2.1",
+    "layout": {
+        "type": "VerticalLayout",
+        "elements": [
+            {
+                "type": "Control",
+                "scope": "/properties/document"
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/type"
+            },
+            {
+                "type": "Buttongroup",
+                "buttons": [
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "options": {
+                            "submitOptions": {
+                                "action": "summary",
+                                "summary": {
+                                    "field": "document",
+                                    "documentTypeField": "type",
+                                    "apiEndpoint": "http://localhost:44803/ai/summary",
+                                    "saveUrl": "http://localhost:44803/log",
+                                    "feedbackUrl": "https://educorvi.de",
+                                    "copyToClipboard": true
+                                }
+                            },
+                            "variant": "primary"
+                        },
+                        "text": "Submit"
+                    }
+                ]
+            }
+        ]
+    }
+}

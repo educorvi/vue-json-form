@@ -82,7 +82,7 @@ test.describe('Structure', () => {
     test('Group selector', async ({ page }) => {
         const id = '#vjf_control_for__properties_group_selector';
         await expect(page.locator(id)).toBeVisible();
-        const labels = page.locator(`${id} > label`);
+        const labels = page.locator(`${id} label`);
         await expect(labels).toHaveCount(2);
         await expect(labels.first()).toBeVisible();
         await expect(labels.last()).toBeVisible();
@@ -183,9 +183,8 @@ test.describe('Structure', () => {
     test.describe('Object', () => {
         test.beforeEach(async ({ page }) => {
             await page
-                .locator('#vjf_control_for__properties_group_selector')
-                .locator('> *')
-                .nth(3)
+                .locator('#vjf_control_for__properties_group_selector input')
+                .nth(1)
                 .click();
         });
 
@@ -400,7 +399,7 @@ test.describe('Button functions', () => {
             .check();
 
         await page
-            .locator('#vjf_control_for__properties_group_selector label')
+            .locator('#vjf_control_for__properties_group_selector input')
             .nth(1)
             .click();
 

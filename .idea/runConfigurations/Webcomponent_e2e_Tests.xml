@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Webcomponent e2e Tests" type="JavaScriptTestRunnerPlaywright">
+    <node-interpreter value="project" />
+    <playwright-package value="$PROJECT_DIR$/node_modules/@playwright/test" />
+    <working-dir value="$PROJECT_DIR$/packages/webcomponent" />
+    <envs />
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/packages/webcomponent/tests/e2e" />
+    <method v="2" />
+  </configuration>
+</component>

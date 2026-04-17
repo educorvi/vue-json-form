@@ -29,10 +29,10 @@
               <option name="patterns">
                 <list>
                   <Item>
-                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_7.json" />
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_10.json" />
                   </Item>
                   <Item>
-                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_10.json" />
+                    <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_7.json" />
                   </Item>
                 </list>
               </option>
@@ -61,10 +61,15 @@
             <SchemaInfo>
               <option name="generatedName" value="New Schema" />
               <option name="name" value="UI Schema" />
-              <option name="relativePathToSchema" value="schemas/src/generated/ui-merged.schema.json" />
+              <option name="relativePathToSchema" value="packages/schemas/dist/ui.schema.json" />
               <option name="schemaVersion" value="JSON Schema 202,012" />
               <option name="patterns">
                 <list>
+                  <Item>
+                    <option name="pattern" value="true" />
+                    <option name="path" value="**/ui.json" />
+                    <option name="mappingKind" value="Pattern" />
+                  </Item>
                   <Item>
                     <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.json" />
                   </Item>
@@ -76,15 +81,6 @@
                   </Item>
                 </list>
               </option>
-            </SchemaInfo>
-          </value>
-        </entry>
-        <entry key="show_on.schema">
-          <value>
-            <SchemaInfo>
-              <option name="generatedName" value="New Schema" />
-              <option name="name" value="show_on.schema" />
-              <option name="relativePathToSchema" value="schemas/src/ui/show_on.schema.json" />
             </SchemaInfo>
           </value>
         </entry>
