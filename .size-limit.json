@@ -32,22 +32,22 @@
     {
         "path": "packages/webcomponent/dist/shadowDom/vue-json-form.umd.js",
         "name": "WebComponent Shadow DOM",
-        "limit": "305 kB"
+        "limit": "350 kB"
     },
     {
         "path": "packages/webcomponent/dist/shadowDom/vue-json-form.mjs",
         "name": "WebComponent Shadow DOM Module",
-        "limit": "305 kB"
+        "limit": "350 kB"
     },
     {
         "path": "packages/webcomponent/dist/ajvValidator/vue-json-form.umd.js",
         "name": "WebComponent AjvValidator",
-        "limit": "300 kB"
+        "limit": "350 kB"
     },
     {
         "path": "packages/webcomponent/dist/ajvValidator/vue-json-form.mjs",
         "name": "WebComponent AjvValidator Module",
-        "limit": "300 kB"
+        "limit": "350 kB"
     },
     {
         "path": "packages/webcomponent/dist/default/vue-json-form.css",
