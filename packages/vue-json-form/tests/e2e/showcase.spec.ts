@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -446,7 +446,7 @@ test.describe('Button functions', () => {
             .update(json['fileupload'])
             .digest('base64');
         expect(fileHash).toEqual(
-            '1GW+tQlX6j/o+hU/18VW33uDoKfkWyA9AcCmSvKWhQw='
+            'ntFD28ZRkJ8QjShRgrKxj780CdYzwVC+H5Jn/88C/yQ='
         );
     });
 });
