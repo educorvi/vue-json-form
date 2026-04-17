@@ -17,17 +17,8 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
-    optimizeDeps: {
-        esbuildOptions: {
-            // Node.js global to browser globalThis
-            define: {
-                global: 'globalThis',
-            },
-        },
-    },
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: resolve(__dirname, 'src/main.ts'),
@@ -36,7 +27,7 @@ export default defineConfig({
             fileName: 'vue-json-form',
             formats: ['es', 'cjs'],
         },
-        rollupOptions: {
+        rolldownOptions: {
             // make sure to externalize deps that shouldn't be bundled
             // into your library
             output: {
