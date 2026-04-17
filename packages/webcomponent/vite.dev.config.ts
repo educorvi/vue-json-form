@@ -28,13 +28,6 @@ export default defineConfig({
     define: {
         'process.env.NODE_ENV': JSON.stringify('development'),
     },
-    optimizeDeps: {
-        esbuildOptions: {
-            define: {
-                global: 'globalThis',
-            },
-        },
-    },
     css: {
         preprocessorOptions: {
             scss: {
