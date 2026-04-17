@@ -133,6 +133,15 @@ export class Base64String {
         return new Blob([this.getBuffer()], { type: this.data.mimeType });
     }
 
+    /**
+     * Combines an optional file name and an optional extension into a single
+     * string (e.g. `"report.pdf"`).
+     *
+     * - Both defined → `"filename.extension"`
+     * - Only `filename` → `"filename"`
+     * - Only `extension` → `".extension"`
+     * - Neither defined → `""`
+     */
     private static calculateFileNameWithExtension(
         filename: string | undefined,
         extension: string | undefined
@@ -153,6 +162,9 @@ export class Base64String {
         });
     }
 
+    /**
+     * Returns the MIME type of the file (e.g. `"image/png"`, `"text/plain"`).
+     */
     getMimeType(): string {
         return this.data.mimeType;
     }
@@ -166,24 +178,50 @@ export class Base64String {
         return Base64String.calculateFileNameWithExtension(filename, extension);
     }
 
+    /**
+     * Returns the file name without its extension (e.g. `"report"`).
+     * Returns an empty string when the data URL contains no `name=` segment.
+     */
     getFileName(): string {
         const { filename } = this.data;
         return filename ?? '';
     }
 
+    /**
+     * Returns the file extension without the leading dot (e.g. `"pdf"`).
+     * Returns an empty string when the data URL contains no `name=` segment.
+     */
     getExtension(): string {
         const { extension } = this.data;
         return extension ?? '';
     }
 
+    /**
+     * Returns the raw base64-encoded file content (without the data URL prefix).
+     */
     getBase64Data(): string {
         return this.data.b64data;
     }
 
+    /**
+     * Returns the full data URL string as originally passed to the constructor
+     * (e.g. `"data:image/png;name=photo.png;base64,…"`).
+     */
     getBase64Uri(): string {
         return this.b64;
     }
 
+    /**
+     * Checks whether this instance is equal to another `Base64String`.
+     *
+     * Delegates to {@link Base64String.equals}.
+     *
+     * @param b64 - The other `Base64String` to compare against.
+     * @param metadata - When `true` (default), MIME type and file name are
+     *   included in the comparison. When `false`, only the raw base64 data is
+     *   compared.
+     * @returns `true` if the two instances are considered equal.
+     */
     equals(b64: Base64String, metadata = true): boolean {
         return Base64String.equals(this, b64, metadata);
     }
@@ -223,6 +261,16 @@ export class Base64String {
         });
     }
 
+    /**
+     * Compares two `Base64String` instances for equality.
+     *
+     * @param a - The first `Base64String`.
+     * @param b - The second `Base64String`.
+     * @param metadata - When `true` (default), MIME type and file name are
+     *   included in the comparison. When `false`, only the raw base64 data is
+     *   compared.
+     * @returns `true` if the two instances are considered equal.
+     */
     static equals(a: Base64String, b: Base64String, metadata = true): boolean {
         if (metadata) {
             return (
