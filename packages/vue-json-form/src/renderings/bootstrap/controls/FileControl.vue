@@ -2,7 +2,7 @@
 import { BFormFile } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
-import { FileControl } from '@/renderings/renderHelpers';
+import { Base64String, FileControl } from '@/renderings/renderHelpers';
 import { inject, watch, computed, ref, onMounted } from 'vue';
 import {
     inArrayItemProviderKey,
@@ -44,6 +44,7 @@ const maxNumberOfFiles = FileControl.getMaxNumberOfFiles(jsonElement);
 const acceptedFileTypes = FileControl.getAcceptedFileTypes(layoutElement);
 
 const valid = ref(true);
+const file = ref<File | File[] | undefined>();
 
 const state = computed(() => {
     if (formStateWasValidated.value) {
@@ -55,7 +56,7 @@ const state = computed(() => {
 
 const validate = () => {
     valid.value = validateFileInput(
-        formData.value[savePath],
+        file.value,
         props.required,
         layoutElement.value.options?.maxFileSize,
         multiple,
@@ -67,7 +68,7 @@ const validate = () => {
 };
 watch(
     [
-        () => formData.value[savePath],
+        file,
         () => jsonElement.value,
         () => layoutElement.value,
         () => multiple.value,
@@ -79,18 +80,73 @@ watch(
     { deep: true }
 );
 
-onMounted(() => {
-    if (multiple.value) {
-        formData.value[savePath] = formData.value[savePath] || [];
+watch(file, async (newVal) => {
+    if (newVal) {
+        if (Array.isArray(newVal)) {
+            const b64Strings = await Promise.all(
+                newVal.map((f) => Base64String.fromFile(f))
+            );
+            formData.value[savePath] = b64Strings.map((b64) =>
+                b64.getBase64Uri()
+            );
+        } else {
+            const b64String = await Base64String.fromFile(newVal);
+            formData.value[savePath] = b64String.getBase64Uri();
+        }
+    } else {
+        if (multiple.value) {
+            formData.value[savePath] = [];
+        } else {
+            formData.value[savePath] = undefined;
+        }
     }
-    validate();
 });
+
+watch(
+    () => formData.value[savePath],
+    async () => {
+        if (multiple.value) {
+            if (
+                formData.value[savePath] &&
+                Array.isArray(formData.value[savePath])
+            ) {
+                const newVal = formData.value[savePath].map(
+                    (f: string) => new Base64String(f)
+                );
+                if (!Array.isArray(file.value)) {
+                    file.value = newVal.map((v) => v.getFile());
+                }
+                const oldVal = await Promise.all(
+                    file.value.map((i) => Base64String.fromFile(i))
+                );
+                if (newVal.find((v, i) => !v.equals(oldVal[i]))) {
+                    file.value = newVal.map((v) => v.getFile());
+                }
+            }
+        } else {
+            if (formData.value[savePath]) {
+                const newVal = new Base64String(formData.value[savePath]);
+                if (!(file.value instanceof File)) {
+                    file.value = newVal.getFile();
+                }
+                const oldVal = await Base64String.fromFile(file.value);
+                if (!newVal.equals(oldVal)) {
+                    file.value = newVal.getFile();
+                }
+            }
+        }
+        validate();
+    },
+    { immediate: true }
+);
+
+onMounted(validate);
 </script>
 
 <template>
     <BFormFile
         :id="id"
-        v-model="formData[savePath]"
+        v-model="file"
         :state="state"
         :class="{ vjf_file: true, noBorderRadius: inArrayItem }"
         :multiple="multiple"
