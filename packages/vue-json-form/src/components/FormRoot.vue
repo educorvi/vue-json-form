@@ -285,6 +285,10 @@ async function parseUiSchema(
     }
 }
 
+function assignRenderInterface(renderInterface: RenderInterface) {
+    components.value = renderInterface ? markRaw(renderInterface) : undefined;
+}
+
 async function assignStoreData(
     obj: {
         jsonSchema: Record<string, any>;
@@ -292,9 +296,9 @@ async function assignStoreData(
         renderInterface: RenderInterface | undefined;
     } & Record<string, any>
 ) {
-    components.value = obj.renderInterface
-        ? markRaw(obj.renderInterface)
-        : undefined;
+    if (obj.renderInterface) {
+        assignRenderInterface(obj.renderInterface);
+    }
 
     storeMappers.value = props.mappers || [];
 
@@ -315,7 +319,7 @@ async function assignStoreData(
 
 provide(requiredProviderKey, true);
 
-async function init() {
+async function initValidator() {
     try {
         await validator.value.initialize();
     } catch (e: unknown) {
@@ -325,6 +329,9 @@ async function init() {
             validationErrors.value.general = [e];
         }
     }
+}
+async function init() {
+    await initValidator();
     await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
@@ -336,5 +343,13 @@ async function init() {
 
 onBeforeMount(init);
 
-watch(props, init);
+watch([() => props.jsonSchema, () => props.uiSchema], init);
+watch(validator, initValidator);
+
+watch(
+    () => props.renderInterface,
+    (newVal) => {
+        assignRenderInterface(newVal);
+    }
+);
 </script>
