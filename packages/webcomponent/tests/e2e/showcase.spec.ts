@@ -121,7 +121,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             const component = page.locator(tag);
             const id = '#vjf_control_for__properties_group_selector';
             await expect(component.locator(id)).toBeVisible();
-            const labels = component.locator(`${id} > label`);
+            const labels = component.locator(`${id} label`);
             await expect(labels).toHaveCount(2);
             await expect(labels.first()).toBeVisible();
             await expect(labels.last()).toBeVisible();
@@ -231,9 +231,10 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             test.beforeEach(async ({ page }) => {
                 await page
                     .locator(tag)
-                    .locator('#vjf_control_for__properties_group_selector')
-                    .locator('> *')
-                    .nth(3)
+                    .locator(
+                        '#vjf_control_for__properties_group_selector input'
+                    )
+                    .nth(1)
                     .click();
             });
 
@@ -470,7 +471,7 @@ test.describe('Button functions [vjf-ajv]', () => {
             .check();
 
         await component
-            .locator('#vjf_control_for__properties_group_selector label')
+            .locator('#vjf_control_for__properties_group_selector input')
             .nth(1)
             .click();
 

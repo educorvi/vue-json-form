@@ -50,8 +50,7 @@
                 "scope": "/properties/group_selector",
                 "options": {
                     "displayAs": "radiobuttons",
-                    "buttonVariant": "outline-primary",
-                    "label": false
+                    "buttonVariant": "outline-primary"
                 }
             },
             {
@@ -143,6 +142,9 @@
             },
             {
                 "type": "Group",
+                "options": {
+                    "label": "Group 2"
+                },
                 "showOn": {
                     "type": "EQUALS",
                     "path": "group_selector",
