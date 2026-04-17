@@ -28,7 +28,7 @@ export default defineConfig({
             fileName: 'vue-json-form',
             formats: ['es', 'cjs'],
         },
-        rollupOptions: {
+        rolldownOptions: {
             // make sure to externalize deps that shouldn't be bundled
             // into your library
             output: {
