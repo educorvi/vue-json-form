@@ -233,7 +233,7 @@ export class AiMockServer {
     /** Start listening on an OS-assigned port and return the base URL. */
     start(): Promise<string> {
         return new Promise((resolve, reject) => {
-            this.server.listen(44803, '127.0.0.1', () => {
+            this.server.listen(0, '127.0.0.1', () => {
                 const address = this.server.address() as AddressInfo;
                 resolve(`http://127.0.0.1:${address.port}`);
             });
@@ -311,15 +311,6 @@ export class AiMockServer {
         req: IncomingMessage,
         res: ServerResponse
     ): Promise<void> {
-        // Validate Content-Type is multipart/form-data
-        const contentType = req.headers['content-type'] ?? '';
-        if (!contentType.includes('multipart/form-data')) {
-            sendJson(res, 400, {
-                message: `Expected multipart/form-data, got: ${contentType}`,
-            });
-            return;
-        }
-
         // Consume request body before responding
         await consumeBody(req);
 
@@ -354,4 +345,4 @@ export class AiMockServer {
     }
 }
 
-new AiMockServer({ eventIntervalMs: 100 }).start().then((r) => console.log(r));
+

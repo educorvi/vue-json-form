@@ -39,7 +39,7 @@ describe('vueComponentCommons', () => {
         it('should return a function', () => {
             const submitFunc = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             expect(typeof submitFunc).toBe('function');
         });
@@ -47,7 +47,7 @@ describe('vueComponentCommons', () => {
         it('should return an async function', async () => {
             const submitFunc = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const result = submitFunc({}, { action: 'emit' });
             expect(result instanceof Promise).toBe(true);
@@ -58,7 +58,7 @@ describe('vueComponentCommons', () => {
         it('should emit submit event when action is not "request"', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
@@ -71,7 +71,7 @@ describe('vueComponentCommons', () => {
         it('should emit submitSucceeded event after successful emit action', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
@@ -88,7 +88,7 @@ describe('vueComponentCommons', () => {
         it('should emit afterSubmitted event after successful emit action', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
@@ -105,7 +105,7 @@ describe('vueComponentCommons', () => {
         it('should emit events in correct order for emit action', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = { action: 'emit' };
@@ -122,7 +122,7 @@ describe('vueComponentCommons', () => {
         it('should not emit submitFailed event for successful emit action', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = { action: 'emit' };
@@ -144,7 +144,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -174,7 +174,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -200,7 +200,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -229,7 +229,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -259,7 +259,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const urls = [
@@ -305,7 +305,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -337,7 +337,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -374,7 +374,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -406,7 +406,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
@@ -433,7 +433,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
@@ -459,7 +459,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
@@ -488,7 +488,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -516,7 +516,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -541,7 +541,7 @@ describe('vueComponentCommons', () => {
         it('should handle undefined URL gracefully', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -565,7 +565,7 @@ describe('vueComponentCommons', () => {
         it('should handle empty URL array', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -589,7 +589,7 @@ describe('vueComponentCommons', () => {
         it('should handle undefined request object', async () => {
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -613,7 +613,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -640,7 +640,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const options: SubmitOptions = {
@@ -666,7 +666,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = { name: 'John' };
             const customHeaders = {
@@ -698,7 +698,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = {
                 name: 'John',
@@ -732,7 +732,7 @@ describe('vueComponentCommons', () => {
 
             const onSubmitForm = getSubmitFunc(
                 mockEmit as Emits,
-                resultModal.value.updateStage
+                null
             );
             const data = {};
             const options: SubmitOptions = {

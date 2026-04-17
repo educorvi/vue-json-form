@@ -206,7 +206,26 @@ export async function requestSummary(
             const status = e.response?.status ?? 'unknown';
             message = `Summary request failed with status ${status}`;
             const body = e.response?.data;
-            if (
+            if (body instanceof ReadableStream) {
+                // With responseType:'stream', error body arrives as a ReadableStream
+                try {
+                    const reader = (body as ReadableStream<Uint8Array>).getReader();
+                    const decoder = new TextDecoder();
+                    let text = '';
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        text += decoder.decode(value, { stream: true });
+                    }
+                    text += decoder.decode();
+                    const parsed = JSON.parse(text);
+                    if (parsed && typeof parsed.message === 'string') {
+                        message = parsed.message;
+                    }
+                } catch {
+                    // Keep the status-based message
+                }
+            } else if (
                 body &&
                 typeof body === 'object' &&
                 typeof body.message === 'string'
@@ -226,6 +245,8 @@ export async function requestSummary(
         }
         if (event.event === 'result') {
             result = event.data;
+        } else if (event.event === 'error') {
+            throw new Error(event.data.message);
         }
     }
 
