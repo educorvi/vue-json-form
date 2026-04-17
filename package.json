@@ -25,7 +25,7 @@
         "semver": "^7.7.4",
         "size-limit": "^12.0.1",
         "syncpack": "^14.2.1",
-        "turbo": "^2.8.20",
+        "turbo": "^2.9.6",
         "typedoc": "^0.28.18",
         "vue-eslint-parser": "^10.4.0"
     },
