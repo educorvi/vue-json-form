@@ -104,26 +104,34 @@ watch(file, async (newVal) => {
 
 watch(
     () => formData.value[savePath],
-    () => {
+    async () => {
         if (multiple.value) {
             if (
                 formData.value[savePath] &&
                 Array.isArray(formData.value[savePath])
             ) {
-                const newVal = formData.value[savePath].map((f: string) =>
-                    new Base64String(f).getFile()
+                const newVal = formData.value[savePath].map(
+                    (f: string) => new Base64String(f)
                 );
-                if (JSON.stringify(newVal) !== JSON.stringify(file.value)) {
-                    file.value = newVal;
+                if (!Array.isArray(file.value)) {
+                    file.value = newVal.map((v) => v.getFile());
+                }
+                const oldVal = await Promise.all(
+                    file.value.map((i) => Base64String.fromFile(i))
+                );
+                if (newVal.find((v, i) => !v.equals(oldVal[i]))) {
+                    file.value = newVal.map((v) => v.getFile());
                 }
             }
         } else {
             if (formData.value[savePath]) {
-                const newVal = new Base64String(
-                    formData.value[savePath]
-                ).getFile();
-                if (JSON.stringify(newVal) !== JSON.stringify(file.value)) {
-                    file.value = newVal;
+                const newVal = new Base64String(formData.value[savePath]);
+                if (!(file.value instanceof File)) {
+                    file.value = newVal.getFile();
+                }
+                const oldVal = await Base64String.fromFile(file.value);
+                if (!newVal.equals(oldVal)) {
+                    file.value = newVal.getFile();
                 }
             }
         }

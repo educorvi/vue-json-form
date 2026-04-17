@@ -184,6 +184,10 @@ export class Base64String {
         return this.b64;
     }
 
+    equals(b64: Base64String, metadata = true): boolean {
+        return Base64String.equals(this, b64, metadata);
+    }
+
     /**
      * Reads a `File` and resolves to a `Base64String` instance that encodes the
      * file's content together with its metadata.
@@ -217,5 +221,17 @@ export class Base64String {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    }
+
+    static equals(a: Base64String, b: Base64String, metadata = true): boolean {
+        if (metadata) {
+            return (
+                a.getMimeType() === b.getMimeType() &&
+                a.getFileNameWithextension() === b.getFileNameWithextension() &&
+                a.getBase64Data() === b.getBase64Data()
+            );
+        } else {
+            return a.getBase64Data() === b.getBase64Data();
+        }
     }
 }
