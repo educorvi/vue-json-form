@@ -148,7 +148,7 @@ export class Base64String {
      * Reconstructs the original `File` object from the stored base64 data.
      */
     getFile(): File {
-        return new File([this.getBlob()], this.getFileNameWithextension(), {
+        return new File([this.getBlob()], this.getFileNameExtension(), {
             type: this.data.mimeType,
         });
     }
@@ -161,7 +161,7 @@ export class Base64String {
      * Returns the file name including its extension (e.g. `"report.pdf"`).
      * Returns an empty string when the data URL contains no `name=` segment.
      */
-    getFileNameWithextension(): string {
+    getFileNameExtension(): string {
         const { filename, extension } = this.data;
         return Base64String.calculateFileNameWithExtension(filename, extension);
     }
@@ -227,7 +227,7 @@ export class Base64String {
         if (metadata) {
             return (
                 a.getMimeType() === b.getMimeType() &&
-                a.getFileNameWithextension() === b.getFileNameWithextension() &&
+                a.getFileNameExtension() === b.getFileNameExtension() &&
                 a.getBase64Data() === b.getBase64Data()
             );
         } else {

@@ -148,23 +148,21 @@ describe('Base64String', () => {
     // -------------------------------------------------------------------------
     describe('getFileNameWithextension', () => {
         it('returns filename.extension', () => {
-            expect(new Base64String(VALID_URL).getFileNameWithextension()).toBe(
+            expect(new Base64String(VALID_URL).getFileNameExtension()).toBe(
                 'hello.txt'
             );
         });
 
         it('handles a URL-encoded filename with spaces', () => {
             const url = `data:text/plain;name=my%20file.csv;base64,${HELLO_B64}`;
-            expect(new Base64String(url).getFileNameWithextension()).toBe(
+            expect(new Base64String(url).getFileNameExtension()).toBe(
                 'my file.csv'
             );
         });
 
         it('joins with a dot even when extension is empty', () => {
             const url = `data:application/octet-stream;name=noext.;base64,${HELLO_B64}`;
-            expect(new Base64String(url).getFileNameWithextension()).toBe(
-                'noext.'
-            );
+            expect(new Base64String(url).getFileNameExtension()).toBe('noext.');
         });
     });
 
