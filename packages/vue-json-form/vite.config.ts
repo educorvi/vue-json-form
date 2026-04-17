@@ -19,7 +19,6 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: resolve(__dirname, 'src/main.ts'),

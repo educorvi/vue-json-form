@@ -38,7 +38,6 @@ export default defineConfig({
     ],
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             entry: config.entry,
             name: 'vue-json-form',

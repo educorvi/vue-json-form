@@ -6,7 +6,6 @@ import { externalizeDeps } from 'vite-plugin-externalize-deps';
 export default defineConfig({
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             entry: './src/index.ts',
             name: 'vue-json-form-schemas',

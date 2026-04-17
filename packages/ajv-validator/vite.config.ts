@@ -20,7 +20,6 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             entry: './src/index.ts',
             name: 'vue-json-form-ajv-validator',
