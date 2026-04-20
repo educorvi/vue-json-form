@@ -5,6 +5,15 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Control",
+                "scope": "/properties/objectWithInfo",
+                "options": {
+                    "help": {
+                        "text": "This is a test help text for the objectWithInfo field"
+                    }
+                }
+            },
+            {
                 "type": "Group",
                 "options": { "label": "JSO-151" },
                 "elements": [
@@ -18,7 +27,12 @@
                     },
                     {
                         "type": "Control",
-                        "scope": "/properties/fileUploadWithPreset"
+                        "scope": "/properties/fileUploadWithPreset",
+                        "options": {
+                            "help": {
+                                "text": "This is a test help text for the fileUploadWithPreset field"
+                            }
+                        }
                     }
                 ]
             },

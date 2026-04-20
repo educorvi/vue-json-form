@@ -6,6 +6,15 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "objectWithInfo": {
+            "type": "object",
+            "title": "JSO-141",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "fileUploadWithPreset": {
             "type": "string",
             "format": "uri"
