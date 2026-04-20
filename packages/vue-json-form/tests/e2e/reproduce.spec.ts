@@ -58,6 +58,17 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('JSO-141 (help text on object)', async ({ page }) => {
+    await page.goto(REPRODUCE_URL);
+
+    const helpBadge = page.locator(
+        'fieldset#vjf_control_for__properties_objectWithInfo legend .vjf_object_help'
+    );
+
+    await expect(helpBadge).toBeVisible();
+    await expect(helpBadge.locator('span.badge')).toHaveText('i');
+});
+
 test('JSO-151 (checkboxesWithPreset is prefilled correctly)', async ({
     page,
 }) => {
