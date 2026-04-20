@@ -29,7 +29,7 @@
         "typedoc": "^0.28.19",
         "vue-eslint-parser": "^10.4.0"
     },
-    "packageManager": "yarn@4.13.0",
+    "packageManager": "yarn@4.14.1",
     "private": true,
     "scripts": {
         "build": "turbo check-types build:internal",
