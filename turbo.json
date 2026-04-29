@@ -1,6 +1,7 @@
 {
     "$schema": "https://v2-9-6.turborepo.dev/schema.json",
     "ui": "tui",
+    "concurrency": "100%",
     "tasks": {
         "build:internal": {
             "outputs": ["dist/**"],
@@ -9,9 +10,10 @@
         "check-types": {
             "dependsOn": ["^check-types", "^build:internal"]
         },
-        "dev": {
+        "dev:internal": {
             "persistent": true,
-            "cache": false
+            "cache": false,
+            "dependsOn": ["^build:internal"]
         },
         "lint": {
             "cache": false
