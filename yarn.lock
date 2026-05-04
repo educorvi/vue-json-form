@@ -5212,6 +5212,7 @@ __metadata:
   resolution: "builder-frontend@workspace:apps/builder/frontend"
   dependencies:
     "@playwright/test": "npm:^1.59.1"
+    "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node24": "npm:^24.0.4"
     "@types/jsdom": "npm:^28.0.1"
     "@types/node": "npm:^25.6.0"
@@ -5229,6 +5230,9 @@ __metadata:
     npm-run-all2: "npm:^8.0.4"
     oxlint: "npm:~1.60.0"
     pinia: "npm:^3.0.4"
+    semantic-release: "npm:^25.0.3"
+    semantic-release-monorepo: "npm:^8.0.2"
+    semantic-release-yarn: "npm:^3.0.2"
     typescript: "npm:~6.0.3"
     vite: "npm:^8.0.10"
     vite-plugin-vue-devtools: "npm:^8.1.1"
