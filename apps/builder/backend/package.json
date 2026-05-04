@@ -1,12 +1,12 @@
 {
-    "name": "vue-json-form-builder-backend",
+    "name": "builder-backend",
     "private": true,
     "version": "0.0.0",
     "main": "dist/index.js",
     "type": "module",
     "license": "MIT",
     "scripts": {
-        "dev:internal": "nodemon src/index.ts",
+        "dev:internal": "nodemon src/backend.ts",
         "dev": "turbo watch dev:internal",
         "build": "turbo run build:internal",
         "build:internal": "tsc",
@@ -18,7 +18,7 @@
     "devDependencies": {
         "@semantic-release/exec": "^7.1.0",
         "@types/express": "^5.0.6",
-        "@types/node": "^24.6.0",
+        "@types/node": "^25.6.0",
         "nodemon": "^3.1.0",
         "semantic-release": "^25.0.3",
         "semantic-release-monorepo": "^8.0.2",
