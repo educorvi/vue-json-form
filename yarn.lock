@@ -846,9 +846,9 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.6"
     "@vitest/ui": "npm:^4.1.5"
     "@vue/tsconfig": "npm:^0.9.1"
-    "@vueuse/core": "npm:^14.2.1"
-    axios: "npm:^1.15.2"
-    bootstrap-vue-next: "npm:0.44.7"
+    "@vueuse/core": "npm:^14.3.0"
+    axios: "npm:^1.16.0"
+    bootstrap-vue-next: "npm:0.45.0"
     js-cookie: "npm:^3.0.5"
     jsdom: "npm:^29.1.0"
     npm-run-all: "npm:^4.1.5"
@@ -893,11 +893,11 @@ __metadata:
     "@vue/eslint-config-typescript": "npm:^14.7.0"
     "@vue/test-utils": "npm:^2.4.9"
     "@vue/tsconfig": "npm:^0.9.1"
-    "@vueuse/core": "npm:^14.2.1"
+    "@vueuse/core": "npm:^14.3.0"
     axe-core: "npm:^4.11.3"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
-    bootstrap-vue-next: "npm:0.44.7"
+    bootstrap-vue-next: "npm:0.45.0"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^10.2.1"
     eslint-config-prettier: "npm:^10.1.8"
@@ -925,7 +925,7 @@ __metadata:
     vite-plugin-vue-devtools: "npm:^8.1.1"
     vitest: "npm:^4.1.5"
     vue: "npm:^3.5.33"
-    vue-component-type-helpers: "npm:^3.2.7"
+    vue-component-type-helpers: "npm:^3.2.8"
     vue-eslint-parser: "npm:^10.4.0"
     vue-router: "npm:^5.0.6"
     vue-tsc: "npm:^3.2.7"
@@ -3990,10 +3990,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/core@npm:^14.3.0":
+  version: 14.3.0
+  resolution: "@vueuse/core@npm:14.3.0"
+  dependencies:
+    "@types/web-bluetooth": "npm:^0.0.21"
+    "@vueuse/metadata": "npm:14.3.0"
+    "@vueuse/shared": "npm:14.3.0"
+  peerDependencies:
+    vue: ^3.5.0
+  checksum: 10/5a152edbfd8d45f1c012cbd8c046bee940a6abd012625954146ce453b3cfed29387b1a3895bf5f50d80bebff1711f16726dbeeb5f2942a51d6fb7e5f97054e0f
+  languageName: node
+  linkType: hard
+
 "@vueuse/metadata@npm:14.2.1":
   version: 14.2.1
   resolution: "@vueuse/metadata@npm:14.2.1"
   checksum: 10/0df90e1eb15b94e559ca7c398950ade6a255ee01cd10fb4711372c9e74f2f93448ecca672ba6ea8bd7eec80b472cb09bf4ddfe479a95919024a9c7adb14331f1
+  languageName: node
+  linkType: hard
+
+"@vueuse/metadata@npm:14.3.0":
+  version: 14.3.0
+  resolution: "@vueuse/metadata@npm:14.3.0"
+  checksum: 10/6be5cd87e48ed4b718f444c0597be115de577616f2d9600f7fd1ad6ba466f748c7cde6b583086a3079f39a5edc0d43fc9caca526d775285fd45d5d3860404f4f
   languageName: node
   linkType: hard
 
@@ -4003,6 +4023,15 @@ __metadata:
   peerDependencies:
     vue: ^3.5.0
   checksum: 10/813955ddf6c943a4939fcaf9d24582c7e36c9bb5ca148513d486eb3b737822be8b56e70a37c4a593c973b5eb563868f45cb34a45e8d5f27af9ac7a18ec115d02
+  languageName: node
+  linkType: hard
+
+"@vueuse/shared@npm:14.3.0":
+  version: 14.3.0
+  resolution: "@vueuse/shared@npm:14.3.0"
+  peerDependencies:
+    vue: ^3.5.0
+  checksum: 10/27e680b964b906ef75c49e9db01e063d90d9434b34b3f24529874c48780016f19abebb1f9b0e68ca19e9eeaa3a776c8772d68630772c17ca4d996ed0a928fd74
   languageName: node
   linkType: hard
 
@@ -4606,14 +4635,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.15.2":
-  version: 1.15.2
-  resolution: "axios@npm:1.15.2"
+"axios@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
   dependencies:
-    follow-redirects: "npm:^1.15.11"
+    follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/eebbd8cb777316d4252cd994a06ec9fb956ef519214a62dab6c5443ae8b753b5116e9a770502316789e6cdef1101e6aae53b6936d6a3791b2d66d75f4d7d2462
+  checksum: 10/cf8b521ff732c21550b38c8739aef556ea5e14b268468bb89e4307416ab262b462e582474e810963a3d61c2392ab47ad35c11d05eff027de7c97113bc7411623
   languageName: node
   linkType: hard
 
@@ -4799,9 +4828,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap-vue-next@npm:0.44.7":
-  version: 0.44.7
-  resolution: "bootstrap-vue-next@npm:0.44.7"
+"bootstrap-vue-next@npm:0.45.0":
+  version: 0.45.0
+  resolution: "bootstrap-vue-next@npm:0.45.0"
   dependencies:
     "@floating-ui/core": "npm:^1.7.5"
     "@floating-ui/vue": "npm:^1.1.11"
@@ -4832,7 +4861,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/ae5efb8dfe66880fc6d7c446aab73b98c3c0e63d665c32abbbf436ff792a812adbcce50cc07a5476773f944c03bfd66fab3872df6f5ffed1f0a854cec96df84c
+  checksum: 10/3f40736c0f0df051a8f032950ab3e4abceadf9cbdfda94de18b19b5660dd4d5886ebf81b2c4f0bdffb36e46a743d30b990387a004dce473ba7aa760251937843
   languageName: node
   linkType: hard
 
@@ -5739,7 +5768,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.6"
     "@vue/tsconfig": "npm:^0.9.1"
     bootstrap: "npm:^5.3.8"
-    bootstrap-vue-next: "npm:0.44.7"
+    bootstrap-vue-next: "npm:0.45.0"
     bootswatch: "npm:^5.3.8"
     npm-run-all: "npm:^4.1.5"
     playwright: "npm:^1.59.1"
@@ -6824,7 +6853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.11":
+"follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
@@ -13598,10 +13627,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-component-type-helpers@npm:^3.0.0, vue-component-type-helpers@npm:^3.2.7":
+"vue-component-type-helpers@npm:^3.0.0":
   version: 3.2.7
   resolution: "vue-component-type-helpers@npm:3.2.7"
   checksum: 10/f089e3da977b53b00e792f8fb7d7d215b17c48b5620a346a4c784ad5449bd99b87d498e8369ce9d23ae2b5ce929fff8caace6d846df943bd97d8b103261576e0
+  languageName: node
+  linkType: hard
+
+"vue-component-type-helpers@npm:^3.2.8":
+  version: 3.2.8
+  resolution: "vue-component-type-helpers@npm:3.2.8"
+  checksum: 10/942414a48ea8a36f9725b9d44b479f123d610c4a18a7a54a432e01904ca10ae937cb68d30f2a4be4e30fe811d74a96b4406462cbc0dbe25da5d0490ff7c04a61
   languageName: node
   linkType: hard
 
