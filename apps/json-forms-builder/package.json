@@ -21,8 +21,15 @@
         "@nuxt/icon": "2.2.1",
         "@nuxtjs/i18n": "10.2.4",
         "nuxt": "^4.4.2",
+        "pg": "^8.20.0",
         "turbo": "^2.9.6",
+        "typeorm": "^0.3.28",
         "vue": "^3.5.32",
-        "vue-router": "^5.0.4"
+        "vue-router": "^5.0.4",
+        "zod": "^3",
+        "zod-to-json-schema": "^3"
+    },
+    "devDependencies": {
+        "@types/pg": "^8"
     }
 }
