@@ -271,7 +271,14 @@ function parseDocumentField(
             bb.on('error', reject);
 
             // Feed the already-buffered body into busboy
-            Readable.from(body).pipe(bb);
+            const bodyStream = Readable.from(body);
+            bodyStream.on('error', (err) => {
+                if (!settled) {
+                    settled = true;
+                    reject(err);
+                }
+            });
+            bodyStream.pipe(bb);
         });
     });
 }
