@@ -14,7 +14,8 @@
             "selectAtMost": "Bitte wählen Sie höchstens !&data&! Optionen aus."
         },
         "generic": {
-            "temporaryError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal."
+            "errorOccurred": "Ein Fehler ist aufgetreten:",
+            "retryLater": "Bitte versuchen Sie es später erneut."
         }
     },
     "buttons": {
