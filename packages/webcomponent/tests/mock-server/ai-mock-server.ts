@@ -13,7 +13,10 @@ import {
     type ServerResponse,
     type Server,
 } from 'node:http';
+import { Readable } from 'node:stream';
 import type { AddressInfo } from 'node:net';
+import Busboy from 'busboy';
+import { PDFDocument } from 'pdf-lib';
 import { PromptType, SseEvent, SummaryStage } from '../../src/types';
 // ── Schema types (mirroring the OpenAPI spec) ─────────────────────────────────
 
@@ -197,16 +200,95 @@ function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function consumeBody(req: IncomingMessage): Promise<Buffer> {
+/** Extracts the `document` file from a multipart/form-data request.
+ *
+ * Axios (fetch adapter) sends a multipart body but overwrites the Content-Type
+ * header to `application/x-www-form-urlencoded`. We detect the real boundary
+ * from the first line of the body and reconstruct the correct Content-Type.
+ */
+function parseDocumentField(
+    req: IncomingMessage
+): Promise<{ data: Buffer; mimeType: string }> {
     return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
         req.on('data', (chunk: Buffer) => chunks.push(chunk));
-        req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
+        req.on('end', () => {
+            const body = Buffer.concat(chunks);
+
+            // Detect multipart boundary from the first line of the body
+            const firstLineEnd = body.indexOf('\n');
+            const firstLine = body.slice(0, firstLineEnd).toString().trim();
+            const boundary = firstLine.startsWith('--')
+                ? firstLine.slice(2)
+                : null;
+
+            if (!boundary) {
+                reject(
+                    new Error(
+                        'Could not detect multipart boundary in request body'
+                    )
+                );
+                return;
+            }
+
+            const headers = {
+                ...req.headers,
+                'content-type': `multipart/form-data; boundary=${boundary}`,
+            } as Record<string, string>;
+
+            const bb = Busboy({ headers });
+            let settled = false;
+
+            bb.on('file', (name, stream, info) => {
+                if (name !== 'document') {
+                    stream.resume();
+                    return;
+                }
+                const fileChunks: Buffer[] = [];
+                stream.on('data', (chunk: Buffer) => fileChunks.push(chunk));
+                stream.on('end', () => {
+                    if (!settled) {
+                        settled = true;
+                        resolve({
+                            data: Buffer.concat(fileChunks),
+                            mimeType: info.mimeType,
+                        });
+                    }
+                });
+                stream.on('error', reject);
+            });
+
+            bb.on('finish', () => {
+                if (!settled) {
+                    settled = true;
+                    reject(
+                        new Error('No "document" field found in multipart body')
+                    );
+                }
+            });
+
+            bb.on('error', reject);
+
+            // Feed the already-buffered body into busboy
+            Readable.from(body).pipe(bb);
+        });
     });
 }
 
-// ── Mock server ───────────────────────────────────────────────────────────────
+function sendSseError(res: ServerResponse, message: string): void {
+    res.writeHead(200, {
+        ...CORS_HEADERS,
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+        'Transfer-Encoding': 'chunked',
+    });
+    res.write(formatSseEvent({ event: 'error', data: { message } }));
+    res.end();
+}
+
+
 
 export class AiMockServer {
     private readonly server: Server;
@@ -313,8 +395,35 @@ export class AiMockServer {
         req: IncomingMessage,
         res: ServerResponse
     ): Promise<void> {
-        // Consume request body before responding
-        await consumeBody(req);
+        // Parse multipart body and validate the uploaded document
+        let document: { data: Buffer; mimeType: string };
+        try {
+            document = await parseDocumentField(req);
+        } catch {
+            sendSseError(res, 'Invalid or missing multipart document field');
+            return;
+        }
+
+        if (document.mimeType !== 'application/pdf') {
+            sendSseError(res, `Only PDF files are allowed (received: ${document.mimeType})`);
+            return;
+        }
+
+        let pageCount: number;
+        try {
+            const pdfDoc = await PDFDocument.load(document.data, {
+                ignoreEncryption: true,
+            });
+            pageCount = pdfDoc.getPageCount();
+        } catch {
+            sendSseError(res, 'Failed to parse PDF document');
+            return;
+        }
+
+        if (pageCount > 20) {
+            sendSseError(res, `PDF must not exceed 20 pages (got ${pageCount})`);
+            return;
+        }
 
         // Respond with a plain HTTP error if configured
         if (this.options.summaryHttpError) {
