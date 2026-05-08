@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import Aura from '@primeuix/themes/aura';
+
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
+    ssr: false,
     devtools: { enabled: true },
 
     typescript: {
@@ -20,7 +23,16 @@ export default defineNuxtConfig({
         '@nuxt/icon',
         '@artmizu/nuxt-prometheus',
         '@nuxtjs/i18n',
+        '@primevue/nuxt-module',
     ],
+
+    primevue: {
+        options: {
+            theme: {
+                preset: Aura,
+            },
+        },
+    },
 
     nitro: {
         experimental: {

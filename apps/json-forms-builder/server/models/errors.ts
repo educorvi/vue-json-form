@@ -1,9 +1,7 @@
 /**
  * Machine-readable error codes returned in API error responses.
- * Each code is a namespaced string: DOMAIN_REASON
  */
-import type { SchemaObject } from './types';
-import type { NitroRouteMeta } from 'nitropack/types';
+import { z } from 'zod/v4';
 
 export const ErrorCode = {
     // Generic
@@ -30,86 +28,20 @@ export const ErrorCode = {
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
-// ── Extract the ResponseObject type from NitroRouteMeta ───────────────────
+export const ErrorCodeSchema = z.nativeEnum(ErrorCode);
 
-type _OpenAPI = NonNullable<NitroRouteMeta['openAPI']>;
-type _Responses = NonNullable<_OpenAPI['responses']>;
-type ResponseObject = _Responses[string];
+export const ApiErrorSchema = z.object({
+    message: z.string().describe('Human-readable error summary'),
+    code: ErrorCodeSchema,
+    errors: z
+        .array(
+            z.object({
+                field: z.string(),
+                message: z.string(),
+            })
+        )
+        .optional()
+        .describe('Field-level validation errors'),
+});
 
-// ── OpenAPI schema for error responses ──────────────────────────────────────
-
-export const ErrorResponseSchema: SchemaObject = {
-    type: 'object',
-    required: ['message', 'code'],
-    properties: {
-        message: {
-            type: 'string',
-            description: 'Human-readable error summary',
-        },
-        code: {
-            type: 'string',
-            enum: Object.values(ErrorCode),
-            description: 'Machine-readable error code',
-        },
-        errors: {
-            type: 'array',
-            description: 'Field-level validation errors',
-            items: {
-                type: 'object',
-                required: ['field', 'message'],
-                properties: {
-                    field: { type: 'string' },
-                    message: { type: 'string' },
-                },
-            },
-        },
-    },
-};
-
-const errorRef: ResponseObject = {
-    description: '',
-    content: {
-        'application/json': {
-            schema: { $ref: '#/components/schemas/ErrorResponse' },
-        },
-    },
-};
-
-/** Standard error response objects for use in defineRouteMeta responses */
-export const ErrorResponses: {
-    400: ResponseObject;
-    401: ResponseObject;
-    404: ResponseObject;
-    409: ResponseObject;
-    422: ResponseObject;
-    500: ResponseObject;
-} = {
-    400: {
-        ...errorRef,
-        description:
-            'Bad request – query parameters or request body are invalid',
-    },
-    401: {
-        ...errorRef,
-        description: 'Unauthorized – missing or invalid API key',
-    },
-    404: {
-        ...errorRef,
-        description: 'Not found – the requested resource does not exist',
-    },
-    409: {
-        ...errorRef,
-        description:
-            'Conflict – a conflicting resource already exists (e.g. duplicate permission)',
-    },
-    422: {
-        ...errorRef,
-        description:
-            'Unprocessable – semantic validation failed (e.g. version not higher than current)',
-    },
-    500: {
-        ...errorRef,
-        description:
-            'Internal server error – unexpected failure (e.g. database unreachable)',
-    },
-};
+export type ApiError = z.infer<typeof ApiErrorSchema>;

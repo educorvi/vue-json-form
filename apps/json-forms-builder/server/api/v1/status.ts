@@ -1,18 +1,6 @@
-import { StatusResponseSchema } from '~~/server/models/status';
+import { appRouter } from '~~/server/trpc/routers';
 
-defineRouteMeta({
-    openAPI: {
-        tags: ['Status'],
-        summary: 'Health check',
-        description:
-            'Returns service health status, API version, and current server timestamp. Does not require authentication.',
-    },
-});
-
-export default defineEventHandler(() => {
-    return StatusResponseSchema.parse({
-        status: 'ok',
-        version: '1.0.0',
-        timestamp: new Date().toISOString(),
-    });
+export default defineEventHandler(async () => {
+    const caller = appRouter.createCaller({ apiKey: null });
+    return caller.status.get();
 });

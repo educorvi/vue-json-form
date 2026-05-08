@@ -6,8 +6,14 @@ import {
     type Repository,
 } from 'typeorm';
 import { User } from '~~/server/db/entities/User';
-import type { PaginationParams } from '~~/server/utils/helpers';
 import { paginatedResponse } from '~~/server/utils/helpers';
+
+export interface ListParams {
+    page: number;
+    pageSize: number;
+    sortOrder: 'ASC' | 'DESC';
+    search: string;
+}
 
 export class UserService {
     private readonly repo: Repository<User>;
@@ -16,7 +22,7 @@ export class UserService {
         this.repo = dataSource.getRepository(User);
     }
 
-    async list(params: PaginationParams, orderByCol: keyof User) {
+    async list(params: ListParams, orderByCol: keyof User) {
         const { page, pageSize, sortOrder, search } = params;
 
         const where: FindOptionsWhere<User>[] = search
@@ -36,7 +42,11 @@ export class UserService {
             take: pageSize,
         });
 
-        const data = rows.map(({ deleted: _d, ...u }) => u);
+        const data = rows.map(({ deleted: _d, created, updated, ...u }) => ({
+            ...u,
+            created: created.toISOString(),
+            updated: updated.toISOString(),
+        }));
         return paginatedResponse(data, total, page, pageSize);
     }
 

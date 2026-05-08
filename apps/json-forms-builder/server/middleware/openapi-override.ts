@@ -1,13 +1,49 @@
 /**
- * Intercepts Nitro's built-in `/_openapi.json` endpoint and replaces
- * it with a spec built entirely from Zod models.
- *
- * This ensures the OpenAPI/Swagger/Scalar UI always reflects the Zod models.
+ * Serves the OpenAPI spec at /_openapi.json.
+ * Generated at startup from tRPC router meta using trpc-to-openapi.
+ * Nitro's built-in Scalar UI (/_scalar) and Swagger UI (/_swagger) read from this path.
  */
-import { openApiSpec } from '~~/server/utils/openapi-spec';
+import { generateOpenApiDocument } from 'trpc-to-openapi';
+import { appRouter } from '~~/server/trpc/routers';
+import { StatusResponseSchema } from '~~/server/models/status';
+import {
+    UserSchema,
+    ListUsersResponseSchema,
+    UsersQuerySchema,
+} from '~~/server/models/user';
+import {
+    GlobalRoleSchema,
+    PaginatedMetaSchema,
+    TimestampsSchema,
+} from '~~/server/models/shared';
+
+const baseUrl = `${process.env.BASE_URL ?? 'http://localhost:3000'}/api/v1`;
+
+const spec = generateOpenApiDocument(appRouter, {
+    title: 'Form Builder API',
+    description: 'API for the Form Builder application.',
+    version: '1.0.0',
+    baseUrl,
+    securitySchemes: {
+        ApiKeyAuth: {
+            type: 'apiKey',
+            in: 'header',
+            name: 'X-Api-Key',
+        },
+    },
+    defs: {
+        StatusResponse: StatusResponseSchema,
+        User: UserSchema,
+        UserList: ListUsersResponseSchema,
+        UsersQuery: UsersQuerySchema,
+        GlobalRole: GlobalRoleSchema,
+        PaginatedMeta: PaginatedMetaSchema,
+        Timestamps: TimestampsSchema,
+    },
+});
 
 export default defineEventHandler((event) => {
     if (event.path === '/_openapi.json') {
-        return openApiSpec;
+        return spec;
     }
 });

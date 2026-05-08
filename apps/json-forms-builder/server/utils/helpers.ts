@@ -1,26 +1,9 @@
-import type { H3Event } from 'h3';
 import { ErrorCode } from '~~/server/models/errors';
 
-export interface PaginationParams {
-    page: number;
-    pageSize: number;
-    sortOrder: 'ASC' | 'DESC';
-    search: string;
-}
+const API_KEY = process.env.API_KEY ?? 'dev-secret';
 
-export function parsePagination(event: H3Event): PaginationParams {
-    const query = getQuery(event);
-    return {
-        page: Math.max(1, parseInt(String(query.page ?? '1'), 10) || 1),
-        pageSize: Math.min(
-            100,
-            Math.max(1, parseInt(String(query.page_size ?? '20'), 10) || 20)
-        ),
-        sortOrder: query.sort_order === 'asc' ? 'ASC' : 'DESC',
-        search: String(query.search ?? '')
-            .trim()
-            .slice(0, 200),
-    };
+export function hasValidApiKey(key: string | null | undefined) {
+    return Boolean(key && key === API_KEY);
 }
 
 export function paginatedResponse<T>(
@@ -52,7 +35,6 @@ export function throwBadRequest(
     throw createError({ statusCode: 400, message, data: { code } });
 }
 
-/** Alias for throwBadRequest — used when the problem is input validation */
 export const throwValidationError = throwBadRequest;
 
 export function throwConflict(
@@ -76,15 +58,10 @@ export function throwUnauthorized(
     throw createError({ statusCode: 401, message, data: { code } });
 }
 
-/**
- * Wraps a handler body in a try/catch so all unhandled errors
- * are returned as a structured 500 response.
- */
 export async function withErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
     try {
         return await fn();
     } catch (err: unknown) {
-        // Re-throw H3 errors as-is (they already have statusCode)
         if (err && typeof err === 'object' && 'statusCode' in err) throw err;
         console.error('[API Error]', err);
         throw createError({

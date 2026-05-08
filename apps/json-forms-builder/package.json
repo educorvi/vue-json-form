@@ -10,7 +10,8 @@
         "dev": "turbo watch dev:internal",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
+        "postinstall": "nuxt prepare",
+        "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json"
     },
     "dependencies": {
         "@artmizu/nuxt-prometheus": "3.0.1",
@@ -20,14 +21,22 @@
         "@nuxt/hints": "1.0.3",
         "@nuxt/icon": "2.2.1",
         "@nuxtjs/i18n": "10.2.4",
+        "@primeuix/themes": "^2.0.3",
+        "@primevue/nuxt-module": "^4.5.5",
+        "@trpc/client": "^11.17.0",
+        "@trpc/server": "^11.17.0",
         "nuxt": "^4.4.2",
         "pg": "^8.20.0",
+        "primeicons": "^7.0.0",
+        "primevue": "^4.5.5",
+        "trpc-nuxt": "^2.0.2",
+        "trpc-to-openapi": "^3.2.0",
         "turbo": "^2.9.6",
         "typeorm": "^0.3.28",
         "vue": "^3.5.32",
         "vue-router": "^5.0.4",
-        "zod": "^3",
-        "zod-to-json-schema": "^3"
+        "zod": "^4",
+        "zod-openapi": "^5.4.6"
     },
     "devDependencies": {
         "@types/pg": "^8"
