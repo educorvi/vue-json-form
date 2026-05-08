@@ -41,6 +41,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@adonisjs/hash@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "@adonisjs/hash@npm:9.1.1"
+  dependencies:
+    "@phc/format": "npm:^1.0.0"
+    "@poppinss/utils": "npm:^6.9.3"
+  peerDependencies:
+    argon2: ^0.31.2 || ^0.41.0 || ^0.43.0
+    bcrypt: ^5.1.1 || ^6.0.0
+  peerDependenciesMeta:
+    argon2:
+      optional: true
+    bcrypt:
+      optional: true
+  checksum: 10/f242b061fbdfa92e893c185bcf94f8d0ca15409692edded6bdfef79da6057b449bf7a0f3f33bef6143460bf88f33a93bf299a167722bb9feeb739b96da08bdf6
+  languageName: node
+  linkType: hard
+
 "@antfu/install-pkg@npm:^1.1.0":
   version: 1.1.0
   resolution: "@antfu/install-pkg@npm:1.1.0"
@@ -4144,6 +4162,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@phc/format@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@phc/format@npm:1.0.0"
+  checksum: 10/26c4feccdc766e4ebf0d2b46a99ded027b8fd9b013529d5728870e0683dfd1f606177b475ceb656d163519443d734abeba6b1d8ea5c9d2748e723059cc1c0c39
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -4223,10 +4248,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@poppinss/exception@npm:^1.2.2":
+"@poppinss/exception@npm:^1.2.1, @poppinss/exception@npm:^1.2.2":
   version: 1.2.3
   resolution: "@poppinss/exception@npm:1.2.3"
   checksum: 10/dda850dbaf1e889110a9221604f38b68b24137b39a3127299707ace5d091b875766bad40774ee4cffcb6aebf543251b9e2b7071b0ed4b4c8958f481206d2b372
+  languageName: node
+  linkType: hard
+
+"@poppinss/object-builder@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@poppinss/object-builder@npm:1.1.0"
+  checksum: 10/ea46e1b84b4885e3dee6ba3f884b8613711b9b0ff76aba74246ca497f2223b85bf2b44dd451d06f3ada9e1e491cef8d6bb581e54a3b1eda40cfb4e1eaeccc70c
+  languageName: node
+  linkType: hard
+
+"@poppinss/string@npm:^1.3.0":
+  version: 1.7.2
+  resolution: "@poppinss/string@npm:1.7.2"
+  dependencies:
+    "@types/pluralize": "npm:^0.0.33"
+    case-anything: "npm:^3.1.2"
+    pluralize: "npm:^8.0.0"
+    slugify: "npm:^1.6.9"
+  checksum: 10/1ed5f0264203fe329a2e1cd32debf4e80211fc8b3ee7abe46ced66be298bad4f9b091d2618b446bef886ac8d9c56e49e541a59a8cc319b6748cc0d821a0dd667
+  languageName: node
+  linkType: hard
+
+"@poppinss/utils@npm:^6.9.3":
+  version: 6.10.1
+  resolution: "@poppinss/utils@npm:6.10.1"
+  dependencies:
+    "@poppinss/exception": "npm:^1.2.1"
+    "@poppinss/object-builder": "npm:^1.1.0"
+    "@poppinss/string": "npm:^1.3.0"
+    flattie: "npm:^1.1.1"
+    safe-stable-stringify: "npm:^2.5.0"
+    secure-json-parse: "npm:^4.0.0"
+  checksum: 10/1af2f138d4b25d48c27d2c1a692b0d6524221814c2b1ee2f8cb568d3bc2d1dbb0ec79f5fd723786a7cad8731a6919a7165803104f197ab070a37e05808c0ed20
   languageName: node
   linkType: hard
 
@@ -5708,6 +5766,13 @@ __metadata:
     pg-protocol: "npm:*"
     pg-types: "npm:^2.2.0"
   checksum: 10/3fb5be6e02de5c1a519acfbcb73647864e0d118bd09d0dea9b02091992095094e1ba150454c1175fd0127a596947e7216e15ff9b6162cd7792b62effce6aa751
+  languageName: node
+  linkType: hard
+
+"@types/pluralize@npm:^0.0.33":
+  version: 0.0.33
+  resolution: "@types/pluralize@npm:0.0.33"
+  checksum: 10/282d42dc0187e5e0912f9f36ee0f5615bfd273a08d40afe5bf5881cb28daf1977abe10564543032aa0f42352ebba739ff3d86bf5562ac4691c6d1761fcc7cf39
   languageName: node
   linkType: hard
 
@@ -8114,6 +8179,13 @@ __metadata:
   version: 1.0.30001788
   resolution: "caniuse-lite@npm:1.0.30001788"
   checksum: 10/bead3aa7e9795335396953305e9e791514960151fc24b665a09751d27d348d4de6e147a749ba5258921f32b1170f7db798099142a40db3d61f8d586f410f298a
+  languageName: node
+  linkType: hard
+
+"case-anything@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "case-anything@npm:3.1.2"
+  checksum: 10/8783316772cb11d6c6690824e087249a6207182f656068ff0fdd2a88b3f23c9525de307cc5d9359fcec05a7106783debba726821f7587172e6b869cfc90aa4c7
   languageName: node
   linkType: hard
 
@@ -10707,6 +10779,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flattie@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "flattie@npm:1.1.1"
+  checksum: 10/c5e475c9358ff78ddbf8b211850bfdca041f2e49508ea0419a6cd19e94ffdaf09ee2f6e4379460c91929b203eafc75b3c34ae829809f598a4cc0e58782dc2aaa
+  languageName: node
+  linkType: hard
+
 "follow-redirects@npm:^1.15.11":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
@@ -12450,6 +12529,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^6.1.3, jose@npm:^6.2.2":
+  version: 6.2.3
+  resolution: "jose@npm:6.2.3"
+  checksum: 10/876974613c5ee988d43b65a34c96ce440dbf7706a2f07f465b8874af16ee532102e224459a7068d2c6ef044affe49690667d23ca12770c279804baec95a09608
+  languageName: node
+  linkType: hard
+
 "js-beautify@npm:^1.14.9":
   version: 1.15.4
   resolution: "js-beautify@npm:1.15.4"
@@ -12580,6 +12666,7 @@ __metadata:
     "@trpc/server": "npm:^11.17.0"
     "@types/pg": "npm:^8"
     nuxt: "npm:^4.4.2"
+    nuxt-auth-utils: "npm:^0.5.29"
     pg: "npm:^8.20.0"
     primeicons: "npm:^7.0.0"
     primevue: "npm:^4.5.5"
@@ -14451,6 +14538,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nuxt-auth-utils@npm:^0.5.29":
+  version: 0.5.29
+  resolution: "nuxt-auth-utils@npm:0.5.29"
+  dependencies:
+    "@adonisjs/hash": "npm:^9.1.1"
+    "@nuxt/kit": "npm:^4.3.1"
+    defu: "npm:^6.1.4"
+    h3: "npm:^1.15.4"
+    hookable: "npm:^6.0.1"
+    jose: "npm:^6.1.3"
+    ofetch: "npm:^1.5.1"
+    openid-client: "npm:^6.8.2"
+    pathe: "npm:^2.0.3"
+    scule: "npm:^1.3.0"
+    uncrypto: "npm:^0.1.3"
+  peerDependencies:
+    "@atproto/api": ^0.13.15
+    "@atproto/oauth-client-node": ^0.2.0
+    "@simplewebauthn/browser": ^11.0.0
+    "@simplewebauthn/server": ^11.0.0
+  peerDependenciesMeta:
+    "@atproto/api":
+      optional: true
+    "@atproto/oauth-client-node":
+      optional: true
+    "@simplewebauthn/browser":
+      optional: true
+    "@simplewebauthn/server":
+      optional: true
+  checksum: 10/e19d0d30e552467c7cff29c1f0f778155c0bb0da323d3ba73ca5c47e7fa7d1c69094aa747d2f1fc32eb66182e2ef6766769730596749a2564cb9a58f878a08d0
+  languageName: node
+  linkType: hard
+
 "nuxt-define@npm:^1.0.0":
   version: 1.0.0
   resolution: "nuxt-define@npm:1.0.0"
@@ -14543,6 +14663,13 @@ __metadata:
   bin:
     nypm: dist/cli.mjs
   checksum: 10/615f8f661e74440a42f93b2f05082b4de2c91aacaa497aafa939b212a125ce8ce82d0c50e0cd0a8f8e8a5931764e3a63f76c4c8a68d5f1586274394a8fc8c5a6
+  languageName: node
+  linkType: hard
+
+"oauth4webapi@npm:^3.8.5":
+  version: 3.8.6
+  resolution: "oauth4webapi@npm:3.8.6"
+  checksum: 10/980568a712c9ac6afaa35bea4b8887accfa37470fbceec6c833edad74cf82a9c981aacdbb4f270dcbc27c2a5af9b3a2d2c48ae98e51df7a278985c5f00631410
   languageName: node
   linkType: hard
 
@@ -14695,6 +14822,16 @@ __metadata:
   dependencies:
     yaml: "npm:^2.5.0"
   checksum: 10/db9373ba6ba939f1da316d6b551d410efc5ad9667c32ae1efd494d68f24001bb0ffc66597041821ccd813caf2bef913fc2666f43dfce1914cc994bbd42828799
+  languageName: node
+  linkType: hard
+
+"openid-client@npm:^6.8.2":
+  version: 6.8.4
+  resolution: "openid-client@npm:6.8.4"
+  dependencies:
+    jose: "npm:^6.2.2"
+    oauth4webapi: "npm:^3.8.5"
+  checksum: 10/39402afd4534081d0c9af41aadc916b2b6d41cab1d9eaa9b33f1a3bc3a73ba437f04ccb4b906a4523b41886ee3de716d24c028fd734282b4924cac641d5c5869
   languageName: node
   linkType: hard
 
@@ -17271,6 +17408,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"safe-stable-stringify@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "safe-stable-stringify@npm:2.5.0"
+  checksum: 10/2697fa186c17c38c3ca5309637b4ac6de2f1c3d282da27cd5e1e3c88eca0fb1f9aea568a6aabdf284111592c8782b94ee07176f17126031be72ab1313ed46c5c
+  languageName: node
+  linkType: hard
+
 "safer-buffer@npm:>= 2.1.2 < 3, safer-buffer@npm:>= 2.1.2 < 3.0.0":
   version: 2.1.2
   resolution: "safer-buffer@npm:2.1.2"
@@ -17554,6 +17698,13 @@ __metadata:
   version: 1.3.0
   resolution: "scule@npm:1.3.0"
   checksum: 10/f2968b292e33c0eddca4a68b5c70f08dfc8479e492461c248f72873deaf77ae87c9f27dde7a342b3cb6394d2fae9665890b07a2243f79cff5cba65c9525ccf7e
+  languageName: node
+  linkType: hard
+
+"secure-json-parse@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "secure-json-parse@npm:4.1.0"
+  checksum: 10/1025c6fd0b8fa0e8c6ac7225fc0b79ecc528b2e51a8446e4bb73bfc47a2450b9e9e9813b84bc9e6735ce30c947b52e5b9d90771521aa9bb2ec216afd24c2da4e
   languageName: node
   linkType: hard
 
@@ -18007,6 +18158,13 @@ __metadata:
   version: 5.1.0
   resolution: "slash@npm:5.1.0"
   checksum: 10/2c41ec6fb1414cd9bba0fa6b1dd00e8be739e3fe85d079c69d4b09ca5f2f86eafd18d9ce611c0c0f686428638a36c272a6ac14799146a8295f259c10cc45cde4
+  languageName: node
+  linkType: hard
+
+"slugify@npm:^1.6.9":
+  version: 1.6.9
+  resolution: "slugify@npm:1.6.9"
+  checksum: 10/101599a77585ac3b3fe49662db8666260c8ee1c5090d28a13c6ecabf16b42057e69ea209654797f46b13faee4c53224f48784044bd734a9443b7b88e0357110e
   languageName: node
   linkType: hard
 

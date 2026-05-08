@@ -26,6 +26,7 @@
         "@trpc/client": "^11.17.0",
         "@trpc/server": "^11.17.0",
         "nuxt": "^4.4.2",
+        "nuxt-auth-utils": "^0.5.29",
         "pg": "^8.20.0",
         "primeicons": "^7.0.0",
         "primevue": "^4.5.5",

@@ -25,10 +25,9 @@ const spec = generateOpenApiDocument(appRouter, {
     version: '1.0.0',
     baseUrl,
     securitySchemes: {
-        ApiKeyAuth: {
-            type: 'apiKey',
-            in: 'header',
-            name: 'X-Api-Key',
+        OidcAuth: {
+            type: 'openIdConnect',
+            openIdConnectUrl: `${process.env.NUXT_OAUTH_KEYCLOAK_SERVER_URL ?? 'http://localhost:8080'}/realms/${process.env.NUXT_OAUTH_KEYCLOAK_REALM ?? 'dev'}/.well-known/openid-configuration`,
         },
     },
     defs: {

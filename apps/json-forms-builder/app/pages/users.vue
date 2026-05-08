@@ -3,6 +3,8 @@ import type { UsersQuery } from '~~/server/models/user';
 import type { AppRouter } from '~~/server/trpc/routers';
 import { createTRPCNuxtClient } from 'trpc-nuxt/client';
 
+definePageMeta({ middleware: ['authenticated'] });
+
 const trpc = useNuxtApp().$trpc as unknown as ReturnType<
     typeof createTRPCNuxtClient<AppRouter>
 >;

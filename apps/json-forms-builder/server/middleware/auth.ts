@@ -1,25 +1,24 @@
-import { hasValidApiKey, throwUnauthorized } from '~~/server/utils/helpers';
+import type { User } from '#auth-utils';
 
 // Tell TypeScript about our custom context property
 declare module 'h3' {
     interface H3EventContext {
-        apiKeyValid?: boolean;
+        user?: User;
     }
 }
 
 /**
- * API key authentication middleware — single source of truth for auth.
- * Guards all /api/trpc/* routes except the public status.get procedure.
- * Sets event.context.apiKeyValid = true so tRPC procedures can trust it
- * without re-validating the key themselves.
+ * Session authentication middleware.
+ * Guards all /api/trpc/* and /api/v1/* routes except the public status endpoint.
+ * On success, sets event.context.user so tRPC procedures can access it.
  */
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
     const path = event.path ?? '';
 
     // Only guard tRPC and REST v1 routes
     if (!path.startsWith('/api/trpc/') && !path.startsWith('/api/v1/')) return;
 
-    // Public endpoints — no key required
+    // Public endpoints — no session required
     if (
         path === '/api/trpc/status.get' ||
         path.startsWith('/api/trpc/status.get?') ||
@@ -28,12 +27,10 @@ export default defineEventHandler((event) => {
     )
         return;
 
-    const key = getHeader(event, 'x-api-key');
-    if (!hasValidApiKey(key)) {
-        throwUnauthorized(
-            'Missing or invalid API key. Provide it via the X-Api-Key header.'
-        );
+    const session = await getUserSession(event).catch(() => null);
+    if (!session?.user) {
+        throw createError({ statusCode: 401, message: 'Unauthorized' });
     }
 
-    event.context.apiKeyValid = true;
+    event.context.user = session.user;
 });

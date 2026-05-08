@@ -2,6 +2,9 @@
 import type { AppRouter } from '~~/server/trpc/routers';
 import { createTRPCNuxtClient } from 'trpc-nuxt/client';
 
+definePageMeta({ middleware: ['authenticated'] });
+
+const { user, clear: clearSession } = useUserSession();
 const trpc = useNuxtApp().$trpc as unknown as ReturnType<
     typeof createTRPCNuxtClient<AppRouter>
 >;
@@ -11,21 +14,43 @@ const {
     pending,
     error,
 } = await useAsyncData('status', () => trpc.status.get.query());
+
+async function logout() {
+    await $fetch('/auth/logout', { method: 'POST' });
+    await clearSession();
+    await navigateTo('/login');
+}
 </script>
 
 <template>
     <div class="min-h-screen bg-surface-50 dark:bg-surface-900 p-6">
         <div class="max-w-3xl mx-auto">
-            <div class="mb-8">
-                <h1
-                    class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1"
-                >
-                    Form Builder
-                </h1>
-                <p class="text-surface-400">
-                    Administrative interface for managing forms, users, and
-                    permissions.
-                </p>
+            <div class="flex items-start justify-between mb-8">
+                <div>
+                    <h1
+                        class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1"
+                    >
+                        Form Builder
+                    </h1>
+                    <p class="text-surface-400">
+                        Administrative interface for managing forms, users, and
+                        permissions.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span
+                        v-if="user"
+                        class="text-sm text-surface-500 dark:text-surface-400"
+                        >{{ (user as { name?: string }).name }}</span
+                    >
+                    <Button
+                        label="Sign out"
+                        icon="pi pi-sign-out"
+                        severity="secondary"
+                        size="small"
+                        @click="logout"
+                    />
+                </div>
             </div>
 
             <!-- Status card -->

@@ -1,7 +1,7 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { OpenApiMeta } from 'trpc-to-openapi';
 import type { H3Event } from 'h3';
-import { hasValidApiKey } from '~~/server/utils/helpers';
+import type { User } from '#auth-utils';
 
 type OpenApiContextArgs = {
     req?: {
@@ -13,13 +13,13 @@ export async function createTRPCContext(
     eventOrArgs: H3Event | OpenApiContextArgs
 ) {
     if ('context' in eventOrArgs) {
-        return { apiKeyValid: eventOrArgs.context.apiKeyValid ?? false };
+        // H3Event path: user was set by the auth middleware
+        return { user: (eventOrArgs.context.user as User) ?? null };
     }
-
-    const headerValue = eventOrArgs.req?.headers?.['x-api-key'];
-    const apiKey = Array.isArray(headerValue) ? headerValue[0] : headerValue;
-
-    return { apiKeyValid: hasValidApiKey(apiKey) };
+    // req/res path (OpenAPI handler): middleware already validated the session.
+    // Return null user — protected procedures won't be called without a session
+    // because the middleware rejects unauthenticated requests upstream.
+    return { user: null as User | null };
 }
 
 export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
@@ -29,14 +29,13 @@ const t = initTRPC.context<TRPCContext>().meta<OpenApiMeta>().create();
 export const router = t.router;
 export const publicProcedure = t.procedure;
 
-/** Procedure that requires a valid X-Api-Key header (checked by auth middleware). */
+/** Procedure that requires a valid user session (enforced by auth middleware). */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-    if (!ctx.apiKeyValid) {
+    if (!ctx.user) {
         throw new TRPCError({
             code: 'UNAUTHORIZED',
-            message:
-                'Missing or invalid API key. Provide it via the X-Api-Key header.',
+            message: 'Authentication required.',
         });
     }
-    return next({ ctx });
+    return next({ ctx: { ...ctx, user: ctx.user } });
 });

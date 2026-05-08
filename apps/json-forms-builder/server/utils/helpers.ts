@@ -1,11 +1,5 @@
 import { ErrorCode } from '~~/server/models/errors';
 
-const API_KEY = process.env.API_KEY ?? 'dev-secret';
-
-export function hasValidApiKey(key: string | null | undefined) {
-    return Boolean(key && key === API_KEY);
-}
-
 export function paginatedResponse<T>(
     data: T[],
     totalCount: number,

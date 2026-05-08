@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     },
 
     modules: [
+        'nuxt-auth-utils',
         '@nuxt/a11y',
         '@nuxt/eslint',
         '@nuxt/fonts',
