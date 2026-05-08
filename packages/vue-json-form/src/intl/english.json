@@ -27,6 +27,13 @@
         "clipboard": "Copy to clipboard",
         "feedback": "Feedback"
     },
+    "controls": {
+        "upload": {
+            "browse": "Browse",
+            "noFileChosen": "No file chosen",
+            "dropFilesHere": "Drop files here to upload"
+        }
+    },
     "modals": {
         "delete-remaining-items": {
             "title": "Delete the remaining items",

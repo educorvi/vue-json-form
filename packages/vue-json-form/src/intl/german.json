@@ -27,6 +27,13 @@
         "clipboard": "In Zwischenablage kopieren",
         "feedback": "Feedback"
     },
+    "controls": {
+        "upload": {
+            "browse": "Durchsuchen",
+            "noFileChosen": "Keine Datei ausgewählt",
+            "dropFilesHere": "Dateien hierher ziehen, um sie hochzuladen"
+        }
+    },
     "modals": {
         "delete-remaining-items": {
             "title": "Löschen der übrigen Elemente",
