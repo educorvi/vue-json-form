@@ -4,14 +4,14 @@
     "version": "0.0.0",
     "dependencies": {
         "@educorvi/vue-json-form-schemas": "workspace:^",
-        "ajv": "^8.18.0",
+        "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1"
     },
     "devDependencies": {
         "@semantic-release/exec": "^7.1.0",
         "@tsconfig/node24": "^24.0.4",
-        "@types/node": "^25.3.0",
-        "@vitest/coverage-v8": "^4.0.18",
+        "@types/node": "^25.6.0",
+        "@vitest/coverage-v8": "^4.1.5",
         "npm-run-all": "^4.1.5",
         "rollup-plugin-copy": "^3.5.0",
         "semantic-release": "^25.0.3",
@@ -19,13 +19,13 @@
         "semantic-release-yarn": "^3.0.2",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "turbo": "^2.8.17",
-        "typescript": "~5.9.3",
-        "vite": "^7.3.1",
-        "vite-bundle-analyzer": "^1.3.6",
+        "turbo": "^2.9.10",
+        "typescript": "~6.0.3",
+        "vite": "^8.0.10",
+        "vite-bundle-analyzer": "^1.3.7",
         "vite-plugin-dts": "^4.5.4",
-        "vite-plugin-static-copy": "^3.2.0",
-        "vitest": "^4.0.18"
+        "vite-plugin-static-copy": "^4.1.0",
+        "vitest": "^4.1.5"
     },
     "exports": {
         ".": {
@@ -61,5 +61,6 @@
         "test:unit": "vitest --run"
     },
     "type": "module",
-    "types": "./dist/vue-json-form-ajv-validator.d.ts"
+    "types": "./dist/vue-json-form-ajv-validator.d.ts",
+    "sideEffects": false
 }

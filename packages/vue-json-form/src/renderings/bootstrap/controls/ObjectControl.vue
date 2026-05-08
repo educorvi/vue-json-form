@@ -5,6 +5,7 @@ import { computed } from 'vue';
 import { generateUISchema } from '@/Commons';
 import FormWrap from '@/components/FormWrap.vue';
 import { computedCssClass } from '@/computedProperties/css.ts';
+import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
@@ -23,7 +24,7 @@ const controlElements = computed(() => {
 <template>
     <fieldset :id="id" :class="cssClass">
         <legend v-if="layoutElement.options?.label !== false && label">
-            {{ label }}
+            {{ label }} <span class="vjf_object_help"><HelpPopover /></span>
         </legend>
         <p v-if="jsonElement.description">
             {{ jsonElement.description }}
@@ -42,5 +43,10 @@ const controlElements = computed(() => {
 legend {
     display: flex;
     align-items: center;
+}
+
+.vjf_object_help {
+    font-size: 1rem;
+    margin-left: 0.25rem;
 }
 </style>

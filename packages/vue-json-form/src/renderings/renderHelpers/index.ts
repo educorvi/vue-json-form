@@ -2,6 +2,7 @@ export * from '@/computedProperties/css';
 export * from '@/computedProperties/json';
 export * from '@/computedProperties/misc';
 export * from './utilities.ts';
+export * from './B64File.ts';
 
 export * as FileControl from './FileControl';
 export * as FormfieldWrapper from './FormfieldWrapper';

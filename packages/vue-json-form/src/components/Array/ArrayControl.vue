@@ -14,7 +14,7 @@ import {
     isArrayItemKey,
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons.ts';
-import draggable from 'vuedraggable/src/vuedraggable';
+import { VueDraggable } from 'vue-draggable-plus';
 import {
     ref,
     nextTick,
@@ -53,7 +53,7 @@ const languageProvider = inject(languageProviderKey);
 const id = controlID(savePath);
 const required = getComputedRequired(layoutElement);
 
-function addField(skipFocus = false, value?: any) {
+function addField(skipFocus = false, value?: unknown) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
@@ -241,34 +241,30 @@ onBeforeMount(initArray);
             :id="id"
             class="vjf_array"
         >
-            <draggable
+            <VueDraggable
                 key="draggable"
                 v-model="formData[savePath]"
                 class="list-group"
                 handle=".handle"
-                :item-key="(elemId: string) => elemId"
                 v-bind="dragOptions"
-                :component-data="{
-                    tag: 'div',
-                    type: 'transition-group',
-                    name: !drag ? 'flip-list' : null,
-                }"
                 @start="drag = true"
                 @end="drag = false"
             >
-                <template #item="{ element, index }">
-                    <div :key="element" class="draggable-array-item">
-                        <ArrayItem
-                            :scope="layoutElement.scope"
-                            :base-save-path="savePath"
-                            :index="index"
-                            :item-i-d="element"
-                            :allow-remove="allowRemoveField"
-                            @delete="deleteItemWithID"
-                        />
-                    </div>
-                </template>
-            </draggable>
+                <div
+                    v-for="(element, index) in formData[savePath]"
+                    :key="element"
+                    class="draggable-array-item"
+                >
+                    <ArrayItem
+                        :scope="layoutElement.scope"
+                        :base-save-path="savePath"
+                        :index="index as number"
+                        :item-i-d="element"
+                        :allow-remove="allowRemoveField"
+                        @delete="deleteItemWithID"
+                    />
+                </div>
+            </VueDraggable>
 
             <array-button
                 variant="outline-primary"
@@ -329,14 +325,6 @@ onBeforeMount(initArray);
 .vjf_label_wrapper {
     display: flex;
     align-items: center;
-}
-
-.flip-list-move {
-    transition: transform 0.5s;
-}
-
-.no-move {
-    transition: transform 0s;
 }
 
 .ghost {

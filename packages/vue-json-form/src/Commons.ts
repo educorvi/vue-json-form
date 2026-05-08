@@ -46,7 +46,7 @@ export function generateUUID(): string {
  * Checks if the given key has the format of an array item key.
  * @param key
  */
-export function isArrayItemKey(key: any): boolean {
+export function isArrayItemKey(key: unknown): key is string {
     if (typeof key !== 'string') {
         return false;
     }

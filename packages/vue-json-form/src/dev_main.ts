@@ -11,6 +11,7 @@ import Showcase from '@/_DevViews/Showcase.vue';
 import Reproduce from '@/_DevViews/Reproduce.vue';
 import Wizard from '@/_DevViews/Wizard.vue';
 import MultipleJsonForms from '@/_DevViews/MultipleJsonForms.vue';
+import CustomSchema from '@/_DevViews/CustomSchema.vue';
 
 const routes = [
     { path: '/', component: Home, name: 'home' },
@@ -18,6 +19,11 @@ const routes = [
     { path: '/reproduce', component: Reproduce, name: 'reproduce' },
     { path: '/wizard', component: Wizard, name: 'wizard' },
     { path: '/multiple', component: MultipleJsonForms, name: 'multiple' },
+    {
+        path: '/custom-schema',
+        component: CustomSchema,
+        name: 'custom-schema',
+    },
 ];
 
 export const router = createRouter({

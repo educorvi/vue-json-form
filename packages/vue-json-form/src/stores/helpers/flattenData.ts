@@ -17,7 +17,15 @@ export function flattenArray(
             !(item.item instanceof Date) &&
             !(typeof File !== 'undefined' && item.item instanceof File)
         ) {
-            flattenData(item.item, into, `${arrayKey}.${item.id}`);
+            let parentKeyAddOn = '';
+            if (!Array.isArray(item.item)) {
+                parentKeyAddOn = '/properties';
+            }
+            flattenData(
+                item.item,
+                into,
+                `${arrayKey}.${item.id}${parentKeyAddOn}`
+            );
         } else {
             into[`${arrayKey}.${item.id}`] = item.item;
         }

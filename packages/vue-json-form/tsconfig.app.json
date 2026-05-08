@@ -16,7 +16,6 @@
         "declarationDir": "dist",
         "declarationMap": true,
         "composite": true,
-        "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"]
         },
