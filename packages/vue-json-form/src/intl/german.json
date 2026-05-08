@@ -14,7 +14,9 @@
             "selectAtMost": "Bitte wählen Sie höchstens !&data&! Optionen aus."
         },
         "generic": {
-            "temporaryError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal."
+            "errorOccurred": "Ein Fehler ist aufgetreten:",
+            "retryLater": "Bitte versuchen Sie es später erneut.",
+            "temporaryError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
         }
     },
     "buttons": {
@@ -24,6 +26,13 @@
         "save": "Speichern",
         "clipboard": "In Zwischenablage kopieren",
         "feedback": "Feedback"
+    },
+    "controls": {
+        "upload": {
+            "browse": "Durchsuchen",
+            "noFileChosen": "Keine Datei ausgewählt",
+            "dropFilesHere": "Dateien hierher ziehen, um sie hochzuladen"
+        }
     },
     "modals": {
         "delete-remaining-items": {

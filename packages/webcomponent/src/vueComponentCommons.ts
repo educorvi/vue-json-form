@@ -209,7 +209,9 @@ export async function requestSummary(
             if (body instanceof ReadableStream) {
                 // With responseType:'stream', error body arrives as a ReadableStream
                 try {
-                    const reader = (body as ReadableStream<Uint8Array>).getReader();
+                    const reader = (
+                        body as ReadableStream<Uint8Array>
+                    ).getReader();
                     const decoder = new TextDecoder();
                     let text = '';
                     while (true) {
@@ -232,6 +234,12 @@ export async function requestSummary(
             ) {
                 message = body.message;
             }
+        }
+        if (updateState) {
+            updateState({
+                event: 'error',
+                data: { message },
+            });
         }
         throw new Error(message, { cause: e });
     }

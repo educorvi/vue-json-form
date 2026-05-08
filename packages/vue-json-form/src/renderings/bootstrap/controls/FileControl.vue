@@ -13,6 +13,7 @@ import { validateFileInput } from '@/formControlInputValidation';
 
 const props = defineProps<{
     required?: boolean;
+    placeholder?: string;
 }>();
 
 const { formDataStore, formStructureStore } = getStores();
@@ -152,6 +153,14 @@ onMounted(validate);
         :multiple="multiple"
         :accept="acceptedFileTypes"
         :required="required"
+        :browse-text="languageProvider?.getString('controls.upload.browse')"
+        :drop-placeholder="
+            languageProvider?.getString('controls.upload.dropFilesHere')
+        "
+        :placeholder="
+            props.placeholder ??
+            languageProvider?.getString('controls.upload.noFileChosen')
+        "
     />
 </template>
 
