@@ -1,162 +1,179 @@
 <script setup lang="ts">
-import type { AppRouter } from '~~/server/trpc/routers';
-import { createTRPCNuxtClient } from 'trpc-nuxt/client';
+definePageMeta({ layout: false });
 
-definePageMeta({ middleware: ['authenticated'] });
+const { loggedIn } = useUserSession();
 
-const { user, clear: clearSession } = useUserSession();
-const trpc = useNuxtApp().$trpc as unknown as ReturnType<
-    typeof createTRPCNuxtClient<AppRouter>
->;
-
-const {
-    data: status,
-    pending,
-    error,
-} = await useAsyncData('status', () => trpc.status.get.query());
-
-async function logout() {
-    await $fetch('/auth/logout', { method: 'POST' });
-    await clearSession();
-    await navigateTo('/login');
+if (loggedIn.value) {
+    await navigateTo('/dashboard');
 }
+
+const route = useRoute();
+const authError = computed(() => route.query.error === 'auth_failed');
+
+interface Feature {
+    icon: string;
+    title: string;
+    description: string;
+}
+
+const features: Feature[] = [
+    {
+        icon: 'pi pi-file-edit',
+        title: 'Visual Form Builder',
+        description:
+            'Design complex JSON Schema-driven forms with a drag-and-drop interface and live preview.',
+    },
+    {
+        icon: 'pi pi-users',
+        title: 'User & Role Management',
+        description:
+            'Manage system users, assign roles, and control access to forms and data.',
+    },
+    {
+        icon: 'pi pi-shield',
+        title: 'Fine-grained Permissions',
+        description:
+            'Define granular access policies per form, schema, or resource for your organisation.',
+    },
+    {
+        icon: 'pi pi-code',
+        title: 'OpenAPI REST Interface',
+        description:
+            'Every resource is accessible via a fully documented, standards-compliant REST API.',
+    },
+    {
+        icon: 'pi pi-history',
+        title: 'Schema Versioning',
+        description:
+            'Track changes to your JSON Schemas over time and roll back to any previous version.',
+    },
+    {
+        icon: 'pi pi-lock',
+        title: 'Single Sign-On',
+        description:
+            'Authenticate via Keycloak OIDC — one login for all services in your infrastructure.',
+    },
+];
 </script>
 
 <template>
-    <div class="min-h-screen bg-surface-50 dark:bg-surface-900 p-6">
-        <div class="max-w-3xl mx-auto">
-            <div class="flex items-start justify-between mb-8">
-                <div>
-                    <h1
-                        class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1"
-                    >
-                        Form Builder
-                    </h1>
-                    <p class="text-surface-400">
-                        Administrative interface for managing forms, users, and
-                        permissions.
+    <div class="min-h-screen flex flex-col surface-ground">
+        <!-- Minimal top bar -->
+        <Menubar class="rounded-none border-x-0 border-t-0">
+            <template #start>
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-file-edit text-primary text-lg" />
+                    <span class="font-semibold text-sm">Form Builder</span>
+                </div>
+            </template>
+            <template #end>
+                <Button
+                    as="a"
+                    href="/auth/keycloak"
+                    label="Sign in"
+                    icon="pi pi-sign-in"
+                    size="small"
+                />
+            </template>
+        </Menubar>
+
+        <!-- Hero -->
+        <section
+            class="flex flex-col items-center justify-center text-center px-6 py-24 surface-section"
+        >
+            <div class="mb-5">
+                <span
+                    class="inline-flex items-center justify-center w-20 h-20 rounded-full surface-card shadow-2"
+                >
+                    <i
+                        class="pi pi-file-edit text-primary"
+                        style="font-size: 2.5rem"
+                    />
+                </span>
+            </div>
+
+            <h1 class="text-6xl font-bold mb-4 text-color">
+                Build &amp; Manage<br />
+                <span class="text-primary">JSON Forms</span>
+            </h1>
+            <p
+                class="text-xl text-color-secondary max-w-2xl mb-8 line-height-3"
+            >
+                A self-hosted form administration platform — design schemas,
+                manage users, and expose a clean REST API, all in one place.
+            </p>
+
+            <Message
+                v-if="authError"
+                severity="error"
+                class="mb-6 max-w-md w-full"
+                :closable="false"
+            >
+                Authentication failed. Please try again.
+            </Message>
+
+            <Button
+                as="a"
+                href="/auth/keycloak"
+                label="Sign in with Keycloak"
+                icon="pi pi-sign-in"
+                size="large"
+            />
+        </section>
+
+        <!-- Features -->
+        <section class="px-6 py-20 surface-card">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-color mb-2">
+                        Everything you need
+                    </h2>
+                    <p class="text-color-secondary text-lg">
+                        One platform for forms, users, and APIs
                     </p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span
-                        v-if="user"
-                        class="text-sm text-surface-500 dark:text-surface-400"
-                        >{{ (user as { name?: string }).name }}</span
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+                >
+                    <Card
+                        v-for="feature in features"
+                        :key="feature.title"
+                        class="shadow-1"
                     >
-                    <Button
-                        label="Sign out"
-                        icon="pi pi-sign-out"
-                        severity="secondary"
-                        size="small"
-                        @click="logout"
-                    />
+                        <template #header>
+                            <div
+                                class="flex items-center justify-center pt-5 pb-2"
+                            >
+                                <span
+                                    class="inline-flex items-center justify-center w-14 h-14 rounded-full surface-ground"
+                                >
+                                    <i
+                                        :class="[
+                                            feature.icon,
+                                            'text-primary text-2xl',
+                                        ]"
+                                    />
+                                </span>
+                            </div>
+                        </template>
+                        <template #title>{{ feature.title }}</template>
+                        <template #content>
+                            <p class="text-color-secondary line-height-3 m-0">
+                                {{ feature.description }}
+                            </p>
+                        </template>
+                    </Card>
                 </div>
             </div>
+        </section>
 
-            <!-- Status card -->
-            <Card class="mb-6 shadow-sm">
-                <template #title>
-                    <span
-                        class="text-base font-semibold text-surface-700 dark:text-surface-200"
-                        >API Status</span
-                    >
-                </template>
-                <template #content>
-                    <div v-if="pending" class="flex items-center gap-3">
-                        <Skeleton
-                            width="5rem"
-                            height="1.5rem"
-                            border-radius="9999px"
-                        />
-                        <Skeleton width="4rem" height="1rem" />
-                    </div>
-                    <div
-                        v-else-if="error"
-                        class="flex items-center gap-2 text-red-500"
-                    >
-                        <i class="pi pi-exclamation-triangle" />
-                        Could not reach API: {{ error.message }}
-                    </div>
-                    <div v-else-if="status" class="flex items-center gap-4">
-                        <Tag
-                            :value="status.status.toUpperCase()"
-                            :severity="
-                                status.status === 'ok'
-                                    ? 'success'
-                                    : status.status === 'degraded'
-                                      ? 'warn'
-                                      : 'danger'
-                            "
-                        />
-                        <span class="text-sm text-surface-400"
-                            >v{{ status.version }}</span
-                        >
-                        <span class="text-sm text-surface-400">{{
-                            new Date(status.timestamp).toLocaleString()
-                        }}</span>
-                    </div>
-                </template>
-            </Card>
-
-            <!-- Navigation cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <NuxtLink to="/users" class="no-underline">
-                    <Card
-                        class="hover:shadow-md transition-shadow cursor-pointer border border-surface-200 dark:border-surface-700"
-                    >
-                        <template #content>
-                            <div class="flex items-start gap-4">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0"
-                                >
-                                    <i
-                                        class="pi pi-users text-primary-500 text-lg"
-                                    />
-                                </div>
-                                <div>
-                                    <p
-                                        class="font-semibold text-surface-800 dark:text-surface-100 mb-0.5"
-                                    >
-                                        Users
-                                    </p>
-                                    <p class="text-sm text-surface-400">
-                                        Manage system users, roles, and access.
-                                    </p>
-                                </div>
-                            </div>
-                        </template>
-                    </Card>
-                </NuxtLink>
-
-                <a href="/_swagger" target="_blank" class="no-underline">
-                    <Card
-                        class="hover:shadow-md transition-shadow cursor-pointer border border-surface-200 dark:border-surface-700"
-                    >
-                        <template #content>
-                            <div class="flex items-start gap-4">
-                                <div
-                                    class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0"
-                                >
-                                    <i
-                                        class="pi pi-code text-emerald-500 text-lg"
-                                    />
-                                </div>
-                                <div>
-                                    <p
-                                        class="font-semibold text-surface-800 dark:text-surface-100 mb-0.5"
-                                    >
-                                        API Docs
-                                    </p>
-                                    <p class="text-sm text-surface-400">
-                                        Browse and test the REST API via Swagger
-                                        UI.
-                                    </p>
-                                </div>
-                            </div>
-                        </template>
-                    </Card>
-                </a>
-            </div>
-        </div>
+        <!-- Footer -->
+        <footer
+            class="surface-section border-top-1 surface-border px-6 py-5 text-center"
+        >
+            <span class="text-color-secondary text-sm">
+                Form Builder &mdash; built with Nuxt, oRPC &amp; PrimeVue
+            </span>
+        </footer>
     </div>
 </template>

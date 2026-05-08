@@ -4,9 +4,9 @@ definePageMeta({ layout: false });
 const { loggedIn } = useUserSession();
 const route = useRoute();
 
-// Redirect already-logged-in users to home
+// Redirect already-logged-in users to dashboard
 if (loggedIn.value) {
-    await navigateTo('/');
+    await navigateTo('/dashboard');
 }
 
 const authError = computed(() => route.query.error === 'auth_failed');

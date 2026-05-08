@@ -10,7 +10,7 @@ export default defineOAuthKeycloakEventHandler({
                         .realm_access?.roles ?? [],
             },
         });
-        return sendRedirect(event, '/');
+        return sendRedirect(event, '/dashboard');
     },
     onError(event, error) {
         console.error('[Keycloak OIDC] Error:', error);

@@ -3,7 +3,7 @@ import Aura from '@primeuix/themes/aura';
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
-    ssr: false,
+    ssr: true,
     devtools: { enabled: true },
 
     typescript: {
@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         '@nuxt/icon',
         '@artmizu/nuxt-prometheus',
         '@nuxtjs/i18n',
+        '@nuxtjs/tailwindcss',
         '@primevue/nuxt-module',
     ],
 

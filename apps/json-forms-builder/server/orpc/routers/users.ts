@@ -1,4 +1,4 @@
-import { router, protectedProcedure } from '../init';
+import { authed } from '../init';
 import {
     UsersQuerySchema,
     ListUsersResponseSchema,
@@ -17,20 +17,18 @@ const ORDER_BY_MAP: Record<(typeof ALLOWED_ORDER_BY)[number], string> = {
     role: 'role',
 };
 
-export const usersRouter = router({
-    list: protectedProcedure
-        .meta({
-            openapi: {
-                method: 'GET',
-                path: '/users',
-                tags: ['Users'],
-                summary: 'List users',
-                protect: true,
-            },
+export const usersRouter = {
+    list: authed
+        .route({
+            method: 'GET',
+            inputStructure: 'detailed',
+            path: '/users',
+            tags: ['Users'],
+            summary: 'List users',
         })
         .input(UsersQuerySchema)
         .output(ListUsersResponseSchema)
-        .query(async ({ input }) => {
+        .handler(async ({ input }) => {
             const service = new UserService(AppDataSource);
             return service.list(
                 {
@@ -42,4 +40,4 @@ export const usersRouter = router({
                 ORDER_BY_MAP[input.order_by] as any
             );
         }),
-});
+};

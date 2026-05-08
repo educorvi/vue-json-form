@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import type { RouterClient } from '@orpc/server';
 import type { UsersQuery } from '~~/server/models/user';
-import type { AppRouter } from '~~/server/trpc/routers';
-import { createTRPCNuxtClient } from 'trpc-nuxt/client';
+import type { AppRouter } from '~~/server/orpc/routers';
 
-definePageMeta({ middleware: ['authenticated'] });
+definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 
-const trpc = useNuxtApp().$trpc as unknown as ReturnType<
-    typeof createTRPCNuxtClient<AppRouter>
->;
+const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 type OrderBy = UsersQuery['order_by'];
 
@@ -27,7 +25,7 @@ const queryInput = computed<UsersQuery>(() => ({
 
 const { data, pending, error } = await useAsyncData(
     'users',
-    () => trpc.users.list.query(queryInput.value),
+    () => orpc.users.list(queryInput.value),
     { watch: [queryInput] }
 );
 
@@ -58,7 +56,7 @@ const columns = [
 </script>
 
 <template>
-    <div class="min-h-screen bg-surface-50 dark:bg-surface-900 p-6">
+    <div class="p-6">
         <div class="max-w-6xl mx-auto">
             <!-- Header row -->
             <div class="flex items-center justify-between mb-6">

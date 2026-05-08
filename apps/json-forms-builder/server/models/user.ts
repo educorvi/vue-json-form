@@ -20,9 +20,11 @@ export const UserSchema = z
     .describe('A system user')
     .register(globalRegistry, { id: 'User' });
 
-export const ListUsersResponseSchema = PaginatedMetaSchema.extend({
-    data: z.array(UserSchema),
-})
+export const ListUsersResponseSchema = PaginatedMetaSchema.and(
+    z.object({
+        data: z.array(UserSchema),
+    })
+)
     .describe('Paginated list of users')
     .register(globalRegistry, { id: 'UserList' });
 
