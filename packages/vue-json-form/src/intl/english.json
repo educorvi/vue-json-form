@@ -14,9 +14,9 @@
             "selectAtMost": "Please select at most !&data&! options."
         },
         "generic": {
-            "errorOccurred": "An Error occurred:",
+            "errorOccurred": "An error occurred:",
             "retryLater": "Please try again later.",
-            "temporaryError": "Please try again later."
+            "temporaryError": "An error occurred. Please try again later."
         }
     },
     "buttons": {

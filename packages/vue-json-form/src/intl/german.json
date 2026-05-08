@@ -15,7 +15,8 @@
         },
         "generic": {
             "errorOccurred": "Ein Fehler ist aufgetreten:",
-            "retryLater": "Bitte versuchen Sie es später erneut."
+            "retryLater": "Bitte versuchen Sie es später erneut.",
+            "temporaryError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
         }
     },
     "buttons": {
