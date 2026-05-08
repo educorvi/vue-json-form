@@ -926,10 +926,10 @@ __metadata:
     vitest: "npm:^4.1.5"
     vue: "npm:^3.5.33"
     vue-component-type-helpers: "npm:^3.2.7"
+    vue-draggable-plus: "npm:^0.6.1"
     vue-eslint-parser: "npm:^10.4.0"
     vue-router: "npm:^5.0.6"
     vue-tsc: "npm:^3.2.7"
-    vuedraggable: "npm:^4.1.0"
   languageName: unknown
   linkType: soft
 
@@ -3085,6 +3085,13 @@ __metadata:
   dependencies:
     htmlparser2: "npm:^10.1"
   checksum: 10/fba65c1b612f60cba07af2bb22791997f02b6774a2b68f16a40cb73e92b5f7086684fa6a947b5a24d200aae3607236eb24bfa3f2c56c40cd0e5209baf50bb12a
+  languageName: node
+  linkType: hard
+
+"@types/sortablejs@npm:^1.15.8":
+  version: 1.15.9
+  resolution: "@types/sortablejs@npm:1.15.9"
+  checksum: 10/9e0d6ef1cdcd30acab7af74cab5cbf56685e2de47c6f254357f7dde2626e9b49b8668c43f92761202cf4e10f2e3fd3d7baa6a83a39c3d342fc45ce66e87bd5aa
   languageName: node
   linkType: hard
 
@@ -11846,13 +11853,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sortablejs@npm:1.14.0":
-  version: 1.14.0
-  resolution: "sortablejs@npm:1.14.0"
-  checksum: 10/434e0caaabfac2b4f48e102cc40e12fd0af7dc99f14838005e6429e92cc190f0ccfb48b0cb8deed8a9b808543f926e2aad26aa89277ee036e5b4ee959ae47f9e
-  languageName: node
-  linkType: hard
-
 "source-map-js@npm:>=0.6.2 <2.0.0, source-map-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
@@ -13621,6 +13621,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue-draggable-plus@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "vue-draggable-plus@npm:0.6.1"
+  dependencies:
+    "@types/sortablejs": "npm:^1.15.8"
+  peerDependencies:
+    "@types/sortablejs": ^1.15.0
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+  checksum: 10/0de0029db906bece663b88c7df4dc817c34a1c77618ec4b0049f7a112b68768dba789a6226fc5fddee84bee43ec1a74b7071f0fa61fcc8dc9783f1eed2497ac7
+  languageName: node
+  linkType: hard
+
 "vue-eslint-parser@npm:^10.4.0":
   version: 10.4.0
   resolution: "vue-eslint-parser@npm:10.4.0"
@@ -13757,17 +13771,6 @@ __metadata:
     typescript:
       optional: true
   checksum: 10/71224766c803c6b515402b8a32f53a21e96e170d4eb37b5c28b58e494152908ef7b9a5915c56a6c0d2f9c9420678028412e6f82b71c21a678f9f5491c2fdfbb7
-  languageName: node
-  linkType: hard
-
-"vuedraggable@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "vuedraggable@npm:4.1.0"
-  dependencies:
-    sortablejs: "npm:1.14.0"
-  peerDependencies:
-    vue: ^3.0.1
-  checksum: 10/87d4faba83ea27c0c262fcdbe7bc9791560079096a5a9d1dc191ebfe0a00f8324d33ebc15272c4067ddc32b1681534d17acafbe73d18c4cb2a8d99f19d86e74b
   languageName: node
   linkType: hard
 
