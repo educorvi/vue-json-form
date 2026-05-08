@@ -103,7 +103,7 @@ function updateStage(event: SseEvent) {
     } else if (event.event === 'result') {
         summary.value = event.data.summary;
     } else if (event.event === 'error') {
-        summary.value = `${intl.getString('errors.generic.errorOccurred')}\n\n${event.data.message}\n\n${intl.getString('errors.generic.retryLater')}`;
+        summary.value = `${intl.getString('errors.generic.errorOccurred')}\n\n${event.data.message}`;
     }
 }
 
