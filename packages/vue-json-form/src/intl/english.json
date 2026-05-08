@@ -15,7 +15,8 @@
         },
         "generic": {
             "errorOccurred": "An Error occurred:",
-            "retryLater": "Please try again later."
+            "retryLater": "Please try again later.",
+            "temporaryError": "Please try again later."
         }
     },
     "buttons": {
