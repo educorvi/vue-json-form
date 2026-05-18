@@ -11,7 +11,8 @@
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
-        "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json"
+        "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json",
+        "orpg:generate": "npx @hey-api/openapi-ts"
     },
     "dependencies": {
         "@artmizu/nuxt-prometheus": "3.0.1",
@@ -21,10 +22,11 @@
         "@nuxt/hints": "1.0.3",
         "@nuxt/icon": "2.2.1",
         "@nuxtjs/i18n": "10.2.4",
-        "@orpc/client": "^1.14.2",
-        "@orpc/openapi": "^1.14.2",
-        "@orpc/server": "^1.14.2",
-        "@orpc/zod": "^1.14.2",
+        "@orpc/client": "^1.14.3",
+        "@orpc/json-schema": "^1.14.3",
+        "@orpc/openapi": "^1.14.3",
+        "@orpc/server": "^1.14.3",
+        "@orpc/zod": "^1.14.3",
         "@primeuix/themes": "^2.0.3",
         "@primevue/nuxt-module": "^4.5.5",
         "nuxt": "^4.4.2",
@@ -40,6 +42,7 @@
         "zod-openapi": "^5.4.6"
     },
     "devDependencies": {
+        "@hey-api/openapi-ts": "^0.97.1",
         "@nuxtjs/tailwindcss": "^6.14.0",
         "@tailwindcss/postcss": "^4.2.4",
         "@types/pg": "^8",

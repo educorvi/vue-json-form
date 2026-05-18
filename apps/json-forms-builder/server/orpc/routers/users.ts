@@ -1,13 +1,9 @@
-import { authed } from '../init';
-import {
-    UsersQuerySchema,
-    ListUsersResponseSchema,
-    ALLOWED_ORDER_BY,
-} from '~~/server/models/user';
+import { os, authMiddleware } from '../init';
 import { AppDataSource } from '~~/server/db/data-source';
 import { UserService } from '~~/server/services/UserService';
+import { zListUsersQuery } from '../generated/zod.gen';
 
-const ORDER_BY_MAP: Record<(typeof ALLOWED_ORDER_BY)[number], string> = {
+const ORDER_BY_MAP: Record<string, string> = {
     id: 'id',
     firstname: 'firstname',
     lastname: 'lastname',
@@ -18,26 +14,20 @@ const ORDER_BY_MAP: Record<(typeof ALLOWED_ORDER_BY)[number], string> = {
 };
 
 export const usersRouter = {
-    list: authed
-        .route({
-            method: 'GET',
-            inputStructure: 'detailed',
-            path: '/users',
-            tags: ['Users'],
-            summary: 'List users',
-        })
-        .input(UsersQuerySchema)
-        .output(ListUsersResponseSchema)
-        .handler(async ({ input }) => {
-            const service = new UserService(AppDataSource);
-            return service.list(
-                {
-                    page: input.page,
-                    pageSize: input.page_size,
-                    sortOrder: input.sort_order === 'asc' ? 'ASC' : 'DESC',
-                    search: input.search,
-                },
-                ORDER_BY_MAP[input.order_by] as any
-            );
-        }),
+    list: os.users.list.use(authMiddleware).handler(async ({ input }) => {
+        const service = new UserService(AppDataSource);
+        // input.query is fully typed with Zod defaults applied by the contract
+        // schema (z.coerce + .default()). Fallback to {} only when query string
+        // is absent entirely (query param block omitted).
+        const q = input.query ?? zListUsersQuery.parse({});
+        return service.list(
+            {
+                page: q.page,
+                pageSize: q.page_size,
+                sortOrder: q.sort_order === 'asc' ? 'ASC' : 'DESC',
+                search: q.search ?? '',
+            },
+            ORDER_BY_MAP[q.order_by] as any
+        );
+    }),
 };

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { RouterClient } from '@orpc/server';
-import type { UsersQuery } from '~~/server/models/user';
+import type { z } from 'zod';
+import type { zListUsersQuery } from '~~/server/orpc/generated/zod.gen';
 import type { AppRouter } from '~~/server/orpc/routers';
+
+type UsersQuery = z.infer<typeof zListUsersQuery>;
 
 definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 
@@ -25,7 +28,7 @@ const queryInput = computed<UsersQuery>(() => ({
 
 const { data, pending, error } = await useAsyncData(
     'users',
-    () => orpc.users.list(queryInput.value),
+    () => orpc.users.list({ query: queryInput.value }),
     { watch: [queryInput] }
 );
 

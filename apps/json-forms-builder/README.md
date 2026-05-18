@@ -73,3 +73,24 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+
+# Nitro:
+- doesn't support proper validation fo query parameters, return types with status code etc.
+
+# tRPC
+
+- supports proper validation but OpenAPI Export ist great
+
+
+# oRPC:
+
+- very similar to tRPC but with good OpenAPI support built in
+
+## TODOS oRPC:
+- Optimize SSR
+- https://orpc.dev/docs/adapters/nuxt#optimize-ssr
+- https://orpc.dev/docs/best-practices/optimize-ssr
+- Add Authentication to routes
+

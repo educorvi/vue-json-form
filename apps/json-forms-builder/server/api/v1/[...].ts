@@ -6,12 +6,20 @@
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { onError, ORPCError } from '@orpc/server';
 import { appRouter } from '~~/server/orpc/routers';
+import { SmartCoercionPlugin } from '@orpc/json-schema';
+import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 
 const handler = new OpenAPIHandler(appRouter, {
     interceptors: [
         onError((error) => {
-            if (!(error instanceof ORPCError))
-                console.error('[oRPC OpenAPI]', error);
+            console.error(error);
+            // if (!(error instanceof ORPCError))
+            //     console.error('[oRPC OpenAPI]', error);
+        }),
+    ],
+    plugins: [
+        new SmartCoercionPlugin({
+            schemaConverters: [new ZodToJsonSchemaConverter()],
         }),
     ],
 });

@@ -6,6 +6,14 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
 
+    css: ['~/assets/main.css', 'primeicons/primeicons.css'],
+
+    postcss: {
+        plugins: {
+            '@tailwindcss/postcss': {},
+        },
+    },
+
     typescript: {
         tsConfig: {
             compilerOptions: {
@@ -24,7 +32,6 @@ export default defineNuxtConfig({
         '@nuxt/icon',
         '@artmizu/nuxt-prometheus',
         '@nuxtjs/i18n',
-        '@nuxtjs/tailwindcss',
         '@primevue/nuxt-module',
     ],
 

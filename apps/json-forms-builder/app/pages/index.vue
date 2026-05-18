@@ -7,6 +7,12 @@ if (loggedIn.value) {
     await navigateTo('/dashboard');
 }
 
+const orpc = useNuxtApp().$orpc;
+const { data: apiStatus, error: apiStatusError } = await useAsyncData(
+    'api-status',
+    () => orpc.status.get()
+);
+
 const route = useRoute();
 const authError = computed(() => route.query.error === 'auth_failed');
 
@@ -93,14 +99,12 @@ const features: Feature[] = [
             </div>
 
             <h1 class="text-6xl font-bold mb-4 text-color">
-                Build &amp; Manage<br />
-                <span class="text-primary">JSON Forms</span>
+                Vue Json Form Builder<br />
             </h1>
             <p
                 class="text-xl text-color-secondary max-w-2xl mb-8 line-height-3"
             >
-                A self-hosted form administration platform — design schemas,
-                manage users, and expose a clean REST API, all in one place.
+                Easily create and manage forms based on JSON Schema
             </p>
 
             <Message
@@ -129,7 +133,8 @@ const features: Feature[] = [
                         Everything you need
                     </h2>
                     <p class="text-color-secondary text-lg">
-                        One platform for forms, users, and APIs
+                        One platform for creating new forms, managing them, and
+                        deploying them
                     </p>
                 </div>
                 <div
@@ -174,6 +179,20 @@ const features: Feature[] = [
             <span class="text-color-secondary text-sm">
                 Form Builder &mdash; built with Nuxt, oRPC &amp; PrimeVue
             </span>
+            <div class="mt-2 text-xs font-mono" data-testid="api-status">
+                <template v-if="apiStatusError">
+                    <span class="text-red-500"
+                        >API error: {{ apiStatusError.message }}</span
+                    >
+                </template>
+                <template v-else-if="apiStatus">
+                    <span class="text-green-600"
+                        >API {{ apiStatus.status }} v{{ apiStatus.version }} ({{
+                            apiStatus.timestamp
+                        }})</span
+                    >
+                </template>
+            </div>
         </footer>
     </div>
 </template>

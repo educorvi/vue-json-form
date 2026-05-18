@@ -10,7 +10,7 @@ export function paginatedResponse<T>(
         page,
         page_size: pageSize,
         total_count: totalCount,
-        total_pages: Math.ceil(totalCount / pageSize),
+        total_pages: Math.max(Math.ceil(totalCount / pageSize), 1),
         data,
     };
 }

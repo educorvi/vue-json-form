@@ -3,20 +3,34 @@
  * Generated from the oRPC router via @orpc/openapi + @orpc/zod.
  * Nitro's built-in Scalar UI (/_scalar) and Swagger UI (/_swagger) read from this path.
  */
+
+// import { readFileSync } from 'node:fs';
+// import { resolve } from 'node:path';
+// import { parse as parseYaml } from 'yaml';
+
+// const spec = parseYaml(
+//     readFileSync(resolve(process.cwd(), 'api/api-development.yaml'), 'utf-8')
+// );
+
+// export default defineEventHandler((event) => {
+//     if (event.path !== '/_openapi.json') return;
+//     return spec;
+// });
+
 import { OpenAPIGenerator } from '@orpc/openapi';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 import { appRouter } from '~~/server/orpc/routers';
-import { StatusResponseSchema } from '~~/server/models/status';
-import {
-    UserSchema,
-    ListUsersResponseSchema,
-    UsersQuerySchema,
-} from '~~/server/models/user';
-import {
-    GlobalRoleSchema,
-    PaginatedMetaSchema,
-    TimestampsSchema,
-} from '~~/server/models/shared';
+// import { StatusResponseSchema } from '~~/server/models/status';
+// import {
+//     UserSchema,
+//     ListUsersResponseSchema,
+//     UsersQuerySchema,
+// } from '~~/server/models/user';
+// import {
+//     GlobalRoleSchema,
+//     PaginatedMetaSchema,
+//     TimestampsSchema,
+// } from '~~/server/models/shared';
 
 const generator = new OpenAPIGenerator({
     schemaConverters: [new ZodToJsonSchemaConverter()],
@@ -46,15 +60,15 @@ export default defineEventHandler(async (event) => {
                     },
                 },
             },
-            commonSchemas: {
-                StatusResponse: { schema: StatusResponseSchema },
-                User: { schema: UserSchema },
-                UserList: { schema: ListUsersResponseSchema },
-                UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
-                GlobalRole: { schema: GlobalRoleSchema },
-                PaginatedMeta: { schema: PaginatedMetaSchema },
-                Timestamps: { schema: TimestampsSchema },
-            },
+            // commonSchemas: {
+            //     StatusResponse: { schema: StatusResponseSchema },
+            //     User: { schema: UserSchema },
+            //     UserList: { schema: ListUsersResponseSchema },
+            //     UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
+            //     GlobalRole: { schema: GlobalRoleSchema },
+            //     PaginatedMeta: { schema: PaginatedMetaSchema },
+            //     Timestamps: { schema: TimestampsSchema },
+            // },
         });
     }
 
