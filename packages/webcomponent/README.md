@@ -16,26 +16,49 @@ Or use it directly from a CDN (see usage example below).
 
 ## Usage
 
-VJF can be used as a webcomponent.
+VJF can be used as a web component.
 Bootstrap needs to be set up on the surrounding page.
-If you set `action === 'request'` and `request.url` in the submit options of the button, the webcomponent will post the form data to the given endpoint in the background.
-If one of those options is not set, the data and the submit options will be emitted as an event with the name `submit`.
+If you set `action: 'request'` and `request.url` in the submit button options of the UI Schema, the web component will post the form data to the given endpoint in the background and emit `submitSucceeded` or `submitFailed` accordingly.
+If `request.url` is not set, the form data is emitted as a `submit` event instead.
+See the [Events](#events) section below for the full list of events.
 
-There are three variants of the webcomponent:
+There are three variants of the web component:
 
 - default
 - shadowDom (where the webcomponent is inside of a schadow dom)
 - ajvValidator (validates the provided schemas)
 
-Supported options are:
+### Attributes
 
-- `jsonSchema`
-- `uiSchema`
-- `presetData`
-- `returnDataAsScopes`
-- `noValidate` (only for `ajvValidator` variant, disables validation)
+| Attribute              | Type    | Description                                                                                          |
+| ---------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| `json-schema`          | string  | **(Required)** JSON-serialized JSON Schema for the form.                                             |
+| `ui-schema`            | string  | JSON-serialized UI Schema that controls layout and options.                                          |
+| `preset-data`          | string  | JSON-serialized object with initial / pre-filled form values.                                        |
+| `return-data-as-scopes`| boolean | When `"true"`, the submitted data object uses UI-Schema scopes as keys instead of JSON Schema paths. |
+| `no-validate`          | boolean | *(ajvValidator variant only)* Disables AJV schema validation when set.                               |
 
 The submission of results is controlled via the submit buttons in the UI Schema.
+
+### Events
+
+Web-component events are dispatched as `CustomEvent`s. Access the payload via `event.detail`.
+
+| Event            | When fired                                                                                                      | `event.detail`                          |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `submit`         | The submit button action is not `request`, **or** `request` is configured but no URL is provided.              | `{ data, options }`                     |
+| `submitSucceeded`| All configured HTTP requests completed successfully.                                                            | `{ data, options }`                     |
+| `submitFailed`   | At least one of the configured HTTP requests failed.                                                            | `{ data, options }`                     |
+| `afterSubmitted` | Always fired after the submit cycle finishes (regardless of success or failure), unless action is `summary`.   | `{ data, options }`                     |
+
+`data` is the collected form data object. `options` is the submit-button options object from the UI Schema.
+
+```js
+document.querySelector('vue-json-form').addEventListener('submit', (event) => {
+    const { data, options } = event.detail;
+    console.log(data);
+});
+```
 
 ```html
 <!DOCTYPE html>
@@ -49,9 +72,7 @@ The submission of results is controlled via the submit buttons in the UI Schema.
         />
     </head>
     <body>
-        <!-- json: Your JSON Schema   -->
-        <!-- ui: Your UI Schema       -->
-        <vue-json-form jsonSchema="{...}" uiSchema="{...}"></vue-json-form>
+        <vue-json-form json-schema="{...}" ui-schema="{...}"></vue-json-form>
 
         <script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@3/dist/default/vue-json-form.umd.js"></script>
     </body>
