@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: false });
 
+const { t } = useI18n();
 const { loggedIn } = useUserSession();
 
 if (loggedIn.value) {
@@ -18,68 +19,74 @@ const authError = computed(() => route.query.error === 'auth_failed');
 
 interface Feature {
     icon: string;
-    title: string;
-    description: string;
+    titleKey: string;
+    descKey: string;
 }
 
-const features: Feature[] = [
+const featureDefs: Feature[] = [
     {
         icon: 'pi pi-file-edit',
-        title: 'Visual Form Builder',
-        description:
-            'Design complex JSON Schema-driven forms with a drag-and-drop interface and live preview.',
+        titleKey: 'features.formBuilder.title',
+        descKey: 'features.formBuilder.description',
     },
     {
         icon: 'pi pi-users',
-        title: 'User & Role Management',
-        description:
-            'Manage system users, assign roles, and control access to forms and data.',
+        titleKey: 'features.userManagement.title',
+        descKey: 'features.userManagement.description',
     },
     {
         icon: 'pi pi-shield',
-        title: 'Fine-grained Permissions',
-        description:
-            'Define granular access policies per form, schema, or resource for your organisation.',
+        titleKey: 'features.permissions.title',
+        descKey: 'features.permissions.description',
     },
     {
         icon: 'pi pi-code',
-        title: 'OpenAPI REST Interface',
-        description:
-            'Every resource is accessible via a fully documented, standards-compliant REST API.',
+        titleKey: 'features.openApi.title',
+        descKey: 'features.openApi.description',
     },
     {
         icon: 'pi pi-history',
-        title: 'Schema Versioning',
-        description:
-            'Track changes to your JSON Schemas over time and roll back to any previous version.',
+        titleKey: 'features.versioning.title',
+        descKey: 'features.versioning.description',
     },
     {
         icon: 'pi pi-lock',
-        title: 'Single Sign-On',
-        description:
-            'Authenticate via Keycloak OIDC — one login for all services in your infrastructure.',
+        titleKey: 'features.sso.title',
+        descKey: 'features.sso.description',
     },
 ];
+
+const features = computed(() =>
+    featureDefs.map((f) => ({
+        icon: f.icon,
+        title: t(f.titleKey),
+        description: t(f.descKey),
+    }))
+);
 </script>
 
 <template>
     <div class="min-h-screen flex flex-col surface-ground">
-        <!-- Minimal top bar -->
-        <Menubar class="rounded-none border-x-0 border-t-0">
+        <!-- Top bar -->
+        <Menubar class="rounded-none border-x-0 border-t-0 px-4 py-2">
             <template #start>
                 <div class="flex items-center gap-2">
-                    <i class="pi pi-file-edit text-primary text-lg" />
+                    <i class="pi pi-file-edit text-primary text-xl" />
                     <span class="font-semibold text-sm">Form Builder</span>
                 </div>
             </template>
             <template #end>
-                <Button
-                    as="a"
-                    href="/auth/keycloak"
-                    label="Sign in"
-                    icon="pi pi-sign-in"
-                    size="small"
-                />
+                <div class="flex items-center gap-2">
+                    <LocaleSwitcher class="w-36" />
+                    <ThemeSwitcher />
+                    <Button
+                        as="a"
+                        href="/auth/keycloak"
+                        :label="t('nav.signIn')"
+                        icon="pi pi-sign-in"
+                        size="small"
+                    />
+                </div>
             </template>
         </Menubar>
 
@@ -99,12 +106,12 @@ const features: Feature[] = [
             </div>
 
             <h1 class="text-6xl font-bold mb-4 text-color">
-                Vue Json Form Builder<br />
+                {{ t('landing.title') }}
             </h1>
             <p
                 class="text-xl text-color-secondary max-w-2xl mb-8 line-height-3"
             >
-                Easily create and manage forms based on JSON Schema
+                {{ t('landing.subtitle') }}
             </p>
 
             <Message
@@ -113,13 +120,13 @@ const features: Feature[] = [
                 class="mb-6 max-w-md w-full"
                 :closable="false"
             >
-                Authentication failed. Please try again.
+                {{ t('landing.authError') }}
             </Message>
 
             <Button
                 as="a"
                 href="/auth/keycloak"
-                label="Sign in with Keycloak"
+                :label="t('landing.signInKeycloak')"
                 icon="pi pi-sign-in"
                 size="large"
             />
@@ -130,44 +137,22 @@ const features: Feature[] = [
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl font-bold text-color mb-2">
-                        Everything you need
+                        {{ t('landing.featuresHeading') }}
                     </h2>
                     <p class="text-color-secondary text-lg">
-                        One platform for creating new forms, managing them, and
-                        deploying them
+                        {{ t('landing.featuresSubheading') }}
                     </p>
                 </div>
                 <div
                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
                 >
-                    <Card
+                    <FeatureCard
                         v-for="feature in features"
                         :key="feature.title"
-                        class="shadow-1"
-                    >
-                        <template #header>
-                            <div
-                                class="flex items-center justify-center pt-5 pb-2"
-                            >
-                                <span
-                                    class="inline-flex items-center justify-center w-14 h-14 rounded-full surface-ground"
-                                >
-                                    <i
-                                        :class="[
-                                            feature.icon,
-                                            'text-primary text-2xl',
-                                        ]"
-                                    />
-                                </span>
-                            </div>
-                        </template>
-                        <template #title>{{ feature.title }}</template>
-                        <template #content>
-                            <p class="text-color-secondary line-height-3 m-0">
-                                {{ feature.description }}
-                            </p>
-                        </template>
-                    </Card>
+                        :icon="feature.icon"
+                        :title="feature.title"
+                        :description="feature.description"
+                    />
                 </div>
             </div>
         </section>
@@ -177,7 +162,7 @@ const features: Feature[] = [
             class="surface-section border-top-1 surface-border px-6 py-5 text-center"
         >
             <span class="text-color-secondary text-sm">
-                Form Builder &mdash; built with Nuxt, oRPC &amp; PrimeVue
+                {{ t('landing.footer') }}
             </span>
             <div class="mt-2 text-xs font-mono" data-testid="api-status">
                 <template v-if="apiStatusError">

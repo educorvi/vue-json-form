@@ -1,0 +1,92 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "users": "Users",
+        "apiDocs": "API Docs",
+        "signIn": "Sign in",
+        "signOut": "Sign out"
+    },
+    "landing": {
+        "title": "Vue Json Form Builder",
+        "subtitle": "Easily create and manage forms based on JSON Schema",
+        "signInKeycloak": "Sign in with Keycloak",
+        "authError": "Authentication failed. Please try again.",
+        "featuresHeading": "Everything you need",
+        "featuresSubheading": "One platform for creating new forms, managing them, and deploying them",
+        "footer": "Form Builder — built with Nuxt, oRPC & PrimeVue"
+    },
+    "features": {
+        "formBuilder": {
+            "title": "Visual Form Builder",
+            "description": "Design complex JSON Schema-driven forms with a drag-and-drop interface and live preview."
+        },
+        "userManagement": {
+            "title": "User & Role Management",
+            "description": "Manage system users, assign roles, and control access to forms and data."
+        },
+        "permissions": {
+            "title": "Fine-grained Permissions",
+            "description": "Define granular access policies per form, schema, or resource for your organisation."
+        },
+        "openApi": {
+            "title": "OpenAPI REST Interface",
+            "description": "Every resource is accessible via a fully documented, standards-compliant REST API."
+        },
+        "versioning": {
+            "title": "Schema Versioning",
+            "description": "Track changes to your JSON Schemas over time and roll back to any previous version."
+        },
+        "sso": {
+            "title": "Single Sign-On",
+            "description": "Authenticate via Keycloak OIDC — one login for all services in your infrastructure."
+        }
+    },
+    "users": {
+        "title": "Users",
+        "searchPlaceholder": "Search by name or email…",
+        "loadError": "Failed to load users:",
+        "noUsersTitle": "No users found",
+        "noUsersDescription": "There are no users yet.",
+        "noSearchResults": "No results for '{query}'. Try a different search term.",
+        "total": "No users | {n} user | {n} users",
+        "columns": {
+            "firstname": "First name",
+            "lastname": "Last name",
+            "email": "Email",
+            "role": "Role",
+            "created": "Created"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Administrative interface for managing forms, users, and permissions.",
+        "apiStatus": "API Status",
+        "apiError": "Could not reach API:",
+        "navUsers": "Users",
+        "navUsersDesc": "Manage system users, roles, and access.",
+        "navApiDocs": "API Docs",
+        "navApiDocsDesc": "Browse and test the REST API via Swagger UI."
+    },
+    "theme": {
+        "label": "Theme mode",
+        "light": "Light mode",
+        "dark": "Dark mode",
+        "system": "System theme"
+    },
+    "locale": {
+        "label": "Language"
+    },
+    "designSystem": {
+        "label": "Design System",
+        "active": "Active",
+        "hint": "Switching the design system updates all PrimeVue components and Tailwind primary / surface utilities instantly — no reload needed.",
+        "uv": {
+            "label": "UV Corporate",
+            "description": "Flat enterprise look with UV brand colors and 0px border radius."
+        },
+        "aura": {
+            "label": "PrimeVue Aura",
+            "description": "Default PrimeVue Aura preset with rounded corners and standard palette."
+        }
+    }
+}

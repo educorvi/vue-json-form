@@ -25,6 +25,7 @@ export default defineNuxtConfig({
 
     modules: [
         'nuxt-auth-utils',
+        '@pinia/nuxt',
         '@nuxt/a11y',
         '@nuxt/eslint',
         '@nuxt/fonts',
@@ -33,14 +34,29 @@ export default defineNuxtConfig({
         '@artmizu/nuxt-prometheus',
         '@nuxtjs/i18n',
         '@primevue/nuxt-module',
+        '@nuxtjs/i18n',
     ],
 
     primevue: {
         options: {
             theme: {
-                preset: Aura,
+                preset: UVNexusPreset,
+                options: {
+                    darkModeSelector: '.app-dark',
+                },
             },
         },
+    },
+
+    i18n: {
+        locales: [
+            { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
+            { code: 'de', language: 'de-DE', name: 'Deutsch', file: 'de.json' },
+        ],
+        defaultLocale: 'en',
+        lazy: true,
+        // langDir: 'i18n/locales/',
+        strategy: 'no_prefix',
     },
 
     nitro: {

@@ -4,6 +4,7 @@ import type { AppRouter } from '~~/server/orpc/routers';
 
 definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 
+const { t } = useI18n();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 const {
@@ -15,25 +16,24 @@ const {
 
 <template>
     <div class="p-6">
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-5xl mx-auto">
             <div class="mb-8">
                 <h1
                     class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-1"
                 >
-                    Dashboard
+                    {{ t('dashboard.title') }}
                 </h1>
                 <p class="text-surface-400">
-                    Administrative interface for managing forms, users, and
-                    permissions.
+                    {{ t('dashboard.subtitle') }}
                 </p>
             </div>
 
             <!-- Status card -->
-            <Card class="mb-6 shadow-sm">
+            <Card class="mb-6">
                 <template #title>
                     <span
                         class="text-base font-semibold text-surface-700 dark:text-surface-200"
-                        >API Status</span
+                        >{{ t('dashboard.apiStatus') }}</span
                     >
                 </template>
                 <template #content>
@@ -50,7 +50,7 @@ const {
                         class="flex items-center gap-2 text-red-500"
                     >
                         <i class="pi pi-exclamation-triangle" />
-                        Could not reach API: {{ error.message }}
+                        {{ t('dashboard.apiError') }} {{ error.message }}
                     </div>
                     <div v-else-if="status" class="flex items-center gap-4">
                         <Tag
@@ -78,26 +78,24 @@ const {
             <!-- Navigation cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <NuxtLink to="/users" class="no-underline">
-                    <Card
-                        class="hover:shadow-md transition-shadow cursor-pointer border border-surface-200 dark:border-surface-700"
-                    >
+                    <Card>
                         <template #content>
                             <div class="flex items-start gap-4">
                                 <div
                                     class="w-10 h-10 rounded-lg bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0"
                                 >
                                     <i
-                                        class="pi pi-users text-primary-500 text-lg"
+                                        class="pi pi-users text-emerald-500 text-lg"
                                     />
                                 </div>
                                 <div>
                                     <p
                                         class="font-semibold text-surface-800 dark:text-surface-100 mb-0.5"
                                     >
-                                        Users
+                                        {{ t('dashboard.navUsers') }}
                                     </p>
                                     <p class="text-sm text-surface-400">
-                                        Manage system users, roles, and access.
+                                        {{ t('dashboard.navUsersDesc') }}
                                     </p>
                                 </div>
                             </div>
@@ -106,9 +104,7 @@ const {
                 </NuxtLink>
 
                 <a href="/_swagger" target="_blank" class="no-underline">
-                    <Card
-                        class="hover:shadow-md transition-shadow cursor-pointer border border-surface-200 dark:border-surface-700"
-                    >
+                    <Card>
                         <template #content>
                             <div class="flex items-start gap-4">
                                 <div
@@ -122,11 +118,10 @@ const {
                                     <p
                                         class="font-semibold text-surface-800 dark:text-surface-100 mb-0.5"
                                     >
-                                        API Docs
+                                        {{ t('dashboard.navApiDocs') }}
                                     </p>
                                     <p class="text-sm text-surface-400">
-                                        Browse and test the REST API via Swagger
-                                        UI.
+                                        {{ t('dashboard.navApiDocsDesc') }}
                                     </p>
                                 </div>
                             </div>

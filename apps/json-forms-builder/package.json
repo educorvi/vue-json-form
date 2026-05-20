@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@artmizu/nuxt-prometheus": "3.0.1",
+        "@educorvi/uv-theme": "workspace:*",
         "@nuxt/a11y": "1.0.0-alpha.1",
         "@nuxt/eslint": "1.15.2",
         "@nuxt/fonts": "0.14.0",
@@ -27,11 +28,14 @@
         "@orpc/openapi": "^1.14.3",
         "@orpc/server": "^1.14.3",
         "@orpc/zod": "^1.14.3",
+        "@phosphor-icons/vue": "^2.2.1",
+        "@pinia/nuxt": "^0.11.3",
         "@primeuix/themes": "^2.0.3",
         "@primevue/nuxt-module": "^4.5.5",
-        "nuxt": "^4.4.2",
+        "nuxt": "^4.4.6",
         "nuxt-auth-utils": "^0.5.29",
         "pg": "^8.20.0",
+        "pinia-plugin-persistedstate": "^4.7.1",
         "primeicons": "^7.0.0",
         "primevue": "^4.5.5",
         "turbo": "^2.9.6",
@@ -48,6 +52,7 @@
         "@types/pg": "^8",
         "autoprefixer": "^10.5.0",
         "postcss": "^8.5.14",
-        "tailwindcss": "^4.2.4"
+        "tailwindcss": "^4.2.4",
+        "tailwindcss-primeui": "^0.6.1"
     }
 }

@@ -8,6 +8,7 @@ type UsersQuery = z.infer<typeof zListUsersQuery>;
 
 definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 
+const { t } = useI18n();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 type OrderBy = UsersQuery['order_by'];
@@ -51,11 +52,11 @@ const ROLE_SEVERITY: Record<string, 'danger' | 'secondary'> = {
     user: 'secondary',
 };
 
-const columns = [
-    { field: 'firstname', header: 'First name' },
-    { field: 'lastname', header: 'Last name' },
-    { field: 'email', header: 'Email' },
-];
+const columns = computed(() => [
+    { field: 'firstname', header: t('users.columns.firstname') },
+    { field: 'lastname', header: t('users.columns.lastname') },
+    { field: 'email', header: t('users.columns.email') },
+]);
 </script>
 
 <template>
@@ -67,13 +68,14 @@ const columns = [
                     <h1
                         class="text-2xl font-bold text-surface-900 dark:text-surface-0"
                     >
-                        Users
+                        {{ t('users.title') }}
                     </h1>
                     <p v-if="data" class="text-sm text-surface-400 mt-0.5">
-                        {{ data.total_count }} user{{
-                            data.total_count !== 1 ? 's' : ''
+                        {{
+                            $t('users.total', data.total_count, {
+                                n: data.total_count,
+                            })
                         }}
-                        total
                     </p>
                 </div>
                 <!-- Search -->
@@ -81,7 +83,7 @@ const columns = [
                     <IconField>
                         <InputIcon class="pi pi-search" />
                         <InputText
-                            placeholder="Search by name or email…"
+                            :placeholder="t('users.searchPlaceholder')"
                             class="w-full"
                             @input="
                                 onSearch(
@@ -100,87 +102,104 @@ const columns = [
                 class="mb-4"
                 :closable="false"
             >
-                <span class="font-semibold">Failed to load users:</span>
+                <span class="font-semibold">{{ t('users.loadError') }}</span>
                 {{ error.message }}
             </Message>
 
             <!-- Table card -->
-            <div
-                class="rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800 overflow-hidden shadow-sm"
-            >
-                <!-- Loading skeleton -->
-                <DataTable
-                    v-if="pending"
-                    :value="Array(pageSize).fill({})"
-                    class="w-full"
-                >
-                    <Column header="First name"
-                        ><template #body><Skeleton height="1rem" /></template
-                    ></Column>
-                    <Column header="Last name"
-                        ><template #body><Skeleton height="1rem" /></template
-                    ></Column>
-                    <Column header="Email"
-                        ><template #body><Skeleton height="1rem" /></template
-                    ></Column>
-                    <Column header="Role"
-                        ><template #body
-                            ><Skeleton
-                                width="4rem"
-                                height="1.25rem"
-                                border-radius="9999px" /></template
-                    ></Column>
-                    <Column header="Created"
-                        ><template #body><Skeleton height="1rem" /></template
-                    ></Column>
-                </DataTable>
-
-                <!-- Empty state -->
-                <EmptyState
-                    v-else-if="data && data.data.length === 0"
-                    icon="pi pi-users"
-                    title="No users found"
-                    :description="
-                        search
-                            ? `No results for '${search}'. Try a different search term.`
-                            : 'There are no users yet.'
-                    "
-                />
-
-                <!-- Data table -->
-                <DataTable
-                    v-else-if="data"
-                    :value="data.data"
-                    class="w-full"
-                    striped-rows
-                >
-                    <Column
-                        v-for="col in columns"
-                        :key="col.field"
-                        :field="col.field"
-                        :header="col.header"
-                        sortable
-                    ></Column>
-                    <Column field="role" header="Role">
-                        <template #body="{ data: row }">
-                            <Tag
-                                :value="row.role"
-                                :severity="
-                                    ROLE_SEVERITY[row.role] ?? 'secondary'
-                                "
-                                class="capitalize"
-                            />
-                        </template>
-                    </Column>
-                    <Column field="created" header="Created">
-                        <template #body="{ data: row }">
-                            <span class="text-surface-500 text-sm">
-                                {{ new Date(row.created).toLocaleDateString() }}
-                            </span>
-                        </template>
-                    </Column>
-                </DataTable>
-            </div>
+            <Card>
+                <template #content>
+                    <!-- Loading skeleton -->
+                    <DataTable
+                        v-if="pending"
+                        :value="Array(pageSize).fill({})"
+                        class="w-full"
+                    >
+                        <Column :header="t('users.columns.firstname')"
+                            ><template #body
+                                ><Skeleton height="1rem" /></template
+                        ></Column>
+                        <Column :header="t('users.columns.lastname')"
+                            ><template #body
+                                ><Skeleton height="1rem" /></template
+                        ></Column>
+                        <Column :header="t('users.columns.email')"
+                            ><template #body
+                                ><Skeleton height="1rem" /></template
+                        ></Column>
+                        <Column :header="t('users.columns.role')"
+                            ><template #body
+                                ><Skeleton
+                                    width="4rem"
+                                    height="1.25rem"
+                                    border-radius="9999px" /></template
+                        ></Column>
+                        <Column :header="t('users.columns.created')">
+                            <template #body>
+                                <Skeleton height="1rem" />
+                            </template>
+                        </Column>
+                    </DataTable>
+                    <template v-else>
+                        <EmptyState
+                            v-if="data && data.data.length === 0"
+                            icon="pi pi-users"
+                            :title="t('users.noUsersTitle')"
+                            :description="
+                                search
+                                    ? t('users.noSearchResults', {
+                                          query: search,
+                                      })
+                                    : t('users.noUsersDescription')
+                            "
+                        />
+                        <!-- Data table -->
+                        <DataTable
+                            v-else-if="data"
+                            :value="data.data"
+                            class="w-full"
+                            striped-rows
+                        >
+                            <Column
+                                v-for="col in columns"
+                                :key="col.field"
+                                :field="col.field"
+                                :header="col.header"
+                                sortable
+                            ></Column>
+                            <Column
+                                field="role"
+                                :header="t('users.columns.role')"
+                            >
+                                <template #body="{ data: row }">
+                                    <Tag
+                                        :value="row.role"
+                                        :severity="
+                                            ROLE_SEVERITY[row.role] ??
+                                            'secondary'
+                                        "
+                                        class="capitalize"
+                                    />
+                                </template>
+                            </Column>
+                            <Column
+                                field="created"
+                                :header="t('users.columns.created')"
+                            >
+                                <template #body="{ data: row }">
+                                    <span class="text-surface-500 text-sm">
+                                        {{
+                                            new Date(
+                                                row.created
+                                            ).toLocaleDateString()
+                                        }}
+                                    </span>
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </template>
+                </template>
+            </Card>
 
             <!-- Pagination -->
             <div

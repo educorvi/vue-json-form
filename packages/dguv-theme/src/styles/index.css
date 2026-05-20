@@ -1,0 +1,214 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   @educorvi/uv-theme — UV Corporate Color Palette
+   ══════════════════════════════════════════════════════════════════════════════
+
+   Import this file in your app's entry CSS AFTER @import 'tailwindcss':
+
+       @import 'tailwindcss';
+       @import 'tailwindcss-primeui';
+       @import '@educorvi/uv-theme/styles';
+
+   This file provides:
+     1. :root CSS custom properties (--uv-*) — single source of truth for
+        all UV brand colors. PrimeVue primitive tokens reference them via
+        var(--uv-*), meaning a color change here cascades to every component.
+
+     2. @theme inline block — wires the UV palette into Tailwind v4's
+        --color-* namespace so standard utilities like bg-blue-500,
+        text-red-300, border-teal-600 all resolve to UV brand colors.
+        UV uses a 6-stop scale stretched to Tailwind's 11-stop (50–950).
+
+   NOTE: tailwindcss-primeui already maps primary-* and surface-* utilities
+   to PrimeVue's --p-* CSS vars, so those are not redefined here.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. Source Sans 3 — local variable font ────────────────────────────────────────── */
+/* Path is relative to this CSS file (src/styles/ → src/assets/). */
+/* Vite resolves and copies the TTF into the build output automatically.    */
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('../assets/Source_Sans_3/SourceSans3-VariableFont_wght.ttf') format('truetype');
+    font-weight: 200 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Source Sans 3';
+    src: url('../assets/Source_Sans_3/SourceSans3-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 200 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* ── 1. UV Color Custom Properties ──────────────────────────────────────────── */
+:root {
+    /* Typography */
+    --uv-font-sans: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    /* Blue (primary) — ref-color-primary-* */
+    --uv-blue-10: #d4edfc;
+    --uv-blue-20: #a1daf8;
+    --uv-blue-30: #4ebfef;
+    --uv-blue-50: #0095db;
+    --uv-blue-60: #0063af;
+    --uv-blue-70: #004994;
+
+    /* Green (success / secondary) — ref-color-success-* */
+    --uv-green-10: #ecf3da;
+    --uv-green-20: #d5df95;
+    --uv-green-30: #afca0b;
+    --uv-green-50: #4ca22f;
+    --uv-green-60: #00812c;
+    --uv-green-70: #006226;
+
+    /* Teal (info) — ref-color-info-* */
+    --uv-teal-10: #ebf6f6;
+    --uv-teal-20: #a4d8de;
+    --uv-teal-30: #6ebcc9;
+    --uv-teal-50: #007c84;
+    --uv-teal-60: #006169;
+    --uv-teal-70: #00434b;
+
+    /* Violet (brand accent) — ref-color-custom-* */
+    --uv-violet-10: #f1d9ea;
+    --uv-violet-20: #edbad9;
+    --uv-violet-30: #cb5d9f;
+    --uv-violet-50: #b81178;
+    --uv-violet-60: #881861;
+    --uv-violet-70: #56184a;
+
+    /* Red (error) — ref-color-error-* */
+    --uv-red-10: #fdeded;
+    --uv-red-20: #f8c7c8;
+    --uv-red-30: #f35449;
+    --uv-red-50: #d51317;
+    --uv-red-60: #9b1c18;
+    --uv-red-70: #681c16;
+
+    /* Orange (warning) — ref-color-warning-* */
+    --uv-orange-10: #faf4d6;
+    --uv-orange-20: #ffe4b2;
+    --uv-orange-30: #ffc670;
+    --uv-orange-50: #f7a600;
+    --uv-orange-60: #dd7500;
+    --uv-orange-70: #b55103;
+
+    /* Grey (neutral) — ref-color-neutral-* */
+    --uv-grey-0:   #ffffff;
+    --uv-grey-10:  #ededed;
+    --uv-grey-30:  #c6c6c6;
+    --uv-grey-50:  #9c9c9c;
+    --uv-grey-80:  #555555;
+    --uv-grey-90:  #3c3c3c;
+    --uv-grey-100: #000000;
+
+}
+
+/* ── 2. Tailwind v4 Color Scale Mapping ──────────────────────────────────────
+   UV 6-stop scale stretched to Tailwind's 11-stop (50–950).
+   Stops without an exact UV match use the nearest UV stop.
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme inline {
+    /* Blue ── UV: 10/20/30/50/60/70 */
+    --color-blue-50: var(--uv-blue-10);
+    --color-blue-100: var(--uv-blue-10);
+    --color-blue-200: var(--uv-blue-20);
+    --color-blue-300: var(--uv-blue-30);
+    --color-blue-400: var(--uv-blue-30);
+    --color-blue-500: var(--uv-blue-50);
+    --color-blue-600: var(--uv-blue-60);
+    --color-blue-700: var(--uv-blue-70);
+    --color-blue-800: var(--uv-blue-70);
+    --color-blue-900: var(--uv-blue-70);
+    --color-blue-950: var(--uv-blue-70);
+
+    /* Green ── UV success */
+    --color-green-50: var(--uv-green-10);
+    --color-green-100: var(--uv-green-10);
+    --color-green-200: var(--uv-green-20);
+    --color-green-300: var(--uv-green-30);
+    --color-green-400: var(--uv-green-30);
+    --color-green-500: var(--uv-green-50);
+    --color-green-600: var(--uv-green-60);
+    --color-green-700: var(--uv-green-70);
+    --color-green-800: var(--uv-green-70);
+    --color-green-900: var(--uv-green-70);
+    --color-green-950: var(--uv-green-70);
+
+    /* Teal ── UV info */
+    --color-teal-50: var(--uv-teal-10);
+    --color-teal-100: var(--uv-teal-10);
+    --color-teal-200: var(--uv-teal-20);
+    --color-teal-300: var(--uv-teal-30);
+    --color-teal-400: var(--uv-teal-30);
+    --color-teal-500: var(--uv-teal-50);
+    --color-teal-600: var(--uv-teal-60);
+    --color-teal-700: var(--uv-teal-70);
+    --color-teal-800: var(--uv-teal-70);
+    --color-teal-900: var(--uv-teal-70);
+    --color-teal-950: var(--uv-teal-70);
+
+    /* Violet ── UV brand accent */
+    --color-violet-50: var(--uv-violet-10);
+    --color-violet-100: var(--uv-violet-10);
+    --color-violet-200: var(--uv-violet-20);
+    --color-violet-300: var(--uv-violet-30);
+    --color-violet-400: var(--uv-violet-30);
+    --color-violet-500: var(--uv-violet-50);
+    --color-violet-600: var(--uv-violet-60);
+    --color-violet-700: var(--uv-violet-70);
+    --color-violet-800: var(--uv-violet-70);
+    --color-violet-900: var(--uv-violet-70);
+    --color-violet-950: var(--uv-violet-70);
+
+    /* Red ── UV error */
+    --color-red-50: var(--uv-red-10);
+    --color-red-100: var(--uv-red-10);
+    --color-red-200: var(--uv-red-20);
+    --color-red-300: var(--uv-red-30);
+    --color-red-400: var(--uv-red-30);
+    --color-red-500: var(--uv-red-50);
+    --color-red-600: var(--uv-red-60);
+    --color-red-700: var(--uv-red-70);
+    --color-red-800: var(--uv-red-70);
+    --color-red-900: var(--uv-red-70);
+    --color-red-950: var(--uv-red-70);
+
+    /* Orange ── UV warning */
+    --color-orange-50: var(--uv-orange-10);
+    --color-orange-100: var(--uv-orange-10);
+    --color-orange-200: var(--uv-orange-20);
+    --color-orange-300: var(--uv-orange-30);
+    --color-orange-400: var(--uv-orange-30);
+    --color-orange-500: var(--uv-orange-50);
+    --color-orange-600: var(--uv-orange-60);
+    --color-orange-700: var(--uv-orange-70);
+    --color-orange-800: var(--uv-orange-70);
+    --color-orange-900: var(--uv-orange-70);
+    --color-orange-950: var(--uv-orange-70);
+
+    /* Gray ── UV grey */
+    --color-gray-50:  var(--uv-grey-10);
+    --color-gray-100: var(--uv-grey-10);
+    --color-gray-200: var(--uv-grey-30);
+    --color-gray-300: var(--uv-grey-30);
+    --color-gray-400: var(--uv-grey-30);
+    --color-gray-500: var(--uv-grey-50);
+    --color-gray-600: var(--uv-grey-50);
+    --color-gray-700: var(--uv-grey-80);
+    --color-gray-800: var(--uv-grey-80);
+    --color-gray-900: var(--uv-grey-90);
+    --color-gray-950: var(--uv-grey-100);
+
+    /* Font family */
+    --font-sans: var(--uv-font-sans);
+
+    /* Border radius — inherit from PrimeVue theme tokens so that
+       Tailwind rounded-* utilities always match the component border-radius.
+       Change the theme preset once and both update automatically. */
+    --radius-sm:   var(--p-border-radius-sm);
+    --radius-md:   var(--p-border-radius-md);
+    --radius-lg:   var(--p-border-radius-lg);
+    --radius-xl:   var(--p-border-radius-xl);
+    --radius-2xl:  var(--p-border-radius-xl);
+    --radius-3xl:  var(--p-border-radius-xl);
+}

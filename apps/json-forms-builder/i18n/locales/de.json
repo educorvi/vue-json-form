@@ -1,0 +1,92 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "users": "Benutzer",
+        "apiDocs": "API-Dokumentation",
+        "signIn": "Anmelden",
+        "signOut": "Abmelden"
+    },
+    "landing": {
+        "title": "Vue Json Form Builder",
+        "subtitle": "Formulare auf Basis von JSON Schema einfach erstellen und verwalten",
+        "signInKeycloak": "Mit Keycloak anmelden",
+        "authError": "Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "featuresHeading": "Alles, was Sie brauchen",
+        "featuresSubheading": "Eine Plattform zum Erstellen, Verwalten und Bereitstellen von Formularen",
+        "footer": "Form Builder — gebaut mit Nuxt, oRPC & PrimeVue"
+    },
+    "features": {
+        "formBuilder": {
+            "title": "Visueller Formularersteller",
+            "description": "Gestalten Sie komplexe JSON-Schema-gestützte Formulare mit Drag-and-Drop und Live-Vorschau."
+        },
+        "userManagement": {
+            "title": "Benutzer- & Rollenverwaltung",
+            "description": "Systembenutzer verwalten, Rollen zuweisen und Zugriff auf Formulare und Daten steuern."
+        },
+        "permissions": {
+            "title": "Feinkörnige Berechtigungen",
+            "description": "Detaillierte Zugriffsrichtlinien pro Formular, Schema oder Ressource für Ihre Organisation festlegen."
+        },
+        "openApi": {
+            "title": "OpenAPI REST-Schnittstelle",
+            "description": "Jede Ressource ist über eine vollständig dokumentierte, standardkonforme REST-API zugänglich."
+        },
+        "versioning": {
+            "title": "Schema-Versionierung",
+            "description": "Änderungen an Ihren JSON-Schemas im Laufe der Zeit verfolgen und auf frühere Versionen zurücksetzen."
+        },
+        "sso": {
+            "title": "Single Sign-On",
+            "description": "Authentifizierung über Keycloak OIDC — ein Login für alle Dienste in Ihrer Infrastruktur."
+        }
+    },
+    "users": {
+        "title": "Benutzer",
+        "searchPlaceholder": "Nach Name oder E-Mail suchen…",
+        "loadError": "Benutzer konnten nicht geladen werden:",
+        "noUsersTitle": "Keine Benutzer gefunden",
+        "noUsersDescription": "Es gibt noch keine Benutzer.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'. Versuchen Sie einen anderen Suchbegriff.",
+        "total": "Keine Benutzer | {n} Benutzer | {n} Benutzer",
+        "columns": {
+            "firstname": "Vorname",
+            "lastname": "Nachname",
+            "email": "E-Mail",
+            "role": "Rolle",
+            "created": "Erstellt"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Verwaltungsschnittstelle für Formulare, Benutzer und Berechtigungen.",
+        "apiStatus": "API-Status",
+        "apiError": "API nicht erreichbar:",
+        "navUsers": "Benutzer",
+        "navUsersDesc": "Systembenutzer, Rollen und Zugriff verwalten.",
+        "navApiDocs": "API-Dokumentation",
+        "navApiDocsDesc": "REST-API über Swagger UI erkunden und testen."
+    },
+    "theme": {
+        "label": "Farbschema",
+        "light": "Helles Design",
+        "dark": "Dunkles Design",
+        "system": "Systemdesign"
+    },
+    "locale": {
+        "label": "Sprache"
+    },
+    "designSystem": {
+        "label": "Designsystem",
+        "active": "Aktiv",
+        "hint": "Das Wechseln des Designsystems aktualisiert alle PrimeVue-Komponenten und Tailwind-Utilities sofort – kein Neuladen erforderlich.",
+        "uv": {
+            "label": "UV Corporate",
+            "description": "Flaches Unternehmens-Design mit UV-Markenfarben und 0px Rahmenradius."
+        },
+        "aura": {
+            "label": "PrimeVue Aura",
+            "description": "Standard PrimeVue Aura-Preset mit abgerundeten Ecken und Standardpalette."
+        }
+    }
+}

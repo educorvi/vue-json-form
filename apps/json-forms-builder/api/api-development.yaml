@@ -415,7 +415,7 @@ paths:
     get:
       tags: [Forms]
       summary: List forms
-      description: Returns forms without schema content. Filter by group to scope results.
+      description: Returns forms without schema content. Filter by group to scope results. Searches recursively within the specified group and all its sub-groups.
       operationId: listForms
       parameters:
         - $ref: '#/components/parameters/Page'
@@ -1054,6 +1054,25 @@ components:
           type: string
           format: date-time
 
+    ParentPath:
+      type: array
+      items:
+        $ref: '#/components/schemas/ParentPathEntry'
+
+    ParentPathEntry:
+      type: object
+      description: An entry in the parent path, representing a single ancestor group
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        path_segment:
+          type: string
+        id:
+          type: integer
+
+
     # ── User ────────────────────────────────────────────────────────────────
 
     # Lightweight user reference embedded inside permission responses
@@ -1138,12 +1157,12 @@ components:
               readOnly: true
               description: Number of direct forms
             parent_path:
-              type:
-                - string
-                - "null"
+              anyOf:
+                - $ref: '#/components/schemas/ParentPath'
+                - type: "null"
               readOnly: true
               description: Full parent path of the group
-              examples: ['educorvi/internal/parent_group']
+              # examples: ['educorvi/internal/parent_group']
             parent_id:
               type:
                 - integer
@@ -1228,12 +1247,12 @@ components:
                 - "null"
               description: Description of the form
             parent_path:
-              type:
-                - string
-                - "null"
+              anyOf:
+                - $ref: '#/components/schemas/ParentPath'
+                - type: "null"
               readOnly: true
               description: Full parent path of the form
-              examples: ['educorvi/internal/parent_group']
+              # examples: ['educorvi/internal/parent_group']
             parent_id:
               type:
                 - integer
