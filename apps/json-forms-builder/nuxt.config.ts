@@ -25,7 +25,6 @@ export default defineNuxtConfig({
 
     modules: [
         'nuxt-auth-utils',
-        '@pinia/nuxt',
         '@nuxt/a11y',
         '@nuxt/eslint',
         '@nuxt/fonts',

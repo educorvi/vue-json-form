@@ -3271,7 +3271,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/kit@npm:4.4.6, @nuxt/kit@npm:^4.2.0":
+"@nuxt/kit@npm:4.4.6":
   version: 4.4.6
   resolution: "@nuxt/kit@npm:4.4.6"
   dependencies:
@@ -5262,17 +5262,6 @@ __metadata:
   peerDependencies:
     vue: ">=3.2.39"
   checksum: 10/a8135fffcc0f6ea5a7e5c688ad339d47c0376768d2d129827f87bcb49fa88a1de570c328178e147a6b8a6a09ea1475f7288847db4f5048740e33b64e95389ec6
-  languageName: node
-  linkType: hard
-
-"@pinia/nuxt@npm:^0.11.3":
-  version: 0.11.3
-  resolution: "@pinia/nuxt@npm:0.11.3"
-  dependencies:
-    "@nuxt/kit": "npm:^4.2.0"
-  peerDependencies:
-    pinia: ^3.0.4
-  checksum: 10/9d26c74e0478877187b2a583036e11a785c8ded2b07dfae742fadf8fa16800402ae37d31c8b2fb9440e93ac8567ddd7643b097f8339aeb3c6c53dda2afdba907
   languageName: node
   linkType: hard
 
@@ -15437,7 +15426,6 @@ __metadata:
     "@orpc/server": "npm:^1.14.3"
     "@orpc/zod": "npm:^1.14.3"
     "@phosphor-icons/vue": "npm:^2.2.1"
-    "@pinia/nuxt": "npm:^0.11.3"
     "@primeuix/themes": "npm:^2.0.3"
     "@primevue/nuxt-module": "npm:^4.5.5"
     "@tailwindcss/postcss": "npm:^4.2.4"
@@ -15446,7 +15434,6 @@ __metadata:
     nuxt: "npm:^4.4.6"
     nuxt-auth-utils: "npm:^0.5.29"
     pg: "npm:^8.20.0"
-    pinia-plugin-persistedstate: "npm:^4.7.1"
     postcss: "npm:^8.5.14"
     primeicons: "npm:^7.0.0"
     primevue: "npm:^4.5.5"

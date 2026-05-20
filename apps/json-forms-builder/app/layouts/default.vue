@@ -107,6 +107,17 @@ function toggleUserPopover(event: Event) {
                                     <ThemeSwitcher />
                                 </div>
 
+                                <!-- Design System -->
+                                <div
+                                    class="flex items-center justify-between px-1"
+                                >
+                                    <span
+                                        class="text-sm text-surface-600 dark:text-surface-300"
+                                        >{{ t('designSystem.label') }}</span
+                                    >
+                                    <DesignSystemSwitcher />
+                                </div>
+
                                 <!-- Language -->
                                 <div class="flex flex-col gap-1 px-1">
                                     <span

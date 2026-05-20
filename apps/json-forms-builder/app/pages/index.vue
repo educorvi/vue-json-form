@@ -79,13 +79,14 @@ const features = computed(() =>
                 <div class="flex items-center gap-2">
                     <LocaleSwitcher class="w-36" />
                     <ThemeSwitcher />
-                    <Button
+                    <DesignSystemSwitcher />
+                    <!-- <Button
                         as="a"
                         href="/auth/keycloak"
                         :label="t('nav.signIn')"
                         icon="pi pi-sign-in"
                         size="small"
-                    />
+                    /> -->
                 </div>
             </template>
         </Menubar>
