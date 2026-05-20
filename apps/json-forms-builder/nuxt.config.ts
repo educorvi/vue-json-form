@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import Aura from '@primeuix/themes/aura';
+import { UVNexusPreset } from '@educorvi/uv-theme';
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
