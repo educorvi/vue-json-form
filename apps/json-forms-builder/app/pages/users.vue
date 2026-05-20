@@ -44,7 +44,7 @@ function onSearch(value: string) {
     searchTimer = setTimeout(() => {
         search.value = value;
         page.value = 1;
-    }, 300);
+    }, 500);
 }
 
 const ROLE_SEVERITY: Record<string, 'danger' | 'secondary'> = {
@@ -53,8 +53,7 @@ const ROLE_SEVERITY: Record<string, 'danger' | 'secondary'> = {
 };
 
 const columns = computed(() => [
-    { field: 'firstname', header: t('users.columns.firstname') },
-    { field: 'lastname', header: t('users.columns.lastname') },
+    { field: 'name', header: t('users.columns.name') },
     { field: 'email', header: t('users.columns.email') },
 ]);
 </script>
@@ -115,11 +114,7 @@ const columns = computed(() => [
                         :value="Array(pageSize).fill({})"
                         class="w-full"
                     >
-                        <Column :header="t('users.columns.firstname')"
-                            ><template #body
-                                ><Skeleton height="1rem" /></template
-                        ></Column>
-                        <Column :header="t('users.columns.lastname')"
+                        <Column :header="t('users.columns.name')"
                             ><template #body
                                 ><Skeleton height="1rem" /></template
                         ></Column>

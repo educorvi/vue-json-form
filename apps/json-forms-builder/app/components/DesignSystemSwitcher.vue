@@ -3,11 +3,8 @@
  * DesignSystemSwitcher — opens a modal dialog where the user can switch
  * between the UV Corporate design system and PrimeVue Aura.
  *
- * The button trigger fits inside any popover / nav bar.  The Dialog is
- * teleported to <body> by PrimeVue so it always overlays correctly.
- *
  * Persists the selection in localStorage under the key "designSystem" and
- * re-applies on mount.
+ * re-applies on mount. // TODO. use pinia
  */
 import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
@@ -55,6 +52,7 @@ function applyDesignSystem(id: DesignSystem, preset: object) {
     dialogVisible.value = false;
 }
 
+// TODO: use pinia
 onMounted(() => {
     const saved = (localStorage.getItem('designSystem') ??
         'uv') as DesignSystem;
@@ -68,7 +66,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- Trigger button — fits inside a Popover row or nav bar -->
     <Button
         :label="t('designSystem.label')"
         icon="pi pi-palette"
@@ -79,7 +76,7 @@ onMounted(() => {
         @click="dialogVisible = true"
     />
 
-    <!-- Modal dialog — teleported to <body> by PrimeVue -->
+    <!-- Modal dialog-->
     <Dialog
         v-model:visible="dialogVisible"
         modal

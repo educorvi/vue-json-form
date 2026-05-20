@@ -54,10 +54,20 @@ export const zStatusResponse = z.object({
     timestamp: z.iso.datetime()
 });
 
+/**
+ * An entry in the parent path, representing a single ancestor group
+ */
+export const zParentPathEntry = z.object({
+    name: z.string().max(255),
+    path_segment: z.string().optional(),
+    id: z.int().optional()
+});
+
+export const zParentPath = z.array(zParentPathEntry);
+
 export const zUserShared = z.object({
     id: z.int().readonly(),
-    firstname: z.string().readonly(),
-    lastname: z.string().readonly(),
+    name: z.string().readonly(),
     email: z.email().readonly()
 }).readonly();
 
@@ -87,7 +97,7 @@ export const zGroupPatch = zGroupShared.and(z.object({
     description: z.string().nullish(),
     group_count: z.int().readonly(),
     form_count: z.int().readonly(),
-    parent_path: z.string().readonly().nullable(),
+    parent_path: zParentPath.nullable(),
     parent_id: z.int().readonly().nullable()
 })).and(zResourceModification);
 
@@ -103,7 +113,7 @@ export const zFormPatch = z.object({
     id: z.int().readonly(),
     title: z.string().max(255).optional(),
     description: z.string().nullish(),
-    parent_path: z.string().readonly().nullable(),
+    parent_path: zParentPath.nullable(),
     parent_id: z.int().readonly().nullable()
 }).and(zResourceModification);
 
@@ -321,8 +331,7 @@ export const zListUsersQuery = z.object({
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
     order_by: z.enum([
         'id',
-        'firstname',
-        'lastname',
+        'name',
         'email',
         'created',
         'last_activity',
@@ -336,6 +345,11 @@ export const zListUsersQuery = z.object({
 export const zListUsersResponse = zPaginatedMeta.and(z.object({
     data: z.array(zUser)
 }));
+
+/**
+ * User created
+ */
+export const zCreateUserResponse = zUser;
 
 export const zListGroupsQuery = z.object({
     page: z.int().gte(1).optional().default(1),
@@ -452,8 +466,7 @@ export const zListGroupPermissionsQuery = z.object({
         'updated',
         'expire',
         'role',
-        'firstname',
-        'lastname',
+        'name',
         'email',
         'scope',
         'type'

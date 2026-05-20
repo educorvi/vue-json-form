@@ -3,7 +3,7 @@
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
 
-import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteGroupPath, zDeleteGroupPermissionPath, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
+import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteGroupPath, zDeleteGroupPermissionPath, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
 
 /**
  * Health check
@@ -31,6 +31,19 @@ export const listUsers = oc.route({
     summary: 'List users',
     tags: ['Users']
 }).input(z.object({ query: zListUsersQuery.optional() })).output(zListUsersResponse);
+
+/**
+ * Create a user
+ */
+export const createUser = oc.route({
+    inputStructure: 'detailed',
+    method: 'POST',
+    operationId: 'createUser',
+    path: '/users',
+    successStatus: 201,
+    summary: 'Create a user',
+    tags: ['Users']
+}).output(zCreateUserResponse);
 
 /**
  * List groups
@@ -201,10 +214,10 @@ export const patchGroupPermission = oc.route({
 /**
  * List forms
  *
- * Returns forms without schema content. Filter by group to scope results.
+ * Returns forms without schema content. Filter by group to scope results. Searches recursively within the specified group and all its sub-groups.
  */
 export const listForms = oc.route({
-    description: 'Returns forms without schema content. Filter by group to scope results.',
+    description: 'Returns forms without schema content. Filter by group to scope results. Searches recursively within the specified group and all its sub-groups.',
     inputStructure: 'detailed',
     method: 'GET',
     operationId: 'listForms',
@@ -427,6 +440,7 @@ export const patchFormPermission = oc.route({
 export const contract = {
     getStatus,
     listUsers,
+    createUser,
     listGroups,
     createGroup,
     deleteGroup,

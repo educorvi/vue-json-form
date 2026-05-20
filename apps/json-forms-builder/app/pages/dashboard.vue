@@ -7,6 +7,10 @@ definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 const { t } = useI18n();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
+// Upsert the current user in the DB from their Keycloak claims.
+// TODO: only do once after login and not all the time...
+orpc.users.create().catch((err) => console.warn('[users.create]', err));
+
 const {
     data: status,
     pending,

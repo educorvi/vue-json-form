@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { UVNexusPreset } from '@educorvi/uv-theme';
+// import { UVNexusPreset } from '@educorvi/uv-theme';
+import Aura from '@primeuix/themes/aura';
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
@@ -39,7 +40,8 @@ export default defineNuxtConfig({
     primevue: {
         options: {
             theme: {
-                preset: UVNexusPreset,
+                // preset: UVNexusPreset,
+                preset: Aura,
                 options: {
                     darkModeSelector: '.app-dark',
                 },

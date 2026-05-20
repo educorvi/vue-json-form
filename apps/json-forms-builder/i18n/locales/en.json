@@ -50,8 +50,7 @@
         "noSearchResults": "No results for '{query}'. Try a different search term.",
         "total": "No users | {n} user | {n} users",
         "columns": {
-            "firstname": "First name",
-            "lastname": "Last name",
+            "name": "Name",
             "email": "Email",
             "role": "Role",
             "created": "Created"

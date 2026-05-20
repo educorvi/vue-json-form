@@ -10,10 +10,7 @@ import { BaseTimestampedEntity } from './BaseEntities';
 @Entity({ name: 'user' })
 export class User extends BaseTimestampedEntity {
     @Column({ type: 'varchar', length: 255 })
-    firstname!: string;
-
-    @Column({ type: 'varchar', length: 255 })
-    lastname!: string;
+    name!: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;

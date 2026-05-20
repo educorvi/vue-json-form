@@ -5,8 +5,7 @@ import { zListUsersQuery } from '../generated/zod.gen';
 
 const ORDER_BY_MAP: Record<string, string> = {
     id: 'id',
-    firstname: 'firstname',
-    lastname: 'lastname',
+    name: 'name',
     email: 'email',
     created: 'created',
     last_activity: 'updated',
@@ -14,6 +13,14 @@ const ORDER_BY_MAP: Record<string, string> = {
 };
 
 export const usersRouter = {
+    create: os.users.create.use(authMiddleware).handler(async ({ context }) => {
+        const service = new UserService(AppDataSource);
+        const user = context.user;
+        if (!user) {
+            throw new Error('Unauthorized');
+        }
+        return service.create(context.user);
+    }),
     list: os.users.list.use(authMiddleware).handler(async ({ input }) => {
         const service = new UserService(AppDataSource);
         // input.query is fully typed with Zod defaults applied by the contract

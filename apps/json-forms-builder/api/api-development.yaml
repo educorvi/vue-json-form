@@ -77,6 +77,21 @@ paths:
   # ── USERS ─────────────────────────────────────────────────────────────────
 
   /users:
+    post:
+      tags: [Users]
+      summary: Create a user
+      operationId: createUser
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     get:
       tags: [Users]
       summary: List users
@@ -92,7 +107,7 @@ paths:
           description: Field to order by
           schema:
             type: string
-            enum: [id, firstname, lastname, email, created, last_activity, role]
+            enum: [id, name, email, created, last_activity, role]
             default: last_activity
         # - name: filter_role
         #   in: query
@@ -326,7 +341,7 @@ paths:
           description: Field to order by
           schema:
             type: string
-            enum: [created, updated, expire, role, firstname, lastname, email, scope, type]
+            enum: [created, updated, expire, role, name, email, scope, type]
             default: lastname
         - $ref: '#/components/parameters/PermissionScopeFilter'
         - $ref: '#/components/parameters/PermissionTypeFilter'
@@ -1078,18 +1093,16 @@ components:
     # Lightweight user reference embedded inside permission responses
     UserShared:
       type: object
-      required: [id, firstname, lastname, email]
+      required: [id, name, email]
       readOnly: true
       properties:
         id:
           type: integer
           readOnly: true
-        firstname:
+        name:
           type: string
           readOnly: true
-        lastname:
-          type: string
-          readOnly: true
+          description: Full name of the user (e.g. "Jane Doe")
         email:
           type: string
           format: email
@@ -1099,7 +1112,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/UserShared'
         - type: object
-          required: [id, firstname, lastname, email, role]
+          required: [id, name, email, role]
           properties:
             role:
               $ref: '#/components/schemas/GlobalRole'
@@ -1114,7 +1127,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/UserShared'
         - type: object
-          required: [id, firstname, lastname, email]
+          required: [id, name, email]
 
     # ── Group ───────────────────────────────────────────────────────────────
 

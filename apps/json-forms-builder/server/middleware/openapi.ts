@@ -20,6 +20,7 @@
 import { OpenAPIGenerator } from '@orpc/openapi';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 import { appRouter } from '~~/server/orpc/routers';
+import { zStatusResponse, zUser } from '../orpc/generated/zod.gen';
 // import { StatusResponseSchema } from '~~/server/models/status';
 // import {
 //     UserSchema,
@@ -60,15 +61,21 @@ export default defineEventHandler(async (event) => {
                     },
                 },
             },
-            // commonSchemas: {
-            //     StatusResponse: { schema: StatusResponseSchema },
-            //     User: { schema: UserSchema },
-            //     UserList: { schema: ListUsersResponseSchema },
-            //     UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
-            //     GlobalRole: { schema: GlobalRoleSchema },
-            //     PaginatedMeta: { schema: PaginatedMetaSchema },
-            //     Timestamps: { schema: TimestampsSchema },
-            // },
+            commonSchemas: {
+                // StatusResponse: { schema: StatusResponseSchema },
+                // User: { schema: UserSchema },
+                // UserList: { schema: ListUsersResponseSchema },
+                // UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
+                // GlobalRole: { schema: GlobalRoleSchema },
+                // PaginatedMeta: { schema: PaginatedMetaSchema },
+                // Timestamps: { schema: TimestampsSchema },
+                Status: {
+                    schema: zStatusResponse,
+                },
+                User: {
+                    schema: zUser,
+                },
+            },
         });
     }
 

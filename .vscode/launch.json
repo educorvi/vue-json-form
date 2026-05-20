@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "launch",
+            "name": "client: firefox",
+            "url": "http://localhost:3000",
+            // this should point to your Nuxt `srcDir`, which is `app` by default
+            "webRoot": "${workspaceFolder}/apps/json-forms-builder/app"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "server: nuxt",
+            "cwd": "${workspaceFolder}/apps/json-forms-builder",
+            "program": "${workspaceFolder}/node_modules/.bin/nuxt",
+            "args": [
+                "dev"
+            ],
+            "autoAttachChildProcesses": true,
+            "runtimeExecutable": "node",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "sourceMaps": true,
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "fullstack: nuxt",
+            "configurations": [
+                "server: nuxt",
+                "client: firefox"
+            ]
+        }
+    ]
+}
