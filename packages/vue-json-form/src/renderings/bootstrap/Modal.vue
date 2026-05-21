@@ -19,7 +19,7 @@ const size = computed(() => {
         case 'x-large':
             return 'xl';
         default:
-            return 'md';
+            return undefined;
     }
 });
 
