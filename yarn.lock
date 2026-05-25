@@ -987,7 +987,7 @@ __metadata:
     vite-plugin-vue-devtools: "npm:^8.1.2"
     vitest: "npm:^4.1.7"
     vue: "npm:^3.5.34"
-    vue-component-type-helpers: "npm:^3.3.1"
+    vue-component-type-helpers: "npm:^3.3.2"
     vue-draggable-plus: "npm:^0.6.1"
     vue-eslint-parser: "npm:^10.4.0"
     vue-router: "npm:^5.0.7"
@@ -13556,10 +13556,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-component-type-helpers@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "vue-component-type-helpers@npm:3.3.1"
-  checksum: 10/1536a04c6ba9e02104661a8988d643f5e40b8d9041d572cda9bbabd39dc9aae7371628766cdf11c468c66e40572492a043ca5717ab60f9f52c2e321330f72b2b
+"vue-component-type-helpers@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "vue-component-type-helpers@npm:3.3.2"
+  checksum: 10/12288022f694d1bb5e9fcc44e02276d9a45c7c99236c10bbb94567e1543b6b06ac8a0728bf129146eca7cd3a48d8929a204073a48189465fd09c478451928f37
   languageName: node
   linkType: hard
 
