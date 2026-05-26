@@ -336,32 +336,28 @@ export class IfThenElseMapper extends MapperWithData {
         return ifThenElses
             .map((ifThen) => {
                 // Extract field-specific schema fragments from then/else blocks
-                const thenResult = getPropertyByString(
+                const thenResult = getPropertyByString<JSONSchema>(
                     ifThen.then,
                     deltaPath,
-                    '/',
-                    null
+                    '/'
                 );
-                const elseResult = getPropertyByString(
+                const elseResult = getPropertyByString<JSONSchema>(
                     ifThen.else,
                     deltaPath,
-                    '/',
-                    null
+                    '/'
                 );
 
                 // Extract required field constraints from parent object level
                 const parentDeltaPath = sliceScope(deltaPath, -2);
-                const thenRequired = getPropertyByString(
+                const thenRequired = getPropertyByString<string[]>(
                     ifThen.then,
                     parentDeltaPath + '/required',
-                    '/',
-                    null
+                    '/'
                 );
-                const elseRequired = getPropertyByString(
+                const elseRequired = getPropertyByString<string[]>(
                     ifThen.else,
                     parentDeltaPath + '/required',
-                    '/',
-                    null
+                    '/'
                 );
 
                 // Skip rules that don't affect this field

@@ -5,6 +5,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
+import type { Control } from '@educorvi/vue-json-form-schemas';
 
 /**
  * Prefix for array item keys.
@@ -36,7 +37,8 @@ export function generateUUID(): string {
     let id: string;
     try {
         id = crypto.randomUUID();
-    } catch (e) {
+    } catch {
+        console.warn('crypto.randomUUID() not available, using uuidv4 instead');
         id = uuidv4();
     }
     return id;
@@ -127,7 +129,7 @@ export function generateUISchema(
     };
 
     for (const key in json.properties) {
-        const element: any = {
+        const element: Control = {
             type: 'Control',
             scope: `${generationOptions.scopeBase ?? ''}/properties/${key}`,
         };
@@ -144,23 +146,28 @@ export function generateUISchema(
  * @param separator separator
  * @param defaultVal default value to return if path is not found
  */
-export function getPropertyByString(
-    object: any,
+export function getPropertyByString<T = unknown>(
+    object: Record<string, unknown> | undefined,
     path: string,
     separator: string = '.',
-    defaultVal?: any
-): any {
+    defaultVal?: T
+): T | undefined {
+    if (object === undefined) {
+        return defaultVal;
+    }
+
     const escapePCRE = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     path = path.replace(/\[(\w+)]/g, `${separator}$1`); // convert indexes to properties
     path = path.replace(new RegExp(`^${escapePCRE(separator)}`), ''); // strip a leading separator
     const a = path.split(separator);
+    let current: unknown = object;
     for (let i = 0, n = a.length; i < n; ++i) {
         const k = a[i];
         if (k === undefined) {
             return defaultVal;
         }
-        if (typeof object !== 'object') {
+        if (current === null || typeof current !== 'object') {
             if (defaultVal !== undefined) {
                 return defaultVal;
             } else {
@@ -168,19 +175,19 @@ export function getPropertyByString(
                     'Invalid path in data: ' +
                         path +
                         ' is of invalid type ' +
-                        typeof object +
+                        typeof current +
                         ' with value ' +
-                        object
+                        current
                 );
             }
         }
-        if (k in object) {
-            object = object[k];
+        if (k in current) {
+            current = (current as Record<string, unknown>)[k];
         } else if (defaultVal !== undefined) {
             return defaultVal;
         } else {
             throw new Error('Undefined path in data: ' + path);
         }
     }
-    return object;
+    return current as T | undefined;
 }
