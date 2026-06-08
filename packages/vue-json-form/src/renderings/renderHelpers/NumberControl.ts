@@ -52,7 +52,6 @@ export function getComputedValidationState(
 
     return computed(() => {
         if (formStateWasValidated.value) {
-            console.log('Validation state for', savePath, 'is', valid.value);
             return valid.value;
         } else {
             return undefined;
