@@ -58,6 +58,41 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('JSO-140 (number field with multipleOf validation)', async ({ page }) => {
+    const NUMBER_FIELD =
+        '#vjf_control_for__properties_numberWithMultiple';
+
+    await page.goto(REPRODUCE_URL);
+
+    // Value below minimum should fail
+    await page.locator(NUMBER_FIELD).fill('4');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(page.locator(NUMBER_FIELD));
+
+    // Value not a multiple of 4 should fail
+    await page.locator(NUMBER_FIELD).fill('10');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(page.locator(NUMBER_FIELD));
+
+    // Value above maximum should fail
+    await page.locator(NUMBER_FIELD).fill('24');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(page.locator(NUMBER_FIELD));
+
+    // Valid value: multiple of 4, within range
+    await page.locator(NUMBER_FIELD).fill('12');
+    await expectValid(page.locator(NUMBER_FIELD));
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+    expect(res['numberWithMultiple']).toBe(12);
+});
+
 test('JSO-141 (help text on object)', async ({ page }) => {
     await page.goto(REPRODUCE_URL);
 
