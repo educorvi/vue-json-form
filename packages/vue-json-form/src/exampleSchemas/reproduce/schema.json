@@ -13,6 +13,11 @@
             "minimum": 8,
             "maximum": 20
         },
+        "numberWithMultipleSmallerOne": {
+            "type": "number",
+            "multipleOf": 0.02,
+            "title": "Number with Multiple of 0.02"
+        },
         "objectWithInfo": {
             "type": "object",
             "title": "JSO-141",

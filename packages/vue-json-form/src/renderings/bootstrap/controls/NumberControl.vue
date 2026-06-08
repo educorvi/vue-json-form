@@ -5,27 +5,36 @@ import { BFormInput } from 'bootstrap-vue-next';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import {
-    getComputedValidationState,
     getStep,
+    setupValueAndValidation,
 } from '@/renderings/renderHelpers/NumberControl.ts';
 const { formDataStore } = getStores();
 const { formData } = storeToRefs(formDataStore);
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
+const props = defineProps<{
+    required?: boolean;
+}>();
+
 const step = getStep(jsonElement);
-const state = getComputedValidationState(jsonElement, savePath, id.value);
+const { state, value } = setupValueAndValidation(
+    jsonElement,
+    id.value,
+    props.required
+);
 </script>
 
 <template>
     <b-form-input
         :id="id"
-        v-model.number="formData[savePath]"
+        v-model="value"
         class="vjf_input"
         :step="step"
         :min="jsonElement.minimum"
         :max="jsonElement.maximum"
         :type="getOption(layoutElement, 'range', false) ? 'range' : 'number'"
+        :required="required"
         :state="state"
     />
 </template>

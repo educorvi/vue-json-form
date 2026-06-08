@@ -26,24 +26,42 @@ export function getStep(jsonElement: Readonly<Ref<JSONSchema>>) {
     });
 }
 
-export function getComputedValidationState(
+export function setupValueAndValidation(
     jsonElement: Readonly<Ref<JSONSchema>>,
     id: string,
     required: boolean
 ) {
-    const { formDataStore, formStructureStore } = getStores();
+    const { savePath } = injectJsonData();
+    const { formDataStore } = getStores();
     const { formData } = storeToRefs(formDataStore);
+
+    const value = ref<string | undefined>(undefined);
+
+    watch(value, () => {
+        formData.value[savePath] = Number(value.value);
+    });
+
+    const state = getComputedValidationState(jsonElement, id, required, value);
+    return { state, value };
+}
+
+export function getComputedValidationState(
+    jsonElement: Readonly<Ref<JSONSchema>>,
+    id: string,
+    required: boolean,
+    value: Ref<string | undefined>
+) {
+    const { formStructureStore } = getStores();
     const { formStateWasValidated } = storeToRefs(formStructureStore);
     const languageProvider = inject(languageProviderKey);
-    const { savePath } = injectJsonData();
 
     const valid = ref(true);
     watch(
-        () => formData.value[savePath],
+        value,
         () => {
             valid.value = validateNumberInput(
                 jsonElement.value,
-                formData.value[savePath],
+                value.value,
                 languageProvider,
                 document.getElementById(id) as HTMLInputElement | null,
                 required

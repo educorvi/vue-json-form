@@ -13,6 +13,10 @@
                         "scope": "/properties/numberWithMultiple"
                     },
                     {
+                        "type": "Control",
+                        "scope": "/properties/numberWithMultipleSmallerOne"
+                    },
+                    {
                         "type": "Button",
                         "buttonType": "submit",
                         "text": "Submit"

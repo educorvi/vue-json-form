@@ -59,8 +59,7 @@ async function expectValid(locator: Locator) {
 }
 
 test('JSO-140 (number field with multipleOf validation)', async ({ page }) => {
-    const NUMBER_FIELD =
-        '#vjf_control_for__properties_numberWithMultiple';
+    let NUMBER_FIELD = '#vjf_control_for__properties_numberWithMultiple';
 
     await page.goto(REPRODUCE_URL);
 
@@ -88,9 +87,32 @@ test('JSO-140 (number field with multipleOf validation)', async ({ page }) => {
     await submitForm(page);
     await expect(page.locator('#result-container')).toBeVisible();
 
+    let resultText = await page.locator('#result-container').textContent();
+    let res = JSON.parse(resultText || '');
+    expect(res['numberWithMultiple']).toBe(12);
+});
+
+test('JSO-140 (number field with multipleOf validation for small multiples)', async ({
+    page,
+}) => {
+    let NUMBER_FIELD =
+        '#vjf_control_for__properties_numberWithMultipleSmallerOne';
+
+    await page.goto(REPRODUCE_URL);
+
+    await page.locator(NUMBER_FIELD).fill('1.01');
+    await submitForm(page);
+    await expect(page.locator('#result-container')).not.toBeAttached();
+    await expectInvalid(page.locator(NUMBER_FIELD));
+
+    await page.locator(NUMBER_FIELD).fill('1.12');
+    await expectValid(page.locator(NUMBER_FIELD));
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
     const resultText = await page.locator('#result-container').textContent();
     const res = JSON.parse(resultText || '');
-    expect(res['numberWithMultiple']).toBe(12);
+    expect(res['numberWithMultipleSmallerOne']).toBe(1.12);
 });
 
 test('JSO-141 (help text on object)', async ({ page }) => {

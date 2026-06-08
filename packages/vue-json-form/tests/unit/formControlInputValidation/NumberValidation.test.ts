@@ -28,7 +28,13 @@ describe('validateNumberInput', () => {
         const schema: JSONSchema = { type: 'number' };
         const data = 'not a number';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(false);
         expect(el.setCustomValidity).toHaveBeenCalledWith(
@@ -38,9 +44,15 @@ describe('validateNumberInput', () => {
 
     it('returns true and clears custom validity if data is a number and no multipleOf is defined', () => {
         const schema: JSONSchema = { type: 'number' };
-        const data = 10;
+        const data = '10';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(true);
         expect(el.setCustomValidity).toHaveBeenCalledWith('');
@@ -48,9 +60,15 @@ describe('validateNumberInput', () => {
 
     it('returns true and clears custom validity if data is a multiple of multipleOf', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 5 };
-        const data = 15;
+        const data = '15';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(true);
         expect(el.setCustomValidity).toHaveBeenCalledWith('');
@@ -58,9 +76,15 @@ describe('validateNumberInput', () => {
 
     it('returns false and sets custom validity if data is not a multiple of multipleOf', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 5 };
-        const data = 13;
+        const data = '13';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(false);
         expect(languageProvider.getStringTemplate).toHaveBeenCalledWith(
@@ -74,9 +98,15 @@ describe('validateNumberInput', () => {
 
     it('returns true and clears custom validity when data is 0 and multipleOf is defined', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 5 };
-        const data = 0;
+        const data = '0';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(true);
         expect(el.setCustomValidity).toHaveBeenCalledWith('');
@@ -84,9 +114,15 @@ describe('validateNumberInput', () => {
 
     it('handles floating point multipleOf correctly', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 0.5 };
-        const data = 2.5;
+        const data = '2.5';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(true);
         expect(el.setCustomValidity).toHaveBeenCalledWith('');
@@ -94,9 +130,15 @@ describe('validateNumberInput', () => {
 
     it('handles floating point multipleOf incorrectly', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 0.5 };
-        const data = 2.3;
+        const data = '2.3';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(false);
         expect(languageProvider.getStringTemplate).toHaveBeenCalledWith(
