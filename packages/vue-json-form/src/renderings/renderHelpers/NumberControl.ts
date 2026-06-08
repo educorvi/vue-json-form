@@ -1,7 +1,7 @@
 import { computed, inject, ref, type Ref, watch } from 'vue';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { validateNumberInput } from '@/formControlInputValidation/NumberValidation.ts';
-import { getStores } from '@/computedProperties/json.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import { storeToRefs } from 'pinia';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
 
@@ -28,13 +28,14 @@ export function getStep(jsonElement: Readonly<Ref<JSONSchema>>) {
 
 export function getComputedValidationState(
     jsonElement: Readonly<Ref<JSONSchema>>,
-    savePath: string,
-    id: string
+    id: string,
+    required: boolean
 ) {
     const { formDataStore, formStructureStore } = getStores();
     const { formData } = storeToRefs(formDataStore);
     const { formStateWasValidated } = storeToRefs(formStructureStore);
     const languageProvider = inject(languageProviderKey);
+    const { savePath } = injectJsonData();
 
     const valid = ref(true);
     watch(
@@ -44,7 +45,8 @@ export function getComputedValidationState(
                 jsonElement.value,
                 formData.value[savePath],
                 languageProvider,
-                document.getElementById(id) as HTMLInputElement | null
+                document.getElementById(id) as HTMLInputElement | null,
+                required
             );
         },
         { immediate: true }
