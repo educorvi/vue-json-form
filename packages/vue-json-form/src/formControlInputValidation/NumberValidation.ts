@@ -7,7 +7,6 @@ export function validateNumberInput(
     languageProvider: LanguageProvider | undefined,
     el: HTMLInputElement | null
 ): boolean {
-    console.log(jsonSchemaElement, data, languageProvider, el);
     if (typeof data !== 'number') {
         el?.setCustomValidity(
             languageProvider?.getString('errors.number.invalidNumber') ||
