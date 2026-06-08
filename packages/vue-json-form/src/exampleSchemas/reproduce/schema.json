@@ -6,6 +6,13 @@
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "numberWithMultiple": {
+            "type": "number",
+            "multipleOf": 4,
+            "title": "Number with Multiple of 4",
+            "minimum": 8,
+            "maximum": 20
+        },
         "objectWithInfo": {
             "type": "object",
             "title": "JSO-141",

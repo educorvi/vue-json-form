@@ -4,14 +4,17 @@ import { controlID } from '@/computedProperties/misc';
 import { BFormInput } from 'bootstrap-vue-next';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
-import { getStep } from '@/renderings/renderHelpers/NumberControl.ts';
+import {
+    getComputedValidationState,
+    getStep,
+} from '@/renderings/renderHelpers/NumberControl.ts';
 const { formDataStore } = getStores();
 const { formData } = storeToRefs(formDataStore);
-
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
 const step = getStep(jsonElement);
+const state = getComputedValidationState(jsonElement, savePath, id.value);
 </script>
 
 <template>
@@ -23,6 +26,7 @@ const step = getStep(jsonElement);
         :min="jsonElement.minimum"
         :max="jsonElement.maximum"
         :type="getOption(layoutElement, 'range', false) ? 'range' : 'number'"
+        :state="state"
     />
 </template>
 

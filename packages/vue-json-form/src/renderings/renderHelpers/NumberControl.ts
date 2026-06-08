@@ -1,5 +1,9 @@
-import { computed, type Ref } from 'vue';
+import { computed, inject, ref, type Ref, watch } from 'vue';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import { validateNumberInput } from '@/formControlInputValidation/NumberValidation.ts';
+import { getStores } from '@/computedProperties/json.ts';
+import { storeToRefs } from 'pinia';
+import { languageProviderKey } from '@/components/ProviderKeys.ts';
 
 /**
  * Returns a computed ref of the `step` attribute value for a numeric input.
@@ -18,6 +22,40 @@ export function getStep(jsonElement: Readonly<Ref<JSONSchema>>) {
         if (jsonElement.value.type === 'integer') {
             return jsonElement.value.multipleOf || 1;
         }
-        return jsonElement.value.multipleOf || 0.0000000000000000000001;
+        return jsonElement.value.multipleOf || undefined;
+    });
+}
+
+export function getComputedValidationState(
+    jsonElement: Readonly<Ref<JSONSchema>>,
+    savePath: string,
+    id: string
+) {
+    const { formDataStore, formStructureStore } = getStores();
+    const { formData } = storeToRefs(formDataStore);
+    const { formStateWasValidated } = storeToRefs(formStructureStore);
+    const languageProvider = inject(languageProviderKey);
+
+    const valid = ref(true);
+    watch(
+        () => formData.value[savePath],
+        () => {
+            valid.value = validateNumberInput(
+                jsonElement.value,
+                formData.value[savePath],
+                languageProvider,
+                document.getElementById(id) as HTMLInputElement | null
+            );
+        },
+        { immediate: true }
+    );
+
+    return computed(() => {
+        if (formStateWasValidated.value) {
+            console.log('Validation state for', savePath, 'is', valid.value);
+            return valid.value;
+        } else {
+            return undefined;
+        }
     });
 }
