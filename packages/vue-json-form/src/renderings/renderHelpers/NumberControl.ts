@@ -22,7 +22,7 @@ export function getStep(jsonElement: Readonly<Ref<JSONSchema>>) {
         if (jsonElement.value.type === 'integer') {
             return jsonElement.value.multipleOf || 1;
         }
-        return jsonElement.value.multipleOf || undefined;
+        return jsonElement.value.multipleOf || 'any';
     });
 }
 
