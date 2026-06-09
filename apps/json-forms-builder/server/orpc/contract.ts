@@ -9,9 +9,25 @@
  */
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
-import { getStatus, listUsers, createUser } from './generated/orpc.gen';
+import {
+    getStatus,
+    listUsers,
+    createUser,
+    listGroups,
+    getGroup,
+    listGroupChildren,
+    listGroupHierarchy,
+    createGroup,
+} from './generated/orpc.gen';
 
 export const appContract = {
     status: { get: getStatus },
     users: { create: createUser, list: listUsers },
+    groups: {
+        list: listGroups,
+        get: getGroup,
+        listChildren: listGroupChildren,
+        hierarchy: listGroupHierarchy,
+        create: createGroup,
+    },
 };

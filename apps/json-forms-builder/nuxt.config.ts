@@ -7,6 +7,18 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
 
+    vite: {
+        optimizeDeps: {
+            include: [
+                '@orpc/client',
+                '@orpc/client/fetch',
+                '@phosphor-icons/vue',
+                '@vue/devtools-core',
+                '@vue/devtools-kit',
+            ],
+        },
+    },
+
     css: ['~/assets/main.css', 'primeicons/primeicons.css'],
 
     postcss: {
@@ -34,7 +46,6 @@ export default defineNuxtConfig({
         '@artmizu/nuxt-prometheus',
         '@nuxtjs/i18n',
         '@primevue/nuxt-module',
-        '@nuxtjs/i18n',
     ],
 
     primevue: {
@@ -56,7 +67,6 @@ export default defineNuxtConfig({
         ],
         defaultLocale: 'en',
         lazy: true,
-        // langDir: 'i18n/locales/',
         strategy: 'no_prefix',
     },
 

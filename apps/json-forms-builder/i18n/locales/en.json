@@ -2,6 +2,7 @@
     "nav": {
         "dashboard": "Dashboard",
         "users": "Users",
+        "groups": "Groups",
         "apiDocs": "API Docs",
         "signIn": "Sign in",
         "signOut": "Sign out"
@@ -49,11 +50,66 @@
         "noUsersDescription": "There are no users yet.",
         "noSearchResults": "No results for '{query}'. Try a different search term.",
         "total": "No users | {n} user | {n} users",
+        "created": "Created",
+        "lastActivity": "Active",
+        "sortBy": {
+            "name": "Name",
+            "email": "Email",
+            "created": "Created",
+            "activity": "Last Activity",
+            "role": "Role"
+        },
         "columns": {
+            "user": "User",
             "name": "Name",
             "email": "Email",
             "role": "Role",
-            "created": "Created"
+            "created": "Created",
+            "activity": "Activity"
+        }
+    },
+    "groups": {
+        "title": "Groups",
+        "searchPlaceholder": "Search groups…",
+        "searchChildrenPlaceholder": "Search children…",
+        "loadError": "Failed to load groups:",
+        "noGroupsTitle": "No groups found",
+        "noGroupsDescription": "There are no groups yet.",
+        "noChildrenTitle": "No sub-groups or forms",
+        "noChildrenDescription": "This group has no children.",
+        "noSearchResults": "No results for '{query}'.",
+        "total": "No groups | {n} group | {n} groups",
+        "subGroups": "sub-groups",
+        "forms": "forms",
+        "members": "members",
+        "sortBy": {
+            "title": "Title",
+            "created": "Created",
+            "updated": "Updated",
+            "members": "Members"
+        },
+        "noSubGroups": "No sub-groups",
+        "new": {
+            "title": "New Group",
+            "addSubGroup": "New Sub-Group",
+            "subtitle": "Create a new group in the hierarchy.",
+            "create": "Create Group",
+            "createError": "Failed to create group.",
+            "fields": {
+                "title": "Title",
+                "titlePlaceholder": "e.g. Frontend Development",
+                "name": "URL slug (name)",
+                "namePlaceholder": "e.g. frontend-development",
+                "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
+                "description": "Description",
+                "descriptionPlaceholder": "Optional — describe the purpose of this group.",
+                "parent": "Parent Group",
+                "parentHint": "Leave empty to create a top-level group."
+            }
+        },
+        "treeSelect": {
+            "placeholder": "Select parent group…",
+            "useCurrentFolder": "Use current folder"
         }
     },
     "dashboard": {
@@ -65,6 +121,14 @@
         "navUsersDesc": "Manage system users, roles, and access.",
         "navApiDocs": "API Docs",
         "navApiDocsDesc": "Browse and test the REST API via Swagger UI."
+    },
+    "common": {
+        "searchPlaceholder": "Search…",
+        "sortAscending": "Sort ascending",
+        "sortDescending": "Sort descending",
+        "loading": "Loading…",
+        "cancel": "Cancel",
+        "clear": "Clear"
     },
     "theme": {
         "label": "Theme mode",

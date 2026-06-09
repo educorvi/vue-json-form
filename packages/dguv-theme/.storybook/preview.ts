@@ -16,11 +16,10 @@ import Toast from "primevue/toast";
 import ToggleSwitch from "primevue/toggleswitch";
 import Divider from "primevue/divider";
 import Message from "primevue/message";
-import { ref, watchEffect } from "vue";
 import PhosphorVue from "@phosphor-icons/vue";
 import "primeicons/primeicons.css";
 import "./preview.css";
-import { UVNexusPreset } from "../src/index";
+import { UVNexusPreset } from "../src/theme/index";
 
 setup((app) => {
   app.use(PrimeVue, {
@@ -100,26 +99,17 @@ const preview: Preview = {
   },
 
   /**
-   * Global decorator: injects the shared <Toast /> container and applies
-   * the dark mode class to <html> from the toolbar "Color scheme" selector.
-   * Storybook re-mounts the decorator whenever globals change, so setup()
-   * always runs with the latest context value.
+   * Global decorator: applies the dark mode class to <html>
+   * from the toolbar "Color scheme" selector.
    */
   decorators: [
-    (story, context) => ({
-      components: { story },
-      setup() {
-        const colorScheme = ref(context.globals.colorScheme ?? "light");
-        watchEffect(() => {
-          document.documentElement.classList.toggle(
-            "my-app-dark",
-            colorScheme.value === "dark",
-          );
-        });
-        return {};
-      },
-      template: `<div><Toast /><story /></div>`,
-    }),
+    (story, context) => {
+      document.documentElement.classList.toggle(
+        "my-app-dark",
+        (context.globals.colorScheme ?? "light") === "dark",
+      );
+      return story();
+    },
   ],
 };
 

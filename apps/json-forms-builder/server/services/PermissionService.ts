@@ -1,5 +1,7 @@
-import { type DataSource, type Repository } from 'typeorm';
+import { In, type DataSource, type Repository } from 'typeorm';
 import { Permission } from '~~/server/db/entities/Permission';
+import { Group } from '~~/server/db/entities/Group';
+import { User } from '~~/server/db/entities/User';
 import {
     throwNotFound,
     throwConflict,
@@ -163,5 +165,60 @@ export class PermissionService {
                 ErrorCode.VALIDATION_ERROR
             );
         }
+    }
+
+    /**
+     * Checks whether a user (identified by email) has a direct or inherited
+     * permission on a group.
+     *
+     * Inheritance means: a permission on any ancestor group also grants access
+     * to all descendants. Two queries total regardless of tree depth:
+     *   1. Fetch the group path to derive ancestor paths.
+     *   2. Check if any permission exists for those ancestor group IDs.
+     */
+    async canUserAccessGroup(
+        userEmail: string,
+        groupId: number,
+        requiredRoles: Array<'owner' | 'editor' | 'guest'> = [
+            'owner',
+            'editor',
+            'guest',
+        ]
+    ): Promise<boolean> {
+        const userRepo = this.repo.manager.getRepository(User);
+        const groupRepo = this.repo.manager.getRepository(Group);
+
+        const user = await userRepo.findOne({
+            where: { email: userEmail },
+            select: { id: true },
+        });
+        if (!user) return false;
+
+        const target = await groupRepo.findOne({
+            where: { id: groupId },
+            select: { id: true, path: true },
+        });
+        if (!target) return false;
+
+        // Build all ancestor path strings (including self)
+        const segments = target.path.split('/');
+        const allPaths = segments.map((_, i) =>
+            segments.slice(0, i + 1).join('/')
+        );
+
+        const ancestors = await groupRepo.find({
+            where: { path: In(allPaths) },
+            select: { id: true },
+        });
+        const ancestorIds = ancestors.map((a) => a.id);
+
+        const perm = await this.repo.findOne({
+            where: {
+                group_id: In(ancestorIds),
+                user_id: user.id,
+                role: In(requiredRoles),
+            },
+        });
+        return !!perm;
     }
 }

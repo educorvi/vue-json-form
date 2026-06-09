@@ -13,6 +13,7 @@ async function logout() {
 const navItems = computed(() => [
     { label: t('nav.dashboard'), icon: 'pi pi-home', route: '/dashboard' },
     { label: t('nav.users'), icon: 'pi pi-users', route: '/users' },
+    { label: t('nav.groups'), icon: 'pi pi-sitemap', route: '/groups' },
     {
         label: t('nav.apiDocs'),
         icon: 'pi pi-code',

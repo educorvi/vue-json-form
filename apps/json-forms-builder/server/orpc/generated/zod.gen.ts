@@ -86,6 +86,13 @@ export const zResourceModification = z.object({
     }))
 }).readonly();
 
+export const zGroupHierarchyNode = z.object({
+    id: z.int().readonly(),
+    name: z.string().max(255),
+    title: z.string().max(255),
+    children: z.array(z.lazy((): any => zGroupHierarchyNode)).nullish()
+});
+
 export const zGroupShared = z.object({
     id: z.int().readonly(),
     name: z.string().max(255).optional(),
@@ -183,6 +190,12 @@ export const zResourceModificationWritable = z.object({
 
 export const zUserWritable = z.object({
     role: zGlobalRole
+});
+
+export const zGroupHierarchyNodeWritable = z.object({
+    name: z.string().max(255),
+    title: z.string().max(255),
+    children: z.array(z.lazy((): any => zGroupHierarchyNodeWritable)).nullish()
 });
 
 export const zGroupSharedWritable = z.object({
@@ -350,6 +363,11 @@ export const zListUsersResponse = zPaginatedMeta.and(z.object({
  * User created
  */
 export const zCreateUserResponse = zUser;
+
+/**
+ * Group hierarchy as nested tree
+ */
+export const zListGroupHierarchyResponse = z.array(zGroupHierarchyNode);
 
 export const zListGroupsQuery = z.object({
     page: z.int().gte(1).optional().default(1),

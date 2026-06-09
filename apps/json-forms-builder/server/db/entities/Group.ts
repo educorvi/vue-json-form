@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+// import 'reflect-metadata';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 

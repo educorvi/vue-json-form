@@ -132,6 +132,23 @@ paths:
 
   # ── GROUPS ───────────────────────────────────────────────────────────────
 
+  /groups-hierarchy:
+    get:
+      tags: [Groups]
+      summary: List group hierarchy
+      description: |
+        Returns the entire group hierarchy as a nested tree structure. This endpoint is not paginated and does not support search or filters. Use `GET /groups` to retrieve a paginated list of groups without child elements.
+      operationId: listGroupHierarchy
+      responses:
+        '200':
+          description: Group hierarchy as nested tree
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupHierarchyNode'
+
   /groups:
     get:
       tags: [Groups]
@@ -1130,6 +1147,30 @@ components:
           required: [id, name, email]
 
     # ── Group ───────────────────────────────────────────────────────────────
+
+    GroupHierarchyNode:
+      type: object
+      required: [id, name, title]
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+          description: Unique name of the group within its parent, used for path generation.
+        title:
+          type: string
+          maxLength: 255
+          description: Display name of the group
+        children:
+          type:
+            - array
+            - "null"
+          description: Direct child groups and forms
+          items:
+            $ref: '#/components/schemas/GroupHierarchyNode'
+
 
     GroupShared:
       type: object

@@ -7,23 +7,40 @@ import {
 } from 'typeorm';
 import { User as DbUser } from '~~/server/db/entities/User';
 import { paginatedResponse } from '~~/server/utils/helpers';
-import User from 'nuxt-auth-utils';
+import type { User as AuthUser } from '#auth-utils';
+import {
+    zListUsersQuery,
+    zListUsersResponse,
+    zUser,
+} from '../orpc/generated/zod.gen';
+import z from 'zod';
 
-export interface ListParams {
-    page: number;
-    pageSize: number;
-    sortOrder: 'ASC' | 'DESC';
-    search: string;
-}
+// export interface ListParams {
+//     page: number;
+//     pageSize: number;
+//     sortOrder: 'ASC' | 'DESC';
+//     search: string;
+// }
 
-// TODO: logic should be extracted to class
-const userDataChanged = (existing: DbUser, newData: typeof User) => {
-    return (
-        existing.name !== newData.name ||
-        existing.email !== newData.email ||
-        existing.role !== newData.role
-    );
-};
+type ApiUser = z.infer<typeof zUser>;
+
+type ApiListUser = z.infer<typeof zListUsersResponse>;
+
+type ApiListUserQuery = z.infer<typeof zListUsersQuery>;
+
+// type ApiUserOrderBy = ApiListUserQuery['order_by'];
+
+const dbUserToApiUser = (u: DbUser): ApiUser => ({
+    id: u.id,
+    name: u.name,
+    email: u.email,
+    role: u.role,
+    created: u.created.toISOString(),
+    updated: u.updated.toISOString(),
+});
+
+const userDataChanged = (existing: DbUser, newData: AuthUser): boolean =>
+    existing.name !== newData.name || existing.email !== newData.email;
 
 export class UserService {
     private readonly repo: Repository<DbUser>;
@@ -32,61 +49,62 @@ export class UserService {
         this.repo = dataSource.getRepository(DbUser);
     }
 
-    async create(data: typeof User) {
-        // Upsert by email so re-logging in doesn't fail if the user already exists.
+    /**
+     * Upsert: create if new, update name if it changed.
+     */
+    async upsert(data: AuthUser): Promise<ApiUser> {
         const existing = await this.repo.findOne({
             where: { email: data.email },
         });
-        let dbUser: DbUser;
-        if (existing && userDataChanged(existing, data)) {
-            // TODO: logic should be extracted to class
-            existing.name = data.name;
-            existing.email = data.email;
-            existing.role = data.role;
-            dbUser = await this.repo.save(existing);
-        } else {
-            const user = this.repo.create({
-                email: data.email,
-                name: data.name,
-                role: 'user',
-            });
-            dbUser = await this.repo.save(user);
+
+        if (existing) {
+            if (userDataChanged(existing, data)) {
+                existing.name = data.name;
+                return dbUserToApiUser(await this.repo.save(existing));
+            }
+            return dbUserToApiUser(existing);
         }
-        return {
-            id: dbUser.id,
-            name: dbUser.name,
-            email: dbUser.email,
-            role: dbUser.role,
-            created: dbUser.created.toISOString(),
-            updated: dbUser.updated.toISOString(),
-        };
+
+        const user = this.repo.create({
+            email: data.email,
+            name: data.name,
+            role: 'user',
+        });
+        return dbUserToApiUser(await this.repo.save(user));
     }
 
-    async list(params: ListParams, orderByCol: keyof DbUser) {
-        const { page, pageSize, sortOrder, search } = params;
+    /**
+     * List users with pagination, sorting, and search.
+     */
+    async list(params: ApiListUserQuery): Promise<ApiListUser> {
+        const { page, page_size, sort_order, order_by, search } = params;
+
+        let order_by_subset = order_by;
+        if (order_by == 'last_activity') {
+            order_by_subset = 'name';
+        }
 
         const where: FindOptionsWhere<DbUser>[] = search
             ? [{ name: ILike(`%${search}%`) }, { email: ILike(`%${search}%`) }]
             : [];
 
-        const order: FindOptionsOrder<DbUser> = { [orderByCol]: sortOrder };
+        // TODO: no validation that ApiUserOrderBy are valid column names. Also the api column names don't have to be the same like in the database, so abstraction is needed
+        const order: FindOptionsOrder<DbUser> = order_by_subset
+            ? { [order_by_subset]: sort_order === 'asc' ? 'ASC' : 'DESC' }
+            : {};
 
         const [rows, total] = await this.repo.findAndCount({
             where: where.length ? where : undefined,
             order,
-            skip: (page - 1) * pageSize,
-            take: pageSize,
+            skip: (page - 1) * page_size,
+            take: page_size,
         });
 
-        const data = rows.map(({ deleted: _d, created, updated, ...u }) => ({
-            ...u,
-            created: created.toISOString(),
-            updated: updated.toISOString(),
-        }));
-        return paginatedResponse(data, total, page, pageSize);
+        const data = rows.map(dbUserToApiUser);
+        return paginatedResponse(data, total, page, page_size);
     }
 
-    async findById(id: number): Promise<DbUser | null> {
-        return this.repo.findOne({ where: { id } });
-    }
+    // async findById(id: number): Promise<DbUser | null> {
+    //     return this.repo.findOne({ where: { id } });
+    // }
 }

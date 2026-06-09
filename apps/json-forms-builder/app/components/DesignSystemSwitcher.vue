@@ -52,16 +52,11 @@ function applyDesignSystem(id: DesignSystem, preset: object) {
     dialogVisible.value = false;
 }
 
-// TODO: use pinia
 onMounted(() => {
-    const saved = (localStorage.getItem('designSystem') ??
+    // Sync active indicator to what the design-system plugin already applied.
+    // TODO: use pinia store
+    active.value = (localStorage.getItem('designSystem') ??
         'uv') as DesignSystem;
-    if (saved !== 'uv') {
-        const option = options.find((o) => o.id === saved);
-        if (option) applyDesignSystem(option.id, option.preset);
-    } else {
-        active.value = 'uv';
-    }
 });
 </script>
 

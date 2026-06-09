@@ -2,6 +2,7 @@
     "nav": {
         "dashboard": "Dashboard",
         "users": "Benutzer",
+        "groups": "Gruppen",
         "apiDocs": "API-Dokumentation",
         "signIn": "Anmelden",
         "signOut": "Abmelden"
@@ -49,11 +50,66 @@
         "noUsersDescription": "Es gibt noch keine Benutzer.",
         "noSearchResults": "Keine Ergebnisse für '{query}'. Versuchen Sie einen anderen Suchbegriff.",
         "total": "Keine Benutzer | {n} Benutzer | {n} Benutzer",
+        "created": "Erstellt",
+        "lastActivity": "Aktiv",
+        "sortBy": {
+            "name": "Name",
+            "email": "E-Mail",
+            "created": "Erstellt",
+            "activity": "Letzte Aktivität",
+            "role": "Rolle"
+        },
         "columns": {
+            "user": "Benutzer",
             "name": "Name",
             "email": "E-Mail",
             "role": "Rolle",
-            "created": "Erstellt"
+            "created": "Erstellt",
+            "activity": "Aktivität"
+        }
+    },
+    "groups": {
+        "title": "Gruppen",
+        "searchPlaceholder": "Gruppen suchen…",
+        "searchChildrenPlaceholder": "Unterelemente suchen…",
+        "loadError": "Gruppen konnten nicht geladen werden:",
+        "noGroupsTitle": "Keine Gruppen gefunden",
+        "noGroupsDescription": "Es gibt noch keine Gruppen.",
+        "noChildrenTitle": "Keine Untergruppen oder Formulare",
+        "noChildrenDescription": "Diese Gruppe hat keine Kinder.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'.",
+        "total": "Keine Gruppen | {n} Gruppe | {n} Gruppen",
+        "subGroups": "Untergruppen",
+        "forms": "Formulare",
+        "members": "Mitglieder",
+        "sortBy": {
+            "title": "Titel",
+            "created": "Erstellt",
+            "updated": "Aktualisiert",
+            "members": "Mitglieder"
+        },
+        "noSubGroups": "Keine Untergruppen",
+        "new": {
+            "title": "Neue Gruppe",
+            "addSubGroup": "Neue Untergruppe",
+            "subtitle": "Erstelle eine neue Gruppe in der Hierarchie.",
+            "create": "Gruppe erstellen",
+            "createError": "Gruppe konnte nicht erstellt werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Frontend-Entwicklung",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. frontend-entwicklung",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "parent": "Übergeordnete Gruppe",
+                "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen."
+            }
+        },
+        "treeSelect": {
+            "placeholder": "Übergeordnete Gruppe wählen…",
+            "useCurrentFolder": "Aktuellen Ordner verwenden"
         }
     },
     "dashboard": {
@@ -65,6 +121,14 @@
         "navUsersDesc": "Systembenutzer, Rollen und Zugriff verwalten.",
         "navApiDocs": "API-Dokumentation",
         "navApiDocsDesc": "REST-API über Swagger UI erkunden und testen."
+    },
+    "common": {
+        "searchPlaceholder": "Suchen…",
+        "sortAscending": "Aufsteigend sortieren",
+        "sortDescending": "Absteigend sortieren",
+        "loading": "Laden…",
+        "cancel": "Abbrechen",
+        "clear": "Löschen"
     },
     "theme": {
         "label": "Farbschema",

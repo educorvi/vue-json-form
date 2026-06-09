@@ -1,5 +1,12 @@
 import { ErrorCode } from '~~/server/models/errors';
 
+export interface PaginationParams {
+    page: number;
+    pageSize: number;
+    sortOrder: 'ASC' | 'DESC';
+    search: string;
+}
+
 export function paginatedResponse<T>(
     data: T[],
     totalCount: number,
@@ -13,6 +20,13 @@ export function paginatedResponse<T>(
         total_pages: Math.max(Math.ceil(totalCount / pageSize), 1),
         data,
     };
+}
+
+// TODO: the code generator doesn't create reusable enum for this so the value has to be redefined here
+export function apiSortOrderToDbSortOrder(
+    order: 'asc' | 'desc'
+): 'ASC' | 'DESC' {
+    return order === 'asc' ? 'ASC' : 'DESC';
 }
 
 export function throwNotFound(
