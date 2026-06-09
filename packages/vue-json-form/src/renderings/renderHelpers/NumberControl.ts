@@ -37,9 +37,22 @@ export function setupValueAndValidation(
 
     const value = ref<string | undefined>(undefined);
 
-    watch(value, () => {
-        formData.value[savePath] = Number(value.value);
+    watch(value, (newValue) => {
+        if (newValue === '' || newValue === undefined) {
+            formData.value[savePath] = undefined;
+        } else {
+            formData.value[savePath] = Number(newValue);
+        }
     });
+    watch(
+        () => formData.value[savePath],
+        (newValue) => {
+            if (value.value !== newValue?.toString()) {
+                value.value = newValue?.toString();
+            }
+        },
+        { immediate: true }
+    );
 
     const state = getComputedValidationState(jsonElement, id, required, value);
     return { state, value };

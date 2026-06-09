@@ -9,7 +9,6 @@ import {
     setupValueAndValidation,
 } from '@/renderings/renderHelpers/NumberControl.ts';
 const { formDataStore } = getStores();
-const { formData } = storeToRefs(formDataStore);
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 

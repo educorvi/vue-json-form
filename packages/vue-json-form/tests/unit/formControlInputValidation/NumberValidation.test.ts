@@ -130,9 +130,15 @@ describe('validateNumberInput', () => {
 
     it('handles floating point rounding edge cases (e.g. 0.3 is a multiple of 0.1)', () => {
         const schema: JSONSchema = { type: 'number', multipleOf: 0.1 };
-        const data = 0.3;
+        const data = '0.3';
 
-        const result = validateNumberInput(schema, data, languageProvider, el);
+        const result = validateNumberInput(
+            schema,
+            data,
+            languageProvider,
+            el,
+            true
+        );
 
         expect(result).toBe(true);
         expect(el.setCustomValidity).toHaveBeenCalledWith('');
