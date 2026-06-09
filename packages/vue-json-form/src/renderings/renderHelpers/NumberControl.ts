@@ -1,5 +1,9 @@
-import { computed, type Ref } from 'vue';
+import { computed, inject, ref, type Ref, watch } from 'vue';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import { validateNumberInput } from '@/formControlInputValidation/NumberValidation.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
+import { storeToRefs } from 'pinia';
+import { languageProviderKey } from '@/components/ProviderKeys.ts';
 
 /**
  * Returns a computed ref of the `step` attribute value for a numeric input.
@@ -18,6 +22,72 @@ export function getStep(jsonElement: Readonly<Ref<JSONSchema>>) {
         if (jsonElement.value.type === 'integer') {
             return jsonElement.value.multipleOf || 1;
         }
-        return jsonElement.value.multipleOf || 0.0000000000000000000001;
+        return jsonElement.value.multipleOf || 'any';
+    });
+}
+
+export function setupValueAndValidation(
+    jsonElement: Readonly<Ref<JSONSchema>>,
+    id: string,
+    required: boolean
+) {
+    const { savePath } = injectJsonData();
+    const { formDataStore } = getStores();
+    const { formData } = storeToRefs(formDataStore);
+
+    const value = ref<string | undefined>(undefined);
+
+    watch(value, (newValue) => {
+        if (newValue === '' || newValue === undefined) {
+            formData.value[savePath] = undefined;
+        } else {
+            formData.value[savePath] = Number(newValue);
+        }
+    });
+    watch(
+        () => formData.value[savePath],
+        (newValue) => {
+            if (value.value !== newValue?.toString()) {
+                value.value = newValue?.toString();
+            }
+        },
+        { immediate: true }
+    );
+
+    const state = getComputedValidationState(jsonElement, id, required, value);
+    return { state, value };
+}
+
+export function getComputedValidationState(
+    jsonElement: Readonly<Ref<JSONSchema>>,
+    id: string,
+    required: boolean,
+    value: Ref<string | undefined>
+) {
+    const { formStructureStore } = getStores();
+    const { formStateWasValidated } = storeToRefs(formStructureStore);
+    const languageProvider = inject(languageProviderKey);
+
+    const valid = ref(true);
+    watch(
+        value,
+        () => {
+            valid.value = validateNumberInput(
+                jsonElement.value,
+                value.value,
+                languageProvider,
+                document.getElementById(id) as HTMLInputElement | null,
+                required
+            );
+        },
+        { immediate: true }
+    );
+
+    return computed(() => {
+        if (formStateWasValidated.value) {
+            return valid.value;
+        } else {
+            return undefined;
+        }
     });
 }

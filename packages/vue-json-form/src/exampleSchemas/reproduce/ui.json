@@ -5,6 +5,25 @@
         "type": "VerticalLayout",
         "elements": [
             {
+                "type": "Group",
+                "options": { "label": "JSO-140" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/numberWithMultiple"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/numberWithMultipleSmallerOne"
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit"
+                    }
+                ]
+            },
+            {
                 "type": "Control",
                 "scope": "/properties/objectWithInfo",
                 "options": {

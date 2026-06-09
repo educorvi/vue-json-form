@@ -959,6 +959,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:0.45.4"
+    decimal.js: "npm:^10.6.0"
     deepmerge: "npm:^4.3.1"
     eslint: "npm:^10.4.0"
     eslint-config-prettier: "npm:^10.1.8"
