@@ -165,6 +165,7 @@ function handleSubmit(event: Event, variant: string) {
                     <code>&lt;vjf-default&gt;</code> — no validation, light DOM
                 </p>
                 <vjf-default
+                    id="default-form"
                     :json-schema="currentSchemaStr"
                     :ui-schema="currentUiStr"
                     @submit="handleSubmit($event, 'default')"
@@ -177,6 +178,7 @@ function handleSubmit(event: Event, variant: string) {
                     DOM
                 </p>
                 <vjf-ajv
+                    id="ajv-form"
                     :json-schema="currentSchemaStr"
                     :ui-schema="currentUiStr"
                     @submit="handleSubmit($event, 'ajv')"
@@ -189,6 +191,7 @@ function handleSubmit(event: Event, variant: string) {
                     encapsulated)
                 </p>
                 <vjf-shadow
+                    id="shadow-form"
                     :json-schema="currentSchemaStr"
                     :ui-schema="currentUiStr"
                     @submit="handleSubmit($event, 'shadow')"
@@ -201,6 +204,7 @@ function handleSubmit(event: Event, variant: string) {
                     <code>json-schema-url</code> and <code>ui-schema-url</code>
                 </p>
                 <vjf-default
+                    id="url-form"
                     :json-schema-url="currentSchemaUrl"
                     :ui-schema-url="currentUiUrl"
                     @submit="handleSubmit($event, 'url')"
