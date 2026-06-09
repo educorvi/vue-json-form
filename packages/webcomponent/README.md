@@ -12,91 +12,194 @@ A standalone web component wrapper for VueJsonForm. Use it in any HTML page with
 npm install @educorvi/vue-json-form-webcomponent
 ```
 
-Or use it directly from a CDN (see usage example below).
+Or use it directly from a CDN. See the example below.
+
+## Variants
+
+All bundles register the same custom element tag: `<vue-json-form>`.
+
+| Variant        | Bundle path                              | Description                                                                                                     |
+| -------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `default`      | `dist/default/vue-json-form.umd.js`      | Light DOM web component without built-in schema validation. The surrounding page must provide Bootstrap styles. |
+| `ajvValidator` | `dist/ajvValidator/vue-json-form.umd.js` | Light DOM web component with AJV schema validation enabled by default.                                          |
+| `shadowDom`    | `dist/shadowDom/vue-json-form.umd.js`    | Shadow DOM web component with bundled Bootstrap and Vue JSON Form styles.                                       |
 
 ## Usage
-
-VJF can be used as a web component.
-Bootstrap needs to be set up on the surrounding page.
-If you set `action: 'request'` and `request.url` in the submit button options of the UI Schema, the web component will post the form data to the given endpoint in the background and emit `submitSucceeded` or `submitFailed` accordingly.
-If `request.url` is not set, the form data is emitted as a `submit` event instead.
-See the [Events](#events) section below for the full list of events.
-
-There are three variants of the web component:
-
-- default
-- shadowDom (where the webcomponent is inside of a schadow dom)
-- ajvValidator (validates the provided schemas)
-
-### Attributes
-
-| Attribute              | Type    | Description                                                                                          |
-| ---------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| `json-schema`          | string  | **(Required)** JSON-serialized JSON Schema for the form.                                             |
-| `ui-schema`            | string  | JSON-serialized UI Schema that controls layout and options.                                          |
-| `preset-data`          | string  | JSON-serialized object with initial / pre-filled form values.                                        |
-| `return-data-as-scopes`| boolean | When `"true"`, the submitted data object uses UI-Schema scopes as keys instead of JSON Schema paths. |
-| `no-validate`          | boolean | *(ajvValidator variant only)* Disables AJV schema validation when set.                               |
-
-The submission of results is controlled via the submit buttons in the UI Schema.
-
-### Events
-
-Web-component events are dispatched as `CustomEvent`s. Access the payload via `event.detail`.
-
-| Event            | When fired                                                                                                      | `event.detail`                          |
-| ---------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `submit`         | The submit button action is not `request`, **or** `request` is configured but no URL is provided.              | `{ data, options }`                     |
-| `submitSucceeded`| All configured HTTP requests completed successfully.                                                            | `{ data, options }`                     |
-| `submitFailed`   | At least one of the configured HTTP requests failed.                                                            | `{ data, options }`                     |
-| `afterSubmitted` | Always fired after the submit cycle finishes (regardless of success or failure), unless action is `summary`.   | `{ data, options }`                     |
-
-`data` is the collected form data object. `options` is the submit-button options object from the UI Schema.
-
-```js
-document.querySelector('vue-json-form').addEventListener('submit', (event) => {
-    const { data, options } = event.detail;
-    console.log(data);
-});
-```
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Title</title>
+        <title>Vue JSON Form Web Component</title>
         <link
             rel="stylesheet"
             href="https://unpkg.com/@educorvi/vue-json-form-webcomponent@3/dist/default/vue-json-form.css"
         />
     </head>
     <body>
-        <vue-json-form json-schema="{...}" ui-schema="{...}"></vue-json-form>
+        <vue-json-form id="form"></vue-json-form>
 
         <script src="https://unpkg.com/@educorvi/vue-json-form-webcomponent@3/dist/default/vue-json-form.umd.js"></script>
+        <script>
+            const form = document.querySelector('#form');
+
+            form.setAttribute(
+                'json-schema',
+                JSON.stringify({
+                    type: 'object',
+                    properties: {
+                        name: { type: 'string' },
+                    },
+                })
+            );
+
+            form.setAttribute(
+                'ui-schema',
+                JSON.stringify({
+                    type: 'VerticalLayout',
+                    elements: [
+                        { type: 'Control', scope: '#/properties/name' },
+                        {
+                            type: 'Button',
+                            buttonType: 'submit',
+                            text: 'Submit',
+                            submitOptions: { action: 'emit' },
+                        },
+                    ],
+                })
+            );
+
+            form.addEventListener('submit', (event) => {
+                const [data, options] = event.detail;
+                console.log(data, options);
+            });
+        </script>
     </body>
 </html>
 ```
 
-A working example can be found in the file `webcomponent/webcomponent_test.html`.
+A working local example is available in `packages/webcomponent/webcomponent_test.html`.
+
+## Attributes
+
+| Attribute               | Type           | Description                                                                                                     |
+| ----------------------- | -------------- | --------------------------------------------------------------------------------------------------------------- |
+| `json-schema`           | string         | JSON-serialized JSON Schema for the form. Required unless `json-schema-url` is provided.                        |
+| `ui-schema`             | string         | JSON-serialized UI Schema that controls layout and options.                                                     |
+| `json-schema-url`       | string         | URL that is loaded with `GET` and used as the JSON Schema. Takes precedence over `json-schema`.                 |
+| `ui-schema-url`         | string         | URL that is loaded with `GET` and used as the UI Schema. Takes precedence over `ui-schema`.                     |
+| `preset-data`           | string         | JSON-serialized object with initial form values.                                                                |
+| `return-data-as-scopes` | boolean/string | When set to `true` or `"true"`, submitted data uses UI schema scopes as keys. Otherwise it defaults to `false`. |
+| `no-validate`           | boolean        | `ajvValidator` variant only. Disables AJV validation when set.                                                  |
+
+## Submit Actions
+
+Submission behavior is controlled by `submitOptions` on submit buttons in the UI Schema.
+
+### Emit
+
+Any action other than `request` or `summary` emits the form data through the `submit` event.
+
+```json
+{
+    "type": "Button",
+    "buttonType": "submit",
+    "text": "Submit",
+    "submitOptions": { "action": "emit" }
+}
+```
+
+### HTTP Request
+
+When `action` is `request`, the component sends the form data with Axios. `request.url` can be a string or an array of strings. The default method is `POST`.
+
+```json
+{
+    "type": "Button",
+    "buttonType": "submit",
+    "text": "Save",
+    "submitOptions": {
+        "action": "request",
+        "request": {
+            "url": "https://example.com/api/form",
+            "method": "POST",
+            "headers": { "Content-Type": "application/json" },
+            "onSuccessRedirect": "https://example.com/success"
+        }
+    }
+}
+```
+
+If `request.url` is missing or an empty array, the component falls back to emitting `submit`. For multiple URLs, requests are sent sequentially and stop after the first failure.
+
+### Summary
+
+When `action` is `summary`, the component reads a document URL from the submitted data, downloads it as a blob, and posts it to the configured SSE summary endpoint as multipart form data.
+
+```json
+{
+    "type": "Button",
+    "buttonType": "submit",
+    "text": "Create summary",
+    "submitOptions": {
+        "action": "summary",
+        "summary": {
+            "field": "document",
+            "documentTypeField": "documentType",
+            "apiEndpoint": "https://example.com/ai/summary",
+            "saveUrl": "https://example.com/ai/summary/save",
+            "feedbackUrl": "https://example.com/feedback",
+            "copyToClipboard": true
+        }
+    }
+}
+```
+
+The summary request sends `promptType` and `document`. If the `__ac` cookie exists, it is forwarded as the `X-AC-Session-Token` header. SSE events named `progress`, `result`, and `error` are logged and used to update the built-in result modal.
+
+## Events
+
+Vue custom-element events are dispatched as `CustomEvent`s. Vue passes emitted arguments as an array in `event.detail`.
+
+| Event                    | When fired                                                                                                                                                                     | `event.detail`    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `submit`                 | A non-request action is submitted, or `request` has no usable URL.                                                                                                             | `[data, options]` |
+| `submitSucceeded`        | Emit fallback or all configured HTTP requests completed successfully.                                                                                                          | `[data, options]` |
+| `submitFailed`           | At least one configured HTTP request failed.                                                                                                                                   | `[data, options]` |
+| `afterSubmitted`         | Fired after `submitSucceeded` or `submitFailed` for emit/request flows. Not fired for `summary`, because the summary flow returns after starting the modal-driven SSE request. | `[data, options]` |
+| `schemaLoadingSucceeded` | `json-schema-url` or `ui-schema-url` was loaded successfully.                                                                                                                  | `[url]`           |
+| `schemaLoadingFailed`    | Loading `json-schema-url` or `ui-schema-url` failed.                                                                                                                           | `[url, error]`    |
+| `schemaParsingFailed`    | A loaded or inline JSON/UI schema could not be parsed.                                                                                                                         | `[schema, error]` |
+
+```js
+form.addEventListener('submitSucceeded', (event) => {
+    const [data, options] = event.detail;
+    console.log('submitted', data, options);
+});
+
+form.addEventListener('schemaLoadingFailed', (event) => {
+    const [url, error] = event.detail;
+    console.error('schema load failed', url, error);
+});
+```
 
 ## Development
 
 ### Project setup
 
-```
+```bash
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Compile and hot-reload for development
 
-```
+```bash
 yarn run dev
 ```
 
-### Type-Check and Build for Production
+### Type-check and build for production
 
-```
+```bash
 yarn run build
 ```
