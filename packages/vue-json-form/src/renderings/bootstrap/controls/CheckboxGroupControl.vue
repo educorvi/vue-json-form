@@ -21,7 +21,7 @@ let options: ComputedRef<CheckboxOption[]> = CheckboxGroupControl.getOptions(
 );
 
 // values are not written to store directly because v-model writes the values in the order they are clicked, not the order they are defined in the schema
-const { values, state } = setupValuesAndValidation(props.required);
+const { values, state } = setupValuesAndValidation(props.required ?? false);
 </script>
 
 <template>

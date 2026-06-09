@@ -34,7 +34,7 @@ const multiple = FileControl.getMultiple(jsonElement);
 
 const acceptedFileTypes = FileControl.getAcceptedFileTypes(layoutElement);
 
-const { file, state } = setupFileAndValidation(props.required);
+const { file, state } = setupFileAndValidation(props.required ?? false);
 </script>
 
 <template>

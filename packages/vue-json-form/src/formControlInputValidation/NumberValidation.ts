@@ -2,19 +2,10 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 import { Decimal } from 'decimal.js';
 
-function checkNativeValidity(el: HTMLInputElement | null) {
-    if (!el) {
-        console.warn('Input element is undefined, cannot check validity');
-        return true;
-    }
-    return el.checkValidity();
-}
-
 function checkModulo(data: string, multipleOf: number): boolean {
     const lData = new Decimal(data);
     const lMultipleOf = new Decimal(multipleOf);
     return lData.modulo(lMultipleOf).eq(0);
-    // return true;
 }
 
 export function validateNumberInput(
