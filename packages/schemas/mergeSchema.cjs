@@ -78,4 +78,7 @@ async function mergeJsonSchema() {
 
 Promise.all([merge(), mergeJsonSchema()])
     .then(() => process.exit(0))
-    .catch(console.error);
+    .catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
