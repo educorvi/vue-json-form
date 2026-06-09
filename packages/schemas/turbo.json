@@ -5,13 +5,15 @@
             "dependsOn": ["^build:internal", "generateTypings", "mergeSchema"]
         },
         "generateTypings": {
-            "outputs": ["src/generated/*.d.ts"]
+            "outputs": ["src/generated/*.d.ts"],
+            "inputs": ["src/ui/*.schema.json"]
         },
         "check-types": {
             "dependsOn": ["generateTypings", "mergeSchema", "^check-types"]
         },
         "mergeSchema": {
-            "outputs": ["src/generated/*.schema.json"]
+            "outputs": ["src/generated/*.schema.json"],
+            "inputs": ["src/ui/*.schema.json"]
         }
     }
 }

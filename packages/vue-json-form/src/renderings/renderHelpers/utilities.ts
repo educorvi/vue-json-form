@@ -1,4 +1,8 @@
-import type { LayoutElement, Options } from '@educorvi/vue-json-form-schemas';
+import type {
+    HTMLRenderer,
+    LayoutElement,
+    Options,
+} from '@educorvi/vue-json-form-schemas';
 import { hasOption } from '@/typings/typeValidators';
 
 /**
@@ -31,4 +35,37 @@ export function getOption<Key extends keyof Options>(
         if (value !== undefined) return value;
     }
     return defaultValue;
+}
+
+/**
+ * Retrieves HTML messages based on the provided layout element. The method checks
+ * for optional pre and post HTML configurations and constructs a UI Schema object accordingly.
+ *
+ * @param {LayoutElement} layoutElement - The layout element containing configuration options
+ *                                         for preHtml and postHtml.
+ * @return {{ pre?: HTMLRenderer, post?: HTMLRenderer }} An object containing optional `pre`
+ *         and `post` HTMLRenderer instances if the respective configurations are available.
+ */
+export function getHtmlMessages(layoutElement: LayoutElement): {
+    pre?: HTMLRenderer;
+    post?: HTMLRenderer;
+} {
+    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
+    const preHtml = getOption(layoutElement, 'preHtml');
+    if (preHtml) {
+        messages.pre = {
+            type: 'HTML',
+            htmlData: preHtml,
+        };
+    }
+
+    const postHtml = getOption(layoutElement, 'postHtml');
+    if (postHtml) {
+        messages.post = {
+            type: 'HTML',
+            htmlData: postHtml,
+        };
+    }
+
+    return messages;
 }
