@@ -5,6 +5,7 @@ import { computed, inject, ref } from 'vue';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
+import { getHtmlMessages } from '@/renderings/bootstrap/common.ts';
 
 const props = defineProps<ModalProps>();
 
@@ -31,29 +32,48 @@ const modalContentUi = computed<HTMLRenderer>(() => {
 });
 
 const languageProvider = inject(languageProviderKey);
+const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
 </script>
 
 <template>
-    <BButton
-        :variant="layoutElement.button.variant || 'info'"
-        @click="modal = true"
-        >{{ layoutElement.button.text }}</BButton
-    >
-    <BModal
-        v-model="modal"
-        :size="size"
-        centered
-        scrollable
-        :title="layoutElement.modal.title"
-    >
-        <HtmlRenderer :layout-element="modalContentUi" />
+    <div class="vjf_modal_control">
+        <html-renderer
+            v-if="htmlMessages.pre"
+            :layout-element="htmlMessages.pre"
+        />
+        <BButton
+            :variant="layoutElement.button.variant || 'info'"
+            @click="modal = true"
+            >{{ layoutElement.button.text }}</BButton
+        >
+        <html-renderer
+            v-if="htmlMessages.post"
+            :layout-element="htmlMessages.post"
+        />
+        <BModal
+            v-model="modal"
+            :size="size"
+            centered
+            scrollable
+            :title="layoutElement.modal.title"
+            class="vjf_modal"
+        >
+            <HtmlRenderer :layout-element="modalContentUi" />
 
-        <template #footer>
-            <BButton variant="primary" class="w-100" @click="modal = false">
-                {{ languageProvider?.getString('buttons.close') || 'Close' }}
-            </BButton>
-        </template>
-    </BModal>
+            <template #footer>
+                <BButton variant="primary" class="w-100" @click="modal = false">
+                    {{
+                        languageProvider?.getString('buttons.close') || 'Close'
+                    }}
+                </BButton>
+            </template>
+        </BModal>
+    </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.vjf_modal_control {
+    display: flex;
+    flex-direction: column;
+}
+</style>

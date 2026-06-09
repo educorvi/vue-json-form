@@ -7,7 +7,7 @@ const { mkdirp } = require('mkdirp');
 process.chdir(join(__dirname, 'src/ui'));
 const nodeModulesResolver = {
     name: 'nodeModulesResolver',
-    order: 1,
+    order: 2,
     canRead: (file) => {
         return file.url?.includes('/node_modules');
     },
@@ -25,11 +25,35 @@ const nodeModulesResolver = {
         }
     },
 };
+const vjfResolver = {
+    name: 'vjfResolver',
+    order: 1,
+    canRead: (file) => {
+        return file.url?.startsWith(
+            'https://educorvi.github.io/vue-json-form/schemas/'
+        );
+    },
+
+    read(file, callback, $refs) {
+        const path = file.url.replace(
+            'https://educorvi.github.io/vue-json-form/schemas/',
+            ''
+        );
+        try {
+            const data = fs.readFileSync(path, 'utf8');
+            callback(null, data);
+        } catch (e) {
+            callback(e);
+        }
+    },
+};
 
 async function merge() {
     const resolveOptions = {
         resolve: {
             nodeModules: nodeModulesResolver,
+            vjf: vjfResolver,
+            http: false,
         },
     };
     let schema = await RefParser.bundle('ui.schema.json', resolveOptions);
@@ -52,4 +76,6 @@ async function mergeJsonSchema() {
     );
 }
 
-Promise.all([merge(), mergeJsonSchema()]).then(() => process.exit(0));
+Promise.all([merge(), mergeJsonSchema()])
+    .then(() => process.exit(0))
+    .catch(console.error);
