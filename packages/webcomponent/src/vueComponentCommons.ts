@@ -107,11 +107,11 @@ export function getComputed(props: Props, emit: Emits) {
                 emit('schemaLoadingSucceeded', props.uiSchemaUrl);
                 return schema;
             } catch (error) {
-                let upstreamError;
-                if (error instanceof Error) {
-                    upstreamError = error;
-                }
-                emit('schemaLoadingFailed', props.uiSchemaUrl, upstreamError);
+                emit(
+                    'schemaLoadingFailed',
+                    props.uiSchemaUrl,
+                    error instanceof Error ? error : undefined
+                );
             }
         } else {
             return props.uiSchema;
@@ -127,9 +127,13 @@ export function getComputed(props: Props, emit: Emits) {
             } else {
                 return uiSchemaRaw.value;
             }
-        } catch (e) {
-            emit('schemaParsingFailed', uiSchemaRaw.value);
-            console.warn('Could not parse UI Schema', e, uiSchemaRaw.value);
+        } catch (error) {
+            emit(
+                'schemaParsingFailed',
+                uiSchemaRaw.value,
+                error instanceof Error ? error : undefined
+            );
+            console.warn('Could not parse UI Schema', error, uiSchemaRaw.value);
             return undefined;
         }
     });
