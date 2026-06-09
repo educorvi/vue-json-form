@@ -70,7 +70,6 @@
         },
         "preAndPostHtmlOptions": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "preHtml": {
                     "type": "string",
