@@ -52,7 +52,10 @@ import type {
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getOption } from '@/renderings/renderHelpers/utilities.ts';
+import {
+    getHtmlMessages,
+    getOption,
+} from '@/renderings/renderHelpers/utilities.ts';
 import {
     computed,
     inject,
@@ -93,7 +96,6 @@ import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import { watchDebounced } from '@vueuse/core';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
 import { Mapper } from '@/Mappers';
-import { getHtmlMessages } from '@/renderings/bootstrap/common.ts';
 
 const { formStructureStore, formDataStore } = getStores();
 

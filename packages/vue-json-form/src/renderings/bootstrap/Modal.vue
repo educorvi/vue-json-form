@@ -5,7 +5,8 @@ import { computed, inject, ref } from 'vue';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import { languageProviderKey } from '@/components/ProviderKeys.ts';
-import { getHtmlMessages } from '@/renderings/bootstrap/common.ts';
+
+import { getHtmlMessages } from '@/renderings/renderHelpers';
 
 const props = defineProps<ModalProps>();
 
