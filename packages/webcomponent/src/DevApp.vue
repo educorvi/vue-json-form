@@ -11,9 +11,23 @@ import reproduceSchema from '../../vue-json-form/src/exampleSchemas/reproduce/sc
 import reproduceUi from '../../vue-json-form/src/exampleSchemas/reproduce/ui.json';
 
 function createSchemaUrl(schema: unknown) {
-    return URL.createObjectURL(
-        new Blob([JSON.stringify(schema)], { type: 'text/plain' })
-    );
+    const schemaJson = JSON.stringify(schema);
+    if (typeof URL.createObjectURL === 'function') {
+        return URL.createObjectURL(
+            new Blob([schemaJson], { type: 'application/json' })
+        );
+    }
+
+    return `data:application/json,${encodeURIComponent(schemaJson)}`;
+}
+
+function revokeSchemaUrl(url: string) {
+    if (
+        typeof URL.revokeObjectURL === 'function' &&
+        url.startsWith('blob:')
+    ) {
+        URL.revokeObjectURL(url);
+    }
 }
 
 const schemas: Record<
@@ -77,10 +91,10 @@ const currentUiUrl = computed(() => schemas[selectedSchemaKey.value].uiUrl);
 onBeforeUnmount(() => {
     for (const schema of Object.values(schemas)) {
         if (schema.schemaUrl) {
-            URL.revokeObjectURL(schema.schemaUrl);
+            revokeSchemaUrl(schema.schemaUrl);
         }
         if (schema.uiUrl) {
-            URL.revokeObjectURL(schema.uiUrl);
+            revokeSchemaUrl(schema.uiUrl);
         }
     }
 });
