@@ -56,8 +56,8 @@ function handleSubmit(event: Event, variant: string) {
                 >
                 <select
                     id="schema-select"
-                    class="form-select"
                     v-model="selectedSchemaKey"
+                    class="form-select"
                 >
                     <option
                         v-for="(schema, key) in schemas"
