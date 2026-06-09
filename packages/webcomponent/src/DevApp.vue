@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeUnmount } from 'vue';
 
 import summarySchema from './exampleSchemas/summary/schema.json';
 import summaryUi from './exampleSchemas/summary/ui.json';
@@ -10,19 +10,54 @@ import wizardUi from '../../vue-json-form/src/exampleSchemas/wizard/ui.json';
 import reproduceSchema from '../../vue-json-form/src/exampleSchemas/reproduce/schema.json';
 import reproduceUi from '../../vue-json-form/src/exampleSchemas/reproduce/ui.json';
 
-const schemas = {
-    showcase: { schema: showcaseSchema, ui: showcaseUi, label: 'Showcase' },
-    wizard: { schema: wizardSchema, ui: wizardUi, label: 'Wizard' },
+function createSchemaUrl(schema: unknown) {
+    return URL.createObjectURL(
+        new Blob([JSON.stringify(schema)], { type: 'text/plain' })
+    );
+}
+
+const schemas: Record<
+    string,
+    {
+        schemaUrl?: string;
+        uiUrl?: string;
+        label: string;
+        schema?: unknown;
+        ui?: unknown;
+    }
+> = {
+    showcase: {
+        schema: showcaseSchema,
+        schemaUrl: createSchemaUrl(showcaseSchema),
+        ui: showcaseUi,
+        uiUrl: createSchemaUrl(showcaseUi),
+        label: 'Showcase',
+    },
+    wizard: {
+        schema: wizardSchema,
+        schemaUrl: createSchemaUrl(wizardSchema),
+        ui: wizardUi,
+        uiUrl: createSchemaUrl(wizardUi),
+        label: 'Wizard',
+    },
     summary: {
         schema: summarySchema,
+        schemaUrl: createSchemaUrl(summarySchema),
         ui: summaryUi,
+        uiUrl: createSchemaUrl(summaryUi),
         label: 'Summary (webcomponent)',
     },
-    reproduce: { schema: reproduceSchema, ui: reproduceUi, label: 'Reproduce' },
-} as const;
+    reproduce: {
+        schema: reproduceSchema,
+        schemaUrl: createSchemaUrl(reproduceSchema),
+        ui: reproduceUi,
+        uiUrl: createSchemaUrl(reproduceUi),
+        label: 'Reproduce',
+    },
+};
 
 type SchemaKey = keyof typeof schemas;
-type Tab = 'default' | 'ajv' | 'shadow';
+type Tab = 'default' | 'ajv' | 'shadow' | 'url';
 
 const selectedSchemaKey = ref<SchemaKey>('summary');
 const activeTab = ref<Tab>('default');
@@ -34,6 +69,21 @@ const currentSchemaStr = computed(() =>
 const currentUiStr = computed(() =>
     JSON.stringify(schemas[selectedSchemaKey.value].ui)
 );
+const currentSchemaUrl = computed(
+    () => schemas[selectedSchemaKey.value].schemaUrl
+);
+const currentUiUrl = computed(() => schemas[selectedSchemaKey.value].uiUrl);
+
+onBeforeUnmount(() => {
+    for (const schema of Object.values(schemas)) {
+        if (schema.schemaUrl) {
+            URL.revokeObjectURL(schema.schemaUrl);
+        }
+        if (schema.uiUrl) {
+            URL.revokeObjectURL(schema.uiUrl);
+        }
+    }
+});
 
 function handleSubmit(event: Event, variant: string) {
     const ce = event as CustomEvent;
@@ -98,6 +148,15 @@ function handleSubmit(event: Event, variant: string) {
                     Shadow DOM
                 </button>
             </li>
+            <li class="nav-item">
+                <button
+                    class="nav-link"
+                    :class="{ active: activeTab === 'url' }"
+                    @click="activeTab = 'url'"
+                >
+                    URL Props
+                </button>
+            </li>
         </ul>
 
         <div class="tab-content p-4 border border-top-0 rounded-bottom mb-4">
@@ -133,6 +192,18 @@ function handleSubmit(event: Event, variant: string) {
                     :json-schema="currentSchemaStr"
                     :ui-schema="currentUiStr"
                     @submit="handleSubmit($event, 'shadow')"
+                />
+            </div>
+
+            <div v-show="activeTab === 'url'">
+                <p class="text-muted small mb-3">
+                    <code>&lt;vjf-default&gt;</code> — schemas loaded through
+                    <code>json-schema-url</code> and <code>ui-schema-url</code>
+                </p>
+                <vjf-default
+                    :json-schema-url="currentSchemaUrl"
+                    :ui-schema-url="currentUiUrl"
+                    @submit="handleSubmit($event, 'url')"
                 />
             </div>
         </div>

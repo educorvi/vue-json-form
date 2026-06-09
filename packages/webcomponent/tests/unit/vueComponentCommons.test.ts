@@ -37,18 +37,12 @@ describe('vueComponentCommons', () => {
 
     describe('getSubmitFunc', () => {
         it('should return a function', () => {
-            const submitFunc = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const submitFunc = getSubmitFunc(mockEmit as Emits, null);
             expect(typeof submitFunc).toBe('function');
         });
 
         it('should return an async function', async () => {
-            const submitFunc = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const submitFunc = getSubmitFunc(mockEmit as Emits, null);
             const result = submitFunc({}, { action: 'emit' });
             expect(result instanceof Promise).toBe(true);
         });
@@ -56,10 +50,7 @@ describe('vueComponentCommons', () => {
 
     describe('onSubmitForm - emit action', () => {
         it('should emit submit event when action is not "request"', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
 
@@ -69,10 +60,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should emit submitSucceeded event after successful emit action', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
 
@@ -86,10 +74,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should emit afterSubmitted event after successful emit action', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John', age: 30 };
             const options: SubmitOptions = { action: 'emit' };
 
@@ -103,10 +88,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should emit events in correct order for emit action', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = { action: 'emit' };
 
@@ -120,10 +102,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should not emit submitFailed event for successful emit action', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = { action: 'emit' };
 
@@ -142,10 +121,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -172,10 +148,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -198,10 +171,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockRejectedValueOnce(new Error('Network error'));
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -227,10 +197,7 @@ describe('vueComponentCommons', () => {
                 .spyOn(console, 'error')
                 .mockImplementation(() => {});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -257,10 +224,7 @@ describe('vueComponentCommons', () => {
             mockedAxios.mockResolvedValueOnce({});
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const urls = [
                 'https://api.example.com/submit1',
@@ -303,10 +267,7 @@ describe('vueComponentCommons', () => {
             mockedAxios.mockResolvedValueOnce({});
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -335,10 +296,7 @@ describe('vueComponentCommons', () => {
                 new Error('Second request failed')
             );
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -372,10 +330,7 @@ describe('vueComponentCommons', () => {
                 .spyOn(console, 'error')
                 .mockImplementation(() => {});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -404,10 +359,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
             const options: SubmitOptions = {
@@ -431,10 +383,7 @@ describe('vueComponentCommons', () => {
                 .spyOn(console, 'error')
                 .mockImplementation(() => {});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
             const options: SubmitOptions = {
@@ -457,10 +406,7 @@ describe('vueComponentCommons', () => {
             mockedAxios.mockResolvedValueOnce({});
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const redirectUrl = 'https://example.com/success';
             const options: SubmitOptions = {
@@ -486,10 +432,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -514,10 +457,7 @@ describe('vueComponentCommons', () => {
                 .spyOn(console, 'error')
                 .mockImplementation(() => {});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -539,10 +479,7 @@ describe('vueComponentCommons', () => {
 
     describe('onSubmitForm - edge cases', () => {
         it('should handle undefined URL gracefully', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -563,10 +500,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should handle empty URL array', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -587,10 +521,7 @@ describe('vueComponentCommons', () => {
         });
 
         it('should handle undefined request object', async () => {
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -611,10 +542,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -638,10 +566,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const options: SubmitOptions = {
                 action: 'request',
@@ -664,10 +589,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = { name: 'John' };
             const customHeaders = {
                 Authorization: 'Bearer token123',
@@ -696,10 +618,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = {
                 name: 'John',
                 nested: {
@@ -730,10 +649,7 @@ describe('vueComponentCommons', () => {
             const mockedAxios = vi.mocked(axios);
             mockedAxios.mockResolvedValueOnce({});
 
-            const onSubmitForm = getSubmitFunc(
-                mockEmit as Emits,
-                null
-            );
+            const onSubmitForm = getSubmitFunc(mockEmit as Emits, null);
             const data = {};
             const options: SubmitOptions = {
                 action: 'request',
@@ -761,7 +677,7 @@ describe('vueComponentCommons', () => {
                     '{"type":"object","properties":{"name":{"type":"string"}}}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.jsonSchema.value).toEqual({
                 type: 'object',
                 properties: {
@@ -778,7 +694,7 @@ describe('vueComponentCommons', () => {
                 jsonSchema: 'invalid json',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.jsonSchema.value).toBeUndefined();
             expect(consoleWarnSpy).toHaveBeenCalledWith(
                 'Could not parse JSON Schema',
@@ -794,7 +710,7 @@ describe('vueComponentCommons', () => {
                 uiSchema: '{"type":"VerticalLayout","elements":[]}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.uiSchema.value).toEqual({
                 type: 'VerticalLayout',
                 elements: [],
@@ -806,7 +722,7 @@ describe('vueComponentCommons', () => {
                 jsonSchema: '{}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.uiSchema.value).toBeUndefined();
         });
 
@@ -819,7 +735,7 @@ describe('vueComponentCommons', () => {
                 uiSchema: 'invalid ui schema',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.uiSchema.value).toBeUndefined();
             expect(consoleWarnSpy).toHaveBeenCalledWith(
                 'Could not parse UI Schema',
@@ -835,7 +751,7 @@ describe('vueComponentCommons', () => {
                 presetData: '{"name":"John","age":30}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.presetData.value).toEqual({
                 name: 'John',
                 age: 30,
@@ -847,7 +763,7 @@ describe('vueComponentCommons', () => {
                 jsonSchema: '{}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.presetData.value).toBeUndefined();
         });
 
@@ -860,7 +776,7 @@ describe('vueComponentCommons', () => {
                 presetData: 'invalid preset data',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.presetData.value).toBeUndefined();
             expect(consoleWarnSpy).toHaveBeenCalledWith(
                 'Could not parse pre-set data',
@@ -876,7 +792,7 @@ describe('vueComponentCommons', () => {
                 returnDataAsScopes: true,
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.returnDataAsScopes.value).toBe(true);
         });
 
@@ -886,7 +802,7 @@ describe('vueComponentCommons', () => {
                 returnDataAsScopes: false,
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.returnDataAsScopes.value).toBe(false);
         });
 
@@ -896,7 +812,7 @@ describe('vueComponentCommons', () => {
                 returnDataAsScopes: 'true',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.returnDataAsScopes.value).toBe(true);
         });
 
@@ -906,7 +822,7 @@ describe('vueComponentCommons', () => {
                 returnDataAsScopes: 'false',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.returnDataAsScopes.value).toBe(false);
         });
 
@@ -915,7 +831,7 @@ describe('vueComponentCommons', () => {
                 jsonSchema: '{}',
             };
 
-            const computed = getComputed(props);
+            const computed = getComputed(props, emit);
             expect(computed.returnDataAsScopes.value).toBe(false);
         });
     });

@@ -22,8 +22,10 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const { jsonSchema, uiSchema, presetData, returnDataAsScopes } =
-    getComputed(props);
+const { jsonSchema, uiSchema, presetData, returnDataAsScopes } = getComputed(
+    props,
+    emit
+);
 
 const mappers = [
     OneOfToEnumMapper,
