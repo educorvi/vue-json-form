@@ -8,17 +8,28 @@ import type { SseEvent, SummaryResultEvent } from '@/types.ts';
 import { getPropertyByString } from '@educorvi/vue-json-form';
 import ResultModal from '@/ResultModal.vue';
 import Cookies from 'js-cookie';
+import { computedAsync } from '@vueuse/core';
 
 export type Props = {
     /**
      * The JSON Schema of the form
      */
-    jsonSchema: string;
+    jsonSchema?: string;
 
     /**
      * The UI Schema of the form
      */
     uiSchema?: string;
+
+    /**
+     * An Url to load a JSON Schema from
+     */
+    jsonSchemaUrl?: string;
+
+    /**
+     * An Url to load a UI Schema from
+     */
+    uiSchemaUrl?: string;
 
     /**
      * The plain data of the form
@@ -48,25 +59,81 @@ export type Emits = {
         data: Record<string, any>,
         options: SubmitOptions
     ): void;
+    (e: 'schemaLoadingSucceeded', url: string): void;
+    (e: 'schemaLoadingFailed', url: string, error?: Error): void;
+    (e: 'schemaParsingFailed', schema: unknown, error?: Error): void;
 };
 
-export function getComputed(props: Props) {
+export function getComputed(props: Props, emit: Emits) {
+    const jsonSchemaRaw = computedAsync(async () => {
+        if (props.jsonSchemaUrl) {
+            try {
+                const schema = (await axios.get(props.jsonSchemaUrl)).data;
+                emit('schemaLoadingSucceeded', props.jsonSchemaUrl);
+                return schema;
+            } catch (error) {
+                let upstreamError;
+                if (error instanceof Error) {
+                    upstreamError = error;
+                }
+                emit('schemaLoadingFailed', props.jsonSchemaUrl, upstreamError);
+            }
+        } else if (props.jsonSchema) {
+            return props.jsonSchema;
+        } else {
+            return undefined;
+        }
+    });
     const jsonSchema = computed(() => {
+        if (!jsonSchemaRaw.value) {
+            return undefined;
+        }
         try {
-            return JSON.parse(props.jsonSchema) as Record<string, any>;
+            if (typeof jsonSchemaRaw.value === 'string') {
+                return JSON.parse(jsonSchemaRaw.value) as Record<string, any>;
+            } else {
+                return jsonSchemaRaw.value;
+            }
         } catch (e) {
+            emit('schemaParsingFailed', jsonSchemaRaw.value);
             console.warn('Could not parse JSON Schema', e);
             return undefined;
         }
     });
+    const uiSchemaRaw = computedAsync(async () => {
+        if (props.uiSchemaUrl) {
+            try {
+                const schema = (await axios.get(props.uiSchemaUrl)).data;
+                emit('schemaLoadingSucceeded', props.uiSchemaUrl);
+                return schema;
+            } catch (error) {
+                emit(
+                    'schemaLoadingFailed',
+                    props.uiSchemaUrl,
+                    error instanceof Error ? error : undefined
+                );
+            }
+        } else {
+            return props.uiSchema;
+        }
+    });
     const uiSchema = computed(() => {
-        if (!props.uiSchema) {
+        if (!uiSchemaRaw.value) {
             return undefined;
         }
         try {
-            return JSON.parse(props.uiSchema) as Record<string, any>;
-        } catch (e) {
-            console.warn('Could not parse UI Schema', e);
+            if (typeof uiSchemaRaw.value === 'string') {
+                return JSON.parse(uiSchemaRaw.value) as Record<string, any>;
+            } else {
+                return uiSchemaRaw.value;
+            }
+        } catch (error) {
+            emit(
+                'schemaParsingFailed',
+                uiSchemaRaw.value,
+                error instanceof Error ? error : undefined
+            );
+            console.warn('Could not parse UI Schema', error, uiSchemaRaw.value);
             return undefined;
         }
     });
