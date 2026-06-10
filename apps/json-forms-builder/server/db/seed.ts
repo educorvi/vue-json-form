@@ -127,10 +127,10 @@ const FORMS: FormSeed[] = [
 ];
 
 export async function seed(dataSource: DataSource): Promise<void> {
-    const groupRepo = dataSource.getRepository(Group);
+    const treeRepo = dataSource.getTreeRepository(Group);
     const formRepo = dataSource.getRepository(Form);
 
-    const existingCount = await groupRepo.count();
+    const existingCount = await treeRepo.count();
     if (existingCount > 0) {
         console.log('[seed] Groups table already has data — skipping seed.');
         return;
@@ -138,36 +138,34 @@ export async function seed(dataSource: DataSource): Promise<void> {
 
     console.log('[seed] Seeding development data…');
 
-    // Build a path → Group map as we insert
+    // Build a name → Group map as we insert (keyed by parentPath/name path)
     const pathMap = new Map<string, Group>();
 
     for (const s of GROUPS) {
         const parent = s.parentPath
             ? (pathMap.get(s.parentPath) ?? null)
             : null;
-        const path = parent ? `${parent.path}/${s.name}` : s.name;
+        const pathKey = parent ? `${s.parentPath}/${s.name}` : s.name;
 
-        const group = groupRepo.create({
+        const group = treeRepo.create({
             title: s.title,
             name: s.name,
             description: s.description ?? null,
+            parent: parent ?? undefined,
             parent_id: parent?.id ?? null,
-            path,
         });
-        const saved = await groupRepo.save(group);
-        pathMap.set(path, saved);
+        const saved = await treeRepo.save(group);
+        pathMap.set(pathKey, saved);
     }
 
     for (const s of FORMS) {
         const group = pathMap.get(s.groupPath) ?? null;
-        const path = group ? `${group.path}/${s.name}` : s.name;
-
         const form = formRepo.create({
             title: s.title,
             name: s.name,
             description: s.description ?? null,
             group_id: group?.id ?? null,
-            path,
+            path: s.groupPath ? `${s.groupPath}/${s.name}` : s.name,
         });
         await formRepo.save(form);
     }

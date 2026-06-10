@@ -169,12 +169,8 @@ export class PermissionService {
 
     /**
      * Checks whether a user (identified by email) has a direct or inherited
-     * permission on a group.
-     *
-     * Inheritance means: a permission on any ancestor group also grants access
-     * to all descendants. Two queries total regardless of tree depth:
-     *   1. Fetch the group path to derive ancestor paths.
-     *   2. Check if any permission exists for those ancestor group IDs.
+     * permission on a group. Inheritance means a permission on any ancestor
+     * group also grants access to all descendants.
      */
     async canUserAccessGroup(
         userEmail: string,
@@ -186,7 +182,7 @@ export class PermissionService {
         ]
     ): Promise<boolean> {
         const userRepo = this.repo.manager.getRepository(User);
-        const groupRepo = this.repo.manager.getRepository(Group);
+        const treeRepo = this.repo.manager.getTreeRepository(Group);
 
         const user = await userRepo.findOne({
             where: { email: userEmail },
@@ -194,22 +190,10 @@ export class PermissionService {
         });
         if (!user) return false;
 
-        const target = await groupRepo.findOne({
-            where: { id: groupId },
-            select: { id: true, path: true },
-        });
+        const target = await treeRepo.findOne({ where: { id: groupId } });
         if (!target) return false;
 
-        // Build all ancestor path strings (including self)
-        const segments = target.path.split('/');
-        const allPaths = segments.map((_, i) =>
-            segments.slice(0, i + 1).join('/')
-        );
-
-        const ancestors = await groupRepo.find({
-            where: { path: In(allPaths) },
-            select: { id: true },
-        });
+        const ancestors = await treeRepo.findAncestors(target);
         const ancestorIds = ancestors.map((a) => a.id);
 
         const perm = await this.repo.findOne({

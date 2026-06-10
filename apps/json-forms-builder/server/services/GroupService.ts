@@ -1,4 +1,11 @@
-import { In, type DataSource, type Repository } from 'typeorm';
+import {
+    ILike,
+    IsNull,
+    type DataSource,
+    type TreeRepository,
+    type FindOptionsWhere,
+    type FindOptionsOrder,
+} from 'typeorm';
 import { Group } from '~~/server/db/entities/Group';
 import {
     throwNotFound,
@@ -6,106 +13,132 @@ import {
     paginatedResponse,
     apiSortOrderToDbSortOrder,
 } from '~~/server/utils/helpers';
-import type { PaginationParams } from '~~/server/utils/helpers';
 import { ErrorCode } from '~~/server/models/errors';
-import {
-    ToApiGroup,
-    toGroupDto,
-    type GroupDto,
-    type GroupHierarchyNodeDto,
-    type GroupStats,
-    type GroupStatsByGroupId,
-    type GroupStatsRow,
-    type ParentPathEntryDto,
-} from '~~/server/models/domain/group';
 import {
     zListGroupsQuery,
     zListGroupsResponse,
+    zGroup,
+    zGroupHierarchyNode,
+    zParentPath,
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
 
-const ZERO_GROUP_STATS: GroupStats = {
+type ApiGroup = z.infer<typeof zGroup>;
+type ApiListGroupQuery = z.infer<typeof zListGroupsQuery>;
+type ApiListGroup = z.infer<typeof zListGroupsResponse>;
+type ApiGroupHierarchyNode = z.infer<typeof zGroupHierarchyNode>;
+type ApiParentPath = z.infer<typeof zParentPath>;
+
+interface GroupStats {
+    member_count: number;
+    group_count: number;
+    form_count: number;
+}
+
+interface GroupStatsRow {
+    g_id: number;
+    member_count: number | string;
+    group_count: number | string;
+    form_count: number | string;
+}
+
+const ZERO_STATS: GroupStats = {
     member_count: 0,
     group_count: 0,
     form_count: 0,
 };
 
-/** Columns safe to use in ORDER BY (prevents SQL injection). */
-const SAFE_ORDER_COLS = new Set([
-    'id',
-    'title',
-    'name',
-    'created',
-    'updated',
-    // member_count / group_count / form_count are derived — handled separately
-]);
+const SAFE_ORDER_COLS = new Set(['id', 'title', 'name', 'created', 'updated']);
 
-type ApiListGroupQuery = z.infer<typeof zListGroupsQuery>;
+function toApiGroup(
+    g: Group,
+    stats: GroupStats,
+    parentPath: ApiParentPath | null = null
+): ApiGroup {
+    return {
+        id: g.id,
+        name: g.name,
+        title: g.title,
+        description: g.description ?? null,
+        parent_id: g.parent_id ?? null,
+        parent_path: parentPath,
+        member_count: stats.member_count,
+        group_count: stats.group_count,
+        form_count: stats.form_count,
+        created_by: {
+            id: g.created_by?.id ?? 0,
+            name: g.created_by?.name ?? 'System',
+            email: g.created_by?.email ?? 'system@example.com',
+            timestamp: g.created.toISOString(),
+        },
+        updated_by: {
+            id: g.updated_by?.id ?? 0,
+            name: g.updated_by?.name ?? 'System',
+            email: g.updated_by?.email ?? 'system@example.com',
+            timestamp: g.updated.toISOString(),
+        },
+    };
+}
 
-type ApiListGroup = z.infer<typeof zListGroupsResponse>;
+function toHierarchyNode(g: Group): ApiGroupHierarchyNode {
+    return {
+        id: g.id,
+        name: g.name,
+        title: g.title,
+        children:
+            g.children && g.children.length > 0
+                ? g.children.map(toHierarchyNode)
+                : null,
+    };
+}
 
 export class GroupService {
-    private readonly repo: Repository<Group>;
+    private readonly treeRepo: TreeRepository<Group>;
     private readonly dataSource: DataSource;
 
     constructor(dataSource: DataSource) {
         this.dataSource = dataSource;
-        this.repo = dataSource.getRepository(Group);
+        this.treeRepo = dataSource.getTreeRepository(Group);
     }
 
-    /**
-     * Returns a paginated list of GroupDtos for a given parent level.
-     *
-     * Counts (member_count, group_count, form_count) are fetched in a single
-     * batch SQL query for the N items on the current page — no N+1 queries.
-     *
-     * parent semantics:
-     *   0 or undefined → root groups (parent IS NULL)
-     *   positive number → direct children of that group
-     */
     async list(
         query: ApiListGroupQuery,
         parentId: number
     ): Promise<ApiListGroup> {
         const { page, page_size, sort_order, order_by, search } = query;
 
-        const qb = this.repo
-            .createQueryBuilder('g')
-            .leftJoinAndSelect('g.created_by', 'cb')
-            .leftJoinAndSelect('g.updated_by', 'ub');
+        const parentWhere: FindOptionsWhere<Group> =
+            parentId === 0 ? { parent_id: IsNull() } : { parent_id: parentId };
 
-        if (parentId === 0 || parentId == null) {
-            qb.where('g.parent_id IS NULL');
-        } else {
-            qb.where('g.parent_id = :parentId', { parentId });
-        }
+        const where: FindOptionsWhere<Group>[] = search
+            ? [
+                  { ...parentWhere, title: ILike(`%${search}%`) },
+                  { ...parentWhere, name: ILike(`%${search}%`) },
+              ]
+            : [parentWhere];
 
-        if (search) {
-            qb.andWhere('(g.title ILIKE :s OR g.name ILIKE :s)', {
-                s: `%${search}%`,
-            });
-        }
+        const safeCol = SAFE_ORDER_COLS.has(order_by) ? order_by : 'title';
+        const order: FindOptionsOrder<Group> = {
+            [safeCol]: apiSortOrderToDbSortOrder(sort_order),
+        };
 
-        const col = SAFE_ORDER_COLS.has(order_by) ? `g.${order_by}` : 'g.title';
-        const [entities, total] = await qb
-            .orderBy(col, apiSortOrderToDbSortOrder(sort_order))
-            .skip((page - 1) * page_size)
-            .take(page_size)
-            .getManyAndCount();
+        const [entities, total] = await this.treeRepo.findAndCount({
+            where,
+            order,
+            relations: { created_by: true, updated_by: true },
+            skip: (page - 1) * page_size,
+            take: page_size,
+        });
 
-        const statsByGroupId = await this._batchStats(
-            entities.map((g) => g.id)
-        );
+        const stats = await this._batchStats(entities.map((g) => g.id));
         const data = entities.map((g) =>
-            ToApiGroup(g, this._statsFor(g.id, statsByGroupId))
+            toApiGroup(g, stats[g.id] ?? ZERO_STATS)
         );
-
         return paginatedResponse(data, total, page, page_size);
     }
 
-    /** Load a raw entity, throwing 404 if missing. */
     async findById(id: number): Promise<Group> {
-        const group = await this.repo.findOne({
+        const group = await this.treeRepo.findOne({
             where: { id },
             relations: { created_by: true, updated_by: true },
         });
@@ -113,108 +146,111 @@ export class GroupService {
         return group;
     }
 
-    /** Load a group and build its full API DTO including computed counts and parent path. */
-    async findByIdWithStats(id: number): Promise<GroupDto> {
+    async get(id: number): Promise<ApiGroup> {
         const g = await this.findById(id);
-        const statsByGroupId = await this._batchStats([id]);
+        const stats = await this._batchStats([id]);
         const parentPath = await this._getParentPath(g);
-        return toGroupDto(g, this._statsFor(id, statsByGroupId), parentPath);
+        return toApiGroup(g, stats[id] ?? ZERO_STATS, parentPath);
     }
 
-    /**
-     * Fetches the entire groups tree in one query and builds a nested structure
-     * in memory. Efficient for up to ~10 000 groups.
-     */
-    async getHierarchy(): Promise<GroupHierarchyNodeDto[]> {
-        const all = await this.repo.find({ order: { title: 'ASC' } });
+    async getHierarchy(): Promise<ApiGroupHierarchyNode[]> {
+        const roots = await this.treeRepo.findTrees();
+        return roots.map(toHierarchyNode);
+    }
 
-        type InternalNode = GroupHierarchyNodeDto & {
-            _parentId: number | null;
-        };
-        const nodeMap = new Map<number, InternalNode>();
-        for (const g of all) {
-            nodeMap.set(g.id, {
-                id: g.id,
-                name: g.name,
-                title: g.title,
-                children: [],
-                _parentId: g.parent_id,
-            });
+    async create(data: {
+        title: string;
+        name: string;
+        description?: string | null;
+        parent_id?: number | null;
+    }): Promise<ApiGroup> {
+        const parent = data.parent_id
+            ? await this.treeRepo.findOne({ where: { id: data.parent_id } })
+            : null;
+        const group = this.treeRepo.create({
+            title: data.title,
+            name: data.name,
+            description: data.description ?? null,
+            parent_id: data.parent_id ?? null,
+            parent: parent ?? undefined,
+        });
+        const saved = await this.treeRepo.save(group);
+        return this.get(saved.id);
+    }
+
+    async replace(
+        id: number,
+        data: {
+            title: string;
+            name: string;
+            description?: string | null;
+            parent_id?: number | null;
         }
+    ): Promise<ApiGroup> {
+        const existing = await this.findById(id);
+        const parent =
+            data.parent_id !== undefined
+                ? data.parent_id
+                    ? await this.treeRepo.findOne({
+                          where: { id: data.parent_id },
+                      })
+                    : null
+                : existing.parent;
+        await this.treeRepo.save({
+            ...existing,
+            title: data.title,
+            name: data.name,
+            description: data.description ?? null,
+            parent_id: data.parent_id ?? null,
+            parent: parent ?? undefined,
+        });
+        return this.get(id);
+    }
 
-        const roots: GroupHierarchyNodeDto[] = [];
-        for (const node of nodeMap.values()) {
-            if (node._parentId == null) {
-                roots.push(node);
-            } else {
-                const parent = nodeMap.get(node._parentId);
-                if (parent) {
-                    parent.children = parent.children ?? [];
-                    parent.children.push(node);
-                }
-            }
+    async patch(
+        id: number,
+        data: {
+            title?: string;
+            name?: string;
+            description?: string | null;
+            parent_id?: number | null;
         }
-
-        // Strip internal _parentId and convert empty children arrays to null
-        const clean = (
-            nodes: GroupHierarchyNodeDto[]
-        ): GroupHierarchyNodeDto[] =>
-            nodes.map((n) => ({
-                id: n.id,
-                name: n.name,
-                title: n.title,
-                children:
-                    n.children && n.children.length > 0
-                        ? clean(n.children)
-                        : null,
-            }));
-
-        return clean(roots);
-    }
-
-    async create(data: Partial<Group>): Promise<GroupDto> {
-        const group = this.repo.create(data);
-        const saved = await this.repo.save(group);
-        // Reload with relations for the mapper
-        return this.findByIdWithStats(saved.id);
-    }
-
-    async replace(id: number, data: Partial<Group>): Promise<GroupDto> {
+    ): Promise<ApiGroup> {
         const existing = await this.findById(id);
-        await this.repo.save({ ...existing, ...data, id });
-        return this.findByIdWithStats(id);
-    }
-
-    async patch(id: number, data: Partial<Group>): Promise<GroupDto> {
-        const existing = await this.findById(id);
-        await this.repo.save({ ...existing, ...data });
-        return this.findByIdWithStats(id);
+        const parent =
+            data.parent_id !== undefined
+                ? data.parent_id
+                    ? await this.treeRepo.findOne({
+                          where: { id: data.parent_id },
+                      })
+                    : null
+                : existing.parent;
+        await this.treeRepo.save({
+            ...existing,
+            ...data,
+            parent: parent ?? undefined,
+        });
+        return this.get(id);
     }
 
     async softDelete(id: number): Promise<void> {
-        const existing = await this.findById(id);
-        const childCount = await this.repo.count({
-            where: { parent_id: existing.id },
+        await this.findById(id);
+        const childCount = await this.treeRepo.count({
+            where: { parent_id: id },
         });
         if (childCount > 0)
             throwConflict(
                 'Group has children — remove them first',
                 ErrorCode.GROUP_HAS_CHILDREN
             );
-        await this.repo.softDelete(id);
+        await this.treeRepo.softDelete(id);
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    /**
-     * Fetches member_count, group_count and form_count for a set of group IDs
-     * in a single SQL query using correlated subqueries.
-     *
-     * `member_count` = users with a direct permission on the group
-     * `group_count`  = direct child groups
-     * `form_count`   = direct forms
-     */
-    private async _batchStats(ids: number[]): Promise<GroupStatsByGroupId> {
+    private async _batchStats(
+        ids: number[]
+    ): Promise<Record<number, GroupStats>> {
         if (ids.length === 0) return {};
 
         const rows: GroupStatsRow[] = await this.dataSource.query(
@@ -231,57 +267,33 @@ export class GroupService {
             [ids]
         );
 
-        const byId: GroupStatsByGroupId = Object.fromEntries(
-            ids.map((id) => [id, { ...ZERO_GROUP_STATS }])
+        const result: Record<number, GroupStats> = Object.fromEntries(
+            ids.map((id) => [id, { ...ZERO_STATS }])
         );
-
         for (const r of rows) {
-            const id = Number(r.g_id);
-            byId[id] = {
+            result[Number(r.g_id)] = {
                 member_count: Number(r.member_count),
                 group_count: Number(r.group_count),
                 form_count: Number(r.form_count),
             };
         }
-
-        return byId;
+        return result;
     }
 
-    private _statsFor(
-        id: number,
-        statsByGroupId: GroupStatsByGroupId
-    ): GroupStats {
-        return statsByGroupId[id] ?? ZERO_GROUP_STATS;
-    }
-
-    /**
-     * Builds the breadcrumb path for a group by resolving its ancestors
-     * from the materialized `path` column in a single DB query.
-     *
-     * E.g. group with path "engineering/frontend/vue" → resolves the groups
-     * at paths "engineering" and "engineering/frontend".
-     */
-    private async _getParentPath(g: Group): Promise<ParentPathEntryDto[]> {
-        if (!g.parent_id || !g.path) return [];
-
-        const segments = g.path.split('/');
-        segments.pop(); // remove own segment
-        if (segments.length === 0) return [];
-
-        // Collect all ancestor path strings: ["a"], ["a","b"], …
-        const ancestorPaths = segments.map((_, i) =>
-            segments.slice(0, i + 1).join('/')
-        );
-
-        const ancestors = await this.repo.find({
-            where: { path: In(ancestorPaths) },
-            select: { id: true, title: true, name: true, path: true },
-        });
-
-        // Sort by path depth (shallowest first) to maintain breadcrumb order
-        ancestors.sort((a, b) => a.path.length - b.path.length);
-
-        return ancestors.map((a) => ({
+    private async _getParentPath(group: Group): Promise<ApiParentPath> {
+        if (!group.parent_id) return [];
+        const ancestors = await this.treeRepo.findAncestors(group);
+        // Build ordered chain (root → direct parent) using parent_id links
+        const map = new Map(ancestors.map((a) => [a.id, a]));
+        const chain: Group[] = [];
+        let id: number | null = group.parent_id;
+        while (id != null) {
+            const anc = map.get(id);
+            if (!anc) break;
+            chain.unshift(anc);
+            id = anc.parent_id;
+        }
+        return chain.map((a) => ({
             id: a.id,
             name: a.title,
             path_segment: a.name,
