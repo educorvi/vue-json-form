@@ -146,25 +146,39 @@ export function generateUISchema(
  * @param separator separator
  * @param defaultVal default value to return if path is not found
  */
-export function getPropertyByString<T>(
+export function getPropertyByString<ReturnValueType extends {} | null>(
     object: Record<string, unknown> | undefined,
     path: string,
     separator?: string
-): T | undefined;
-export function getPropertyByString<T>(
+): ReturnValueType;
+export function getPropertyByString<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ReturnValueType extends {} | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    DefaultValueType extends {} | null = ReturnValueType,
+>(
     object: Record<string, unknown> | undefined,
     path: string,
     separator: string | undefined,
-    defaultVal: T
-): T;
-export function getPropertyByString<T>(
+    defaultVal: DefaultValueType
+): ReturnValueType | DefaultValueType;
+export function getPropertyByString<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ReturnValueType extends {} | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    DefaultValueType extends {} | null = ReturnValueType,
+>(
     object: Record<string, unknown> | undefined,
     path: string,
     separator: string = '.',
-    defaultVal?: T
-): T | undefined {
+    defaultVal?: DefaultValueType
+): ReturnValueType | DefaultValueType {
     if (object === undefined) {
-        return defaultVal;
+        if (defaultVal !== undefined) {
+            return defaultVal;
+        } else {
+            throw new Error('Undefined path in data: ' + path);
+        }
     }
 
     const escapePCRE = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -176,7 +190,11 @@ export function getPropertyByString<T>(
     for (let i = 0, n = a.length; i < n; ++i) {
         const k = a[i];
         if (k === undefined) {
-            return defaultVal;
+            if (defaultVal !== undefined) {
+                return defaultVal;
+            } else {
+                throw new Error('Undefined path in data: ' + path);
+            }
         }
         if (current === null || typeof current !== 'object') {
             if (defaultVal !== undefined) {
@@ -200,5 +218,5 @@ export function getPropertyByString<T>(
             throw new Error('Undefined path in data: ' + path);
         }
     }
-    return current as T | undefined;
+    return current as ReturnValueType;
 }

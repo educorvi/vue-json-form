@@ -337,28 +337,32 @@ export class IfThenElseMapper extends MapperWithData {
         return ifThenElses
             .map((ifThen) => {
                 // Extract field-specific schema fragments from then/else blocks
-                const thenResult = getPropertyByString<JSONSchema>(
+                const thenResult: JSONSchema | null = getPropertyByString(
                     ifThen.then,
                     deltaPath,
-                    '/'
+                    '/',
+                    null
                 );
-                const elseResult = getPropertyByString<JSONSchema>(
+                const elseResult: JSONSchema | null = getPropertyByString(
                     ifThen.else,
                     deltaPath,
-                    '/'
+                    '/',
+                    null
                 );
 
                 // Extract required field constraints from parent object level
                 const parentDeltaPath = sliceScope(deltaPath, -2);
-                const thenRequired = getPropertyByString<string[]>(
+                const thenRequired: string[] | null = getPropertyByString(
                     ifThen.then,
                     parentDeltaPath + '/required',
-                    '/'
+                    '/',
+                    null
                 );
-                const elseRequired = getPropertyByString<string[]>(
+                const elseRequired: string[] | null = getPropertyByString(
                     ifThen.else,
                     parentDeltaPath + '/required',
-                    '/'
+                    '/',
+                    null
                 );
 
                 // Skip rules that don't affect this field
@@ -376,10 +380,10 @@ export class IfThenElseMapper extends MapperWithData {
                         ifThen.if,
                         sliceScope(allOfScope, -1)
                     ),
-                    then: thenResult,
-                    else: elseResult,
-                    thenRequired,
-                    elseRequired,
+                    then: thenResult || undefined,
+                    else: elseResult || undefined,
+                    thenRequired: thenRequired || undefined,
+                    elseRequired: elseRequired || undefined,
                 };
             })
             .filter((c) => c !== undefined);
