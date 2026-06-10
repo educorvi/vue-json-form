@@ -28,6 +28,7 @@ import { MapperWithData } from '@/Mappers/index.ts';
 import type {
     IfConditions,
     IfProperty,
+    FormData,
     SupportedIfThenElse,
 } from '@/typings/customTypes.ts';
 
@@ -45,7 +46,7 @@ enum ConditionType {
 type Condition = {
     key: string;
     savePath: string;
-    value: any;
+    value: unknown;
     type: ConditionType;
 };
 
@@ -136,7 +137,7 @@ export class IfThenElseMapper extends MapperWithData {
         IfConditions,
     ]): Condition {
         let conditionType: ConditionType;
-        let conditionValue: any;
+        let conditionValue: unknown;
         if ('const' in condition) {
             conditionType = ConditionType.CONST;
             conditionValue = condition.const;
@@ -428,7 +429,7 @@ export class IfThenElseMapper extends MapperWithData {
      */
     private checkRequiredConditionFulfilled(
         actualValue: Readonly<unknown>,
-        data: Readonly<Record<string, any>>,
+        data: Readonly<FormData>,
         conditionSavePath: Readonly<string>
     ): boolean {
         if (isNotNullOrUndefined(actualValue) && actualValue !== '') {
@@ -461,7 +462,7 @@ export class IfThenElseMapper extends MapperWithData {
      */
     private checkConditionFulfilled(
         condition: Condition,
-        data: Readonly<Record<string, any>>
+        data: Readonly<FormData>
     ): boolean {
         if (!this.savePath || !this.scope) {
             return false;
@@ -472,6 +473,9 @@ export class IfThenElseMapper extends MapperWithData {
                 // Uses deep equality instead of strict equality for complex types
                 return deepEqual(actualValue, condition.value);
             case ConditionType.ENUM:
+                if (!Array.isArray(condition.value)) {
+                    return false;
+                }
                 return condition.value.includes(actualValue);
             case ConditionType.CONTAINS_CONST:
                 if (!Array.isArray(actualValue)) {
@@ -482,8 +486,15 @@ export class IfThenElseMapper extends MapperWithData {
                 if (!Array.isArray(actualValue)) {
                     return false;
                 }
-                return actualValue.some((a) => condition.value.includes(a));
+                return actualValue.some(
+                    (a) =>
+                        Array.isArray(condition.value) &&
+                        condition.value.includes(a)
+                );
             case ConditionType.MIN_LENGTH:
+                if (typeof condition.value !== 'number') {
+                    return false;
+                }
                 return (actualValue?.length ?? 0) >= condition.value;
             case ConditionType.REQUIRED:
                 return this.checkRequiredConditionFulfilled(
@@ -514,7 +525,7 @@ export class IfThenElseMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        data: Readonly<FormData>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -568,9 +579,9 @@ export class IfThenElseMapper extends MapperWithData {
                         // For object values, deep merge with array overwrite strategy
                         if (val) {
                             const overwriteMerge = (
-                                destinationArray: any[],
-                                sourceArray: any[],
-                                options: ArrayMergeOptions
+                                destinationArray: unknown[],
+                                sourceArray: unknown[],
+                                _options: ArrayMergeOptions
                             ) => sourceArray;
                             const merged = deepmerge(
                                 newJsonElement[key] || {},

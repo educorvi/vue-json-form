@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { bootstrapComponents, IfThenElseMapper, VueJsonForm } from '../main';
+import {
+    bootstrapComponents,
+    IfThenElseMapper,
+    type FormData,
+    VueJsonForm,
+} from '../main';
 import jsonSchema from '../exampleSchemas/wizard/schema.json';
 import uiSchema from '../exampleSchemas/wizard/ui.json';
 import { ref } from 'vue';
@@ -8,7 +13,7 @@ import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
 const formData = ref({});
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
     switch (options.action) {
         case 'console':

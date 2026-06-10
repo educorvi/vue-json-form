@@ -5,6 +5,7 @@ import type {
     TitlesForEnum,
 } from '@educorvi/vue-json-form-schemas';
 import { hasOption } from '@/typings/typeValidators.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 export type SelectOptions = Array<
     { value: string | number; text: string } | string | number
@@ -61,7 +62,7 @@ export function getOptions(
  */
 export function createInvalidValueWatch(
     jsonElement: Readonly<Ref<JSONSchema>>,
-    formData: Ref<Record<string, any>>,
+    formData: Ref<FormData>,
     savePath: string
 ) {
     watch(

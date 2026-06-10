@@ -146,7 +146,18 @@ export function generateUISchema(
  * @param separator separator
  * @param defaultVal default value to return if path is not found
  */
-export function getPropertyByString<T = unknown>(
+export function getPropertyByString<T>(
+    object: Record<string, unknown> | undefined,
+    path: string,
+    separator?: string
+): T | undefined;
+export function getPropertyByString<T>(
+    object: Record<string, unknown> | undefined,
+    path: string,
+    separator: string | undefined,
+    defaultVal: T
+): T;
+export function getPropertyByString<T>(
     object: Record<string, unknown> | undefined,
     path: string,
     separator: string = '.',

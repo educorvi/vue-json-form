@@ -16,6 +16,7 @@ export default [
             '**/coverage/**',
             '**/playwright-report/**',
             '**/test-results/**',
+            '**/tests/**/*.ts',
             'docs/**',
             '**/*.d.ts',
             '**/node_modules/**',
