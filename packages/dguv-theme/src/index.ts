@@ -11,4 +11,14 @@
  *   @import '@educorvi/uv-theme/styles';
  */
 // export { UVNexusPreset } from "./theme/uv-nexus-preset";
-export { UVNexusPreset } from "./theme/index";
+
+import { UVNexusPreset } from './theme';
+
+export { UVNexusPreset };
+
+export default {
+    preset: UVNexusPreset,
+    options: {
+        darkModeSelector: '.app-dark',
+    },
+};

@@ -3,6 +3,7 @@
         "dashboard": "Dashboard",
         "users": "Users",
         "groups": "Groups",
+        "formBuilder": "Form Builder",
         "apiDocs": "API Docs",
         "signIn": "Sign in",
         "signOut": "Sign out"

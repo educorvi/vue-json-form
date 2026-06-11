@@ -79,7 +79,7 @@ const features = computed(() =>
                 <div class="flex items-center gap-2">
                     <LocaleSwitcher class="w-36" />
                     <ThemeSwitcher />
-                    <DesignSystemSwitcher />
+                    <!-- <DesignSystemSwitcher /> -->
                     <!-- <Button
                         as="a"
                         href="/auth/keycloak"

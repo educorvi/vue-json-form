@@ -3,6 +3,7 @@
         "dashboard": "Dashboard",
         "users": "Benutzer",
         "groups": "Gruppen",
+        "formBuilder": "Formular-Builder",
         "apiDocs": "API-Dokumentation",
         "signIn": "Anmelden",
         "signOut": "Abmelden"

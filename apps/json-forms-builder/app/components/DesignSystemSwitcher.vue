@@ -9,7 +9,7 @@
 import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
-import { UVNexusPreset } from '@educorvi/uv-theme';
+import { UVNexusPreset } from '@educorvi/dguv-theme';
 
 const { t } = useI18n();
 const primevue = usePrimeVue();

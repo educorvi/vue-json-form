@@ -1011,6 +1011,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@educorvi/dguv-theme@workspace:*, @educorvi/dguv-theme@workspace:packages/dguv-theme":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/dguv-theme@workspace:packages/dguv-theme"
+  dependencies:
+    "@phosphor-icons/vue": "npm:^2.2.1"
+    "@primeuix/themes": "npm:^2.0.3"
+    "@storybook/addon-docs": "npm:^10.3.4"
+    "@storybook/vue3": "npm:^10.3.4"
+    "@storybook/vue3-vite": "npm:^10.3.4"
+    "@tailwindcss/vite": "npm:^4.2.1"
+    "@vitejs/plugin-vue": "npm:^6.0.5"
+    primeicons: "npm:^7.0.0"
+    primevue: "npm:^4.5.4"
+    storybook: "npm:^10.3.4"
+    storybook-dark-mode: "npm:^5.0.0"
+    tailwindcss: "npm:^4.0.0"
+    tailwindcss-primeui: "npm:^0.6.1"
+    typescript: "npm:^5.5.0"
+    vite: "npm:^6.0.0"
+  peerDependencies:
+    primevue: ^4.0.0
+    tailwindcss: ^4.0.0
+    vue: ^3.0.0
+  languageName: unknown
+  linkType: soft
+
 "@educorvi/primevue-webcomponent@workspace:packages/vue-form-builder-webcomponent":
   version: 0.0.0-use.local
   resolution: "@educorvi/primevue-webcomponent@workspace:packages/vue-form-builder-webcomponent"
@@ -1038,37 +1064,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/uv-theme@workspace:*, @educorvi/uv-theme@workspace:packages/dguv-theme":
-  version: 0.0.0-use.local
-  resolution: "@educorvi/uv-theme@workspace:packages/dguv-theme"
-  dependencies:
-    "@phosphor-icons/vue": "npm:^2.2.1"
-    "@primeuix/themes": "npm:^2.0.3"
-    "@storybook/addon-docs": "npm:^10.3.4"
-    "@storybook/vue3": "npm:^10.3.4"
-    "@storybook/vue3-vite": "npm:^10.3.4"
-    "@tailwindcss/vite": "npm:^4.2.1"
-    "@vitejs/plugin-vue": "npm:^6.0.5"
-    primeicons: "npm:^7.0.0"
-    primevue: "npm:^4.5.4"
-    storybook: "npm:^10.3.4"
-    storybook-dark-mode: "npm:^5.0.0"
-    tailwindcss: "npm:^4.0.0"
-    tailwindcss-primeui: "npm:^0.6.1"
-    typescript: "npm:^5.5.0"
-    vite: "npm:^6.0.0"
-  peerDependencies:
-    primevue: ^4.0.0
-    tailwindcss: ^4.0.0
-    vue: ^3.0.0
-  languageName: unknown
-  linkType: soft
-
 "@educorvi/vue-form-builder@workspace:packages/vue-form-builder":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-form-builder@workspace:packages/vue-form-builder"
   dependencies:
-    "@educorvi/uv-theme": "workspace:*"
+    "@educorvi/dguv-theme": "workspace:*"
     "@educorvi/vue-json-form": "npm:^3.2.0-beta.2"
     "@educorvi/vue-json-form-ajv-validator": "npm:^1.0.1-beta.1"
     "@iconify/json": "npm:^2.2.467"
@@ -15380,7 +15380,7 @@ __metadata:
   resolution: "json-forms-builder@workspace:apps/json-forms-builder"
   dependencies:
     "@artmizu/nuxt-prometheus": "npm:3.0.1"
-    "@educorvi/uv-theme": "workspace:*"
+    "@educorvi/dguv-theme": "workspace:*"
     "@hey-api/openapi-ts": "npm:^0.97.1"
     "@nuxt/a11y": "npm:1.0.0-alpha.1"
     "@nuxt/eslint": "npm:1.15.2"

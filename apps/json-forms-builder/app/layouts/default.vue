@@ -15,6 +15,11 @@ const navItems = computed(() => [
     { label: t('nav.users'), icon: 'pi pi-users', route: '/users' },
     { label: t('nav.groups'), icon: 'pi pi-sitemap', route: '/groups' },
     {
+        label: t('nav.formBuilder'),
+        icon: 'pi pi-objects-column',
+        route: '/form-builder',
+    },
+    {
         label: t('nav.apiDocs'),
         icon: 'pi pi-code',
         url: '/_swagger',
@@ -105,11 +110,11 @@ function toggleUserPopover(event: Event) {
                                         class="text-sm text-surface-600 dark:text-surface-300"
                                         >{{ t('theme.system') }}</span
                                     >
-                                    <ThemeSwitcher />
+                                    <LazyThemeSwitcher />
                                 </div>
 
                                 <!-- Design System -->
-                                <div
+                                <!-- <div
                                     class="flex items-center justify-between px-1"
                                 >
                                     <span
@@ -117,7 +122,7 @@ function toggleUserPopover(event: Event) {
                                         >{{ t('designSystem.label') }}</span
                                     >
                                     <DesignSystemSwitcher />
-                                </div>
+                                </div> -->
 
                                 <!-- Language -->
                                 <div class="flex flex-col gap-1 px-1">
@@ -125,7 +130,7 @@ function toggleUserPopover(event: Event) {
                                         class="text-sm text-surface-600 dark:text-surface-300"
                                         >{{ t('locale.label') }}</span
                                     >
-                                    <LocaleSwitcher />
+                                    <LazyLocaleSwitcher />
                                 </div>
 
                                 <Divider class="my-0" />

@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@artmizu/nuxt-prometheus": "3.0.1",
-        "@educorvi/uv-theme": "workspace:*",
+        "@educorvi/dguv-theme": "workspace:*",
         "@nuxt/a11y": "1.0.0-alpha.1",
         "@nuxt/eslint": "1.15.2",
         "@nuxt/fonts": "0.14.0",
@@ -30,7 +30,6 @@
         "@orpc/zod": "^1.14.3",
         "@phosphor-icons/vue": "^2.2.1",
         "@primeuix/themes": "^2.0.3",
-        "@primevue/nuxt-module": "^4.5.5",
         "nuxt": "^4.4.6",
         "nuxt-auth-utils": "^0.5.29",
         "pg": "^8.20.0",
@@ -46,6 +45,7 @@
     "devDependencies": {
         "@hey-api/openapi-ts": "^0.97.1",
         "@nuxtjs/tailwindcss": "^6.14.0",
+        "@primevue/nuxt-module": "^4.5.5",
         "@tailwindcss/postcss": "^4.2.4",
         "@types/pg": "^8",
         "autoprefixer": "^10.5.0",
