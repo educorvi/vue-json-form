@@ -219,7 +219,11 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
             </b-card>
         </b-collapse>
         <b-collapse :show="!!summary">
-            <vue-markdown v-if="summary" :source="summary" />
+            <vue-markdown
+                v-if="summary"
+                :source="summary"
+                :options="{ html: true }"
+            />
         </b-collapse>
         <template #footer>
             <BButtonGroup class="w-100">

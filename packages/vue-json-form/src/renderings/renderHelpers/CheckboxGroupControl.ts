@@ -1,7 +1,16 @@
-import { hasEnumValuesForItems } from '@/typings/typeValidators.ts';
-import { computed, type Ref } from 'vue';
+import {
+    hasEnumValuesForItems,
+    isNotNullOrUndefined,
+} from '@/typings/typeValidators.ts';
+import { computed, inject, onMounted, ref, type Ref, watch } from 'vue';
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
+import type { CheckboxValue } from 'bootstrap-vue-next';
+import { getArrayItemSavePath, isArrayItemKey } from '@/Commons.ts';
+import { storeToRefs } from 'pinia';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
+import { validateCheckboxGroupInput } from '@/formControlInputValidation';
+import { languageProviderKey } from '@/components/ProviderKeys.ts';
 
 /**
  * Returns a computed ref of the option list for a checkbox-group control.
@@ -36,4 +45,73 @@ export function getOptions(
             );
         }
     });
+}
+
+function setupValidation(values: Ref<CheckboxValue[]>, required: boolean) {
+    const valid = ref(true);
+    const { jsonElement, savePath } = injectJsonData();
+    const { formDataStore, formStructureStore } = getStores();
+    const { formData } = storeToRefs(formDataStore);
+    const { formStateWasValidated } = storeToRefs(formStructureStore);
+    const languageProvider = inject(languageProviderKey);
+    const validate = () => {
+        valid.value = validateCheckboxGroupInput(
+            required,
+            values.value,
+            jsonElement.value,
+            savePath,
+            languageProvider
+        );
+    };
+
+    watch(values, (newVal) => {
+        validate();
+        if (!hasEnumValuesForItems(jsonElement.value)) return;
+        formData.value[savePath] = jsonElement.value.items.enum.filter((e) =>
+            newVal.includes(e)
+        );
+    });
+
+    onMounted(validate);
+
+    return computed(() => {
+        if (formStateWasValidated.value) {
+            return valid.value;
+        } else {
+            return undefined;
+        }
+    });
+}
+
+export function setupValuesAndValidation(required: boolean) {
+    const { formDataStore } = getStores();
+    const { formData } = storeToRefs(formDataStore);
+    const values = ref<CheckboxValue[]>([]);
+    const { savePath } = injectJsonData();
+
+    // Convert array item keys to local items if loaded (for example with presetData)
+    watch(
+        () => formData.value[savePath],
+        (newVal) => {
+            let presetValues: CheckboxValue[] | undefined;
+            if (isNotNullOrUndefined(newVal) && Array.isArray(newVal)) {
+                presetValues = newVal?.map((item) => {
+                    if (!isArrayItemKey(item)) {
+                        return item;
+                    }
+                    return formData.value[getArrayItemSavePath(savePath, item)];
+                });
+                if (
+                    JSON.stringify(presetValues) !==
+                    JSON.stringify(values.value)
+                ) {
+                    values.value = presetValues as CheckboxValue[];
+                }
+            }
+        },
+        { immediate: true }
+    );
+
+    const state = setupValidation(values, required);
+    return { values, state };
 }

@@ -13,6 +13,12 @@
             "selectAtLeast": "Please select at least !&data&! options.",
             "selectAtMost": "Please select at most !&data&! options."
         },
+        "number": {
+            "invalidNumber": "Please enter a valid number.",
+            "tooSmall": "The number must be at least !&data&!",
+            "tooLarge": "The number must be at most !&data&!",
+            "multipleOf": "The number must be a multiple of !&data&!"
+        },
         "generic": {
             "errorOccurred": "An error occurred:",
             "retryLater": "Please try again later.",

@@ -52,7 +52,10 @@ import type {
     DescendantControlOverrides,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getOption } from '@/renderings/renderHelpers/utilities.ts';
+import {
+    getHtmlMessages,
+    getOption,
+} from '@/renderings/renderHelpers/utilities.ts';
 import {
     computed,
     inject,
@@ -82,7 +85,6 @@ import {
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
-import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
@@ -223,24 +225,9 @@ onMounted(() => {
     mapFormStructure();
 });
 
-const htmlMessages = computed(() => {
-    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
-    const layoutElement = formStructureMapped.value.uiElement;
-    if (layoutElement.options?.preHtml) {
-        messages.pre = {
-            type: 'HTML',
-            htmlData: layoutElement.options.preHtml,
-        };
-    }
-    if (layoutElement.options?.postHtml) {
-        messages.post = {
-            type: 'HTML',
-            htmlData: layoutElement.options.postHtml,
-        };
-    }
-
-    return messages;
-});
+const htmlMessages = computed(() =>
+    getHtmlMessages(formStructureMapped.value.uiElement)
+);
 
 const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
 const required = getComputedRequired(mappedUiElement);

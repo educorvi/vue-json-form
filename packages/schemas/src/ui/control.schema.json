@@ -68,14 +68,9 @@
                 "webauthn"
             ]
         },
-        "controlFormattingOptions": {
+        "preAndPostHtmlOptions": {
             "type": "object",
             "properties": {
-                "label": {
-                    "type": "boolean",
-                    "description": "Defines whether the fields label is shown",
-                    "default": true
-                },
                 "preHtml": {
                     "type": "string",
                     "description": "Will be prepended to field (before the label)",
@@ -85,6 +80,16 @@
                     "type": "string",
                     "description": "Will be appended to field",
                     "examples": ["<span class=\"text-muted\">Append</span>"]
+                }
+            }
+        },
+        "controlFormattingOptions": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "boolean",
+                    "description": "Defines whether the fields label is shown",
+                    "default": true
                 },
                 "help": {
                     "type": "object",
@@ -356,6 +361,9 @@
                 },
                 {
                     "$ref": "#/definitions/controlFormattingOptions"
+                },
+                {
+                    "$ref": "#/definitions/preAndPostHtmlOptions"
                 }
             ]
         }
