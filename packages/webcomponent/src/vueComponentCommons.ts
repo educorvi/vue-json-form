@@ -5,7 +5,11 @@ import type {
 import { computed } from 'vue';
 import axios from 'axios';
 import type { SseEvent, SummaryResultEvent } from '@/types.ts';
-import { getPropertyByString } from '@educorvi/vue-json-form';
+import {
+    getPropertyByString,
+    type ParsedAndUnvalidatedJson,
+    type FormData as VjfFormData,
+} from '@educorvi/vue-json-form';
 import ResultModal from '@/ResultModal.vue';
 import Cookies from 'js-cookie';
 import { computedAsync } from '@vueuse/core';
@@ -43,20 +47,20 @@ export type Props = {
 };
 
 export type Emits = {
-    (e: 'submit', data: Record<string, any>, options: SubmitOptions): void;
+    (e: 'submit', data: Record<string, unknown>, options: SubmitOptions): void;
     (
         e: 'submitSucceeded',
-        data: Record<string, any>,
+        data: Record<string, unknown>,
         options: SubmitOptions
     ): void;
     (
         e: 'submitFailed',
-        data: Record<string, any>,
+        data: Record<string, unknown>,
         options: SubmitOptions
     ): void;
     (
         e: 'afterSubmitted',
-        data: Record<string, any>,
+        data: Record<string, unknown>,
         options: SubmitOptions
     ): void;
     (e: 'schemaLoadingSucceeded', url: string): void;
@@ -90,7 +94,9 @@ export function getComputed(props: Props, emit: Emits) {
         }
         try {
             if (typeof jsonSchemaRaw.value === 'string') {
-                return JSON.parse(jsonSchemaRaw.value) as Record<string, any>;
+                return JSON.parse(
+                    jsonSchemaRaw.value
+                ) as ParsedAndUnvalidatedJson;
             } else {
                 return jsonSchemaRaw.value;
             }
@@ -123,7 +129,9 @@ export function getComputed(props: Props, emit: Emits) {
         }
         try {
             if (typeof uiSchemaRaw.value === 'string') {
-                return JSON.parse(uiSchemaRaw.value) as Record<string, any>;
+                return JSON.parse(
+                    uiSchemaRaw.value
+                ) as ParsedAndUnvalidatedJson;
             } else {
                 return uiSchemaRaw.value;
             }
@@ -142,7 +150,7 @@ export function getComputed(props: Props, emit: Emits) {
             return undefined;
         }
         try {
-            return JSON.parse(props.presetData) as Record<string, any>;
+            return JSON.parse(props.presetData) as ParsedAndUnvalidatedJson;
         } catch (e) {
             console.warn('Could not parse pre-set data', e);
             return undefined;
@@ -342,7 +350,7 @@ async function request(
     url: string,
     method: NonNullable<SubmitRequestOptions['method']>,
     headers: SubmitRequestOptions['headers'],
-    data: Record<string, any>
+    data: VjfFormData
 ) {
     let success = true;
     try {
@@ -365,7 +373,7 @@ export function getSubmitFunc(
     resultModal: InstanceType<typeof ResultModal> | null
 ) {
     return async function onSubmitForm(
-        data: Record<string, any>,
+        data: VjfFormData,
         options: SubmitOptions
     ) {
         let success = true;
@@ -373,11 +381,15 @@ export function getSubmitFunc(
             resultModal?.setSaveUrl(options.summary.saveUrl);
             resultModal?.setClipboard(options.summary.copyToClipboard || false);
             resultModal?.setFeedbackUrl(options.summary.feedbackUrl);
-            const encodedFile = getPropertyByString(
+            const encodedFile = getPropertyByString<string>(
                 data,
                 options.summary.field
             );
-            const promptType = getPropertyByString(
+            if (!encodedFile) {
+                console.error('File not found in form data!');
+                return;
+            }
+            const promptType = getPropertyByString<string>(
                 data,
                 options.summary.documentTypeField ?? '',
                 undefined,

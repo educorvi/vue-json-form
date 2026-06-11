@@ -1,8 +1,9 @@
 import { generateUUID, VJF_ARRAY_ITEM_PREFIX } from '@/Commons.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 export function flattenArray(
-    data: any[],
-    into: Record<string, any>,
+    data: unknown[],
+    into: FormData,
     arrayKey: string
 ) {
     const mappedArray = data.map((item) => ({
@@ -33,10 +34,10 @@ export function flattenArray(
 }
 
 export function flattenData(
-    data: Record<string, any> | any[],
-    into: Record<string, any> = {},
+    data: FormData | unknown[],
+    into: FormData = {},
     parentKey = '/properties'
-): Record<string, any> {
+): FormData {
     if (Array.isArray(data)) {
         flattenArray(data, into, parentKey);
     } else {

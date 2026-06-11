@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import {
     RitaDependentOptionsMapper,
+    type FormData,
     type SubmitOptions,
     VueJsonForm,
 } from '../main';
@@ -40,9 +41,9 @@ import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
 import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | FormData> = ref(undefined);
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
     switch (options.action) {
         case 'console':

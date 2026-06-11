@@ -9,6 +9,7 @@ import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 /**
  * A mapper that filters enum options based on RITA rules defined in the UI schema.
@@ -32,8 +33,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        _: Readonly<Record<string, any>>,
-        cleanedFormData: Readonly<Record<string, any>>
+        _: Readonly<FormData>,
+        cleanedFormData: Readonly<FormData>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -98,13 +99,13 @@ export class RitaDependentOptionsMapper extends MapperWithData {
      *
      * @param uiElement - The UI control element containing option filters.
      * @param depsSet - A set to collect dependency paths.
-     * @param savePath - The save path (unused in current implementation but available).
+     * @param _savePath - The save path (unused in current implementation but available).
      * @returns A map of rule IDs to parsed RITA rules.
      */
     private getOptionFilterDependencies(
         uiElement: Control,
         depsSet: Set<string>,
-        savePath: string
+        _savePath: string
     ) {
         const depsRuleMap: Record<IndexType, ParsedRule> = {};
         const optionFilters = getOption(uiElement, 'optionFilters');
@@ -124,7 +125,10 @@ export class RitaDependentOptionsMapper extends MapperWithData {
                         depsSet.add(mappedPath);
                     }
                 } catch (e) {
-                    console.warn(`Invalid rule ${rule.id} for option ${key}`);
+                    console.warn(
+                        `Invalid rule ${rule.id} for option ${key}:`,
+                        e
+                    );
                 }
             }
         }

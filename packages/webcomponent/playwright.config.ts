@@ -1,4 +1,8 @@
-import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test';
+import {
+    defineConfig,
+    devices,
+    type PlaywrightTestConfig,
+} from '@playwright/test';
 
 const reporter: PlaywrightTestConfig['reporter'] = [['list'], ['html']];
 

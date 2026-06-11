@@ -14,7 +14,7 @@ const props = defineProps<FormFieldWrapperProps>();
 const slots = useSlots();
 defineSlots<FormFieldWrapperSlots>();
 
-const { jsonElement, layoutElement, savePath } = injectJsonData();
+const { jsonElement, layoutElement } = injectJsonData();
 
 const isObjectOrArrayView = FormfieldWrapper.getIsObjectOrArrayViewComputed(
     jsonElement,

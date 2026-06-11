@@ -50,6 +50,7 @@
 import type {
     Control,
     DescendantControlOverrides,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
 import {
@@ -136,8 +137,11 @@ const savePath =
 
 const mappers: Ref<Mapper[]> = ref([]);
 
-const formStructureMapped = ref({
-    jsonElement: jsonElement.value || ({} as Record<string, any>),
+const formStructureMapped: Ref<{
+    jsonElement: JSONSchema;
+    uiElement: Control;
+}> = ref({
+    jsonElement: jsonElement.value || ({} as JSONSchema),
     uiElement: props.layoutElement,
 });
 

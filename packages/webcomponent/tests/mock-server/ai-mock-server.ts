@@ -295,8 +295,6 @@ function sendSseError(res: ServerResponse, message: string): void {
     res.end();
 }
 
-
-
 export class AiMockServer {
     private readonly server: Server;
     private readonly options: Required<AiMockServerOptions>;
@@ -412,7 +410,10 @@ export class AiMockServer {
         }
 
         if (document.mimeType !== 'application/pdf') {
-            sendSseError(res, `Only PDF files are allowed (received: ${document.mimeType})`);
+            sendSseError(
+                res,
+                `Only PDF files are allowed (received: ${document.mimeType})`
+            );
             return;
         }
 
@@ -428,7 +429,10 @@ export class AiMockServer {
         }
 
         if (pageCount > 20) {
-            sendSseError(res, `PDF must not exceed 20 pages (got ${pageCount})`);
+            sendSseError(
+                res,
+                `PDF must not exceed 20 pages (got ${pageCount})`
+            );
             return;
         }
 

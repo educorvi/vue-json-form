@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { bootstrapComponents, VueJsonForm } from '@educorvi/vue-json-form';
+import {
+    bootstrapComponents,
+    type ParsedAndUnvalidatedJson,
+    type FormData,
+    VueJsonForm,
+} from '@educorvi/vue-json-form';
 import showcaseSchema from '@educorvi/vue-json-form/src/exampleSchemas/showcase/schema.json';
 import showcaseUISchema from '@educorvi/vue-json-form/src/exampleSchemas/showcase/ui.json';
 import { BButton, BButtonGroup, BFormCheckbox } from 'bootstrap-vue-next';
 
 const emit = defineEmits<{
-    viewCode: [title: string, object: Record<any, any>];
+    viewCode: [title: string, object: ParsedAndUnvalidatedJson];
 }>();
 
-async function submitMethod(data: Record<string, any>) {
+async function submitMethod(data: FormData) {
     emit('viewCode', 'Form Results', data);
 }
 
