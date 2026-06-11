@@ -22,10 +22,7 @@ function createSchemaUrl(schema: unknown) {
 }
 
 function revokeSchemaUrl(url: string) {
-    if (
-        typeof URL.revokeObjectURL === 'function' &&
-        url.startsWith('blob:')
-    ) {
+    if (typeof URL.revokeObjectURL === 'function' && url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
     }
 }

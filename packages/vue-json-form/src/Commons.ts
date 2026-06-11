@@ -146,6 +146,7 @@ export function generateUISchema(
  * @param separator separator
  * @param defaultVal default value to return if path is not found
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export function getPropertyByString<ReturnValueType extends {} | null>(
     object: Record<string, unknown> | undefined,
     path: string,

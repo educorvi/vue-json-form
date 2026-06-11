@@ -213,9 +213,7 @@ export function isIfThenAllOf(
     return Array.isArray(json) && json.every(isSupportedIfThenElse);
 }
 
-export function isSupportedIfCondition(
-    json: unknown
-): json is IfConditions {
+export function isSupportedIfCondition(json: unknown): json is IfConditions {
     if (!isUnknownRecord(json)) {
         return false;
     }
