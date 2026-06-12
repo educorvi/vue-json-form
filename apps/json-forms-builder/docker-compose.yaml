@@ -22,4 +22,7 @@ services:
     # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
     volumes:
       - ./data/keycloak:/opt/keycloak/data
-    command: start-dev
+      - ./keycloak:/opt/keycloak/data/import
+    command:
+      - "start-dev"
+      - "--import-realm"

@@ -52,7 +52,22 @@ function onPage(event: { page: number; rows: number }) {
             :home="{ icon: 'pi pi-home', route: '/dashboard' }"
             :model="[{ label: t('groups.title') }]"
             class="mb-4 px-0"
-        />
+        >
+            <template #item="{ item }">
+                <NuxtLink
+                    v-if="item.route"
+                    :to="item.route"
+                    class="no-underline text-surface-600 dark:text-surface-300 hover:underline text-sm"
+                >
+                    {{ item.label }}
+                </NuxtLink>
+                <span
+                    v-else
+                    class="text-sm font-medium text-surface-800 dark:text-surface-100"
+                    >{{ item.label }}</span
+                >
+            </template>
+        </Breadcrumb>
 
         <!-- Header -->
         <div class="flex items-end justify-between mb-6">

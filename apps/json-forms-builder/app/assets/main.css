@@ -5,4 +5,10 @@
    overrides are provided by @educorvi/uv-theme. */
 @import '@educorvi/dguv-theme/styles';
 
+
+/* TODO: hacky, no ../ imports should be used, should be changed*/
+/* Tell Tailwind v4 to also scan the form-builder package source so all of
+   its utility classes are included in the generated CSS. */
+@source "../../../../packages/vue-form-builder/src";
+
 @custom-variant dark (&:where(.app-dark, .app-dark *));

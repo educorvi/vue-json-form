@@ -26,17 +26,67 @@ const parentId = ref<number | null>(
     route.query.parent ? parseInt(String(route.query.parent), 10) : null
 );
 
-// Auto-derive slug from title (URL-safe, lowercase, hyphens)
-const slugEdited = ref(false);
+// ── Slug auto-generation ─────────────────────────────────────────────────────
+// Uses the centralised toSlug() helper.
+// - When the user hasn't touched the slug field, auto-generate from title.
+// - When the user types in the slug field, stop auto-generating.
+// - When the user clears the slug field AND changes the title, restart.
+
+const slugEditedByUser = ref(false);
+const slugManuallyCleared = ref(false);
+
 watch(title, (val) => {
-    if (!slugEdited.value) {
-        slug.value = val
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '');
+    if (!slugEditedByUser.value) {
+        // Never edited → always auto-generate
+        slug.value = toSlug(val);
+    } else if (slugManuallyCleared.value && !slug.value) {
+        // Was cleared by user and title changed → restart auto-generation
+        slugEditedByUser.value = false;
+        slugManuallyCleared.value = false;
+        slug.value = toSlug(val);
     }
 });
+
+function onSlugInput() {
+    slugEditedByUser.value = true;
+    if (!slug.value) {
+        slugManuallyCleared.value = true;
+    } else {
+        slugManuallyCleared.value = false;
+    }
+}
+
+// ── Fetch parent group for breadcrumb ───────────────────────────────────────
+
+const parentGroup = ref<{
+    id: number;
+    title?: string;
+    name?: string;
+    parent_path?: Array<{
+        id?: number;
+        name: string;
+        path_segment?: string;
+    }> | null;
+} | null>(null);
+
+watch(
+    parentId,
+    async (id) => {
+        if (id != null) {
+            try {
+                const result = await orpc.groups.get({
+                    params: { id: String(id) },
+                });
+                parentGroup.value = result;
+            } catch {
+                parentGroup.value = null;
+            }
+        } else {
+            parentGroup.value = null;
+        }
+    },
+    { immediate: true }
+);
 
 // ── Submission ───────────────────────────────────────────────────────────────
 
@@ -62,8 +112,9 @@ async function submit() {
                 updated_by: null,
             },
         });
-        // Navigate to the newly created group's page
-        await router.push(`/groups/${created.id}`);
+        // Navigate to the newly created group's page using its path
+        const path = buildGroupUrlPath(created.parent_path, created.name ?? '');
+        await router.push(`/groups/${encodeGroupPath(path)}`);
     } catch (err: any) {
         errorMessage.value =
             err?.message ?? err?.data?.message ?? t('groups.new.createError');
@@ -73,7 +124,13 @@ async function submit() {
 }
 
 function cancel() {
-    if (parentId.value != null) {
+    if (parentGroup.value) {
+        const path = buildGroupUrlPath(
+            parentGroup.value.parent_path ?? null,
+            parentGroup.value.name ?? ''
+        );
+        router.push(`/groups/${encodeGroupPath(path)}`);
+    } else if (parentId.value != null) {
         router.push(`/groups/${parentId.value}`);
     } else {
         router.push('/groups');
@@ -84,8 +141,19 @@ function cancel() {
 
 const breadcrumbItems = computed(() => [
     { label: t('groups.title'), route: '/groups' },
-    ...(parentId.value != null
-        ? [{ label: `#${parentId.value}`, route: `/groups/${parentId.value}` }]
+    ...(parentGroup.value
+        ? [
+              {
+                  label:
+                      parentGroup.value.title || parentGroup.value.name || '',
+                  route: `/groups/${encodeGroupPath(
+                      buildGroupUrlPath(
+                          parentGroup.value.parent_path ?? null,
+                          parentGroup.value.name ?? ''
+                      )
+                  )}`,
+              },
+          ]
         : []),
     { label: t('groups.new.title') },
 ]);
@@ -98,7 +166,22 @@ const breadcrumbItems = computed(() => [
             :home="{ icon: 'pi pi-home', route: '/dashboard' }"
             :model="breadcrumbItems"
             class="mb-4 px-0"
-        />
+        >
+            <template #item="{ item }">
+                <NuxtLink
+                    v-if="item.route"
+                    :to="item.route"
+                    class="no-underline text-surface-600 dark:text-surface-300 hover:underline text-sm"
+                >
+                    {{ item.label }}
+                </NuxtLink>
+                <span
+                    v-else
+                    class="text-sm font-medium text-surface-800 dark:text-surface-100"
+                    >{{ item.label }}</span
+                >
+            </template>
+        </Breadcrumb>
 
         <!-- Header -->
         <div class="mb-6">
@@ -111,7 +194,7 @@ const breadcrumbItems = computed(() => [
         </div>
 
         <!-- Form card -->
-        <Card class="max-w-2xl">
+        <Card>
             <template #content>
                 <form class="flex flex-col gap-5" @submit.prevent="submit">
                     <!-- Title -->
@@ -152,7 +235,7 @@ const breadcrumbItems = computed(() => [
                             "
                             class="w-full font-mono"
                             required
-                            @input="slugEdited = true"
+                            @input="onSlugInput"
                         />
                         <small class="text-surface-400">
                             {{ t('groups.new.fields.nameHint') }}

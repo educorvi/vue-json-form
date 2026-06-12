@@ -6,7 +6,8 @@
  * v-model: number | null  (selected group ID)
  *
  * The component fetches the hierarchy from the backend once on mount and
- * converts it to PrimeVue TreeNode objects.
+ * converts it to PrimeVue TreeNode objects. When a group is selected, the
+ * full ancestor chain is shown as a mini breadcrumb below the selector.
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
@@ -43,7 +44,13 @@ interface HierarchyNode {
     children?: HierarchyNode[] | null;
 }
 
-function toTreeNodes(nodes: HierarchyNode[]): TreeNode[] {
+// Also store a flat map from node key → TreeNode for quick ancestor lookup
+interface TreeNodeRecord extends TreeNode {
+    data: { id: number; name: string; title: string };
+    children?: TreeNodeRecord[];
+}
+
+function toTreeNodes(nodes: HierarchyNode[]): TreeNodeRecord[] {
     return nodes.map((n) => ({
         key: String(n.id),
         label: n.title,
@@ -54,22 +61,68 @@ function toTreeNodes(nodes: HierarchyNode[]): TreeNode[] {
     }));
 }
 
-const treeNodes = computed<TreeNode[]>(() =>
+const treeNodes = computed<TreeNodeRecord[]>(() =>
     hierarchy.value ? toTreeNodes(hierarchy.value as HierarchyNode[]) : []
 );
 
+// ── Ancestor lookup helpers ──────────────────────────────────────────────────
+
+/**
+ * Walk the tree recursively to find the ancestor chain (root → leaf) for a
+ * given node key. Returns the chain of TreeNode records, or empty array if
+ * the key is not found.
+ */
+function findAncestorChain(
+    nodes: TreeNodeRecord[],
+    targetKey: string
+): TreeNodeRecord[] {
+    for (const node of nodes) {
+        if (node.key === targetKey) {
+            return [node];
+        }
+        if (node.children && node.children.length > 0) {
+            const found = findAncestorChain(
+                node.children as TreeNodeRecord[],
+                targetKey
+            );
+            if (found.length > 0) {
+                return [node, ...found];
+            }
+        }
+    }
+    return [];
+}
+
+const ancestorChain = ref<TreeNodeRecord[]>([]);
+
+function updateAncestorChain(selectedId: number | null) {
+    if (selectedId == null || !treeNodes.value.length) {
+        ancestorChain.value = [];
+        return;
+    }
+    ancestorChain.value = findAncestorChain(
+        treeNodes.value,
+        String(selectedId)
+    );
+}
+
 // ── Selection — PrimeVue TreeSelect uses Record<string,boolean> internally ──
 
-// We maintain a separate "selected node" object to extract label for display
 const selectedKeys = ref<Record<string, boolean> | null>(
     props.modelValue != null ? { [String(props.modelValue)]: true } : null
 );
+
+// Initial ancestor chain
+if (props.modelValue != null) {
+    updateAncestorChain(props.modelValue);
+}
 
 // Keep selectedKeys in sync when parent changes modelValue
 watch(
     () => props.modelValue,
     (id) => {
         selectedKeys.value = id != null ? { [String(id)]: true } : null;
+        updateAncestorChain(id);
     }
 );
 
@@ -80,7 +133,8 @@ function onSelectionChange(keys: Record<string, boolean> | null) {
         return;
     }
     const id = Object.keys(keys)[0];
-    emit('update:modelValue', id ? parseInt(id, 10) : null);
+    const numericId = id ? parseInt(id, 10) : null;
+    emit('update:modelValue', numericId);
 }
 
 function useCurrentFolder() {
@@ -128,5 +182,35 @@ function clearSelection() {
                 @click="clearSelection"
             />
         </div>
+
+        <!-- Hierarchy breadcrumb for selected parent -->
+        <template v-if="ancestorChain.length > 0">
+            <div
+                class="mt-2 pt-2 border-t border-surface-100 dark:border-surface-800"
+            >
+                <div
+                    class="flex items-center gap-1.5 text-xs text-surface-600 dark:text-surface-400"
+                >
+                    <i
+                        class="pi pi-folder-open text-primary text-sm shrink-0"
+                    />
+                    <template
+                        v-for="(entry, idx) in ancestorChain"
+                        :key="entry.key"
+                    >
+                        <span
+                            class="font-medium truncate max-w-[12ch]"
+                            :title="entry.label"
+                        >
+                            {{ entry.label }}
+                        </span>
+                        <i
+                            v-if="idx < ancestorChain.length - 1"
+                            class="pi pi-angle-right text-[10px] text-surface-300 dark:text-surface-600 shrink-0"
+                        />
+                    </template>
+                </div>
+            </div>
+        </template>
     </div>
 </template>

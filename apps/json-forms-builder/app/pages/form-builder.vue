@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import FormBuilderApp from '@educorvi/vue-form-builder/src/App.vue';
 
-definePageMeta({ middleware: ['authenticated'] });
+definePageMeta({ middleware: ['authenticated'], layout: 'fullscreen' });
 </script>
 
 <template>
     <ClientOnly>
-        <div class="form-builder-root h-full">
+        <!-- h-full fills the layout's <main class="flex-1 min-h-0 overflow-hidden"> -->
+        <div class="h-full overflow-hidden">
             <FormBuilderApp />
         </div>
         <template #fallback>
@@ -21,10 +22,9 @@ definePageMeta({ middleware: ['authenticated'] });
 </template>
 
 <style scoped>
-/* Override the full-viewport height of the form-builder's root div so it
-   fills the remaining space below the layout's menubar instead of the
-   entire viewport (which would cause overflow). */
-.form-builder-root :deep(.relative.flex.h-screen) {
+/* The form builder's root element uses h-screen (100vh). Override it to h-full
+   so it fills our constrained container instead of the full viewport. */
+:deep(.relative.flex.h-screen) {
     height: 100%;
 }
 </style>

@@ -1,4 +1,13 @@
 <script setup lang="ts">
+/**
+ * /groups/[...slug] — Group detail page.
+ *
+ * Supports both:
+ * - Path-based URLs: `/groups/parent/child`
+ * - Numeric ID fallback: `/groups/42`
+ *
+ * The slug is joined with `/` and passed to the API, which resolves it.
+ */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
 
@@ -6,25 +15,36 @@ definePageMeta({ middleware: ['authenticated'], layout: 'default' });
 
 const { t } = useI18n();
 const route = useRoute();
+const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
-const groupId = computed(() => String(route.params.id));
+// The catch-all slug comes as an array of path segments, or a string if single
+const groupSlug = computed(() => {
+    const slug = route.params.slug;
+    if (Array.isArray(slug)) return slug.join('/');
+    return slug || '';
+});
 
 const { data: group, error: groupError } = useLazyAsyncData(
-    `group-${groupId.value}`,
-    () => orpc.groups.get({ params: { id: groupId.value } })
+    `group-${groupSlug.value}`,
+    () => orpc.groups.get({ params: { id: groupSlug.value } })
 );
 
-// Build breadcrumb from parent_path + current group
+// Build breadcrumb from parent_path + current group, using path-based URLs
 const breadcrumbItems = computed(() => {
     const items: { label: string; route?: string }[] = [
         { label: t('groups.title'), route: '/groups' },
     ];
     if (group.value?.parent_path) {
+        // Build cumulative path for each ancestor
+        const pathSegments: string[] = [];
         for (const entry of group.value.parent_path) {
-            if (entry.id) {
-                items.push({ label: entry.name, route: `/groups/${entry.id}` });
-            }
+            const seg = entry.path_segment ?? '';
+            pathSegments.push(seg);
+            items.push({
+                label: entry.name,
+                route: `/groups/${encodeGroupPath(pathSegments.join('/'))}`,
+            });
         }
     }
     if (group.value) {
@@ -36,7 +56,8 @@ const breadcrumbItems = computed(() => {
     return items;
 });
 
-// Children list
+// ── Children list ───────────────────────────────────────────────────────────
+
 const childPage = ref(1);
 const childPageSize = ref(10);
 const search = ref('');
@@ -53,10 +74,10 @@ const {
     pending: childrenPending,
     error: childrenError,
 } = useLazyAsyncData(
-    `group-children-${groupId.value}`,
+    `group-children-${groupSlug.value}`,
     () =>
         orpc.groups.listChildren({
-            params: { id: groupId.value },
+            params: { id: groupSlug.value },
             query: {
                 page: childPage.value,
                 page_size: childPageSize.value,
@@ -70,6 +91,23 @@ const {
 function onPage(event: { page: number; rows: number }) {
     childPage.value = event.page + 1;
     childPageSize.value = event.rows;
+}
+
+// Build child link URL using path if available, fallback to ID
+function childLink(child: {
+    id: number;
+    name?: string;
+    parent_path?: Array<{
+        id?: number;
+        name: string;
+        path_segment?: string;
+    }> | null;
+}): string {
+    if (child.parent_path && child.name) {
+        return `/groups/${encodeGroupPath(buildGroupUrlPath(child.parent_path, child.name))}`;
+    }
+    // Fallback to ID-based URL
+    return `/groups/${child.id}`;
 }
 </script>
 
@@ -144,13 +182,24 @@ function onPage(event: { page: number; rows: number }) {
                         >
                     </div>
                 </div>
-                <NuxtLink :to="`/groups/new?parent=${groupId}`">
-                    <Button
-                        :label="t('groups.new.addSubGroup')"
-                        icon="pi pi-plus"
-                        size="small"
-                    />
-                </NuxtLink>
+                <div class="flex items-center gap-2">
+                    <NuxtLink :to="`/groups/${group.id}/edit`">
+                        <Button
+                            :label="t('common.edit')"
+                            icon="pi pi-pencil"
+                            size="small"
+                            severity="secondary"
+                            outlined
+                        />
+                    </NuxtLink>
+                    <NuxtLink :to="`/groups/new?parent=${group.id}`">
+                        <Button
+                            :label="t('groups.new.addSubGroup')"
+                            icon="pi pi-plus"
+                            size="small"
+                        />
+                    </NuxtLink>
+                </div>
             </div>
         </div>
 
@@ -195,11 +244,44 @@ function onPage(event: { page: number; rows: number }) {
                         v-else-if="children"
                         class="divide-y divide-surface-100 dark:divide-surface-800"
                     >
-                        <GroupItem
+                        <div
                             v-for="child in children.data"
                             :key="child.id"
-                            :group="child as any"
-                        />
+                            class="flex items-center gap-3 py-2 px-3 rounded hover:bg-surface-50 dark:hover:bg-surface-800"
+                        >
+                            <i
+                                :class="[
+                                    'pi flex-shrink-0',
+                                    child.type === 'group'
+                                        ? 'pi-folder text-primary'
+                                        : 'pi-file text-surface-400',
+                                ]"
+                            />
+                            <div class="flex-1 min-w-0">
+                                <NuxtLink
+                                    v-if="child.type === 'group'"
+                                    :to="childLink(child as any)"
+                                    class="font-medium text-surface-800 dark:text-surface-100 hover:underline"
+                                >
+                                    {{
+                                        (child as any).title ||
+                                        (child as any).name
+                                    }}
+                                </NuxtLink>
+                                <span
+                                    v-else
+                                    class="font-medium text-surface-800 dark:text-surface-100"
+                                >
+                                    {{ child.title }}
+                                </span>
+                                <span
+                                    v-if="(child as any).description"
+                                    class="text-xs text-surface-400 ml-2 truncate"
+                                >
+                                    {{ (child as any).description }}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </template>
 

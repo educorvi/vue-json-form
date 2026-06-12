@@ -108,6 +108,22 @@
                 "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen."
             }
         },
+        "edit": {
+            "title": "Gruppe bearbeiten",
+            "subtitle": "Gruppeneinstellungen und Metadaten aktualisieren.",
+            "save": "Änderungen speichern",
+            "updateError": "Gruppe konnte nicht aktualisiert werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Frontend-Entwicklung",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. frontend-entwicklung",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "path": "Pfad"
+            }
+        },
         "treeSelect": {
             "placeholder": "Übergeordnete Gruppe wählen…",
             "useCurrentFolder": "Aktuellen Ordner verwenden"
@@ -129,7 +145,8 @@
         "sortDescending": "Absteigend sortieren",
         "loading": "Laden…",
         "cancel": "Abbrechen",
-        "clear": "Löschen"
+        "clear": "Löschen",
+        "edit": "Bearbeiten"
     },
     "theme": {
         "label": "Farbschema",

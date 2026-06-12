@@ -20,7 +20,7 @@ export const groupsRouter = {
 
     get: os.groups.get.use(authMiddleware).handler(async ({ input }) => {
         const service = new GroupService(AppDataSource);
-        return service.get(parseInt(input.params.id, 10));
+        return service.getByIdOrSlug(input.params.id);
     }),
 
     listChildren: os.groups.listChildren
@@ -28,7 +28,9 @@ export const groupsRouter = {
         .handler(async ({ input }) => {
             const service = new GroupService(AppDataSource);
             const q = input.query ?? zListGroupChildrenQuery.parse({});
-            const parentId = parseInt(input.params.id, 10);
+            // Resolve parent group by ID or path
+            const parentGroup = await service.getByIdOrSlug(input.params.id);
+            const parentId = parentGroup.id;
 
             const result = await service.list(
                 {
@@ -59,6 +61,26 @@ export const groupsRouter = {
         const service = new GroupService(AppDataSource);
         return service.getHierarchy();
     }),
+
+    update: os.groups.update.use(authMiddleware).handler(async ({ input }) => {
+        const service = new GroupService(AppDataSource);
+        return service.patch(parseInt(input.params.id, 10), {
+            title: input.body.title ?? undefined,
+            name: input.body.name ?? undefined,
+            description: input.body.description ?? undefined,
+        });
+    }),
+
+    replace: os.groups.replace
+        .use(authMiddleware)
+        .handler(async ({ input }) => {
+            const service = new GroupService(AppDataSource);
+            return service.replace(parseInt(input.params.id, 10), {
+                title: input.body.title ?? '',
+                name: input.body.name ?? '',
+                description: input.body.description ?? null,
+            });
+        }),
 
     create: os.groups.create
         .use(authMiddleware)

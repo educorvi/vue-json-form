@@ -18,6 +18,8 @@ import {
     listGroupChildren,
     listGroupHierarchy,
     createGroup,
+    updateGroup,
+    replaceGroup,
 } from './generated/orpc.gen';
 
 export const appContract = {
@@ -29,5 +31,7 @@ export const appContract = {
         listChildren: listGroupChildren,
         hierarchy: listGroupHierarchy,
         create: createGroup,
+        update: updateGroup,
+        replace: replaceGroup,
     },
 };

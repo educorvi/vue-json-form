@@ -36,10 +36,13 @@ function toggleUserPopover(event: Event) {
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col bg-surface-50 dark:bg-surface-950">
+    <!-- h-screen + overflow-hidden: viewport-locked, no document scroll -->
+    <div
+        class="h-screen flex flex-col overflow-hidden bg-surface-50 dark:bg-surface-950"
+    >
         <Menubar
             :model="navItems"
-            class="rounded-none border-x-0 border-t-0 sticky top-0 z-50 px-4 py-2"
+            class="rounded-none border-x-0 border-t-0 z-50 px-4 py-2 shrink-0"
         >
             <template #start>
                 <NuxtLink
@@ -151,7 +154,8 @@ function toggleUserPopover(event: Event) {
             </template>
         </Menubar>
 
-        <main class="flex-1 overflow-y-auto">
+        <!-- min-h-0 is critical: without it flex child ignores overflow:hidden -->
+        <main class="flex-1 min-h-0 overflow-hidden">
             <slot />
         </main>
     </div>

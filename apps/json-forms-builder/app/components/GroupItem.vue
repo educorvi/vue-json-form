@@ -17,6 +17,11 @@ const props = defineProps<{
         member_count: number;
         group_count: number;
         form_count: number;
+        parent_path?: Array<{
+            id?: number;
+            name: string;
+            path_segment?: string;
+        }> | null;
     };
     /** nesting depth for indentation */
     depth?: number;
@@ -55,6 +60,14 @@ const indentStyle = computed(() => ({
 const displayName = computed(
     () => props.group.title || props.group.name || `Group #${props.group.id}`
 );
+
+const groupLink = computed(() => {
+    const g = props.group;
+    if (g.parent_path && g.name) {
+        return `/groups/${encodeGroupPath(buildGroupUrlPath(g.parent_path, g.name))}`;
+    }
+    return `/groups/${g.id}`;
+});
 </script>
 
 <template>
@@ -77,7 +90,7 @@ const displayName = computed(
             <i class="pi pi-folder text-primary flex-shrink-0" />
             <div class="flex-1 min-w-0">
                 <NuxtLink
-                    :to="`/groups/${group.id}`"
+                    :to="groupLink"
                     class="font-medium text-surface-800 dark:text-surface-100 hover:underline"
                     @click.stop
                 >

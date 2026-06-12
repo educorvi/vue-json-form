@@ -1,214 +1,257 @@
 /* ══════════════════════════════════════════════════════════════════════════════
-   @educorvi/uv-theme — UV Corporate Color Palette
+   @educorvi/dguv-theme — CSS entry point
    ══════════════════════════════════════════════════════════════════════════════
 
-   Import this file in your app's entry CSS AFTER @import 'tailwindcss':
+   Import in your app's entry CSS AFTER @import 'tailwindcss':
 
        @import 'tailwindcss';
        @import 'tailwindcss-primeui';
-       @import '@educorvi/uv-theme/styles';
+       @import '@educorvi/dguv-theme/styles';
 
-   This file provides:
-     1. :root CSS custom properties (--uv-*) — single source of truth for
-        all UV brand colors. PrimeVue primitive tokens reference them via
-        var(--uv-*), meaning a color change here cascades to every component.
-
-     2. @theme inline block — wires the UV palette into Tailwind v4's
-        --color-* namespace so standard utilities like bg-blue-500,
-        text-red-300, border-teal-600 all resolve to UV brand colors.
-        UV uses a 6-stop scale stretched to Tailwind's 11-stop (50–950).
-
-   NOTE: tailwindcss-primeui already maps primary-* and surface-* utilities
-   to PrimeVue's --p-* CSS vars, so those are not redefined here.
+   Architecture:
+     1. DGUV design tokens (ref → sys → comp) from vanilla-sass / Figma sync.
+        Tokens are the single source of truth. Update via: yarn sync-tokens
+     2. Typography responsive scale (CSS equivalent of viewport-variables Sass mixin)
+     3. @theme inline — maps DGUV ref tokens to Tailwind v4 color utilities
+     4. Global heading reset — h1–h6 styled via DGUV comp tokens
    ══════════════════════════════════════════════════════════════════════════════ */
 
-/* ── 0. Source Sans 3 — local variable font ────────────────────────────────────────── */
-/* Path is relative to this CSS file (src/styles/ → src/assets/). */
-/* Vite resolves and copies the TTF into the build output automatically.    */
-@font-face {
-    font-family: 'Source Sans 3';
-    src: url('../assets/Source_Sans_3/SourceSans3-VariableFont_wght.ttf') format('truetype');
-    font-weight: 200 900;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Source Sans 3';
-    src: url('../assets/Source_Sans_3/SourceSans3-Italic-VariableFont_wght.ttf') format('truetype');
-    font-weight: 200 900;
-    font-style: italic;
-    font-display: swap;
-}
+/* ── 0a. Source Sans 3 ───────────────────────────────────────────────────────── */
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/400-italic.css';
+@import '@fontsource/source-sans-3/600.css';
+@import '@fontsource/source-sans-3/600-italic.css';
+@import '@fontsource/source-sans-3/700.css';
+@import '@fontsource/source-sans-3/700-italic.css';
 
-/* ── 1. UV Color Custom Properties ──────────────────────────────────────────── */
+/* ── 0b. Phosphor Icons (CSS class variant) ──────────────────────────────────── */
+/* <i class="ph ph-house"></i>  /  <i class="ph-bold ph-house"></i>            */
+@import '@phosphor-icons/web/regular';
+@import '@phosphor-icons/web/bold';
+@import '@phosphor-icons/web/fill';
+
+/* ── 0c. DGUV design tokens ──────────────────────────────────────────────────── */
+/* ref-tokens → sys-tokens → comp-tokens                                        */
+/* Regenerate with: yarn sync-tokens (reads vanilla-sass or figma-sync output)  */
+@import './dguv-design-tokens.css';
+
+/* ── 1. Typography responsive scale ─────────────────────────────────────────────
+   CSS equivalent of the vanilla-sass viewport-variables Sass mixin.
+   Mobile (s) defaults; promoted to medium values at ≥ 48 rem.
+   Provides --sys-typographie-* scale vars used by the heading reset below.
+   ─────────────────────────────────────────────────────────────────────────── */
 :root {
-    /* Typography */
-    --uv-font-sans: 'Source Sans 3', system-ui, -apple-system, sans-serif;
-    /* Blue (primary) — ref-color-primary-* */
-    --uv-blue-10: #d4edfc;
-    --uv-blue-20: #a1daf8;
-    --uv-blue-30: #4ebfef;
-    --uv-blue-50: #0095db;
-    --uv-blue-60: #0063af;
-    --uv-blue-70: #004994;
+    /* Scale — mobile defaults */
+    --sys-typographie-display-font-size:        1.75rem;
+    --sys-typographie-display-line-height:      2.25rem;
+    --sys-typographie-headline-xl-font-size:    1.5rem;
+    --sys-typographie-headline-xl-line-height:  2rem;
+    --sys-typographie-headline-l-font-size:     1.375rem;
+    --sys-typographie-headline-l-line-height:   1.875rem;
+    --sys-typographie-headline-m-font-size:     1.25rem;
+    --sys-typographie-headline-m-line-height:   1.75rem;
+    --sys-typographie-headline-s-font-size:     1.125rem;
+    --sys-typographie-headline-s-line-height:   1.625rem;
+    --sys-typographie-headline-xs-font-size:    1rem;
+    --sys-typographie-headline-xs-line-height:  1.5rem;
 
-    /* Green (success / secondary) — ref-color-success-* */
-    --uv-green-10: #ecf3da;
-    --uv-green-20: #d5df95;
-    --uv-green-30: #afca0b;
-    --uv-green-50: #4ca22f;
-    --uv-green-60: #00812c;
-    --uv-green-70: #006226;
-
-    /* Teal (info) — ref-color-info-* */
-    --uv-teal-10: #ebf6f6;
-    --uv-teal-20: #a4d8de;
-    --uv-teal-30: #6ebcc9;
-    --uv-teal-50: #007c84;
-    --uv-teal-60: #006169;
-    --uv-teal-70: #00434b;
-
-    /* Violet (brand accent) — ref-color-custom-* */
-    --uv-violet-10: #f1d9ea;
-    --uv-violet-20: #edbad9;
-    --uv-violet-30: #cb5d9f;
-    --uv-violet-50: #b81178;
-    --uv-violet-60: #881861;
-    --uv-violet-70: #56184a;
-
-    /* Red (error) — ref-color-error-* */
-    --uv-red-10: #fdeded;
-    --uv-red-20: #f8c7c8;
-    --uv-red-30: #f35449;
-    --uv-red-50: #d51317;
-    --uv-red-60: #9b1c18;
-    --uv-red-70: #681c16;
-
-    /* Orange (warning) — ref-color-warning-* */
-    --uv-orange-10: #faf4d6;
-    --uv-orange-20: #ffe4b2;
-    --uv-orange-30: #ffc670;
-    --uv-orange-50: #f7a600;
-    --uv-orange-60: #dd7500;
-    --uv-orange-70: #b55103;
-
-    /* Grey (neutral) — ref-color-neutral-* */
-    --uv-grey-0:   #ffffff;
-    --uv-grey-10:  #ededed;
-    --uv-grey-30:  #c6c6c6;
-    --uv-grey-50:  #9c9c9c;
-    --uv-grey-80:  #555555;
-    --uv-grey-90:  #3c3c3c;
-    --uv-grey-100: #000000;
-
+    /* Semantic h1–h6 aliases */
+    --sys-typography-h1-font-size:   var(--sys-typographie-display-font-size);
+    --sys-typography-h1-font-weight: var(--ref-font-weight-700);
+    --sys-typography-h1-line-height: var(--sys-typographie-display-line-height);
+    --sys-typography-h2-font-size:   var(--sys-typographie-headline-xl-font-size);
+    --sys-typography-h2-font-weight: var(--ref-font-weight-600);
+    --sys-typography-h2-line-height: var(--sys-typographie-headline-xl-line-height);
+    --sys-typography-h3-font-size:   var(--sys-typographie-headline-l-font-size);
+    --sys-typography-h3-font-weight: var(--ref-font-weight-600);
+    --sys-typography-h3-line-height: var(--sys-typographie-headline-l-line-height);
+    --sys-typography-h4-font-size:   var(--sys-typographie-headline-m-font-size);
+    --sys-typography-h4-font-weight: var(--ref-font-weight-600);
+    --sys-typography-h4-line-height: var(--sys-typographie-headline-m-line-height);
+    --sys-typography-h5-font-size:   var(--sys-typographie-headline-s-font-size);
+    --sys-typography-h5-font-weight: var(--ref-font-weight-600);
+    --sys-typography-h5-line-height: var(--sys-typographie-headline-s-line-height);
+    --sys-typography-h6-font-size:   var(--sys-typographie-headline-xs-font-size);
+    --sys-typography-h6-font-weight: var(--ref-font-weight-600);
+    --sys-typography-h6-line-height: var(--sys-typographie-headline-xs-line-height);
 }
 
-/* ── 2. Tailwind v4 Color Scale Mapping ──────────────────────────────────────
-   UV 6-stop scale stretched to Tailwind's 11-stop (50–950).
-   Stops without an exact UV match use the nearest UV stop.
+/* Larger screens: promote to medium breakpoint values */
+@media (min-width: 48rem) {
+    :root {
+        --sys-typographie-display-font-size:       2rem;
+        --sys-typographie-display-line-height:     2.5rem;
+        --sys-typographie-headline-xl-font-size:   1.75rem;
+        --sys-typographie-headline-xl-line-height: 2.25rem;
+        --sys-typographie-headline-l-font-size:    1.5rem;
+        --sys-typographie-headline-l-line-height:  2rem;
+    }
+}
+
+/* ── 2. Tailwind v4 color scale mapping ──────────────────────────────────────
+   Maps DGUV ref tokens → Tailwind --color-* utilities.
+   DGUV semantic mapping:
+     primary   → blue     (ref-color-primary-*)
+     secondary → green    (ref-color-secondary-*)
+     info      → teal     (ref-color-info-*)
+     custom    → violet   (ref-color-custom-*)
+     danger    → red      (ref-color-danger-*)
+     warning   → orange   (ref-color-warning-*)
+     neutral   → gray     (ref-color-neutral-*)
    ─────────────────────────────────────────────────────────────────────────── */
 @theme inline {
-    /* Blue ── UV: 10/20/30/50/60/70 */
-    --color-blue-50: var(--uv-blue-10);
-    --color-blue-100: var(--uv-blue-10);
-    --color-blue-200: var(--uv-blue-20);
-    --color-blue-300: var(--uv-blue-30);
-    --color-blue-400: var(--uv-blue-30);
-    --color-blue-500: var(--uv-blue-50);
-    --color-blue-600: var(--uv-blue-60);
-    --color-blue-700: var(--uv-blue-70);
-    --color-blue-800: var(--uv-blue-70);
-    --color-blue-900: var(--uv-blue-70);
-    --color-blue-950: var(--uv-blue-70);
+    /* Blue ── primary */
+    --color-blue-50:  var(--ref-color-primary-10);
+    --color-blue-100: var(--ref-color-primary-10);
+    --color-blue-200: var(--ref-color-primary-20);
+    --color-blue-300: var(--ref-color-primary-30);
+    --color-blue-400: var(--ref-color-primary-30);
+    --color-blue-500: var(--ref-color-primary-50);
+    --color-blue-600: var(--ref-color-primary-60);
+    --color-blue-700: var(--ref-color-primary-70);
+    --color-blue-800: var(--ref-color-primary-70);
+    --color-blue-900: var(--ref-color-primary-70);
+    --color-blue-950: var(--ref-color-primary-70);
 
-    /* Green ── UV success */
-    --color-green-50: var(--uv-green-10);
-    --color-green-100: var(--uv-green-10);
-    --color-green-200: var(--uv-green-20);
-    --color-green-300: var(--uv-green-30);
-    --color-green-400: var(--uv-green-30);
-    --color-green-500: var(--uv-green-50);
-    --color-green-600: var(--uv-green-60);
-    --color-green-700: var(--uv-green-70);
-    --color-green-800: var(--uv-green-70);
-    --color-green-900: var(--uv-green-70);
-    --color-green-950: var(--uv-green-70);
+    /* Green ── secondary */
+    --color-green-50:  var(--ref-color-secondary-10);
+    --color-green-100: var(--ref-color-secondary-10);
+    --color-green-200: var(--ref-color-secondary-20);
+    --color-green-300: var(--ref-color-secondary-30);
+    --color-green-400: var(--ref-color-secondary-30);
+    --color-green-500: var(--ref-color-secondary-50);
+    --color-green-600: var(--ref-color-secondary-60);
+    --color-green-700: var(--ref-color-secondary-70);
+    --color-green-800: var(--ref-color-secondary-70);
+    --color-green-900: var(--ref-color-secondary-70);
+    --color-green-950: var(--ref-color-secondary-70);
 
-    /* Teal ── UV info */
-    --color-teal-50: var(--uv-teal-10);
-    --color-teal-100: var(--uv-teal-10);
-    --color-teal-200: var(--uv-teal-20);
-    --color-teal-300: var(--uv-teal-30);
-    --color-teal-400: var(--uv-teal-30);
-    --color-teal-500: var(--uv-teal-50);
-    --color-teal-600: var(--uv-teal-60);
-    --color-teal-700: var(--uv-teal-70);
-    --color-teal-800: var(--uv-teal-70);
-    --color-teal-900: var(--uv-teal-70);
-    --color-teal-950: var(--uv-teal-70);
+    /* Teal ── info */
+    --color-teal-50:  var(--ref-color-info-10);
+    --color-teal-100: var(--ref-color-info-10);
+    --color-teal-200: var(--ref-color-info-20);
+    --color-teal-300: var(--ref-color-info-30);
+    --color-teal-400: var(--ref-color-info-30);
+    --color-teal-500: var(--ref-color-info-50);
+    --color-teal-600: var(--ref-color-info-60);
+    --color-teal-700: var(--ref-color-info-70);
+    --color-teal-800: var(--ref-color-info-70);
+    --color-teal-900: var(--ref-color-info-70);
+    --color-teal-950: var(--ref-color-info-70);
 
-    /* Violet ── UV brand accent */
-    --color-violet-50: var(--uv-violet-10);
-    --color-violet-100: var(--uv-violet-10);
-    --color-violet-200: var(--uv-violet-20);
-    --color-violet-300: var(--uv-violet-30);
-    --color-violet-400: var(--uv-violet-30);
-    --color-violet-500: var(--uv-violet-50);
-    --color-violet-600: var(--uv-violet-60);
-    --color-violet-700: var(--uv-violet-70);
-    --color-violet-800: var(--uv-violet-70);
-    --color-violet-900: var(--uv-violet-70);
-    --color-violet-950: var(--uv-violet-70);
+    /* Violet ── custom / brand accent */
+    --color-violet-50:  var(--ref-color-custom-10);
+    --color-violet-100: var(--ref-color-custom-10);
+    --color-violet-200: var(--ref-color-custom-20);
+    --color-violet-300: var(--ref-color-custom-30);
+    --color-violet-400: var(--ref-color-custom-30);
+    --color-violet-500: var(--ref-color-custom-50);
+    --color-violet-600: var(--ref-color-custom-60);
+    --color-violet-700: var(--ref-color-custom-70);
+    --color-violet-800: var(--ref-color-custom-70);
+    --color-violet-900: var(--ref-color-custom-70);
+    --color-violet-950: var(--ref-color-custom-70);
 
-    /* Red ── UV error */
-    --color-red-50: var(--uv-red-10);
-    --color-red-100: var(--uv-red-10);
-    --color-red-200: var(--uv-red-20);
-    --color-red-300: var(--uv-red-30);
-    --color-red-400: var(--uv-red-30);
-    --color-red-500: var(--uv-red-50);
-    --color-red-600: var(--uv-red-60);
-    --color-red-700: var(--uv-red-70);
-    --color-red-800: var(--uv-red-70);
-    --color-red-900: var(--uv-red-70);
-    --color-red-950: var(--uv-red-70);
+    /* Red ── danger */
+    --color-red-50:  var(--ref-color-danger-10);
+    --color-red-100: var(--ref-color-danger-10);
+    --color-red-200: var(--ref-color-danger-20);
+    --color-red-300: var(--ref-color-danger-30);
+    --color-red-400: var(--ref-color-danger-30);
+    --color-red-500: var(--ref-color-danger-50);
+    --color-red-600: var(--ref-color-danger-60);
+    --color-red-700: var(--ref-color-danger-70);
+    --color-red-800: var(--ref-color-danger-70);
+    --color-red-900: var(--ref-color-danger-70);
+    --color-red-950: var(--ref-color-danger-70);
 
-    /* Orange ── UV warning */
-    --color-orange-50: var(--uv-orange-10);
-    --color-orange-100: var(--uv-orange-10);
-    --color-orange-200: var(--uv-orange-20);
-    --color-orange-300: var(--uv-orange-30);
-    --color-orange-400: var(--uv-orange-30);
-    --color-orange-500: var(--uv-orange-50);
-    --color-orange-600: var(--uv-orange-60);
-    --color-orange-700: var(--uv-orange-70);
-    --color-orange-800: var(--uv-orange-70);
-    --color-orange-900: var(--uv-orange-70);
-    --color-orange-950: var(--uv-orange-70);
+    /* Orange ── warning */
+    --color-orange-50:  var(--ref-color-warning-10);
+    --color-orange-100: var(--ref-color-warning-10);
+    --color-orange-200: var(--ref-color-warning-20);
+    --color-orange-300: var(--ref-color-warning-30);
+    --color-orange-400: var(--ref-color-warning-30);
+    --color-orange-500: var(--ref-color-warning-50);
+    --color-orange-600: var(--ref-color-warning-60);
+    --color-orange-700: var(--ref-color-warning-70);
+    --color-orange-800: var(--ref-color-warning-70);
+    --color-orange-900: var(--ref-color-warning-70);
+    --color-orange-950: var(--ref-color-warning-70);
 
-    /* Gray ── UV grey */
-    --color-gray-50:  var(--uv-grey-10);
-    --color-gray-100: var(--uv-grey-10);
-    --color-gray-200: var(--uv-grey-30);
-    --color-gray-300: var(--uv-grey-30);
-    --color-gray-400: var(--uv-grey-30);
-    --color-gray-500: var(--uv-grey-50);
-    --color-gray-600: var(--uv-grey-50);
-    --color-gray-700: var(--uv-grey-80);
-    --color-gray-800: var(--uv-grey-80);
-    --color-gray-900: var(--uv-grey-90);
-    --color-gray-950: var(--uv-grey-100);
+    /* Gray ── neutral */
+    --color-gray-50:  var(--ref-color-neutral-10);
+    --color-gray-100: var(--ref-color-neutral-10);
+    --color-gray-200: var(--ref-color-neutral-20);
+    --color-gray-300: var(--ref-color-neutral-30);
+    --color-gray-400: var(--ref-color-neutral-30);
+    --color-gray-500: var(--ref-color-neutral-50);
+    --color-gray-600: var(--ref-color-neutral-60);
+    --color-gray-700: var(--ref-color-neutral-80);
+    --color-gray-800: var(--ref-color-neutral-80);
+    --color-gray-900: var(--ref-color-neutral-90);
+    --color-gray-950: var(--ref-color-neutral-100);
 
-    /* Font family */
-    --font-sans: var(--uv-font-sans);
+    /* Font */
+    --font-sans: var(--ref-font-family);
 
-    /* Border radius — inherit from PrimeVue theme tokens so that
-       Tailwind rounded-* utilities always match the component border-radius.
-       Change the theme preset once and both update automatically. */
-    --radius-sm:   var(--p-border-radius-sm);
-    --radius-md:   var(--p-border-radius-md);
-    --radius-lg:   var(--p-border-radius-lg);
-    --radius-xl:   var(--p-border-radius-xl);
-    --radius-2xl:  var(--p-border-radius-xl);
-    --radius-3xl:  var(--p-border-radius-xl);
+    /* Border radius — inherit from PrimeVue so rounded-* matches components */
+    --radius-sm:  var(--p-border-radius-sm);
+    --radius-md:  var(--p-border-radius-md);
+    --radius-lg:  var(--p-border-radius-lg);
+    --radius-xl:  var(--p-border-radius-xl);
+    --radius-2xl: var(--p-border-radius-xl);
+    --radius-3xl: var(--p-border-radius-xl);
+}
+
+/* ── 3. Global font reset ────────────────────────────────────────────────────
+   Apply Source Sans 3 globally.
+   NOTE: only * — not *::before/*::after — so icon pseudo-elements (.pi::before,
+   .ph::before) keep their icon font-family via inheritance from the icon class.
+   ─────────────────────────────────────────────────────────────────────────── */
+* {
+    font-family: var(--ref-font-family);
+}
+
+/* ── 4. DGUV content typography ──────────────────────────────────────────────
+   Heading styles are scoped to .dguv-content so they do NOT affect PrimeVue
+   components, the form builder UI, or any app shell headings.
+
+   Usage: wrap a content area in <div class="dguv-content"> to opt in.
+   In Storybook, the Typography story applies this class around its preview.
+   ─────────────────────────────────────────────────────────────────────────── */
+.dguv-content h1 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h1-font-size);
+    font-weight: var(--sys-typography-h1-font-weight);
+    line-height: var(--sys-typography-h1-line-height);
+}
+.dguv-content h2 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h2-font-size);
+    font-weight: var(--sys-typography-h2-font-weight);
+    line-height: var(--sys-typography-h2-line-height);
+}
+.dguv-content h3 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h3-font-size);
+    font-weight: var(--sys-typography-h3-font-weight);
+    line-height: var(--sys-typography-h3-line-height);
+}
+.dguv-content h4 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h4-font-size);
+    font-weight: var(--sys-typography-h4-font-weight);
+    line-height: var(--sys-typography-h4-line-height);
+}
+.dguv-content h5 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h5-font-size);
+    font-weight: var(--sys-typography-h5-font-weight);
+    line-height: var(--sys-typography-h5-line-height);
+}
+.dguv-content h6 {
+    color: var(--sys-color-surface-default-accent);
+    font-size: var(--sys-typography-h6-font-size);
+    font-weight: var(--sys-typography-h6-font-weight);
+    line-height: var(--sys-typography-h6-line-height);
 }

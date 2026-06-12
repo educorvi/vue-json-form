@@ -108,6 +108,22 @@
                 "parentHint": "Leave empty to create a top-level group."
             }
         },
+        "edit": {
+            "title": "Edit Group",
+            "subtitle": "Update group settings and metadata.",
+            "save": "Save Changes",
+            "updateError": "Failed to update group.",
+            "fields": {
+                "title": "Title",
+                "titlePlaceholder": "e.g. Frontend Development",
+                "name": "URL slug (name)",
+                "namePlaceholder": "e.g. frontend-development",
+                "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
+                "description": "Description",
+                "descriptionPlaceholder": "Optional — describe the purpose of this group.",
+                "path": "Path"
+            }
+        },
         "treeSelect": {
             "placeholder": "Select parent group…",
             "useCurrentFolder": "Use current folder"
@@ -129,7 +145,8 @@
         "sortDescending": "Sort descending",
         "loading": "Loading…",
         "cancel": "Cancel",
-        "clear": "Clear"
+        "clear": "Clear",
+        "edit": "Edit"
     },
     "theme": {
         "label": "Theme mode",

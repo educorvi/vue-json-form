@@ -131,8 +131,11 @@ export class GroupService {
         });
 
         const stats = await this._batchStats(entities.map((g) => g.id));
-        const data = entities.map((g) =>
-            toApiGroup(g, stats[g.id] ?? ZERO_STATS)
+        const data = await Promise.all(
+            entities.map(async (g) => {
+                const parentPath = await this._getParentPath(g);
+                return toApiGroup(g, stats[g.id] ?? ZERO_STATS, parentPath);
+            })
         );
         return paginatedResponse(data, total, page, page_size);
     }
@@ -146,11 +149,64 @@ export class GroupService {
         return group;
     }
 
-    async get(id: number): Promise<ApiGroup> {
-        const g = await this.findById(id);
-        const stats = await this._batchStats([id]);
+    /**
+     * Find a group by its URL path (sequence of `name` slugs).
+     *
+     * Example: `findByPath(['projects', 'frontend', 'team-a'])` traverses
+     * root → "projects" → "frontend" → "team-a".
+     */
+    async findByPath(segments: string[]): Promise<Group> {
+        if (segments.length === 0) {
+            throwNotFound('Empty group path', ErrorCode.GROUP_NOT_FOUND);
+        }
+
+        let parentId: number | null = null;
+        let currentGroup: Group | null = null;
+
+        for (const segment of segments) {
+            const where: FindOptionsWhere<Group> = {
+                name: segment,
+                parent_id: parentId == null ? IsNull() : parentId,
+            };
+            const group = await this.treeRepo.findOne({
+                where,
+                relations: { created_by: true, updated_by: true },
+            });
+            if (!group) {
+                throwNotFound(
+                    `Group not found at path "${segments.join('/')}"`,
+                    ErrorCode.GROUP_NOT_FOUND
+                );
+            }
+            currentGroup = group;
+            parentId = group.id;
+        }
+
+        if (!currentGroup) {
+            throwNotFound('Group not found', ErrorCode.GROUP_NOT_FOUND);
+        }
+        return currentGroup;
+    }
+
+    /**
+     * Get a group by either its numeric ID or its path string.
+     *
+     * - If `idOrSlug` contains only digits, it is treated as a numeric ID.
+     * - Otherwise it is treated as a `/`-separated path.
+     */
+    async getByIdOrSlug(idOrSlug: string): Promise<ApiGroup> {
+        const isNumeric = /^\d+$/.test(idOrSlug);
+        const g = isNumeric
+            ? await this.findById(parseInt(idOrSlug, 10))
+            : await this.findByPath(idOrSlug.split('/'));
+        const stats = await this._batchStats([g.id]);
         const parentPath = await this._getParentPath(g);
-        return toApiGroup(g, stats[id] ?? ZERO_STATS, parentPath);
+        return toApiGroup(g, stats[g.id] ?? ZERO_STATS, parentPath);
+    }
+
+    /** @deprecated Use getByIdOrSlug instead */
+    async get(id: number): Promise<ApiGroup> {
+        return this.getByIdOrSlug(String(id));
     }
 
     async getHierarchy(): Promise<ApiGroupHierarchyNode[]> {

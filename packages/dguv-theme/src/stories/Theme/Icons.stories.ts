@@ -1,31 +1,121 @@
-import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
 /**
- * Phosphor Icons — the icon library used by the UV design system.
- * Components are globally registered in preview.ts via `app.use(PhosphorVue)`.
+ * Phosphor Icons — the icon library used by the UV / DGUV design system.
  *
- * Usage in templates: `<PhHouse />`, `<PhTrash weight="fill" />` etc.
- * Full catalogue: https://phosphoricons.com
+ * **Two usage variants:**
  *
- * Weight variants: thin | light | regular (default) | bold | fill | duotone
+ * 1. **CSS classes** (matches vanilla-sass / Angular usage):
+ *    `<i class="ph ph-house"></i>` — imported from `@phosphor-icons/web`.
+ *    Weights: ph-regular (default), ph-bold, ph-fill.
+ *
+ * 2. **Vue components** (registered globally via `app.use(PhosphorVue)`):
+ *    `<PhHouse />`, `<PhTrash weight="fill" />` etc.
+ *    Full catalogue: https://phosphoricons.com
  */
 const meta: Meta = {
-  title: "Theme/Icons",
-  parameters: {
-    controls: { disable: true },
-    docs: {
-      description: {
-        component:
-          "Phosphor Icons are the standard icon set for the UV design system. " +
-          "All icons are registered globally as `<Ph{Name} />` components. " +
-          "Pass `weight` (thin | light | regular | bold | fill | duotone), " +
-          "`size` (number, px), and `color` (CSS colour string) as props.",
-      },
+    title: 'Theme/Icons',
+    parameters: {
+        controls: { disable: true },
+        docs: {
+            description: {
+                component:
+                    'Phosphor Icons are the standard icon set for the UV / DGUV design system. ' +
+                    'Both CSS class (`<i class="ph ph-house">`) and Vue component (`<PhHouse />`) usage are supported.',
+            },
+        },
     },
-  },
 };
 export default meta;
 type Story = StoryObj;
+
+/** CSS class icons — matches the vanilla-sass design system approach */
+export const CSSIcons: Story = {
+    name: 'CSS Icons (ph ph-*)',
+    render: () => ({
+        template: `
+      <div class="p-6 flex flex-col gap-8">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3">
+            Regular weight (default) — <code>ph ph-{name}</code>
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <div v-for="name in icons" :key="name"
+                 class="flex flex-col items-center gap-2 w-20">
+              <div class="w-10 h-10 flex items-center justify-center border border-surface-200 rounded text-primary-700">
+                <i :class="'ph ph-' + name" style="font-size: 24px"></i>
+              </div>
+              <span class="text-xs text-center text-surface-400 leading-tight break-all">{{ name }}</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3">
+            Bold weight — <code>ph-bold ph-{name}</code>
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <div v-for="name in icons" :key="'bold-' + name"
+                 class="flex flex-col items-center gap-2 w-20">
+              <div class="w-10 h-10 flex items-center justify-center border border-surface-200 rounded text-primary-700">
+                <i :class="'ph-bold ph-' + name" style="font-size: 24px"></i>
+              </div>
+              <span class="text-xs text-center text-surface-400 leading-tight break-all">{{ name }}</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-surface-400 mb-3">
+            Fill weight — <code>ph-fill ph-{name}</code>
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <div v-for="name in icons" :key="'fill-' + name"
+                 class="flex flex-col items-center gap-2 w-20">
+              <div class="w-10 h-10 flex items-center justify-center border border-surface-200 rounded text-primary-700">
+                <i :class="'ph-fill ph-' + name" style="font-size: 24px"></i>
+              </div>
+              <span class="text-xs text-center text-surface-400 leading-tight break-all">{{ name }}</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-surface-400">
+          Full catalogue at <a href="https://phosphoricons.com" target="_blank" class="text-primary-600">phosphoricons.com</a>.
+          CSS icon name = component name in kebab-case without <code>Ph</code> prefix.
+          Example: <code>&lt;PhArrowRight /&gt;</code> → <code>ph-arrow-right</code>.
+        </p>
+      </div>
+    `,
+        setup() {
+            const icons = [
+                'house',
+                'user',
+                'gear',
+                'magnifying-glass',
+                'bell',
+                'check-circle',
+                'warning',
+                'info',
+                'x-circle',
+                'question',
+                'arrow-right',
+                'arrow-left',
+                'caret-down',
+                'list',
+                'dots-three-vertical',
+                'file',
+                'folder-open',
+                'envelope',
+                'calendar',
+                'cloud-arrow-up',
+                'plus',
+                'trash',
+                'pencil-simple',
+                'floppy-disk',
+                'share-network',
+            ];
+            return { icons };
+        },
+    }),
+};
 
 // const ICON_GROUPS: { label: string; icons: string[] }[] = [
 //   {
@@ -184,13 +274,20 @@ type Story = StoryObj;
 // };
 
 export const IconWeights: Story = {
-  name: "Icon Weights",
-  render: () => ({
-    setup() {
-      const weights = ["thin", "light", "regular", "bold", "fill", "duotone"];
-      return { weights };
-    },
-    template: `
+    name: 'Icon Weights',
+    render: () => ({
+        setup() {
+            const weights = [
+                'thin',
+                'light',
+                'regular',
+                'bold',
+                'fill',
+                'duotone',
+            ];
+            return { weights };
+        },
+        template: `
       <div class="p-6 flex flex-col gap-6">
         <div
           v-for="w in weights"
@@ -206,25 +303,25 @@ export const IconWeights: Story = {
         </div>
       </div>
     `,
-  }),
+    }),
 };
 
 export const IconSizes: Story = {
-  name: "Icon Sizes",
-  render: () => ({
-    setup() {
-      const sizes = [
-        { size: 12, label: "12 px — caption / badge" },
-        { size: 14, label: "14 px — inline with small text" },
-        { size: 16, label: "16 px — default body" },
-        { size: 20, label: "20 px — button / input" },
-        { size: 24, label: "24 px — heading companion" },
-        { size: 32, label: "32 px — hero / empty state" },
-        { size: 48, label: "48 px — illustration" },
-      ];
-      return { sizes };
-    },
-    template: `
+    name: 'Icon Sizes',
+    render: () => ({
+        setup() {
+            const sizes = [
+                { size: 12, label: '12 px — caption / badge' },
+                { size: 14, label: '14 px — inline with small text' },
+                { size: 16, label: '16 px — default body' },
+                { size: 20, label: '20 px — button / input' },
+                { size: 24, label: '24 px — heading companion' },
+                { size: 32, label: '32 px — hero / empty state' },
+                { size: 48, label: '48 px — illustration' },
+            ];
+            return { sizes };
+        },
+        template: `
       <div class="p-6 flex flex-col gap-4">
         <div
           v-for="s in sizes"
@@ -237,13 +334,13 @@ export const IconSizes: Story = {
         </div>
       </div>
     `,
-  }),
+    }),
 };
 
 export const IconInComponents: Story = {
-  name: "Icons in Components",
-  render: () => ({
-    template: `
+    name: 'Icons in Components',
+    render: () => ({
+        template: `
       <div class="p-6 flex flex-col gap-8">
 
         <div>
@@ -303,5 +400,5 @@ export const IconInComponents: Story = {
 
       </div>
     `,
-  }),
+    }),
 };
