@@ -22,8 +22,6 @@ definePageMeta({ middleware: ['authenticated'], layout: 'fullscreen' });
 </template>
 
 <style scoped>
-/* The form builder's root element uses h-screen (100vh). Override it to h-full
-   so it fills our constrained container instead of the full viewport. */
 :deep(.relative.flex.h-screen) {
     height: 100%;
 }
