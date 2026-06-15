@@ -377,9 +377,11 @@ test.describe('URL Props [vjf-default]', () => {
         await expect(
             component.locator('select#vjf_control_for__properties_title')
         ).toBeVisible();
-        await expect(
-            component.locator('span.vjf_htmlRenderer > p')
-        ).toContainText('Ich bin ein HTML Text');
+        expect(
+            await component.locator('span.vjf_htmlRenderer > p').innerHTML()
+        ).toBe(
+            'I am a <strong class="text-primary">HTML</strong> Text with a <a href="https://educorvi.de">link</a>'
+        );
     });
 });
 
