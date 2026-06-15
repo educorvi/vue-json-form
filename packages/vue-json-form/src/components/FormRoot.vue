@@ -1,8 +1,10 @@
 <template>
+    <!--    Autocomplete is disabled on the form level, because it lead to bugs when navigating to a form by pressing the back button. For Text and number inputs, it is turned back on on the input-->
     <form
         v-if="storedUiSchema && storedJsonSchema"
         :id="id"
         :class="formClass"
+        autocomplete="off"
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         @invalid.capture="formStateWasValidated = true"

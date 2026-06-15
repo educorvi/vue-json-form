@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput, BFormTextarea } from 'bootstrap-vue-next';
 import { getStores, injectJsonData } from '@/computedProperties/json.ts';
-import { StringControl } from '@/renderings/renderHelpers';
+import { getOption, StringControl } from '@/renderings/renderHelpers';
 
 const { formDataStore } = getStores();
 
@@ -39,6 +39,7 @@ const numberOfLines = StringControl.getNumberOfLines(layoutElement);
         :max="jsonElement.maximum"
         :type="type"
         :pattern="jsonElement.pattern"
+        :autocomplete="getOption(layoutElement, 'autocomplete', 'on')"
     />
 </template>
 
