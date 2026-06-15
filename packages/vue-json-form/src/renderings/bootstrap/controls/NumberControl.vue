@@ -33,7 +33,7 @@ const { state, value } = setupValueAndValidation(
         :type="getOption(layoutElement, 'range', false) ? 'range' : 'number'"
         :required="required"
         :state="state"
-        autocomplete="on"
+        :autocomplete="getOption(layoutElement, 'autocomplete', 'on')"
     />
 </template>
 

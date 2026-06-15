@@ -1,5 +1,5 @@
 <template>
-    <!--    Autocomplete is disabled on the form level, because it lead to bugs when navigating to a form by pressing the back button. For Text and number inputs, it is turned back on on the input-->
+    <!-- Autocomplete is disabled at the form level because it led to bugs when navigating back to a form. Text and number inputs enable it again at the control level. -->
     <form
         v-if="storedUiSchema && storedJsonSchema"
         :id="id"

@@ -15,16 +15,9 @@
             <component
                 :is="controlType"
                 :name="formStructureMapped.uiElement.scope"
-                :disabled="formStructureMapped.uiElement.options?.disabled"
+                :disabled="getOption(formStructureMapped.uiElement, 'disabled')"
                 :placeholder="
-                    formStructureMapped.uiElement.options?.placeholder
-                "
-                :autocomplete="
-                    getOption(
-                        formStructureMapped.uiElement,
-                        'autocomplete',
-                        'on'
-                    )
+                    getOption(formStructureMapped.uiElement, 'placeholder')
                 "
                 :required="required || inArrayItem"
                 :style="style"

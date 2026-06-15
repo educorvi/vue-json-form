@@ -26,6 +26,7 @@ const numberOfLines = StringControl.getNumberOfLines(layoutElement);
         :rows="numberOfLines"
         :minlength="jsonElement.minLength"
         :maxlength="jsonElement.maxLength"
+        :autocomplete="getOption(layoutElement, 'autocomplete', 'on')"
     />
     <b-form-input
         v-else
