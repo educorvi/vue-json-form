@@ -219,7 +219,7 @@ test.describe('Structure', () => {
         const id = 'span.vjf_htmlRenderer > p';
         await expect(page.locator(id)).toBeVisible();
         expect(await page.locator(id).innerHTML()).toBe(
-            'Ich bin ein <strong class="text-primary">HTML</strong> Text'
+            'I am a <strong class="text-primary">HTML</strong> Text with a <a href="https://educorvi.de">link</a>'
         );
     });
 

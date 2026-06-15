@@ -70,7 +70,7 @@ const schemas: Record<
 type SchemaKey = keyof typeof schemas;
 type Tab = 'default' | 'ajv' | 'shadow' | 'url';
 
-const selectedSchemaKey = ref<SchemaKey>('summary');
+const selectedSchemaKey = ref<SchemaKey>('showcase');
 const activeTab = ref<Tab>('default');
 const submitData = ref<{ variant: string; data: unknown } | null>(null);
 
