@@ -555,6 +555,58 @@ test.describe('Button functions [vjf-ajv]', () => {
             flauschig: true,
         });
     });
+
+    test('radiobutton keeps consistent value after browser back', async ({
+        page,
+    }) => {
+        const component = await gotoShowcase(page, 'vjf-ajv');
+        const unicornRadio = component
+            .locator('#vjf_control_for__properties_fanciness input')
+            .nth(3);
+
+        await component
+            .getByRole('button', { name: 'Submit', exact: true })
+            .click();
+        await expect(page.locator('.card-body pre')).not.toBeAttached();
+
+        await unicornRadio.check();
+        await expect(unicornRadio).toBeChecked();
+
+        await page.goto('about:blank');
+        await page.goBack();
+        await page
+            .locator('.nav-tabs')
+            .getByRole('button', { name: 'AJV Validator', exact: true })
+            .click();
+
+        const restoredComponent = getShowcaseForm(page, 'vjf-ajv');
+        const restoredUnicornRadio = restoredComponent
+            .locator('#vjf_control_for__properties_fanciness input')
+            .nth(3);
+        await expect(restoredUnicornRadio).toBeChecked();
+
+        await restoredComponent
+            .locator('#vjf_control_for__properties_done')
+            .check();
+        await restoredComponent
+            .locator('#vjf_control_for__properties_name')
+            .fill('Back Navigation');
+        await restoredComponent
+            .locator('#vjf_control_for__properties_testArray input')
+            .nth(0)
+            .fill('Item 1');
+        await restoredComponent
+            .locator('#vjf_control_for__properties_testArray input')
+            .nth(1)
+            .fill('Item 2');
+        await restoredComponent
+            .getByRole('button', { name: 'Submit', exact: true })
+            .click();
+
+        const resultText = await page.locator('.card-body pre').textContent();
+        const json = JSON.parse(resultText || '');
+        expect(json['fanciness']).toEqual('unicorn');
+    });
 });
 
 // ── Submit Options tests – using vjf-default ──────────────────────────────────
