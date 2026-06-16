@@ -59,7 +59,7 @@
         "test:e2e": "turbo run test:e2e"
     },
     "workspaces": [
-        "apps/demo",
+        "apps/*",
         "packages/*"
     ]
 }

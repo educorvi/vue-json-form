@@ -8,6 +8,7 @@ import type { AppRouter } from '~~/server/orpc/routers';
  */
 export default defineNuxtPlugin((nuxtApp) => {
     const { loggedIn, user } = useUserSession();
+    console.log('user-sync', user.value);
     const orpc = nuxtApp.$orpc as RouterClient<AppRouter>;
     const SYNC_KEY = 'user-synced-id';
 

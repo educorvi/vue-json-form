@@ -12,11 +12,10 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json",
-        "orpg:generate": "npx @hey-api/openapi-ts"
+        "orpc:generate": "npx @hey-api/openapi-ts"
     },
     "dependencies": {
         "@artmizu/nuxt-prometheus": "3.0.1",
-        "@educorvi/dguv-theme": "workspace:*",
         "@nuxt/a11y": "1.0.0-alpha.1",
         "@nuxt/eslint": "1.15.2",
         "@nuxt/fonts": "0.14.0",

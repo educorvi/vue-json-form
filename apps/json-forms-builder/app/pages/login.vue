@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { BCard, BButton } from 'bootstrap-vue-next';
+import { definePageMeta, useUserSession, useRoute, navigateTo } from '#imports';
+import { computed } from 'vue';
+
 definePageMeta({ layout: false });
 
 const { loggedIn } = useUserSession();
@@ -13,39 +17,27 @@ const authError = computed(() => route.query.error === 'auth_failed');
 </script>
 
 <template>
-    <div
-        class="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center p-6"
-    >
-        <div class="w-full max-w-sm">
-            <div class="text-center mb-8">
-                <h1
-                    class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-2"
-                >
-                    Form Builder
-                </h1>
-                <p class="text-surface-400">Sign in to continue</p>
+    <div>
+        <div>
+            <div>
+                <h1>Form Builder</h1>
+                <p>Sign in to continue</p>
             </div>
 
-            <Card class="shadow-sm">
-                <template #content>
-                    <Message
-                        v-if="authError"
-                        severity="error"
-                        class="mb-4"
-                        :closable="false"
-                    >
-                        Authentication failed. Please try again.
-                    </Message>
+            <b-card class="shadow-sm">
+                <Message
+                    v-if="authError"
+                    severity="error"
+                    class="mb-4"
+                    :closable="false"
+                >
+                    Authentication failed. Please try again.
+                </Message>
 
-                    <a href="/auth/keycloak" class="block">
-                        <Button
-                            label="Sign in with Keycloak"
-                            icon="pi pi-sign-in"
-                            class="w-full"
-                        />
-                    </a>
-                </template>
-            </Card>
+                <a href="/auth/keycloak" class="block">
+                    <BButton> Sign in with Keycloak </BButton>
+                </a>
+            </b-card>
         </div>
     </div>
 </template>

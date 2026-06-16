@@ -5,21 +5,22 @@ import {
     DeleteDateColumn,
     ManyToOne,
     JoinColumn,
+    BaseEntity,
 } from 'typeorm';
 import { User } from './User';
 
 /**
  * Base class for all entities that include an auto-generated primary key ID.
  */
-export abstract class BaseEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
+export abstract class CustomBaseEntity extends BaseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 }
 
 /**
  * Base class for all entities that track when they were created/updated/deleted,
  */
-export abstract class BaseTimestampedEntity extends BaseEntity {
+export abstract class BaseTimestampedEntity extends CustomBaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     created!: Date;
 
