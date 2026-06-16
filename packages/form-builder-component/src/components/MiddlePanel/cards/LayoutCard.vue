@@ -53,7 +53,7 @@ function doSwitchToWizard() {
         <b-button
             v-for="opt in layoutTypeOpts"
             :key="opt.value"
-            class="layout-select-button"
+            size="sm"
             :variant="
                 element.type === opt.value ? 'primary' : 'outline-secondary'
             "
@@ -67,7 +67,7 @@ function doSwitchToWizard() {
             <div class="vr" />
             <b-button
                 @click="switchToWizard"
-                class="layout-select-button"
+                size="sm"
                 variant="outline-secondary"
             >
                 <i class="bi bi-book me-1" />Wizard
@@ -114,9 +114,3 @@ function doSwitchToWizard() {
     </BModal>
 </template>
 
-<style scoped>
-.layout-select-button {
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-}
-</style>

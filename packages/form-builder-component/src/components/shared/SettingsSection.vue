@@ -6,14 +6,17 @@ defineProps<{
 }>();
 
 import { ref } from 'vue';
+import { BButton } from 'bootstrap-vue-next';
 const expanded = ref(true);
 </script>
 
 <template>
     <div class="mb-3">
-        <button
+        <b-button
             v-if="collapsible"
-            class="btn btn-sm btn-link text-decoration-none text-body d-flex align-items-center gap-2 w-100 px-0 text-uppercase fw-semibold mb-2"
+            variant="link"
+            size="sm"
+            class="text-decoration-none text-body d-flex align-items-center gap-2 w-100 px-0 text-uppercase fw-semibold mb-2"
             style="font-size: 0.65rem; letter-spacing: 0.05em"
             @click="expanded = !expanded"
         >
@@ -23,7 +26,7 @@ const expanded = ref(true);
                 :class="expanded ? 'bi bi-chevron-down' : 'bi bi-chevron-right'"
                 class="ms-auto"
             />
-        </button>
+        </b-button>
         <p
             v-else
             class="d-flex align-items-center gap-2 text-body fw-semibold mb-2"

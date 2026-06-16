@@ -27,10 +27,12 @@ const activeIndex = ref(0);
     >
         <!-- Tab Header -->
         <div class="d-flex align-items-center border-bottom flex-shrink-0 pe-1">
-            <button
+            <b-button
                 v-for="(tab, i) in tabs"
                 :key="tab.label"
-                class="flex-grow-1 btn btn-sm rounded-0 border-0 py-2"
+                variant="link"
+                size="sm"
+                class="flex-grow-1 rounded-0 border-0 py-2 text-decoration-none"
                 :class="
                     activeIndex === i
                         ? 'border-bottom border-primary border-2 text-primary fw-medium'
@@ -41,15 +43,17 @@ const activeIndex = ref(0);
             >
                 <i :class="tab.icon" class="me-1" />
                 {{ tab.label }}
-            </button>
+            </b-button>
 
-            <button
-                class="btn btn-sm btn-link text-body flex-shrink-0 p-1"
+            <b-button
+                variant="link"
+                size="sm"
+                class="text-body flex-shrink-0 p-1"
                 title="Collapse panel"
                 @click="emit('toggleCollapse')"
             >
                 <i class="bi bi-chevron-left" />
-            </button>
+            </b-button>
         </div>
 
         <!-- Active tab content -->

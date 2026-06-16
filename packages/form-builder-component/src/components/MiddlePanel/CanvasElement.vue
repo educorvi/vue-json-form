@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { BButton, BBadge } from 'bootstrap-vue-next';
 import {
     supportedUiSchemaVersion,
     VueJsonForm,
@@ -118,10 +119,11 @@ function duplicate(e: Event) {
                 >
 
                 <!-- Data type badge -->
-                <span
+                <b-badge
                     v-if="element.type === 'Control' && controlType"
-                    class="badge bg-secondary bg-opacity-25 text-body text-xs flex-shrink-0"
-                    >{{ controlType }}</span
+                    variant="secondary"
+                    class="bg-opacity-25 text-body text-xs flex-shrink-0"
+                    >{{ controlType }}</b-badge
                 >
 
                 <!-- ShowOn indicator -->
@@ -155,22 +157,24 @@ function duplicate(e: Event) {
                     @click.stop
                 >
                     <div class="vr" />
-                    <button
-                        class="btn btn-sm p-0 border-0 text-body"
+                    <b-button
+                        variant="link"
+                        class="p-0 border-0 text-body text-decoration-none"
                         style="width: 1.25rem; height: 1.25rem; line-height: 1"
                         title="Duplicate"
                         @click="duplicate"
                     >
                         <i class="bi bi-clipboard text-xs" />
-                    </button>
-                    <button
-                        class="btn btn-sm p-0 border-0 text-danger"
+                    </b-button>
+                    <b-button
+                        variant="link"
+                        class="p-0 border-0 text-danger text-decoration-none"
                         style="width: 1.25rem; height: 1.25rem; line-height: 1"
                         title="Delete"
                         @click="deleteEl"
                     >
                         <i class="bi bi-trash text-xs" />
-                    </button>
+                    </b-button>
                 </div>
             </div>
 

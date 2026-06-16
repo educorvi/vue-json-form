@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { BModal } from 'bootstrap-vue-next';
+import { BModal, BButton, BFormInput } from 'bootstrap-vue-next';
 import { useFormStore } from '@/stores/formStore';
 import ExportDialog from './ExportDialog.vue';
 import ImportDialog from './ImportDialog.vue';
@@ -24,20 +24,19 @@ function doReset() {
         <!-- Left side: form title -->
         <div class="d-flex align-items-center gap-2 me-auto">
             <i class="bi bi-pencil-square text-primary" />
-            <input
-                type="text"
-                class="form-control form-control-sm form-control-transparent"
-                :value="store.jsonSchema.title"
+            <b-form-input
+                size="sm"
+                class="form-control-transparent"
+                :model-value="store.jsonSchema.title"
                 placeholder="Form Title"
-                @input="
-                    store.jsonSchema.title = ($event.target as HTMLInputElement).value
-                "
+                @update:model-value="store.jsonSchema.title = $event"
             />
         </div>
 
         <!-- Theme toggle -->
-        <button
-            class="btn btn-sm btn-outline-secondary"
+        <b-button
+            size="sm"
+            variant="outline-secondary"
             :title="
                 store.themeMode === 'light'
                     ? 'Switch to dark mode'
@@ -50,17 +49,17 @@ function doReset() {
                     store.themeMode === 'light' ? 'bi bi-moon' : 'bi bi-sun'
                 "
             />
-        </button>
+        </b-button>
 
         <div class="vr" />
 
         <!-- Preview toggle -->
-        <button
-            class="btn btn-sm"
-            :class="
+        <b-button
+            size="sm"
+            :variant="
                 store.isPreviewInline
-                    ? 'btn-secondary'
-                    : 'btn-outline-secondary'
+                    ? 'secondary'
+                    : 'outline-secondary'
             "
             @click="store.togglePreviewInline()"
         >
@@ -70,34 +69,37 @@ function doReset() {
                 "
                 class="me-1"
             />{{ store.isPreviewInline ? 'Edit' : 'Preview' }}
-        </button>
+        </b-button>
 
         <!-- Export -->
-        <button
-            class="btn btn-sm btn-primary"
+        <b-button
+            size="sm"
+            variant="primary"
             title="Export JSON &amp; UI Schema"
             @click="store.openExport()"
         >
             <i class="bi bi-download me-1" />Export
-        </button>
+        </b-button>
 
         <!-- Import -->
-        <button
-            class="btn btn-sm btn-outline-primary"
+        <b-button
+            size="sm"
+            variant="outline-primary"
             title="Import JSON &amp; UI Schema"
             @click="store.openImport()"
         >
             <i class="bi bi-upload me-1" />Import
-        </button>
+        </b-button>
 
         <!-- Reset -->
-        <button
-            class="btn btn-sm btn-outline-danger"
+        <b-button
+            size="sm"
+            variant="outline-danger"
             title="Reset form to empty state"
             @click="showResetModal = true"
         >
             <i class="bi bi-arrow-clockwise me-1" />Reset
-        </button>
+        </b-button>
 
         <!-- Export dialog -->
         <ExportDialog v-model:visible="store.isExportOpen" />

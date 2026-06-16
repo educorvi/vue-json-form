@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { BModal } from 'bootstrap-vue-next';
+import { BModal, BButton } from 'bootstrap-vue-next';
 import { useFormStore } from '@/stores/formStore';
 import type { WizardElement, WizardPage, FormElement } from '@/types/formTypes';
 import DropZone from './DropZone.vue';
@@ -81,22 +81,24 @@ function doSwitchToLayout() {
         class="d-flex align-items-center gap-1 px-2 py-1 border-bottom flex-wrap"
         @click.stop
     >
-        <button
+        <b-button
             v-for="opt in layoutTypeOpts"
             :key="opt.value"
-            class="btn btn-outline-secondary py-0 px-1"
-            style="font-size: 0.7rem"
+            variant="outline-secondary"
+            size="sm"
+            class="py-0 px-1"
             @click="switchToLayout(opt.value as any)"
         >
             <i :class="opt.icon" class="me-1" />{{ opt.label }}
-        </button>
+        </b-button>
         <div class="vr" />
-        <span
-            class="btn btn-primary py-0 px-1 disabled"
-            style="font-size: 0.7rem"
+        <b-button
+            variant="primary"
+            size="sm"
+            class="py-0 px-1 disabled"
         >
             <i class="bi bi-book me-1" />Wizard
-        </span>
+        </b-button>
     </div>
 
     <!-- Page tabs -->
@@ -104,14 +106,14 @@ function doSwitchToLayout() {
         class="d-flex align-items-center gap-1 px-2 py-1 border-bottom overflow-x-auto"
         @click.stop
     >
-        <button
+        <b-button
             v-for="(page, i) in element.pages"
             :key="page._id"
-            class="btn py-0 px-2 text-xs flex-shrink-0"
-            :class="
-                i === activeIdx ? 'btn-primary' : 'btn-outline-secondary'
+            size="sm"
+            class="py-0 px-2 text-xs flex-shrink-0"
+            :variant="
+                i === activeIdx ? 'primary' : 'outline-secondary'
             "
-            style="font-size: 0.7rem"
             @click="store.activeWizardPageIndex = i"
         >
             {{ page.options?.label ?? `Page ${i + 1}` }}
@@ -120,15 +122,16 @@ function doSwitchToLayout() {
                 class="bi bi-x ms-1 opacity-75"
                 @click.stop="removePage(i)"
             />
-        </button>
-        <button
-            class="btn btn-outline-secondary py-0 px-1 flex-shrink-0"
-            style="font-size: 0.7rem"
+        </b-button>
+        <b-button
+            variant="outline-secondary"
+            size="sm"
+            class="py-0 px-1 flex-shrink-0"
             title="Add page"
             @click.stop="store.addWizardPage()"
         >
             <i class="bi bi-plus" />
-        </button>
+        </b-button>
     </div>
 
     <!-- Active page layout switcher -->
@@ -138,20 +141,20 @@ function doSwitchToLayout() {
         @click.stop
     >
         <span class="text-xs text-body me-1">Page layout:</span>
-        <button
+        <b-button
             v-for="opt in layoutTypeOpts"
             :key="opt.value"
-            class="btn py-0 px-1 text-xs"
-            :class="
+            size="sm"
+            class="py-0 px-1 text-xs"
+            :variant="
                 activePage.type === opt.value
-                    ? 'btn-primary'
-                    : 'btn-outline-secondary'
+                    ? 'primary'
+                    : 'outline-secondary'
             "
-            style="font-size: 0.7rem"
             @click="setPageType(opt.value as any)"
         >
             <i :class="opt.icon" class="me-1" />{{ opt.label }}
-        </button>
+        </b-button>
     </div>
 
     <!-- Drop zone for active page -->
