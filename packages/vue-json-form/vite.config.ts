@@ -42,23 +42,12 @@ export default defineConfig({
         },
     },
     plugins: [
-        // nodePolyfills({
-        //     include: ['path', 'util', 'process', 'buffer'],
-        //     globals: {
-        //         process: true,
-        //         global: false,
-        //         Buffer: true,
-        //     },
-        // }),
-        // vueDevTools(),
         externalizeDeps(),
         vue({
             include: [/\.vue$/],
         }),
         dts({
-            rollupTypes: true,
             tsconfigPath: './tsconfig.app.json',
-            outDir: './dist',
             insertTypesEntry: true,
             copyDtsFiles: true,
         }),
