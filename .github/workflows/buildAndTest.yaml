@@ -1,16 +1,18 @@
 name: Build And Test
 
 on:
-    push:
-        branches:
-            - 'main'
     pull_request:
         branches:
             - 'main'
+            - 'release/*'
     merge_group:
         types:
             - checks_requested
     workflow_dispatch:
+
+concurrency:
+  group: build-and-test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
     contents: read
@@ -127,58 +129,58 @@ jobs:
                   path: ./packages/vue-json-form/blob-report
                   retention-days: 1
     test-e2e-webcomponent:
-      needs: build
-      runs-on: ubuntu-latest
-      name: e2e Tests Webcomponent
-      timeout-minutes: 60
-      strategy:
-        fail-fast: false
-        matrix:
-          shardIndex: [ 1, 2 ]
-          shardTotal: [ 2 ]
-      steps:
-        - uses: actions/checkout@v6
-          with:
-            submodules: recursive
-        - name: Cache turbo build setup
-          uses: actions/cache@v5
-          with:
-            path: .turbo
-            key: ${{ runner.os }}-turbo-${{ github.sha }}
-            restore-keys: |
-              ${{ runner.os }}-turbo-
-        - name: Setup node
-          uses: actions/setup-node@v6
-          with:
-            cache: yarn
-            node-version: lts/*
-        - name: Store Playwright's Version
-          run: |
-            PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
-            echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-            echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+        needs: build
+        runs-on: ubuntu-latest
+        name: e2e Tests Webcomponent
+        timeout-minutes: 60
+        strategy:
+            fail-fast: false
+            matrix:
+                shardIndex: [1, 2]
+                shardTotal: [2]
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  submodules: recursive
+            - name: Cache turbo build setup
+              uses: actions/cache@v5
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+            - name: Setup node
+              uses: actions/setup-node@v6
+              with:
+                  cache: yarn
+                  node-version: lts/*
+            - name: Store Playwright's Version
+              run: |
+                  PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
+                  echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+                  echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
-        - name: Cache Playwright Browsers for Playwright's Version
-          id: cache-playwright-browsers
-          uses: actions/cache@v5
-          with:
-            path: ~/.cache/ms-playwright
-            key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
-        - run: yarn install --immutable
-        - run: yarn run build
-        - name: Install Playwright Browsers
-          run: yarn playwright install --with-deps
-          working-directory: ./packages/webcomponent
-        - name: Run Playwright tests
-          run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
-          working-directory: ./packages/webcomponent
-        - name: Upload blob report to GitHub Actions Artifacts
-          if: ${{ !cancelled() }}
-          uses: actions/upload-artifact@v7
-          with:
-            name: blob-report-wc-${{ matrix.shardIndex }}
-            path: ./packages/webcomponent/blob-report
-            retention-days: 1
+            - name: Cache Playwright Browsers for Playwright's Version
+              id: cache-playwright-browsers
+              uses: actions/cache@v5
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+            - run: yarn install --immutable
+            - run: yarn run build
+            - name: Install Playwright Browsers
+              run: yarn playwright install --with-deps
+              working-directory: ./packages/webcomponent
+            - name: Run Playwright tests
+              run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+              working-directory: ./packages/webcomponent
+            - name: Upload blob report to GitHub Actions Artifacts
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v7
+              with:
+                  name: blob-report-wc-${{ matrix.shardIndex }}
+                  path: ./packages/webcomponent/blob-report
+                  retention-days: 1
     merge-reports:
         # Merge reports after playwright-tests, even if some shards have failed
         if: ${{ !cancelled() }}

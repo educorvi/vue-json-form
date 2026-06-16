@@ -103,7 +103,7 @@ function updateStage(event: SseEvent) {
     } else if (event.event === 'result') {
         summary.value = event.data.summary;
     } else if (event.event === 'error') {
-        summary.value = intl.getString('errors.generic.temporaryError');
+        summary.value = `${intl.getString('errors.generic.errorOccurred')}\n\n${event.data.message}`;
     }
 }
 
@@ -219,7 +219,11 @@ defineExpose({ updateStage, setSaveUrl, setFeedbackUrl, setClipboard });
             </b-card>
         </b-collapse>
         <b-collapse :show="!!summary">
-            <vue-markdown v-if="summary" :source="summary" />
+            <vue-markdown
+                v-if="summary"
+                :source="summary"
+                :options="{ html: true }"
+            />
         </b-collapse>
         <template #footer>
             <BButtonGroup class="w-100">

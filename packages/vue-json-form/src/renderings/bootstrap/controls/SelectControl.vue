@@ -7,6 +7,7 @@ import {
     createInvalidValueWatch,
     getOptions,
 } from '@/renderings/renderHelpers/SelectControl.ts';
+import { getOption } from '@/renderings/renderHelpers';
 
 const { formDataStore } = getStores();
 
@@ -27,6 +28,7 @@ createInvalidValueWatch(jsonElement, formData, savePath);
         v-model="formData[savePath]"
         :options="options"
         class="vjf_select"
+        :autocomplete="getOption(layoutElement, 'autocomplete', 'on')"
     />
 </template>
 

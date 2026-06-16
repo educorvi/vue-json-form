@@ -2,7 +2,7 @@
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
-import { VueJsonForm } from '@/main.ts';
+import { type FormData, VueJsonForm } from '@/main.ts';
 
 import json from '../exampleSchemas/showcase/schema.json';
 import ui from '../exampleSchemas/showcase/ui.json';
@@ -10,10 +10,10 @@ import ui from '../exampleSchemas/showcase/ui.json';
 import { ref, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | FormData> = ref(undefined);
 const submitOptionsData: Ref<undefined | SubmitOptions> = ref(undefined);
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
     submitOptionsData.value = options;
     switch (options.action) {

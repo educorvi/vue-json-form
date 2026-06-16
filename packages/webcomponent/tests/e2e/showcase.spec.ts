@@ -6,25 +6,38 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 type ComponentTag = 'vjf-default' | 'vjf-ajv' | 'vjf-shadow';
+type ShowcaseTab = ComponentTag | 'url-props';
 
-const TAB_BUTTONS: Record<ComponentTag, string> = {
+const TAB_BUTTONS: Record<ShowcaseTab, string> = {
     'vjf-default': 'Default',
     'vjf-ajv': 'AJV Validator',
     'vjf-shadow': 'Shadow DOM',
+    'url-props': 'URL Props',
 };
+
+const TAB_FORM_IDS: Record<ShowcaseTab, string> = {
+    'vjf-default': 'default-form',
+    'vjf-ajv': 'ajv-form',
+    'vjf-shadow': 'shadow-form',
+    'url-props': 'url-form',
+};
+
+function getShowcaseForm(page: Page, tag: ShowcaseTab): Locator {
+    return page.locator(`#${TAB_FORM_IDS[tag]}`);
+}
 
 /**
  * Navigate to the dev app, select the showcase schema, switch to the given
  * webcomponent tab, and return a Locator scoped to that component element.
  */
-async function gotoShowcase(page: Page, tag: ComponentTag): Promise<Locator> {
+async function gotoShowcase(page: Page, tag: ShowcaseTab): Promise<Locator> {
     await page.goto('/');
     await page.locator('#schema-select').selectOption('showcase');
     await page
         .locator('.nav-tabs')
         .getByRole('button', { name: TAB_BUTTONS[tag], exact: true })
         .click();
-    const component = page.locator(tag);
+    const component = getShowcaseForm(page, tag);
     // Wait until the form is ready
     await expect(
         component.locator('#vjf_control_for__properties_done')
@@ -60,7 +73,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Switch', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             const checkbox = component.locator(
                 '#vjf_control_for__properties_done'
             );
@@ -69,7 +82,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Title', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             const select = component.locator(
                 'select#vjf_control_for__properties_title'
             );
@@ -94,7 +107,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Fanciness', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             await expect(
                 component.locator('div#vjf_control_for__properties_fanciness')
             ).toBeVisible();
@@ -106,7 +119,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Fileupload', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             await expect(
                 component.locator(
                     'label[for="vjf_control_for__properties_fileupload"]'
@@ -118,7 +131,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Group selector', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             const id = '#vjf_control_for__properties_group_selector';
             await expect(component.locator(id)).toBeVisible();
             const labels = component.locator(`${id} label`);
@@ -129,7 +142,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
 
         test.describe('Group', () => {
             test('dueDate', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const input = component.locator(
                     'input#vjf_control_for__properties_due_date'
                 );
@@ -138,7 +151,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('Rating', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const rating = component.locator(
                     'input#vjf_control_for__properties_rating'
                 );
@@ -151,7 +164,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('Description', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const description = component.locator(
                     'textarea#vjf_control_for__properties_description'
                 );
@@ -163,7 +176,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('Teststring', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const input = component.locator(
                     'input#vjf_control_for__properties_teststring'
                 );
@@ -172,7 +185,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('Weekdays', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const id = 'div#vjf_control_for__properties_weekdays';
                 const container = component.locator(id);
                 await expect(container).toBeVisible();
@@ -199,7 +212,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('RecurrenceInterval', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const input = component.locator(
                     'input#vjf_control_for__properties_recurrence_interval'
                 );
@@ -211,7 +224,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('TestArray', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const container = component.locator(
                     'div[name="/properties/testArray"]'
                 );
@@ -229,8 +242,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
 
         test.describe('Object', () => {
             test.beforeEach(async ({ page }) => {
-                await page
-                    .locator(tag)
+                await getShowcaseForm(page, tag)
                     .locator(
                         '#vjf_control_for__properties_group_selector input'
                     )
@@ -239,7 +251,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('name', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const input = component.locator(
                     'input#vjf_control_for__properties_testObject_properties_petName'
                 );
@@ -248,7 +260,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('age', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const age = component.locator(
                     'input#vjf_control_for__properties_testObject_properties_age'
                 );
@@ -261,7 +273,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
             });
 
             test('flauschig', async ({ page }) => {
-                const component = page.locator(tag);
+                const component = getShowcaseForm(page, tag);
                 const checkbox = component.locator(
                     'input#vjf_control_for__properties_testObject_properties_flauschig'
                 );
@@ -271,16 +283,16 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('HTML text', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             const el = component.locator('span.vjf_htmlRenderer > p');
             await expect(el).toBeVisible();
             expect(await el.innerHTML()).toBe(
-                'Ich bin ein <strong class="text-primary">HTML</strong> Text'
+                'I am a <strong class="text-primary">HTML</strong> Text with a <a href="https://educorvi.de">link</a>'
             );
         });
 
         test('Form Buttons', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             await expect(
                 component.getByRole('button', { name: 'Submit', exact: true })
             ).toBeVisible();
@@ -295,7 +307,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Fancy Unicorn', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             await component
                 .locator('#vjf_control_for__properties_fanciness input')
                 .nth(3)
@@ -315,7 +327,7 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
 
         test('Hidden form fields', async ({ page }) => {
-            const component = page.locator(tag);
+            const component = getShowcaseForm(page, tag);
             const hiddenFields = [
                 '/properties/hiddenDateTime',
                 '/properties/hiddenDate',
@@ -336,6 +348,42 @@ for (const tag of ['vjf-default', 'vjf-ajv', 'vjf-shadow'] as ComponentTag[]) {
         });
     });
 }
+
+test.describe('URL Props [vjf-default]', () => {
+    test('loads JSON schema and UI schema from URL props', async ({ page }) => {
+        const component = await gotoShowcase(page, 'url-props');
+
+        const urls = await component.evaluate((element) => {
+            const customElement = element as HTMLElement & {
+                jsonSchemaUrl?: string;
+                uiSchemaUrl?: string;
+            };
+
+            return {
+                jsonSchemaUrl:
+                    customElement.jsonSchemaUrl ??
+                    customElement.getAttribute('json-schema-url'),
+                uiSchemaUrl:
+                    customElement.uiSchemaUrl ??
+                    customElement.getAttribute('ui-schema-url'),
+            };
+        });
+
+        expect(urls.jsonSchemaUrl).toMatch(/^blob:/);
+        expect(urls.uiSchemaUrl).toMatch(/^blob:/);
+        await expect(
+            component.locator('#vjf_control_for__properties_done')
+        ).toBeVisible();
+        await expect(
+            component.locator('select#vjf_control_for__properties_title')
+        ).toBeVisible();
+        expect(
+            await component.locator('span.vjf_htmlRenderer > p').innerHTML()
+        ).toBe(
+            'I am a <strong class="text-primary">HTML</strong> Text with a <a href="https://educorvi.de">link</a>'
+        );
+    });
+});
 
 // ── Button function tests – using vjf-ajv (AJV validation) ───────────────────
 

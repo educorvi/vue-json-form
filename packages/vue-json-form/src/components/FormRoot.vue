@@ -1,8 +1,10 @@
 <template>
+    <!-- Autocomplete is disabled at the form level because it led to bugs when navigating back to a form. Text and number inputs enable it again at the control level. -->
     <form
         v-if="storedUiSchema && storedJsonSchema"
         :id="id"
         :class="formClass"
+        autocomplete="off"
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         @invalid.capture="formStateWasValidated = true"
@@ -62,7 +64,12 @@ import {
     generateUUID,
     SUPPORTED_UISCHEMA_VERSION,
 } from '@/Commons';
-import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
+import type {
+    GenerationOptions,
+    MapperClass,
+    ParsedAndUnvalidatedJson,
+    FormData,
+} from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
     AutoLanguageProvider,
@@ -79,7 +86,7 @@ const props = defineProps<{
      * @param data The data of the form
      */
     onSubmitForm: (
-        data: Record<string, any>,
+        data: FormData,
         customSubmitOptions: SubmitOptions,
         evt: SubmitEvent
     ) => Promise<void>;
@@ -87,12 +94,12 @@ const props = defineProps<{
     /**
      * The JSON Schema of the form
      */
-    jsonSchema: Record<string, any>;
+    jsonSchema: ParsedAndUnvalidatedJson;
 
     /**
      * The UI Schema of the form
      */
-    uiSchema?: Record<string, any>;
+    uiSchema?: ParsedAndUnvalidatedJson;
 
     /**
      * The Render Interface
@@ -103,7 +110,7 @@ const props = defineProps<{
     /**
      * Data that should be loaded into the form.
      */
-    presetData?: Record<string, any>;
+    presetData?: FormData;
 
     /**
      * Options for the generation of the UI-Schema if no UI-Schema is provided
@@ -247,7 +254,7 @@ function resetForm(evt: Event) {
 }
 
 async function parseJsonSchema(
-    jsonSchema: Record<string, any>
+    jsonSchema: ParsedAndUnvalidatedJson
 ): Promise<JSONSchema | null> {
     if (validator.value.validateJsonSchema(jsonSchema)) {
         return jsonSchema;
@@ -259,7 +266,7 @@ async function parseJsonSchema(
 }
 
 async function parseUiSchema(
-    uiSchema: Record<string, any> | undefined,
+    uiSchema: ParsedAndUnvalidatedJson | undefined,
     jsonSchema: JSONSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
@@ -289,13 +296,11 @@ function assignRenderInterface(renderInterface: RenderInterface) {
     components.value = renderInterface ? markRaw(renderInterface) : undefined;
 }
 
-async function assignStoreData(
-    obj: {
-        jsonSchema: Record<string, any>;
-        uiSchema: Record<string, any> | undefined;
-        renderInterface: RenderInterface | undefined;
-    } & Record<string, any>
-) {
+async function assignStoreData(obj: {
+    jsonSchema: ParsedAndUnvalidatedJson;
+    uiSchema: ParsedAndUnvalidatedJson | undefined;
+    renderInterface: RenderInterface | undefined;
+}) {
     if (obj.renderInterface) {
         assignRenderInterface(obj.renderInterface);
     }

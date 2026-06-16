@@ -23,6 +23,7 @@ import type {
 import { Mapper, MapperWithData, MapperWithoutData } from '@/Mappers';
 
 export type IndexType = string | number | symbol;
+export type IndexTypeWithoutSymbol = Exclude<IndexType, symbol>;
 
 /**
  * Checks if a given key exists in the provided object.
@@ -46,16 +47,21 @@ export function isKeyOf<T extends object>(
  * @return A boolean indicating whether the object has the specified property and the property is both defined and non-null.
  */
 export function hasProperty<T, K extends IndexType>(
-    obj: T | undefined,
+    obj: T | undefined | null,
     propertyName: K
-): obj is T & Record<K, K extends keyof T ? NonNullable<T[K]> : never> {
-    if (!(typeof obj === 'object' && obj !== null && obj !== undefined)) {
+): obj is T & Record<K, K extends keyof T ? NonNullable<T[K]> : unknown> {
+    if (!(typeof obj === 'object' && obj !== null)) {
         return false;
     }
-    if (!isKeyOf(propertyName, obj)) {
+    if (!(propertyName in obj)) {
         return false;
     }
-    return obj[propertyName] !== undefined && obj[propertyName] !== null;
+    const record = obj as Record<IndexType, unknown>;
+    return record[propertyName] !== undefined && record[propertyName] !== null;
+}
+
+function isUnknownRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 /**
@@ -137,14 +143,39 @@ export function hasItems(jsonSchema: JSONSchema): jsonSchema is JSONSchema & {
     );
 }
 
-export function hasEnumValuesForItems(
-    json: JSONSchema
-): json is Extract<JSONSchema, Record<any, any>> & { items: { enum: any[] } } {
-    return hasProperty(json, 'items') && hasProperty(json.items, 'enum');
+export function isIndexType(value: unknown): value is IndexType;
+export function isIndexType(
+    value: unknown,
+    allowSymbol: true
+): value is IndexType;
+export function isIndexType(
+    value: unknown,
+    allowSymbol: false
+): value is IndexTypeWithoutSymbol;
+export function isIndexType(
+    value: unknown,
+    allowSymbol = true
+): value is IndexType {
+    return (
+        typeof value === 'number' ||
+        typeof value === 'string' ||
+        (allowSymbol && typeof value === 'symbol')
+    );
 }
 
-export function isInputType(value: any): value is InputOptions['format'] {
-    const validInputTypes: InputOptions['format'][] = [
+export function hasEnumValuesForItems(json: JSONSchema): json is JSONSchema & {
+    items: { enum: IndexTypeWithoutSymbol[] };
+} {
+    return (
+        hasProperty(json, 'items') &&
+        hasProperty(json.items, 'enum') &&
+        Array.isArray(json.items.enum) &&
+        json.items.enum.every((val) => isIndexType(val, false))
+    );
+}
+
+export function isInputType(value: unknown): value is InputOptions['format'] {
+    const validInputTypes: unknown[] = [
         'text',
         'time',
         'date',
@@ -161,7 +192,7 @@ export function isInputType(value: any): value is InputOptions['format'] {
 }
 
 export function isInputTypeWithoutHidden(
-    value: any
+    value: unknown
 ): value is InputTypeWithoutHidden {
     return isInputType(value) && value !== 'hidden';
 }
@@ -182,9 +213,11 @@ export function isIfThenAllOf(
     return Array.isArray(json) && json.every(isSupportedIfThenElse);
 }
 
-export function isSupportedIfCondition(
-    json: Record<string, any>
-): json is IfConditions {
+export function isSupportedIfCondition(json: unknown): json is IfConditions {
+    if (!isUnknownRecord(json)) {
+        return false;
+    }
+
     return (
         hasProperty(json, 'const') ||
         hasProperty(json, 'enum') ||
@@ -195,14 +228,16 @@ export function isSupportedIfCondition(
     );
 }
 
-function isSupportedIfProperty(json: Record<string, any>): boolean {
+function isSupportedIfProperty(json: unknown): json is IfProperty {
+    if (!isUnknownRecord(json)) {
+        return false;
+    }
+
     return (
         (hasProperty(json, 'properties') &&
+            isUnknownRecord(json.properties) &&
             Object.values(json.properties).every(
-                (value) =>
-                    typeof value === 'object' &&
-                    value !== null &&
-                    isSupportedIfPropertyOrCondition(value)
+                isSupportedIfPropertyOrCondition
             )) ||
         (hasProperty(json, 'items') &&
             isSupportedIfPropertyOrCondition(json.items)) ||
@@ -211,28 +246,38 @@ function isSupportedIfProperty(json: Record<string, any>): boolean {
 }
 
 function isSupportedIfPropertyOrCondition(
-    json: Record<string, any>
+    json: unknown
 ): json is IfConditions | IfProperty {
     return isSupportedIfCondition(json) || isSupportedIfProperty(json);
 }
 
-export function isSupportedIf(json: any): json is SupportedIfThenElse['if'] {
+export function isSupportedIf(
+    json: unknown
+): json is SupportedIfThenElse['if'] {
     return isSupportedIfProperty(json);
 }
 
 export function isSupportedThenOrElse(
-    json: any
-): json is SupportedIfThenElse['then'] | SupportedIfThenElse['else'] {
-    return typeof json === 'object' && json !== null && !Array.isArray(json);
+    json: unknown
+): json is
+    | NonNullable<SupportedIfThenElse['then']>
+    | NonNullable<SupportedIfThenElse['else']> {
+    return isUnknownRecord(json);
 }
 
-export function isSupportedIfThenElse(json: any): json is SupportedIfThenElse {
+export function isSupportedIfThenElse(
+    json: unknown
+): json is SupportedIfThenElse {
+    if (!isUnknownRecord(json)) {
+        return false;
+    }
+
     return (
         hasProperty(json, 'if') &&
-        isSupportedIf(json['if']) &&
+        isSupportedIf(json.if) &&
         'then' in json &&
-        isSupportedThenOrElse(json['then']) &&
-        ('else' in json ? isSupportedThenOrElse(json['else']) : true)
+        isSupportedThenOrElse(json.then) &&
+        ('else' in json ? isSupportedThenOrElse(json.else) : true)
     );
 }
 

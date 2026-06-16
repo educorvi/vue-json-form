@@ -7,6 +7,10 @@ permissions:
     pages: write
     id-token: write
 
+concurrency:
+  group: docs
+  cancel-in-progress: true
+
 jobs:
     # Build job
     build-doc:

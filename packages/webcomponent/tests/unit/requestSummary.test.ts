@@ -10,14 +10,16 @@ import {
 } from 'vitest';
 import { requestSummary } from '../../src/vueComponentCommons';
 import { AiMockServer } from '../mock-server/ai-mock-server';
+import { createPdfBlob } from '../fixtures/pdf';
 
 // Single shared server for all tests in this file
 let server: AiMockServer;
 let baseUrl: string;
+let validPdf: Blob;
 
 beforeAll(async () => {
     server = new AiMockServer();
-    baseUrl = await server.start();
+    [baseUrl, validPdf] = await Promise.all([server.start(), createPdfBlob()]);
 });
 
 afterAll(() => server.stop());
@@ -41,7 +43,7 @@ describe('requestSummary – SSE logging', () => {
     it('logs a progress line for every progress event', async () => {
         await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -55,7 +57,7 @@ describe('requestSummary – SSE logging', () => {
     it('logs the result event', async () => {
         await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -67,7 +69,7 @@ describe('requestSummary – SSE logging', () => {
     it('logs stage and status in progress lines', async () => {
         await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -85,7 +87,7 @@ describe('requestSummary – SSE logging', () => {
     it('includes page counts in progress lines for paged stages', async () => {
         await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -98,7 +100,7 @@ describe('requestSummary – SSE logging', () => {
     it('includes the optional message field when present', async () => {
         await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -108,7 +110,7 @@ describe('requestSummary – SSE logging', () => {
     it('returns the summary text from the result event', async () => {
         const result = await requestSummary(
             `${baseUrl}/ai/summary`,
-            new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
+            validPdf,
             'claim-summary'
         );
 
@@ -127,11 +129,7 @@ describe('requestSummary – SSE logging', () => {
         const url = await errServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('PDF too large');
 
         await errServer.stop();
@@ -151,11 +149,7 @@ describe('requestSummary – SSE logging', () => {
         const url = await errServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('Internal server error');
 
         await errServer.stop();
@@ -173,11 +167,7 @@ describe('requestSummary – SSE logging', () => {
         const url = await noResultServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                new Blob(['%PDF-1.4'], { type: 'application/pdf' }),
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('No result event received');
 
         await noResultServer.stop();

@@ -1,14 +1,13 @@
 import { isArray } from '@/computedProperties/json.ts';
 import { isArrayItemKey } from '@/Commons.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 /**
  * Get the array alias indices.
  * @param obj - The form data
+ * @param formId - The form id
  */
-export function getArrayAliasIndices(
-    obj: Readonly<Record<string, any>>,
-    formId: string
-) {
+export function getArrayAliasIndices(obj: Readonly<FormData>, formId: string) {
     const arrayIndices: Map<string, number> = new Map();
     const arrays = new Set<string>();
     for (const [key, value] of Object.entries(obj)) {

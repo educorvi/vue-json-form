@@ -15,16 +15,9 @@
             <component
                 :is="controlType"
                 :name="formStructureMapped.uiElement.scope"
-                :disabled="formStructureMapped.uiElement.options?.disabled"
+                :disabled="getOption(formStructureMapped.uiElement, 'disabled')"
                 :placeholder="
-                    formStructureMapped.uiElement.options?.placeholder
-                "
-                :autocomplete="
-                    getOption(
-                        formStructureMapped.uiElement,
-                        'autocomplete',
-                        'on'
-                    )
+                    getOption(formStructureMapped.uiElement, 'placeholder')
                 "
                 :required="required || inArrayItem"
                 :style="style"
@@ -50,9 +43,13 @@
 import type {
     Control,
     DescendantControlOverrides,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getOption } from '@/renderings/renderHelpers/utilities.ts';
+import {
+    getHtmlMessages,
+    getOption,
+} from '@/renderings/renderHelpers/utilities.ts';
 import {
     computed,
     inject,
@@ -82,7 +79,6 @@ import {
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
-import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
@@ -134,8 +130,11 @@ const savePath =
 
 const mappers: Ref<Mapper[]> = ref([]);
 
-const formStructureMapped = ref({
-    jsonElement: jsonElement.value || ({} as Record<string, any>),
+const formStructureMapped: Ref<{
+    jsonElement: JSONSchema;
+    uiElement: Control;
+}> = ref({
+    jsonElement: jsonElement.value || ({} as JSONSchema),
     uiElement: props.layoutElement,
 });
 
@@ -223,24 +222,9 @@ onMounted(() => {
     mapFormStructure();
 });
 
-const htmlMessages = computed(() => {
-    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
-    const layoutElement = formStructureMapped.value.uiElement;
-    if (layoutElement.options?.preHtml) {
-        messages.pre = {
-            type: 'HTML',
-            htmlData: layoutElement.options.preHtml,
-        };
-    }
-    if (layoutElement.options?.postHtml) {
-        messages.post = {
-            type: 'HTML',
-            htmlData: layoutElement.options.postHtml,
-        };
-    }
-
-    return messages;
-});
+const htmlMessages = computed(() =>
+    getHtmlMessages(formStructureMapped.value.uiElement)
+);
 
 const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
 const required = getComputedRequired(mappedUiElement);
