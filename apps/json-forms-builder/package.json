@@ -35,10 +35,10 @@
         "pg": "^8.20.0",
         "primeicons": "^7.0.0",
         "primevue": "^4.5.5",
-        "turbo": "^2.9.6",
+        "turbo": "^2.9.18",
         "typeorm": "^0.3.28",
-        "vue": "^3.5.32",
-        "vue-router": "^5.0.4",
+        "vue": "^3.5.35",
+        "vue-router": "^5.1.0",
         "zod": "^4",
         "zod-openapi": "^5.4.6"
     },
