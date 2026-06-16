@@ -1,0 +1,1456 @@
+openapi: 3.1.0
+info:
+  title: Form Builder API
+  description: |
+    API for the vue_form_builder tool. All elements are organized within groups. Groups can contain groups again or forms. For both forms and groups, permissions for users and other groups can be set.
+
+    ## List endpoints
+    - `pagination`: All list endpoints support offset pagination via `page` and `page_size`. They return a `page` metadata wrapper which includes `page`, `page_size`, `total_count` and `total pages` as wel as `data` with the data of the resource itself.
+    - `sort_order`: Sort order can be set to ascending (`asc`) or descending (`desc`) via the `sort_order` query parameter. The default is `desc`.
+    - `search`: Full-text search via the `search` query parameter. The search is applied to relevant text fields of the resource (e.g. title, email, name).
+    - `ordering`: All list endpoints support ordering by specific fields via the `order_by` query parameter. The allowed fields depend on the resource type but generally include common fields like `created`, `updated`, `title` as well as some resource-specific fields (e.g. `member_count` for groups).
+    - `filters`: For some endpoints, additional filters are available to narrow down results (e.g. filter permissions by `scope` or `type`). When multiple filters are set, all of them need to match for an element to be included in the results (logical AND).
+
+    ## Group hierarchy
+    - groups form a tree. `GET /groups` and `GET /groups/{id}` both return group
+    summaries (metadata + stats) **without** child elements.
+    - use the dedicated
+    `GET /groups/{id}/children` endpoint to retrieve the paginated, filterable list
+    of direct children (sub-groups and forms) as well as permissions
+    - all `{id}` path parameters for groups and forms accept either:
+      - an integer ID (e.g. `42`), or
+      - a URL-encoded full path (e.g. `my-project%2Fsub-group`).
+
+    ## Permissions
+    Permissions for projects and forms have two different scopes:
+    - `direct` — explicitly granted on the resource itself
+    - `inherited` — propagated from a parent group
+    - subgroups can only extend the permissions of a parent group, not restrict them. For example, if a user has `editor` access on a parent group, they will have at least `editor` access on all child groups and forms. The child elements can then grant additional permissions (e.g. `owner`) to the user, but they cannot revoke the inherited `editor` access by defining `guest`` access.
+
+    ## TODO
+    - Deletion of groups: Allow if subgroups exist? At least a warning should be set in the UI
+
+  version: 1.0.0
+  contact: {}
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Status
+    description: Health and readiness checks
+  - name: Users
+    description: User management
+  - name: Groups
+    description: Group hierarchy management
+  - name: Forms
+    description: Form management
+  # - name: Permissions
+  #   description: Permission management for forms and groups
+
+# All endpoints require authentication by default; /status overrides with security: []
+security:
+  - OidcAuth: []
+
+# ---------------------------------------------------------------------------
+# PATHS
+# ---------------------------------------------------------------------------
+paths:
+
+  # ── STATUS ────────────────────────────────────────────────────────────────
+
+  /status:
+    get:
+      tags: [Status]
+      summary: Health check
+      operationId: getStatus
+      security: []  # public endpoint — overrides global OidcAuth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+
+  # ── USERS ─────────────────────────────────────────────────────────────────
+
+  /users:
+    post:
+      tags: [Users]
+      summary: Create a user
+      operationId: createUser
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    get:
+      tags: [Users]
+      summary: List users
+      description: Returns a paginated, searchable and filterable list of users.
+      operationId: listUsers
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: order_by
+          in: query
+          description: Field to order by
+          schema:
+            type: string
+            enum: [id, name, email, created, last_activity, role]
+            default: last_activity
+        # - name: filter_role
+        #   in: query
+        #   description: Filter by global role
+        #   schema:
+        #     $ref: '#/components/schemas/GlobalRole'
+      responses:
+        '200':
+          description: Paginated list of users
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+
+  # ── GROUPS ───────────────────────────────────────────────────────────────
+
+  /groups-hierarchy:
+    get:
+      tags: [Groups]
+      summary: List group hierarchy
+      description: |
+        Returns the entire group hierarchy as a nested tree structure. This endpoint is not paginated and does not support search or filters. Use `GET /groups` to retrieve a paginated list of groups without child elements.
+      operationId: listGroupHierarchy
+      responses:
+        '200':
+          description: Group hierarchy as nested tree
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupHierarchyNode'
+
+  /groups:
+    get:
+      tags: [Groups]
+      summary: List groups
+      description: |
+        Returns group summaries at the requested level of the hierarchy.
+        Child elements are **not** included — use `GET /groups/{id}/children`.
+        - Omit `parent` to receive **root** groups (top-level).
+        - Provide `parent` (ID or path) to receive direct children of that group.
+      operationId: listGroups
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: order_by
+          in: query
+          description: Field to order by.
+          schema:
+            type: string
+            enum: [id, title, parent_path, created, updated, member_count, form_count, group_count]
+            default: title
+        - name: filter_parent_group
+          in: query
+          description: |
+            Integer ID **or** URL-encoded full path of the group. Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of group summaries
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Group'
+    post:
+      tags: [Groups]
+      summary: Create a group
+      operationId: createGroup
+      parameters:
+        - name: parent
+          in: query
+          description: |
+            ID or URL-encoded path of the parent group. Omit to create a root-level group.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '201':
+          description: Group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /groups/{id}:
+    parameters:
+      - $ref: '#/components/parameters/GroupIdOrPath'
+    get:
+      tags: [Groups]
+      summary: Get a group
+      description: |
+        Returns group metadata and stats. Child elements and permissions are not included and can be retrieved by their respective endpoints.
+      operationId: getGroup
+      responses:
+        '200':
+          description: Group summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Groups]
+      summary: Replace a group
+      description: Full replacement of all writable fields.
+      operationId: replaceGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          description: Group replaced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Groups]
+      summary: Partially update a group
+      operationId: updateGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPatch'
+      responses:
+        '200':
+          description: Group updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Groups]
+      summary: Delete a group
+      operationId: deleteGroup
+      responses:
+        '204':
+          description: Group deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /groups/{id}/children:
+    parameters:
+      - $ref: '#/components/parameters/GroupIdOrPath'
+    get:
+      tags: [Groups]
+      summary: List children of a group
+      description: |
+        Returns a paginated list of direct children (sub-groups and/or forms) for the
+        given group.
+      operationId: listGroupChildren
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: order_by
+          in: query
+          description: Field to order by
+          schema:
+            type: string
+            enum: [type, title, created, updated]
+            default: title
+        - $ref: '#/components/parameters/ChildTypeFilter'
+
+      responses:
+        '200':
+          description: Paginated list of group elements
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/GroupElement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /groups/{id}/permissions:
+    parameters:
+      - $ref: '#/components/parameters/GroupIdOrPath'
+    get:
+      tags: [Groups]
+      summary: List permissions for a group
+      description: |
+        Returns a paginated list of permissions (both user and group permissions).
+        Each element is identified by the `type` discriminator field.
+        Use `scope` to filter between directly assigned and inherited permissions.
+        Use `type` (repeatable) to filter by subject type.
+      operationId: listGroupPermissions
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: order_by
+          in: query
+          description: Field to order by
+          schema:
+            type: string
+            enum: [created, updated, expire, role, name, email, scope, type]
+            default: lastname
+        - $ref: '#/components/parameters/PermissionScopeFilter'
+        - $ref: '#/components/parameters/PermissionTypeFilter'
+
+      responses:
+        '200':
+          description: Paginated permission list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [elements]
+                    properties:
+                      elements:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PermissionElement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Groups]
+      summary: Add a permission to a group
+      description: Grant a user or group a role. Exactly one of `user` or `group` must be set.
+      operationId: createGroupPermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionElement'
+      responses:
+        '201':
+          description: Permission created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionElement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /groups/{id}/permissions/{permissionId}:
+    parameters:
+      - $ref: '#/components/parameters/GroupIdOrPath'
+      - $ref: '#/components/parameters/PermissionId'
+    patch:
+      tags: [Groups]
+      summary: Update a permission on a group
+      description: Works for both user and group permissions. Identify the entry by its `id` returned when the permission was created.
+      operationId: patchGroupPermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionMeta'
+      responses:
+        '200':
+          description: Permission updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionElement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Groups]
+      summary: Remove a permission from a group
+      operationId: deleteGroupPermission
+      responses:
+        '204':
+          description: Permission removed
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── FORMS ─────────────────────────────────────────────────────────────────
+
+  /forms:
+    get:
+      tags: [Forms]
+      summary: List forms
+      description: Returns forms without schema content. Filter by group to scope results. Searches recursively within the specified group and all its sub-groups.
+      operationId: listForms
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: filter_parent_group
+          in: query
+          description: |
+            Integer ID **or** URL-encoded full path of the group. Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+          schema:
+            type: string
+        - name: order_by
+          in: query
+          description: Field to order by.
+          schema:
+            type: string
+            enum: [id, title, created, updated]
+            default: title
+      responses:
+        '200':
+          description: Paginated list of forms (no schema included)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Form'
+    post:
+      tags: [Forms]
+      summary: Create a form
+      description: |
+        Creates a new form. Optionally supply `schema.json` and `schema.ui` to
+        create the first revision in the same request.
+      operationId: createForm
+      parameters:
+        - $ref: '#/components/parameters/GroupIdOrPathQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Form'
+      responses:
+        '201':
+          description: Form created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /forms/{id}:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: Get a form
+      description: Returns form metadata. Schema is not included — use `/forms/{id}/schema`.
+      operationId: getForm
+      responses:
+        '200':
+          description: Form details (no schema)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Forms]
+      summary: Replace a form
+      description: |
+        Full replacement of all writable fields. Supply `schema.json` and/or
+        `schema.ui` to create a new revision.
+      operationId: replaceForm
+      parameters:
+        - $ref: '#/components/parameters/GroupIdOrPathQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Form'
+      responses:
+        '200':
+          description: Form replaced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Forms]
+      summary: Partially update a form
+      description: |
+        Updates only the provided fields. Supply `schema.json` and/or `schema.ui`
+        to create a new revision from the current one.
+      operationId: updateForm
+      parameters:
+        - $ref: '#/components/parameters/GroupIdOrPathQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormPatch'
+      responses:
+        '200':
+          description: Form updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Forms]
+      summary: Delete a form
+      operationId: deleteForm
+      responses:
+        '204':
+          description: Form deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /forms/{id}/versions:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: List versions of a form
+      description: Returns all revisions ordered by version descending. Schema content is not included.
+      operationId: listFormVersions
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/SortOrder'
+      responses:
+        '200':
+          description: Paginated list of form revisions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/FormVersionRef'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Forms]
+      summary: Create a new form version
+      description: |
+        Creates a new version for the form. The `version` in the request body must
+        be strictly higher than the current latest version — this is validated by the
+        backend (422 is returned when the version is not higher). Any schema fields
+        omitted are inherited from the current latest version.
+      operationId: createFormVersion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormVersionRef'
+      responses:
+        '201':
+          description: Version created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormVersionRef'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /forms/{id}/schema:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: Get the latest schema for a form
+      description: Returns the JSON Schema and UI Schema for the most recent revision.
+      operationId: getFormLatestSchema
+      responses:
+        '200':
+          description: JSON Schema and UI Schema for the latest revision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormVersion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /forms/{id}/schema/{version}:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+      - name: version
+        in: path
+        required: true
+        description: Semantic version string (e.g. `1.2.0`)
+        schema:
+          type: string
+          examples: ['1.2.0']
+    get:
+      tags: [Forms]
+      summary: Get the schema for a specific form version
+      operationId: getFormSchemaByVersion
+      responses:
+        '200':
+          description: JSON Schema and UI Schema for the specified version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormVersion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /forms/{id}/permissions:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: List permissions for a form
+      description: |
+        Returns a paginated list of permissions (both user and group permissions).
+        Each element is identified by the `type` discriminator field.
+        Use `scope` to filter between directly assigned and inherited permissions.
+        Use `type` (repeatable) to filter by subject type.
+      operationId: listFormPermissions
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/SortOrder'
+        - name: sortBy
+          in: query
+          description: Field to sort by
+          schema:
+            type: string
+            enum: [created, expire, role, name, scope, type]
+            default: name
+        - $ref: '#/components/parameters/PermissionScopeFilter'
+        - $ref: '#/components/parameters/PermissionTypeFilter'
+      responses:
+        '200':
+          description: Paginated permission list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedMeta'
+                  - type: object
+                    required: [elements]
+                    properties:
+                      elements:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PermissionElement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Forms]
+      summary: Add a permission to a form
+      description: Grant a user or group a role. Exactly one of `user` or `group` must be set.
+      operationId: createFormPermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionElement'
+      responses:
+        '201':
+          description: Permission created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionElement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /forms/{id}/permissions/{permissionId}:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+      - $ref: '#/components/parameters/PermissionId'
+    patch:
+      tags: [Forms]
+      summary: Update a permission on a form
+      description: Works for both user and group permissions. Identify the entry by its `id` returned when the permission was created.
+      operationId: patchFormPermission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionMeta'
+      responses:
+        '200':
+          description: Permission updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionElement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Forms]
+      summary: Remove a permission from a form
+      operationId: deleteFormPermission
+      responses:
+        '204':
+          description: Permission removed
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+# ---------------------------------------------------------------------------
+# COMPONENTS
+# ---------------------------------------------------------------------------
+components:
+
+  # ── SECURITY SCHEMES ──────────────────────────────────────────────────────
+  securitySchemes:
+    OidcAuth:
+      type: openIdConnect
+      # Set NUXT_OAUTH_KEYCLOAK_SERVER_URL and NUXT_OAUTH_KEYCLOAK_REALM in .env
+      openIdConnectUrl: http://localhost:8080/realms/dev/.well-known/openid-configuration
+
+  # ── PARAMETERS ────────────────────────────────────────────────────────────
+  parameters:
+
+    GroupIdOrPath:
+      name: id
+      in: path
+      required: true
+      description: |
+        Integer ID **or** URL-encoded full path of the group.
+        Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+      schema:
+        type: string
+
+    FormIdOrPath:
+      name: id
+      in: path
+      required: true
+      description: |
+        Integer ID **or** URL-encoded full path of the form.
+        Examples: `99` or `projects%2Fmarketing%2Fmy-form`
+      schema:
+        type: string
+
+    PermissionId:
+      name: permissionId
+      in: path
+      required: true
+      description: ID of the permission entry (returned when the permission was created)
+      schema:
+        type: integer
+        minimum: 1
+
+    Page:
+      name: page
+      in: query
+      description: Page number (1-based)
+      examples:
+        first:
+          value: 1
+        second:
+          value: 2
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PageSize:
+      name: page_size
+      in: query
+      description: Number of items per page
+      examples:
+        small:
+          value: 10
+        medium:
+          value: 20
+        large:
+          value: 100
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    Search:
+      name: search
+      in: query
+      description: Full-text search query applied to relevant text fields
+      schema:
+        type: string
+        maxLength: 200
+
+    SortOrder:
+      name: sort_order
+      in: query
+      description: Sort direction
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+
+    PermissionScopeFilter:
+      name: filter_scope
+      in: query
+      description: Filter by permission scope. Omit to return both direct and inherited. Since values are exclusive, multiple values can be supplied to return both types (logical OR).
+      schema:
+        type: array
+        items:
+          type: string
+          enum: [direct, inherited]
+
+    PermissionTypeFilter:
+      name: filter_type
+      in: query
+      description: |
+        Filter by permission subject type. Omit to return both users and groups. Since values are exclusive, multiple values can be supplied to return both types (logical OR).
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum: [user, group]
+
+    ChildTypeFilter:
+      name: type
+      in: query
+      description: |
+        Filter by element type. Omit to return both groups and forms. Since values are exclusive, multiple values can be supplied to return both types (logical OR).
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum: [group, form]
+
+    # Could also be implemented by using a path parameter for form operations
+    GroupIdOrPathQuery:
+      name: id
+      in: query
+      required: true
+      description: |
+        Integer ID **or** URL-encoded full path of the group.
+        Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+      schema:
+        type: string
+
+  # ── RESPONSES ─────────────────────────────────────────────────────────────
+  responses:
+
+    BadRequest:
+      description: The request body or query parameters are invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: The requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Conflict:
+      description: A conflicting resource already exists (e.g. duplicate permission)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    UnprocessableEntity:
+      description: Semantic validation failed (e.g. referential integrity)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  # ── SCHEMAS ───────────────────────────────────────────────────────────────
+  schemas:
+
+    # ── Enums ────────────────────────────────────────────────────────────────
+
+    GlobalRole:
+      type: string
+      enum: [admin, user]
+      description: System-wide role assigned to a user
+
+    ElementRole:
+      type: string
+      enum: [owner, editor, guest]
+      description: Permission level on a specific form or group
+
+    PermissionScope:
+      type: string
+      enum: [direct, inherited]
+      readOnly: true
+      description: |
+        Whether this permission was granted directly on the resource (`direct`) or
+        propagated from a parent group (`inherited`).
+
+    # ── Shared mixins ────────────────────────────────────────────────────────
+
+    # Server-managed audit timestamps (deleted is never exposed via the API)
+    Timestamps:
+      type: object
+      required: [created, updated]
+      properties:
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+
+    # Metadata about the creation and last update of a resource, including user references and timestamps
+    ResourceModification:
+      type: object
+      readOnly: true
+      required: [created_by, updated_by]
+      properties:
+        created_by:
+          allOf:
+            - $ref: '#/components/schemas/UserRef'
+            - type: object
+              required: [timestamp]
+              properties:
+                timestamp:
+                  type: string
+                  format: date-time
+                  readOnly: true
+        updated_by:
+          allOf:
+            - $ref: '#/components/schemas/UserRef'
+            - type: object
+              required: [timestamp]
+              properties:
+                timestamp:
+                  type: string
+                  format: date-time
+                  readOnly: true
+
+    # Envelope for paginated list responses
+    PaginatedMeta:
+      type: object
+      required: [page, page_size, total_count, total_pages]
+      properties:
+        page:
+          type: integer
+          description: Current page (1-based)
+        page_size:
+          type: integer
+          description: Items per page
+        total_count:
+          type: integer
+          description: Total number of matching items across all pages
+        total_pages:
+          type: integer
+          description: Total number of pages
+
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: Human-readable error summary
+        code:
+          type: string
+          description: Machine-readable error code
+        errors:
+          type: array
+          description: Field-level validation errors
+          items:
+            type: object
+            required: [field, message]
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+    StatusResponse:
+      type: object
+      required: [status, version, timestamp]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded, error]
+        version:
+          type: string
+          examples: ['1.0.0']
+        timestamp:
+          type: string
+          format: date-time
+
+    ParentPath:
+      type: array
+      items:
+        $ref: '#/components/schemas/ParentPathEntry'
+
+    ParentPathEntry:
+      type: object
+      description: An entry in the parent path, representing a single ancestor group
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        path_segment:
+          type: string
+        id:
+          type: integer
+
+
+    # ── User ────────────────────────────────────────────────────────────────
+
+    # Lightweight user reference embedded inside permission responses
+    UserShared:
+      type: object
+      required: [id, name, email]
+      readOnly: true
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          description: Full name of the user (e.g. "Jane Doe")
+        email:
+          type: string
+          format: email
+          readOnly: true
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserShared'
+        - type: object
+          required: [id, name, email, role]
+          properties:
+            role:
+              $ref: '#/components/schemas/GlobalRole'
+            # last_activity:
+            #   type: string
+            #   format: date-time
+            #   readOnly: true
+            #   description: Timestamp of the user's most recent API activity
+        - $ref: '#/components/schemas/Timestamps'
+
+    UserRef:
+      allOf:
+        - $ref: '#/components/schemas/UserShared'
+        - type: object
+          required: [id, name, email]
+
+    # ── Group ───────────────────────────────────────────────────────────────
+
+    GroupHierarchyNode:
+      type: object
+      required: [id, name, title]
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+          description: Unique name of the group within its parent, used for path generation.
+        title:
+          type: string
+          maxLength: 255
+          description: Display name of the group
+        children:
+          type:
+            - array
+            - "null"
+          description: Direct child groups and forms
+          items:
+            $ref: '#/components/schemas/GroupHierarchyNode'
+
+
+    GroupShared:
+      type: object
+      required: [id, member_count]
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+          description: Unique name of the group within its parent, used for path generation.
+        title:
+          type: string
+          maxLength: 255
+          description: Display name of the group
+        member_count:
+          type: integer
+          readOnly: true
+          description: Number of users with a direct permission on this group
+
+    GroupPatch:
+      allOf:
+        - $ref: '#/components/schemas/GroupShared'
+        - type: object
+          required: [group_count, form_count, parent_path, parent_id]
+          properties:
+            description:
+              type:
+                - string
+                - "null"
+            group_count:
+              type: integer
+              readOnly: true
+              description: Number of direct child groups
+            form_count:
+              type: integer
+              readOnly: true
+              description: Number of direct forms
+            parent_path:
+              anyOf:
+                - $ref: '#/components/schemas/ParentPath'
+                - type: "null"
+              readOnly: true
+              description: Full parent path of the group
+              # examples: ['educorvi/internal/parent_group']
+            parent_id:
+              type:
+                - integer
+                - "null"
+              readOnly: true
+              description: ID of the parent group, or null if this is a root-level group
+            permissions:
+              type:
+                - array
+                - "null"
+              writeOnly: true
+              description: Optional permissions to assign at creation time.
+              items:
+                $ref: '#/components/schemas/PermissionElement'
+        - $ref: '#/components/schemas/ResourceModification'
+
+    # Lightweight group reference embedded inside permission responses
+    GroupRef:
+      allOf:
+        - $ref: '#/components/schemas/GroupShared'
+        - type: object
+          required: [name, title]
+
+    Group:
+      allOf:
+        - $ref: '#/components/schemas/GroupPatch'
+      type: object
+      required: [name, title, description, permissions]
+
+    # Child elements within a group need to be differentiated with a discriminator
+
+    ## A child group item in the children list
+    ChildGroup:
+      allOf:
+        - type: object
+          required: [type]
+          properties:
+            type:
+              type: string
+              enum: [group]
+        - $ref: '#/components/schemas/Group'
+
+    ## A form item in the children list
+    ChildForm:
+      allOf:
+        - type: object
+          required: [type]
+          properties:
+            type:
+              type: string
+              enum: [form]
+        - $ref: '#/components/schemas/Form'
+
+    ## Discriminated union returned by GET /groups/{id}/children
+    GroupElement:
+      oneOf:
+        - $ref: '#/components/schemas/ChildGroup'
+        - $ref: '#/components/schemas/ChildForm'
+      discriminator:
+        propertyName: type
+        mapping:
+          group: '#/components/schemas/ChildGroup'
+          form: '#/components/schemas/ChildForm'
+
+    # ── Form ─────────────────────────────────────────────────────────────────
+
+    FormPatch:
+      allOf:
+        - type: object
+          required: [id, parent_path, parent_id]
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            title:
+              type: string
+              maxLength: 255
+              description: Display name of the form
+            description:
+              type:
+                - string
+                - "null"
+              description: Description of the form
+            parent_path:
+              anyOf:
+                - $ref: '#/components/schemas/ParentPath'
+                - type: "null"
+              readOnly: true
+              description: Full parent path of the form
+              # examples: ['educorvi/internal/parent_group']
+            parent_id:
+              type:
+                - integer
+                - "null"
+              readOnly: true
+              description: ID of the parent group, or null if this is a root-level group
+            permissions:
+              type:
+                - array
+                - "null"
+              writeOnly: true
+              description: Optional permissions to assign at creation time.
+              items:
+                $ref: '#/components/schemas/PermissionElement'
+            schema:
+              writeOnly: true
+              allOf:
+                - $ref: '#/components/schemas/FormSchemaPayload'
+        - $ref: '#/components/schemas/ResourceModification'
+
+    Form:
+      allOf:
+        - $ref: '#/components/schemas/FormPatch'
+      required: [title, description, permissions, schema]
+
+    # Schema payload for read operations (GET /forms/{id}/schema)
+    FormSchemaPayloadPatch:
+      type:
+        - object
+        - "null"
+      description: Schema definitions returned from the schema endpoint.
+      properties:
+        json:
+          type:
+            - object
+            - "null"
+          description: JSON Schema (Draft-07 or later) defining the data model
+          additionalProperties: true
+        ui:
+          type:
+            - object
+            - "null"
+          description: UI Schema controlling how the form is rendered
+          additionalProperties: true
+      additionalProperties: false
+
+    FormSchemaPayload:
+      allOf:
+        - $ref: '#/components/schemas/FormSchemaPayloadPatch'
+      required: [json, ui]
+
+
+    # ── Form Revision ────────────────────────────────────────────────────────
+
+    FormVersionRef:
+      allOf:
+        - type: object
+          required: [version, comment]
+          properties:
+            version:
+              type: string
+              description: Version string for the new revision (e.g. `2.0.0`). Must be higher than the current latest version.
+              examples: ['2.0.0']
+            comment:
+              type: string
+              description: Comment describing the changes in this revision
+        - $ref: '#/components/schemas/FormSchemaPayload'
+        - $ref: '#/components/schemas/ResourceModification'
+
+    FormVersion:
+      allOf:
+        - $ref: '#/components/schemas/FormVersionRef'
+        - $ref: '#/components/schemas/FormSchemaPayload'
+
+    # ── Permission ───────────────────────────────────────────────────────────
+
+    # Shared read-only metadata on every permission entry
+    PermissionMeta:
+      allOf:
+        # - $ref: '#/components/schemas/PermissionWritable'
+        - type: object
+          required: [id, scope, expired]
+          properties:
+            id:
+              type: integer
+              readOnly: true
+              description: Unique identifier for this permission entry
+            scope:
+              $ref: '#/components/schemas/PermissionScope'
+            expired:
+              type: boolean
+              readOnly: true
+              description: True when `expire` is set and the date has passed
+            role:
+              $ref: '#/components/schemas/ElementRole'
+            expire:
+              type: string
+              format: date
+              description: Optional expiry date after which the permission is no longer active
+        - $ref: '#/components/schemas/ResourceModification'
+
+    UserPermission:
+      allOf:
+        - $ref: '#/components/schemas/PermissionMeta'
+        - type: object
+          required: [type, user]
+          properties:
+            type:
+              type: string
+              enum: [user]
+            user:
+              allOf:
+                - $ref: '#/components/schemas/UserRef'
+              readOnly: true
+            user_id:
+              type: integer
+              writeOnly: true
+              description: ID of the user this permission applies to
+
+    GroupPermission:
+      allOf:
+        - $ref: '#/components/schemas/PermissionMeta'
+        - type: object
+          required: [type, group]
+          properties:
+            type:
+              type: string
+              enum: [group]
+            group:
+              allOf:
+                - $ref: '#/components/schemas/GroupRef'
+              readOnly: true
+            group_id:
+              type: integer
+              writeOnly: true
+              description: ID of the group this permission applies to
+
+    # Discriminated union returned by list and write permission endpoints
+    PermissionElement:
+      oneOf:
+        - $ref: '#/components/schemas/UserPermission'
+        - $ref: '#/components/schemas/GroupPermission'
+      discriminator:
+        propertyName: type
+        mapping:
+          user: '#/components/schemas/UserPermission'
+          group: '#/components/schemas/GroupPermission'

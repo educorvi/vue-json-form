@@ -156,3 +156,6 @@ dist
 playwright-report/
 test-results/
 playwright/.cache/
+
+packages/vue-form-builder
+packages/vue-form-builder-webcomponent
