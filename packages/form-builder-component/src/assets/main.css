@@ -1,0 +1,148 @@
+/* Prevent document-level scrolling */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+#app {
+    height: 100%;
+}
+
+/* Canvas element selection styles */
+.canvas-element-wrapper {
+    position: relative;
+}
+
+.canvas-element-wrapper.selected > .canvas-element-inner {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.canvas-element-wrapper:not(.selected):hover > .canvas-element-inner {
+    outline: 2px dashed var(--bs-primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.drag-handle {
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+    border: 2px dashed var(--bs-primary);
+    border-radius: 6px;
+}
+
+.sortable-chosen {
+    opacity: 0.9;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 3px;
+}
+
+/* Utility helpers not in Bootstrap */
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.overflow-y-auto {
+    overflow-y: auto !important;
+}
+
+.cursor-col-resize {
+    cursor: col-resize;
+}
+
+.resize-handle {
+    width: 4px;
+    background-color: #dee2e6;
+    cursor: col-resize;
+    flex-shrink: 0;
+    transition: background-color 0.15s;
+}
+
+.resize-handle:hover {
+    background-color: var(--bs-primary);
+}
+
+[data-bs-theme='dark'] .resize-handle {
+    background-color: #495057;
+}
+
+[data-bs-theme='dark'] .resize-handle:hover {
+    background-color: var(--bs-primary);
+}
+
+/* Palette item */
+.palette-item {
+    cursor: grab;
+    transition: border-color 0.15s, background-color 0.15s, transform 0.1s;
+    user-select: none;
+}
+
+.palette-item:active {
+    transform: scale(0.95);
+}
+
+/* Code block */
+pre.code-block {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    overflow: auto;
+    max-height: 24rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+}
+
+/* App header */
+.app-header {
+    height: 40px;
+    flex-shrink: 0;
+    z-index: 1030;
+}
+
+/* Canvas preview area - disable pointer events */
+.canvas-preview {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Small font utility */
+.font-mono {
+    font-family: monospace;
+}
+
+/* Form title input in toolbar - transparent border until focused */
+.form-control-transparent {
+    width: 10rem;
+    border-color: transparent;
+}
+
+.form-control-transparent:hover {
+    border-color: #dee2e6;
+}
+
+.form-control-transparent:focus {
+    border-color: #86b7fe;
+}
