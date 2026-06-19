@@ -6,11 +6,11 @@
         "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@vueuse/core": "^14.3.0",
-        "axios": "^1.17.0",
-        "bootstrap-vue-next": "0.45.5",
+        "axios": "^1.18.0",
+        "bootstrap-vue-next": "0.45.6",
         "js-cookie": "^3.0.8",
         "unplugin-icons": "^23.0.1",
-        "vue": "^3.5.35",
+        "vue": "^3.5.38",
         "vue-markdown-render": "^2.3.1"
     },
     "devDependencies": {
