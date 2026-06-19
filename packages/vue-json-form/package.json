@@ -6,7 +6,7 @@
         "name": "Julian Pollinger"
     },
     "dependencies": {
-        "@educorvi/rita": "^5.5.1",
+        "@educorvi/rita": "^6.0.0",
         "@educorvi/vue-json-form-schemas": "workspace:^",
         "@vueuse/core": "^14.3.0",
         "bootstrap": "^5.3.8",
