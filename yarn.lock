@@ -831,15 +831,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@educorvi/rita@npm:^6.0.0-beta.2":
-  version: 6.0.0-beta.2
-  resolution: "@educorvi/rita@npm:6.0.0-beta.2"
+"@educorvi/rita@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@educorvi/rita@npm:6.0.0"
   dependencies:
     ajv: "npm:8.18.0"
     ajv-formats: "npm:^2.1.1"
     dayjs: "npm:^1.11.20"
     tslib: "npm:^2.8.1"
-  checksum: 10/3d8feb25a988955ff99ccd73274cbb9cf1bb74e916bff234c1466a710b8108065fc45735c9ce91498747de81279dd42b76111eba0809b4e5313f17c12ec62a72
+  checksum: 10/2b793cd7beb964f5f02da9cbccd1ca896071859abd9fe526f0d338f54f2d4085f5807f32bf83309e9c9b492b4bcc7676f16e3b8303c05b36dae7b5f9ffe18654
   languageName: node
   linkType: hard
 
@@ -945,7 +945,7 @@ __metadata:
   resolution: "@educorvi/vue-json-form@workspace:packages/vue-json-form"
   dependencies:
     "@axe-core/playwright": "npm:^4.11.3"
-    "@educorvi/rita": "npm:^6.0.0-beta.2"
+    "@educorvi/rita": "npm:^6.0.0"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-schemas": "workspace:^"
     "@playwright/test": "npm:^1.60.0"
