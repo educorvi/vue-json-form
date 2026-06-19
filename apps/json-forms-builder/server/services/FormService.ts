@@ -15,6 +15,7 @@ import {
 } from '~~/server/utils/helpers';
 import type { PaginationParams } from '~~/server/utils/helpers';
 import { ErrorCode } from '~~/server/models/errors';
+import { User } from '#server/db/entities/User';
 
 export class FormService {
     private readonly formRepo: Repository<Form>;
@@ -104,7 +105,7 @@ export class FormService {
         version: number,
         schema: { json: object | null; ui: object | null },
         comment: string | null,
-        createdBy: number
+        createdBy: User
     ): Promise<FormRevision> {
         await this.findById(formId);
         const latest = await this.revisionRepo.findOne({

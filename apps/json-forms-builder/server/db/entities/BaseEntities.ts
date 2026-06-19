@@ -13,8 +13,8 @@ import { User } from './User';
  * Base class for all entities that include an auto-generated primary key ID.
  */
 export abstract class CustomBaseEntity extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 }
 
 /**

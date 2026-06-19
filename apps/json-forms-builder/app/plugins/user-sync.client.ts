@@ -15,6 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const syncUser = () => {
         if (!loggedIn.value || !user.value?.id) return;
         const userId = user.value.id;
+        console.log('syncing user', userId);
         // Avoid calling the endpoint more than once per user per session
         if (sessionStorage.getItem(SYNC_KEY) === userId) return;
         orpc.users

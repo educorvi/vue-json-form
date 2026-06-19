@@ -1,4 +1,9 @@
-import { In, type DataSource, type Repository } from 'typeorm';
+import {
+    In,
+    type DataSource,
+    type Repository,
+    type DeepPartial,
+} from 'typeorm';
 import { Permission } from '~~/server/db/entities/Permission';
 import { Group } from '~~/server/db/entities/Group';
 import { User } from '~~/server/db/entities/User';
@@ -55,8 +60,8 @@ export class PermissionService {
     async createForGroup(
         groupId: number,
         dto: CreatePermissionDto,
-        actorId: number
-    ): Promise<Permission> {
+        actor: User
+    ): Promise<Permission | Permission[]> {
         this._validateSubject(dto);
         const where = dto.user_id
             ? { group_id: groupId, user_id: dto.user_id }
@@ -68,22 +73,23 @@ export class PermissionService {
                 ErrorCode.PERMISSION_DUPLICATE
             );
 
-        const perm = this.repo.create({
+        const rawPermission: DeepPartial<Permission> = {
             group_id: groupId,
             user_id: dto.user_id ?? null,
             subject_group_id: dto.subject_group_id ?? null,
             role: dto.role,
             expire: dto.expire ? new Date(dto.expire) : null,
-            created_by: actorId,
-            updated_by: actorId,
-        });
+            created_by: actor,
+            updated_by: actor,
+        };
+        const perm = this.repo.create(rawPermission);
         return this.repo.save(perm);
     }
 
     async createForForm(
         formId: number,
         dto: CreatePermissionDto,
-        actorId: number
+        actor: User
     ): Promise<Permission> {
         this._validateSubject(dto);
         const where = dto.user_id
@@ -102,8 +108,8 @@ export class PermissionService {
             subject_group_id: dto.subject_group_id ?? null,
             role: dto.role,
             expire: dto.expire ? new Date(dto.expire) : null,
-            created_by: actorId,
-            updated_by: actorId,
+            created_by: actor,
+            updated_by: actor,
         });
         return this.repo.save(perm);
     }
@@ -113,7 +119,7 @@ export class PermissionService {
         scopeKey: 'group_id' | 'form_id',
         scopeValue: number,
         dto: PatchPermissionDto,
-        actorId: number
+        actor: User
     ): Promise<Permission> {
         const perm = await this.repo.findOne({
             where: { id, [scopeKey]: scopeValue },
@@ -132,7 +138,7 @@ export class PermissionService {
                         ? new Date(dto.expire)
                         : null
                     : perm.expire,
-            updated_by: actorId,
+            updated_by: actor,
         });
     }
 

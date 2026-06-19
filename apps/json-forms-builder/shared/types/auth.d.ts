@@ -1,7 +1,10 @@
 declare module '#auth-utils' {
-    // interface User {
-    //     // Add your own fields
-    // }
+    interface User {
+        id: string;
+        name: string;
+        email: string;
+        roles: string[];
+    }
 }
 
 export {};

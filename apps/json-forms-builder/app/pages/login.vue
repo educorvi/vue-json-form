@@ -25,14 +25,9 @@ const authError = computed(() => route.query.error === 'auth_failed');
             </div>
 
             <b-card class="shadow-sm">
-                <Message
-                    v-if="authError"
-                    severity="error"
-                    class="mb-4"
-                    :closable="false"
-                >
+                <div v-if="authError">
                     Authentication failed. Please try again.
-                </Message>
+                </div>
 
                 <a href="/auth/keycloak" class="block">
                     <BButton> Sign in with Keycloak </BButton>
