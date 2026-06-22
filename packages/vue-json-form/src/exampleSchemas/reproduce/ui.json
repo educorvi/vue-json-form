@@ -1,9 +1,77 @@
 {
-    "$schema": "../../../../schemas/dist/ui.schema.json",
+    "$schema": "../../../../schemas/src/generated/ui-merged.schema.json",
     "version": "2.1",
     "layout": {
         "type": "VerticalLayout",
         "elements": [
+            {
+                "type": "Group",
+                "options": { "label": "JSO-172" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithAddressObject",
+                        "options": {
+                            "uiSchema": {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                    {
+                                        "type": "HorizontalLayout",
+                                        "elements": [
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/arrayWithAddressObject/items/properties/name"
+                                            },
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/arrayWithAddressObject/items/properties/surname"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Control",
+                                        "scope": "/properties/arrayWithAddressObject/items/properties/address",
+                                        "options": {
+                                            "multi": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/objectWithUiSchema",
+                        "options": {
+                            "uiSchema": {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                    {
+                                        "type": "HorizontalLayout",
+                                        "elements": [
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/objectWithUiSchema/properties/name"
+                                            },
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/objectWithUiSchema/properties/surname"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Control",
+                                        "scope": "/properties/objectWithUiSchema/properties/address",
+                                        "options": {
+                                            "multi": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
             {
                 "type": "Group",
                 "options": { "label": "JSO-140" },

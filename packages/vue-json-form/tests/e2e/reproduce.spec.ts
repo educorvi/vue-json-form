@@ -58,6 +58,109 @@ async function expectValid(locator: Locator) {
         .toBe(true);
 }
 
+test('JSO-172 (array control uses provided uiSchema)', async ({ page }) => {
+    const arrayContainer = page.locator(
+        '#vjf_control_for__properties_arrayWithAddressObject'
+    );
+    const objectContainer = page.locator(
+        '#vjf_control_for__properties_objectWithUiSchema'
+    );
+
+    await page.goto(REPRODUCE_URL);
+
+    await expect(arrayContainer.locator('.list-group > div')).toHaveCount(1);
+    await expect(arrayContainer.locator('.list-group > div').first()).toBeVisible();
+    await expect(
+        arrayContainer.locator('.list-group > div').first().locator('input')
+    ).toHaveCount(2);
+    await expect(
+        arrayContainer.locator('.list-group > div').first().locator('textarea')
+    ).toHaveCount(1);
+    await expect(
+        arrayContainer.locator('.list-group > div').first().locator('textarea')
+    ).toHaveAttribute('rows', '5');
+
+    await expect(objectContainer.locator('input')).toHaveCount(2);
+    await expect(objectContainer.locator('textarea')).toHaveCount(1);
+    await expect(objectContainer.locator('textarea')).toHaveAttribute('rows', '5');
+
+    await arrayContainer.locator('button[aria-label="Add Item"]').click();
+    await expect(arrayContainer.locator('.list-group > div')).toHaveCount(2);
+    await expect(
+        arrayContainer.locator('.list-group > div').nth(1).locator('input')
+    ).toHaveCount(2);
+    await expect(
+        arrayContainer.locator('.list-group > div').nth(1).locator('textarea')
+    ).toHaveCount(1);
+    await expect(
+        arrayContainer.locator('.list-group > div').nth(1).locator('textarea')
+    ).toHaveAttribute('rows', '5');
+
+    await arrayContainer
+        .locator('.list-group > div')
+        .first()
+        .locator('input')
+        .nth(0)
+        .fill('John');
+    await arrayContainer
+        .locator('.list-group > div')
+        .first()
+        .locator('input')
+        .nth(1)
+        .fill('Doe');
+    await arrayContainer
+        .locator('.list-group > div')
+        .first()
+        .locator('textarea')
+        .fill('Array Address 1');
+
+    await arrayContainer
+        .locator('.list-group > div')
+        .nth(1)
+        .locator('input')
+        .nth(0)
+        .fill('Jane');
+    await arrayContainer
+        .locator('.list-group > div')
+        .nth(1)
+        .locator('input')
+        .nth(1)
+        .fill('Doe');
+    await arrayContainer
+        .locator('.list-group > div')
+        .nth(1)
+        .locator('textarea')
+        .fill('Array Address 2');
+
+    await objectContainer.locator('input').nth(0).fill('Object John');
+    await objectContainer.locator('input').nth(1).fill('Object Doe');
+    await objectContainer.locator('textarea').fill('Object Address');
+
+    await submitForm(page);
+    await expect(page.locator('#result-container')).toBeVisible();
+
+    const resultText = await page.locator('#result-container').textContent();
+    const res = JSON.parse(resultText || '');
+
+    expect(res['arrayWithAddressObject']).toEqual([
+        {
+            name: 'John',
+            surname: 'Doe',
+            address: 'Array Address 1',
+        },
+        {
+            name: 'Jane',
+            surname: 'Doe',
+            address: 'Array Address 2',
+        },
+    ]);
+    expect(res['objectWithUiSchema']).toEqual({
+        name: 'Object John',
+        surname: 'Object Doe',
+        address: 'Object Address',
+    });
+});
+
 test('JSO-140 (number field with multipleOf validation)', async ({ page }) => {
     let NUMBER_FIELD = '#vjf_control_for__properties_numberWithMultiple';
 

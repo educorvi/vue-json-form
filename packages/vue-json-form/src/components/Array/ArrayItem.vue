@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue';
-import { savePathOverrideProviderKey } from '@/components/ProviderKeys.ts';
-import Control from '@/components/LayoutElements/Control.vue';
-import type { Control as ControlType } from '@educorvi/vue-json-form-schemas';
+import { computed } from 'vue';
+import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';
 import { getArrayItemSavePath } from '@/Commons.ts';
 import { getStores } from '@/computedProperties/json.ts';
+import { isControl, isLayoutWithChildren } from '@/typings/typeValidators.ts';
+import FormWrap from '@/components/FormWrap.vue';
+import { getOption } from '@/renderings/renderHelpers';
 
 const props = defineProps<{
     scope: string;
@@ -14,30 +15,50 @@ const props = defineProps<{
     itemID: string;
     baseSavePath: string;
     allowRemove: boolean;
-    uiSchema?: ControlType;
+    uiSchema?: LayoutElement;
 }>();
 const savePath = getArrayItemSavePath(props.baseSavePath, props.itemID);
-provide(savePathOverrideProviderKey, savePath);
+// provide(savePathOverrideProviderKey, savePath);
 const layoutElement = computed(() => {
-    const uiSchema = props.uiSchema || {
-        type: 'Control',
-        scope: '',
-        options: {
-            label: false,
-        },
-    };
-    uiSchema.scope = props.scope + '.' + props.itemID;
+    let uiSchema: LayoutElement;
+    if (props.uiSchema) {
+        uiSchema = JSON.parse(JSON.stringify(props.uiSchema));
+    } else {
+        uiSchema = {
+            type: 'Control',
+            scope: props.scope + '/items',
+            options: {
+                label: false,
+            },
+        };
+    }
+    replaceScopes(uiSchema);
     return uiSchema;
 });
 const emit = defineEmits<{
     (e: 'delete', id: string, savePath: string): void;
 }>();
 const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
+
+function replaceScopes(layoutElement: LayoutElement | undefined) {
+    if (!layoutElement) {
+        return;
+    }
+    if (isControl(layoutElement)) {
+        layoutElement.scope = layoutElement.scope.replace(
+            props.scope + '/items',
+            getArrayItemSavePath(props.scope, props.itemID)
+        );
+        replaceScopes(getOption(layoutElement, 'uiSchema'));
+    } else if (isLayoutWithChildren(layoutElement)) {
+        layoutElement.elements.forEach(replaceScopes);
+    }
+}
 </script>
 
 <template>
     <div :id="itemID" class="vjf_arrayItem">
-        <Control :layout-element="layoutElement" in-array-item>
+        <FormWrap :layout-element="layoutElement" in-array-item>
             <template #prepend>
                 <div class="handle">
                     <GripVerticalIcon />
@@ -53,7 +74,7 @@ const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
                     <XIcon />
                 </ArrayButton>
             </template>
-        </Control>
+        </FormWrap>
     </div>
 </template>
 
@@ -72,5 +93,9 @@ const ArrayButton = getStores().formStructureStore.getComponent('ArrayButton');
 
 .vjf_arrayItem > * {
     background: var(--bs-body-bg);
+}
+
+.vjf_arrayItem {
+    margin-bottom: 0.75rem;
 }
 </style>

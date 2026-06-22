@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computedLabel, injectJsonData } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
-import { computed } from 'vue';
+import { computed, inject, provide } from 'vue';
 import { generateUISchema } from '@/Commons';
 import FormWrap from '@/components/FormWrap.vue';
 import { computedCssClass } from '@/computedProperties/css.ts';
 import HelpPopover from '@/renderings/bootstrap/HelpPopover.vue';
+import { getOption } from '@/renderings/renderHelpers';
+import { inArrayItemProviderKey } from '@/components/ProviderKeys.ts';
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
@@ -19,6 +21,13 @@ const controlElements = computed(() => {
     const elements = uiSchema.layout.elements;
     return elements.filter((element) => element.type === 'Control');
 });
+
+const customUiSchema = computed(() =>
+    getOption(layoutElement.value, 'uiSchema')
+);
+
+const inArrayItem = inject(inArrayItemProviderKey, false);
+provide(inArrayItemProviderKey, false);
 </script>
 
 <template>
@@ -29,12 +38,17 @@ const controlElements = computed(() => {
         <p v-if="jsonElement.description">
             {{ jsonElement.description }}
         </p>
-        <div class="vjf_indented">
-            <form-wrap
-                v-for="element in controlElements"
-                :key="element.scope"
-                :layout-element="element"
-            />
+        <div :class="{ vjf_indented: !inArrayItem }">
+            <template v-if="customUiSchema">
+                <form-wrap :layout-element="customUiSchema" />
+            </template>
+            <template v-else>
+                <form-wrap
+                    v-for="element in controlElements"
+                    :key="element.scope"
+                    :layout-element="element"
+                />
+            </template>
         </div>
     </fieldset>
 </template>
