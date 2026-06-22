@@ -4,6 +4,35 @@
     "$id": "https://educorvi.github.io/vue-json-form/schemas/layout.schema.json",
     "type": "object",
     "description": "The different layouts",
+    "definitions": {
+        "layoutElement": {
+            "title": "LayoutElement",
+            "description": "Different types of layout elements",
+            "oneOf": [
+                {
+                    "$ref": "control.schema.json"
+                },
+                {
+                    "$ref": "layout.schema.json"
+                },
+                {
+                    "$ref": "html.schema.json"
+                },
+                {
+                    "$ref": "divider.schema.json"
+                },
+                {
+                    "$ref": "modal.schema.json"
+                },
+                {
+                    "$ref": "button.schema.json"
+                },
+                {
+                    "$ref": "buttongroup.schema.json"
+                }
+            ]
+        }
+    },
     "properties": {
         "type": {
             "type": "string",
@@ -15,31 +44,7 @@
             "type": "array",
             "default": [],
             "items": {
-                "title": "Layout element",
-                "description": "Different types of layout elements",
-                "oneOf": [
-                    {
-                        "$ref": "control.schema.json"
-                    },
-                    {
-                        "$ref": "layout.schema.json"
-                    },
-                    {
-                        "$ref": "html.schema.json"
-                    },
-                    {
-                        "$ref": "divider.schema.json"
-                    },
-                    {
-                        "$ref": "modal.schema.json"
-                    },
-                    {
-                        "$ref": "button.schema.json"
-                    },
-                    {
-                        "$ref": "buttongroup.schema.json"
-                    }
-                ]
+                "$ref": "#/definitions/layoutElement"
             }
         },
         "showOn": {

@@ -22,6 +22,7 @@
                 :required="required || inArrayItem"
                 :style="style"
                 :aria-label="inArrayItem ? 'List item' : undefined"
+                :class="{ inArrayControl: inArrayItem }"
             />
             <template v-if="$slots.append" #append>
                 <slot name="append" />
@@ -105,9 +106,6 @@ const ErrorViewer = formStructureStore.getComponent('ErrorViewer');
 const props = defineProps<{
     /** The UI Schema of this Element */
     layoutElement: Control;
-
-    /** Is this control in an array item */
-    inArrayItem?: boolean;
 }>();
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
@@ -127,6 +125,8 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
 
 const savePath =
     inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+
+const inArrayItem = inject(inArrayItemProviderKey, false);
 
 const mappers: Ref<Mapper[]> = ref([]);
 
@@ -246,14 +246,13 @@ const style = computed(() => {
 
 const cssClass = computedCssClass(
     formStructureMapped.value.uiElement,
-    'vjf_control mb-3',
+    'vjf_control mb-2',
     additionalHiddenClass
 );
 
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
 provide(savePathOverrideProviderKey, undefined);
-provide(inArrayItemProviderKey, props.inArrayItem ?? false);
 
 const control_id_string = controlID(savePath);
 
@@ -366,6 +365,16 @@ onBeforeUnmount(() => {
     display: block;
     &.hiddenControl {
         display: none;
+    }
+}
+
+.inArrayControl {
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+    flex-grow: 1;
+    &.vjf_object {
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
     }
 }
 </style>

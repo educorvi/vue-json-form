@@ -1,4 +1,5 @@
 import type {
+    Control,
     EnumOptions,
     InputOptions,
     JSONSchema,
@@ -334,5 +335,19 @@ export function isElementWithCustomValidity(
         isValidateableElement(el) &&
         'setCustomValidity' in el &&
         typeof el.setCustomValidity === 'function'
+    );
+}
+
+export function isControl(element: LayoutElement): element is Control {
+    return element.type === 'Control';
+}
+
+export function isLayoutWithChildren(
+    element: LayoutElement
+): element is Layout {
+    return (
+        element.type === 'VerticalLayout' ||
+        element.type === 'HorizontalLayout' ||
+        element.type === 'Group'
     );
 }

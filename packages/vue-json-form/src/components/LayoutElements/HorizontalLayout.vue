@@ -13,7 +13,11 @@ const props = defineProps<{
     layoutElement: Layout;
 }>();
 
-const cssClass = computedCssClass(props.layoutElement, 'vjf_horizontalLayout');
+const cssClass = computedCssClass(
+    props.layoutElement,
+    'vjf_horizontalLayout',
+    'row'
+);
 const elementsWithUUID = computed(() => {
     if (!hasElements(props.layoutElement)) return [];
     return mapUUID(props.layoutElement.elements);
@@ -26,26 +30,17 @@ const elementsWithUUID = computed(() => {
             v-for="element in elementsWithUUID"
             :key="element.uuid"
             :layout-element="element"
+            class="col"
         />
     </div>
 </template>
 
-<style>
-.vjf_horizontalLayout {
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-    justify-content: space-around;
-}
-.vjf_horizontalLayout > * {
-    flex: 2 1 auto;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-.vjf_horizontalLayout > *:first-child {
-    margin-left: 0;
-}
-.vjf_horizontalLayout > *:last-child {
-    margin-right: 0;
-}
+<style lang="scss" scoped>
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/grid';
 </style>
