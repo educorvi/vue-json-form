@@ -63,7 +63,6 @@ import {
 } from 'vue';
 import {
     savePathProviderKey,
-    savePathOverrideProviderKey,
     mergeDescendantControlOptionsOverrides,
     setDescendantControlOverrides,
     formStructureProviderKey,
@@ -123,8 +122,7 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
     descendantControlOverridesProviderKey
 );
 
-const savePath =
-    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+const savePath = props.layoutElement.scope;
 
 const inArrayItem = inject(inArrayItemProviderKey, false);
 
@@ -252,7 +250,6 @@ const cssClass = computedCssClass(
 
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
-provide(savePathOverrideProviderKey, undefined);
 
 const control_id_string = controlID(savePath);
 
