@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue';
-import { savePathOverrideProviderKey } from '@/components/ProviderKeys.ts';
+import { computed } from 'vue';
 import type { LayoutElement } from '@educorvi/vue-json-form-schemas';
 import XIcon from '@/assets/icons/XIcon.vue';
 import GripVerticalIcon from '@/assets/icons/GripVerticalIcon.vue';
