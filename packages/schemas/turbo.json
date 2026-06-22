@@ -14,6 +14,11 @@
         "mergeSchema": {
             "outputs": ["src/generated/*.schema.json"],
             "inputs": ["src/ui/*.schema.json"]
+        },
+        "doc": {
+            "outputs": ["docs-dist/*"],
+            "inputs": ["src/generated/ui-merged.schema.json"],
+            "dependsOn": ["mergeSchema"]
         }
     }
 }
