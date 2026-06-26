@@ -458,6 +458,18 @@
                             "content": "This is some additional information that can be shown in a modal. It supports <strong class=\"text-success\">HTML</strong>.",
                             "size": "medium"
                         }
+                    },
+                    {
+                        "type": "Modal",
+                        "button": {
+                            "text": "Show additional information in Modal",
+                            "asLink": true
+                        },
+                        "modal": {
+                            "title": "Additional information",
+                            "content": "This is some additional information that can be shown in a modal. It supports <strong class=\"text-success\">HTML</strong>.",
+                            "size": "medium"
+                        }
                     }
                 ]
             },

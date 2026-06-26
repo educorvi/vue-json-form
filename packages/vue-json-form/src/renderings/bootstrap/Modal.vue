@@ -37,16 +37,35 @@ const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
 </script>
 
 <template>
-    <div class="vjf_modal_control">
+    <div class="vjf_modal_control mb-2 mt-2">
         <html-renderer
             v-if="htmlMessages.pre"
             :layout-element="htmlMessages.pre"
         />
-        <BButton
-            :variant="layoutElement.button.variant || 'info'"
-            @click="modal = true"
-            >{{ layoutElement.button.text }}</BButton
-        >
+        <template v-if="layoutElement.button.asLink">
+            <a
+                href="#"
+                class="text-decoration-none text-body-emphasis vjf_info-modal-link"
+                @click.prevent="modal = true"
+            >
+                <i
+                    class="bi bi-info-square-fill text-primary"
+                    style="font-size: 1.75rem"
+                />
+                <span class="ms-2">
+                    {{ layoutElement.button.text }}
+                </span>
+            </a>
+        </template>
+        <template v-else>
+            <BButton
+                :variant="layoutElement.button.variant || 'info'"
+                @click="modal = true"
+            >
+                {{ layoutElement.button.text }}
+            </BButton>
+        </template>
+
         <html-renderer
             v-if="htmlMessages.post"
             :layout-element="htmlMessages.post"
@@ -76,5 +95,11 @@ const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
 .vjf_modal_control {
     display: flex;
     flex-direction: column;
+}
+
+.vjf_info-modal-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 </style>
