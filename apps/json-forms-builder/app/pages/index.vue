@@ -24,7 +24,7 @@ const authError = computed(() => route.query.error === 'auth_failed');
         {{ t('landing.authError') }}
     </div>
 
-    <BButton v-if="!loggedIn" @click="() => navigateTo('/auth/keycloak')">{{
+    <BButton v-if="!loggedIn" @click="() => navigateTo('login')">{{
         t('nav.signIn')
     }}</BButton>
 </template>
