@@ -21,6 +21,11 @@
                 },
                 "variant": {
                     "$ref": "variants.schema.json"
+                },
+                "asLink": {
+                    "type": "boolean",
+                    "title": "As Link",
+                    "description": "Whether the button should be rendered as a link"
                 }
             },
             "additionalProperties": false,
