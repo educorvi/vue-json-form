@@ -1,0 +1,173 @@
+{
+    "nav": {
+        "dashboard": "Dashboard",
+        "users": "Benutzer",
+        "groups": "Gruppen",
+        "formBuilder": "Formular-Builder",
+        "apiDocs": "API-Dokumentation",
+        "signIn": "Anmelden",
+        "signOut": "Abmelden"
+    },
+    "landing": {
+        "title": "Vue Json Form Builder",
+        "subtitle": "Formulare auf Basis von JSON Schema einfach erstellen und verwalten",
+        "signInKeycloak": "Mit Keycloak anmelden",
+        "authError": "Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "featuresHeading": "Funktionen",
+        "featuresSubheading": "Eine Plattform zum Erstellen, Verwalten und Bereitstellen von Formularen",
+        "footer": "Form Builder"
+    },
+    "features": {
+        "formBuilder": {
+            "title": "Visueller Formularersteller",
+            "description": "Gestalten Sie komplexe JSON-Schema-gestützte Formulare mit Drag-and-Drop und Live-Vorschau."
+        },
+        "userManagement": {
+            "title": "Benutzer- & Rollenverwaltung",
+            "description": "Systembenutzer verwalten, Rollen zuweisen und Zugriff auf Formulare und Daten steuern."
+        },
+        "permissions": {
+            "title": "Feinkörnige Berechtigungen",
+            "description": "Detaillierte Zugriffsrichtlinien pro Formular, Schema oder Ressource für Ihre Organisation festlegen."
+        },
+        "openApi": {
+            "title": "OpenAPI REST-Schnittstelle",
+            "description": "Jede Ressource ist über eine vollständig dokumentierte, standardkonforme REST-API zugänglich, um die Plattform mit anderen Systemen zu integrieren."
+        },
+        "versioning": {
+            "title": "Schema-Versionierung",
+            "description": "Änderungen an JSON-Schemas im Laufe der Zeit verfolgen und auf frühere Versionen zurücksetzen."
+        },
+        "sso": {
+            "title": "Single Sign-On",
+            "description": "Authentifizierung über Keycloak OIDC — ein Login für alle Dienste in Ihrer Infrastruktur."
+        }
+    },
+    "users": {
+        "title": "Benutzer",
+        "searchPlaceholder": "Nach Name oder E-Mail suchen…",
+        "loadError": "Benutzer konnten nicht geladen werden:",
+        "noUsersTitle": "Keine Benutzer gefunden",
+        "noUsersDescription": "Es gibt noch keine Benutzer.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'. Versuchen Sie einen anderen Suchbegriff.",
+        "total": "Keine Benutzer | {n} Benutzer | {n} Benutzer",
+        "created": "Erstellt",
+        "lastActivity": "Aktiv",
+        "sortBy": {
+            "name": "Name",
+            "email": "E-Mail",
+            "created": "Erstellt",
+            "activity": "Letzte Aktivität",
+            "role": "Rolle"
+        },
+        "columns": {
+            "user": "Benutzer",
+            "name": "Name",
+            "email": "E-Mail",
+            "role": "Rolle",
+            "created": "Erstellt",
+            "activity": "Aktivität"
+        }
+    },
+    "groups": {
+        "title": "Gruppen",
+        "searchPlaceholder": "Gruppen suchen…",
+        "searchChildrenPlaceholder": "Unterelemente suchen…",
+        "loadError": "Gruppen konnten nicht geladen werden:",
+        "noGroupsTitle": "Keine Gruppen gefunden",
+        "noGroupsDescription": "Es gibt noch keine Gruppen.",
+        "noChildrenTitle": "Keine Untergruppen oder Formulare",
+        "noChildrenDescription": "Diese Gruppe hat keine Kinder.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'.",
+        "total": "Keine Gruppen | {n} Gruppe | {n} Gruppen",
+        "subGroups": "Untergruppen",
+        "forms": "Formulare",
+        "members": "Mitglieder",
+        "sortBy": {
+            "title": "Titel",
+            "created": "Erstellt",
+            "updated": "Aktualisiert",
+            "members": "Mitglieder"
+        },
+        "noSubGroups": "Keine Untergruppen",
+        "new": {
+            "title": "Neue Gruppe",
+            "addSubGroup": "Neue Untergruppe",
+            "subtitle": "Erstelle eine neue Gruppe in der Hierarchie.",
+            "create": "Gruppe erstellen",
+            "createError": "Gruppe konnte nicht erstellt werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Frontend-Entwicklung",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. frontend-entwicklung",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "parent": "Übergeordnete Gruppe",
+                "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen."
+            }
+        },
+        "edit": {
+            "title": "Gruppe bearbeiten",
+            "subtitle": "Gruppeneinstellungen und Metadaten aktualisieren.",
+            "save": "Änderungen speichern",
+            "updateError": "Gruppe konnte nicht aktualisiert werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Frontend-Entwicklung",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. frontend-entwicklung",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "path": "Pfad"
+            }
+        },
+        "treeSelect": {
+            "placeholder": "Übergeordnete Gruppe wählen…",
+            "useCurrentFolder": "Aktuellen Ordner verwenden"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Verwaltungsschnittstelle für Formulare, Benutzer und Berechtigungen.",
+        "apiStatus": "API-Status",
+        "apiError": "API nicht erreichbar:",
+        "navUsers": "Benutzer",
+        "navUsersDesc": "Systembenutzer, Rollen und Zugriff verwalten.",
+        "navApiDocs": "API-Dokumentation",
+        "navApiDocsDesc": "REST-API über Swagger UI erkunden und testen."
+    },
+    "common": {
+        "searchPlaceholder": "Suchen…",
+        "sortAscending": "Aufsteigend sortieren",
+        "sortDescending": "Absteigend sortieren",
+        "loading": "Laden…",
+        "cancel": "Abbrechen",
+        "clear": "Löschen",
+        "edit": "Bearbeiten"
+    },
+    "theme": {
+        "label": "Farbschema",
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "System"
+    },
+    "locale": {
+        "label": "Sprache"
+    },
+    "designSystem": {
+        "label": "Designsystem",
+        "active": "Aktiv",
+        "hint": "Das Wechseln des Designsystems aktualisiert alle PrimeVue-Komponenten und Tailwind-Utilities sofort – kein Neuladen erforderlich.",
+        "uv": {
+            "label": "UV Corporate",
+            "description": "Flaches Unternehmens-Design mit UV-Markenfarben und 0px Rahmenradius."
+        },
+        "aura": {
+            "label": "PrimeVue Aura",
+            "description": "Standard PrimeVue Aura-Preset mit abgerundeten Ecken und Standardpalette."
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "name": "json-forms-builder",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "turbo build:internal check-types",
+        "build:internal": "nuxt build",
+        "check-types": "npx nuxt typecheck",
+        "dev:internal": "nuxt dev",
+        "dev": "turbo watch dev:internal",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json",
+        "orpg:generate": "npx @hey-api/openapi-ts"
+    },
+    "dependencies": {
+        "@bootstrap-vue-next/nuxt": "^0.45.7",
+        "@nuxtjs/i18n": "^10.4.0",
+        "@orpc/client": "^1.14.6",
+        "@orpc/json-schema": "^1.14.6",
+        "@orpc/openapi": "^1.14.6",
+        "@orpc/server": "^1.14.6",
+        "@orpc/zod": "^1.14.6",
+        "@phosphor-icons/vue": "^2.2.1",
+        "bootstrap": "^5.3.8",
+        "bootstrap-vue-next": "^0.45.7",
+        "nuxt": "^4.4.8",
+        "nuxt-auth-utils": "^0.5.29",
+        "pg": "^8.22.0",
+        "turbo": "^2.10.0",
+        "typeorm": "0.3.28",
+        "vue": "^3.5.38",
+        "vue-router": "^5.1.0",
+        "zod": "^4.4.3",
+        "zod-openapi": "^6.0.0"
+    },
+    "devDependencies": {
+        "@types/bootstrap": "^5",
+        "@types/pg": "^8"
+    }
+}
