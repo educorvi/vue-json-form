@@ -45,7 +45,7 @@ const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
         <template v-if="layoutElement.button.asLink">
             <a
                 href="#"
-                class="text-decoration-none text-body-emphasis vjf_info-modal-link"
+                class="vjf_info-modal-link"
                 @click.prevent="modal = true"
             >
                 <i
@@ -101,5 +101,12 @@ const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 </style>
