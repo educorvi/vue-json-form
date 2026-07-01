@@ -21,7 +21,7 @@ if (loggedIn.value) {
 }
 
 const orpc = useNuxtApp().$orpc;
-const { data: apiStatus, error: apiStatusError } = await useAsyncData(
+const { data: apiStatus, error: apiStatusError } = useLazyAsyncData(
     'api-status',
     () => orpc.status.get()
 );

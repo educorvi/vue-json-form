@@ -1257,6 +1257,40 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@educorvi/vue-json-form-builder@workspace:*, @educorvi/vue-json-form-builder@workspace:packages/form-builder-component":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/vue-json-form-builder@workspace:packages/form-builder-component"
+  dependencies:
+    "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@popperjs/core": "npm:^2.11.8"
+    "@semantic-release/exec": "npm:^7.1.0"
+    "@vitejs/plugin-vue": "npm:^6.0.7"
+    "@vueuse/core": "npm:^14.3.0"
+    bootstrap: "npm:^5.3.8"
+    bootstrap-icons: "npm:^1.13.1"
+    bootstrap-vue-next: "npm:^0.45.7"
+    pinia: "npm:^3.0.4"
+    pinia-plugin-persistedstate: "npm:^4.7.1"
+    prettier: "npm:^3.8.3"
+    sass-embedded: "npm:^1.100.0"
+    semantic-release: "npm:^25.0.3"
+    semantic-release-monorepo: "npm:^8.0.2"
+    semantic-release-yarn: "npm:^3.0.2"
+    turbo: "npm:^2.9.18"
+    typescript: "npm:~6.0.3"
+    uuid: "npm:^14.0.0"
+    vite: "npm:^8.0.16"
+    vite-plugin-dts: "npm:^5.0.2"
+    vite-plugin-externalize-deps: "npm:^0.10.0"
+    vitest: "npm:^4.1.8"
+    vue: "npm:^3.5.35"
+    vue-draggable-plus: "npm:^0.6.1"
+    vue-router: "npm:^5.1.0"
+    vue-tsc: "npm:^3.3.4"
+  languageName: unknown
+  linkType: soft
+
 "@educorvi/vue-json-form-schemas@workspace:^, @educorvi/vue-json-form-schemas@workspace:packages/schemas":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-schemas@workspace:packages/schemas"
@@ -2913,7 +2947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/kit@npm:4.4.8, @nuxt/kit@npm:^4.3.1, @nuxt/kit@npm:^4.4.2, @nuxt/kit@npm:^4.4.4":
+"@nuxt/kit@npm:4.4.8, @nuxt/kit@npm:^4.2.0, @nuxt/kit@npm:^4.3.1, @nuxt/kit@npm:^4.4.2, @nuxt/kit@npm:^4.4.4":
   version: 4.4.8
   resolution: "@nuxt/kit@npm:4.4.8"
   dependencies:
@@ -4380,12 +4414,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@phosphor-icons/vue@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "@phosphor-icons/vue@npm:2.2.1"
+"@pinia/nuxt@npm:^0.11.3":
+  version: 0.11.3
+  resolution: "@pinia/nuxt@npm:0.11.3"
+  dependencies:
+    "@nuxt/kit": "npm:^4.2.0"
   peerDependencies:
-    vue: ">=3.2.39"
-  checksum: 10/a8135fffcc0f6ea5a7e5c688ad339d47c0376768d2d129827f87bcb49fa88a1de570c328178e147a6b8a6a09ea1475f7288847db4f5048740e33b64e95389ec6
+    pinia: ^3.0.4
+  checksum: 10/9d26c74e0478877187b2a583036e11a785c8ded2b07dfae742fadf8fa16800402ae37d31c8b2fb9440e93ac8567ddd7643b097f8339aeb3c6c53dda2afdba907
   languageName: node
   linkType: hard
 
@@ -4448,7 +4484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.9.2":
+"@popperjs/core@npm:^2.11.8, @popperjs/core@npm:^2.9.2":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
   checksum: 10/ddd16090cde777aaf102940f05d0274602079a95ad9805bd20bc55dcc7c3a2ba1b99dd5c73e5cc2753c3d31250ca52a67d58059459d7d27debb983a9f552936c
@@ -5640,6 +5676,13 @@ __metadata:
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 10/7fe0d239397aebb002ac4855d30c197c06a05ea8df8511350a3a5b1abeefe26167c60eda8a5508337571161e4c4b53d7c1342296123f9607af8705369de9fa7f
+  languageName: node
+  linkType: hard
+
+"@types/add@npm:^2":
+  version: 2.0.3
+  resolution: "@types/add@npm:2.0.3"
+  checksum: 10/c15815ef0e4903113f7fda84b4c2704a1b694fd6f53a6e3c9327b5b7067aba676c75e696b950401de45be7646b37b7059303a7bb5c4363de3eb3e0c06d25f565
   languageName: node
   linkType: hard
 
@@ -7203,6 +7246,13 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 10/2eea1588075124df569b15995423204055c5575ad992283025dddfcb557a0340de7d75cc1bc25dca8df148c60c4222e576e0e519965f0ec7f86f6085c8428824
+  languageName: node
+  linkType: hard
+
+"add@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "add@npm:2.0.6"
+  checksum: 10/1d2c0780a660edfc161b7784a846865b28dcd8514cc6042c8e283298f379cd3b150412b67a12603a4ac885912f05759f3e2993c27219f85d1face316ffc0b175
   languageName: node
   linkType: hard
 
@@ -12376,20 +12426,26 @@ __metadata:
   resolution: "json-forms-builder@workspace:apps/json-forms-builder"
   dependencies:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
+    "@educorvi/vue-json-form-builder": "workspace:*"
     "@nuxtjs/i18n": "npm:^10.4.0"
     "@orpc/client": "npm:^1.14.6"
     "@orpc/json-schema": "npm:^1.14.6"
     "@orpc/openapi": "npm:^1.14.6"
     "@orpc/server": "npm:^1.14.6"
     "@orpc/zod": "npm:^1.14.6"
-    "@phosphor-icons/vue": "npm:^2.2.1"
+    "@pinia/nuxt": "npm:^0.11.3"
+    "@types/add": "npm:^2"
     "@types/bootstrap": "npm:^5"
     "@types/pg": "npm:^8"
+    add: "npm:^2.0.6"
     bootstrap: "npm:^5.3.8"
     bootstrap-vue-next: "npm:^0.45.7"
+    module: "npm:^2.0.0"
+    nuxi: "npm:^3.36.1"
     nuxt: "npm:^4.4.8"
     nuxt-auth-utils: "npm:^0.5.29"
     pg: "npm:^8.22.0"
+    pinia: "npm:^3.0.4"
     turbo: "npm:^2.10.0"
     typeorm: "npm:0.3.28"
     vue: "npm:^3.5.38"
@@ -13533,6 +13589,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"module@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "module@npm:2.0.0"
+  dependencies:
+    kleur: "npm:^4.1.5"
+    tildify: "npm:^3.0.0"
+    yargs: "npm:^18.0.0"
+  bin:
+    module: dist/cli.js
+  checksum: 10/3fed12e90ae24cfeff81372d3180319dceba0301843328a62ab25a9dd13f1fdbc77160f7b96a7a988b672a83e0213fcb5e53ca540bc8586ba6ba0408ef4c128b
+  languageName: node
+  linkType: hard
+
 "mrmime@npm:^2.0.0":
   version: 2.0.1
   resolution: "mrmime@npm:2.0.1"
@@ -14171,6 +14240,18 @@ __metadata:
   dependencies:
     boolbase: "npm:^1.0.0"
   checksum: 10/5afc3dafcd1573b08877ca8e6148c52abd565f1d06b1eb08caf982e3fa289a82f2cae697ffb55b5021e146d60443f1590a5d6b944844e944714a5b549675bcd3
+  languageName: node
+  linkType: hard
+
+"nuxi@npm:^3.36.1":
+  version: 3.36.1
+  resolution: "nuxi@npm:3.36.1"
+  bin:
+    nuxi: bin/nuxi.mjs
+    nuxi-ng: bin/nuxi.mjs
+    nuxt: bin/nuxi.mjs
+    nuxt-cli: bin/nuxi.mjs
+  checksum: 10/5ae6b9852f05a93f38613832410dba6df6fb86aa6baebd44cd4e8f5f9c073b0d842fe0d01636f0fa20cb370270a673c145cd3e958bd0ac9fac449d4ad566befc
   languageName: node
   linkType: hard
 
@@ -15446,6 +15527,26 @@ __metadata:
   version: 3.0.0
   resolution: "pify@npm:3.0.0"
   checksum: 10/668c1dc8d9fc1b34b9ce3b16ba59deb39d4dc743527bf2ed908d2b914cb8ba40aa5ba6960b27c417c241531c5aafd0598feeac2d50cb15278cf9863fa6b02a77
+  languageName: node
+  linkType: hard
+
+"pinia-plugin-persistedstate@npm:^4.7.1":
+  version: 4.7.1
+  resolution: "pinia-plugin-persistedstate@npm:4.7.1"
+  dependencies:
+    defu: "npm:^6.1.4"
+  peerDependencies:
+    "@nuxt/kit": ">=3.0.0"
+    "@pinia/nuxt": ">=0.10.0"
+    pinia: ">=3.0.0"
+  peerDependenciesMeta:
+    "@nuxt/kit":
+      optional: true
+    "@pinia/nuxt":
+      optional: true
+    pinia:
+      optional: true
+  checksum: 10/f8935418f1c7ef2921c3935ca66bc2be8f53e993d2756fb30a4ba9ba9b9cd5c416e412c17dd7cb7dceaf7249eb590676fc70f9ac6b35d12577a353d80b72ed28
   languageName: node
   linkType: hard
 
@@ -18499,6 +18600,13 @@ __metadata:
     readable-stream: "npm:~2.3.6"
     xtend: "npm:~4.0.1"
   checksum: 10/cd71f7dcdc7a8204fea003a14a433ef99384b7d4e31f5497e1f9f622b3cf3be3691f908455f98723bdc80922a53af7fa10c3b7abbe51c6fd3d536dbc7850e2c4
+  languageName: node
+  linkType: hard
+
+"tildify@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "tildify@npm:3.0.0"
+  checksum: 10/4d55c391f892bf10ebbcb867b876bc87912b9d4f54b0f60aae1c7924468943d61e15d8d246ac241d58d08c75621a0d585d0b3fc9cc2059534ac88807cb91d309
   languageName: node
   linkType: hard
 

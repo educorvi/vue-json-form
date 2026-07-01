@@ -146,7 +146,8 @@
         "loading": "Laden…",
         "cancel": "Abbrechen",
         "clear": "Löschen",
-        "edit": "Bearbeiten"
+        "edit": "Bearbeiten",
+        "perPage": "Pro Seite"
     },
     "theme": {
         "label": "Farbschema",

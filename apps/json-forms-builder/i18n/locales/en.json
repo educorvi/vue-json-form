@@ -146,7 +146,8 @@
         "loading": "Loading…",
         "cancel": "Cancel",
         "clear": "Clear",
-        "edit": "Edit"
+        "edit": "Edit",
+        "perPage": "Per page"
     },
     "theme": {
         "label": "Theme",

@@ -1,0 +1,24 @@
+{
+    "extends": "@vue/tsconfig/tsconfig.dom.json",
+    "include": [
+        "env.d.ts",
+        "src/**/*",
+        "src/**/*.vue",
+        "src/*.vue",
+        "src/**/*.ts",
+        "src/*.ts",
+        "src/**/*.json"
+    ],
+    "exclude": ["src/**/__tests__/*"],
+    "compilerOptions": {
+        "resolveJsonModule": true,
+        "declaration": true,
+        "declarationDir": "dist",
+        "declarationMap": true,
+        "composite": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "types": ["@vue-macros/reactivity-transform/macros-global"]
+    }
+}
