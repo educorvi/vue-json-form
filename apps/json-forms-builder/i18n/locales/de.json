@@ -147,7 +147,8 @@
         "cancel": "Abbrechen",
         "clear": "Löschen",
         "edit": "Bearbeiten",
-        "perPage": "Pro Seite"
+        "perPage": "Pro Seite",
+        "totalCount": "Keine Elemente | {n} Element | {n} Elemente"
     },
     "theme": {
         "label": "Farbschema",

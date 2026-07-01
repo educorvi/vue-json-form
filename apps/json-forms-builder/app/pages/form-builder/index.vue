@@ -1,24 +1,20 @@
 <script setup lang="ts">
+definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
+import { useTodoStore } from '@/store/todo';
 import FormBuilderApp from '@educorvi/vue-json-form-builder/src/App.vue';
 
-definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
+const store = useTodoStore();
+store.addTodo({ text: 'Test todo', id: '5', done: false, important: false });
+store.addTodo({ text: 'Test todo', id: '5', done: false, important: false });
+store.addTodo({ text: 'Test todo', id: '5', done: false, important: false });
 </script>
 
 <template>
-    <ClientOnly>
-        <div class="h-100 overflow-hidden">
-            <FormBuilderApp />
-        </div>
-        <template #fallback>
-            <div
-                class="d-flex align-items-center justify-content-center gap-3 text-secondary"
-                style="height: 24rem"
-            >
-                <BSpinner />
-                <span>Loading…</span>
-            </div>
-        </template>
-    </ClientOnly>
+    <div class="h-100 overflow-hidden">
+        <FormBuilderApp />
+        <div>{{ store.todos }}</div>
+        <div>Hallo</div>
+    </div>
 </template>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhNotePencil, PhUser, PhSignOut } from '@phosphor-icons/vue';
+// import { PhNotePencil, PhUser } from '@phosphor-icons/vue';
 
 const { t } = useI18n();
 const { user, clear: clearSession } = useUserSession();
@@ -55,7 +55,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                         class="dropdown-item d-flex align-items-center gap-2"
                         style="cursor: default"
                     >
-                        <PhUser :size="18" />
+                        <!-- <PhUser :size="18" /> -->
                         <div class="d-flex flex-column">
                             <span class="fw-medium">{{ userName }}</span>
                             <span class="small text-secondary">{{
@@ -76,7 +76,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                         @click="logout"
                         class="d-flex align-items-center gap-2"
                     >
-                        <PhSignOut :size="18" />
+                        <!-- <PhSignOut :size="18" /> -->
                         {{ t('nav.signOut') }}
                     </BDropdownItem>
                 </BNavItemDropdown>

@@ -1,9 +1,9 @@
 <script setup lang="ts" generic="T extends string">
-import {
-    PhMagnifyingGlass,
-    PhSortAscending,
-    PhSortDescending,
-} from '@phosphor-icons/vue';
+// import {
+//     PhMagnifyingGlass,
+//     PhSortAscending,
+//     PhSortDescending,
+// } from '@phosphor-icons/vue';
 
 const props = defineProps<{
     search: string;
@@ -46,7 +46,7 @@ function toggleSortOrder() {
             <!-- Search -->
             <BInputGroup class="flex-grow-1" style="max-width: 24rem">
                 <BInputGroupText>
-                    <PhMagnifyingGlass :size="16" />
+                    <!-- <PhMagnifyingGlass :size="16" /> -->
                 </BInputGroupText>
                 <BFormInput
                     :placeholder="
@@ -77,8 +77,8 @@ function toggleSortOrder() {
                 "
                 @click="toggleSortOrder"
             >
-                <PhSortAscending v-if="sortOrder === 'asc'" :size="16" />
-                <PhSortDescending v-else :size="16" />
+                <!-- <PhSortAscending v-if="sortOrder === 'asc'" :size="16" /> -->
+                <!-- <PhSortDescending v-else :size="16" /> -->
             </BButton>
 
             <!-- Page size -->

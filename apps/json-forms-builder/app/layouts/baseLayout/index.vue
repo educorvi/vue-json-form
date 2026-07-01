@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { PhNotePencil, PhUser, PhSignOut } from '@phosphor-icons/vue';
 import Header from './header.vue';
 import Footer from './footer.vue';
 

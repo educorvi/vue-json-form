@@ -147,7 +147,8 @@
         "cancel": "Cancel",
         "clear": "Clear",
         "edit": "Edit",
-        "perPage": "Per page"
+        "perPage": "Per page",
+        "totalCount": "No items | {n} item | {n} items"
     },
     "theme": {
         "label": "Theme",

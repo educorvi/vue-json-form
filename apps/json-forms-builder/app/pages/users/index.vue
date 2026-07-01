@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { z } from 'zod';
 import type { zListUsersQuery, zUser } from '~~/server/orpc/generated/zod.gen';
-import { PhUsers, PhWarningCircle } from '@phosphor-icons/vue';
+// import { PhUsers, PhWarningCircle } from '@phosphor-icons/vue';
 
 type UsersQuery = z.infer<typeof zListUsersQuery>;
 type OrderBy = UsersQuery['order_by'];
@@ -94,7 +94,7 @@ const SKELETON_ROWS = Array.from({ length: 5 }, (_, i) => i);
         <!-- Error -->
         <BAlert v-if="error" variant="danger" :dismissible="false" class="mb-3">
             <div class="d-flex align-items-center gap-2">
-                <PhWarningCircle :size="18" />
+                <!-- <PhWarningCircle :size="18" /> -->
                 <strong>{{ t('users.loadError') }}</strong>
             </div>
             <p class="mb-0 mt-1">{{ error.message }}</p>
@@ -164,7 +164,6 @@ const SKELETON_ROWS = Array.from({ length: 5 }, (_, i) => i);
                 <!-- Empty state -->
                 <div v-else-if="data && data.data.length === 0" class="p-4">
                     <EmptyState
-                        :icon="PhUsers"
                         :title="t('users.noUsersTitle')"
                         :description="
                             search

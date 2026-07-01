@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { markRaw } from 'vue';
 import type { Component } from 'vue';
-import {
-    PhNotePencil,
-    PhUsers,
-    PhShieldCheck,
-    PhCode,
-    PhClockCounterClockwise,
-    PhLock,
-    PhSignIn,
-} from '@phosphor-icons/vue';
+// import {
+//     PhNotePencil,
+//     PhUsers,
+//     PhShieldCheck,
+//     PhCode,
+//     PhClockCounterClockwise,
+//     PhLock,
+//     PhSignIn,
+// } from '@phosphor-icons/vue';
 
 definePageMeta({ layout: false });
 
@@ -30,39 +30,39 @@ const route = useRoute();
 const authError = computed(() => route.query.error === 'auth_failed');
 
 interface Feature {
-    icon: Component;
+    // icon: Component;
     titleKey: string;
     descKey: string;
 }
 
 const featureDefs: Feature[] = [
     {
-        icon: markRaw(PhNotePencil),
+        // icon: markRaw(PhNotePencil),
         titleKey: 'features.formBuilder.title',
         descKey: 'features.formBuilder.description',
     },
     {
-        icon: markRaw(PhUsers),
+        // icon: markRaw(PhUsers),
         titleKey: 'features.userManagement.title',
         descKey: 'features.userManagement.description',
     },
     {
-        icon: markRaw(PhShieldCheck),
+        // icon: markRaw(PhShieldCheck),
         titleKey: 'features.permissions.title',
         descKey: 'features.permissions.description',
     },
     {
-        icon: markRaw(PhCode),
+        // icon: markRaw(PhCode),
         titleKey: 'features.openApi.title',
         descKey: 'features.openApi.description',
     },
     {
-        icon: markRaw(PhClockCounterClockwise),
+        // icon: markRaw(PhClockCounterClockwise),
         titleKey: 'features.versioning.title',
         descKey: 'features.versioning.description',
     },
     {
-        icon: markRaw(PhLock),
+        // icon: markRaw(PhLock),
         titleKey: 'features.sso.title',
         descKey: 'features.sso.description',
     },
@@ -70,7 +70,7 @@ const featureDefs: Feature[] = [
 
 const features = computed(() =>
     featureDefs.map((f) => ({
-        icon: f.icon,
+        // icon: f.icon,
         title: t(f.titleKey),
         description: t(f.descKey),
     }))
@@ -86,7 +86,7 @@ const features = computed(() =>
                     href="/"
                     class="d-flex align-items-center gap-2 mb-0"
                 >
-                    <PhNotePencil :size="20" class="text-primary" />
+                    <!-- <PhNotePencil :size="20" class="text-primary" /> -->
                     <span class="fw-semibold small">Form Builder</span>
                 </BNavbarBrand>
                 <div class="d-flex align-items-center gap-2 ms-auto">
@@ -105,7 +105,7 @@ const features = computed(() =>
                     class="d-inline-flex align-items-center justify-content-center bg-light border rounded"
                     style="width: 80px; height: 80px"
                 >
-                    <PhNotePencil :size="40" class="text-primary" />
+                    <!-- <PhNotePencil :size="40" class="text-primary" /> -->
                 </span>
             </div>
 
@@ -127,7 +127,7 @@ const features = computed(() =>
             </BAlert>
 
             <BButton href="/auth/keycloak" variant="primary" size="lg">
-                <PhSignIn :size="20" class="me-2" />
+                <!-- <PhSignIn :size="20" class="me-2" /> -->
                 {{ t('landing.signInKeycloak') }}
             </BButton>
         </section>
@@ -150,7 +150,6 @@ const features = computed(() =>
                         class="col"
                     >
                         <FeatureCard
-                            :icon="feature.icon"
                             :title="feature.title"
                             :description="feature.description"
                         />

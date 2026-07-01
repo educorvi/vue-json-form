@@ -25,7 +25,7 @@
         "@vueuse/core": "^14.3.0",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
-        "bootstrap-vue-next": "0.45.5",
+        "bootstrap-vue-next": "^0.45.7",
         "pinia": "^3.0.4",
         "pinia-plugin-persistedstate": "^4.7.1",
         "uuid": "^14.0.0",

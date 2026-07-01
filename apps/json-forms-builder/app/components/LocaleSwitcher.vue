@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PhGlobe, PhCheck } from '@phosphor-icons/vue';
+// import { PhGlobe, PhCheck } from '@phosphor-icons/vue';
 
 const { locale, setLocale } = useI18n();
 
@@ -25,7 +25,7 @@ const selected = computed({
 <template>
     <BDropdown variant="outline-secondary" size="sm" class="locale-switcher">
         <template #button-content>
-            <PhGlobe :size="16" class="me-1" />
+            <!-- <PhGlobe :size="16" class="me-1" /> -->
             {{ selected.name }}
         </template>
         <BDropdownItem
@@ -36,11 +36,11 @@ const selected = computed({
         >
             <span class="me-2">{{ loc.flag }}</span>
             {{ loc.name }}
-            <PhCheck
+            <!-- <PhCheck
                 v-if="loc.code === selected.code"
                 :size="14"
                 class="ms-auto text-primary"
-            />
+            /> -->
         </BDropdownItem>
     </BDropdown>
 </template>

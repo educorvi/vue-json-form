@@ -4,7 +4,20 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
 
-    modules: ['nuxt-auth-utils', '@bootstrap-vue-next/nuxt', '@nuxtjs/i18n'],
+    modules: [
+        // '@pinia/nuxt',
+        'nuxt-auth-utils',
+        '@bootstrap-vue-next/nuxt',
+        '@nuxtjs/i18n',
+    ],
+
+    // The form-builder is a complex client-side component using localStorage,
+    // custom Pinia stores with persisted state, and heavy browser APIs.
+    // Render it entirely on the client (SPA mode for this route).
+    routeRules: {
+        '/form-builder': { ssr: false },
+        '/form-builder/**': { ssr: false },
+    },
 
     // TypeORM uses legacy (experimental) decorators.
     // The standard TC39 decorator protocol passes `undefined` as the target
@@ -33,9 +46,43 @@ export default defineNuxtConfig({
                 },
             },
         },
+        // Pre-bundle these dependencies at dev-server startup so the heavy
+        // Vite dependency optimization happens once, not incrementally across
+        // multiple page reloads (each blocking 20–60 seconds).
+        optimizeDeps: {
+            include: [
+                '@phosphor-icons/vue',
+                'bootstrap-vue-next',
+                'pinia',
+                'pinia-plugin-persistedstate',
+                'uuid',
+                '@vueuse/core',
+                'vue-draggable-plus',
+                'sanitize-html',
+                'json-pointer',
+                'deepmerge',
+                'fast-deep-equal',
+                'decimal.js',
+            ],
+        },
+        ssr: {
+            // Workspace packages ship raw .vue SFCs and TypeScript source —
+            // Vite must bundle (not externalize) them for SSR to process
+            // their imports and SFC compilation correctly.
+            noExternal: [
+                '@educorvi/vue-json-form-builder',
+                '@educorvi/vue-json-form',
+                // 'pinia',
+                '@vueuse/core',
+                'vue-draggable-plus',
+            ],
+        },
     },
 
-    css: ['bootstrap/dist/css/bootstrap.min.css'],
+    css: [
+        'bootstrap/dist/css/bootstrap.min.css',
+        'bootstrap-icons/font/bootstrap-icons.css',
+    ],
 
     i18n: {
         locales: [
