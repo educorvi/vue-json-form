@@ -20,7 +20,7 @@
         "semantic-release-yarn": "^3.0.2",
         "turbo": "^2.9.18",
         "typescript": "~6.0.3",
-        "vite": "^8.0.16",
+        "vite": "^8.1.0",
         "vite-plugin-dts": "^5.0.2",
         "vite-plugin-externalize-deps": "^0.10.0",
         "vite-plugin-static-copy": "^4.1.1"
