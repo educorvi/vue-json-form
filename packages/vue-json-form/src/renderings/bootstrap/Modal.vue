@@ -34,6 +34,19 @@ const modalContentUi = computed<HTMLRenderer>(() => {
 
 const languageProvider = inject(languageProviderKey);
 const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
+
+const iconClass = computed(() => {
+    const icon = props.layoutElement.button.variant?.startsWith('outline-')
+        ? 'bi-info-square'
+        : 'bi-info-square-fill';
+    const color =
+        'text-' +
+        (props.layoutElement.button.variant || 'primary').replace(
+            'outline-',
+            ''
+        );
+    return `bi ${icon} ${color}`;
+});
 </script>
 
 <template>
@@ -48,10 +61,7 @@ const htmlMessages = computed(() => getHtmlMessages(props.layoutElement));
                 class="vjf_info-modal-link"
                 @click.prevent="modal = true"
             >
-                <i
-                    class="bi bi-info-square-fill text-primary"
-                    style="font-size: 1.75rem"
-                />
+                <i :class="iconClass" style="font-size: 1.75rem" />
                 <span class="ms-2">
                     {{ layoutElement.button.text }}
                 </span>
