@@ -8290,6 +8290,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"change-case@npm:^5.4.4":
+  version: 5.4.4
+  resolution: "change-case@npm:5.4.4"
+  checksum: 10/446e5573f3c854290a91292afef92b957d2e43a928260c91989b482aa860caaa29711b6725fc40c200af68061cbab357b033446d16a17bc5c553636994074e92
+  languageName: node
+  linkType: hard
+
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -12417,7 +12424,6 @@ __metadata:
     "@orpc/openapi": "npm:^1.14.6"
     "@orpc/server": "npm:^1.14.6"
     "@orpc/zod": "npm:^1.14.6"
-    "@phosphor-icons/vue": "npm:^2.2.1"
     "@types/bootstrap": "npm:^5"
     "@types/pg": "npm:^8"
     bootstrap: "npm:^5.3.8"
@@ -12426,6 +12432,7 @@ __metadata:
     nuxi: "npm:^3.36.1"
     nuxt: "npm:^4.4.8"
     nuxt-auth-utils: "npm:^0.5.29"
+    nuxt-phosphor-icons: "npm:2.3.3"
     pg: "npm:^8.22.0"
     turbo: "npm:^2.10.0"
     typeorm: "npm:0.3.28"
@@ -14273,6 +14280,16 @@ __metadata:
   version: 1.0.0
   resolution: "nuxt-define@npm:1.0.0"
   checksum: 10/fecda32862d77a90dc659e864597785a91a5a2e64de423aec1a2e1912bc2b0bf678d98f51fe3d740bcff2e83d20092439a436ae6ab6b8946dfa8cc20359ca578
+  languageName: node
+  linkType: hard
+
+"nuxt-phosphor-icons@npm:2.3.3":
+  version: 2.3.3
+  resolution: "nuxt-phosphor-icons@npm:2.3.3"
+  dependencies:
+    "@phosphor-icons/vue": "npm:^2.2.1"
+    change-case: "npm:^5.4.4"
+  checksum: 10/3e2a097eac3baec569f3b03c8d2172585a19aec73e05ecaaf9bf68b9ae1b769189c425385395fb4ffc9b29e18e422d9334707a98a1e02307dbfe50e03be0dede
   languageName: node
   linkType: hard
 

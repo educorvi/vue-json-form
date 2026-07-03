@@ -11,28 +11,55 @@
     "landing": {
         "title": "Vue Json Form Builder",
         "subtitle": "Formulare auf Basis von JSON Schema einfach erstellen und verwalten",
-        "signInKeycloak": "Mit Keycloak anmelden",
-        "authError": "Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "signInKeycloak": "Anmelden",
+        "authError": "Authentifizierung fehlgeschlagen. Bitte erneut versuchen.",
         "featuresHeading": "Funktionen",
         "featuresSubheading": "Eine Plattform zum Erstellen, Verwalten und Bereitstellen von Formularen",
-        "footer": "Form Builder"
+        "screenshotHeading": "Interaktive Formularerstellung",
+        "screenshotPlaceholder": "Screenshot des Formular-Builders folgt in Kürze",
+        "footer": "Form Builder",
+        "nav": {
+            "demo": "Demo",
+            "docs": "Dokumentation"
+        },
+        "integrations": {
+            "heading": "Integrationen",
+            "subheading": "Formulare überall rendern — Web, Vue oder mobile Apps",
+            "web": {
+                "title": "Web Component",
+                "description": "Mit der generischen Web Component können die Formulare in jede Webanwendung eingebettet werden — framework-unabhängig."
+            },
+            "vue": {
+                "title": "Vue Component",
+                "description": "Die native Vue-Komponente lässt sich direkt in jede Vue 3 App einbinden — für nahtloses Formular-Rendering mit voller Reaktivität."
+            },
+            "flutter": {
+                "title": "Flutter Widget",
+                "description": "Formulare mit dem dedizierten Flutter Widget in Mobile- und Desktop-Apps rendern."
+            }
+        }
+    },
+    "chips": {
+        "demo": "Demo",
+        "docs": "Dokumentation",
+        "github": "GitHub"
     },
     "features": {
         "formBuilder": {
             "title": "Visueller Formularersteller",
-            "description": "Gestalten Sie komplexe JSON-Schema-gestützte Formulare mit Drag-and-Drop und Live-Vorschau."
+            "description": "Komplexe JSON-Schema-gestützte Formulare mit Drag-and-Drop und Live-Vorschau gestalten."
         },
         "userManagement": {
             "title": "Benutzer- & Rollenverwaltung",
             "description": "Systembenutzer verwalten, Rollen zuweisen und Zugriff auf Formulare und Daten steuern."
         },
-        "permissions": {
-            "title": "Feinkörnige Berechtigungen",
-            "description": "Detaillierte Zugriffsrichtlinien pro Formular, Schema oder Ressource für Ihre Organisation festlegen."
-        },
         "openApi": {
             "title": "OpenAPI REST-Schnittstelle",
             "description": "Jede Ressource ist über eine vollständig dokumentierte, standardkonforme REST-API zugänglich, um die Plattform mit anderen Systemen zu integrieren."
+        },
+        "jsonUiSchema": {
+            "title": "JSON & UI Schema",
+            "description": "Standardkonforme JSON Schema-Artefakte generieren, mit einem zusätzlichen UI-Schema zur Anpassung von Felddarstellung, Layout und Abhängigkeiten."
         },
         "versioning": {
             "title": "Schema-Versionierung",
@@ -40,16 +67,17 @@
         },
         "sso": {
             "title": "Single Sign-On",
-            "description": "Authentifizierung über Keycloak OIDC — ein Login für alle Dienste in Ihrer Infrastruktur."
+            "description": "Authentifizierung über OIDC — ein Login für alle Dienste in Ihrer Infrastruktur."
         }
     },
     "users": {
         "title": "Benutzer",
+        "description": "Systembenutzer, Rollen und Zugriffsberechtigungen verwalten.",
         "searchPlaceholder": "Nach Name oder E-Mail suchen…",
         "loadError": "Benutzer konnten nicht geladen werden:",
         "noUsersTitle": "Keine Benutzer gefunden",
         "noUsersDescription": "Es gibt noch keine Benutzer.",
-        "noSearchResults": "Keine Ergebnisse für '{query}'. Versuchen Sie einen anderen Suchbegriff.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'. Bitte einen anderen Suchbegriff versuchen.",
         "total": "Keine Benutzer | {n} Benutzer | {n} Benutzer",
         "created": "Erstellt",
         "lastActivity": "Aktiv",
@@ -130,7 +158,7 @@
         }
     },
     "dashboard": {
-        "title": "Dashboard",
+        "title": "Start",
         "subtitle": "Verwaltungsschnittstelle für Formulare, Benutzer und Berechtigungen.",
         "apiStatus": "API-Status",
         "apiError": "API nicht erreichbar:",
@@ -148,6 +176,8 @@
         "clear": "Löschen",
         "edit": "Bearbeiten",
         "perPage": "Pro Seite",
+        "pageSizeLabel": "Pro Seite",
+        "showingEntries": "{start}-{end} von {total}",
         "totalCount": "Keine Elemente | {n} Element | {n} Elemente"
     },
     "theme": {
@@ -162,7 +192,7 @@
     "designSystem": {
         "label": "Designsystem",
         "active": "Aktiv",
-        "hint": "Das Wechseln des Designsystems aktualisiert alle PrimeVue-Komponenten und Tailwind-Utilities sofort – kein Neuladen erforderlich.",
+        "hint": "Das Wechseln des Designsystems aktualisiert alle PrimeVue-Komponenten und Tailwind-Utilities sofort - kein Neuladen erforderlich.",
         "uv": {
             "label": "UV Corporate",
             "description": "Flaches Unternehmens-Design mit UV-Markenfarben und 0px Rahmenradius."

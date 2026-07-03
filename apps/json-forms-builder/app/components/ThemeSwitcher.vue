@@ -7,11 +7,11 @@ type ThemeMode = 'system' | 'light' | 'dark';
 
 const mode = ref<ThemeMode>('system');
 
-// const currentIcon = computed(() => {
-//     if (mode.value === 'light') return PhSun;
-//     if (mode.value === 'dark') return PhMoon;
-//     return PhMonitor;
-// });
+const currentIcon = computed(() => {
+    if (mode.value === 'light') return 'sun'; // return PhSun;
+    if (mode.value === 'dark') return 'moon'; // return PhMoon;
+    return 'monitor'; // return PhMonitor;
+});
 
 const label = computed(() => {
     switch (mode.value) {
@@ -68,6 +68,7 @@ onMounted(() => {
         @click="cycle"
     >
         <!-- <component :is="currentIcon" :size="16" /> -->
-        <span class="ms-1 d-none d-sm-inline">{{ label }}</span>
+        <PhosphorIcon :name="currentIcon" />
+        <span class="ms-1 d-sm-inline">{{ label }}</span>
     </BButton>
 </template>

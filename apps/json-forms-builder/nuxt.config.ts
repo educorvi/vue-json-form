@@ -4,12 +4,8 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
 
-    modules: [
-        // '@pinia/nuxt',
-        'nuxt-auth-utils',
-        '@bootstrap-vue-next/nuxt',
-        '@nuxtjs/i18n',
-    ],
+    modules: [// '@pinia/nuxt',
+    'nuxt-auth-utils', '@bootstrap-vue-next/nuxt', '@nuxtjs/i18n', 'nuxt-phosphor-icons'],
 
     // The form-builder is a complex client-side component using localStorage,
     // custom Pinia stores with persisted state, and heavy browser APIs.

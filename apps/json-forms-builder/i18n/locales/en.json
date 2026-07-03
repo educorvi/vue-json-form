@@ -11,11 +11,38 @@
     "landing": {
         "title": "Vue Json Form Builder",
         "subtitle": "Easily create and manage forms based on JSON Schema",
-        "signInKeycloak": "Sign in with Keycloak",
+        "signInKeycloak": "Sign in",
         "authError": "Authentication failed. Please try again.",
         "featuresHeading": "Features",
         "featuresSubheading": "One platform for creating, managing, and deploying forms",
-        "footer": "Form Builder"
+        "screenshotHeading": "See it in action",
+        "screenshotPlaceholder": "Screenshot of the form builder coming soon",
+        "footer": "Form Builder",
+        "nav": {
+            "demo": "Demo",
+            "docs": "Docs"
+        },
+        "integrations": {
+            "heading": "Integrations",
+            "subheading": "Render forms anywhere — web, Vue, or mobile apps",
+            "web": {
+                "title": "Web Component",
+                "description": "Use the generic Web Component to embed JSON Schema forms in any web application, framework-agnostic."
+            },
+            "vue": {
+                "title": "Vue Component",
+                "description": "Drop the native Vue component into your Vue 3 app for seamless form rendering with full reactivity."
+            },
+            "flutter": {
+                "title": "Flutter Widget",
+                "description": "Render forms in your Flutter mobile or desktop apps with a dedicated Flutter widget."
+            }
+        }
+    },
+    "chips": {
+        "demo": "Demo",
+        "docs": "Docs",
+        "github": "GitHub"
     },
     "features": {
         "formBuilder": {
@@ -26,13 +53,13 @@
             "title": "User & Role Management",
             "description": "Manage system users, assign roles, and control access to forms and data."
         },
-        "permissions": {
-            "title": "Fine-grained Permissions",
-            "description": "Define granular access policies per form, schema, or resource for your organization."
-        },
         "openApi": {
             "title": "OpenAPI REST Interface",
             "description": "Every resource is accessible via a fully documented, standards-compliant REST API for integrating the platform with other systems."
+        },
+        "jsonUiSchema": {
+            "title": "JSON & UI Schema",
+            "description": "Generate standards-compliant JSON Schema artifacts with an additional UI Schema for customizing field appearance, layout, and dependencies."
         },
         "versioning": {
             "title": "Schema Versioning",
@@ -40,11 +67,12 @@
         },
         "sso": {
             "title": "Single Sign-On",
-            "description": "Authenticate via Keycloak OIDC — one login for all services in your infrastructure."
+            "description": "Authenticate via OIDC — one login for all services in your infrastructure."
         }
     },
     "users": {
         "title": "Users",
+        "description": "Manage system users, their roles, and access permissions.",
         "searchPlaceholder": "Search by name or email…",
         "loadError": "Failed to load users:",
         "noUsersTitle": "No users found",
@@ -130,7 +158,7 @@
         }
     },
     "dashboard": {
-        "title": "Dashboard",
+        "title": "Start",
         "subtitle": "Administrative interface for managing forms, users, and permissions.",
         "apiStatus": "API Status",
         "apiError": "Could not reach API:",
@@ -148,6 +176,8 @@
         "clear": "Clear",
         "edit": "Edit",
         "perPage": "Per page",
+        "pageSizeLabel": "Per page",
+        "showingEntries": "Showing {start}–{end} of {total}",
         "totalCount": "No items | {n} item | {n} items"
     },
     "theme": {

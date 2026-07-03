@@ -1,3 +1,8 @@
+<!--
+    BasePage – Standard page wrapper with spacing + title/description header.
+    Builds on BasePageContainer. In the future this will also render a
+    breadcrumb navigation above the title.
+-->
 <script setup lang="ts">
 defineProps<{
     title: string;
@@ -6,7 +11,8 @@ defineProps<{
 </script>
 
 <template>
-    <div class="py-4 px-4">
+    <BasePageContainer>
+        <!-- TODO: Add breadcrumb navigation here -->
         <div class="mb-4">
             <h1 class="h3 fw-bold">{{ title }}</h1>
             <p v-if="description" class="text-secondary">
@@ -14,5 +20,5 @@ defineProps<{
             </p>
         </div>
         <slot />
-    </div>
+    </BasePageContainer>
 </template>

@@ -35,6 +35,7 @@ const badgeVariant = computed(() => {
                 </div>
                 <div v-else-if="error" class="d-flex gap-2 text-danger">
                     <!-- <PhWarningCircle :size="18" /> -->
+                    <PhosphorIcon name="warning-circle" />
                     {{ t('dashboard.apiError') }} {{ error.message }}
                 </div>
                 <div v-else-if="status" class="d-flex gap-3">
@@ -67,6 +68,10 @@ const badgeVariant = computed(() => {
                                     "
                                 >
                                     <!-- <PhUsers :size="20" class="text-primary" /> -->
+                                    <PhosphorIcon
+                                        name="user"
+                                        class="text-primary"
+                                    />
                                 </div>
                                 <div>
                                     <p class="fw-semibold mb-0">
@@ -103,6 +108,10 @@ const badgeVariant = computed(() => {
                                     "
                                 >
                                     <!-- <PhCode :size="20" class="text-success" /> -->
+                                    <PhosphorIcon
+                                        name="code"
+                                        class="text-success"
+                                    />
                                 </div>
                                 <div>
                                     <p class="fw-semibold mb-0">

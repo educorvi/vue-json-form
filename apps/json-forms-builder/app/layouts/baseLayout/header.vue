@@ -30,9 +30,14 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
 </script>
 
 <template>
-    <BNavbar variant="light" class="border-bottom bg-body px-3 py-2">
+    <BNavbar
+        toggleable="md"
+        variant="light"
+        class="border-bottom bg-body px-3 py-2"
+    >
         <BNavbarBrand href="/dashboard" class="d-flex align-items-center gap-2">
-            <PhNotePencil :size="20" class="text-primary" />
+            <!-- <PhNotePencil :size="20" class="text-primary" /> -->
+            <PhosphorIcon name="note-pencil" class="text-primary" />
             <span class="fw-semibold small"> {{ t('nav.formBuilder') }}</span>
         </BNavbarBrand>
         <BNavbarToggle target="nav-collapse" />
@@ -46,7 +51,8 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                 <BNavItemDropdown right no-caret :auto-close="false">
                     <template #button-content>
                         <span class="d-flex align-items-center gap-2">
-                            <PhUser :size="18" />
+                            <!-- <PhUser :size="18" /> -->
+                            <PhosphorIcon name="user" />
                             <span class="fw-medium">{{ userName }}</span>
                         </span>
                     </template>
@@ -56,6 +62,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                         style="cursor: default"
                     >
                         <!-- <PhUser :size="18" /> -->
+                        <PhosphorIcon name="user" />
                         <div class="d-flex flex-column">
                             <span class="fw-medium">{{ userName }}</span>
                             <span class="small text-secondary">{{
@@ -77,6 +84,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                         class="d-flex align-items-center gap-2"
                     >
                         <!-- <PhSignOut :size="18" /> -->
+                        <PhosphorIcon name="sign-out" />
                         {{ t('nav.signOut') }}
                     </BDropdownItem>
                 </BNavItemDropdown>

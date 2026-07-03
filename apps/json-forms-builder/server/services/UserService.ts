@@ -101,6 +101,8 @@ export class UserService {
         });
 
         const data = rows.map(dbUserToApiUser);
+        // sleep 2 seconds for testing loading state
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
         return paginatedResponse(data, total, page, page_size);
     }
 
