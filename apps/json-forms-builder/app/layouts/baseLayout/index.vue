@@ -12,19 +12,13 @@ async function logout() {
 }
 
 const navItems = computed(() => [
-    { label: t('nav.dashboard'), icon: 'ph ph-house', route: '/dashboard' },
-    { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
-    { label: t('nav.groups'), icon: 'ph ph-tree-structure', route: '/groups' },
     {
-        label: t('nav.formBuilder'),
+        label: t('nav.forms'),
         icon: 'ph ph-objects-column',
         route: '/form-builder',
     },
-    {
-        label: t('nav.apiDocs'),
-        icon: 'ph ph-code',
-        route: '/_swagger',
-    },
+    { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
+    { label: t('nav.groups'), icon: 'ph ph-tree-structure', route: '/groups' },
 ]);
 
 const userName = computed(() => (user as { name?: string })?.name ?? 'User');

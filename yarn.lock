@@ -2947,7 +2947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/kit@npm:4.4.8, @nuxt/kit@npm:^4.3.1, @nuxt/kit@npm:^4.4.2, @nuxt/kit@npm:^4.4.4":
+"@nuxt/kit@npm:4.4.8, @nuxt/kit@npm:^4.2.0, @nuxt/kit@npm:^4.3.1, @nuxt/kit@npm:^4.4.2, @nuxt/kit@npm:^4.4.4":
   version: 4.4.8
   resolution: "@nuxt/kit@npm:4.4.8"
   dependencies:
@@ -4420,6 +4420,17 @@ __metadata:
   peerDependencies:
     vue: ">=3.2.39"
   checksum: 10/a8135fffcc0f6ea5a7e5c688ad339d47c0376768d2d129827f87bcb49fa88a1de570c328178e147a6b8a6a09ea1475f7288847db4f5048740e33b64e95389ec6
+  languageName: node
+  linkType: hard
+
+"@pinia/nuxt@npm:0.11.3":
+  version: 0.11.3
+  resolution: "@pinia/nuxt@npm:0.11.3"
+  dependencies:
+    "@nuxt/kit": "npm:^4.2.0"
+  peerDependencies:
+    pinia: ^3.0.4
+  checksum: 10/9d26c74e0478877187b2a583036e11a785c8ded2b07dfae742fadf8fa16800402ae37d31c8b2fb9440e93ac8567ddd7643b097f8339aeb3c6c53dda2afdba907
   languageName: node
   linkType: hard
 
@@ -12424,6 +12435,7 @@ __metadata:
     "@orpc/openapi": "npm:^1.14.6"
     "@orpc/server": "npm:^1.14.6"
     "@orpc/zod": "npm:^1.14.6"
+    "@pinia/nuxt": "npm:0.11.3"
     "@types/bootstrap": "npm:^5"
     "@types/pg": "npm:^8"
     bootstrap: "npm:^5.3.8"
@@ -12434,6 +12446,7 @@ __metadata:
     nuxt-auth-utils: "npm:^0.5.29"
     nuxt-phosphor-icons: "npm:2.3.3"
     pg: "npm:^8.22.0"
+    pinia: "npm:^3.0.4"
     turbo: "npm:^2.10.0"
     typeorm: "npm:0.3.28"
     vue: "npm:^3.5.38"

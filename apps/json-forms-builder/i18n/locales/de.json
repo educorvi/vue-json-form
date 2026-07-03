@@ -1,10 +1,9 @@
 {
     "nav": {
-        "dashboard": "Dashboard",
+        "forms": "Formulare",
         "users": "Benutzer",
         "groups": "Gruppen",
         "formBuilder": "Formular-Builder",
-        "apiDocs": "API-Dokumentation",
         "signIn": "Anmelden",
         "signOut": "Abmelden"
     },
@@ -111,6 +110,8 @@
         "subGroups": "Untergruppen",
         "forms": "Formulare",
         "members": "Mitglieder",
+        "created": "Erstellt",
+        "updated": "Zuletzt aktualisiert",
         "sortBy": {
             "title": "Titel",
             "created": "Erstellt",
@@ -118,6 +119,20 @@
             "members": "Mitglieder"
         },
         "noSubGroups": "Keine Untergruppen",
+        "columns": {
+            "group": "Gruppe",
+            "stats": "Statistiken",
+            "actions": "Aktionen"
+        },
+        "delete": {
+            "title": "Gruppe löschen",
+            "warning": "Dies löscht die Gruppe und ALLE ihre Untergruppen und Formulare dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+            "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
+            "confirm": "Gruppe löschen",
+            "cancel": "Abbrechen",
+            "deleteSuccess": "Gruppe erfolgreich gelöscht.",
+            "deleteError": "Gruppe konnte nicht gelöscht werden."
+        },
         "new": {
             "title": "Neue Gruppe",
             "addSubGroup": "Neue Untergruppe",
@@ -175,6 +190,8 @@
         "cancel": "Abbrechen",
         "clear": "Löschen",
         "edit": "Bearbeiten",
+        "expand": "Ausklappen",
+        "collapse": "Einklappen",
         "perPage": "Pro Seite",
         "pageSizeLabel": "Pro Seite",
         "showingEntries": "{start}-{end} von {total}",

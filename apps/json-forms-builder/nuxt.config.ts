@@ -4,8 +4,13 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
 
-    modules: [// '@pinia/nuxt',
-    'nuxt-auth-utils', '@bootstrap-vue-next/nuxt', '@nuxtjs/i18n', 'nuxt-phosphor-icons'],
+    modules: [
+        '@pinia/nuxt',
+        'nuxt-auth-utils',
+        '@bootstrap-vue-next/nuxt',
+        '@nuxtjs/i18n',
+        'nuxt-phosphor-icons',
+    ],
 
     // The form-builder is a complex client-side component using localStorage,
     // custom Pinia stores with persisted state, and heavy browser APIs.
@@ -47,18 +52,22 @@ export default defineNuxtConfig({
         // multiple page reloads (each blocking 20–60 seconds).
         optimizeDeps: {
             include: [
+                '@orpc/client',
+                '@orpc/client/fetch',
                 '@phosphor-icons/vue',
-                'bootstrap-vue-next',
-                'pinia',
-                'pinia-plugin-persistedstate',
-                'uuid',
+                '@vue/devtools-core',
+                '@vue/devtools-kit',
                 '@vueuse/core',
-                'vue-draggable-plus',
-                'sanitize-html',
-                'json-pointer',
+                'bootstrap-vue-next',
+                'decimal.js',
                 'deepmerge',
                 'fast-deep-equal',
-                'decimal.js',
+                'json-pointer',
+                'pinia',
+                'pinia-plugin-persistedstate',
+                'sanitize-html',
+                'uuid',
+                'vue-draggable-plus',
             ],
         },
         ssr: {

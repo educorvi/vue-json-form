@@ -1,10 +1,9 @@
 {
     "nav": {
-        "dashboard": "Dashboard",
+        "forms": "Forms",
         "users": "Users",
         "groups": "Groups",
         "formBuilder": "Form Builder",
-        "apiDocs": "API Docs",
         "signIn": "Sign in",
         "signOut": "Sign out"
     },
@@ -108,9 +107,11 @@
         "noChildrenDescription": "This group has no children.",
         "noSearchResults": "No results for '{query}'.",
         "total": "No groups | {n} group | {n} groups",
-        "subGroups": "sub-groups",
-        "forms": "forms",
-        "members": "members",
+        "subGroups": "Sub-groups",
+        "forms": "Forms",
+        "members": "Members",
+        "created": "Created",
+        "updated": "Last updated",
         "sortBy": {
             "title": "Title",
             "created": "Created",
@@ -118,6 +119,20 @@
             "members": "Members"
         },
         "noSubGroups": "No sub-groups",
+        "columns": {
+            "group": "Group",
+            "stats": "Statistics",
+            "actions": "Actions"
+        },
+        "delete": {
+            "title": "Delete Group",
+            "warning": "This will permanently delete this group and ALL its sub-groups and forms. This action cannot be undone.",
+            "confirmPrompt": "Type \"{name}\" to confirm deletion:",
+            "confirm": "Delete Group",
+            "cancel": "Cancel",
+            "deleteSuccess": "Group deleted successfully.",
+            "deleteError": "Failed to delete group."
+        },
         "new": {
             "title": "New Group",
             "addSubGroup": "New Sub-Group",
@@ -175,6 +190,8 @@
         "cancel": "Cancel",
         "clear": "Clear",
         "edit": "Edit",
+        "expand": "Expand",
+        "collapse": "Collapse",
         "perPage": "Per page",
         "pageSizeLabel": "Per page",
         "showingEntries": "Showing {start}–{end} of {total}",
