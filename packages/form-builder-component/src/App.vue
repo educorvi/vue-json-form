@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { createPinia, getActivePinia, setActivePinia } from 'pinia';
+
+setActivePinia(getActivePinia() || createPinia());
+
 import { ref, watch, type Ref } from 'vue';
 import { BApp } from 'bootstrap-vue-next';
-import { useFormStore } from '@/stores/formStore';
-import LeftPanel from '@/components/LeftPanel/LeftPanel.vue';
-import MiddlePanel from '@/components/MiddlePanel/MiddlePanel.vue';
-import RightPanel from '@/components/RightPanel/RightPanel.vue';
+import { useFormStore } from './stores/formStore';
+import LeftPanel from './components/LeftPanel/LeftPanel.vue';
+import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
+import RightPanel from './components/RightPanel/RightPanel.vue';
 import { supportedUiSchemaVersion, version } from '@educorvi/vue-json-form';
 
 const store = useFormStore();
