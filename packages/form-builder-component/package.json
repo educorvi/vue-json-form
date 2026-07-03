@@ -3,6 +3,21 @@
     "version": "0.0.0",
     "private": true,
     "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/vue-json-form-builder.d.ts",
+            "import": "./dist/vue-json-form-builder.js",
+            "default": "./dist/vue-json-form-builder.js"
+        },
+        "./dist/*": "./dist/*"
+    },
+    "files": [
+        "dist",
+        "package.json",
+        "README.md"
+    ],
+    "main": "dist/vue-json-form-builder.cjs",
+    "module": "dist/vue-json-form-builder.js",
     "scripts": {
         "dev:internal": "vite -c vite.dev.config.ts --host",
         "dev": "turbo watch dev:internal",
