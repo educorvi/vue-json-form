@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { definePageMeta } from '#imports';
+
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 // import { useTodoStore } from '@/store/todo';
 // import FormBuilderApp from '@educorvi/vue-json-form-builder/src/App.vue';

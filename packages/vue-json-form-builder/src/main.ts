@@ -20,6 +20,7 @@
 // app.use(createBootstrap());
 
 // app.mount('#app');
+import './assets/main.css';
 
 import VueJsonFormBuilder from './App.vue';
 export { VueJsonFormBuilder };

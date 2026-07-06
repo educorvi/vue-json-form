@@ -978,7 +978,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-builder@workspace:*, @educorvi/vue-json-form-builder@workspace:packages/vue-json-form-builder":
+"@educorvi/vue-json-form-builder@workspace:*, @educorvi/vue-json-form-builder@workspace:^, @educorvi/vue-json-form-builder@workspace:packages/vue-json-form-builder":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-builder@workspace:packages/vue-json-form-builder"
   dependencies:
@@ -1146,6 +1146,33 @@ __metadata:
     vue-eslint-parser: "npm:^10.4.1"
     vue-router: "npm:^5.1.0"
     vue-tsc: "npm:^3.3.4"
+  languageName: unknown
+  linkType: soft
+
+"@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent"
+  dependencies:
+    "@educorvi/vue-json-form-builder": "workspace:^"
+    "@playwright/test": "npm:^1.61.0"
+    "@semantic-release/exec": "npm:^7.1.0"
+    "@tsconfig/node24": "npm:^24.0.4"
+    "@types/node": "npm:^24.13.2"
+    "@vitejs/plugin-vue": "npm:^6.0.7"
+    "@vue/tsconfig": "npm:^0.9.1"
+    bootstrap: "npm:^5.3.8"
+    bootstrap-icons: "npm:^1.13.1"
+    npm-run-all2: "npm:^9.0.2"
+    semantic-release: "npm:^25.0.5"
+    semantic-release-monorepo: "npm:^8.0.2"
+    semantic-release-yarn: "npm:^3.0.2"
+    turbo: "npm:^2.10.3"
+    typescript: "npm:~6.0.0"
+    vite: "npm:^8.0.16"
+    vite-plugin-dts: "npm:^5.0.3"
+    vite-plugin-vue-devtools: "npm:^8.1.2"
+    vue: "npm:^3.5.38"
+    vue-tsc: "npm:^3.3.5"
   languageName: unknown
   linkType: soft
 
@@ -4006,7 +4033,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.60.0":
+"@playwright/test@npm:^1.60.0, @playwright/test@npm:^1.61.0":
   version: 1.61.1
   resolution: "@playwright/test@npm:1.61.1"
   dependencies:
@@ -5033,9 +5060,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/darwin-64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/darwin-64@npm:2.10.3"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/darwin-arm64@npm:2.10.2":
   version: 2.10.2
   resolution: "@turbo/darwin-arm64@npm:2.10.2"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@turbo/darwin-arm64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/darwin-arm64@npm:2.10.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
@@ -5047,9 +5088,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/linux-64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/linux-64@npm:2.10.3"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/linux-arm64@npm:2.10.2":
   version: 2.10.2
   resolution: "@turbo/linux-arm64@npm:2.10.2"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@turbo/linux-arm64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/linux-arm64@npm:2.10.3"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
@@ -5061,9 +5116,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/windows-64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/windows-64@npm:2.10.3"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/windows-arm64@npm:2.10.2":
   version: 2.10.2
   resolution: "@turbo/windows-arm64@npm:2.10.2"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@turbo/windows-arm64@npm:2.10.3":
+  version: 2.10.3
+  resolution: "@turbo/windows-arm64@npm:2.10.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
@@ -5214,6 +5283,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~8.3.0"
   checksum: 10/fee720e8ddf8aa66a22bc5cf3209347f8dcc07cbf7475f966761684f04fb34b819739a311edbf87271d6c7f9f50b1f015d3ff9e36d67d04264aafe18ac9a3796
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^24.13.2":
+  version: 24.13.2
+  resolution: "@types/node@npm:24.13.2"
+  dependencies:
+    undici-types: "npm:~7.18.0"
+  checksum: 10/2b8cb95ada191ecc788fef91d7cdb86dff24f6895b510e1fb495cc001832709fa8fc3e1eeb27d64bda52b3f74f9e91acf42431e98e3e6876de1e53acce7f7602
   languageName: node
   linkType: hard
 
@@ -11422,6 +11500,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-parse-even-better-errors@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "json-parse-even-better-errors@npm:6.0.0"
+  checksum: 10/52f10c3c999f646f1c3fbbf84e0cee6ef3939609bb99d704e7b9a98544325f5a33b4439f2ddb89b5ffcad7171b47658b5365742de398fb3e1145a38ac3c15d1f
+  languageName: node
+  linkType: hard
+
 "json-pointer@npm:^0.6.2":
   version: 0.6.2
   resolution: "json-pointer@npm:0.6.2"
@@ -13024,6 +13109,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"npm-normalize-package-bin@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "npm-normalize-package-bin@npm:6.0.0"
+  checksum: 10/0d9b2a629b488bec426abc64718a5fdf095b40039b58d218f112eb51feb17249f2b362084b787ace8a0b44c56908621b9ca87a40c9c08db9630046a90f5cabdf
+  languageName: node
+  linkType: hard
+
 "npm-package-arg@npm:^13.0.0, npm-package-arg@npm:^13.0.2":
   version: 13.0.2
   resolution: "npm-package-arg@npm:13.0.2"
@@ -13081,6 +13173,27 @@ __metadata:
     npm-package-arg: "npm:^13.0.0"
     proc-log: "npm:^6.0.0"
   checksum: 10/a3f4614a8421b40f72c71cdb97aca3b710a508c929a00b6f795020eaabef19dbe4a3f5043703aa54a1dd56b6d92bc1e764f2299d5a47d6e883942495db085a5e
+  languageName: node
+  linkType: hard
+
+"npm-run-all2@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "npm-run-all2@npm:9.0.2"
+  dependencies:
+    ansi-styles: "npm:^6.2.1"
+    cross-spawn: "npm:^7.0.6"
+    memorystream: "npm:^0.3.1"
+    picomatch: "npm:^4.0.2"
+    pidtree: "npm:^1.0.0"
+    read-package-json-fast: "npm:^6.0.0"
+    shell-quote: "npm:^1.8.4"
+    which: "npm:^7.0.0"
+  bin:
+    npm-run-all: bin/npm-run-all/index.js
+    npm-run-all2: bin/npm-run-all/index.js
+    run-p: bin/run-p/index.js
+    run-s: bin/run-s/index.js
+  checksum: 10/5b723ff5dc4822d9aaa23a2cf31d86309bfda94937e951120e85a493b62945427cb89336aa4090be00d0380e49ba2d9f73303c547f4989b69a93c506a1f7b693
   languageName: node
   linkType: hard
 
@@ -14496,6 +14609,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pidtree@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "pidtree@npm:1.0.0"
+  bin:
+    pidtree: bin/pidtree.js
+  checksum: 10/f9195d62aaf3a87c8c7c18bf3a96f9e28fdb58e347050271e2c7c87c8c66d1b1193a8ae4a8749487a772d3f29a543a74de1d315772327ec17e55ba114417ecd0
+  languageName: node
+  linkType: hard
+
 "pify@npm:^3.0.0":
   version: 3.0.0
   resolution: "pify@npm:3.0.0"
@@ -15275,6 +15397,16 @@ __metadata:
   version: 6.0.0
   resolution: "read-cmd-shim@npm:6.0.0"
   checksum: 10/cba2285ef31ac21e038a1525094defce597c68fdcba0e8b355d4402000ac893dfc2a3d0a44e50471df6096c7b0218af159d7524ff94ca72c21c95d44de476fbc
+  languageName: node
+  linkType: hard
+
+"read-package-json-fast@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "read-package-json-fast@npm:6.0.0"
+  dependencies:
+    json-parse-even-better-errors: "npm:^6.0.0"
+    npm-normalize-package-bin: "npm:^6.0.0"
+  checksum: 10/22fc66c316533f000ec12ed08ae79ab935a13f07c7e928dbb84af3674b0a47aa56fb8a03c170a9b2e4ecbfcb502f17cd3c79814002c3a3a30d17b1e668b1fc3c
   languageName: node
   linkType: hard
 
@@ -16226,7 +16358,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semantic-release@npm:^25.0.3":
+"semantic-release@npm:^25.0.3, semantic-release@npm:^25.0.5":
   version: 25.0.5
   resolution: "semantic-release@npm:25.0.5"
   dependencies:
@@ -17675,6 +17807,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"turbo@npm:^2.10.3":
+  version: 2.10.3
+  resolution: "turbo@npm:2.10.3"
+  dependencies:
+    "@turbo/darwin-64": "npm:2.10.3"
+    "@turbo/darwin-arm64": "npm:2.10.3"
+    "@turbo/linux-64": "npm:2.10.3"
+    "@turbo/linux-arm64": "npm:2.10.3"
+    "@turbo/windows-64": "npm:2.10.3"
+    "@turbo/windows-arm64": "npm:2.10.3"
+  dependenciesMeta:
+    "@turbo/darwin-64":
+      optional: true
+    "@turbo/darwin-arm64":
+      optional: true
+    "@turbo/linux-64":
+      optional: true
+    "@turbo/linux-arm64":
+      optional: true
+    "@turbo/windows-64":
+      optional: true
+    "@turbo/windows-arm64":
+      optional: true
+  bin:
+    turbo: bin/turbo
+  checksum: 10/47823f1a64f4cff46f9ee2366960b56d5c25214a0a21bb0da662debe77d98c41cc24ddf6157c7e31cb32358c02410bbe799d552a2e2405e69ae689e3d303396a
+  languageName: node
+  linkType: hard
+
 "type-check@npm:^0.4.0, type-check@npm:~0.4.0":
   version: 0.4.0
   resolution: "type-check@npm:0.4.0"
@@ -17903,7 +18064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~6.0.3":
+"typescript@npm:~6.0.0, typescript@npm:~6.0.3":
   version: 6.0.3
   resolution: "typescript@npm:6.0.3"
   bin:
@@ -17913,7 +18074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~6.0.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A~6.0.0#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~6.0.3#optional!builtin<compat/typescript>":
   version: 6.0.3
   resolution: "typescript@patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"
   bin:
@@ -17995,6 +18156,13 @@ __metadata:
   version: 7.28.0
   resolution: "undici-types@npm:7.28.0"
   checksum: 10/8f2b46ef376a9e6143a3350fcae10bb499037ee706cfad8e4c4f5d6313675d350487fa1b205cc9d1210d7043818cd0b983c56f9199b2ff28be21b10e59aa5581
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10/e61a5918f624d68420c3ca9d301e9f15b61cba6e97be39fe2ce266dd6151e4afe424d679372638826cb506be33952774e0424141200111a9857e464216c009af
   languageName: node
   linkType: hard
 
@@ -18594,7 +18762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-dts@npm:^5.0.2":
+"vite-plugin-dts@npm:^5.0.2, vite-plugin-dts@npm:^5.0.3":
   version: 5.0.3
   resolution: "vite-plugin-dts@npm:5.0.3"
   dependencies:
@@ -19088,7 +19256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-tsc@npm:^3.3.4":
+"vue-tsc@npm:^3.3.4, vue-tsc@npm:^3.3.5":
   version: 3.3.6
   resolution: "vue-tsc@npm:3.3.6"
   dependencies:
