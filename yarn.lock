@@ -6525,13 +6525,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"app-root-path@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "app-root-path@npm:3.1.0"
-  checksum: 10/b4cdab5f7e51ec43fa04c97eca2adedf8e18d6c3dd21cd775b70457c5e71f0441c692a49dcceb426f192640b7393dcd41d85c36ef98ecb7c785a53159c912def
-  languageName: node
-  linkType: hard
-
 "aproba@npm:^2.0.0":
   version: 2.1.0
   resolution: "aproba@npm:2.1.0"
@@ -8148,7 +8141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.11.19, dayjs@npm:^1.11.20, dayjs@npm:^1.11.7":
+"dayjs@npm:^1.11.20, dayjs@npm:^1.11.7":
   version: 1.11.21
   resolution: "dayjs@npm:1.11.21"
   checksum: 10/dd16f9f2706b61b90e3c346a3211ac3afd9e26193136ce0e87f70bf74d1c17a447bceb230a88b175467fc9f5e3243d8c1544b9897092a12d9c80ee44d338dcb6
@@ -8201,7 +8194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dedent@npm:^1.7.0":
+"dedent@npm:^1.7.2":
   version: 1.7.2
   resolution: "dedent@npm:1.7.2"
   peerDependencies:
@@ -8472,13 +8465,6 @@ __metadata:
   dependencies:
     is-obj: "npm:^2.0.0"
   checksum: 10/33b2561617bd5c73cf9305368ba4638871c5dbf9c8100c8335acd2e2d590a81ec0e75c11cfaea5cc3cf8c2f668cad4beddb52c11856d0c9e666348eee1baf57a
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^16.6.1":
-  version: 16.6.1
-  resolution: "dotenv@npm:16.6.1"
-  checksum: 10/1d1897144344447ffe62aa1a6d664f4cd2e0784e0aff787eeeec1940ded32f8e4b5b506d665134fc87157baa086fce07ec6383970a2b6d2e7985beaed6a4cc14
   languageName: node
   linkType: hard
 
@@ -10058,7 +10044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.0.0, glob@npm:^10.4.2, glob@npm:^10.5.0":
+"glob@npm:^10.0.0, glob@npm:^10.4.2":
   version: 10.5.0
   resolution: "glob@npm:10.5.0"
   dependencies:
@@ -10635,7 +10621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inherits@npm:2, inherits@npm:^2.0.4, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
+"inherits@npm:2, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 10/cd45e923bee15186c07fa4c89db0aace24824c482fb887b528304694b2aa6ff8a898da8657046a5dcf3e46cd6db6c61629551f9215f208d7c3f157cf9b290521
@@ -11400,7 +11386,7 @@ __metadata:
     pg: "npm:^8.22.0"
     pinia: "npm:^3.0.4"
     turbo: "npm:^2.10.0"
-    typeorm: "npm:0.3.28"
+    typeorm: "npm:1.0"
     vue: "npm:^3.5.38"
     vue-router: "npm:^5.1.0"
     zod: "npm:^4.4.3"
@@ -15863,17 +15849,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0":
-  version: 5.2.1
-  resolution: "safe-buffer@npm:5.2.1"
-  checksum: 10/32872cd0ff68a3ddade7a7617b8f4c2ae8764d8b7d884c651b74457967a9e0e886267d3ecc781220629c44a865167b61c375d2da6c720c840ecd73f45d5d9451
-  languageName: node
-  linkType: hard
-
 "safe-buffer@npm:~5.1.0, safe-buffer@npm:~5.1.1":
   version: 5.1.2
   resolution: "safe-buffer@npm:5.1.2"
   checksum: 10/7eb5b48f2ed9a594a4795677d5a150faa7eb54483b2318b568dc0c4fc94092a6cce5be02c7288a0500a156282f5276d5688bce7259299568d1053b2150ef374a
+  languageName: node
+  linkType: hard
+
+"safe-buffer@npm:~5.2.0":
+  version: 5.2.1
+  resolution: "safe-buffer@npm:5.2.1"
+  checksum: 10/32872cd0ff68a3ddade7a7617b8f4c2ae8764d8b7d884c651b74457967a9e0e886267d3ecc781220629c44a865167b61c375d2da6c720c840ecd73f45d5d9451
   languageName: node
   linkType: hard
 
@@ -16407,19 +16393,6 @@ __metadata:
   version: 1.2.0
   resolution: "setprototypeof@npm:1.2.0"
   checksum: 10/fde1630422502fbbc19e6844346778f99d449986b2f9cdcceb8326730d2f3d9964dbcb03c02aaadaefffecd0f2c063315ebea8b3ad895914bf1afc1747fc172e
-  languageName: node
-  linkType: hard
-
-"sha.js@npm:^2.4.12":
-  version: 2.4.12
-  resolution: "sha.js@npm:2.4.12"
-  dependencies:
-    inherits: "npm:^2.0.4"
-    safe-buffer: "npm:^5.2.1"
-    to-buffer: "npm:^1.2.0"
-  bin:
-    sha.js: bin.js
-  checksum: 10/39c0993592c2ab34eb2daae2199a2a1d502713765aecb611fd97c0c4ab7cd53e902d628e1962aaf384bafd28f55951fef46dcc78799069ce41d74b03aa13b5a7
   languageName: node
   linkType: hard
 
@@ -17510,17 +17483,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"to-buffer@npm:^1.2.0":
-  version: 1.2.2
-  resolution: "to-buffer@npm:1.2.2"
-  dependencies:
-    isarray: "npm:^2.0.5"
-    safe-buffer: "npm:^5.2.1"
-    typed-array-buffer: "npm:^1.0.3"
-  checksum: 10/69d806c20524ff1e4c44d49276bc96ff282dcae484780a3974e275dabeb75651ea430b074a2a4023701e63b3e1d87811cd82c0972f35280fe5461710e4872aba
-  languageName: node
-  linkType: hard
-
 "to-regex-range@npm:^5.0.1":
   version: 5.0.1
   resolution: "to-regex-range@npm:5.0.1"
@@ -17857,42 +17819,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typeorm@npm:0.3.28":
-  version: 0.3.28
-  resolution: "typeorm@npm:0.3.28"
+"typeorm@npm:1.0":
+  version: 1.0.0
+  resolution: "typeorm@npm:1.0.0"
   dependencies:
     "@sqltools/formatter": "npm:^1.2.5"
     ansis: "npm:^4.2.0"
-    app-root-path: "npm:^3.1.0"
-    buffer: "npm:^6.0.3"
-    dayjs: "npm:^1.11.19"
+    dayjs: "npm:^1.11.20"
     debug: "npm:^4.4.3"
-    dedent: "npm:^1.7.0"
-    dotenv: "npm:^16.6.1"
-    glob: "npm:^10.5.0"
+    dedent: "npm:^1.7.2"
     reflect-metadata: "npm:^0.2.2"
-    sha.js: "npm:^2.4.12"
     sql-highlight: "npm:^6.1.0"
+    tinyglobby: "npm:^0.2.16"
     tslib: "npm:^2.8.1"
-    uuid: "npm:^11.1.0"
-    yargs: "npm:^17.7.2"
+    yargs: "npm:^18.0.0"
   peerDependencies:
-    "@google-cloud/spanner": ^5.18.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+    "@google-cloud/spanner": ^8.0.0
     "@sap/hana-client": ^2.14.22
-    better-sqlite3: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+    better-sqlite3: ^12.0.0
     ioredis: ^5.0.4
-    mongodb: ^5.8.0 || ^6.0.0
-    mssql: ^9.1.1 || ^10.0.0 || ^11.0.0 || ^12.0.0
-    mysql2: ^2.2.5 || ^3.0.1
+    mongodb: ^7.0.0
+    mssql: ^12.0.0
+    mysql2: ^3.15.3
     oracledb: ^6.3.0
     pg: ^8.5.1
     pg-native: ^3.0.0
     pg-query-stream: ^4.0.0
-    redis: ^3.1.1 || ^4.0.0 || ^5.0.14
+    redis: ^5.0.0
     sql.js: ^1.4.0
-    sqlite3: ^5.0.3
-    ts-node: ^10.7.0
-    typeorm-aurora-data-api-driver: ^2.0.0 || ^3.0.0
+    ts-node: ^10.9.2
+    typeorm-aurora-data-api-driver: ^3.0.0
   peerDependenciesMeta:
     "@google-cloud/spanner":
       optional: true
@@ -17920,8 +17876,6 @@ __metadata:
       optional: true
     sql.js:
       optional: true
-    sqlite3:
-      optional: true
     ts-node:
       optional: true
     typeorm-aurora-data-api-driver:
@@ -17930,7 +17884,7 @@ __metadata:
     typeorm: cli.js
     typeorm-ts-node-commonjs: cli-ts-node-commonjs.js
     typeorm-ts-node-esm: cli-ts-node-esm.js
-  checksum: 10/4eb217d65414291fb226267d903d123a16a9eb090b4e8f8da2dfe2f64680265823bea3712d363d31fe96c6dc2cef00edd545f42e63ec65b8a1899a1b455f757b
+  checksum: 10/56ed87a4215181482ced4d00f14143c5c4f0e7fcc803e0d748ff7b2b98062c6bcb921819a347e79dca9ab0438f81496a2fbf45a7aeec6b98cc138e7a8528f2fa
   languageName: node
   linkType: hard
 
@@ -18519,15 +18473,6 @@ __metadata:
   bin:
     uuid: dist-node/bin/uuid
   checksum: 10/0f978fd5b0269d7acb615342aeb131f0b8d85eeb8ec34f2915d906baa3befcc14a079a430d0f8116aec6fd20c850cbfab65d1b3d1643fa81ed373c0cf9574f18
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^11.1.0":
-  version: 11.1.1
-  resolution: "uuid@npm:11.1.1"
-  bin:
-    uuid: dist/esm/bin/uuid
-  checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
   languageName: node
   linkType: hard
 
