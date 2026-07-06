@@ -238,13 +238,13 @@ const BGETEM_GROUPS: GroupSeed[] = [
         title: 'Rehabitilation und Leistungen',
         name: 'rul',
         description: 'Formulare für Rehabilitation und Leistungen',
-        parentPath: 'dguv',
+        parentPath: 'dguv/bgetem',
     },
     {
         title: 'Mitgliedschaft und Beitrag',
         name: 'mub',
         description: 'Formulare für Mitgliedschaft und Beitrag',
-        parentPath: 'dguv',
+        parentPath: 'dguv/bgetem',
     },
 ];
 // ── Educorvi Sub Groups ────────────────────────────────────────────────────────

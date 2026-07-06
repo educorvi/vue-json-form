@@ -73,11 +73,16 @@ watch(
     { immediate: true }
 );
 
-onUnmounted(() => {
-    breadcrumbStore.set([]);
-});
+// ── 404 handling ─────────────────────────────────────────────────────────
 
-// ── Children list ────────────────────────────────────────────────────────────
+const isNotFound = computed(() => {
+    const err = groupError.value as any;
+    return (
+        err?.statusCode === 404 ||
+        err?.status === 404 ||
+        err?.code === 'NOT_FOUND'
+    );
+});
 
 const childPage = ref(1);
 const childPageSize = ref(20);
@@ -199,15 +204,33 @@ function editCurrentGroup() {
             </BButton>
         </template>
 
-        <!-- Group error -->
-        <BAlert
-            v-if="groupError"
-            variant="danger"
-            :dismissible="false"
-            class="mb-3"
-        >
-            {{ (groupError as any)?.message }}
-        </BAlert>
+        <!-- Group error / 404 -->
+        <template v-if="groupError">
+            <BAlert
+                v-if="isNotFound"
+                variant="warning"
+                :dismissible="false"
+                class="mb-3"
+            >
+                <div class="text-center py-3">
+                    <PhosphorIcon
+                        name="warning-circle"
+                        :size="40"
+                        class="text-warning mb-2"
+                    />
+                    <h4 class="mb-2">{{ t('groups.notFound') }}</h4>
+                    <p class="text-secondary mb-3">
+                        {{ (groupError as any)?.message }}
+                    </p>
+                    <BButton variant="primary" :to="'/groups'">
+                        {{ t('groups.backToGroups') }}
+                    </BButton>
+                </div>
+            </BAlert>
+            <BAlert v-else variant="danger" :dismissible="false" class="mb-3">
+                {{ (groupError as any)?.message }}
+            </BAlert>
+        </template>
 
         <!-- Loading skeleton for group -->
         <div v-else-if="!group" class="mb-4">
@@ -305,12 +328,8 @@ function editCurrentGroup() {
 
                 <!-- Paginator -->
                 <div
-                    v-if="
-                        !showSkeleton &&
-                        !childrenEmpty &&
-                        children &&
-                        children.total_pages > 1
-                    "
+                    v-if="!showSkeleton && !childrenEmpty && children"
+                    class="px-3 pb-3 pt-2"
                 >
                     <ListPaginator
                         :current-page="childPage"

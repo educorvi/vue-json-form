@@ -66,7 +66,7 @@
         },
         "sso": {
             "title": "Single Sign-On",
-            "description": "Authentifizierung über OIDC — ein Login für alle Dienste in Ihrer Infrastruktur."
+            "description": "Authentifizierung über OIDC — ein Login für alle Dienste innerhalb der eigenen Infrastruktur."
         }
     },
     "users": {
@@ -104,9 +104,11 @@
         "noGroupsTitle": "Keine Gruppen gefunden",
         "noGroupsDescription": "Es gibt noch keine Gruppen.",
         "noChildrenTitle": "Keine Untergruppen oder Formulare",
-        "noChildrenDescription": "Diese Gruppe hat keine Kinder.",
+        "noChildrenDescription": "Diese Gruppe beinhaltet keine Elemente.",
         "noSearchResults": "Keine Ergebnisse für '{query}'.",
         "total": "Keine Gruppen | {n} Gruppe | {n} Gruppen",
+        "notFound": "Gruppe nicht gefunden",
+        "backToGroups": "Zurück zu Gruppen",
         "subGroups": "Untergruppen",
         "forms": "Formulare",
         "members": "Mitglieder",
@@ -125,7 +127,7 @@
             "actions": "Aktionen"
         },
         "delete": {
-            "title": "Gruppe löschen",
+            "title": "Löschen",
             "warning": "Dies löscht die Gruppe und ALLE ihre Untergruppen und Formulare dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
             "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
             "confirm": "Gruppe löschen",
@@ -148,7 +150,8 @@
                 "description": "Beschreibung",
                 "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
                 "parent": "Übergeordnete Gruppe",
-                "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen."
+                "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen.",
+                "slugInvalid": "Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt. Darf nicht mit Bindestrich beginnen oder enden."
             }
         },
         "edit": {
@@ -190,6 +193,7 @@
         "cancel": "Abbrechen",
         "clear": "Löschen",
         "edit": "Bearbeiten",
+        "required": "Dieses Feld ist erforderlich",
         "expand": "Ausklappen",
         "collapse": "Einklappen",
         "perPage": "Pro Seite",

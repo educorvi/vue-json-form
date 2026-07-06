@@ -142,19 +142,16 @@ function formatTimestamp(iso: string | undefined): string {
 <template>
     <div class="group-tree-table">
         <div v-for="group in items" :key="group.id" class="group-tree-node">
-            <!-- ── Group row ─────────────────────────────────────────── -->
+            <!-- Group row -->
             <div
-                class="group-tree-row d-flex align-items-center gap-2 py-2 px-3 border-bottom"
+                class="d-flex align-items-center gap-1 py-2 px-2 border-bottom"
                 :style="{ paddingLeft: depth * INDENT_PX + 12 + 'px' }"
-                role="row"
             >
                 <!-- Expand toggle -->
                 <BButton
                     v-if="group.group_count > 0"
                     variant="link"
-                    size="sm"
-                    class="text-secondary p-0 lh-1 flex-shrink-0"
-                    style="width: 20px"
+                    class="text-secondary p-0 lh-1"
                     :aria-label="
                         isExpanded(group.id)
                             ? t('common.collapse')
@@ -166,17 +163,12 @@ function formatTimestamp(iso: string | undefined): string {
                         :name="
                             isExpanded(group.id) ? 'caret-down' : 'caret-right'
                         "
-                        :size="14"
                     />
                 </BButton>
-                <span v-else class="flex-shrink-0" style="width: 20px" />
+                <span v-else class="flex-shrink-0" style="width: 18px" />
 
                 <!-- Folder icon -->
-                <PhosphorIcon
-                    name="folder"
-                    :size="18"
-                    class="text-warning flex-shrink-0"
-                />
+                <PhosphorIcon name="folder" class="flex-shrink-0" />
 
                 <!-- Title -->
                 <div class="flex-grow-1 min-w-0">
@@ -188,33 +180,30 @@ function formatTimestamp(iso: string | undefined): string {
                     </NuxtLink>
                 </div>
 
-                <!-- Right side: stats + timestamps + actions -->
-                <div class="d-flex align-items-center gap-3 flex-shrink-0">
-                    <!-- Stats (icon-only, tooltips) -->
-                    <GroupStatsBadge
-                        :group-count="group.group_count"
-                        :form-count="group.form_count"
-                        :member-count="group.member_count"
-                    />
+                <!-- Right side: stats with timestamps below + actions -->
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <!-- Stats & timestamps column -->
+                    <div class="d-flex flex-column align-items-end gap-0">
+                        <GroupStatsBadge
+                            :group-count="group.group_count"
+                            :form-count="group.form_count"
+                            :member-count="group.member_count"
+                        />
+                        <span
+                            v-if="group.updated_by?.timestamp"
+                            v-b-tooltip.hover
+                            :title="t('groups.updated')"
+                            class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
+                            style="font-size: 0.75rem; cursor: help"
+                        >
+                            <PhosphorIcon name="clock" :size="12" />
+                            {{ formatTimestamp(group.updated_by.timestamp) }}
+                        </span>
+                    </div>
 
-                    <!-- Updated timestamp -->
-                    <span
-                        v-if="group.updated_by?.timestamp"
-                        v-b-tooltip.hover
-                        :title="t('groups.updated')"
-                        class="d-inline-flex align-items-center gap-1 text-secondary"
-                        style="font-size: 0.75rem; cursor: help"
-                    >
-                        <PhosphorIcon name="clock" :size="12" />
-                        {{ formatTimestamp(group.updated_by.timestamp) }}
-                    </span>
-
-                    <!-- "..." dropdown -->
+                    <!-- Actions -->
                     <BDropdown
-                        right
                         variant="link"
-                        size="sm"
-                        class="text-secondary"
                         no-caret
                         toggle-class="text-secondary p-0 border-0"
                     >
@@ -222,37 +211,27 @@ function formatTimestamp(iso: string | undefined): string {
                             <PhosphorIcon name="dots-three" :size="18" />
                         </template>
                         <BDropdownItem @click="emit('edit', group)">
-                            <PhosphorIcon
-                                name="pencil"
-                                :size="14"
-                                class="me-2"
-                            />
+                            <PhosphorIcon name="pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
-                        <BDropdownItem
-                            @click="emit('delete', group)"
-                            class="text-danger"
-                        >
-                            <PhosphorIcon
-                                name="trash"
-                                :size="14"
-                                class="me-2"
-                            />
+                        <BDropdownItem @click="emit('delete', group)">
+                            <PhosphorIcon name="trash" />
                             {{ t('groups.delete.title') }}
                         </BDropdownItem>
                     </BDropdown>
                 </div>
             </div>
 
-            <!-- ── Expanded children ─────────────────────────────────── -->
-            <template v-if="isExpanded(group.id)">
+            <!-- Expanded children -->
+            <div
+                v-if="isExpanded(group.id)"
+                class="group-tree-children"
+                :style="{ marginLeft: INDENT_PX + 'px' }"
+            >
                 <!-- Loading -->
                 <div
                     v-if="childrenState[group.id]?.loading"
                     class="d-flex align-items-center gap-2 py-2 px-3 text-secondary small"
-                    :style="{
-                        paddingLeft: (depth + 1) * INDENT_PX + 44 + 'px',
-                    }"
                 >
                     <BSpinner small />
                     {{ t('common.loading') }}
@@ -275,9 +254,6 @@ function formatTimestamp(iso: string | undefined): string {
                         childrenState[group.id]!.items.length === 0
                     "
                     class="py-2 px-3 text-secondary small"
-                    :style="{
-                        paddingLeft: (depth + 1) * INDENT_PX + 44 + 'px',
-                    }"
                 >
                     {{ t('groups.noSubGroups') }}
                 </div>
@@ -295,9 +271,6 @@ function formatTimestamp(iso: string | undefined): string {
                     <div
                         v-if="childrenState[group.id]!.totalPages > 1"
                         class="px-3 py-2"
-                        :style="{
-                            paddingLeft: (depth + 1) * INDENT_PX + 44 + 'px',
-                        }"
                     >
                         <ListPaginator
                             :current-page="childrenState[group.id]!.page"
@@ -317,16 +290,7 @@ function formatTimestamp(iso: string | undefined): string {
                         />
                     </div>
                 </template>
-            </template>
+            </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-.group-tree-row {
-    transition: background-color 0.1s ease;
-}
-.group-tree-row:hover {
-    background-color: var(--bs-light-bg-subtle, rgba(0, 0, 0, 0.02));
-}
-</style>

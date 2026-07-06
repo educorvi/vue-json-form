@@ -25,9 +25,7 @@ const breadcrumbStore = useBreadcrumbStore();
 // ── Breadcrumb: always starts with a home icon ───────────────────────────
 
 const breadcrumbItems = computed(() => {
-    const items: BreadcrumbEntry[] = [
-        { label: '', route: '/form-builder', icon: 'house' },
-    ];
+    const items: BreadcrumbEntry[] = [{ label: '', route: '/', icon: 'house' }];
 
     for (const entry of breadcrumbStore.trail) {
         items.push(entry);
@@ -63,11 +61,19 @@ function resolveLabel(entry: BreadcrumbEntry): string {
                         v-if="entry.route && idx < breadcrumbItems.length - 1"
                         :to="entry.route"
                         class="text-decoration-none d-inline-flex align-items-center"
-                        :title="idx === 0 ? t('nav.formBuilder') : undefined"
+                        :title="
+                            idx === 0 && !resolveLabel(entry)
+                                ? t('nav.formBuilder')
+                                : undefined
+                        "
                     >
                         <!-- Home: icon only -->
+                        <i
+                            v-if="entry.icon && !resolveLabel(entry)"
+                            class="bi bi-house-fill"
+                        />
                         <PhosphorIcon
-                            v-if="entry.icon"
+                            v-else-if="entry.icon"
                             :name="entry.icon"
                             :size="14"
                             :class="{ 'me-1': resolveLabel(entry) }"
@@ -77,8 +83,12 @@ function resolveLabel(entry: BreadcrumbEntry): string {
                         }}</span>
                     </NuxtLink>
                     <span v-else class="d-inline-flex align-items-center">
+                        <i
+                            v-if="entry.icon && !resolveLabel(entry)"
+                            class="bi bi-house-fill"
+                        />
                         <PhosphorIcon
-                            v-if="entry.icon"
+                            v-else-if="entry.icon"
                             :name="entry.icon"
                             :size="14"
                             :class="{ 'me-1': resolveLabel(entry) }"
@@ -96,7 +106,7 @@ function resolveLabel(entry: BreadcrumbEntry): string {
                     v-if="icon"
                     :name="icon"
                     :size="28"
-                    class="text-warning flex-shrink-0"
+                    class="flex-shrink-0"
                 />
                 <div>
                     <h1 class="h3 fw-bold mb-0">{{ title }}</h1>

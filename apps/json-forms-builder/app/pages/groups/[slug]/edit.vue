@@ -32,31 +32,7 @@ const {
 // ── Form state ──────────────────────────────────────────────────────────────
 
 const title = ref('');
-const slug = ref('');
 const description = ref('');
-
-// Slug auto-generation (same pattern as new.vue)
-const slugEditedByUser = ref(false);
-const slugManuallyCleared = ref(false);
-
-watch(title, (val) => {
-    if (!slugEditedByUser.value) {
-        slug.value = toSlug(val);
-    } else if (slugManuallyCleared.value && !slug.value) {
-        slugEditedByUser.value = false;
-        slugManuallyCleared.value = false;
-        slug.value = toSlug(val);
-    }
-});
-
-function onSlugInput() {
-    slugEditedByUser.value = true;
-    if (!slug.value) {
-        slugManuallyCleared.value = true;
-    } else {
-        slugManuallyCleared.value = false;
-    }
-}
 
 // Populate form when group data arrives
 watch(
@@ -64,7 +40,6 @@ watch(
     (g) => {
         if (g) {
             title.value = (g as any).title ?? '';
-            slug.value = (g as any).name ?? '';
             description.value = (g as any).description ?? '';
 
             // ── Breadcrumb ────────────────────────────────────────────
@@ -98,13 +73,9 @@ watch(
     { immediate: true }
 );
 
-onUnmounted(() => {
-    breadcrumbStore.set([]);
-});
+// ── Computed path helpers ─────────────────────────────────────────────────
 
-// ── Computed path display ───────────────────────────────────────────────────
-
-const groupPath = computed(() => {
+const parentPathDisplay = computed(() => {
     if (!group.value) return '';
     const segments: string[] = [];
     if ((group.value as any).parent_path) {
@@ -112,11 +83,17 @@ const groupPath = computed(() => {
             segments.push(entry.path_segment ?? entry.name);
         }
     }
-    if ((group.value as any).name) {
-        segments.push((group.value as any).name);
-    }
-    return '/' + segments.join('/');
+    return segments.length > 0 ? '/' + segments.join('/') + '/' : '/';
 });
+
+// ── Validation ─────────────────────────────────────────────────────────────
+
+const titleError = computed(() =>
+    !title.value.trim() ? t('common.required') : null
+);
+
+const formTouched = ref(false);
+const formValid = computed(() => title.value.trim().length > 0);
 
 // ── Submission ──────────────────────────────────────────────────────────────
 
@@ -124,7 +101,8 @@ const submitting = ref(false);
 const errorMessage = ref<string | null>(null);
 
 async function submit() {
-    if (!title.value.trim()) return;
+    formTouched.value = true;
+    if (!formValid.value) return;
     submitting.value = true;
     errorMessage.value = null;
 
@@ -133,7 +111,6 @@ async function submit() {
             params: { id: groupId.value },
             body: {
                 title: title.value.trim() || undefined,
-                name: slug.value.trim() || undefined,
                 description: description.value.trim() || null,
             } as any,
         });
@@ -142,7 +119,7 @@ async function submit() {
             `/groups/${encodeGroupPath(
                 buildGroupUrlPath(
                     (group.value as any)?.parent_path ?? null,
-                    slug.value.trim() || (group.value as any)?.name || ''
+                    (group.value as any)?.name || ''
                 )
             )}`
         );
@@ -208,29 +185,45 @@ function cancel() {
                     class="d-flex flex-column gap-3"
                     @submit.prevent="submit"
                 >
-                    <!-- Read-only ID -->
-                    <BFormGroup
-                        label="ID"
-                        label-class="fw-medium text-secondary"
-                    >
-                        <BFormInput
-                            :model-value="(group as any).id"
-                            disabled
-                            class="opacity-50"
-                        />
-                    </BFormGroup>
-
-                    <!-- Read-only Path -->
-                    <BFormGroup
-                        :label="t('groups.edit.fields.path')"
-                        label-class="fw-medium text-secondary"
-                    >
-                        <BFormInput
-                            :model-value="groupPath"
-                            disabled
-                            class="font-monospace opacity-50"
-                        />
-                    </BFormGroup>
+                    <!-- Read-only row: ID | Parent Path | URL Slug -->
+                    <BRow class="g-2">
+                        <BCol cols="2">
+                            <BFormGroup
+                                label="ID"
+                                label-class="fw-medium text-secondary small"
+                            >
+                                <BFormInput
+                                    :model-value="(group as any).id"
+                                    disabled
+                                    class="opacity-50"
+                                />
+                            </BFormGroup>
+                        </BCol>
+                        <BCol>
+                            <BFormGroup
+                                :label="t('groups.edit.fields.path')"
+                                label-class="fw-medium text-secondary small"
+                            >
+                                <BFormInput
+                                    :model-value="parentPathDisplay"
+                                    disabled
+                                    class="font-monospace opacity-50"
+                                />
+                            </BFormGroup>
+                        </BCol>
+                        <BCol cols="4">
+                            <BFormGroup
+                                :label="t('groups.edit.fields.name')"
+                                label-class="fw-medium text-secondary small"
+                            >
+                                <BFormInput
+                                    :model-value="(group as any).name"
+                                    disabled
+                                    class="font-monospace opacity-50"
+                                />
+                            </BFormGroup>
+                        </BCol>
+                    </BRow>
 
                     <!-- Title -->
                     <BFormGroup
@@ -246,26 +239,6 @@ function cancel() {
                             autofocus
                             required
                         />
-                    </BFormGroup>
-
-                    <!-- Slug / Name -->
-                    <BFormGroup
-                        :label="t('groups.edit.fields.name')"
-                        label-class="fw-medium"
-                        required
-                    >
-                        <BFormInput
-                            v-model="slug"
-                            :placeholder="
-                                t('groups.edit.fields.namePlaceholder')
-                            "
-                            class="font-monospace"
-                            required
-                            @input="onSlugInput"
-                        />
-                        <BFormText>
-                            {{ t('groups.edit.fields.nameHint') }}
-                        </BFormText>
                     </BFormGroup>
 
                     <!-- Description -->
@@ -299,9 +272,7 @@ function cancel() {
                         <BButton
                             type="submit"
                             variant="primary"
-                            :disabled="
-                                !title.trim() || !slug.trim() || submitting
-                            "
+                            :disabled="!formValid || submitting"
                         >
                             <BSpinner v-if="submitting" small class="me-1" />
                             {{ t('groups.edit.save') }}

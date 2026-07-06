@@ -38,17 +38,19 @@ defineProps<{
                 v-if="chips && chips.length"
                 class="d-flex flex-wrap justify-content-center gap-2 mt-auto"
             >
-                <a
+                <BBadge
                     v-for="chip in chips"
                     :key="`${chip.icon}-${chip.label}`"
                     :href="chip.href"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="badge text-decoration-none d-inline-flex align-items-center gap-1 px-2 py-1 bg-primary bg-opacity-10 text-primary"
+                    variant="primary"
+                    class="d-inline-flex align-items-center gap-1 py-1 bg-opacity-10 text-primary"
+                    pill
                 >
                     <PhosphorIcon :name="chip.icon" :size="12" />
                     <span class="small">{{ chip.label }}</span>
-                </a>
+                </BBadge>
             </div>
         </BCardBody>
     </BCard>

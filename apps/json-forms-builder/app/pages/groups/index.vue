@@ -225,12 +225,8 @@ const pageDescription = computed(() => {
 
                 <!-- Paginator -->
                 <div
-                    v-if="
-                        !showSkeleton &&
-                        !isEmpty &&
-                        data &&
-                        data.total_pages > 1
-                    "
+                    v-if="!showSkeleton && !isEmpty && data"
+                    class="px-3 pb-3 pt-2"
                 >
                     <ListPaginator
                         :current-page="page"

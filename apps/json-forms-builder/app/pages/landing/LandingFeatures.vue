@@ -71,7 +71,7 @@ const featureDefs: FeatureDef[] = [
             },
             {
                 icon: 'book-open-text',
-                label: 'chips.docs',
+                label: 'UI Schema',
                 href: APP_LINKS.uiSchemaDocs,
                 translate: true,
             },

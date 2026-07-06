@@ -2,9 +2,8 @@
 /**
  * /groups/new — Create a new group.
  *
- * - Title (required), name/slug (auto-derived, editable), description (optional)
- * - Parent group select via GroupParentSelect
- * - Query param `?parent=<id>` pre-selects the current folder
+ * Field order: Title → Parent Group → URL Slug → Description
+ * Query param `?parent=<id>` pre-selects the parent.
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
@@ -18,8 +17,13 @@ const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 const breadcrumbStore = useBreadcrumbStore();
 
-// ── Form state ───────────────────────────────────────────────────────────────
+// ── Breadcrumb ─────────────────────────────────────────────────────────────
+breadcrumbStore.set([
+    { label: t('nav.groups'), route: '/groups' },
+    { label: t('groups.new.title') },
+]);
 
+// ── Form state ─────────────────────────────────────────────────────────────
 const title = ref('');
 const slug = ref('');
 const description = ref('');
@@ -27,8 +31,7 @@ const parentId = ref<number | null>(
     route.query.parent ? parseInt(String(route.query.parent), 10) : null
 );
 
-// ── Slug auto-generation ─────────────────────────────────────────────────────
-
+// ── Slug auto-generation ───────────────────────────────────────────────────
 const slugEditedByUser = ref(false);
 const slugManuallyCleared = ref(false);
 
@@ -44,134 +47,33 @@ watch(title, (val) => {
 
 function onSlugInput() {
     slugEditedByUser.value = true;
-    if (!slug.value) {
-        slugManuallyCleared.value = true;
-    } else {
-        slugManuallyCleared.value = false;
-    }
+    slugManuallyCleared.value = !slug.value;
 }
 
-// ── Fetch parent group for breadcrumb ───────────────────────────────────────
+// ── Validation ─────────────────────────────────────────────────────────────
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-const parentGroup = ref<{
-    id: number;
-    title?: string;
-    name?: string;
-    parent_path?: Array<{
-        id?: number;
-        name: string;
-        path_segment?: string;
-    }> | null;
-} | null>(null);
-
-watch(
-    parentId,
-    async (id) => {
-        if (id != null) {
-            try {
-                const result = await orpc.groups.get({
-                    params: { id: String(id) },
-                });
-                parentGroup.value = result as any;
-            } catch {
-                parentGroup.value = null;
-            }
-        } else {
-            parentGroup.value = null;
-        }
-    },
-    { immediate: true }
-);
-
-// ── Breadcrumb ───────────────────────────────────────────────────────────────
-
-watch(
-    parentGroup,
-    (pg) => {
-        const items: Array<{ label: string; route?: string }> = [
-            { label: t('nav.groups'), route: '/groups' },
-        ];
-        if (pg) {
-            const entries = (pg as any).parent_path;
-            if (entries) {
-                const segments: string[] = [];
-                for (const entry of entries) {
-                    segments.push(entry.path_segment ?? entry.name);
-                    items.push({
-                        label: entry.name,
-                        route: `/groups/${encodeGroupPath(segments.join('/'))}`,
-                    });
-                }
-            }
-            items.push({
-                label:
-                    (pg as any).title ||
-                    (pg as any).name ||
-                    `#${(pg as any).id}`,
-                route: `/groups/${encodeGroupPath(
-                    buildGroupUrlPath(
-                        (pg as any).parent_path ?? null,
-                        (pg as any).name ?? ''
-                    )
-                )}`,
-            });
-        }
-        items.push({ label: t('groups.new.title') });
-        breadcrumbStore.set(items);
-    },
-    { immediate: true }
-);
-
-onUnmounted(() => {
-    breadcrumbStore.set([]);
+const slugError = computed(() => {
+    if (!slug.value.trim()) return null;
+    if (!SLUG_RE.test(slug.value)) return t('groups.new.fields.slugInvalid');
+    return null;
 });
 
-// ── Parent group picker ─────────────────────────────────────────────────────
+const formTouched = ref(false);
+const formValid = computed(
+    () =>
+        title.value.trim().length > 0 &&
+        slug.value.trim().length > 0 &&
+        SLUG_RE.test(slug.value)
+);
 
-const parentPickerOpen = ref(false);
-const parentSearch = ref('');
-const parentResults = ref<{ id: number; title?: string; name?: string }[]>([]);
-const parentLoading = ref(false);
-
-async function searchParentGroups(query: string) {
-    parentLoading.value = true;
-    try {
-        const result = await orpc.groups.list({
-            query: {
-                page: 1,
-                page_size: 20,
-                search: query || undefined,
-                sort_order: 'asc',
-                order_by: 'title',
-            },
-        });
-        parentResults.value = result.data as any[];
-    } catch {
-        parentResults.value = [];
-    } finally {
-        parentLoading.value = false;
-    }
-}
-
-function selectParent(group: { id: number; title?: string; name?: string }) {
-    parentId.value = group.id;
-    parentGroup.value = group as any;
-    parentPickerOpen.value = false;
-    parentSearch.value = '';
-}
-
-function clearParent() {
-    parentId.value = null;
-    parentGroup.value = null;
-}
-
-// ── Submission ───────────────────────────────────────────────────────────────
-
+// ── Submission ─────────────────────────────────────────────────────────────
 const submitting = ref(false);
 const errorMessage = ref<string | null>(null);
 
 async function submit() {
-    if (!title.value.trim()) return;
+    formTouched.value = true;
+    if (!formValid.value) return;
     submitting.value = true;
     errorMessage.value = null;
 
@@ -203,19 +105,7 @@ async function submit() {
 }
 
 function cancel() {
-    if (parentId.value != null) {
-        if (parentGroup.value) {
-            const path = buildGroupUrlPath(
-                (parentGroup.value as any).parent_path ?? null,
-                (parentGroup.value as any).name ?? ''
-            );
-            router.push(`/groups/${encodeGroupPath(path)}`);
-        } else {
-            router.push(`/groups/${parentId.value}`);
-        }
-    } else {
-        router.push('/groups');
-    }
+    router.push('/groups');
 }
 </script>
 
@@ -224,7 +114,6 @@ function cancel() {
         :title="t('groups.new.title')"
         :description="t('groups.new.subtitle')"
     >
-        <!-- Form card -->
         <BCard>
             <BCardBody>
                 <BForm
@@ -242,12 +131,37 @@ function cancel() {
                             :placeholder="
                                 t('groups.new.fields.titlePlaceholder')
                             "
+                            :state="formTouched && !title.trim() ? false : null"
                             autofocus
                             required
                         />
+                        <div
+                            v-if="formTouched && !title.trim()"
+                            class="invalid-feedback"
+                        >
+                            {{ t('common.required') }}
+                        </div>
                     </BFormGroup>
 
-                    <!-- Slug / Name -->
+                    <!-- Parent group -->
+                    <BFormGroup
+                        :label="t('groups.new.fields.parent')"
+                        label-class="fw-medium"
+                    >
+                        <GroupTreeSelect
+                            v-model="parentId"
+                            :current-group-id="
+                                route.query.parent
+                                    ? parseInt(String(route.query.parent), 10)
+                                    : null
+                            "
+                        />
+                        <BFormText>{{
+                            t('groups.new.fields.parentHint')
+                        }}</BFormText>
+                    </BFormGroup>
+
+                    <!-- URL Slug -->
                     <BFormGroup
                         :label="t('groups.new.fields.name')"
                         label-class="fw-medium"
@@ -259,12 +173,19 @@ function cancel() {
                                 t('groups.new.fields.namePlaceholder')
                             "
                             class="font-monospace"
+                            :state="formTouched && slugError ? false : null"
                             required
                             @input="onSlugInput"
                         />
-                        <BFormText>
-                            {{ t('groups.new.fields.nameHint') }}
-                        </BFormText>
+                        <div
+                            v-if="formTouched && slugError"
+                            class="invalid-feedback"
+                        >
+                            {{ slugError }}
+                        </div>
+                        <BFormText>{{
+                            t('groups.new.fields.nameHint')
+                        }}</BFormText>
                     </BFormGroup>
 
                     <!-- Description -->
@@ -279,95 +200,6 @@ function cancel() {
                             "
                             rows="3"
                         />
-                    </BFormGroup>
-
-                    <!-- Parent group -->
-                    <BFormGroup
-                        :label="t('groups.new.fields.parent')"
-                        label-class="fw-medium"
-                    >
-                        <div class="d-flex align-items-center gap-2">
-                            <span v-if="parentGroup" class="text-body">
-                                <PhosphorIcon
-                                    name="folder"
-                                    :size="16"
-                                    class="text-warning me-1"
-                                />
-                                {{
-                                    (parentGroup as any).title ||
-                                    (parentGroup as any).name
-                                }}
-                            </span>
-                            <span v-else class="text-secondary small">
-                                {{ t('groups.new.fields.parentHint') }}
-                            </span>
-                            <BButton
-                                v-if="parentGroup"
-                                variant="link"
-                                size="sm"
-                                class="text-danger p-0"
-                                @click="clearParent"
-                            >
-                                <PhosphorIcon name="x" :size="14" />
-                            </BButton>
-                        </div>
-
-                        <BDropdown
-                            v-model="parentPickerOpen"
-                            text="Browse…"
-                            size="sm"
-                            variant="outline-secondary"
-                            class="mt-1"
-                        >
-                            <div class="px-2 py-1" style="min-width: 280px">
-                                <BFormInput
-                                    v-model="parentSearch"
-                                    size="sm"
-                                    :placeholder="t('groups.searchPlaceholder')"
-                                    @input="
-                                        searchParentGroups($event.target.value)
-                                    "
-                                />
-                            </div>
-                            <BDropdownDivider />
-                            <div
-                                v-if="parentLoading"
-                                class="px-3 py-2 text-center"
-                            >
-                                <BSpinner small />
-                            </div>
-                            <template v-else>
-                                <BDropdownItem
-                                    v-for="p in parentResults"
-                                    :key="p.id"
-                                    @click="selectParent(p)"
-                                >
-                                    <PhosphorIcon
-                                        name="folder"
-                                        :size="14"
-                                        class="text-warning me-1"
-                                    />
-                                    {{ p.title || p.name }}
-                                </BDropdownItem>
-                                <BDropdownItem
-                                    v-if="
-                                        parentResults.length === 0 &&
-                                        parentSearch
-                                    "
-                                    disabled
-                                >
-                                    {{
-                                        t('groups.noSearchResults', {
-                                            query: parentSearch,
-                                        })
-                                    }}
-                                </BDropdownItem>
-                            </template>
-                        </BDropdown>
-
-                        <BFormText>
-                            {{ t('groups.new.fields.parentHint') }}
-                        </BFormText>
                     </BFormGroup>
 
                     <!-- Error -->
@@ -387,9 +219,7 @@ function cancel() {
                         <BButton
                             type="submit"
                             variant="primary"
-                            :disabled="
-                                !title.trim() || !slug.trim() || submitting
-                            "
+                            :disabled="!formValid || submitting"
                         >
                             <BSpinner v-if="submitting" small class="me-1" />
                             {{ t('groups.new.create') }}

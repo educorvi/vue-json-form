@@ -99,14 +99,16 @@
     "groups": {
         "title": "Groups",
         "searchPlaceholder": "Search groups…",
-        "searchChildrenPlaceholder": "Search children…",
+        "searchChildrenPlaceholder": "Search Elements",
         "loadError": "Failed to load groups:",
         "noGroupsTitle": "No groups found",
         "noGroupsDescription": "There are no groups yet.",
         "noChildrenTitle": "No sub-groups or forms",
-        "noChildrenDescription": "This group has no children.",
+        "noChildrenDescription": "This group has no elements.",
         "noSearchResults": "No results for '{query}'.",
         "total": "No groups | {n} group | {n} groups",
+        "notFound": "Group not found",
+        "backToGroups": "Back to Groups",
         "subGroups": "Sub-groups",
         "forms": "Forms",
         "members": "Members",
@@ -125,7 +127,7 @@
             "actions": "Actions"
         },
         "delete": {
-            "title": "Delete Group",
+            "title": "Delete",
             "warning": "This will permanently delete this group and ALL its sub-groups and forms. This action cannot be undone.",
             "confirmPrompt": "Type \"{name}\" to confirm deletion:",
             "confirm": "Delete Group",
@@ -148,7 +150,8 @@
                 "description": "Description",
                 "descriptionPlaceholder": "Optional — describe the purpose of this group.",
                 "parent": "Parent Group",
-                "parentHint": "Leave empty to create a top-level group."
+                "parentHint": "Leave empty to create a top-level group.",
+                "slugInvalid": "Only lowercase letters, numbers, and hyphens allowed. Cannot start or end with a hyphen."
             }
         },
         "edit": {
@@ -190,6 +193,7 @@
         "cancel": "Cancel",
         "clear": "Clear",
         "edit": "Edit",
+        "required": "This field is required",
         "expand": "Expand",
         "collapse": "Collapse",
         "perPage": "Per page",

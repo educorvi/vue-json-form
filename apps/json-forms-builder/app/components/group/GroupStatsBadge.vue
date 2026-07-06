@@ -13,7 +13,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <div class="d-flex align-items-center gap-2 text-secondary small">
+    <div class="d-flex align-items-center gap-1 text-secondary small">
         <span
             v-b-tooltip.hover
             :title="t('groups.subGroups')"
