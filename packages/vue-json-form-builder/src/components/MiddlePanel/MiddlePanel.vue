@@ -7,7 +7,7 @@ import PreviewPanel from './PreviewPanel.vue';
 const store = useFormStore();
 
 defineProps<{
-    hideToolbar: boolean;
+    hideToolbar?: boolean;
 }>();
 </script>
 

@@ -25,11 +25,10 @@ function doReset() {
         <div class="d-flex align-items-center gap-2 me-auto">
             <i class="bi bi-pencil-square text-primary" />
             <b-form-input
+                v-model="store.jsonSchema.title"
                 size="sm"
                 class="form-control-transparent"
-                :model-value="store.jsonSchema.title"
                 placeholder="Form Title"
-                @update:model-value="store.jsonSchema.title = $event"
             />
         </div>
 
@@ -56,17 +55,11 @@ function doReset() {
         <!-- Preview toggle -->
         <b-button
             size="sm"
-            :variant="
-                store.isPreviewInline
-                    ? 'secondary'
-                    : 'outline-secondary'
-            "
+            :variant="store.isPreviewInline ? 'secondary' : 'outline-secondary'"
             @click="store.togglePreviewInline()"
         >
             <i
-                :class="
-                    store.isPreviewInline ? 'bi bi-pencil' : 'bi bi-eye'
-                "
+                :class="store.isPreviewInline ? 'bi bi-pencil' : 'bi bi-eye'"
                 class="me-1"
             />{{ store.isPreviewInline ? 'Edit' : 'Preview' }}
         </b-button>
