@@ -189,16 +189,25 @@ function formatTimestamp(iso: string | undefined): string {
                             :form-count="group.form_count"
                             :member-count="group.member_count"
                         />
-                        <span
+                        <BTooltip
                             v-if="group.updated_by?.timestamp"
-                            v-b-tooltip.hover
-                            :title="t('groups.updated')"
-                            class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
-                            style="font-size: 0.75rem; cursor: help"
+                            triggers="hover"
                         >
-                            <PhosphorIcon name="clock" :size="12" />
-                            {{ formatTimestamp(group.updated_by.timestamp) }}
-                        </span>
+                            <template #target>
+                                <span
+                                    class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
+                                    style="font-size: 0.75rem"
+                                >
+                                    <PhosphorIcon name="clock" :size="12" />
+                                    {{
+                                        formatTimestamp(
+                                            group.updated_by.timestamp
+                                        )
+                                    }}
+                                </span>
+                            </template>
+                            {{ t('groups.updated') }}
+                        </BTooltip>
                     </div>
 
                     <!-- Actions -->

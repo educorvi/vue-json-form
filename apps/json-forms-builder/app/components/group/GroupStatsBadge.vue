@@ -14,32 +14,32 @@ const { t } = useI18n();
 
 <template>
     <div class="d-flex align-items-center gap-1 text-secondary small">
-        <span
-            v-b-tooltip.hover
-            :title="t('groups.subGroups')"
-            class="d-inline-flex align-items-center gap-1"
-            style="cursor: help"
-        >
-            <PhosphorIcon name="folders" :size="14" />
-            {{ groupCount }}
-        </span>
-        <span
-            v-b-tooltip.hover
-            :title="t('groups.forms')"
-            class="d-inline-flex align-items-center gap-1"
-            style="cursor: help"
-        >
-            <PhosphorIcon name="file-text" :size="14" />
-            {{ formCount }}
-        </span>
-        <span
-            v-b-tooltip.hover
-            :title="t('groups.members')"
-            class="d-inline-flex align-items-center gap-1"
-            style="cursor: help"
-        >
-            <PhosphorIcon name="users" :size="14" />
-            {{ memberCount }}
-        </span>
+        <BTooltip triggers="hover">
+            <template #target>
+                <span class="d-inline-flex align-items-center gap-1">
+                    <PhosphorIcon name="folders" :size="14" />
+                    {{ groupCount }}
+                </span>
+            </template>
+            {{ t('groups.subGroups') }}
+        </BTooltip>
+        <BTooltip triggers="hover">
+            <template #target>
+                <span class="d-inline-flex align-items-center gap-1">
+                    <PhosphorIcon name="file-text" :size="14" />
+                    {{ formCount }}
+                </span>
+            </template>
+            {{ t('groups.forms') }}
+        </BTooltip>
+        <BTooltip triggers="hover">
+            <template #target>
+                <span class="d-inline-flex align-items-center gap-1">
+                    <PhosphorIcon name="users" :size="14" />
+                    {{ memberCount }}
+                </span>
+            </template>
+            {{ t('groups.members') }}
+        </BTooltip>
     </div>
 </template>

@@ -39,7 +39,9 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 
 # TODO
 
-- TreeSelect styling (grey select tis off, intendation of children)
+- table components where we cna put in anything with slots and on mobile it is automatically converted into cards or custom components for each page for finder control how cards look
+
+- TreeSelect styling (grey select tis off, indentation of children)
 - select current folder maybe just the icon with tooltip and directly as an icon right to the selector, then slug of the current new folder behind the element, slug shorter description text
 - spacing before group pagination, sub group pagination works
 - 

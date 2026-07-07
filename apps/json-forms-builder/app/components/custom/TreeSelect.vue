@@ -252,7 +252,7 @@ watch(search, (val) => {
                 </BInputGroup>
             </div>
 
-            <BDropdownDivider />
+            <!-- <hr class="my-1 mx-1" /> -->
 
             <!-- Loading -->
             <div

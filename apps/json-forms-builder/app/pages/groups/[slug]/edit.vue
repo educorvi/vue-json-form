@@ -146,6 +146,7 @@ function cancel() {
 
 <template>
     <BasePage
+        icon="pencil"
         :title="t('groups.edit.title')"
         :description="t('groups.edit.subtitle')"
     >

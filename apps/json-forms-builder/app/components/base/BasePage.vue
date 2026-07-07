@@ -100,13 +100,15 @@ function resolveLabel(entry: BreadcrumbEntry): string {
         </nav>
 
         <!-- Header: icon + title/description + actions -->
-        <div class="d-flex align-items-start justify-content-between mb-4">
+        <div
+            class="d-flex flex-column flex-sm-row align-items-start mb-4 gap-2"
+        >
             <div class="d-flex align-items-center gap-3">
                 <PhosphorIcon
                     v-if="icon"
                     :name="icon"
                     :size="28"
-                    class="flex-shrink-0"
+                    class="flex-shrink-0 d-none d-md-flex"
                 />
                 <div>
                     <h1 class="h3 fw-bold mb-0">{{ title }}</h1>
@@ -117,7 +119,10 @@ function resolveLabel(entry: BreadcrumbEntry): string {
             </div>
 
             <!-- Right-side actions (e.g. "New Group" button) -->
-            <div v-if="$slots.actions" class="flex-shrink-0">
+            <div
+                v-if="$slots.actions"
+                class="flex-shrink-0 ms-sm-auto d-flex flex-wrap gap-2"
+            >
                 <slot name="actions" />
             </div>
         </div>

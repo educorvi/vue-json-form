@@ -131,14 +131,21 @@ function useCurrentFolder() {
 
             <!-- Use current folder button -->
             <BCol v-if="currentGroupId != null" sm="auto">
-                <BButton
-                    variant="outline-secondary"
-                    size="sm"
-                    @click="useCurrentFolder"
-                >
-                    <PhosphorIcon name="map-pin" :size="14" class="me-1" />
+                <BTooltip>
+                    <template #target>
+                        <BButton
+                            variant="outline-secondary"
+                            @click="useCurrentFolder"
+                        >
+                            <span
+                                class="d-inline-flex align-items-center gap-1"
+                            >
+                                <PhosphorIcon name="map-pin" />
+                            </span>
+                        </BButton>
+                    </template>
                     {{ t('groups.treeSelect.useCurrentFolder') }}
-                </BButton>
+                </BTooltip>
             </BCol>
         </BRow>
 

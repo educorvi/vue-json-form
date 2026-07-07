@@ -111,6 +111,7 @@ function cancel() {
 
 <template>
     <BasePage
+        icon="folder-plus"
         :title="t('groups.new.title')"
         :description="t('groups.new.subtitle')"
     >
