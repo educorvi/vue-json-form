@@ -5,6 +5,7 @@ import { Group } from './entities/Group';
 import { Form } from './entities/Form';
 import { FormRevision } from './entities/FormRevision';
 import { Permission } from './entities/Permission';
+import { Wizard, WizardPage, SubmitButton, ResetButton, ButtonGroup, ModalElement, HTMLElement, ReferenceElement, FileuploadElement, CheckboxGroup, EnumElement, BooleanElement, NumberElement, StringElement, ObjectElement, ArrayElement, DependencyGroup, Dependency } from './entities/FormEntities';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -15,5 +16,5 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME ?? 'form_builder',
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV === 'development',
-    entities: [User, Group, Form, FormRevision, Permission],
+    entities: [User, Group, Form, FormRevision, Permission, Wizard, WizardPage, SubmitButton, ResetButton, ButtonGroup, ModalElement, HTMLElement, ReferenceElement, FileuploadElement, CheckboxGroup, EnumElement, BooleanElement, NumberElement, StringElement, ObjectElement, ArrayElement, DependencyGroup, Dependency],
 });
