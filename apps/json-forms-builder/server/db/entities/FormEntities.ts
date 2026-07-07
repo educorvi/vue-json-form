@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 import { Layouts, StringFormats, BooleanFormats, EnumFormats, HttpsMethods, ButtonSubmitActions, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation } from "./FormEntityEnums";
 
 
@@ -7,14 +7,17 @@ import { Layouts, StringFormats, BooleanFormats, EnumFormats, HttpsMethods, Butt
 
 // TODO take entity as base class from henrik (basetimestampedentity) instead
 export abstract class DatabaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ type: "int" })
     id!: number;
 
-    @Column()
+    @CreateDateColumn({ type: "timestamp" })
     created!: Date;
 
-    @Column()
+    @UpdateDateColumn({ type: "timestamp" })
     updated!: Date;
+
+    @DeleteDateColumn({ type: "timestamp", nullable: true })
+    deleted!: Date | null;
 }
 
 @Entity()
@@ -22,10 +25,10 @@ export class Dependency extends DatabaseEntity {
     @ManyToOne(() => SimpleElement, (simpleElement) => simpleElement.partOfDependency)
     source!: SimpleElement; // on which element the target depends
 
-    @Column()
+    @Column({ type: "enum", enum: DependencyTypes })
     dependencyType!: DependencyTypes;
 
-    @Column()
+    @Column({ type: "simple-json" })
     value!: number | string | boolean; // the value to compare to, e.g. for "greaterThan", the value that the source should be greater than; for "contains", the value that should be contained in the source; etc.
 
     @ManyToOne(
@@ -60,7 +63,7 @@ export class DependencyGroup extends DatabaseEntity {
 
     // in the final json/ui schema: generate one list that consists of all dependencies and dependency groups (combined with the specified relation)
 
-    @Column()
+    @Column({ type: "enum", enum: DependencyRelation })
     relation!: DependencyRelation; // "AND" or "OR"
 }
 
@@ -80,37 +83,37 @@ export abstract class BaseDataElement extends FormElement {
     /*
     class for all input elements like string/checkboxes/... and array/object
     */
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     title!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     description?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     tooltip?: string;
 
-    @Column()
+    @Column({ type: 'boolean', default: false })
     hidden!: boolean;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     preHtml?: string; // TODO remove if htmlelement is allowed inside of array/object
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     postHtml?: string; // TODO remove if htmlelement is allowed inside of array/object
 }
 
 export abstract class SimpleElement extends BaseDataElement {
-    @Column()
+    @Column({ type: 'boolean', default: false })
     required!: boolean;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     appendValue?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     prependValue?: string;
 
     // constraint valid pattern
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     pattern?: string;
 
     // one can depend on a simpleelement only
@@ -122,27 +125,27 @@ export abstract class ContainerElement extends BaseDataElement {
     @OneToMany(() => FormElement, (formElement) => formElement.parent)
     children!: FormElement[]; // TODO how to save the order of the children?
 
-    @Column()
+    @Column({ type: "enum", enum: Layouts })
     layout!: Layouts;
 
-    @Column()
+    @Column({ type: 'boolean', default: true })
     showTitle!: boolean;
 }
 
 @Entity()
 export class ArrayElement extends ContainerElement {
-    @Column()
+    @Column({ type: 'boolean', default: false })
     required!: boolean; // TODO maybe move to basedataelement (and object also has required in database, but not in ui. object can currently be the source )
 
     // constraint >= 0
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     minItems?: number;
 
     // constraint >=0 and minItems < maxItems
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     maxItems?: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     buttonLabel?: string;
 }
 
@@ -153,55 +156,55 @@ export class ObjectElement extends ContainerElement {
 
 @Entity()
 export class StringElement extends SimpleElement {
-    @Column()
+    @Column({ type: "enum", enum: StringFormats })
     format!: StringFormats;
 
     // constraint >= 0
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     minLength?: number;
 
     // constraint >=0 and minLength < maxLength
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     maxLength?: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     placeholder?: string;
 }
 
 @Entity()
 export class NumberElement extends SimpleElement {
-    @Column({ nullable: true })
+    @Column({ type: "float", nullable: true })
     minimum?: number;
 
     // constraint minimum < maximum
-    @Column({ nullable: true })
+    @Column({ type: "float", nullable: true })
     maximum?: number;
 
     // minimum of 0
-    @Column({ nullable: true, type: "float" })
+    @Column({ type: "float", nullable: true })
     multipleOf?: number;
 }
 
 @Entity()
 export class BooleanElement extends SimpleElement {
-    @Column()
+    @Column({ type: "enum", enum: BooleanFormats })
     format!: BooleanFormats;
 
-    @Column()
+    @Column({ type: 'boolean', default: false })
     mustBeTrue!: boolean;
 }
 
 export abstract class SelectionElement extends SimpleElement {
-    @Column()
+    @Column({ type: 'boolean', default: false })
     useIdInSchema!: boolean;
 
-    @Column({ nullable: true }) // TODO save with id-title pairs
+    @Column({ type: "simple-array", nullable: true }) // TODO save with id-title pairs
     selectionOptions?: string[]; // for select and radio, the options are the possible values; for checkbox group, the options are the labels of the checkboxes
 }
 
 @Entity()
 export class EnumElement extends SelectionElement {
-    @Column()
+    @Column({ type: "enum", enum: EnumFormats })
     format!: EnumFormats;
 }
 
@@ -213,17 +216,17 @@ export class CheckboxGroup extends SelectionElement {
 @Entity()
 export class FileuploadElement extends SimpleElement {
     // constraint >= 0
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     minItems?: number;
 
     // constraint >=0 and minItems < maxItems
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     maxItems?: number;
 
-    @Column({ nullable: true })
+    @Column({ type: "enum", enum: FileTypes, nullable: true })
     possibleFileTypes?: FileTypes[];
 
-    @Column({ nullable: true })
+    @Column({ type: "int", nullable: true })
     maxFileSizeInBytes?: number;
 
     // @Column()
@@ -234,30 +237,30 @@ export class FileuploadElement extends SimpleElement {
 export class ReferenceElement extends FormElement {
     // id of the referenced element (of type )
     @ManyToOne(() => FormElement)
-    referenceId!: number;
+    referenceId!: FormElement;
 }
 
 @Entity()
 export class HTMLElement extends FormElement {
-    @Column()
+    @Column({ type: "text" })
     htmlText!: string;
 }
 
 @Entity()
 export class ModalElement extends FormElement {
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     title!: string;
 
-    @Column()
+    @Column({ type: "text" })
     content!: string;
 
-    @Column({ default: ModalSizes.Medium })
+    @Column({ type: "enum", enum: ModalSizes, default: ModalSizes.Medium })
     size!: ModalSizes;
 
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     buttonLabel!: string;
 
-    @Column({ default: ButtonVariants.Primary })
+    @Column({ type: "enum", enum: ButtonVariants, default: ButtonVariants.Primary })
     variant!: ButtonVariants;
 }
 
@@ -268,13 +271,13 @@ export class ButtonGroup extends FormElement {
 }
 
 export abstract class Button extends FormElement {
-    @Column()
+    @Column({ type: "varchar", length: 255 })
     label!: string;
 
-    @Column()
+    @Column({ type: 'boolean', default: false })
     disabled!: boolean;
 
-    @Column()
+    @Column({ type: "enum", enum: ButtonVariants })
     variant!: ButtonVariants;
 
     // TODO: if button is in a buttongroup and not in an array/object/form, then what is the parent? (parent must be a container so an array or object)
@@ -289,19 +292,19 @@ export class ResetButton extends Button {
 
 @Entity()
 export class SubmitButton extends Button {
-    @Column()
+    @Column({ type: "enum", enum: ButtonSubmitActions })
     submitAction!: ButtonSubmitActions;
 
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     submitUrl!: string;
 
-    @Column({ default: HttpsMethods.Post })
+    @Column({ type: "enum", enum: HttpsMethods , default: HttpsMethods.Post })
     submitMethod!: HttpsMethods;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     requestHeaders?: string; // JSON string of key-value pairs
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     onSuccessRedirectUrl?: string;
 
     // TODO summary from ui schema definition?
@@ -315,10 +318,10 @@ export class WizardPage extends DatabaseEntity { // TODO or extend from object e
     @OneToOne(() => ObjectElement, (objectElement) => objectElement.id)
     form!: ObjectElement; // the form that is displayed on this page of the wizard
 
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     pageTitle!: string;
 
-    @Column()
+    @Column({ type: "int" })
     position!: number; // position of the page in the wizard (starting from 0)
 }
 
@@ -327,10 +330,10 @@ export class Wizard extends DatabaseEntity {
     @OneToMany(() => WizardPage, (wizardPage) => wizardPage.wizard)
     wizardPages!: WizardPage[];
 
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     title!: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     description?: string;
 }
 
