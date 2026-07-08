@@ -9,11 +9,12 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-    vjfbChange: [jsonSchema: JSONSchema, uiSchema: UISchema];
+    'vjfb-change': [jsonSchema: JSONSchema, uiSchema: UISchema];
 }>();
 
 function handleVJFBChange(jsonSchema: JSONSchema, uiSchema: UISchema) {
-    emit('vjfbChange', jsonSchema, uiSchema);
+    console.warn('vjfb-change-outer', jsonSchema, uiSchema);
+    emit('vjfb-change', jsonSchema, uiSchema);
 }
 </script>
 

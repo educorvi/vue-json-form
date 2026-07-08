@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    vjfbChange: [jsonSchema: JSONSchema, uiSchema: UISchema];
+    'vjfb-change': [jsonSchema: JSONSchema, uiSchema: UISchema];
 }>();
 
 const importStore = useImportState({
@@ -98,7 +98,12 @@ watch(
 );
 
 watch([() => store.jsonSchema, () => store.uiSchema], () => {
-    emit('vjfbChange', store.jsonSchema, store.uiSchema as unknown as UISchema);
+    console.warn('vjfb-change-inner', store.jsonSchema, store.uiSchema);
+    emit(
+        'vjfb-change',
+        store.jsonSchema,
+        store.uiSchema as unknown as UISchema
+    );
 });
 </script>
 
