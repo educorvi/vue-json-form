@@ -10,7 +10,6 @@ import LeftPanel from './components/LeftPanel/LeftPanel.vue';
 import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
 import RightPanel from './components/RightPanel/RightPanel.vue';
 import { supportedUiSchemaVersion, version } from '@educorvi/vue-json-form';
-import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import { generateUISchema } from '@educorvi/vue-json-form';
 import { useImportState } from '@/components/MiddlePanel/import/useImportState.ts';
 
@@ -70,16 +69,27 @@ const importStore = useImportState({
         console.error('Import failed', message, error);
     },
 });
-if (props.jsonSchema) {
-    const localUiSchema: string = props.uiSchema
-        ? props.uiSchema
-        : JSON.stringify(generateUISchema(JSON.parse(props.jsonSchema)));
 
-    importStore.jsonText.value = props.jsonSchema;
-    importStore.uiText.value = localUiSchema;
-    importStore.activeTab.value = 0;
-    importStore.doImport();
-}
+watch(
+    [() => props.jsonSchema, () => props.uiSchema],
+    () => {
+        if (props.jsonSchema) {
+            const localUiSchema: string = props.uiSchema
+                ? props.uiSchema
+                : JSON.stringify(
+                      generateUISchema(JSON.parse(props.jsonSchema))
+                  );
+
+            importStore.jsonText.value = props.jsonSchema;
+            importStore.uiText.value = localUiSchema;
+            importStore.activeTab.value = 0;
+            importStore.doImport();
+        }
+    },
+    {
+        immediate: true,
+    }
+);
 </script>
 
 <template>
