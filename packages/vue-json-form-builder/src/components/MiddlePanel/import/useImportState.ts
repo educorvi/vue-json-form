@@ -101,7 +101,7 @@ export function readJsonFile(file: File): Promise<unknown> {
 export interface ImportDeps {
     loadSchemas: (json: JSONSchema, ui: UISchema) => void;
     onSuccess: () => void;
-    onError: (message: string) => void;
+    onError: (message: string, error?: unknown) => void;
 }
 
 export function useImportState(deps: ImportDeps): ImportState {
@@ -181,7 +181,7 @@ export function useImportState(deps: ImportDeps): ImportState {
             deps.onSuccess();
             reset();
         } catch (e: any) {
-            deps.onError(e.message);
+            deps.onError(e.message, e);
         } finally {
             importing.value = false;
         }

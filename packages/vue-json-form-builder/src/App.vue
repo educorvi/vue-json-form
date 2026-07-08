@@ -10,6 +10,9 @@ import LeftPanel from './components/LeftPanel/LeftPanel.vue';
 import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
 import RightPanel from './components/RightPanel/RightPanel.vue';
 import { supportedUiSchemaVersion, version } from '@educorvi/vue-json-form';
+import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
+import { generateUISchema } from '@educorvi/vue-json-form';
+import { useImportState } from '@/components/MiddlePanel/import/useImportState.ts';
 
 const store = useFormStore();
 
@@ -52,6 +55,31 @@ function makeResizer(
 
 const startResizeLeft = makeResizer(leftWidthVw, 1, 12, 30);
 const startResizeRight = makeResizer(rightWidthVw, -1, 15, 35);
+
+const props = defineProps<{
+    jsonSchema?: string;
+    uiSchema?: string;
+}>();
+
+const importStore = useImportState({
+    loadSchemas: (json, ui) => store.loadSchemas(json, ui),
+    onSuccess: () => {
+        console.log('Imported');
+    },
+    onError: (message, error) => {
+        console.error('Import failed', message, error);
+    },
+});
+if (props.jsonSchema) {
+    const localUiSchema: string = props.uiSchema
+        ? props.uiSchema
+        : JSON.stringify(generateUISchema(JSON.parse(props.jsonSchema)));
+
+    importStore.jsonText.value = props.jsonSchema;
+    importStore.uiText.value = localUiSchema;
+    importStore.activeTab.value = 0;
+    importStore.doImport();
+}
 </script>
 
 <template>

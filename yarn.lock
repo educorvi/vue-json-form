@@ -1153,6 +1153,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent"
   dependencies:
+    "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-builder": "workspace:^"
     "@playwright/test": "npm:^1.61.0"
     "@semantic-release/exec": "npm:^7.1.0"

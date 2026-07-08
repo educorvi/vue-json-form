@@ -16,6 +16,7 @@
         "lint:fix": "yarn run -T eslint . --fix"
     },
     "dependencies": {
+        "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-builder": "workspace:^",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
