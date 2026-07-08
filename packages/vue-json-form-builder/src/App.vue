@@ -10,8 +10,10 @@ import LeftPanel from './components/LeftPanel/LeftPanel.vue';
 import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
 import RightPanel from './components/RightPanel/RightPanel.vue';
 import { supportedUiSchemaVersion, version } from '@educorvi/vue-json-form';
+import type { UISchema } from '@educorvi/vue-json-form';
 import { generateUISchema } from '@educorvi/vue-json-form';
 import { useImportState } from '@/components/MiddlePanel/import/useImportState.ts';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 
 const store = useFormStore();
 
@@ -60,6 +62,10 @@ const props = defineProps<{
     uiSchema?: string;
 }>();
 
+const emit = defineEmits<{
+    vjfbChange: [jsonSchema: JSONSchema, uiSchema: UISchema];
+}>();
+
 const importStore = useImportState({
     loadSchemas: (json, ui) => store.loadSchemas(json, ui),
     onSuccess: () => {
@@ -90,6 +96,10 @@ watch(
         immediate: true,
     }
 );
+
+watch([() => store.jsonSchema, () => store.uiSchema], () => {
+    emit('vjfbChange', store.jsonSchema, store.uiSchema as unknown as UISchema);
+});
 </script>
 
 <template>

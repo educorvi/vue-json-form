@@ -90,9 +90,14 @@
             </section>
 
             <section class="card">
-                <vue-json-form-builder></vue-json-form-builder>
+                <vue-json-form-builder id="vjfb"></vue-json-form-builder>
             </section>
         </main>
         <script type="module" src="./dist/vue-json-form-builder.js"></script>
+        <script>
+            document.getElementById('vjfb').addEventListener('vjfbChange', (event) => {
+                console.log(event);
+            });
+        </script>
     </body>
 </html>
