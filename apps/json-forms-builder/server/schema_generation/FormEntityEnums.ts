@@ -18,6 +18,11 @@ enum StringFormats {
     Search = "search",
 }
 
+enum NumberFormats {
+    Integer = "integer",
+    Number = "number", // float
+}
+
 enum BooleanFormats {
     Checkbox = "checkbox",
     Switch = "switch"
@@ -112,4 +117,4 @@ enum DependencyRelation {
     OR = "OR"
 }
 
-export { Layouts, StringFormats, BooleanFormats, EnumFormats, ButtonSubmitActions, HttpsMethods, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation };
+export { Layouts, StringFormats, BooleanFormats, EnumFormats, ButtonSubmitActions, HttpsMethods, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation, NumberFormats };
