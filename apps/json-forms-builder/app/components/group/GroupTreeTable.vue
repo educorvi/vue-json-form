@@ -1,19 +1,22 @@
 <script setup lang="ts">
 /**
- * GroupTreeTable — Recursively expandable group tree.
+ * GroupTreeTable — Recursively expandable tree for groups and forms.
  *
- * Each row can be expanded to lazily fetch & show immediate children.
- * Children are paginated. Works at root level and inside detail groups.
+ * Items can be either groups (type='group') or forms (type='form').
+ * Groups are expandable to show their children; forms link to their detail page.
+ * Children are lazily fetched when expanding a group.
  */
-import type { z } from 'zod';
-import type { zGroup } from '~~/server/orpc/generated/zod.gen';
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
 
-type GroupRow = z.infer<typeof zGroup>;
+interface ChildItem {
+    id: number;
+    type?: 'group' | 'form';
+    [key: string]: any;
+}
 
 interface ChildrenState {
-    items: GroupRow[];
+    items: ChildItem[];
     loading: boolean;
     error: string | null;
     loaded: boolean;
@@ -25,25 +28,25 @@ interface ChildrenState {
 
 const props = withDefaults(
     defineProps<{
-        items: GroupRow[];
+        items: ChildItem[];
         depth?: number;
     }>(),
     { depth: 0 }
 );
 
 const emit = defineEmits<{
-    edit: [group: GroupRow];
-    delete: [group: GroupRow];
-    navigate: [group: GroupRow];
+    edit: [item: ChildItem];
+    delete: [item: ChildItem];
+    navigate: [item: ChildItem];
 }>();
 
 const { t } = useI18n();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const router = useRouter();
 
 const INDENT_PX = 24;
 
-// ── Children state — reactive record keyed by group id ────────────────────
-// Using a plain ref<Record> so Vue tracks nested property mutations.
+// ── Children state (groups only — forms have no children) ─────────────────
 const childrenState = ref<Record<number, ChildrenState>>({});
 
 function emptyState(): ChildrenState {
@@ -66,7 +69,7 @@ function ensureState(id: number): ChildrenState {
     return childrenState.value[id];
 }
 
-async function fetchChildren(group: GroupRow) {
+async function fetchChildren(group: ChildItem) {
     const st = ensureState(group.id);
     st.loading = true;
     st.error = null;
@@ -80,7 +83,7 @@ async function fetchChildren(group: GroupRow) {
                 sort_order: 'asc',
             },
         });
-        st.items = (result.data as GroupRow[]) ?? [];
+        st.items = (result.data as ChildItem[]) ?? [];
         st.totalCount = (result as any).total_count ?? st.items.length;
         st.totalPages = (result as any).total_pages ?? 1;
         st.loaded = true;
@@ -98,35 +101,24 @@ function isExpanded(id: number): boolean {
     return expandedIds.value.has(id);
 }
 
-function onToggle(group: GroupRow) {
-    if (isExpanded(group.id)) {
-        expandedIds.value.delete(group.id);
+function onToggle(item: ChildItem) {
+    if (isExpanded(item.id)) {
+        expandedIds.value.delete(item.id);
         expandedIds.value = new Set(expandedIds.value);
     } else {
-        expandedIds.value.add(group.id);
+        expandedIds.value.add(item.id);
         expandedIds.value = new Set(expandedIds.value);
-        fetchChildren(group);
+        fetchChildren(item);
     }
 }
 
-function onChildPageChange(group: GroupRow, newPage: number) {
-    const st = ensureState(group.id);
+function onChildPageChange(item: ChildItem, newPage: number) {
+    const st = ensureState(item.id);
     st.page = newPage;
-    fetchChildren(group);
+    fetchChildren(item);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-
-function groupLink(group: GroupRow): string {
-    const segments: string[] = [];
-    if (group.parent_path) {
-        for (const entry of group.parent_path) {
-            segments.push(entry.path_segment ?? entry.name);
-        }
-    }
-    segments.push(group.name ?? String(group.id));
-    return `/groups/${encodeGroupPath(segments.join('/'))}`;
-}
 
 function formatTimestamp(iso: string | undefined): string {
     if (!iso) return '';
@@ -137,31 +129,48 @@ function formatTimestamp(iso: string | undefined): string {
         day: 'numeric',
     }).format(date);
 }
+
+function isGroup(item: ChildItem): boolean {
+    return item.type !== 'form';
+}
+
+function isForm(item: ChildItem): boolean {
+    return item.type === 'form';
+}
+
+function itemLink(item: ChildItem): string {
+    return Routes.childItemPath(item);
+}
 </script>
 
 <template>
     <div class="group-tree-table">
-        <div v-for="group in items" :key="group.id" class="group-tree-node">
-            <!-- Group row -->
+        <div
+            v-for="item in items"
+            :key="`${item.type}-${item.id}`"
+            class="group-tree-node"
+        >
+            <!-- ── Group row ──────────────────────────────────────────── -->
             <div
+                v-if="isGroup(item)"
                 class="d-flex align-items-center gap-1 py-2 px-2 border-bottom"
                 :style="{ paddingLeft: depth * INDENT_PX + 12 + 'px' }"
             >
                 <!-- Expand toggle -->
                 <BButton
-                    v-if="group.group_count > 0"
+                    v-if="item.group_count > 0 || item.form_count > 0"
                     variant="link"
                     class="text-secondary p-0 lh-1"
                     :aria-label="
-                        isExpanded(group.id)
+                        isExpanded(item.id)
                             ? t('common.collapse')
                             : t('common.expand')
                     "
-                    @click.stop="onToggle(group)"
+                    @click.stop="onToggle(item)"
                 >
                     <PhosphorIcon
                         :name="
-                            isExpanded(group.id) ? 'caret-down' : 'caret-right'
+                            isExpanded(item.id) ? 'caret-down' : 'caret-right'
                         "
                     />
                 </BButton>
@@ -173,24 +182,23 @@ function formatTimestamp(iso: string | undefined): string {
                 <!-- Title -->
                 <div class="flex-grow-1 min-w-0">
                     <NuxtLink
-                        :to="groupLink(group)"
+                        :to="itemLink(item)"
                         class="fw-medium text-decoration-none text-body"
                     >
-                        {{ group.title || group.name }}
+                        {{ item.title || item.name }}
                     </NuxtLink>
                 </div>
 
-                <!-- Right side: stats with timestamps below + actions -->
+                <!-- Right side: stats + timestamp + actions -->
                 <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                    <!-- Stats & timestamps column -->
                     <div class="d-flex flex-column align-items-end gap-0">
                         <GroupStatsBadge
-                            :group-count="group.group_count"
-                            :form-count="group.form_count"
-                            :member-count="group.member_count"
+                            :group-count="item.group_count"
+                            :form-count="item.form_count"
+                            :member-count="item.member_count"
                         />
                         <BTooltip
-                            v-if="group.updated_by?.timestamp"
+                            v-if="item.updated_by?.timestamp"
                             triggers="hover"
                         >
                             <template #target>
@@ -201,7 +209,7 @@ function formatTimestamp(iso: string | undefined): string {
                                     <PhosphorIcon name="clock" :size="12" />
                                     {{
                                         formatTimestamp(
-                                            group.updated_by.timestamp
+                                            item.updated_by.timestamp
                                         )
                                     }}
                                 </span>
@@ -219,11 +227,11 @@ function formatTimestamp(iso: string | undefined): string {
                         <template #button-content>
                             <PhosphorIcon name="dots-three" :size="18" />
                         </template>
-                        <BDropdownItem @click="emit('edit', group)">
+                        <BDropdownItem @click="emit('edit', item)">
                             <PhosphorIcon name="pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
-                        <BDropdownItem @click="emit('delete', group)">
+                        <BDropdownItem @click="emit('delete', item)">
                             <PhosphorIcon name="trash" />
                             {{ t('groups.delete.title') }}
                         </BDropdownItem>
@@ -231,15 +239,71 @@ function formatTimestamp(iso: string | undefined): string {
                 </div>
             </div>
 
-            <!-- Expanded children -->
+            <!-- ── Form row ───────────────────────────────────────────── -->
             <div
-                v-if="isExpanded(group.id)"
+                v-else
+                class="d-flex align-items-center gap-2 py-2 px-2 border-bottom form-row"
+                :style="{ paddingLeft: depth * INDENT_PX + 12 + 'px' }"
+            >
+                <!-- File icon -->
+                <PhosphorIcon
+                    name="file-text"
+                    class="flex-shrink-0 text-secondary"
+                />
+
+                <!-- Title -->
+                <div class="flex-grow-1 min-w-0">
+                    <NuxtLink
+                        :to="itemLink(item)"
+                        class="fw-medium text-decoration-none text-body"
+                    >
+                        {{ item.title }}
+                    </NuxtLink>
+                    <div
+                        v-if="item.description"
+                        class="text-secondary small text-truncate"
+                    >
+                        {{ item.description }}
+                    </div>
+                </div>
+
+                <!-- Timestamp -->
+                <span
+                    class="text-secondary small text-nowrap flex-shrink-0 d-none d-sm-block"
+                >
+                    <PhosphorIcon name="clock" :size="12" />
+                    {{ formatTimestamp(item.updated_by?.timestamp) }}
+                </span>
+
+                <!-- Actions -->
+                <BDropdown
+                    variant="link"
+                    no-caret
+                    toggle-class="text-secondary p-0 border-0"
+                >
+                    <template #button-content>
+                        <PhosphorIcon name="dots-three" :size="18" />
+                    </template>
+                    <BDropdownItem @click="emit('edit', item)">
+                        <PhosphorIcon name="pencil" />
+                        {{ t('common.edit') }}
+                    </BDropdownItem>
+                    <BDropdownItem @click="emit('delete', item)">
+                        <PhosphorIcon name="trash" />
+                        {{ t('forms.delete.title') }}
+                    </BDropdownItem>
+                </BDropdown>
+            </div>
+
+            <!-- ── Expanded group children ────────────────────────────── -->
+            <div
+                v-if="isGroup(item) && isExpanded(item.id)"
                 class="group-tree-children"
                 :style="{ marginLeft: INDENT_PX + 'px' }"
             >
                 <!-- Loading -->
                 <div
-                    v-if="childrenState[group.id]?.loading"
+                    v-if="childrenState[item.id]?.loading"
                     class="d-flex align-items-center gap-2 py-2 px-3 text-secondary small"
                 >
                     <BSpinner small />
@@ -248,19 +312,19 @@ function formatTimestamp(iso: string | undefined): string {
 
                 <!-- Error -->
                 <BAlert
-                    v-else-if="childrenState[group.id]?.error"
+                    v-else-if="childrenState[item.id]?.error"
                     variant="danger"
                     class="m-2"
                     :dismissible="false"
                 >
-                    {{ childrenState[group.id]?.error }}
+                    {{ childrenState[item.id]?.error }}
                 </BAlert>
 
                 <!-- Empty -->
                 <div
                     v-else-if="
-                        childrenState[group.id]?.loaded &&
-                        childrenState[group.id]!.items.length === 0
+                        childrenState[item.id]?.loaded &&
+                        childrenState[item.id]!.items.length === 0
                     "
                     class="py-2 px-3 text-secondary small"
                 >
@@ -268,32 +332,32 @@ function formatTimestamp(iso: string | undefined): string {
                 </div>
 
                 <!-- Recursive tree + paginator -->
-                <template v-else-if="childrenState[group.id]?.loaded">
+                <template v-else-if="childrenState[item.id]?.loaded">
                     <GroupTreeTable
-                        :items="childrenState[group.id]!.items"
+                        :items="childrenState[item.id]!.items"
                         :depth="depth + 1"
-                        @edit="(g) => emit('edit', g)"
-                        @delete="(g) => emit('delete', g)"
-                        @navigate="(g) => emit('navigate', g)"
+                        @edit="(g: any) => emit('edit', g)"
+                        @delete="(g: any) => emit('delete', g)"
+                        @navigate="(g: any) => emit('navigate', g)"
                     />
 
                     <div
-                        v-if="childrenState[group.id]!.totalPages > 1"
+                        v-if="childrenState[item.id]!.totalPages > 1"
                         class="px-3 py-2"
                     >
                         <ListPaginator
-                            :current-page="childrenState[group.id]!.page"
-                            :page-size="childrenState[group.id]!.pageSize"
-                            :total-count="childrenState[group.id]!.totalCount"
+                            :current-page="childrenState[item.id]!.page"
+                            :page-size="childrenState[item.id]!.pageSize"
+                            :total-count="childrenState[item.id]!.totalCount"
                             @update:current-page="
-                                (v: number) => onChildPageChange(group, v)
+                                (v: number) => onChildPageChange(item, v)
                             "
                             @update:page-size="
                                 (v: number) => {
-                                    const st = ensureState(group.id);
+                                    const st = ensureState(item.id);
                                     st.pageSize = v;
                                     st.page = 1;
-                                    fetchChildren(group);
+                                    fetchChildren(item);
                                 }
                             "
                         />
@@ -303,3 +367,9 @@ function formatTimestamp(iso: string | undefined): string {
         </div>
     </div>
 </template>
+
+<style scoped>
+.form-row:hover {
+    background-color: var(--bs-light-bg-subtle, rgba(0, 0, 0, 0.04));
+}
+</style>

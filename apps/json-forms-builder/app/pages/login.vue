@@ -6,7 +6,7 @@ const route = useRoute();
 
 // Redirect already-logged-in users to dashboard
 if (loggedIn.value) {
-    await navigateTo('/dashboard');
+    await navigateTo(Routes.DASHBOARD);
 }
 
 const authError = computed(() => route.query.error === 'auth_failed');

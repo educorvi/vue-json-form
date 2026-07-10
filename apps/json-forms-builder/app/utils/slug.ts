@@ -54,6 +54,28 @@ export function buildGroupUrlPath(
 }
 
 /**
+ * Build the full URL path for a form from its parent_path and its own name.
+ * Falls back to the form's id as the path segment if name is unavailable.
+ */
+export function buildFormUrlPath(
+    form: {
+        parent_path?: Array<{ name: string; path_segment?: string }> | null;
+        name?: string;
+        id?: number;
+    } | null
+): string {
+    if (!form) return '';
+    const segments: string[] = [];
+    if (form.parent_path) {
+        for (const entry of form.parent_path) {
+            segments.push(entry.path_segment ?? entry.name);
+        }
+    }
+    segments.push(form.name ?? String(form.id ?? ''));
+    return segments.join('/');
+}
+
+/**
  * Encode a group path so it can be used in a URL.
  * Each segment is encoded individually so `/` separators remain visible.
  */

@@ -21,7 +21,7 @@ services:
       - "8080:8080"
     # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
     volumes:
-#      - ./data/keycloak:/opt/keycloak/data
+      #      - ./data/keycloak:/opt/keycloak/data
       - ./keycloak:/opt/keycloak/data/import:ro
     command:
       - "start-dev"

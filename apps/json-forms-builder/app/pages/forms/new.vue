@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * /groups/new — Create a new group.
+ * /forms/new — Create a new form.
  *
  * Field order: Title → Parent Group → URL Slug → Description
  * Query param `?parent=<encoded-path>` pre-selects the parent.
@@ -20,7 +20,7 @@ const parentPath = ref<string | null>(
 );
 
 const { data: parentGroup } = useAsyncData(
-    () => `parent-group-for-subgroup-${parentPath.value}`,
+    () => `parent-group-for-form-${parentPath.value}`,
     () =>
         parentPath.value
             ? orpc.groups.get({ params: { id: parentPath.value } })
@@ -33,7 +33,7 @@ const { set: setBreadcrumb } = useAppBreadcrumb();
 watch(
     parentGroup,
     (g) => {
-        setBreadcrumb('groups', g, t('groups.new.title'));
+        setBreadcrumb('forms', g, t('forms.new.title'));
     },
     { immediate: true }
 );
@@ -79,7 +79,7 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const slugError = computed(() => {
     if (!slug.value.trim()) return null;
-    if (!SLUG_RE.test(slug.value)) return t('groups.new.fields.slugInvalid');
+    if (!SLUG_RE.test(slug.value)) return t('forms.new.fields.slugInvalid');
     return null;
 });
 
@@ -117,27 +117,19 @@ async function submit() {
     errorMessage.value = null;
 
     try {
-        const created = await orpc.groups.create({
-            query:
-                parentPath.value != null
-                    ? { parent: parentPath.value }
-                    : undefined,
+        const created = await orpc.forms.create({
+            query: { id: parentPath.value ?? '' },
             body: {
                 title: title.value.trim(),
                 name: slug.value.trim(),
-                description: description.value.trim() || undefined,
-                created_by: null,
-                updated_by: null,
-            },
+                description: description.value.trim() || null,
+            } as any,
         });
-        const path = buildGroupUrlPath(
-            (created as any).parent_path,
-            (created as any).name ?? ''
-        );
-        await router.push(Routes.groupsDetail(path));
+        const path = buildFormUrlPath(created as any);
+        router.push(Routes.formsDetail(path));
     } catch (err: any) {
         errorMessage.value =
-            err?.message ?? err?.data?.message ?? t('groups.new.createError');
+            err?.message ?? err?.data?.message ?? t('forms.new.createError');
     } finally {
         submitting.value = false;
     }
@@ -147,16 +139,16 @@ function cancel() {
     if (parentPath.value) {
         router.push(Routes.groupsDetail(parentPath.value));
     } else {
-        router.push(Routes.GROUPS);
+        router.push(Routes.FORMS);
     }
 }
 </script>
 
 <template>
     <BasePage
-        icon="folder-plus"
-        :title="t('groups.new.title')"
-        :description="t('groups.new.subtitle')"
+        :title="t('forms.new.title')"
+        :description="t('forms.new.subtitle')"
+        icon="file-plus"
     >
         <BCard>
             <BCardBody>
@@ -167,14 +159,14 @@ function cancel() {
                 >
                     <!-- Title -->
                     <BFormGroup
-                        :label="t('groups.new.fields.title')"
+                        :label="t('forms.new.fields.title')"
                         label-class="fw-medium"
                         required
                     >
                         <BFormInput
                             v-model="title"
                             :placeholder="
-                                t('groups.new.fields.titlePlaceholder')
+                                t('forms.new.fields.titlePlaceholder')
                             "
                             :state="titleState()"
                             autofocus
@@ -187,7 +179,7 @@ function cancel() {
 
                     <!-- Parent group -->
                     <BFormGroup
-                        :label="t('groups.new.fields.parent')"
+                        :label="t('forms.new.fields.parent')"
                         label-class="fw-medium"
                     >
                         <GroupTreeSelect
@@ -195,21 +187,19 @@ function cancel() {
                             :current-group-id="(parentGroup as any)?.id ?? null"
                         />
                         <BFormText>{{
-                            t('groups.new.fields.parentHint')
+                            t('forms.new.fields.parentHint')
                         }}</BFormText>
                     </BFormGroup>
 
                     <!-- URL Slug -->
                     <BFormGroup
-                        :label="t('groups.new.fields.name')"
+                        :label="t('forms.new.fields.name')"
                         label-class="fw-medium"
                         required
                     >
                         <BFormInput
                             v-model="slug"
-                            :placeholder="
-                                t('groups.new.fields.namePlaceholder')
-                            "
+                            :placeholder="t('forms.new.fields.namePlaceholder')"
                             class="font-monospace"
                             :state="slugInvalid ? false : undefined"
                             :required="true"
@@ -224,19 +214,19 @@ function cancel() {
                             </template>
                         </BFormInvalidFeedback>
                         <BFormText>{{
-                            t('groups.new.fields.nameHint')
+                            t('forms.new.fields.nameHint')
                         }}</BFormText>
                     </BFormGroup>
 
                     <!-- Description -->
                     <BFormGroup
-                        :label="t('groups.new.fields.description')"
+                        :label="t('forms.new.fields.description')"
                         label-class="fw-medium"
                     >
                         <BFormTextarea
                             v-model="description"
                             :placeholder="
-                                t('groups.new.fields.descriptionPlaceholder')
+                                t('forms.new.fields.descriptionPlaceholder')
                             "
                             rows="3"
                         />
@@ -262,7 +252,7 @@ function cancel() {
                             :disabled="submitting"
                         >
                             <BSpinner v-if="submitting" small class="me-1" />
-                            {{ t('groups.new.create') }}
+                            {{ t('forms.new.create') }}
                         </BButton>
                     </div>
                 </BForm>

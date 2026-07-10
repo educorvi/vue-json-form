@@ -175,6 +175,64 @@
             "useCurrentFolder": "Use current folder"
         }
     },
+    "forms": {
+        "title": "Forms",
+        "new": {
+            "title": "New Form",
+            "subtitle": "Create a new form in a group.",
+            "create": "Create Form",
+            "createError": "Failed to create form.",
+            "fields": {
+                "title": "Title",
+                "titlePlaceholder": "e.g. Leave Request",
+                "name": "URL slug (name)",
+                "namePlaceholder": "e.g. leave-request",
+                "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
+                "description": "Description",
+                "descriptionPlaceholder": "Optional — describe the purpose of this form.",
+                "parent": "Parent Group",
+                "parentHint": "Leave empty to create a root-level form.",
+                "slugInvalid": "Only lowercase letters, numbers, and hyphens allowed. Cannot start or end with a hyphen."
+            }
+        },
+        "edit": {
+            "title": "Edit Form",
+            "subtitle": "Update form settings and metadata.",
+            "save": "Save Changes",
+            "updateError": "Failed to update form.",
+            "fields": {
+                "title": "Title",
+                "titlePlaceholder": "e.g. Leave Request",
+                "name": "URL slug (name)",
+                "namePlaceholder": "e.g. leave-request",
+                "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
+                "description": "Description",
+                "descriptionPlaceholder": "Optional — describe the purpose of this form."
+            }
+        },
+        "detail": {
+            "notFound": "Form not found",
+            "backToForms": "Back to Forms"
+        },
+        "sortBy": {
+            "title": "Title",
+            "created": "Created",
+            "updated": "Updated"
+        },
+        "noFormsTitle": "No forms found",
+        "noFormsDescription": "There are no forms yet.",
+        "loadError": "Failed to load forms:",
+        "total": "No forms | {n} form | {n} forms",
+        "searchPlaceholder": "Search forms…",
+        "noSearchResults": "No results for '{query}'.",
+        "delete": {
+            "title": "Delete",
+            "confirm": "Delete Form",
+            "warning": "This will permanently delete this form and all its versions. This action cannot be undone.",
+            "confirmPrompt": "Type \"{name}\" to confirm deletion:",
+            "deleteError": "Failed to delete form."
+        }
+    },
     "dashboard": {
         "title": "Start",
         "subtitle": "Administrative interface for managing forms, users, and permissions.",
@@ -194,6 +252,8 @@
         "clear": "Clear",
         "edit": "Edit",
         "required": "This field is required",
+        "errorTitle": "Something went wrong",
+        "errorDescription": "An unexpected error occurred. Please try again.",
         "expand": "Expand",
         "collapse": "Collapse",
         "perPage": "Per page",

@@ -175,6 +175,64 @@
             "useCurrentFolder": "Aktuellen Ordner verwenden"
         }
     },
+    "forms": {
+        "title": "Formulare",
+        "new": {
+            "title": "Neues Formular",
+            "subtitle": "Erstelle ein neues Formular in einer Gruppe.",
+            "create": "Formular erstellen",
+            "createError": "Formular konnte nicht erstellt werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Urlaubsantrag",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. urlaubsantrag",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieses Formulars.",
+                "parent": "Übergeordnete Gruppe",
+                "parentHint": "Leer lassen, um ein Formular auf oberster Ebene zu erstellen.",
+                "slugInvalid": "Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt. Darf nicht mit Bindestrich beginnen oder enden."
+            }
+        },
+        "edit": {
+            "title": "Formular bearbeiten",
+            "subtitle": "Formulareinstellungen und Metadaten aktualisieren.",
+            "save": "Änderungen speichern",
+            "updateError": "Formular konnte nicht aktualisiert werden.",
+            "fields": {
+                "title": "Titel",
+                "titlePlaceholder": "z.B. Urlaubsantrag",
+                "name": "URL-Slug (Name)",
+                "namePlaceholder": "z.B. urlaubsantrag",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieses Formulars."
+            }
+        },
+        "detail": {
+            "notFound": "Formular nicht gefunden",
+            "backToForms": "Zurück zu Formularen"
+        },
+        "sortBy": {
+            "title": "Titel",
+            "created": "Erstellt",
+            "updated": "Aktualisiert"
+        },
+        "noFormsTitle": "Keine Formulare gefunden",
+        "noFormsDescription": "Es gibt noch keine Formulare.",
+        "loadError": "Formulare konnten nicht geladen werden:",
+        "total": "Keine Formulare | {n} Formular | {n} Formulare",
+        "searchPlaceholder": "Formulare suchen…",
+        "noSearchResults": "Keine Ergebnisse für '{query}'.",
+        "delete": {
+            "title": "Löschen",
+            "confirm": "Formular löschen",
+            "warning": "Dies löscht das Formular und alle seine Versionen dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+            "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
+            "deleteError": "Formular konnte nicht gelöscht werden."
+        }
+    },
     "dashboard": {
         "title": "Start",
         "subtitle": "Verwaltungsschnittstelle für Formulare, Benutzer und Berechtigungen.",
@@ -194,6 +252,8 @@
         "clear": "Löschen",
         "edit": "Bearbeiten",
         "required": "Dieses Feld ist erforderlich",
+        "errorTitle": "Etwas ist schiefgelaufen",
+        "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
         "expand": "Ausklappen",
         "collapse": "Einklappen",
         "perPage": "Pro Seite",

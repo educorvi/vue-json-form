@@ -2,11 +2,32 @@ import { ORPCError } from '@orpc/server';
 import { os, authMiddleware } from '../init';
 import { AppDataSource } from '~~/server/db/data-source';
 import { GroupService } from '~~/server/services/GroupService';
+import { FormService } from '~~/server/services/FormService';
 import { PermissionService } from '~~/server/services/PermissionService';
 import {
     zListGroupsQuery,
     zListGroupChildrenQuery,
 } from '../generated/zod.gen';
+
+const ORDER_BY_MAP: Record<string, string> = {
+    title: 'title',
+    created: 'created',
+    updated: 'updated',
+};
+
+/**
+ * Resolve a parent-group reference (numeric ID or path string) to a group ID.
+ * Returns null if the reference is empty/falsy.
+ */
+async function resolveParentGroupId(parentRef: string | undefined | null): Promise<number | null> {
+    if (!parentRef) return null;
+    if (/^\d+$/.test(parentRef)) {
+        return parseInt(parentRef, 10);
+    }
+    const groupService = new GroupService(AppDataSource);
+    const group = await groupService.getByIdOrSlug(parentRef);
+    return group.id;
+}
 
 export const groupsRouter = {
     list: os.groups.list.use(authMiddleware).handler(async ({ input }) => {
@@ -26,34 +47,106 @@ export const groupsRouter = {
     listChildren: os.groups.listChildren
         .use(authMiddleware)
         .handler(async ({ input }) => {
-            const service = new GroupService(AppDataSource);
+            const groupService = new GroupService(AppDataSource);
+            const formService = new FormService(AppDataSource);
             const q = input.query ?? zListGroupChildrenQuery.parse({});
             // Resolve parent group by ID or path
-            const parentGroup = await service.getByIdOrSlug(input.params.id);
+            const parentGroup = await groupService.getByIdOrSlug(
+                input.params.id
+            );
             const parentId = parentGroup.id;
 
-            const result = await service.list(
+            const orderBy = ORDER_BY_MAP[q.order_by] ?? 'title';
+            const sortOrder = q.sort_order === 'asc' ? 'ASC' : 'DESC';
+
+            // Build order_by for groups API (has different enum)
+            const groupOrderBy = (
+                ['title', 'created', 'updated'].includes(q.order_by)
+                    ? q.order_by
+                    : 'title'
+            ) as
+                | 'title'
+                | 'created'
+                | 'updated'
+                | 'id'
+                | 'member_count'
+                | 'group_count'
+                | 'form_count'
+                | 'parent_path';
+
+            // Fetch groups
+            const groupsResult = await groupService.list(
                 {
                     page: q.page,
                     page_size: q.page_size,
                     search: q.search,
                     sort_order: q.sort_order,
-                    order_by: ['title', 'created', 'updated'].includes(
-                        q.order_by
-                    )
-                        ? (q.order_by as 'title' | 'created' | 'updated')
-                        : 'title',
+                    order_by: groupOrderBy,
                     filter_parent_group: String(parentId),
                 },
                 parentId
             );
 
+            // Fetch forms for the same parent group
+            const formsResult = await formService.list(
+                {
+                    page: 1,
+                    pageSize: 250,
+                    sortOrder,
+                    search: q.search ?? '',
+                },
+                orderBy as 'title' | 'created' | 'updated',
+                parentId
+            );
+
+            // Tag groups
+            const groupItems = groupsResult.data.map((g) => ({
+                ...g,
+                type: 'group' as const,
+            }));
+
+            // Tag forms
+            const formItems = formsResult.data.map((f: any) => ({
+                ...f,
+                type: 'form' as const,
+            }));
+
+            // Merge and sort
+            let combined = [...groupItems, ...formItems];
+            if (orderBy === 'title') {
+                combined.sort((a, b) => {
+                    const cmp = ((a as any).title ?? '').localeCompare(
+                        (b as any).title ?? ''
+                    );
+                    return sortOrder === 'ASC' ? cmp : -cmp;
+                });
+            } else if (orderBy === 'created') {
+                combined.sort((a, b) => {
+                    const cmp = (
+                        (a as any).created_by?.timestamp ?? ''
+                    ).localeCompare((b as any).created_by?.timestamp ?? '');
+                    return sortOrder === 'ASC' ? cmp : -cmp;
+                });
+            } else if (orderBy === 'updated') {
+                combined.sort((a, b) => {
+                    const cmp = (
+                        (a as any).updated_by?.timestamp ?? ''
+                    ).localeCompare((b as any).updated_by?.timestamp ?? '');
+                    return sortOrder === 'ASC' ? cmp : -cmp;
+                });
+            }
+
+            // Paginate combined result
+            const totalCount = combined.length;
+            const start = (q.page - 1) * q.page_size;
+            const paged = combined.slice(start, start + q.page_size);
+
             return {
-                ...result,
-                data: result.data.map((g) => ({
-                    ...g,
-                    type: 'group' as const,
-                })),
+                page: q.page,
+                page_size: q.page_size,
+                total_count: totalCount,
+                total_pages: Math.max(Math.ceil(totalCount / q.page_size), 1),
+                data: paged,
             };
         }),
 
@@ -87,9 +180,7 @@ export const groupsRouter = {
         .handler(async ({ input, context }) => {
             const service = new GroupService(AppDataSource);
             const body = input.body;
-            const parentIdParam = input.query?.parent
-                ? parseInt(input.query.parent, 10)
-                : null;
+            const parentIdParam = await resolveParentGroupId(input.query?.parent);
 
             if (!context.user?.roles?.includes('admin')) {
                 if (parentIdParam == null) {

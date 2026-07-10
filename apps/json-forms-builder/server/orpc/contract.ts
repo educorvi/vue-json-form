@@ -20,6 +20,12 @@ import {
     createGroup,
     updateGroup,
     replaceGroup,
+    listForms,
+    getForm,
+    createForm,
+    updateForm,
+    replaceForm,
+    deleteForm,
 } from './generated/orpc.gen';
 
 export const appContract = {
@@ -33,5 +39,13 @@ export const appContract = {
         create: createGroup,
         update: updateGroup,
         replace: replaceGroup,
+    },
+    forms: {
+        list: listForms,
+        get: getForm,
+        create: createForm,
+        update: updateForm,
+        replace: replaceForm,
+        delete: deleteForm,
     },
 };

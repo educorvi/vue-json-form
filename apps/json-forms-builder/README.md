@@ -39,6 +39,11 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 
 # TODO
 
+- group delete, move and export, visibility and permissions
+- Edit and delete for current project should be in ... mneu after create group / form
+- Endpoints to get form content, create version, get version
+- permission problem and also permission groups independent of normal folders / groups
+- visibility rules: visible public, internal, private (only members)
 - table components where we cna put in anything with slots and on mobile it is automatically converted into cards or custom components for each page for finder control how cards look
 
 - TreeSelect styling (grey select tis off, indentation of children)

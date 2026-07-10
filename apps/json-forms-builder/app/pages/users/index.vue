@@ -2,7 +2,6 @@
 import type { z } from 'zod';
 import type { zListUsersQuery } from '~~/server/orpc/generated/zod.gen';
 import UserDataTable from './UserDataTable.vue';
-import { useBreadcrumbStore } from '~~/app/store/breadcrumb';
 
 type UsersQuery = z.infer<typeof zListUsersQuery>;
 type OrderBy = UsersQuery['order_by'];
@@ -11,11 +10,10 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
 const orpc = useNuxtApp().$orpc;
-const breadcrumbStore = useBreadcrumbStore();
 
 // ── Breadcrumb ──────────────────────────────────────────────────────────────
 
-breadcrumbStore.set([{ label: t('nav.users') }]);
+useAppBreadcrumb().set('users');
 
 const page = ref(1);
 const pageSize = ref(20);
@@ -52,7 +50,11 @@ function onSearchChange(val: string) {
 </script>
 
 <template>
-    <BasePage :title="t('users.title')" :description="t('users.description')">
+    <BasePage
+        :title="t('users.title')"
+        :description="t('users.description')"
+        icon="user"
+    >
         <ListToolbar
             v-model:search="search"
             v-model:order-by="orderBy"

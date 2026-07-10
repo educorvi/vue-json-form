@@ -324,6 +324,7 @@ interface FormSeed {
 }
 
 const FORMS: FormSeed[] = [
+    // ── Bug Report ──────────────────────────────────────────────────────────
     {
         title: 'Example Bug Report',
         name: 'example-bug-report',
@@ -331,10 +332,94 @@ const FORMS: FormSeed[] = [
         groupPath: 'bug-report',
     },
     {
+        title: 'Feedback Form',
+        name: 'feedback-form',
+        description: 'General feedback and feature requests',
+        groupPath: 'bug-report',
+    },
+
+    // ── Educorvi / Onboarding ──────────────────────────────────────────────
+    {
         title: 'Onboarding 01',
         name: 'onboarding01',
-        description: 'Beipiel-Formular für das Onboarding neuer Mitarbeiter',
+        description: 'Beispiel-Formular für das Onboarding neuer Mitarbeiter',
         groupPath: 'educorvi/onboarding',
+    },
+    {
+        title: 'Equipment Request',
+        name: 'equipment-request',
+        description: 'Bestellung von Arbeitsmitteln für neue Mitarbeiter',
+        groupPath: 'educorvi/onboarding',
+    },
+
+    // ── Educorvi / Testgruppen ─────────────────────────────────────────────
+    {
+        title: 'Test Survey',
+        name: 'test-survey',
+        description: 'A simple test survey form',
+        groupPath: 'educorvi/test1',
+    },
+    {
+        title: 'QA Checklist',
+        name: 'qa-checklist',
+        description: 'Quality assurance checklist for testing',
+        groupPath: 'educorvi/test2',
+    },
+
+    // ── Develop / Sandbox ──────────────────────────────────────────────────
+    {
+        title: 'Prototype: Contact Form',
+        name: 'prototype-contact',
+        description: 'Prototype for a contact form layout',
+        groupPath: 'develop/sandbox',
+    },
+    {
+        title: 'UI Component Test',
+        name: 'ui-component-test',
+        description: 'Form to test various UI components and layouts',
+        groupPath: 'develop/sandbox',
+    },
+
+    // ── Develop / New Features ─────────────────────────────────────────────
+    {
+        title: 'Feature: Dynamic Sections',
+        name: 'feature-dynamic-sections',
+        description: 'Test form for dynamic section add/remove',
+        groupPath: 'develop/nw-features',
+    },
+
+    // ── DGUV / BG ETEM ────────────────────────────────────────────────────
+    {
+        title: 'Unfallanzeige',
+        name: 'unfallanzeige',
+        description: 'Formular zur Meldung von Arbeitsunfällen',
+        groupPath: 'dguv/bgetem',
+    },
+    {
+        title: 'Beitragsnachweis',
+        name: 'beitragsnachweis',
+        description: 'Jährlicher Beitragsnachweis für Mitgliedsunternehmen',
+        groupPath: 'dguv/bgetem/rul',
+    },
+    {
+        title: 'Rehabilitationsantrag',
+        name: 'rehabilitationsantrag',
+        description: 'Antrag auf medizinische Rehabilitation',
+        groupPath: 'dguv/bgetem/rul',
+    },
+
+    // ── DGUV / BG Bau ──────────────────────────────────────────────────────
+    {
+        title: 'Baustellenmeldung',
+        name: 'baustellenmeldung',
+        description: 'Meldung neuer Baustellen',
+        groupPath: 'dguv/bgbau',
+    },
+    {
+        title: 'Gefährdungsbeurteilung',
+        name: 'gefaehrdungsbeurteilung',
+        description: 'Vorlage für Gefährdungsbeurteilungen auf Baustellen',
+        groupPath: 'dguv/bgbau',
     },
 ];
 

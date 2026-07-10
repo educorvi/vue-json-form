@@ -12,7 +12,7 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json",
-        "orpg:generate": "npx @hey-api/openapi-ts"
+        "orpg:generate": "openapi-ts"
     },
     "dependencies": {
         "@bootstrap-vue-next/nuxt": "^0.45.7",
@@ -41,6 +41,7 @@
         "zod-openapi": "^6.0.0"
     },
     "devDependencies": {
+        "@hey-api/openapi-ts": "0.99.0",
         "@types/bootstrap": "^5",
         "@types/pg": "^8"
     }

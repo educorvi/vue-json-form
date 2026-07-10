@@ -10,32 +10,21 @@
  * Groups are displayed in an expandable tree via GroupTreeTable.
  */
 import type { z } from 'zod';
-import type {
-    zListGroupsQuery,
-    zGroup,
-} from '~~/server/orpc/generated/zod.gen';
+import type { zListGroupsQuery } from '~~/server/orpc/generated/zod.gen';
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
-import { useBreadcrumbStore } from '~~/app/store/breadcrumb';
-
 type GroupsQuery = z.infer<typeof zListGroupsQuery>;
 type OrderBy = GroupsQuery['order_by'];
-type GroupRow = z.infer<typeof zGroup>;
 
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
-const breadcrumbStore = useBreadcrumbStore();
 
 // ── Breadcrumb ──────────────────────────────────────────────────────────────
 
-breadcrumbStore.set([
-    {
-        label: t('nav.groups'),
-    },
-]);
+useAppBreadcrumb().set('groups');
 
 // ── Query state ──────────────────────────────────────────────────────────────
 const page = ref(1);
@@ -71,30 +60,28 @@ function onSearchChange(val: string) {
 }
 
 // ── Delete modal ─────────────────────────────────────────────────────────────
-const deleteTarget = ref<GroupRow | null>(null);
+const deleteTarget = ref<any>(null);
 const showDeleteModal = ref(false);
 const deletePending = ref(false);
 
-function onDelete(group: GroupRow) {
-    deleteTarget.value = group;
+function onDelete(item: any) {
+    deleteTarget.value = item;
     showDeleteModal.value = true;
 }
 
-async function onDeleteConfirm(group: GroupRow) {
+async function onDeleteConfirm(item: any) {
     deletePending.value = true;
     try {
-        // TODO: Add actual delete endpoint
         await orpc.groups.update({
-            params: { id: String(group.id) },
+            params: { id: String(item.id) },
             body: {
-                title: group.title ?? group.name ?? '',
+                title: item.title ?? item.name ?? '',
                 created_by: null as any,
                 updated_by: null as any,
             },
         });
         showDeleteModal.value = false;
         deleteTarget.value = null;
-        // Refresh
         refreshNuxtData('groups');
     } catch {
         // Error is handled by modal
@@ -103,19 +90,20 @@ async function onDeleteConfirm(group: GroupRow) {
     }
 }
 
-function onEdit(group: GroupRow) {
-    router.push(`/groups/${group.id}/edit`);
+function onEdit(item: any) {
+    const path = buildGroupUrlPath(
+        item.parent_path,
+        item.name ?? String(item.id)
+    );
+    router.push(Routes.groupsEdit(path));
 }
 
-function onNavigate(group: GroupRow) {
-    const segments: string[] = [];
-    if (group.parent_path) {
-        for (const entry of group.parent_path) {
-            segments.push(entry.path_segment ?? entry.name);
-        }
-    }
-    segments.push(group.name ?? String(group.id));
-    router.push(`/groups/${encodeGroupPath(segments.join('/'))}`);
+function onNavigate(item: any) {
+    const path = buildGroupUrlPath(
+        item.parent_path,
+        item.name ?? String(item.id)
+    );
+    router.push(Routes.groupsDetail(path));
 }
 
 // ── Description ─────────────────────────────────────────────────────────────
@@ -138,7 +126,7 @@ const pageDescription = computed(() => {
         icon="tree-structure"
     >
         <template #actions>
-            <BButton variant="primary" size="sm" :to="'/groups/new'">
+            <BButton variant="primary" size="sm" :to="Routes.GROUPS_NEW">
                 <PhosphorIcon name="plus" :size="14" class="me-1" />
                 {{ t('groups.new.title') }}
             </BButton>

@@ -3,7 +3,7 @@
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
 
-import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteGroupPath, zDeleteGroupPermissionPath, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
+import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
 
 /**
  * Health check
@@ -30,7 +30,7 @@ export const listUsers = oc.route({
     path: '/users',
     summary: 'List users',
     tags: ['Users']
-}).input(z.object({ query: zListUsersQuery.optional() })).output(zListUsersResponse);
+}).input(z.object({ query: zListUsersQuery.optional() }).optional()).output(zListUsersResponse);
 
 /**
  * Create a user
@@ -78,7 +78,7 @@ export const listGroups = oc.route({
     path: '/groups',
     summary: 'List groups',
     tags: ['Groups']
-}).input(z.object({ query: zListGroupsQuery.optional() })).output(zListGroupsResponse);
+}).input(z.object({ query: zListGroupsQuery.optional() }).optional()).output(zListGroupsResponse);
 
 /**
  * Create a group
@@ -101,9 +101,10 @@ export const deleteGroup = oc.route({
     method: 'DELETE',
     operationId: 'deleteGroup',
     path: '/groups/{id}',
+    successStatus: 204,
     summary: 'Delete a group',
     tags: ['Groups']
-}).input(z.object({ params: zDeleteGroupPath }));
+}).input(z.object({ params: zDeleteGroupPath })).output(zDeleteGroupResponse);
 
 /**
  * Get a group
@@ -208,9 +209,10 @@ export const deleteGroupPermission = oc.route({
     method: 'DELETE',
     operationId: 'deleteGroupPermission',
     path: '/groups/{id}/permissions/{permissionId}',
+    successStatus: 204,
     summary: 'Remove a permission from a group',
     tags: ['Groups']
-}).input(z.object({ params: zDeleteGroupPermissionPath }));
+}).input(z.object({ params: zDeleteGroupPermissionPath })).output(zDeleteGroupPermissionResponse);
 
 /**
  * Update a permission on a group
@@ -240,7 +242,7 @@ export const listForms = oc.route({
     path: '/forms',
     summary: 'List forms',
     tags: ['Forms']
-}).input(z.object({ query: zListFormsQuery.optional() })).output(zListFormsResponse);
+}).input(z.object({ query: zListFormsQuery.optional() }).optional()).output(zListFormsResponse);
 
 /**
  * Create a form
@@ -268,9 +270,10 @@ export const deleteForm = oc.route({
     method: 'DELETE',
     operationId: 'deleteForm',
     path: '/forms/{id}',
+    successStatus: 204,
     summary: 'Delete a form',
     tags: ['Forms']
-}).input(z.object({ params: zDeleteFormPath }));
+}).input(z.object({ params: zDeleteFormPath })).output(zDeleteFormResponse);
 
 /**
  * Get a form
@@ -434,9 +437,10 @@ export const deleteFormPermission = oc.route({
     method: 'DELETE',
     operationId: 'deleteFormPermission',
     path: '/forms/{id}/permissions/{permissionId}',
+    successStatus: 204,
     summary: 'Remove a permission from a form',
     tags: ['Forms']
-}).input(z.object({ params: zDeleteFormPermissionPath }));
+}).input(z.object({ params: zDeleteFormPermissionPath })).output(zDeleteFormPermissionResponse);
 
 /**
  * Update a permission on a form

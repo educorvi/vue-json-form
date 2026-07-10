@@ -20,7 +20,7 @@
 import { OpenAPIGenerator } from '@orpc/openapi';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 import { appRouter } from '~~/server/orpc/routers';
-import { zStatusResponse, zUser } from '../orpc/generated/zod.gen';
+import { zGroup, zStatusResponse, zUser } from '../orpc/generated/zod.gen';
 // import { StatusResponseSchema } from '~~/server/models/status';
 // import {
 //     UserSchema,
@@ -75,6 +75,12 @@ export default defineEventHandler(async (event) => {
                 User: {
                     schema: zUser,
                 },
+                Group: {
+                    schema: zGroup,
+                },
+                // GroupList: {
+
+                // },
             },
         });
     }

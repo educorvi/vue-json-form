@@ -6,17 +6,10 @@
  */
 definePageMeta({ layout: false });
 
-import LandingHeader from '@/pages/landing/LandingHeader.vue';
-import LandingHero from '@/pages/landing/LandingHero.vue';
-import LandingScreenshot from '@/pages/landing/LandingScreenshot.vue';
-import LandingFeatures from '@/pages/landing/LandingFeatures.vue';
-import LandingIntegrations from '@/pages/landing/LandingIntegrations.vue';
-import LandingFooter from '@/pages/landing/LandingFooter.vue';
-
 const { loggedIn } = useUserSession();
 
 if (loggedIn.value) {
-    await navigateTo('/dashboard');
+    await navigateTo(Routes.DASHBOARD);
 }
 
 const route = useRoute();

@@ -52,7 +52,7 @@ const badgeVariant = computed(() => {
         <!-- Navigation cards -->
         <div class="row row-cols-1 row-cols-md-2 g-3">
             <div class="col">
-                <NuxtLink to="/users" class="text-decoration-none">
+                <NuxtLink :to="Routes.USERS" class="text-decoration-none">
                     <BCard class="h-100">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">

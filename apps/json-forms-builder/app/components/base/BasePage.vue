@@ -9,8 +9,7 @@
     - #actions slot for right-aligned buttons (e.g. "New Group")
 -->
 <script setup lang="ts">
-import { useBreadcrumbStore } from '~~/app/store/breadcrumb';
-import type { BreadcrumbEntry } from '~~/app/store/breadcrumb';
+import type { BreadcrumbItem } from '~~/app/composables/useAppBreadcrumb';
 
 defineProps<{
     title: string;
@@ -20,23 +19,19 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
-const breadcrumbStore = useBreadcrumbStore();
+const { trail } = useAppBreadcrumb();
 
 // ── Breadcrumb: always starts with a home icon ───────────────────────────
 
 const breadcrumbItems = computed(() => {
-    const items: BreadcrumbEntry[] = [{ label: '', route: '/', icon: 'house' }];
+    const items: BreadcrumbItem[] = [{ label: '', route: '/', icon: 'house' }];
 
-    for (const entry of breadcrumbStore.trail) {
+    for (const entry of trail.value) {
         items.push(entry);
     }
 
     return items;
 });
-
-function resolveLabel(entry: BreadcrumbEntry): string {
-    return breadcrumbStore.resolveLabel(entry);
-}
 </script>
 
 <template>
@@ -60,40 +55,38 @@ function resolveLabel(entry: BreadcrumbEntry): string {
                     <NuxtLink
                         v-if="entry.route && idx < breadcrumbItems.length - 1"
                         :to="entry.route"
-                        class="text-decoration-none d-inline-flex align-items-center"
+                        class="text-decoration-none d-inline-flex align-items-center gap-1"
                         :title="
-                            idx === 0 && !resolveLabel(entry)
+                            idx === 0 && !entry.label
                                 ? t('nav.formBuilder')
                                 : undefined
                         "
                     >
                         <!-- Home: icon only -->
                         <i
-                            v-if="entry.icon && !resolveLabel(entry)"
+                            v-if="entry.icon && !entry.label"
                             class="bi bi-house-fill"
                         />
                         <PhosphorIcon
                             v-else-if="entry.icon"
                             :name="entry.icon"
                             :size="14"
-                            :class="{ 'me-1': resolveLabel(entry) }"
+                            :class="{ 'me-1': entry.label }"
                         />
-                        <span v-if="resolveLabel(entry)">{{
-                            resolveLabel(entry)
-                        }}</span>
+                        <span v-if="entry.label">{{ entry.label }}</span>
                     </NuxtLink>
-                    <span v-else class="d-inline-flex align-items-center">
+                    <span v-else class="d-inline-flex align-items-center gap-1">
                         <i
-                            v-if="entry.icon && !resolveLabel(entry)"
+                            v-if="entry.icon && !entry.label"
                             class="bi bi-house-fill"
                         />
                         <PhosphorIcon
                             v-else-if="entry.icon"
                             :name="entry.icon"
                             :size="14"
-                            :class="{ 'me-1': resolveLabel(entry) }"
+                            :class="{ 'me-1': entry.label }"
                         />
-                        {{ resolveLabel(entry) }}
+                        {{ entry.label }}
                     </span>
                 </li>
             </ol>
