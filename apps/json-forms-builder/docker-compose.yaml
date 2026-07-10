@@ -1,28 +1,28 @@
 services:
-  postgres:
-    image: postgres:18
-    environment:
-      POSTGRES_USER: form_builder
-      POSTGRES_PASSWORD: form_builder
-      POSTGRES_DB: form_builder
-      PGDATA: /var/lib/postgresql/data
-    ports:
-      - "5433:5432"
-    # TODO: remove volumes since database data should be initialized via scripts (e.g use typescript orm and a typescript script to set the data) and should not rely on manually created data
-    volumes:
-      - ./data/pgdata:/var/lib/postgresql/data
+    postgres:
+        image: postgres:18
+        environment:
+            POSTGRES_USER: form_builder
+            POSTGRES_PASSWORD: form_builder
+            POSTGRES_DB: form_builder
+            PGDATA: /var/lib/postgresql/data
+        ports:
+            - '5433:5432'
+        # TODO: remove volumes since database data should be initialized via scripts (e.g use typescript orm and a typescript script to set the data) and should not rely on manually created data
+        volumes:
+            - ./data/pgdata:/var/lib/postgresql/data
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.6.1
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-    ports:
-      - "8080:8080"
-    # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
-    volumes:
-      #      - ./data/keycloak:/opt/keycloak/data
-      - ./keycloak:/opt/keycloak/data/import:ro
-    command:
-      - "start-dev"
-      - "--import-realm"
+    keycloak:
+        image: quay.io/keycloak/keycloak:26.6.1
+        environment:
+            KC_BOOTSTRAP_ADMIN_USERNAME: admin
+            KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+        ports:
+            - '8080:8080'
+        # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
+        volumes:
+            #      - ./data/keycloak:/opt/keycloak/data
+            - ./keycloak:/opt/keycloak/data/import:ro
+        command:
+            - 'start-dev'
+            - '--import-realm'

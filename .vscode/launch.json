@@ -17,9 +17,7 @@
             "name": "server: nuxt",
             "cwd": "${workspaceFolder}/apps/json-forms-builder",
             "program": "${workspaceFolder}/node_modules/.bin/nuxt",
-            "args": [
-                "dev"
-            ],
+            "args": ["dev"],
             "autoAttachChildProcesses": true,
             "runtimeExecutable": "node",
             "env": {
@@ -27,18 +25,13 @@
             },
             "sourceMaps": true,
             "console": "integratedTerminal",
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
+            "skipFiles": ["<node_internals>/**"]
         }
     ],
     "compounds": [
         {
             "name": "fullstack: nuxt",
-            "configurations": [
-                "server: nuxt",
-                "client: firefox"
-            ]
+            "configurations": ["server: nuxt", "client: firefox"]
         }
     ]
 }

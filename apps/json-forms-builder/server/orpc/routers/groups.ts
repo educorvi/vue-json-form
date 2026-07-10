@@ -19,7 +19,9 @@ const ORDER_BY_MAP: Record<string, string> = {
  * Resolve a parent-group reference (numeric ID or path string) to a group ID.
  * Returns null if the reference is empty/falsy.
  */
-async function resolveParentGroupId(parentRef: string | undefined | null): Promise<number | null> {
+async function resolveParentGroupId(
+    parentRef: string | undefined | null
+): Promise<number | null> {
     if (!parentRef) return null;
     if (/^\d+$/.test(parentRef)) {
         return parseInt(parentRef, 10);
@@ -180,7 +182,9 @@ export const groupsRouter = {
         .handler(async ({ input, context }) => {
             const service = new GroupService(AppDataSource);
             const body = input.body;
-            const parentIdParam = await resolveParentGroupId(input.query?.parent);
+            const parentIdParam = await resolveParentGroupId(
+                input.query?.parent
+            );
 
             if (!context.user?.roles?.includes('admin')) {
                 if (parentIdParam == null) {

@@ -2,7 +2,6 @@
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-
 ## Setup
 
 Make sure to install dependencies:
@@ -35,8 +34,6 @@ The backend service also needs a functioning postgres database as well as a keyc
 
 In order to debug the the frontend as well as the backend, a VsCode Debug configuration exists called `fullstack: nuxt` which starts the backend in debug mode and also launches a firefox browser instance with the frontend in debug mode. Breakpoints can be set both in the frontend and the backend code and will be hit when the corresponding code is executed. Simply access `http://localhost:3000` in the launched browser instance and click on `Sign In with Keycloak` and enter username: `test`, password: `test` to log in. The database is seeded with some example folders and forms.
 
-
-
 # TODO
 
 - group delete, move and export, visibility and permissions
@@ -49,7 +46,7 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 - TreeSelect styling (grey select tis off, indentation of children)
 - select current folder maybe just the icon with tooltip and directly as an icon right to the selector, then slug of the current new folder behind the element, slug shorter description text
 - spacing before group pagination, sub group pagination works
-- 
+-
 
 - Breadcrumb menu
 - Development readme copy from other branch
@@ -66,4 +63,4 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 - landing page (explore ecosystem, Flutter and Vue Json Form, Generic UI rendering interfaces possible, integration of frontend component or standalone frontend)
 - Start Page: last worked on, currently edited forms, last published versions of forms, etc.
 - published forms sorted by date, so newest published /changed forms are easily found
-- 
+-
