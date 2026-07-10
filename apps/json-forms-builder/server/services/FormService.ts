@@ -330,4 +330,71 @@ export class FormService {
             throwNotFound('Version not found', ErrorCode.VERSION_NOT_FOUND);
         return rev;
     }
+
+    // ── Schema (direct on Form entity) ─────────────────────────────────────
+
+    async getFormSchema(
+        formId: number
+    ): Promise<{
+        json: Record<string, unknown> | null;
+        ui: Record<string, unknown> | null;
+    } | null> {
+        const form = await this.findEntityById(formId);
+        return (
+            (form.schema as {
+                json: Record<string, unknown> | null;
+                ui: Record<string, unknown> | null;
+            } | null) ?? null
+        );
+    }
+
+    async getFormJsonSchema(
+        formId: number
+    ): Promise<Record<string, unknown> | null> {
+        const schema = await this.getFormSchema(formId);
+        return schema?.json ?? null;
+    }
+
+    async getFormUiSchema(
+        formId: number
+    ): Promise<Record<string, unknown> | null> {
+        const schema = await this.getFormSchema(formId);
+        return schema?.ui ?? null;
+    }
+
+    async importFormSchema(
+        formId: number,
+        payload: {
+            schema?: {
+                json?: Record<string, unknown> | null;
+                ui?: Record<string, unknown> | null;
+            } | null;
+            json_schema?: Record<string, unknown> | null;
+            ui_schema?: Record<string, unknown> | null;
+        }
+    ): Promise<{
+        json: Record<string, unknown> | null;
+        ui: Record<string, unknown> | null;
+    }> {
+        const form = await this.findEntityById(formId);
+        const current = form.schema ?? { json: null, ui: null };
+
+        const merged = {
+            json:
+                payload.json_schema !== undefined
+                    ? payload.json_schema
+                    : payload.schema?.json !== undefined
+                      ? payload.schema.json
+                      : current.json,
+            ui:
+                payload.ui_schema !== undefined
+                    ? payload.ui_schema
+                    : payload.schema?.ui !== undefined
+                      ? payload.schema.ui
+                      : current.ui,
+        };
+
+        await this.formRepo.update(formId, { schema: merged as any });
+        return merged;
+    }
 }

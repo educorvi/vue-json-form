@@ -10,7 +10,11 @@ export const zGlobalRole = z.enum(['admin', 'user']);
 /**
  * Permission level on a specific form or group
  */
-export const zElementRole = z.enum(['owner', 'editor', 'guest']);
+export const zElementRole = z.enum([
+    'owner',
+    'editor',
+    'guest'
+]);
 
 /**
  * Whether this permission was granted directly on the resource (`direct`) or
@@ -21,33 +25,33 @@ export const zPermissionScope = z.enum(['direct', 'inherited']).readonly();
 
 export const zTimestamps = z.object({
     created: z.iso.datetime().readonly(),
-    updated: z.iso.datetime().readonly(),
+    updated: z.iso.datetime().readonly()
 });
 
 export const zPaginatedMeta = z.object({
     page: z.int(),
     page_size: z.int(),
     total_count: z.int(),
-    total_pages: z.int(),
+    total_pages: z.int()
 });
 
 export const zErrorResponse = z.object({
     message: z.string(),
     code: z.string().optional(),
-    errors: z
-        .array(
-            z.object({
-                field: z.string(),
-                message: z.string(),
-            })
-        )
-        .optional(),
+    errors: z.array(z.object({
+        field: z.string(),
+        message: z.string()
+    })).optional()
 });
 
 export const zStatusResponse = z.object({
-    status: z.enum(['ok', 'degraded', 'error']),
+    status: z.enum([
+        'ok',
+        'degraded',
+        'error'
+    ]),
     version: z.string(),
-    timestamp: z.iso.datetime(),
+    timestamp: z.iso.datetime()
 });
 
 /**
@@ -56,286 +60,240 @@ export const zStatusResponse = z.object({
 export const zParentPathEntry = z.object({
     name: z.string().max(255),
     path_segment: z.string().optional(),
-    id: z.int().optional(),
+    id: z.int().optional()
 });
 
 export const zParentPath = z.array(zParentPathEntry);
 
-export const zUserShared = z
-    .object({
-        id: z.int().readonly(),
-        name: z.string().readonly(),
-        email: z.email().readonly(),
-    })
-    .readonly();
+export const zUserShared = z.object({
+    id: z.int().readonly(),
+    name: z.string().readonly(),
+    email: z.email().readonly()
+}).readonly();
 
-export const zUser = zUserShared
-    .and(
-        z.object({
-            role: zGlobalRole,
-        })
-    )
-    .and(zTimestamps);
+export const zUser = zUserShared.and(z.object({
+    role: zGlobalRole
+})).and(zTimestamps);
 
 export const zUserRef = zUserShared.and(z.record(z.string(), z.unknown()));
 
-export const zResourceModification = z
-    .object({
-        created_by: zUserRef.and(
-            z.object({
-                timestamp: z.iso.datetime().readonly(),
-            })
-        ),
-        updated_by: zUserRef.and(
-            z.object({
-                timestamp: z.iso.datetime().readonly(),
-            })
-        ),
-    })
-    .readonly();
+export const zResourceModification = z.object({
+    created_by: zUserRef.and(z.object({
+        timestamp: z.iso.datetime().readonly()
+    })),
+    updated_by: zUserRef.and(z.object({
+        timestamp: z.iso.datetime().readonly()
+    }))
+}).readonly();
 
 export const zGroupHierarchyNode = z.object({
     id: z.int().readonly(),
     name: z.string().max(255),
     title: z.string().max(255),
-    children: z.array(z.lazy((): any => zGroupHierarchyNode)).nullish(),
+    children: z.array(z.lazy((): any => zGroupHierarchyNode)).nullish()
 });
 
 export const zGroupShared = z.object({
     id: z.int().readonly(),
     name: z.string().max(255).optional(),
     title: z.string().max(255).optional(),
-    member_count: z.int().readonly(),
+    member_count: z.int().readonly()
 });
 
-export const zGroupPatch = zGroupShared
-    .and(
-        z.object({
-            description: z.string().nullish(),
-            group_count: z.int().readonly(),
-            form_count: z.int().readonly(),
-            parent_path: zParentPath.nullable(),
-            parent_id: z.int().readonly().nullable(),
-        })
-    )
-    .and(zResourceModification);
+export const zGroupPatch = zGroupShared.and(z.object({
+    description: z.string().nullish(),
+    group_count: z.int().readonly(),
+    form_count: z.int().readonly(),
+    parent_path: zParentPath.nullable(),
+    parent_id: z.int().readonly().nullable()
+})).and(zResourceModification);
 
 export const zGroupRef = zGroupShared;
 
 export const zGroup = zGroupPatch;
 
-export const zChildGroup = z
-    .object({
-        type: z.enum(['group']),
-    })
-    .and(zGroup);
+export const zChildGroup = z.object({
+    type: z.enum(['group'])
+}).and(zGroup);
 
-export const zFormPatch = z
-    .object({
-        id: z.int().readonly(),
-        title: z.string().max(255).optional(),
-        name: z.string().max(255).optional(),
-        description: z.string().nullish(),
-        parent_path: zParentPath.nullable(),
-        parent_id: z.int().readonly().nullable(),
-    })
-    .and(zResourceModification);
+export const zFormPatch = z.object({
+    id: z.int().readonly(),
+    title: z.string().max(255).optional(),
+    name: z.string().max(255).optional(),
+    description: z.string().nullish(),
+    parent_path: zParentPath.nullable(),
+    parent_id: z.int().readonly().nullable()
+}).and(zResourceModification);
 
+/**
+ * Form metadata. The schema (JSON Schema and UI Schema) is managed separately
+ * via `/forms/{id}/schema` endpoints and is not included here.
+ *
+ */
 export const zForm = zFormPatch;
 
-export const zChildForm = z
-    .object({
-        type: z.enum(['form']),
-    })
-    .and(zForm);
+export const zChildForm = z.object({
+    type: z.enum(['form'])
+}).and(zForm);
 
 export const zGroupElement = z.union([
-    z
-        .object({
-            type: z.literal('group'),
-        })
-        .and(zChildGroup),
-    z
-        .object({
-            type: z.literal('form'),
-        })
-        .and(zChildForm),
+    z.object({
+        type: z.literal('group')
+    }).and(zChildGroup),
+    z.object({
+        type: z.literal('form')
+    }).and(zChildForm)
 ]);
 
 /**
  * Schema definitions returned from the schema endpoint.
  */
-export const zFormSchemaPayloadPatch = z
-    .object({
-        json: z.record(z.string(), z.unknown()).nullish(),
-        ui: z.record(z.string(), z.unknown()).nullish(),
-    })
-    .nullable();
+export const zFormSchemaPayloadPatch = z.object({
+    json: z.record(z.string(), z.unknown()).nullish(),
+    ui: z.record(z.string(), z.unknown()).nullish()
+}).nullable();
 
 export const zFormSchemaPayload = zFormSchemaPayloadPatch;
 
-export const zFormVersionRef = z
-    .object({
-        version: z.string(),
-        comment: z.string(),
-    })
-    .and(zFormSchemaPayload)
-    .and(zResourceModification);
+/**
+ * Payload for importing a schema. At least one field should be provided.
+ * - `schema`: object containing both `json` and `ui` (replaces both parts)
+ * - `json_schema`: replaces only the JSON Schema part
+ * - `ui_schema`: replaces only the UI Schema part
+ *
+ */
+export const zSchemaImportPayload = z.object({
+    schema: zFormSchemaPayload.optional(),
+    json_schema: z.record(z.string(), z.unknown()).optional(),
+    ui_schema: z.record(z.string(), z.unknown()).optional()
+});
+
+export const zFormVersionRef = z.object({
+    version: z.string(),
+    comment: z.string()
+}).and(zFormSchemaPayload).and(zResourceModification);
 
 export const zFormVersion = zFormVersionRef.and(zFormSchemaPayload);
 
-export const zPermissionMeta = z
-    .object({
-        id: z.int().readonly(),
-        scope: zPermissionScope,
-        expired: z.boolean().readonly(),
-        role: zElementRole.optional(),
-        expire: z.iso.date().optional(),
-    })
-    .and(zResourceModification);
+export const zPermissionMeta = z.object({
+    id: z.int().readonly(),
+    scope: zPermissionScope,
+    expired: z.boolean().readonly(),
+    role: zElementRole.optional(),
+    expire: z.iso.date().optional()
+}).and(zResourceModification);
 
-export const zUserPermission = zPermissionMeta.and(
-    z.object({
-        type: z.enum(['user']),
-        user: zUserRef.readonly(),
-    })
-);
+export const zUserPermission = zPermissionMeta.and(z.object({
+    type: z.enum(['user']),
+    user: zUserRef.readonly()
+}));
 
-export const zGroupPermission = zPermissionMeta.and(
-    z.object({
-        type: z.enum(['group']),
-        group: zGroupRef.readonly(),
-    })
-);
+export const zGroupPermission = zPermissionMeta.and(z.object({
+    type: z.enum(['group']),
+    group: zGroupRef.readonly()
+}));
 
 export const zPermissionElement = z.union([
-    z
-        .object({
-            type: z.literal('user'),
-        })
-        .and(zUserPermission),
-    z
-        .object({
-            type: z.literal('group'),
-        })
-        .and(zGroupPermission),
+    z.object({
+        type: z.literal('user')
+    }).and(zUserPermission),
+    z.object({
+        type: z.literal('group')
+    }).and(zGroupPermission)
 ]);
 
-export const zResourceModificationWritable = z
-    .object({
-        created_by: z.unknown(),
-        updated_by: z.unknown(),
-    })
-    .readonly();
+export const zResourceModificationWritable = z.object({
+    created_by: z.unknown(),
+    updated_by: z.unknown()
+}).readonly();
 
 export const zUserWritable = z.object({
-    role: zGlobalRole,
+    role: zGlobalRole
 });
 
 export const zGroupHierarchyNodeWritable = z.object({
     name: z.string().max(255),
     title: z.string().max(255),
-    children: z.array(z.lazy((): any => zGroupHierarchyNodeWritable)).nullish(),
+    children: z.array(z.lazy((): any => zGroupHierarchyNodeWritable)).nullish()
 });
 
 export const zGroupSharedWritable = z.object({
     name: z.string().max(255).optional(),
-    title: z.string().max(255).optional(),
+    title: z.string().max(255).optional()
 });
 
 export const zGroupRefWritable = zGroupSharedWritable;
 
-export const zFormVersionRefWritable = z
-    .object({
-        version: z.string(),
-        comment: z.string(),
-    })
-    .and(zFormSchemaPayload)
-    .and(zResourceModificationWritable);
+export const zFormVersionRefWritable = z.object({
+    version: z.string(),
+    comment: z.string()
+}).and(zFormSchemaPayload).and(zResourceModificationWritable);
 
-export const zFormVersionWritable =
-    zFormVersionRefWritable.and(zFormSchemaPayload);
+export const zFormVersionWritable = zFormVersionRefWritable.and(zFormSchemaPayload);
 
-export const zPermissionMetaWritable = z
-    .object({
-        role: zElementRole.optional(),
-        expire: z.iso.date().optional(),
-    })
-    .and(zResourceModificationWritable);
+export const zPermissionMetaWritable = z.object({
+    role: zElementRole.optional(),
+    expire: z.iso.date().optional()
+}).and(zResourceModificationWritable);
 
-export const zUserPermissionWritable = zPermissionMetaWritable.and(
-    z.object({
-        type: z.enum(['user']),
-        user_id: z.int().optional(),
-    })
-);
+export const zUserPermissionWritable = zPermissionMetaWritable.and(z.object({
+    type: z.enum(['user']),
+    user_id: z.int().optional()
+}));
 
-export const zGroupPermissionWritable = zPermissionMetaWritable.and(
-    z.object({
-        type: z.enum(['group']),
-        group_id: z.int().optional(),
-    })
-);
+export const zGroupPermissionWritable = zPermissionMetaWritable.and(z.object({
+    type: z.enum(['group']),
+    group_id: z.int().optional()
+}));
 
 export const zPermissionElementWritable = z.union([
-    z
-        .object({
-            type: z.literal('user'),
-        })
-        .and(zUserPermissionWritable),
-    z
-        .object({
-            type: z.literal('group'),
-        })
-        .and(zGroupPermissionWritable),
+    z.object({
+        type: z.literal('user')
+    }).and(zUserPermissionWritable),
+    z.object({
+        type: z.literal('group')
+    }).and(zGroupPermissionWritable)
 ]);
 
-export const zGroupPatchWritable = zGroupSharedWritable
-    .and(
-        z.object({
-            description: z.string().nullish(),
-            permissions: z.array(zPermissionElementWritable).nullish(),
-        })
-    )
-    .and(zResourceModificationWritable);
+export const zGroupPatchWritable = zGroupSharedWritable.and(z.object({
+    description: z.string().nullish(),
+    permissions: z.array(zPermissionElementWritable).nullish()
+})).and(zResourceModificationWritable);
 
 export const zGroupWritable = zGroupPatchWritable;
 
-export const zChildGroupWritable = z
-    .object({
-        type: z.enum(['group']),
-    })
-    .and(zGroupWritable);
+export const zChildGroupWritable = z.object({
+    type: z.enum(['group'])
+}).and(zGroupWritable);
 
-export const zFormPatchWritable = z
-    .object({
-        title: z.string().max(255).optional(),
-        name: z.string().max(255).optional(),
-        description: z.string().nullish(),
-        permissions: z.array(zPermissionElementWritable).nullish(),
-        schema: zFormSchemaPayload.optional(),
-    })
-    .and(zResourceModificationWritable);
+export const zFormPatchWritable = z.object({
+    title: z.string().max(255).optional(),
+    name: z.string().max(255).optional(),
+    description: z.string().nullish(),
+    permissions: z.array(zPermissionElementWritable).nullish(),
+    schema: zFormSchemaPayload.optional(),
+    json_schema: z.record(z.string(), z.unknown()).optional(),
+    ui_schema: z.record(z.string(), z.unknown()).optional()
+}).and(zResourceModificationWritable);
 
+/**
+ * Form metadata. The schema (JSON Schema and UI Schema) is managed separately
+ * via `/forms/{id}/schema` endpoints and is not included here.
+ *
+ */
 export const zFormWritable = zFormPatchWritable;
 
-export const zChildFormWritable = z
-    .object({
-        type: z.enum(['form']),
-    })
-    .and(zFormWritable);
+export const zChildFormWritable = z.object({
+    type: z.enum(['form'])
+}).and(zFormWritable);
 
 export const zGroupElementWritable = z.union([
-    z
-        .object({
-            type: z.literal('group'),
-        })
-        .and(zChildGroupWritable),
-    z
-        .object({
-            type: z.literal('form'),
-        })
-        .and(zChildFormWritable),
+    z.object({
+        type: z.literal('group')
+    }).and(zChildGroupWritable),
+    z.object({
+        type: z.literal('form')
+    }).and(zChildFormWritable)
 ]);
 
 /**
@@ -411,20 +369,22 @@ export const zListUsersQuery = z.object({
     page_size: z.int().gte(1).lte(100).optional().default(20),
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
-    order_by: z
-        .enum(['id', 'name', 'email', 'created', 'last_activity', 'role'])
-        .optional()
-        .default('last_activity'),
+    order_by: z.enum([
+        'id',
+        'name',
+        'email',
+        'created',
+        'last_activity',
+        'role'
+    ]).optional().default('last_activity')
 });
 
 /**
  * Paginated list of users
  */
-export const zListUsersResponse = zPaginatedMeta.and(
-    z.object({
-        data: z.array(zUser),
-    })
-);
+export const zListUsersResponse = zPaginatedMeta.and(z.object({
+    data: z.array(zUser)
+}));
 
 /**
  * User created
@@ -441,35 +401,30 @@ export const zListGroupsQuery = z.object({
     page_size: z.int().gte(1).lte(100).optional().default(20),
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
-    order_by: z
-        .enum([
-            'id',
-            'title',
-            'parent_path',
-            'created',
-            'updated',
-            'member_count',
-            'form_count',
-            'group_count',
-        ])
-        .optional()
-        .default('title'),
-    filter_parent_group: z.string().optional(),
+    order_by: z.enum([
+        'id',
+        'title',
+        'parent_path',
+        'created',
+        'updated',
+        'member_count',
+        'form_count',
+        'group_count'
+    ]).optional().default('title'),
+    filter_parent_group: z.string().optional()
 });
 
 /**
  * Paginated list of group summaries
  */
-export const zListGroupsResponse = zPaginatedMeta.and(
-    z.object({
-        data: z.array(zGroup),
-    })
-);
+export const zListGroupsResponse = zPaginatedMeta.and(z.object({
+    data: z.array(zGroup)
+}));
 
 export const zCreateGroupBody = zGroupWritable;
 
 export const zCreateGroupQuery = z.object({
-    parent: z.string().optional(),
+    parent: z.string().optional()
 });
 
 /**
@@ -478,7 +433,7 @@ export const zCreateGroupQuery = z.object({
 export const zCreateGroupResponse = zGroup;
 
 export const zDeleteGroupPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -487,7 +442,7 @@ export const zDeleteGroupPath = z.object({
 export const zDeleteGroupResponse = z.void();
 
 export const zGetGroupPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -498,7 +453,7 @@ export const zGetGroupResponse = zGroup;
 export const zUpdateGroupBody = zGroupPatchWritable;
 
 export const zUpdateGroupPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -509,7 +464,7 @@ export const zUpdateGroupResponse = zGroup;
 export const zReplaceGroupBody = zGroupWritable;
 
 export const zReplaceGroupPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -518,7 +473,7 @@ export const zReplaceGroupPath = z.object({
 export const zReplaceGroupResponse = zGroup;
 
 export const zListGroupChildrenPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 export const zListGroupChildrenQuery = z.object({
@@ -526,24 +481,24 @@ export const zListGroupChildrenQuery = z.object({
     page_size: z.int().gte(1).lte(100).optional().default(20),
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
-    order_by: z
-        .enum(['type', 'title', 'created', 'updated'])
-        .optional()
-        .default('title'),
-    type: z.array(z.enum(['group', 'form'])).optional(),
+    order_by: z.enum([
+        'type',
+        'title',
+        'created',
+        'updated'
+    ]).optional().default('title'),
+    type: z.array(z.enum(['group', 'form'])).optional()
 });
 
 /**
  * Paginated list of group elements
  */
-export const zListGroupChildrenResponse = zPaginatedMeta.and(
-    z.object({
-        data: z.array(zGroupElement),
-    })
-);
+export const zListGroupChildrenResponse = zPaginatedMeta.and(z.object({
+    data: z.array(zGroupElement)
+}));
 
 export const zListGroupPermissionsPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 export const zListGroupPermissionsQuery = z.object({
@@ -551,36 +506,31 @@ export const zListGroupPermissionsQuery = z.object({
     page_size: z.int().gte(1).lte(100).optional().default(20),
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
-    order_by: z
-        .enum([
-            'created',
-            'updated',
-            'expire',
-            'role',
-            'name',
-            'email',
-            'scope',
-            'type',
-        ])
-        .optional()
-        .default('lastname'),
+    order_by: z.enum([
+        'created',
+        'updated',
+        'expire',
+        'role',
+        'name',
+        'email',
+        'scope',
+        'type'
+    ]).optional().default('lastname'),
     filter_scope: z.array(z.enum(['direct', 'inherited'])).optional(),
-    filter_type: z.array(z.enum(['user', 'group'])).optional(),
+    filter_type: z.array(z.enum(['user', 'group'])).optional()
 });
 
 /**
  * Paginated permission list
  */
-export const zListGroupPermissionsResponse = zPaginatedMeta.and(
-    z.object({
-        elements: z.array(zPermissionElement),
-    })
-);
+export const zListGroupPermissionsResponse = zPaginatedMeta.and(z.object({
+    elements: z.array(zPermissionElement)
+}));
 
 export const zCreateGroupPermissionBody = zPermissionElementWritable;
 
 export const zCreateGroupPermissionPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -590,7 +540,7 @@ export const zCreateGroupPermissionResponse = zPermissionElement;
 
 export const zDeleteGroupPermissionPath = z.object({
     id: z.string(),
-    permissionId: z.int().gte(1),
+    permissionId: z.int().gte(1)
 });
 
 /**
@@ -602,7 +552,7 @@ export const zPatchGroupPermissionBody = zPermissionMetaWritable;
 
 export const zPatchGroupPermissionPath = z.object({
     id: z.string(),
-    permissionId: z.int().gte(1),
+    permissionId: z.int().gte(1)
 });
 
 /**
@@ -616,25 +566,25 @@ export const zListFormsQuery = z.object({
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
     filter_parent_group: z.string().optional(),
-    order_by: z
-        .enum(['id', 'title', 'created', 'updated'])
-        .optional()
-        .default('title'),
+    order_by: z.enum([
+        'id',
+        'title',
+        'created',
+        'updated'
+    ]).optional().default('title')
 });
 
 /**
  * Paginated list of forms (no schema included)
  */
-export const zListFormsResponse = zPaginatedMeta.and(
-    z.object({
-        data: z.array(zForm),
-    })
-);
+export const zListFormsResponse = zPaginatedMeta.and(z.object({
+    data: z.array(zForm)
+}));
 
 export const zCreateFormBody = zFormWritable;
 
 export const zCreateFormQuery = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -643,7 +593,7 @@ export const zCreateFormQuery = z.object({
 export const zCreateFormResponse = zForm;
 
 export const zDeleteFormPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -652,7 +602,7 @@ export const zDeleteFormPath = z.object({
 export const zDeleteFormResponse = z.void();
 
 export const zGetFormPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -663,11 +613,11 @@ export const zGetFormResponse = zForm;
 export const zUpdateFormBody = zFormPatchWritable;
 
 export const zUpdateFormPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 export const zUpdateFormQuery = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -678,11 +628,11 @@ export const zUpdateFormResponse = zForm;
 export const zReplaceFormBody = zFormWritable;
 
 export const zReplaceFormPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 export const zReplaceFormQuery = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -691,28 +641,26 @@ export const zReplaceFormQuery = z.object({
 export const zReplaceFormResponse = zForm;
 
 export const zListFormVersionsPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 export const zListFormVersionsQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     page_size: z.int().gte(1).lte(100).optional().default(20),
-    sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
+    sort_order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
  * Paginated list of form revisions
  */
-export const zListFormVersionsResponse = zPaginatedMeta.and(
-    z.object({
-        data: z.array(zFormVersionRef),
-    })
-);
+export const zListFormVersionsResponse = zPaginatedMeta.and(z.object({
+    data: z.array(zFormVersionRef)
+}));
 
 export const zCreateFormVersionBody = zFormVersionRefWritable;
 
 export const zCreateFormVersionPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -721,17 +669,28 @@ export const zCreateFormVersionPath = z.object({
 export const zCreateFormVersionResponse = zFormVersionRef;
 
 export const zGetFormLatestSchemaPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
  * JSON Schema and UI Schema for the latest revision
  */
-export const zGetFormLatestSchemaResponse = zFormVersion;
+export const zGetFormLatestSchemaResponse = zFormSchemaPayload;
+
+export const zImportFormSchemaBody = zSchemaImportPayload;
+
+export const zImportFormSchemaPath = z.object({
+    id: z.string()
+});
+
+/**
+ * Schema replaced, new version created
+ */
+export const zImportFormSchemaResponse = zFormVersion;
 
 export const zGetFormSchemaByVersionPath = z.object({
     id: z.string(),
-    version: z.string(),
+    version: z.string()
 });
 
 /**
@@ -739,8 +698,46 @@ export const zGetFormSchemaByVersionPath = z.object({
  */
 export const zGetFormSchemaByVersionResponse = zFormVersion;
 
-export const zListFormPermissionsPath = z.object({
+export const zGetFormLatestJsonSchemaPath = z.object({
+    id: z.string()
+});
+
+/**
+ * Arbitrary JSON object representing the JSON Schema
+ */
+export const zGetFormLatestJsonSchemaResponse = z.record(z.string(), z.unknown());
+
+export const zGetFormLatestUiSchemaPath = z.object({
+    id: z.string()
+});
+
+/**
+ * Arbitrary JSON object representing the UI Schema
+ */
+export const zGetFormLatestUiSchemaResponse = z.record(z.string(), z.unknown());
+
+export const zGetFormSchemaVersionJsonPath = z.object({
     id: z.string(),
+    version: z.string()
+});
+
+/**
+ * Arbitrary JSON object representing the JSON Schema
+ */
+export const zGetFormSchemaVersionJsonResponse = z.record(z.string(), z.unknown());
+
+export const zGetFormSchemaVersionUiPath = z.object({
+    id: z.string(),
+    version: z.string()
+});
+
+/**
+ * Arbitrary JSON object representing the UI Schema
+ */
+export const zGetFormSchemaVersionUiResponse = z.record(z.string(), z.unknown());
+
+export const zListFormPermissionsPath = z.object({
+    id: z.string()
 });
 
 export const zListFormPermissionsQuery = z.object({
@@ -748,27 +745,29 @@ export const zListFormPermissionsQuery = z.object({
     page_size: z.int().gte(1).lte(100).optional().default(20),
     search: z.string().max(200).optional(),
     sort_order: z.enum(['asc', 'desc']).optional().default('desc'),
-    sortBy: z
-        .enum(['created', 'expire', 'role', 'name', 'scope', 'type'])
-        .optional()
-        .default('name'),
+    sortBy: z.enum([
+        'created',
+        'expire',
+        'role',
+        'name',
+        'scope',
+        'type'
+    ]).optional().default('name'),
     filter_scope: z.array(z.enum(['direct', 'inherited'])).optional(),
-    filter_type: z.array(z.enum(['user', 'group'])).optional(),
+    filter_type: z.array(z.enum(['user', 'group'])).optional()
 });
 
 /**
  * Paginated permission list
  */
-export const zListFormPermissionsResponse = zPaginatedMeta.and(
-    z.object({
-        elements: z.array(zPermissionElement),
-    })
-);
+export const zListFormPermissionsResponse = zPaginatedMeta.and(z.object({
+    elements: z.array(zPermissionElement)
+}));
 
 export const zCreateFormPermissionBody = zPermissionElementWritable;
 
 export const zCreateFormPermissionPath = z.object({
-    id: z.string(),
+    id: z.string()
 });
 
 /**
@@ -778,7 +777,7 @@ export const zCreateFormPermissionResponse = zPermissionElement;
 
 export const zDeleteFormPermissionPath = z.object({
     id: z.string(),
-    permissionId: z.int().gte(1),
+    permissionId: z.int().gte(1)
 });
 
 /**
@@ -790,7 +789,7 @@ export const zPatchFormPermissionBody = zPermissionMetaWritable;
 
 export const zPatchFormPermissionPath = z.object({
     id: z.string(),
-    permissionId: z.int().gte(1),
+    permissionId: z.int().gte(1)
 });
 
 /**

@@ -8,6 +8,8 @@
 import type { DataSource } from 'typeorm';
 import { Group } from './entities/Group';
 import { Form } from './entities/Form';
+import jsonSchema from './entities/seed-data/json-schema.json';
+import uiSchema from './entities/seed-data/ui-schema.json';
 
 interface GroupSeed {
     title: string;
@@ -465,6 +467,24 @@ export async function seed(dataSource: DataSource): Promise<void> {
             path: s.groupPath ? `${s.groupPath}/${s.name}` : s.name,
         });
         await formRepo.save(form);
+    }
+
+    // Assign seed schemas to a few forms for demo purposes
+    const schemaForms = [
+        'unfallanzeige',
+        'beitragsnachweis',
+        'rehabilitationsantrag',
+        'onboarding01',
+        'example-bug-report',
+    ];
+    if (jsonSchema && uiSchema) {
+        const schema = { json: jsonSchema, ui: uiSchema };
+        for (const formName of schemaForms) {
+            const form = await formRepo.findOne({ where: { name: formName } });
+            if (form) {
+                await formRepo.update(form.id, { schema });
+            }
+        }
     }
 
     console.log(

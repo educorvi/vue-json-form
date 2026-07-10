@@ -105,4 +105,61 @@ export const formsRouter = {
         const form = await service.getByIdOrSlug(input.params.id);
         await service.softDelete(form.id);
     }),
+
+    // ── Schema endpoints ────────────────────────────────────────────────
+
+    schema: {
+        getLatest: os.forms.schema.getLatest
+            .use(authMiddleware)
+            .handler(async ({ input }) => {
+                const service = new FormService(AppDataSource);
+                const form = await service.getByIdOrSlug(input.params.id);
+                const schema = await service.getFormSchema(form.id);
+                return { json: schema?.json ?? null, ui: schema?.ui ?? null };
+            }),
+
+        import: os.forms.schema.import
+            .use(authMiddleware)
+            .handler(async ({ input }) => {
+                const service = new FormService(AppDataSource);
+                const form = await service.getByIdOrSlug(input.params.id);
+                const merged = await service.importFormSchema(
+                    form.id,
+                    input.body
+                );
+                const now = new Date().toISOString();
+                const sysRef = {
+                    id: 0,
+                    name: 'System',
+                    email: 'system@example.com',
+                    timestamp: now,
+                };
+                return {
+                    version: '0.0.0',
+                    comment: '',
+                    json: merged.json,
+                    ui: merged.ui,
+                    created_by: sysRef,
+                    updated_by: sysRef,
+                };
+            }),
+
+        getLatestJson: os.forms.schema.getLatestJson
+            .use(authMiddleware)
+            .handler(async ({ input }) => {
+                const service = new FormService(AppDataSource);
+                const form = await service.getByIdOrSlug(input.params.id);
+                const json = await service.getFormJsonSchema(form.id);
+                return json ?? {};
+            }),
+
+        getLatestUi: os.forms.schema.getLatestUi
+            .use(authMiddleware)
+            .handler(async ({ input }) => {
+                const service = new FormService(AppDataSource);
+                const form = await service.getByIdOrSlug(input.params.id);
+                const ui = await service.getFormUiSchema(form.id);
+                return ui ?? {};
+            }),
+    },
 };

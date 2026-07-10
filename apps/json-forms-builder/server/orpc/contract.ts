@@ -26,6 +26,10 @@ import {
     updateForm,
     replaceForm,
     deleteForm,
+    getFormLatestSchema,
+    importFormSchema,
+    getFormLatestJsonSchema,
+    getFormLatestUiSchema,
 } from './generated/orpc.gen';
 
 export const appContract = {
@@ -47,5 +51,11 @@ export const appContract = {
         update: updateForm,
         replace: replaceForm,
         delete: deleteForm,
+        schema: {
+            getLatest: getFormLatestSchema,
+            import: importFormSchema,
+            getLatestJson: getFormLatestJsonSchema,
+            getLatestUi: getFormLatestUiSchema,
+        },
     },
 };

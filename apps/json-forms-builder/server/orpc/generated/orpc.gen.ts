@@ -3,7 +3,7 @@
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
 
-import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
+import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestJsonSchemaPath, zGetFormLatestJsonSchemaResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormLatestUiSchemaPath, zGetFormLatestUiSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetFormSchemaVersionJsonPath, zGetFormSchemaVersionJsonResponse, zGetFormSchemaVersionUiPath, zGetFormSchemaVersionUiResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zImportFormSchemaBody, zImportFormSchemaPath, zImportFormSchemaResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
 
 /**
  * Health check
@@ -247,12 +247,12 @@ export const listForms = oc.route({
 /**
  * Create a form
  *
- * Creates a new form. Optionally supply `schema.json` and `schema.ui` to
- * create the first revision in the same request.
+ * Creates a new form. Optionally include `schema`, `json_schema` or `ui_schema`
+ * to set the initial schema during creation.
  *
  */
 export const createForm = oc.route({
-    description: 'Creates a new form. Optionally supply `schema.json` and `schema.ui` to\ncreate the first revision in the same request.\n',
+    description: 'Creates a new form. Optionally include `schema`, `json_schema` or `ui_schema`\nto set the initial schema during creation.\n',
     inputStructure: 'detailed',
     method: 'POST',
     operationId: 'createForm',
@@ -293,12 +293,12 @@ export const getForm = oc.route({
 /**
  * Partially update a form
  *
- * Updates only the provided fields. Supply `schema.json` and/or `schema.ui`
- * to create a new revision from the current one.
+ * Updates only the provided fields. The `schema` field is excluded —
+ * use `PUT /forms/{id}/schema` to manage the form's schema.
  *
  */
 export const updateForm = oc.route({
-    description: 'Updates only the provided fields. Supply `schema.json` and/or `schema.ui`\nto create a new revision from the current one.\n',
+    description: 'Updates only the provided fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\n',
     inputStructure: 'detailed',
     method: 'PATCH',
     operationId: 'updateForm',
@@ -314,12 +314,12 @@ export const updateForm = oc.route({
 /**
  * Replace a form
  *
- * Full replacement of all writable fields. Supply `schema.json` and/or
- * `schema.ui` to create a new revision.
+ * Full replacement of all writable fields. The `schema` field is excluded —
+ * use `PUT /forms/{id}/schema` to manage the form's schema.
  *
  */
 export const replaceForm = oc.route({
-    description: 'Full replacement of all writable fields. Supply `schema.json` and/or\n`schema.ui` to create a new revision.\n',
+    description: 'Full replacement of all writable fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\n',
     inputStructure: 'detailed',
     method: 'PUT',
     operationId: 'replaceForm',
@@ -383,6 +383,29 @@ export const getFormLatestSchema = oc.route({
 }).input(z.object({ params: zGetFormLatestSchemaPath })).output(zGetFormLatestSchemaResponse);
 
 /**
+ * Import/replace the schema for a form
+ *
+ * Imports/replaces the schema for a form by creating a new revision.
+ * The version is auto-incremented.
+ * Accepts `schema` (both JSON and UI Schema), `json_schema` (JSON Schema only),
+ * or `ui_schema` (UI Schema only). When `schema` is provided, both parts are
+ * replaced at once. When only `json_schema` or `ui_schema` is provided, only
+ * that part is replaced.
+ * This is the only way to modify a form's schema — the `schema` field is excluded
+ * from PUT/PATCH on the form itself.
+ *
+ */
+export const importFormSchema = oc.route({
+    description: 'Imports/replaces the schema for a form by creating a new revision.\nThe version is auto-incremented.\nAccepts `schema` (both JSON and UI Schema), `json_schema` (JSON Schema only),\nor `ui_schema` (UI Schema only). When `schema` is provided, both parts are\nreplaced at once. When only `json_schema` or `ui_schema` is provided, only\nthat part is replaced.\nThis is the only way to modify a form\'s schema — the `schema` field is excluded\nfrom PUT/PATCH on the form itself.\n',
+    inputStructure: 'detailed',
+    method: 'PUT',
+    operationId: 'importFormSchema',
+    path: '/forms/{id}/schema',
+    summary: 'Import/replace the schema for a form',
+    tags: ['Forms']
+}).input(z.object({ body: zImportFormSchemaBody, params: zImportFormSchemaPath })).output(zImportFormSchemaResponse);
+
+/**
  * Get the schema for a specific form version
  */
 export const getFormSchemaByVersion = oc.route({
@@ -393,6 +416,60 @@ export const getFormSchemaByVersion = oc.route({
     summary: 'Get the schema for a specific form version',
     tags: ['Forms']
 }).input(z.object({ params: zGetFormSchemaByVersionPath })).output(zGetFormSchemaByVersionResponse);
+
+/**
+ * Get the latest JSON Schema for a form
+ *
+ * Returns the JSON Schema for the most recent revision.
+ */
+export const getFormLatestJsonSchema = oc.route({
+    description: 'Returns the JSON Schema for the most recent revision.',
+    inputStructure: 'detailed',
+    method: 'GET',
+    operationId: 'getFormLatestJsonSchema',
+    path: '/forms/{id}/schema/json',
+    summary: 'Get the latest JSON Schema for a form',
+    tags: ['Forms']
+}).input(z.object({ params: zGetFormLatestJsonSchemaPath })).output(zGetFormLatestJsonSchemaResponse);
+
+/**
+ * Get the latest UI Schema for a form
+ *
+ * Returns the UI Schema for the most recent revision.
+ */
+export const getFormLatestUiSchema = oc.route({
+    description: 'Returns the UI Schema for the most recent revision.',
+    inputStructure: 'detailed',
+    method: 'GET',
+    operationId: 'getFormLatestUiSchema',
+    path: '/forms/{id}/schema/ui',
+    summary: 'Get the latest UI Schema for a form',
+    tags: ['Forms']
+}).input(z.object({ params: zGetFormLatestUiSchemaPath })).output(zGetFormLatestUiSchemaResponse);
+
+/**
+ * Get the JSON Schema for a specific form version
+ */
+export const getFormSchemaVersionJson = oc.route({
+    inputStructure: 'detailed',
+    method: 'GET',
+    operationId: 'getFormSchemaVersionJson',
+    path: '/forms/{id}/schema/{version}/json',
+    summary: 'Get the JSON Schema for a specific form version',
+    tags: ['Forms']
+}).input(z.object({ params: zGetFormSchemaVersionJsonPath })).output(zGetFormSchemaVersionJsonResponse);
+
+/**
+ * Get the UI Schema for a specific form version
+ */
+export const getFormSchemaVersionUi = oc.route({
+    inputStructure: 'detailed',
+    method: 'GET',
+    operationId: 'getFormSchemaVersionUi',
+    path: '/forms/{id}/schema/{version}/ui',
+    summary: 'Get the UI Schema for a specific form version',
+    tags: ['Forms']
+}).input(z.object({ params: zGetFormSchemaVersionUiPath })).output(zGetFormSchemaVersionUiResponse);
 
 /**
  * List permissions for a form
@@ -482,7 +559,12 @@ export const contract = {
     listFormVersions,
     createFormVersion,
     getFormLatestSchema,
+    importFormSchema,
     getFormSchemaByVersion,
+    getFormLatestJsonSchema,
+    getFormLatestUiSchema,
+    getFormSchemaVersionJson,
+    getFormSchemaVersionUi,
     listFormPermissions,
     createFormPermission,
     deleteFormPermission,

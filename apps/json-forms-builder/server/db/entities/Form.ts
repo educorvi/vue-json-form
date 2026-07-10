@@ -23,4 +23,10 @@ export class Form extends BaseAuditedEntity {
 
     @Column({ type: 'text' })
     path!: string;
+
+    @Column({ type: 'jsonb', nullable: true })
+    schema!: {
+        json: Record<string, unknown> | null;
+        ui: Record<string, unknown> | null;
+    } | null;
 }

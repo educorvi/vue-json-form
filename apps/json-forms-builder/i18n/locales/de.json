@@ -234,14 +234,23 @@
         }
     },
     "dashboard": {
-        "title": "Start",
-        "subtitle": "Verwaltungsschnittstelle für Formulare, Benutzer und Berechtigungen.",
+        "welcomeTitle": "Willkommen, {name}",
+        "welcomeDescription": "Verwalten Sie Formulare, Benutzer und Berechtigungen für Ihre Organisation.",
+        "recentForms": "Kürzlich hinzugefügte Formulare",
+        "recentFormsEmpty": "Noch keine Formulare — erstellen Sie jetzt eines!",
+        "allForms": "Alle Formulare",
+        "createForm": "Neues Formular",
+        "createFormDesc": "Ein neues Formular von Grund auf erstellen",
+        "createGroup": "Neue Gruppe",
+        "createGroupDesc": "Eine neue Gruppe zur Organisation von Formularen erstellen",
+        "developer": "Entwickler",
+        "quickActions": "Schnellaktionen",
+        "apiDocs": "API-Dokumentation",
+        "apiDocsDesc": "REST-API durchsuchen und testen",
         "apiStatus": "API-Status",
         "apiError": "API nicht erreichbar:",
-        "navUsers": "Benutzer",
-        "navUsersDesc": "Systembenutzer, Rollen und Zugriff verwalten.",
-        "navApiDocs": "API-Dokumentation",
-        "navApiDocsDesc": "REST-API über Swagger UI erkunden und testen."
+        "version": "Version",
+        "ping": "Latenz"
     },
     "common": {
         "searchPlaceholder": "Suchen…",

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 /**
- * /forms/detail?path=<path> — Form detail view.
+ * /forms/detail?path=<path> — Form detail view with integrated form builder.
  * Path is the URL-encoded form path (e.g. "bug-report%2Fexample-bug-report").
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import VueJsonFormBuilder from '@educorvi/vue-json-form-builder';
+
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
@@ -16,12 +18,13 @@ const formPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
 
+// Fetch form metadata (for header title/breadcrumb)
 const {
     data: form,
     error: formError,
     status,
 } = useAsyncData(
-    () => `form-detail-${formPath.value}`,
+    `form-detail-${formPath.value}`,
     () => orpc.forms.get({ params: { id: formPath.value } }),
     { watch: [formPath] }
 );
@@ -29,7 +32,26 @@ const pending = computed(() => status.value === 'pending');
 
 const { isNotFound, hasError, errorMessage } = usePageError(formError, status);
 
-const { set: setBreadcrumb } = useAppBreadcrumb();
+// Fetch schema
+const { data: schema } = useAsyncData(
+    `form-schema-${formPath.value}`,
+    () => orpc.forms.schema.getLatest({ params: { id: formPath.value } }),
+    { watch: [formPath] }
+);
+
+// Convert to JSON strings for the builder component props
+const jsonSchemaString = computed(() => {
+    if (!schema.value?.json) return undefined;
+    return JSON.stringify(schema.value.json);
+});
+
+const uiSchemaString = computed(() => {
+    if (!schema.value?.ui) return undefined;
+    return JSON.stringify(schema.value.ui);
+});
+
+// Breadcrumb
+const { set: setBreadcrumb, trail: breadcrumbTrail } = useAppBreadcrumb();
 watch(
     form,
     (f) => {
@@ -38,18 +60,7 @@ watch(
     { immediate: true }
 );
 
-function formatTimestamp(iso: string | undefined): string {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return new Intl.DateTimeFormat(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    }).format(d);
-}
-
+// Delete modal
 const showDeleteModal = ref(false);
 const deletePending = ref(false);
 const deleteError = ref<string | null>(null);
@@ -72,134 +83,232 @@ async function onDeleteConfirm() {
 function goEdit() {
     router.push(Routes.formsEdit(formPath.value));
 }
+
+// Builder expand/collapse toggle (fullscreen overlay)
+const builderExpanded = ref(false);
+
+// Debounced save of schema changes
+const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+
+async function onSchemasChange(json: any, ui: any) {
+    const formId = form.value?.id;
+    if (!formId) return;
+    if (saveTimer.value) clearTimeout(saveTimer.value);
+    saveTimer.value = setTimeout(async () => {
+        try {
+            await orpc.forms.schema.import({
+                params: { id: String(formId) },
+                body: { schema: { json, ui } },
+            });
+        } catch (err: any) {
+            console.error('Failed to save schema', err);
+        }
+    }, 1000);
+}
 </script>
 
 <template>
-    <BasePage
-        :title="form?.title || '...'"
-        :description="form?.description ?? undefined"
-        icon="file-text"
-    >
-        <template v-if="form" #actions>
-            <BButton
-                variant="outline-secondary"
-                size="sm"
-                @click="goEdit"
-                class="me-2"
-            >
-                <PhosphorIcon name="pencil" :size="14" class="me-1" />{{
-                    t('common.edit')
-                }}
-            </BButton>
-            <BButton
-                variant="outline-danger"
-                size="sm"
-                @click="showDeleteModal = true"
-            >
-                <PhosphorIcon name="trash" :size="14" class="me-1" />{{
-                    t('forms.delete.title')
-                }}
-            </BButton>
-        </template>
-
+    <div class="d-flex flex-column flex-grow-1">
+        <!-- Error states -->
         <template v-if="hasError">
-            <BaseErrorState
-                v-if="isNotFound"
-                icon="warning-circle"
-                :title="t('forms.detail.notFound')"
-                :description="errorMessage"
-                :action-route="Routes.FORMS"
-                :action-label="t('forms.detail.backToForms')"
-            />
-            <BaseErrorState
-                v-else
-                icon="bug"
-                :title="t('common.errorTitle')"
-                :description="errorMessage"
-                :action-route="Routes.FORMS"
-                :action-label="t('forms.detail.backToForms')"
-            />
+            <div class="px-4 pt-4">
+                <BaseErrorState
+                    v-if="isNotFound"
+                    icon="warning-circle"
+                    :title="t('forms.detail.notFound')"
+                    :description="errorMessage"
+                    :action-route="Routes.FORMS"
+                    :action-label="t('forms.detail.backToForms')"
+                />
+                <BaseErrorState
+                    v-else
+                    icon="bug"
+                    :title="t('common.errorTitle')"
+                    :description="errorMessage"
+                    :action-route="Routes.FORMS"
+                    :action-label="t('forms.detail.backToForms')"
+                />
+            </div>
         </template>
 
-        <div v-else-if="pending" class="mb-4">
-            <BPlaceholder animation="glow" class="mb-2" width="50%" />
-            <BPlaceholder animation="glow" width="30%" />
-        </div>
-
-        <!-- Form detail -->
-        <BCard v-else-if="form">
-            <BCardBody>
-                <dl class="row mb-0 g-3">
-                    <dt class="col-sm-2 text-secondary small fw-medium">
-                        {{ t('groups.edit.fields.path') }}
-                    </dt>
-                    <dd class="col-sm-10 mb-0">
-                        <div
-                            class="d-flex align-items-center gap-2 font-monospace text-secondary flex-wrap"
-                        >
-                            <template
-                                v-for="(entry, idx) in form.parent_path || []"
-                                :key="idx"
+        <template v-else>
+            <!-- Sticky header: breadcrumb + title + actions -->
+            <div
+                class="flex-shrink-0 sticky-top bg-body border-bottom"
+                style="z-index: 5"
+            >
+                <!-- Breadcrumb -->
+                <div class="px-4 pt-4 pb-2">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 small">
+                            <li
+                                class="breadcrumb-item d-inline-flex align-items-center"
                             >
                                 <NuxtLink
-                                    :to="
-                                        Routes.groupsDetail(
-                                            (form.parent_path || [])
-                                                .slice(0, (idx as number) + 1)
-                                                .map(
-                                                    (p: any) =>
-                                                        p.path_segment ?? p.name
-                                                )
-                                                .join('/')
-                                        )
-                                    "
-                                    class="text-decoration-none text-secondary"
-                                    >{{ entry.name }}</NuxtLink
+                                    to="/"
+                                    class="text-decoration-none d-inline-flex align-items-center gap-1"
+                                    :title="t('nav.formBuilder')"
                                 >
-                                <span class="mx-1">/</span>
-                            </template>
-                            <span class="text-body fw-medium">{{
-                                form.title
-                            }}</span>
+                                    <i class="bi bi-house-fill" />
+                                </NuxtLink>
+                            </li>
+                            <li
+                                v-for="(entry, idx) in breadcrumbTrail"
+                                :key="idx"
+                                class="breadcrumb-item d-inline-flex align-items-center"
+                                :class="{
+                                    active: idx === breadcrumbTrail.length - 1,
+                                }"
+                            >
+                                <NuxtLink
+                                    v-if="
+                                        entry.route &&
+                                        idx < breadcrumbTrail.length - 1
+                                    "
+                                    :to="entry.route"
+                                    class="text-decoration-none"
+                                >
+                                    <span v-if="entry.label">{{
+                                        entry.label
+                                    }}</span>
+                                </NuxtLink>
+                                <span
+                                    v-else
+                                    class="d-inline-flex align-items-center gap-1"
+                                >
+                                    <span v-if="entry.label">{{
+                                        entry.label
+                                    }}</span>
+                                </span>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- Header: title + description + actions -->
+                <div
+                    class="d-flex flex-column flex-sm-row align-items-start px-4 pb-3 gap-2"
+                >
+                    <div class="d-flex align-items-center gap-3">
+                        <PhosphorIcon
+                            name="file-text"
+                            :size="28"
+                            class="flex-shrink-0 d-none d-md-flex"
+                        />
+                        <div>
+                            <h1 class="h3 fw-bold mb-0">
+                                {{ form?.title || '...' }}
+                            </h1>
+                            <p
+                                v-if="form?.description"
+                                class="text-secondary mb-0 mt-1"
+                            >
+                                {{ form.description }}
+                            </p>
                         </div>
-                    </dd>
+                    </div>
+                    <div
+                        v-if="form"
+                        class="flex-shrink-0 ms-sm-auto d-flex flex-wrap gap-2"
+                    >
+                        <BButton
+                            variant="outline-secondary"
+                            size="sm"
+                            @click="builderExpanded = !builderExpanded"
+                            title="Toggle fullscreen"
+                        >
+                            <PhosphorIcon
+                                :name="
+                                    builderExpanded ? 'arrows-in' : 'arrows-out'
+                                "
+                                :size="14"
+                            />
+                        </BButton>
+                        <BButton
+                            variant="outline-secondary"
+                            size="sm"
+                            @click="goEdit"
+                            class="me-2"
+                        >
+                            <PhosphorIcon
+                                name="pencil"
+                                :size="14"
+                                class="me-1"
+                            />{{ t('common.edit') }}
+                        </BButton>
+                        <BButton
+                            variant="outline-danger"
+                            size="sm"
+                            @click="showDeleteModal = true"
+                        >
+                            <PhosphorIcon
+                                name="trash"
+                                :size="14"
+                                class="me-1"
+                            />{{ t('forms.delete.title') }}
+                        </BButton>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="w-100"><hr class="my-1" /></div>
+            <!-- Form builder -->
+            <div class="flex-grow-1 overflow-hidden">
+                <template v-if="pending">
+                    <div class="px-4">
+                        <BPlaceholder
+                            animation="glow"
+                            class="mb-2"
+                            width="50%"
+                        />
+                        <BPlaceholder animation="glow" width="30%" />
+                    </div>
+                </template>
+                <template v-else>
+                    <VueJsonFormBuilder
+                        :jsonSchema="jsonSchemaString"
+                        :uiSchema="uiSchemaString"
+                        hideHeader
+                        @vjfb-change="onSchemasChange"
+                    />
+                </template>
+            </div>
+        </template>
 
-                    <dt class="col-sm-2 text-secondary small fw-medium">ID</dt>
-                    <dd class="col-sm-10 mb-0 text-body">{{ form.id }}</dd>
+        <!-- Fullscreen builder overlay -->
+        <Teleport to="body">
+            <div
+                v-if="builderExpanded"
+                class="position-fixed top-0 start-0 w-100 h-100 z-1060 bg-body d-flex flex-column"
+            >
+                <div
+                    class="d-flex justify-content-between align-items-center p-2 flex-shrink-0 border-bottom"
+                >
+                    <span class="fw-semibold ps-2">{{
+                        form?.title || ''
+                    }}</span>
+                    <BButton
+                        variant="outline-secondary"
+                        size="sm"
+                        @click="builderExpanded = false"
+                        class="me-2"
+                    >
+                        <PhosphorIcon name="x" :size="14" class="me-1" />{{
+                            t('common.close')
+                        }}
+                    </BButton>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                    <VueJsonFormBuilder
+                        :jsonSchema="jsonSchemaString"
+                        :uiSchema="uiSchemaString"
+                        hideHeader
+                        @vjfb-change="onSchemasChange"
+                    />
+                </div>
+            </div>
+        </Teleport>
 
-                    <dt class="col-sm-2 text-secondary small fw-medium">
-                        {{ t('forms.edit.fields.title') }}
-                    </dt>
-                    <dd class="col-sm-10 mb-0 text-body">{{ form.title }}</dd>
-
-                    <dt class="col-sm-2 text-secondary small fw-medium">
-                        {{ t('forms.edit.fields.description') }}
-                    </dt>
-                    <dd class="col-sm-10 mb-0 text-body text-pre-line">
-                        {{ form.description || '-' }}
-                    </dd>
-
-                    <div class="w-100"><hr class="my-1" /></div>
-
-                    <dt class="col-sm-2 text-secondary small fw-medium">
-                        {{ t('users.created') }}
-                    </dt>
-                    <dd class="col-sm-10 mb-0 text-body">
-                        {{ formatTimestamp(form.created_by?.timestamp) }}
-                    </dd>
-
-                    <dt class="col-sm-2 text-secondary small fw-medium">
-                        {{ t('groups.updated') }}
-                    </dt>
-                    <dd class="col-sm-10 mb-0 text-body">
-                        {{ formatTimestamp(form.updated_by?.timestamp) }}
-                    </dd>
-                </dl>
-            </BCardBody>
-        </BCard>
-
+        <!-- Delete modal -->
         <BModal
             v-model="showDeleteModal"
             :title="t('forms.delete.title')"
@@ -218,5 +327,26 @@ function goEdit() {
                 >{{ deleteError }}</BAlert
             >
         </BModal>
-    </BasePage>
+    </div>
 </template>
+
+<style>
+/* BApp (bootstrap-vue-next root component) doesn't inherit height by default,
+   breaking the height chain to the builder's internal layout.
+   Using flex-grow ensures it fills the parent flex container reliably. */
+.b-app {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+    min-height: 0 !important;
+}
+
+/* Override the builder's vh-100 to fill available flex space (not viewport) */
+.vh-100 {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+</style>

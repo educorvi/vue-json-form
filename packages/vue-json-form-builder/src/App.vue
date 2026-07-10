@@ -60,6 +60,7 @@ const startResizeRight = makeResizer(rightWidthVw, -1, 15, 35);
 const props = defineProps<{
     jsonSchema?: string;
     uiSchema?: string;
+    hideHeader?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -115,6 +116,7 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
         >
             <!-- App Header -->
             <div
+                v-if="!props.hideHeader"
                 class="app-header d-flex align-items-center px-3 gap-2 bg-dark shadow-sm"
                 data-bs-theme="dark"
             >

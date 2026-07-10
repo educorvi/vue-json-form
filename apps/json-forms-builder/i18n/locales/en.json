@@ -234,14 +234,23 @@
         }
     },
     "dashboard": {
-        "title": "Start",
-        "subtitle": "Administrative interface for managing forms, users, and permissions.",
+        "welcomeTitle": "Welcome, {name}",
+        "welcomeDescription": "Manage forms, users, and permissions for your organization.",
+        "recentForms": "Recently Added Forms",
+        "recentFormsEmpty": "No forms yet — create one now!",
+        "allForms": "All Forms",
+        "createForm": "New Form",
+        "createFormDesc": "Create a new form from scratch",
+        "createGroup": "New Group",
+        "createGroupDesc": "Create a new group to organize forms",
+        "developer": "Developer",
+        "quickActions": "Quick Actions",
+        "apiDocs": "API Documentation",
+        "apiDocsDesc": "Browse and test the REST API",
         "apiStatus": "API Status",
         "apiError": "Could not reach API:",
-        "navUsers": "Users",
-        "navUsersDesc": "Manage system users, roles, and access.",
-        "navApiDocs": "API Docs",
-        "navApiDocsDesc": "Browse and test the REST API via Swagger UI."
+        "version": "Version",
+        "ping": "Latency"
     },
     "common": {
         "searchPlaceholder": "Search…",

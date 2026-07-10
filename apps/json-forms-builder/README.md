@@ -36,6 +36,16 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 
 # TODO
 
+- Dashboard
+  - Hi / Welcome Bakc, USername section with profile card
+  - section with recently added forms (Card, limit to only 5 and then a link which redirects to the view of all forms)
+  - Developer section with open api and swagger ui link, api version and status and ping
+  - Quick start create new form / create new folder
+  - section with forms currently being edited TODO
+  - Newest version releases of forms TODO API Endpoint
+  - Your recent activity TODO
+- Does it make sense to include permissions within post /put /patch form or should be simpl sue the individual permission endpoints? Same for schemas. Maybe for post it makes sense since for initial creation, we already have the data, but changes should be made individually
+- Hooks for forms and folders, so for exmaple, after a user finished editing (detemrined by our backend logic like he closes the form or after time x when the user hasnt made chnages or is not using the editot anymore), the user can trigger a hook and do an api call, so he can simply define method, url with query parameters, body and use variables to send information to another server. Could also be configured to only send hooks after version release, needed for uvc.x Sync to gitlab repository
 - group delete, move and export, visibility and permissions
 - Edit and delete for current project should be in ... mneu after create group / form
 - Endpoints to get form content, create version, get version

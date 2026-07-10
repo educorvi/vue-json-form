@@ -486,8 +486,8 @@ paths:
       tags: [Forms]
       summary: Create a form
       description: |
-        Creates a new form. Optionally supply `schema.json` and `schema.ui` to
-        create the first revision in the same request.
+        Creates a new form. Optionally include `schema`, `json_schema` or `ui_schema`
+        to set the initial schema during creation.
       operationId: createForm
       parameters:
         - $ref: '#/components/parameters/GroupIdOrPathQuery'
@@ -530,8 +530,8 @@ paths:
       tags: [Forms]
       summary: Replace a form
       description: |
-        Full replacement of all writable fields. Supply `schema.json` and/or
-        `schema.ui` to create a new revision.
+        Full replacement of all writable fields. The `schema` field is excluded —
+        use `PUT /forms/{id}/schema` to manage the form's schema.
       operationId: replaceForm
       parameters:
         - $ref: '#/components/parameters/GroupIdOrPathQuery'
@@ -556,8 +556,8 @@ paths:
       tags: [Forms]
       summary: Partially update a form
       description: |
-        Updates only the provided fields. Supply `schema.json` and/or `schema.ui`
-        to create a new revision from the current one.
+        Updates only the provided fields. The `schema` field is excluded —
+        use `PUT /forms/{id}/schema` to manage the form's schema.
       operationId: updateForm
       parameters:
         - $ref: '#/components/parameters/GroupIdOrPathQuery'
@@ -651,6 +651,38 @@ paths:
   /forms/{id}/schema:
     parameters:
       - $ref: '#/components/parameters/FormIdOrPath'
+    put:
+      tags: [Forms]
+      summary: Import/replace the schema for a form
+      description: |
+        Imports/replaces the schema for a form by creating a new revision.
+        The version is auto-incremented.
+        Accepts `schema` (both JSON and UI Schema), `json_schema` (JSON Schema only),
+        or `ui_schema` (UI Schema only). When `schema` is provided, both parts are
+        replaced at once. When only `json_schema` or `ui_schema` is provided, only
+        that part is replaced.
+        This is the only way to modify a form's schema — the `schema` field is excluded
+        from PUT/PATCH on the form itself.
+      operationId: importFormSchema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchemaImportPayload'
+      responses:
+        '200':
+          description: Schema replaced, new version created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormVersion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
     get:
       tags: [Forms]
       summary: Get the latest schema for a form
@@ -662,7 +694,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormVersion'
+                $ref: '#/components/schemas/FormSchemaPayload'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -687,6 +719,102 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FormVersion'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /forms/{id}/schema/json:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: Get the latest JSON Schema for a form
+      description: Returns the JSON Schema for the most recent revision.
+      operationId: getFormLatestJsonSchema
+      responses:
+        '200':
+          description: JSON Schema for the latest revision
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Arbitrary JSON object representing the JSON Schema
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /forms/{id}/schema/ui:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+    get:
+      tags: [Forms]
+      summary: Get the latest UI Schema for a form
+      description: Returns the UI Schema for the most recent revision.
+      operationId: getFormLatestUiSchema
+      responses:
+        '200':
+          description: UI Schema for the latest revision
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Arbitrary JSON object representing the UI Schema
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /forms/{id}/schema/{version}/json:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+      - name: version
+        in: path
+        required: true
+        description: Semantic version string (e.g. `1.2.0`)
+        schema:
+          type: string
+          examples: ['1.2.0']
+    get:
+      tags: [Forms]
+      summary: Get the JSON Schema for a specific form version
+      operationId: getFormSchemaVersionJson
+      responses:
+        '200':
+          description: JSON Schema for the specified version
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Arbitrary JSON object representing the JSON Schema
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /forms/{id}/schema/{version}/ui:
+    parameters:
+      - $ref: '#/components/parameters/FormIdOrPath'
+      - name: version
+        in: path
+        required: true
+        description: Semantic version string (e.g. `1.2.0`)
+        schema:
+          type: string
+          examples: ['1.2.0']
+    get:
+      tags: [Forms]
+      summary: Get the UI Schema for a specific form version
+      operationId: getFormSchemaVersionUi
+      responses:
+        '200':
+          description: UI Schema for the specified version
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Arbitrary JSON object representing the UI Schema
+                additionalProperties: true
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -1326,15 +1454,30 @@ components:
               items:
                 $ref: '#/components/schemas/PermissionElement'
             schema:
+              type: object
               writeOnly: true
+              description: Schema containing both `json` and `ui` to set during creation
               allOf:
                 - $ref: '#/components/schemas/FormSchemaPayload'
+            json_schema:
+              type: object
+              writeOnly: true
+              description: JSON Schema to set during creation (alternative to `schema.json`)
+              additionalProperties: true
+            ui_schema:
+              type: object
+              writeOnly: true
+              description: UI Schema to set during creation (alternative to `schema.ui`)
+              additionalProperties: true
         - $ref: '#/components/schemas/ResourceModification'
 
     Form:
       allOf:
         - $ref: '#/components/schemas/FormPatch'
-      required: [title, name, description, permissions, schema]
+      description: |
+        Form metadata. The schema (JSON Schema and UI Schema) is managed separately
+        via `/forms/{id}/schema` endpoints and is not included here.
+      required: [title, name, description, permissions]
 
     # Schema payload for read operations (GET /forms/{id}/schema)
     FormSchemaPayloadPatch:
@@ -1362,6 +1505,24 @@ components:
         - $ref: '#/components/schemas/FormSchemaPayloadPatch'
       required: [json, ui]
 
+    SchemaImportPayload:
+      type: object
+      description: |
+        Payload for importing a schema. At least one field should be provided.
+        - `schema`: object containing both `json` and `ui` (replaces both parts)
+        - `json_schema`: replaces only the JSON Schema part
+        - `ui_schema`: replaces only the UI Schema part
+      properties:
+        schema:
+          $ref: '#/components/schemas/FormSchemaPayload'
+        json_schema:
+          type: object
+          description: JSON Schema (replaces only the JSON part)
+          additionalProperties: true
+        ui_schema:
+          type: object
+          description: UI Schema (replaces only the UI part)
+          additionalProperties: true
 
     # ── Form Revision ────────────────────────────────────────────────────────
 

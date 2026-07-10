@@ -12,17 +12,12 @@ async function logout() {
 
 const navItems = computed(() => [
     {
-        label: t('nav.formBuilder'),
-        icon: 'ph ph-objects-column',
-        route: '/form-builder',
-    },
-    {
         label: t('nav.forms'),
         icon: 'ph ph-file-text',
         route: '/forms',
     },
-    { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
     { label: t('nav.groups'), icon: 'ph ph-tree-structure', route: '/groups' },
+    { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
 ]);
 
 const userName = computed(() => (user as { name?: string })?.name ?? 'User');
