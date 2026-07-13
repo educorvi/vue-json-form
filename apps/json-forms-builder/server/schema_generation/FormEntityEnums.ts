@@ -4,25 +4,6 @@ enum Layouts {
     Group = "group" // with line to the right of the elements
 }
 
-enum StringFormats {
-    Text = "text",
-    TextArea = "text-area",
-    Email = "email",
-    Password = "password",
-    Date = "date",
-    DateTime = "date-time",
-    Time = "time",
-    Uri = "uri",
-    Phone = "phone",
-    Color = "color",
-    Search = "search",
-}
-
-enum NumberFormats {
-    Integer = "integer",
-    Number = "number", // float
-}
-
 enum BooleanFormats {
     Checkbox = "checkbox",
     Switch = "switch"
