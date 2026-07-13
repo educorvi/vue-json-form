@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer } from '@educorvi/vue-json-form-schemas';
+import { createId } from "../utils";
 
-abstract class Entity {
+export abstract class Entity {
     id!: string;
 
     // more attributes
@@ -9,8 +10,8 @@ abstract class Entity {
         id: z.string()
     });
 
-    constructor(id: string) {
-        this.id = id;
+    constructor(id?: string) {
+        this.id = id ? createId(id) : createId(this.constructor.name);
     }
 
     getID(): string {
@@ -21,6 +22,16 @@ abstract class Entity {
 export class DependencyGroup extends Entity {
     // attributes
     static schema = Entity.schema.extend({});
+
+    constructor(id?: string) {
+        super(id);
+    }
+
+    toJsonSchema(): JSONSchema {
+        return {
+            //TODO: implement dependency group logic
+        }
+    }
 }
 
 export abstract class FormElement extends Entity {
@@ -35,9 +46,9 @@ export abstract class FormElement extends Entity {
         this.dependencyGroup = dependencyGroup;
     }
 
-    abstract toUiSchema(scope: string): any;
+    abstract toUiSchema(scope: string): Control | HTMLRenderer;
 
-    abstract toJsonSchema(): any;
+    abstract toJsonSchema(): JSONSchema;
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: UISchema | Control | HTMLRenderer): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
@@ -56,8 +67,7 @@ export abstract class BaseDataElement extends FormElement {
     });
 
     constructor(title: string, description?: string, dependencyGroup?: DependencyGroup, id?: string) {
-        id = id === undefined ? title.toLowerCase().replace(/\s+/g, '_') : id;
-        super(id, dependencyGroup);
+        super(id ? id : title, dependencyGroup);
         this.title = title;
         this.description = description;
     }

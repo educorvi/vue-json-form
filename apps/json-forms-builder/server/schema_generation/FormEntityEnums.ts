@@ -1,26 +1,20 @@
-enum Layouts {
-    Horizontal = "horizontal",
-    Vertical = "vertical",
-    Group = "group" // with line to the right of the elements
-}
-
-enum BooleanFormats {
+enum BooleanFormat {
     Checkbox = "checkbox",
     Switch = "switch"
 }
 
-enum EnumFormats {
+enum EnumFormat {
     Select = "select",
     Radio = "radio"
 }
 
-enum ButtonSubmitActions {
+enum ButtonSubmitAction {
     Request = "request",
     Save = "save",
     Print = "print",
 }
 
-enum HttpsMethods {
+enum HttpsMethod {
     Get = "GET",
     Post = "POST",
     Put = "PUT",
@@ -28,7 +22,7 @@ enum HttpsMethods {
     // Patch = "PATCH"
 }
 
-enum ButtonVariants {
+enum ButtonVariant {
     Primary = "primary",
     Secondary = "secondary",
     Success = "success",
@@ -40,14 +34,14 @@ enum ButtonVariants {
     // TODO
 }
 
-enum ModalSizes {
+enum ModalSize {
     Small = "small",
     Medium = "medium",
     Large = "large",
     XLarge = "x-large"
 }
 
-enum FileTypes {
+enum FileType {
     pdf = "pdf",            // "application/pdf"
     jpeg = "jpeg",          // "image/jpeg"
     png = "png",            // "image/png"
@@ -76,7 +70,7 @@ enum FileTypes {
     keynote = "keynote",    // "application/vnd.apple.keynote"
 }
 
-enum DependencyTypes {
+enum DependencyType {
     greaterThan = "greaterThan",
     lessThan = "lessThan",
     equalTo = "equalTo",
@@ -98,4 +92,4 @@ enum DependencyRelation {
     OR = "OR"
 }
 
-export { Layouts, StringFormats, BooleanFormats, EnumFormats, ButtonSubmitActions, HttpsMethods, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation, NumberFormats };
+//export { Layouts, StringFormats, BooleanFormats, EnumFormats, ButtonSubmitActions, HttpsMethods, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation, NumberFormats };

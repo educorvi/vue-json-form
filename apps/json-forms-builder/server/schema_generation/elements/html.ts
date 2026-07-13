@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { JSONSchema, HTMLRenderer } from '@educorvi/vue-json-form-schemas';
-import { FormElement, DependencyGroup } from "../base";
+import { FormElement, DependencyGroup } from "./base";
 
 
 export class HTMLElement extends FormElement {

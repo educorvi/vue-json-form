@@ -1,14 +1,15 @@
 import { z } from "zod";
-import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { BaseDataElement, FormElement, DependencyGroup } from "../base";
+import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
+import { BaseDataElement, FormElement, DependencyGroup } from "./base";
 import { StringElement } from "./string";
 import { NumberElement } from "./number";
 import { HTMLElement } from "./html";
-
-
+import { getObjectJsonSchema, childrenToUiSchema } from "./childrenSchemaUtils";
+import { Layout as Layout, getBaseJsonSchema } from "../utils";
 
 export abstract class ContainerElement extends BaseDataElement {
     readonly type!: "array" | "object";
+    format!: Layout;
     children!: FormElement[];
 
     static schema = BaseDataElement.schema.extend({
@@ -21,8 +22,9 @@ export abstract class ContainerElement extends BaseDataElement {
         ])))
     });
 
-    constructor(title: string, description?: string, dependencyGroup?: DependencyGroup, id?: string) {
+    constructor(title: string, description?: string, format: Layout = Layout.Vertical, dependencyGroup?: DependencyGroup, id?: string) {
         super(title, description, dependencyGroup, id);
+        this.format = format;
         this.children = [];
     }
 
@@ -30,39 +32,17 @@ export abstract class ContainerElement extends BaseDataElement {
     abstract getScopePart(): string
 
     toUiSchema(scope: string): Control {
-        let objectScope = scope + this.getID();
-        let uiSchema: any = {
+        scope = scope + this.getID()
+        const uiSchema: Control = {
             "type": "Control",
-            "scope": objectScope,
-        };
-        objectScope = objectScope + this.getScopePart();
+            "scope": scope,
+        }
 
         if (this.children && this.children.length > 0) {
-            uiSchema["options"] = uiSchema["options"] || {};
-            uiSchema["options"]["descendantControlOverrides"] = {};
-            for (let child of this.children) {
-                const childUiSchema = child.toUiSchema(objectScope);
-                if (childUiSchema && "options" in childUiSchema && Object.keys(childUiSchema["options"]).length > 0) {
-                    let childOverrides: any = {}
-                    if ("options" in childUiSchema) {
-                        if ("descendantControlOverrides" in childUiSchema["options"]) {
-                            uiSchema["options"]["descendantControlOverrides"] = {
-                                ...uiSchema["options"]["descendantControlOverrides"],
-                                ...childUiSchema["options"]["descendantControlOverrides"]
-                            };
-                            delete childUiSchema["options"]["descendantControlOverrides"];
-                        }
-                        if (Object.keys(childUiSchema["options"]).length > 0) {
-                            childOverrides["options"] = childUiSchema["options"];
-                        }
-                    }
-                    if ("showOn" in childUiSchema) {
-                        childOverrides["showOn"] = childUiSchema["showOn"];
-                    }
-                    if (Object.keys(childOverrides).length > 0) {
-                        const childScope = objectScope + child.getID();
-                        uiSchema["options"]["descendantControlOverrides"][childScope] = childOverrides;
-                    }
+            uiSchema.options = {
+                "uiSchema": {
+                    "type": this.format as UiLayout["type"],
+                    "elements": childrenToUiSchema(scope + this.getScopePart(), this.children)
                 }
             }
         }
@@ -70,35 +50,7 @@ export abstract class ContainerElement extends BaseDataElement {
     }
 
     toJsonSchema(): JSONSchema {
-        let schema: any = {
-            "type": this.type,
-            "title": this.title,
-        }
-        if (this.description !== undefined) {
-            schema.description = this.description;
-        }
-        if (this.children && this.children.length > 0) {
-            if (this.getScopePart() === "/properties/items/") {
-                schema.items = {};
-                if (this.children.length === 1 && this.children[0] instanceof FormElement) {
-                    schema.items = this.children[0].toJsonSchema();
-                } else {
-                    schema.items = {
-                        "type": "object",
-                        "properties": {}
-                    };
-                    for (let child of this.children) {
-                        schema.items.properties[child.getID()] = child.toJsonSchema();
-                    }
-                }
-            } else {
-                schema.properties = {};
-                for (let child of this.children) {
-                    schema.properties[child.getID()] = child.toJsonSchema();
-                }
-            }
-        }
-        return schema;
+        return getObjectJsonSchema(this.title, this.children, this.description);
     }
 }
 
@@ -108,6 +60,7 @@ export class ArrayElement extends ContainerElement {
 
     buttonLabel?: string;
     required!: boolean;
+    minItems?: number;
 
     // more attributes
     static schema = ContainerElement.schema.extend({
@@ -115,14 +68,36 @@ export class ArrayElement extends ContainerElement {
         buttonLabel: z.string().optional()
     });
 
-    constructor(title: string, description?: string, buttonLabel?: string,required: boolean = false, dependencyGroup?: DependencyGroup, id?: string) {
+    constructor(title: string, description?: string, required: boolean = false, buttonLabel?: string, minItems?: number, dependencyGroup?: DependencyGroup, id?: string) {
         super(title, description, dependencyGroup, id);
         this.required = required;
         this.buttonLabel = buttonLabel;
+        this.minItems = minItems;
+        // if (this.minItems > 0) {
+        //     this.required = true;
+        // } // TODO discuss (to be inserted in the future) if minItems > 0, then required should be true
     }
 
     getScopePart(): string {
-        return "/properties/items/";
+        return "/items/properties/";
+    }
+
+    toJsonSchema(): JSONSchema {
+        const jsonSchema: any = super.toJsonSchema();
+        jsonSchema.items = {
+            "type": "object",
+            "properties": jsonSchema.properties
+        }
+        delete jsonSchema.properties;
+        jsonSchema.type = "array";
+
+        if (this.required) {
+            jsonSchema['minItems'] = 1;
+        }
+        if (this.minItems !== undefined) {
+            jsonSchema['minItems'] = this.minItems;
+        }
+        return jsonSchema;
     }
 
     toUiSchema(scope: string): Control {
@@ -134,8 +109,8 @@ export class ArrayElement extends ContainerElement {
         return uiSchema;
     }
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control): ArrayElement {
-        const arrayElement = new ArrayElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, uiSchema.options?.addButtonText);
+    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control, required: boolean=false): ArrayElement {
+        const arrayElement = new ArrayElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, required, uiSchema.options?.addButtonText, jsonSchema.minItems);
         return arrayElement;
     }
 }

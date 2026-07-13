@@ -1,9 +1,9 @@
 import { z } from "zod";
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { SimpleElement, DependencyGroup } from "../base";
+import { SimpleElement, DependencyGroup } from "./base";
 
 
-enum NumberFormats {
+enum NumberFormat {
     Integer = "integer",
     Number = "number", // float
 }
@@ -12,7 +12,7 @@ enum NumberFormats {
 export class NumberElement extends SimpleElement {
     readonly type = "number";
 
-    format!: NumberFormats;
+    format!: NumberFormat;
 
     minimum?: number;
 
@@ -22,13 +22,13 @@ export class NumberElement extends SimpleElement {
 
     static schema = SimpleElement.schema.extend({
         type: z.literal("number"),
-        format: z.enum(NumberFormats),
+        format: z.enum(NumberFormat),
         minimum: z.number().optional(),
         maximum: z.number().optional(),
         multipleOf: z.number().optional()
     });
 
-    constructor(title: string, description?: string, format: NumberFormats = NumberFormats.Number, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string) {
+    constructor(title: string, description?: string, format: NumberFormat = NumberFormat.Number, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string) {
         super(title, description, required, dependencyGroup, id);
         this.format = format;
     }
@@ -36,7 +36,7 @@ export class NumberElement extends SimpleElement {
     toUiSchema(scope: string): Control {
         return {
             "type": "Control",
-            "scope": scope + "/properties/" + this.getID(),
+            "scope": scope + this.getID(),
             "options": {
                 // possible options from attributes
             }
@@ -65,8 +65,8 @@ export class NumberElement extends SimpleElement {
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control): NumberElement {
         let numberElement = new NumberElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description);
-        if ((jsonSchema.type === "number" || jsonSchema.type === "integer") && Object.values(NumberFormats as unknown as string[]).includes(jsonSchema.type)) {
-            numberElement.format = jsonSchema.type as NumberFormats;
+        if ((jsonSchema.type === "number" || jsonSchema.type === "integer") && Object.values(NumberFormat as unknown as string[]).includes(jsonSchema.type)) {
+            numberElement.format = jsonSchema.type as NumberFormat;
         } else {
             throw new Error("Invalid type for NumberElement: " + jsonSchema.type);
         }

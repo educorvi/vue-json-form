@@ -1,6 +1,6 @@
 import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import { ArrayElement, ContainerElement } from "./elements/container";
-import { FormElement } from "./base";
+import { FormElement } from "./elements/base";
 import { FormElementRegistry } from "./registry";
 
 
