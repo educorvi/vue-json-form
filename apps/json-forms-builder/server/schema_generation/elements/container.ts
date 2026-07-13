@@ -9,7 +9,8 @@ import { Layout as Layout, getBaseJsonSchema } from "../utils";
 
 export abstract class ContainerElement extends BaseDataElement {
     readonly type!: "array" | "object";
-    format!: Layout;
+    layout!: Layout;
+    showTitle!: boolean;
     children!: FormElement[];
 
     static schema = BaseDataElement.schema.extend({
@@ -19,12 +20,15 @@ export abstract class ContainerElement extends BaseDataElement {
             StringElement.schema,
             NumberElement.schema,
             HTMLElement.schema
-        ])))
+        ]))),
+        layout: z.enum(Layout),
+        showTitle: z.boolean()
     });
 
-    constructor(title: string, description?: string, format: Layout = Layout.Vertical, dependencyGroup?: DependencyGroup, id?: string) {
-        super(title, description, dependencyGroup, id);
-        this.format = format;
+    constructor(title: string, description?: string, layout: Layout = Layout.Vertical, dependencyGroup?: DependencyGroup, id?: string, showTitle: boolean = true, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string) {
+        super(title, description, dependencyGroup, id, tooltip, hidden, preHtml, postHtml);
+        this.layout = layout;
+        this.showTitle = showTitle;
         this.children = [];
     }
 
@@ -38,10 +42,19 @@ export abstract class ContainerElement extends BaseDataElement {
             "scope": scope,
         }
 
+        const options = super.getUiSchemaOptions();
+        if (this.showTitle === false) {
+            options["label"] = false;
+        }
+        if (Object.keys(options).length > 0) {
+            uiSchema.options = options;
+        }
+
         if (this.children && this.children.length > 0) {
             uiSchema.options = {
+                ... uiSchema.options,
                 "uiSchema": {
-                    "type": this.format as UiLayout["type"],
+                    "type": this.layout as UiLayout["type"],
                     "elements": childrenToUiSchema(scope + this.getScopePart(), this.children)
                 }
             }
@@ -61,18 +74,23 @@ export class ArrayElement extends ContainerElement {
     buttonLabel?: string;
     required!: boolean;
     minItems?: number;
+    maxItems?: number;
 
     // more attributes
     static schema = ContainerElement.schema.extend({
         type: z.literal("array"),
-        buttonLabel: z.string().optional()
+        required: z.boolean(),
+        buttonLabel: z.string().optional(),
+        minItems: z.number().int().nonnegative().optional(),
+        maxItems: z.number().int().nonnegative().optional()
     });
 
-    constructor(title: string, description?: string, required: boolean = false, buttonLabel?: string, minItems?: number, dependencyGroup?: DependencyGroup, id?: string) {
-        super(title, description, dependencyGroup, id);
+    constructor(title: string, description?: string, required: boolean = false, layout: Layout = Layout.Vertical, buttonLabel?: string, minItems?: number, maxItems?: number, dependencyGroup?: DependencyGroup, id?: string, showTitle: boolean = true, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string) {
+        super(title, description, layout, dependencyGroup, id, showTitle, tooltip, hidden, preHtml, postHtml);
         this.required = required;
         this.buttonLabel = buttonLabel;
         this.minItems = minItems;
+        this.maxItems = maxItems;
         // if (this.minItems > 0) {
         //     this.required = true;
         // } // TODO discuss (to be inserted in the future) if minItems > 0, then required should be true
@@ -97,6 +115,9 @@ export class ArrayElement extends ContainerElement {
         if (this.minItems !== undefined) {
             jsonSchema['minItems'] = this.minItems;
         }
+        if (this.maxItems !== undefined) {
+            jsonSchema['maxItems'] = this.maxItems;
+        }
         return jsonSchema;
     }
 
@@ -110,7 +131,8 @@ export class ArrayElement extends ContainerElement {
     }
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control, required: boolean=false): ArrayElement {
-        const arrayElement = new ArrayElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, required, uiSchema.options?.addButtonText, jsonSchema.minItems);
+        const layout = uiSchema.options?.uiSchema?.type ? uiSchema.options.uiSchema.type as Layout : Layout.Vertical;
+        const arrayElement = new ArrayElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, required, layout, uiSchema.options?.addButtonText, jsonSchema.minItems, jsonSchema.maxItems);
         return arrayElement;
     }
 }
@@ -123,8 +145,8 @@ export class ObjectElement extends ContainerElement {
         type: z.literal("object")
     });
 
-    constructor(title: string, description?: string, dependencyGroup?: DependencyGroup, id?: string) {
-        super(title, description, dependencyGroup, id);
+    constructor(title: string, description?: string, layout: Layout = Layout.Vertical, dependencyGroup?: DependencyGroup, id?: string, showTitle: boolean = true, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string) {
+        super(title, description, layout, dependencyGroup, id, showTitle, tooltip, hidden, preHtml, postHtml);
     }
 
     getScopePart(): string {
@@ -132,7 +154,8 @@ export class ObjectElement extends ContainerElement {
     }
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control): ObjectElement {
-        const objectElement = new ObjectElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description);
+        const layout = uiSchema.options?.uiSchema?.type ? uiSchema.options.uiSchema.type as Layout : Layout.Vertical;
+        const objectElement = new ObjectElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, layout);
         return objectElement;
     }
 }

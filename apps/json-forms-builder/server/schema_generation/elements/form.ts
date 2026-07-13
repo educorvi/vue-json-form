@@ -2,7 +2,11 @@ import { Entity, FormElement } from "./base";
 import { z } from "zod";
 import { childrenToUiSchema, getObjectJsonSchema } from "./childrenSchemaUtils";
 import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
-import { Layout, getBaseJsonSchema } from "../utils";
+import { Layout } from "../utils";
+import { ArrayElement, ObjectElement } from "./container";
+import { StringElement } from "./string";
+import { NumberElement } from "./number";
+import { HTMLElement } from "./html";
 
 
 export class Form extends Entity {
@@ -16,7 +20,13 @@ export class Form extends Entity {
     static schema = super.schema.extend({
         title: z.string(),
         description: z.string().optional(),
-        children: z.array(z.lazy(() => FormElement.schema)),
+        children: z.lazy((): z.ZodType<any[]> => z.array(z.union([
+                    ArrayElement.schema,
+                    ObjectElement.schema,
+                    StringElement.schema,
+                    NumberElement.schema,
+                    HTMLElement.schema
+                ]))),
         requiredList: z.array(z.string())
     });
 

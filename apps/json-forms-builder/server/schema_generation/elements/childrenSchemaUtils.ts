@@ -2,10 +2,10 @@ import type { JSONSchema, Control, HTMLRenderer, ShowOnProperty } from '@educorv
 import { FormElement } from './base';
 import { getBaseJsonSchema } from '../utils';
 
-function childrenToJsonSchema(children: FormElement[]): {childrenJsonSchema: JSONSchema["properties"], requiredList: string[], allOfList: JSONSchema["allOf"]} {
+function childrenToJsonSchema(children: FormElement[]): {childrenJsonSchema: JSONSchema["properties"], requiredList: string[], allOf: JSONSchema["allOf"]} {
     const schema: JSONSchema["properties"] = {};
     const requiredList: string[] = [];
-    const allOfList = [];
+    const allOf = [];
 
     for (const child of children) {
         const childId = child.getID();
@@ -20,26 +20,25 @@ function childrenToJsonSchema(children: FormElement[]): {childrenJsonSchema: JSO
         }
 
         if (child.dependencyGroup) {
-            const allOf: JSONSchema = {
+            const allOfItem: JSONSchema = {
                 [childId]: child.dependencyGroup.toJsonSchema(),
             }
-            allOfList.push({
-                "properties": {
-                    [childId]: allOf
-                }
-            });
+            allOf.push(allOfItem);
         }
     }
 
-    return {childrenJsonSchema: schema, requiredList: requiredList, allOfList: allOfList};
+    return {childrenJsonSchema: schema, requiredList: requiredList, allOf: allOf};
 }
 
 export function getObjectJsonSchema(title: string, children: FormElement[], description?: string): JSONSchema {
     const jsonSchema: JSONSchema = getBaseJsonSchema("object", title, description);
     if (children && children.length > 0) {
-        const { childrenJsonSchema, requiredList } = childrenToJsonSchema(children);
+        const { childrenJsonSchema, requiredList, allOf } = childrenToJsonSchema(children);
         jsonSchema.properties = childrenJsonSchema;
         jsonSchema.required = requiredList;
+        if (allOf && allOf.length > 0) {
+            jsonSchema.allOf = allOf;
+        }
     }
 
     return jsonSchema;

@@ -19,5 +19,6 @@ export const FormElementRegistry = new Map<string, FormElementConstructor>([
     ["object",  ObjectElement],
     ["string",  StringElement],
     ["number",  NumberElement],
+    ["integer", NumberElement],
     ["html",    HTMLElement],
 ]);

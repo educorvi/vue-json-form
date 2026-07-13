@@ -28,23 +28,25 @@ export class NumberElement extends SimpleElement {
         multipleOf: z.number().optional()
     });
 
-    constructor(title: string, description?: string, format: NumberFormat = NumberFormat.Number, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string) {
-        super(title, description, required, dependencyGroup, id);
+    constructor(title: string, description?: string, format: NumberFormat = NumberFormat.Number, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string, prependValue?: string, appendValue?: string, pattern?: string) {
+        super(title, description, required, dependencyGroup, id, tooltip, hidden, preHtml, postHtml, prependValue, appendValue, pattern);
         this.format = format;
     }
 
     toUiSchema(scope: string): Control {
-        return {
+        const uiSchema: Control = {
             "type": "Control",
             "scope": scope + this.getID(),
-            "options": {
-                // possible options from attributes
-            }
         };
+        const options = super.getUiSchemaOptions();
+        if (Object.keys(options).length > 0) {
+            uiSchema.options = options;
+        }
+        return uiSchema;
     }
 
     toJsonSchema(): JSONSchema {
-        let schema: JSONSchema = {
+        const schema: JSONSchema = {
             "type": this.format,
             "title": this.title,
         };
@@ -64,7 +66,7 @@ export class NumberElement extends SimpleElement {
     }
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control): NumberElement {
-        let numberElement = new NumberElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description);
+        const numberElement = new NumberElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description);
         if ((jsonSchema.type === "number" || jsonSchema.type === "integer") && Object.values(NumberFormat as unknown as string[]).includes(jsonSchema.type)) {
             numberElement.format = jsonSchema.type as NumberFormat;
         } else {
