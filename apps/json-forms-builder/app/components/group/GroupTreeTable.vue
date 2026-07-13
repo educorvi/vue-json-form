@@ -197,25 +197,14 @@ function itemLink(item: ChildItem): string {
                             :form-count="item.form_count"
                             :member-count="item.member_count"
                         />
-                        <BTooltip
-                            v-if="item.updated_by?.timestamp"
-                            triggers="hover"
+                        <span
+                            class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
+                            style="font-size: 0.75rem"
+                            v-b-tooltip="t('groups.updated')"
                         >
-                            <template #target>
-                                <span
-                                    class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
-                                    style="font-size: 0.75rem"
-                                >
-                                    <PhosphorIcon name="clock" :size="12" />
-                                    {{
-                                        formatTimestamp(
-                                            item.updated_by.timestamp
-                                        )
-                                    }}
-                                </span>
-                            </template>
-                            {{ t('groups.updated') }}
-                        </BTooltip>
+                            <PhosphorIcon name="clock" :size="12" />
+                            {{ formatTimestamp(item.updated_by.timestamp) }}
+                        </span>
                     </div>
 
                     <!-- Actions -->

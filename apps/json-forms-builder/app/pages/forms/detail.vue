@@ -108,7 +108,7 @@ async function onSchemasChange(json: any, ui: any) {
 </script>
 
 <template>
-    <div class="d-flex flex-column flex-grow-1">
+    <div class="d-flex flex-column flex-grow-1" style="min-height: 0">
         <!-- Error states -->
         <template v-if="hasError">
             <div class="px-4 pt-4">
@@ -214,8 +214,12 @@ async function onSchemasChange(json: any, ui: any) {
                         <BButton
                             variant="outline-secondary"
                             size="sm"
+                            v-b-tooltip="
+                                builderExpanded
+                                    ? t('common.collapse')
+                                    : t('common.expand')
+                            "
                             @click="builderExpanded = !builderExpanded"
-                            title="Toggle fullscreen"
                         >
                             <PhosphorIcon
                                 :name="
@@ -228,7 +232,6 @@ async function onSchemasChange(json: any, ui: any) {
                             variant="outline-secondary"
                             size="sm"
                             @click="goEdit"
-                            class="me-2"
                         >
                             <PhosphorIcon
                                 name="pencil"
@@ -252,7 +255,10 @@ async function onSchemasChange(json: any, ui: any) {
             </div>
 
             <!-- Form builder -->
-            <div class="flex-grow-1 overflow-hidden">
+            <div
+                class="flex-grow-1 d-flex flex-column overflow-hidden"
+                style="min-height: 0"
+            >
                 <template v-if="pending">
                     <div class="px-4">
                         <BPlaceholder
@@ -278,7 +284,8 @@ async function onSchemasChange(json: any, ui: any) {
         <Teleport to="body">
             <div
                 v-if="builderExpanded"
-                class="position-fixed top-0 start-0 w-100 h-100 z-1060 bg-body d-flex flex-column"
+                class="position-fixed top-0 start-0 w-100 h-100 bg-body d-flex flex-column"
+                style="z-index: 10000"
             >
                 <div
                     class="d-flex justify-content-between align-items-center p-2 flex-shrink-0 border-bottom"
@@ -297,7 +304,10 @@ async function onSchemasChange(json: any, ui: any) {
                         }}
                     </BButton>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
+                <div
+                    class="flex-grow-1 d-flex flex-column overflow-hidden"
+                    style="min-height: 0"
+                >
                     <VueJsonFormBuilder
                         :jsonSchema="jsonSchemaString"
                         :uiSchema="uiSchemaString"
@@ -331,22 +341,9 @@ async function onSchemasChange(json: any, ui: any) {
 </template>
 
 <style>
-/* BApp (bootstrap-vue-next root component) doesn't inherit height by default,
-   breaking the height chain to the builder's internal layout.
-   Using flex-grow ensures it fills the parent flex container reliably. */
-.b-app {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-grow: 1 !important;
-    min-height: 0 !important;
-}
-
-/* Override the builder's vh-100 to fill available flex space (not viewport) */
-.vh-100 {
-    display: flex !important;
-    flex-direction: column !important;
-    flex-grow: 1 !important;
-    height: auto !important;
-    min-height: 0 !important;
+/* Prevent the surrounding Nuxt layout from scrolling.
+   The form builder component handles its own internal scrolling. */
+.d-flex.flex-column.vh-100 > main.overflow-y-auto {
+    overflow: hidden !important;
 }
 </style>

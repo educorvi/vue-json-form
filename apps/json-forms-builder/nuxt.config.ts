@@ -14,10 +14,11 @@ export default defineNuxtConfig({
 
     // The form-builder is a complex client-side component using localStorage,
     // custom Pinia stores with persisted state, and heavy browser APIs.
-    // Render it entirely on the client (SPA mode for this route).
+    // Render it entirely on the client (SPA mode for these routes).
     routeRules: {
         '/form-builder': { ssr: false },
         '/form-builder/**': { ssr: false },
+        '/forms/detail': { ssr: false },
     },
 
     // TypeORM uses legacy (experimental) decorators.
@@ -37,6 +38,12 @@ export default defineNuxtConfig({
                 },
             },
         },
+        alias: {
+            // @educorvi/rita imports dayjs plugins without .js extension,
+            // which fails in ESM resolution (Node.js requires explicit .js).
+            'dayjs/plugin/duration': 'dayjs/plugin/duration.js',
+            'dayjs/plugin/relativeTime': 'dayjs/plugin/relativeTime.js',
+        },
     },
     vite: {
         esbuild: {
@@ -45,6 +52,14 @@ export default defineNuxtConfig({
                     experimentalDecorators: true,
                     useDefineForClassFields: false,
                 },
+            },
+        },
+        resolve: {
+            alias: {
+                // @educorvi/rita imports dayjs plugins without .js extension,
+                // which fails in ESM resolution (Node.js requires explicit .js).
+                'dayjs/plugin/duration': 'dayjs/plugin/duration.js',
+                'dayjs/plugin/relativeTime': 'dayjs/plugin/relativeTime.js',
             },
         },
         // Pre-bundle these dependencies at dev-server startup so the heavy
@@ -77,6 +92,7 @@ export default defineNuxtConfig({
             noExternal: [
                 '@educorvi/vue-json-form-builder',
                 '@educorvi/vue-json-form',
+                '@educorvi/rita',
                 // 'pinia',
                 '@vueuse/core',
                 'vue-draggable-plus',

@@ -268,7 +268,8 @@
         "perPage": "Per page",
         "pageSizeLabel": "Per page",
         "showingEntries": "Showing {start}–{end} of {total}",
-        "totalCount": "No items | {n} item | {n} items"
+        "totalCount": "No items | {n} item | {n} items",
+        "close": "Close"
     },
     "theme": {
         "label": "Theme",

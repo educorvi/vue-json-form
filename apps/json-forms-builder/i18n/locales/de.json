@@ -268,7 +268,8 @@
         "perPage": "Pro Seite",
         "pageSizeLabel": "Pro Seite",
         "showingEntries": "{start}-{end} von {total}",
-        "totalCount": "Keine Elemente | {n} Element | {n} Elemente"
+        "totalCount": "Keine Elemente | {n} Element | {n} Elemente",
+        "close": "Schließen"
     },
     "theme": {
         "label": "Farbschema",

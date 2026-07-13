@@ -23,7 +23,7 @@ const selected = computed({
 </script>
 
 <template>
-    <BDropdown variant="outline-secondary" size="sm" class="locale-switcher">
+    <BDropdown variant="outline-secondary" size="sm" class="d-grid gap-2 mb-2">
         <template #button-content>
             <!-- <PhGlobe :size="16" class="me-1" /> -->
             {{ selected.name }}

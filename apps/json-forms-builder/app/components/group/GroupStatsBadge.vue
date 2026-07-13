@@ -14,32 +14,26 @@ const { t } = useI18n();
 
 <template>
     <div class="d-flex align-items-center gap-1 text-secondary small">
-        <BTooltip triggers="hover">
-            <template #target>
-                <span class="d-inline-flex align-items-center gap-1">
-                    <PhosphorIcon name="folders" :size="14" />
-                    {{ groupCount }}
-                </span>
-            </template>
-            {{ t('groups.subGroups') }}
-        </BTooltip>
-        <BTooltip triggers="hover">
-            <template #target>
-                <span class="d-inline-flex align-items-center gap-1">
-                    <PhosphorIcon name="file-text" :size="14" />
-                    {{ formCount }}
-                </span>
-            </template>
-            {{ t('groups.forms') }}
-        </BTooltip>
-        <BTooltip triggers="hover">
-            <template #target>
-                <span class="d-inline-flex align-items-center gap-1">
-                    <PhosphorIcon name="users" :size="14" />
-                    {{ memberCount }}
-                </span>
-            </template>
-            {{ t('groups.members') }}
-        </BTooltip>
+        <span
+            class="d-inline-flex align-items-center gap-1"
+            v-b-tooltip="t('groups.subGroups')"
+        >
+            <PhosphorIcon name="folders" :size="14" />
+            {{ groupCount }}
+        </span>
+        <span
+            class="d-inline-flex align-items-center gap-1"
+            v-b-tooltip="t('groups.forms')"
+        >
+            <PhosphorIcon name="file-text" :size="14" />
+            {{ formCount }}
+        </span>
+        <span
+            class="d-inline-flex align-items-center gap-1"
+            v-b-tooltip="t('groups.members')"
+        >
+            <PhosphorIcon name="users" :size="14" />
+            {{ memberCount }}
+        </span>
     </div>
 </template>

@@ -25,7 +25,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
 </script>
 
 <template>
-    <div class="d-flex flex-column min-vh-100 bg-body-tertiary">
+    <div class="d-flex flex-column vh-100 bg-body-tertiary">
         <Header />
         <main class="d-flex flex-column flex-grow-1 overflow-y-auto">
             <slot />

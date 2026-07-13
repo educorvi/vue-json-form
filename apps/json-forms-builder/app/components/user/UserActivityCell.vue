@@ -11,26 +11,22 @@ const { t } = useI18n();
 
 <template>
     <div class="d-flex flex-column small text-secondary">
-        <span class="d-inline-flex align-items-center gap-1">
-            <BTooltip triggers="hover">
-                <template #target>
-                    <span class="d-inline-flex align-items-center">
-                        <PhosphorIcon name="calendar" :size="14" />
-                    </span>
-                </template>
-                {{ t('users.created') }}: {{ formatDate(created) }}
-            </BTooltip>
+        <span
+            class="d-inline-flex align-items-center gap-1"
+            v-b-tooltip="`${t('users.created')}: ${formatDate(created)}`"
+        >
+            <span class="d-inline-flex align-items-center">
+                <PhosphorIcon name="calendar" :size="14" />
+            </span>
             {{ formatDate(created) }}
         </span>
-        <span class="d-inline-flex align-items-center gap-1">
-            <BTooltip triggers="hover">
-                <template #target>
-                    <span class="d-inline-flex align-items-center">
-                        <PhosphorIcon name="clock" :size="14" />
-                    </span>
-                </template>
-                {{ t('users.lastActivity') }}: {{ formatDate(updated) }}
-            </BTooltip>
+        <span
+            class="d-inline-flex align-items-center gap-1"
+            v-b-tooltip="`${t('users.lastActivity')}: ${formatDate(updated)}`"
+        >
+            <span class="d-inline-flex align-items-center">
+                <PhosphorIcon name="clock" :size="14" />
+            </span>
             {{ formatDate(updated) }}
         </span>
     </div>

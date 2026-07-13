@@ -109,9 +109,10 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
 </script>
 
 <template>
-    <BApp>
+    <BApp class="d-flex flex-column" style="flex: 1; min-height: 0">
         <div
-            class="d-flex flex-column vh-100 overflow-hidden"
+            class="d-flex flex-column flex-grow-1 overflow-hidden"
+            style="min-height: 0"
             :data-bs-theme="store.themeMode === 'dark' ? 'dark' : undefined"
         >
             <!-- App Header -->
@@ -136,7 +137,7 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                 <!-- Left Panel + collapse toggle -->
                 <div class="d-flex flex-shrink-0">
                     <div
-                        class="overflow-hidden"
+                        class="d-flex flex-column overflow-hidden"
                         :style="
                             leftCollapsed
                                 ? { width: '0' }
@@ -165,7 +166,7 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                 />
 
                 <!-- Middle Panel -->
-                <div class="flex-grow-1 overflow-hidden">
+                <div class="d-flex flex-column flex-grow-1 overflow-hidden">
                     <MiddlePanel />
                 </div>
 
@@ -179,7 +180,7 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                 <!-- Right Panel -->
                 <div
                     v-if="rightVisible && store.selectedElementId"
-                    class="flex-shrink-0 overflow-hidden"
+                    class="d-flex flex-column flex-shrink-0 overflow-hidden"
                     :style="{ width: rightWidthVw + 'vw' }"
                 >
                     <RightPanel @close="rightVisible = false" />

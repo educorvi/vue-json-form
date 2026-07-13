@@ -131,7 +131,7 @@ const pageDescription = computed(() => {
     >
         <template #actions>
             <BButton variant="primary" size="sm" :to="Routes.FORMS_NEW">
-                <PhosphorIcon name="plus" :size="14" class="me-1" />
+                <PhosphorIcon name="plus" class="me-1" />
                 {{ t('forms.new.title') }}
             </BButton>
         </template>

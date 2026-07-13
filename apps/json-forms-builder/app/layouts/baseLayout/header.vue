@@ -2,13 +2,7 @@
 // import { PhNotePencil, PhUser } from '@phosphor-icons/vue';
 
 const { t } = useI18n();
-const { user, clear: clearSession } = useUserSession();
-
-async function logout() {
-    await $fetch('/auth/logout', { method: 'POST' });
-    await clearSession();
-    await navigateTo('/');
-}
+const { user } = useUserSession();
 
 const navItems = computed(() => [
     {
@@ -50,37 +44,7 @@ const userName = computed(() => (user as { name?: string })?.name ?? 'User');
                             <span class="fw-medium">{{ userName }}</span>
                         </span>
                     </template>
-                    <!-- User greeting header -->
-                    <li
-                        class="dropdown-item d-flex align-items-center gap-2"
-                        style="cursor: default"
-                    >
-                        <!-- <PhUser :size="18" /> -->
-                        <PhosphorIcon name="user" />
-                        <div class="d-flex flex-column">
-                            <span class="fw-medium">{{ userName }}</span>
-                            <span class="small text-secondary">{{
-                                (user as { email?: string })?.email ?? ''
-                            }}</span>
-                        </div>
-                    </li>
-                    <BDropdownDivider />
-                    <!-- Theme & Locale -->
-                    <li class="px-3 py-1" @click.stop>
-                        <ThemeSwitcher />
-                    </li>
-                    <li class="px-3 py-1" @click.stop>
-                        <LocaleSwitcher />
-                    </li>
-                    <BDropdownDivider />
-                    <BDropdownItem
-                        @click="logout"
-                        class="d-flex align-items-center gap-2"
-                    >
-                        <!-- <PhSignOut :size="18" /> -->
-                        <PhosphorIcon name="sign-out" />
-                        {{ t('nav.signOut') }}
-                    </BDropdownItem>
+                    <UserProfileDropdown />
                 </BNavItemDropdown>
             </BNavbarNav>
         </BCollapse>

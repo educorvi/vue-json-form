@@ -16,6 +16,9 @@ defineProps<{
     description?: string;
     /** Phosphor icon name to show before the title. */
     icon?: string;
+    /** When true, removes padding and max-width so the page content fills the
+        full available space (e.g. for full-page builders/editors). */
+    fullHeight?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -35,7 +38,7 @@ const breadcrumbItems = computed(() => {
 </script>
 
 <template>
-    <BasePageContainer>
+    <BasePageContainer :fullHeight="fullHeight">
         <!-- Breadcrumb -->
         <nav
             v-if="breadcrumbItems.length > 1"
