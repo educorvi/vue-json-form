@@ -5,7 +5,7 @@
         "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "bootstrap": "^5.3.8",
-        "bootstrap-vue-next": "0.45.7",
+        "bootstrap-vue-next": "0.45.8",
         "bootswatch": "^5.3.8",
         "vue": "^3.5.39",
         "vue-json-pretty": "^2.6.0",
