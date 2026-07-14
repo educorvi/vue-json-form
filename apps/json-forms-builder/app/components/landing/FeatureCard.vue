@@ -4,11 +4,8 @@
  * Each chip renders as a small link with an icon and label.
  */
 export interface FeatureChip {
-    /** Phosphor icon name */
     icon: string;
-    /** Visible label text */
     label: string;
-    /** Target URL */
     href: string;
 }
 
@@ -16,7 +13,6 @@ defineProps<{
     icon: string;
     title: string;
     description: string;
-    /** Optional action chips shown below the description */
     chips?: FeatureChip[];
 }>();
 </script>

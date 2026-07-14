@@ -8,12 +8,11 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import TimestampStats from '~/components/utils/TimestampStats.vue';
+import type { zGroupElement } from '~~/server/orpc/generated/zod.gen';
+import type z from 'zod';
 
-interface ChildItem {
-    id: number;
-    type?: 'group' | 'form';
-    [key: string]: any;
-}
+type ChildItem = z.infer<typeof zGroupElement>;
 
 interface ChildrenState {
     items: ChildItem[];
@@ -153,8 +152,12 @@ function itemLink(item: ChildItem): string {
             <!-- ── Group row ──────────────────────────────────────────── -->
             <div
                 v-if="isGroup(item)"
-                class="d-flex align-items-center gap-1 py-2 px-2 border-bottom"
-                :style="{ paddingLeft: depth * INDENT_PX + 12 + 'px' }"
+                class="d-flex align-items-center gap-1 py-2 px-2 border-bottom tree-row"
+                :style="{
+                    paddingLeft: depth * INDENT_PX + 12 + 'px',
+                    cursor: 'pointer',
+                }"
+                @click="emit('navigate', item)"
             >
                 <!-- Expand toggle -->
                 <BButton
@@ -181,30 +184,19 @@ function itemLink(item: ChildItem): string {
 
                 <!-- Title -->
                 <div class="flex-grow-1 min-w-0">
-                    <NuxtLink
-                        :to="itemLink(item)"
-                        class="fw-medium text-decoration-none text-body"
-                    >
+                    <span class="fw-medium text-body">
                         {{ item.title || item.name }}
-                    </NuxtLink>
+                    </span>
                 </div>
 
                 <!-- Right side: stats + timestamp + actions -->
-                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <div
+                    class="d-flex align-items-center gap-2 flex-shrink-0"
+                    @click.stop
+                >
                     <div class="d-flex flex-column align-items-end gap-0">
-                        <GroupStatsBadge
-                            :group-count="item.group_count"
-                            :form-count="item.form_count"
-                            :member-count="item.member_count"
-                        />
-                        <span
-                            class="d-inline-flex align-items-center gap-1 text-secondary mt-1"
-                            style="font-size: 0.75rem"
-                            v-b-tooltip="t('groups.updated')"
-                        >
-                            <PhosphorIcon name="clock" :size="12" />
-                            {{ formatTimestamp(item.updated_by.timestamp) }}
-                        </span>
+                        <GroupDetailStats :childGroup="item" />
+                        <TimestampStats :created="item.created_by?.timestamp" />
                     </div>
 
                     <!-- Actions -->
@@ -231,8 +223,12 @@ function itemLink(item: ChildItem): string {
             <!-- ── Form row ───────────────────────────────────────────── -->
             <div
                 v-else
-                class="d-flex align-items-center gap-2 py-2 px-2 border-bottom form-row"
-                :style="{ paddingLeft: depth * INDENT_PX + 12 + 'px' }"
+                class="d-flex align-items-center gap-2 py-2 px-2 border-bottom tree-row"
+                :style="{
+                    paddingLeft: depth * INDENT_PX + 12 + 'px',
+                    cursor: 'pointer',
+                }"
+                @click="emit('navigate', item)"
             >
                 <!-- File icon -->
                 <PhosphorIcon
@@ -242,12 +238,9 @@ function itemLink(item: ChildItem): string {
 
                 <!-- Title -->
                 <div class="flex-grow-1 min-w-0">
-                    <NuxtLink
-                        :to="itemLink(item)"
-                        class="fw-medium text-decoration-none text-body"
-                    >
+                    <span class="fw-medium text-body">
                         {{ item.title }}
-                    </NuxtLink>
+                    </span>
                     <div
                         v-if="item.description"
                         class="text-secondary small text-truncate"
@@ -257,31 +250,36 @@ function itemLink(item: ChildItem): string {
                 </div>
 
                 <!-- Timestamp -->
-                <span
-                    class="text-secondary small text-nowrap flex-shrink-0 d-none d-sm-block"
-                >
-                    <PhosphorIcon name="clock" :size="12" />
-                    {{ formatTimestamp(item.updated_by?.timestamp) }}
-                </span>
+                <TimestampStats
+                    v-if="item.type === 'group'"
+                    :created="item.created_by?.timestamp"
+                />
+                <TimestampStats
+                    v-else-if="item.type === 'form'"
+                    :created="item.created_by?.timestamp"
+                    :updated="item.updated_by?.timestamp"
+                />
 
                 <!-- Actions -->
-                <BDropdown
-                    variant="link"
-                    no-caret
-                    toggle-class="text-secondary p-0 border-0"
-                >
-                    <template #button-content>
-                        <PhosphorIcon name="dots-three" :size="18" />
-                    </template>
-                    <BDropdownItem @click="emit('edit', item)">
-                        <PhosphorIcon name="pencil" />
-                        {{ t('common.edit') }}
-                    </BDropdownItem>
-                    <BDropdownItem @click="emit('delete', item)">
-                        <PhosphorIcon name="trash" />
-                        {{ t('forms.delete.title') }}
-                    </BDropdownItem>
-                </BDropdown>
+                <div @click.stop>
+                    <BDropdown
+                        variant="link"
+                        no-caret
+                        toggle-class="text-secondary p-0 border-0"
+                    >
+                        <template #button-content>
+                            <PhosphorIcon name="dots-three" :size="18" />
+                        </template>
+                        <BDropdownItem @click="emit('edit', item)">
+                            <PhosphorIcon name="pencil" />
+                            {{ t('common.edit') }}
+                        </BDropdownItem>
+                        <BDropdownItem @click="emit('delete', item)">
+                            <PhosphorIcon name="trash" />
+                            {{ t('forms.delete.title') }}
+                        </BDropdownItem>
+                    </BDropdown>
+                </div>
             </div>
 
             <!-- ── Expanded group children ────────────────────────────── -->
@@ -358,7 +356,7 @@ function itemLink(item: ChildItem): string {
 </template>
 
 <style scoped>
-.form-row:hover {
+.tree-row:hover {
     background-color: var(--bs-light-bg-subtle, rgba(0, 0, 0, 0.04));
 }
 </style>

@@ -10,8 +10,8 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
-import type { TreeNode } from '~~/app/components/custom/TreeSelect.vue';
-import TreeSelect from '~~/app/components/custom/TreeSelect.vue';
+import type { TreeNode } from '~/components/treeSelect/TreeSelect.vue';
+import TreeSelect from '~/components/treeSelect/TreeSelect.vue';
 
 interface HierarchyNode {
     id: number;

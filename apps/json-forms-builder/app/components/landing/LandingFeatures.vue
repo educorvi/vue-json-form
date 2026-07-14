@@ -1,20 +1,13 @@
-<!--
-    LandingFeatures – Feature cards grid. Defines the feature data and renders
-    FeatureCard components.
--->
 <script setup lang="ts">
-import type { FeatureChip } from '@/components/FeatureCard.vue';
+import type { FeatureChip } from '@/components/landing/FeatureCard.vue';
 import { APP_LINKS } from '@/utils/links';
 
 const { t } = useI18n();
 
-/** Internal chip definition with a translation key for the label. */
 interface ChipDef {
     icon: string;
-    /** Raw label (not translated, e.g. "Swagger", "Scalar") or a translation key */
     label: string;
     href: string;
-    /** If true, treat label as a translation key and pass through t() */
     translate?: boolean;
 }
 

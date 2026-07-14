@@ -12,7 +12,6 @@ const props = withDefaults(
         items: T[];
         pending: boolean;
         error: unknown;
-        /** Delay in ms before showing skeleton. Default 200. */
         skeletonDelay?: number;
     }>(),
     { skeletonDelay: 200 }

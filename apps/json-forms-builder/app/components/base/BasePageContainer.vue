@@ -1,7 +1,6 @@
 <!--
     BasePageContainer – Provides consistent horizontal padding and max-width
-    for page content. Use this directly when you need spacing but NOT the
-    standard title/description/breadcrumb header (e.g. the landing page).
+    for page content.
 
     Props:
     - fullHeight: Removes padding and max-width so child content fills the

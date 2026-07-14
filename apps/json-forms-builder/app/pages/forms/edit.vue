@@ -5,6 +5,7 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
@@ -38,19 +39,13 @@ watch(
     { immediate: true }
 );
 
+// ── General section state ─────────────────────────────────────────────────
 const editTitle = ref('');
 const editDescription = ref('');
 const editSlug = ref('');
-const formTouched = ref(false);
-const showEditTitleInvalid = computed(
-    () => formTouched.value && !editTitle.value.trim()
-);
-function editTitleState(): boolean | undefined {
-    return showEditTitleInvalid.value ? false : undefined;
-}
-const formValid = computed(() => editTitle.value.trim().length > 0);
-const submitting = ref(false);
-const errorMsg = ref<string | null>(null);
+const saving = ref(false);
+const savedMsg = ref(false);
+const saveErrorMsg = ref<string | null>(null);
 
 watch(form, (f) => {
     if (f) {
@@ -60,14 +55,11 @@ watch(form, (f) => {
     }
 });
 
-async function submit() {
-    formTouched.value = true;
-    if (!formValid.value) {
-        submitting.value = false;
-        return;
-    }
-    submitting.value = true;
-    errorMsg.value = null;
+async function onSaveGeneral() {
+    if (!form.value) return;
+    saving.value = true;
+    savedMsg.value = false;
+    saveErrorMsg.value = null;
     try {
         await orpc.forms.update({
             params: { id: formPath.value },
@@ -77,11 +69,32 @@ async function submit() {
                 description: editDescription.value.trim() || null,
             } as any,
         });
-        router.push(Routes.formsDetail(formPath.value));
+        savedMsg.value = true;
+        refreshNuxtData(`form-${formPath.value}`);
     } catch (err: any) {
-        errorMsg.value = err?.message ?? String(err);
+        saveErrorMsg.value = err?.message ?? String(err);
     } finally {
-        submitting.value = false;
+        saving.value = false;
+    }
+}
+
+// ── Advanced section (delete) state ───────────────────────────────────────
+const showDeleteModal = ref(false);
+const deletePending = ref(false);
+const deleteError = ref<string | null>(null);
+
+async function onDeleteConfirm() {
+    if (!form.value) return;
+    deletePending.value = true;
+    deleteError.value = null;
+    try {
+        await orpc.forms.delete({ params: { id: String(form.value.id) } });
+        showDeleteModal.value = false;
+        router.push(Routes.FORMS);
+    } catch (err: any) {
+        deleteError.value = err?.message ?? String(err);
+    } finally {
+        deletePending.value = false;
     }
 }
 
@@ -96,9 +109,15 @@ function goDetail() {
         :title="t('forms.edit.title')"
         :description="t('forms.edit.subtitle')"
     >
+        <template #actions>
+            <BButton variant="outline-secondary" size="sm" @click="goDetail">
+                {{ t('common.cancel') }}
+            </BButton>
+        </template>
+
         <BCard v-if="pending">
-            <BCardBody
-                ><div class="d-flex flex-column gap-3">
+            <BCardBody>
+                <div class="d-flex flex-column gap-3">
                     <BPlaceholder
                         animation="glow"
                         width="100%"
@@ -108,8 +127,9 @@ function goDetail() {
                         animation="glow"
                         width="100%"
                         height="2.5rem"
-                    /></div
-            ></BCardBody>
+                    />
+                </div>
+            </BCardBody>
         </BCard>
         <template v-else-if="hasError">
             <BaseErrorState
@@ -129,107 +149,37 @@ function goDetail() {
                 :action-label="t('forms.detail.backToForms')"
             />
         </template>
-        <BCard v-else-if="form">
-            <BCardBody>
-                <BForm
-                    class="d-flex flex-column gap-3"
-                    :validated="formTouched"
-                    @submit.prevent="submit"
-                >
-                    <BRow class="g-2">
-                        <BCol cols="2">
-                            <BFormGroup
-                                label="ID"
-                                label-class="fw-medium text-secondary small"
-                            >
-                                <BFormInput
-                                    :model-value="form.id"
-                                    disabled
-                                    class="opacity-50"
-                                />
-                            </BFormGroup>
-                        </BCol>
-                        <BCol>
-                            <BFormGroup
-                                :label="t('groups.edit.fields.path')"
-                                label-class="fw-medium text-secondary small"
-                            >
-                                <BFormInput
-                                    :model-value="'/' + formPath"
-                                    disabled
-                                    class="font-monospace opacity-50"
-                                />
-                            </BFormGroup>
-                        </BCol>
-                        <BCol cols="4">
-                            <BFormGroup
-                                :label="t('forms.edit.fields.name')"
-                                label-class="fw-medium text-secondary small"
-                            >
-                                <BFormInput
-                                    :model-value="editSlug"
-                                    disabled
-                                    class="font-monospace opacity-50"
-                                />
-                            </BFormGroup>
-                        </BCol>
-                    </BRow>
-                    <BFormGroup
-                        :label="t('forms.edit.fields.title')"
-                        label-class="fw-medium"
-                        required
-                    >
-                        <BFormInput
-                            v-model="editTitle"
-                            :placeholder="
-                                t('forms.edit.fields.titlePlaceholder')
-                            "
-                            :state="editTitleState()"
-                            autofocus
-                            :required="true"
-                        />
-                        <BFormInvalidFeedback
-                            :force-show="showEditTitleInvalid"
-                        >
-                            {{ t('common.required') }}
-                        </BFormInvalidFeedback>
-                    </BFormGroup>
-                    <BFormGroup
-                        :label="t('forms.edit.fields.description')"
-                        label-class="fw-medium"
-                    >
-                        <BFormTextarea
-                            v-model="editDescription"
-                            :placeholder="
-                                t('forms.edit.fields.descriptionPlaceholder')
-                            "
-                            rows="3"
-                        />
-                    </BFormGroup>
-                    <BAlert
-                        v-if="errorMsg"
-                        variant="danger"
-                        :dismissible="false"
-                        >{{ errorMsg }}</BAlert
-                    >
-                    <div class="d-flex justify-content-end gap-2 pt-2">
-                        <BButton
-                            variant="outline-secondary"
-                            @click="goDetail"
-                            >{{ t('common.cancel') }}</BButton
-                        >
-                        <BButton
-                            type="submit"
-                            variant="primary"
-                            :disabled="submitting"
-                        >
-                            <BSpinner v-if="submitting" small class="me-1" />{{
-                                t('forms.edit.save')
-                            }}
-                        </BButton>
-                    </div>
-                </BForm>
-            </BCardBody>
-        </BCard>
+        <template v-else-if="form">
+            <!-- General settings (includes read-only metadata + edit fields) -->
+            <FormSettingsGeneral
+                v-model="editTitle"
+                :description="editDescription"
+                :form-id="form.id"
+                :form-path="formPath"
+                :form-name="editSlug"
+                :saving="saving"
+                :saved-msg="savedMsg"
+                :save-error="saveErrorMsg"
+                @update:description="editDescription = $event"
+                @save="onSaveGeneral"
+            />
+
+            <!-- Advanced settings -->
+            <FormSettingsAdvanced @delete="showDeleteModal = true" />
+        </template>
+
+        <!-- Delete modal -->
+        <ConfirmTypingDelete
+            v-if="form"
+            v-model="showDeleteModal"
+            :title="t('forms.delete.title')"
+            :warning="t('forms.delete.warning')"
+            :item-name="form.title ?? ''"
+            :confirm-label="t('forms.delete.confirm')"
+            :cancel-label="t('common.cancel')"
+            :pending="deletePending"
+            :error="deleteError"
+            @confirm="onDeleteConfirm"
+        />
     </BasePage>
 </template>

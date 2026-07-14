@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { z } from 'zod';
+import TimestampStats from '~/components/utils/TimestampStats.vue';
 import type { zUser } from '~~/server/orpc/generated/zod.gen';
 
 type UserRow = z.infer<typeof zUser>;
@@ -36,11 +37,6 @@ const fields = computed(() => [
 </script>
 
 <template>
-    <!--
-        ListDataContainer provides two things:
-        1. Stable items (no flash during refetch — stale-while-revalidate)
-        2. Delayed skeleton flag (avoids flash on fast loads)
-    -->
     <ListDataContainer
         :items="items"
         :pending="pending"
@@ -69,7 +65,6 @@ const fields = computed(() => [
 
         <BCard v-else>
             <BCardBody class="p-0">
-                <!-- Skeleton: BPlaceholderTable with real headers -->
                 <BPlaceholderTable
                     v-if="showSkeleton"
                     :columns="3"
@@ -118,7 +113,7 @@ const fields = computed(() => [
                         <UserRoleCell :role="(data.item as UserRow).role" />
                     </template>
                     <template #cell(activity)="data">
-                        <UserActivityCell
+                        <TimestampStats
                             :created="(data.item as UserRow).created"
                             :updated="(data.item as UserRow).updated"
                         />

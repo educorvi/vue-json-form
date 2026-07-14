@@ -62,7 +62,7 @@ const badgeVariant = computed(() => {
                         "
                     >
                         <PhosphorIcon
-                            name="activity"
+                            name="cloud"
                             :size="20"
                             class="text-warning"
                         />
@@ -139,7 +139,7 @@ const badgeVariant = computed(() => {
                     target="_blank"
                     class="text-decoration-none"
                 >
-                    <BCard class="h-100 dashboard-doc-card">
+                    <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
                                 <div
@@ -176,7 +176,7 @@ const badgeVariant = computed(() => {
                     target="_blank"
                     class="text-decoration-none"
                 >
-                    <BCard class="h-100 dashboard-doc-card">
+                    <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
                                 <div
@@ -214,12 +214,12 @@ const badgeVariant = computed(() => {
 </template>
 
 <style scoped>
-.dashboard-doc-card {
+.dashboard-card {
     transition:
         box-shadow 0.15s ease-in-out,
         border-color 0.15s ease-in-out;
 }
-.dashboard-doc-card:hover {
+.dashboard-card:hover {
     border-color: var(--bs-primary);
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 }

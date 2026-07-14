@@ -1,7 +1,3 @@
-<!--
-    LandingHero – Hero section with icon, title, subtitle, auth error alert,
-    and sign-in button.
--->
 <script setup lang="ts">
 defineProps<{
     authError: boolean;

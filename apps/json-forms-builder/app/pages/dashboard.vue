@@ -12,7 +12,7 @@ const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 const { user } = useUserSession();
 const userName = computed(() => (user as { name?: string })?.name ?? 'User');
 
-// ── Recently added forms (last 6) ────────────────────────────────────────
+// ── Recently added forms ────────────────────────────────────────
 
 const { data: recentData, pending: recentPending } = useLazyAsyncData(
     'dashboard-recent-forms',
@@ -34,10 +34,25 @@ const recentForms = computed<any[]>(
 </script>
 
 <template>
-    <BasePageContainer>
-        <DashboardWelcome :user-name="userName" />
+    <BasePage
+        :title="`${$t('dashboard.welcomeTitle', { name: userName })}`"
+        :description="$t('dashboard.welcomeDescription')"
+    >
+        <template #icon>
+            <div
+                class="d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10"
+                style="width: 64px; height: 64px; flex-shrink: 0"
+            >
+                <PhosphorIcon
+                    name="user-circle"
+                    :size="36"
+                    class="text-primary"
+                />
+            </div>
+        </template>
+
         <DashboardRecentForms :forms="recentForms" :pending="recentPending" />
         <DashboardQuickActions />
         <DashboardDeveloper />
-    </BasePageContainer>
+    </BasePage>
 </template>

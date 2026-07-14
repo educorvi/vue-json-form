@@ -225,6 +225,7 @@
         "total": "No forms | {n} form | {n} forms",
         "searchPlaceholder": "Search forms…",
         "noSearchResults": "No results for '{query}'.",
+        "updated": "Last updated",
         "delete": {
             "title": "Delete",
             "confirm": "Delete Form",
@@ -235,7 +236,7 @@
     },
     "dashboard": {
         "welcomeTitle": "Welcome, {name}",
-        "welcomeDescription": "Manage forms, users, and permissions for your organization.",
+        "welcomeDescription": "Create, manage, and deploy forms — all in one place.",
         "recentForms": "Recently Added Forms",
         "recentFormsEmpty": "No forms yet — create one now!",
         "allForms": "All Forms",
@@ -270,6 +271,15 @@
         "showingEntries": "Showing {start}–{end} of {total}",
         "totalCount": "No items | {n} item | {n} items",
         "close": "Close"
+    },
+    "settings": {
+        "general": "General",
+        "generalDescription": "Manage basic metadata for this item.",
+        "advanced": "Advanced",
+        "advancedDescription": "Danger zone — irreversible actions like deletion.",
+        "save": "Save Changes",
+        "saved": "Changes saved successfully.",
+        "saveError": "Failed to save changes."
     },
     "theme": {
         "label": "Theme",

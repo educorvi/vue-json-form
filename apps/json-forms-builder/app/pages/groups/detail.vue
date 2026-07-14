@@ -5,6 +5,9 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+
+import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
+
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
@@ -87,13 +90,11 @@ const deleteTarget = ref<any>(null);
 const showDeleteModal = ref(false);
 const deletePending = ref(false);
 const deleteError = ref<string | null>(null);
-const confirmText = ref('');
 
 function onDelete(item: any) {
     deleteTarget.value = item;
     showDeleteModal.value = true;
     deleteError.value = null;
-    confirmText.value = '';
 }
 
 async function onDeleteConfirm(item: any) {
@@ -218,12 +219,7 @@ function editCurrent() {
 
         <!-- Group detail -->
         <template v-if="group">
-            <GroupStatsBadge
-                :group-count="group.group_count"
-                :form-count="group.form_count"
-                :member-count="group.member_count"
-                class="mb-3"
-            />
+            <GroupDetailStats :childGroup="group" class="mb-2" />
 
             <ListToolbar
                 v-model:search="childSearch"
@@ -321,8 +317,8 @@ function editCurrent() {
             </ListDataContainer>
         </template>
 
-        <!-- Delete modal -->
-        <BModal
+        <!-- Delete modal for child items -->
+        <ConfirmTypingDelete
             v-if="deleteTarget"
             v-model="showDeleteModal"
             :title="
@@ -330,47 +326,21 @@ function editCurrent() {
                     ? t('forms.delete.title')
                     : t('groups.delete.title')
             "
-            ok-variant="danger"
-            :ok-title="
+            :warning="
+                deleteTarget?.type === 'form'
+                    ? t('forms.delete.warning')
+                    : t('groups.delete.warning')
+            "
+            :item-name="deleteTarget?.title ?? deleteTarget?.name ?? ''"
+            :confirm-label="
                 deleteTarget?.type === 'form'
                     ? t('forms.delete.confirm')
                     : t('groups.delete.confirm')
             "
-            :cancel-title="t('common.cancel')"
-            :ok-disabled="
-                deletePending ||
-                (deleteTarget?.type !== 'form' &&
-                    confirmText !== (deleteTarget?.title || deleteTarget?.name))
-            "
-            @ok="onDeleteConfirm(deleteTarget!)"
-        >
-            <p v-if="deleteTarget?.type === 'form'">
-                {{ t('forms.delete.warning') }}
-            </p>
-            <template v-else>
-                <p>{{ t('groups.delete.warning') }}</p>
-                <BFormGroup
-                    :label="
-                        t('groups.delete.confirmPrompt', {
-                            name:
-                                deleteTarget?.title || deleteTarget?.name || '',
-                        })
-                    "
-                    label-class="fw-medium"
-                >
-                    <BFormInput
-                        v-model="confirmText"
-                        :placeholder="deleteTarget?.title || deleteTarget?.name"
-                    />
-                </BFormGroup>
-            </template>
-            <BAlert
-                v-if="deleteError"
-                variant="danger"
-                :dismissible="false"
-                class="mb-0 mt-2"
-                >{{ deleteError }}</BAlert
-            >
-        </BModal>
+            :cancel-label="t('common.cancel')"
+            :pending="deletePending"
+            :error="deleteError"
+            @confirm="onDeleteConfirm(deleteTarget!)"
+        />
     </BasePage>
 </template>

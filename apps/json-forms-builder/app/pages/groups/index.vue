@@ -63,6 +63,7 @@ function onSearchChange(val: string) {
 const deleteTarget = ref<any>(null);
 const showDeleteModal = ref(false);
 const deletePending = ref(false);
+const deleteError = ref<string | null>(null);
 
 function onDelete(item: any) {
     deleteTarget.value = item;
@@ -71,6 +72,7 @@ function onDelete(item: any) {
 
 async function onDeleteConfirm(item: any) {
     deletePending.value = true;
+    deleteError.value = null;
     try {
         await orpc.groups.update({
             params: { id: String(item.id) },
@@ -83,8 +85,8 @@ async function onDeleteConfirm(item: any) {
         showDeleteModal.value = false;
         deleteTarget.value = null;
         refreshNuxtData('groups');
-    } catch {
-        // Error is handled by modal
+    } catch (err: any) {
+        deleteError.value = err?.message ?? String(err);
     } finally {
         deletePending.value = false;
     }
@@ -228,18 +230,17 @@ const pageDescription = computed(() => {
         </ListDataContainer>
 
         <!-- Delete confirmation modal -->
-        <GroupDeleteModal
+        <ConfirmTypingDelete
             v-if="deleteTarget"
             v-model="showDeleteModal"
-            :group="deleteTarget"
+            :title="t('groups.delete.title')"
+            :warning="t('groups.delete.warning')"
+            :item-name="deleteTarget?.title ?? deleteTarget?.name ?? ''"
+            :confirm-label="t('groups.delete.confirm')"
+            :cancel-label="t('common.cancel')"
             :pending="deletePending"
-            @confirm="onDeleteConfirm"
-            @cancel="
-                () => {
-                    showDeleteModal = false;
-                    deleteTarget = null;
-                }
-            "
+            :error="deleteError"
+            @confirm="onDeleteConfirm(deleteTarget!)"
         />
     </BasePage>
 </template>

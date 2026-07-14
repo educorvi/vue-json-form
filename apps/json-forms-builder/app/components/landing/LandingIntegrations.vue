@@ -1,19 +1,14 @@
-<!--
-    LandingIntegrations – Showcases the different ways to integrate the form
-    renderer: as a generic Web Component, a Vue component, or a Flutter widget.
--->
+´
 <script setup lang="ts">
-import type { FeatureChip } from '@/components/FeatureCard.vue';
+import type { FeatureChip } from '@/components/landing/FeatureCard.vue';
 import { APP_LINKS } from '@/utils/links';
 
 const { t } = useI18n();
 
-/** Internal chip definition with a translation key for the label. */
 interface ChipDef {
     icon: string;
     label: string;
     href: string;
-    /** If true, treat label as a translation key and pass through t() */
     translate?: boolean;
 }
 

@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import type { Component } from 'vue';
-// import { PhTray } from '@phosphor-icons/vue';
-
 withDefaults(
     defineProps<{
-        //icon?: Component;
         icon?: string;
         title: string;
         description?: string;
     }>(),
     {
-        // icon: () => /* PhTray */ null,
         icon: () => 'tray',
     }
 );
@@ -24,7 +19,6 @@ withDefaults(
             class="d-flex align-items-center justify-content-center rounded-circle bg-light mb-3"
             style="width: 80px; height: 80px"
         >
-            <!-- <component :is="icon" :size="40" class="text-secondary" /> -->
             <PhosphorIcon :name="icon" :size="40" class="text-secondary" />
         </div>
         <p class="fs-5 fw-semibold mb-1">{{ title }}</p>

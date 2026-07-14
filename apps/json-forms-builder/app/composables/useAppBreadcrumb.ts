@@ -6,21 +6,7 @@
  *
  * Icons are only applied to root entity entries (groups, forms, users)
  * via the ENTITY_CONFIG. Dynamic entries (ancestor paths, entity names)
- * are always text-only.
- *
- * Usage:
- *   // List page
- *   useAppBreadcrumb().set('groups')
- *
- *   // Detail page
- *   const { data: group } = useAsyncData(...)
- *   watch(group, (g) => { if (g) useAppBreadcrumb().set('groups', g) }, { immediate: true })
- *
- *   // New page (with optional parent context)
- *   useAppBreadcrumb().set('groups', parentGroup, t('groups.new.title'))
- *
- *   // Edit page
- *   useAppBreadcrumb().set('groups', group, t('groups.edit.title'))
+ * are text-only.
  */
 
 export interface BreadcrumbItem {

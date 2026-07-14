@@ -1,7 +1,3 @@
-<!--
-    LandingScreenshot – Placeholder section for a screenshot of the form builder.
-    Replace the placeholder div with an <img> when ready.
--->
 <script setup lang="ts">
 const { t } = useI18n();
 </script>
@@ -14,10 +10,8 @@ const { t } = useI18n();
                     {{ t('landing.screenshotHeading') }}
                 </h2>
             </div>
-            <!-- TODO: Replace with an actual screenshot image -->
             <div
                 class="border"
-                
             >
                 <img
                     src="~/assets/img/form-builder-demo.png"

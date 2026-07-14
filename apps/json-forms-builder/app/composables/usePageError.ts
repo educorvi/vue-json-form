@@ -1,36 +1,5 @@
 /**
  * usePageError — Centralized error detection for API-loaded pages.
- *
- * Detects not-found (404) vs generic errors by inspecting the error object
- * and the status ref from useAsyncData.
- *
- * Handles both H3Error and oRPC (JSON-RPC) error shapes:
- *   H3Error:       { statusCode: 404, statusMessage: 'Not Found', message: '...' }
- *   oRPC via Nuxt: { statusCode: 500, data: { message: '...', code: -32004, data: { code: 'NOT_FOUND', httpStatus: 404 } } }
- *
- * Usage:
- *   const { data, error, status } = useAsyncData(...)
- *   const { isNotFound, hasError, errorMessage } = usePageError(error, status)
- *
- * Template:
- *   <template v-if="hasError">
- *     <BaseErrorState
- *       v-if="isNotFound"
- *       icon="warning-circle"
- *       :title="t('groups.notFound')"
- *       :description="errorMessage"
- *       :action-route="Routes.GROUPS"
- *       :action-label="t('groups.backToGroups')"
- *     />
- *     <BaseErrorState
- *       v-else
- *       icon="bug"
- *       :title="t('common.errorTitle')"
- *       :description="errorMessage"
- *       :action-route="Routes.GROUPS"
- *       :action-label="t('groups.backToGroups')"
- *     />
- *   </template>
  */
 
 export function usePageError(
@@ -51,17 +20,6 @@ export function usePageError(
         if (resolvedStatus.value === 'error') return true;
         return false;
     });
-
-    // ── Deep-search helpers for oRPC / H3 / Nuxt error shapes ────────────
-
-    // function deepGet(obj: any, ...keys: string[]): any {
-    //     let cur = obj;
-    //     for (const key of keys) {
-    //         if (cur == null) return undefined;
-    //         cur = cur[key];
-    //     }
-    //     return cur;
-    // }
 
     const isNotFound = computed(() => {
         const err = resolvedError.value;

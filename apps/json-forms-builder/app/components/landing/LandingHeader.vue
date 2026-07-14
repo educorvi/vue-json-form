@@ -1,8 +1,3 @@
-<!--
-    LandingHeader – Top navigation bar for the unauthenticated landing page.
-    Collapses on small screens, same as the in-app header.
-    Left: brand + Demo & Docs links   |   Right: GitHub + theme + locale
--->
 <script setup lang="ts">
 import { APP_LINKS } from '@/utils/links';
 

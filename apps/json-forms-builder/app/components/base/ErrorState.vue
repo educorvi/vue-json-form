@@ -1,18 +1,13 @@
 <!--
-    ErrorState – Reusable error display for 404 (not found) and 500 (error) states.
+    ErrorState – Reusable error display
     Shows a centered card with icon, title, description, and a call-to-action button.
 -->
 <script setup lang="ts">
 defineProps<{
-    /** Phosphor icon name shown above the title. */
     icon?: string;
-    /** Heading text. */
     title: string;
-    /** Description / body text. */
     description: string;
-    /** Route for the CTA button. Omit to hide the button. */
     actionRoute?: string;
-    /** Label for the CTA button. */
     actionLabel?: string;
 }>();
 </script>

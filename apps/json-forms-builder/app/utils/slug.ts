@@ -1,8 +1,5 @@
 /**
  * Centralized slug / URL-safe string utilities.
- *
- * All slug generation across the application should use these helpers
- * so the behaviour is consistent and testable.
  */
 
 /**

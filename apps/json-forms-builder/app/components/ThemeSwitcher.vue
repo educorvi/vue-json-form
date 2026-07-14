@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import { PhSun, PhMoon, PhMonitor } from '@phosphor-icons/vue';
-
 const { t } = useI18n();
 
 type ThemeMode = 'system' | 'light' | 'dark';
@@ -8,9 +6,9 @@ type ThemeMode = 'system' | 'light' | 'dark';
 const mode = ref<ThemeMode>('system');
 
 const currentIcon = computed(() => {
-    if (mode.value === 'light') return 'sun'; // return PhSun;
-    if (mode.value === 'dark') return 'moon'; // return PhMoon;
-    return 'monitor'; // return PhMonitor;
+    if (mode.value === 'light') return 'sun';
+    if (mode.value === 'dark') return 'moon';
+    return 'monitor';
 });
 
 const label = computed(() => {
@@ -67,7 +65,6 @@ onMounted(() => {
         :title="label"
         @click="cycle"
     >
-        <!-- <component :is="currentIcon" :size="16" /> -->
         <PhosphorIcon :name="currentIcon" />
         <span class="ms-1 d-sm-inline">{{ label }}</span>
     </BButton>

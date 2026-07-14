@@ -1,7 +1,3 @@
-<!--
-    LandingFooter – Footer for the unauthenticated landing page.
-    Shows copyright / branding, API version, and a GitHub link.
--->
 <script setup lang="ts">
 import { APP_LINKS } from '@/utils/links';
 

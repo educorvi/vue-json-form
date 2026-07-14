@@ -10,7 +10,7 @@ const { t } = useI18n();
         <div class="row row-cols-1 row-cols-md-2 g-3">
             <div class="col">
                 <NuxtLink :to="Routes.FORMS_NEW" class="text-decoration-none">
-                    <BCard class="h-100 dashboard-action-card">
+                    <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
                                 <div
@@ -45,7 +45,7 @@ const { t } = useI18n();
             </div>
             <div class="col">
                 <NuxtLink :to="Routes.GROUPS_NEW" class="text-decoration-none">
-                    <BCard class="h-100 dashboard-action-card">
+                    <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
                                 <div
@@ -83,12 +83,12 @@ const { t } = useI18n();
 </template>
 
 <style scoped>
-.dashboard-action-card {
+.dashboard-card {
     transition:
         box-shadow 0.15s ease-in-out,
         border-color 0.15s ease-in-out;
 }
-.dashboard-action-card:hover {
+.dashboard-card:hover {
     border-color: var(--bs-primary);
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
 }

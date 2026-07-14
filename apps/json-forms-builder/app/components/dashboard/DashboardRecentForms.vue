@@ -5,38 +5,6 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
-
-function formatTimestamp(iso: string | undefined): string {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return new Intl.DateTimeFormat(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    }).format(d);
-}
-
-function groupPathFromParentPath(
-    parentPath:
-        Array<{ name: string; path_segment?: string }> | null | undefined
-): string {
-    if (!parentPath || parentPath.length === 0) return '';
-    return parentPath.map((e) => e.path_segment ?? e.name).join('/');
-}
-
-function groupDetailLink(
-    parentPath:
-        Array<{ name: string; path_segment?: string }> | null | undefined,
-    index: number
-): string {
-    if (!parentPath) return '';
-    const segments = parentPath
-        .slice(0, index + 1)
-        .map((e) => e.path_segment ?? e.name);
-    return Routes.groupsDetail(segments.join('/'));
-}
 </script>
 
 <template>
@@ -101,44 +69,13 @@ function groupDetailLink(
                                         <p class="fw-medium mb-1 text-truncate">
                                             {{ form.title }}
                                         </p>
-                                        <div
+                                        <BreadcrumbInline
                                             v-if="
                                                 form.parent_path &&
                                                 form.parent_path.length > 0
                                             "
-                                            class="small d-flex align-items-center flex-wrap gap-1"
-                                            @click.stop
-                                        >
-                                            <template
-                                                v-for="(
-                                                    entry, idx
-                                                ) in form.parent_path"
-                                                :key="idx"
-                                            >
-                                                <NuxtLink
-                                                    :to="
-                                                        groupDetailLink(
-                                                            form.parent_path,
-                                                            Number(idx)
-                                                        )
-                                                    "
-                                                    class="text-secondary text-decoration-none path-segment"
-                                                    @click.stop
-                                                >
-                                                    {{ entry.name }}
-                                                </NuxtLink>
-                                                <span
-                                                    v-if="
-                                                        Number(idx) <
-                                                        form.parent_path
-                                                            .length -
-                                                            1
-                                                    "
-                                                    class="text-secondary opacity-50"
-                                                    >/</span
-                                                >
-                                            </template>
-                                        </div>
+                                            :parent-path="form.parent_path"
+                                        />
                                     </div>
                                 </div>
 
@@ -166,8 +103,9 @@ function groupDetailLink(
                                         class="flex-shrink-0"
                                     />
                                     <span>{{
-                                        formatTimestamp(
-                                            form.updated_by?.timestamp
+                                        formatDate(
+                                            form.updated_by?.timestamp,
+                                            true
                                         )
                                     }}</span>
                                 </div>
@@ -189,9 +127,5 @@ function groupDetailLink(
 .dashboard-card:hover {
     border-color: var(--bs-primary);
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
-}
-.path-segment:hover {
-    text-decoration: underline !important;
-    color: var(--bs-primary) !important;
 }
 </style>

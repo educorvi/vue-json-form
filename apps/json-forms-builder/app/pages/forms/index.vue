@@ -12,6 +12,8 @@ import type { z } from 'zod';
 import type { zListFormsQuery, zForm } from '~~/server/orpc/generated/zod.gen';
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import TimestampStats from '~/components/utils/TimestampStats.vue';
+import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 type FormsQuery = z.infer<typeof zListFormsQuery>;
 type OrderBy = NonNullable<FormsQuery['order_by']>;
 type FormRow = z.infer<typeof zForm>;
@@ -98,16 +100,6 @@ function onNavigate(form: FormRow) {
 function formLink(form: FormRow): string {
     const path = buildFormUrlPath(form as any);
     return path ? Routes.formsDetail(path) : '';
-}
-
-function formatTimestamp(iso: string | undefined): string {
-    if (!iso) return '';
-    const date = new Date(iso);
-    return new Intl.DateTimeFormat(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    }).format(date);
 }
 
 // ── Description ───────────────────────────────────────────────────────────
@@ -205,50 +197,25 @@ const pageDescription = computed(() => {
                             v-for="form in stableItems"
                             :key="form.id"
                             class="d-flex align-items-center gap-2 py-2 px-3 border-bottom form-row"
+                            style="cursor: pointer"
+                            @click="onNavigate(form)"
                         >
                             <!-- Path breadcrumb + title -->
-                            <div class="flex-grow-1 min-w-0">
-                                <div
-                                    class="d-flex align-items-center text-secondary small font-monospace flex-wrap gap-0"
-                                >
-                                    <template
-                                        v-for="(entry, idx) in (form as any)
-                                            .parent_path || []"
-                                        :key="idx"
-                                    >
-                                        <span
-                                            class="mx-1 text-secondary opacity-50"
-                                            >/</span
-                                        >
-                                        <NuxtLink
-                                            :to="
-                                                Routes.groupsDetail(
-                                                    (
-                                                        (form as any)
-                                                            .parent_path || []
-                                                    )
-                                                        .slice(
-                                                            0,
-                                                            (idx as number) + 1
-                                                        )
-                                                        .map(
-                                                            (p: any) =>
-                                                                p.path_segment ??
-                                                                p.name
-                                                        )
-                                                        .join('/')
-                                                )
-                                            "
-                                            class="text-decoration-none text-secondary"
-                                            >{{ entry.name }}</NuxtLink
-                                        >
-                                    </template>
-                                    <span class="mx-1 text-secondary opacity-50"
+                            <div class="flex-grow-1 min-w-0" @click.stop>
+                                <div class="d-flex align-items-center gap-0">
+                                    <BreadcrumbInline
+                                        v-if="(form as any).parent_path?.length"
+                                        :parent-path="(form as any).parent_path"
+                                    />
+                                    <span
+                                        v-if="(form as any).parent_path?.length"
+                                        class="text-secondary opacity-50 mx-1"
                                         >/</span
                                     >
                                     <NuxtLink
                                         :to="formLink(form)"
-                                        class="fw-bold text-decoration-none text-body flex-shrink-0"
+                                        class="fw-bold text-decoration-none text-body"
+                                        @click.stop="onNavigate(form)"
                                     >
                                         {{ form.title }}
                                     </NuxtLink>
@@ -264,17 +231,13 @@ const pageDescription = computed(() => {
                             <!-- Timestamp + actions (right side) -->
                             <div
                                 class="d-flex align-items-center gap-2 flex-shrink-0"
+                                @click.stop
                             >
-                                <span
-                                    class="text-secondary small text-nowrap d-none d-sm-inline"
-                                >
-                                    <PhosphorIcon name="clock" :size="12" />
-                                    {{
-                                        formatTimestamp(
-                                            (form as any).updated_by?.timestamp
-                                        )
-                                    }}
-                                </span>
+                                <TimestampStats
+                                    :created="form.created_by?.timestamp"
+                                    :updated="form.updated_by?.timestamp"
+                                />
+
                                 <BDropdown
                                     variant="link"
                                     no-caret
@@ -316,26 +279,18 @@ const pageDescription = computed(() => {
         </ListDataContainer>
 
         <!-- Delete modal -->
-        <BModal
+        <ConfirmTypingDelete
             v-if="deleteTarget"
             v-model="showDeleteModal"
             :title="t('forms.delete.title')"
-            ok-variant="danger"
-            :ok-title="t('forms.delete.confirm')"
-            :cancel-title="t('common.cancel')"
-            :ok-disabled="deletePending"
-            @ok="onDeleteConfirm(deleteTarget!)"
-        >
-            <p>{{ t('forms.delete.warning') }}</p>
-            <BAlert
-                v-if="deleteError"
-                variant="danger"
-                :dismissible="false"
-                class="mb-0"
-            >
-                {{ deleteError }}
-            </BAlert>
-        </BModal>
+            :warning="t('forms.delete.warning')"
+            :item-name="deleteTarget.title ?? deleteTarget.name ?? ''"
+            :confirm-label="t('forms.delete.confirm')"
+            :cancel-label="t('common.cancel')"
+            :pending="deletePending"
+            :error="deleteError"
+            @confirm="onDeleteConfirm(deleteTarget!)"
+        />
     </BasePage>
 </template>
 

@@ -225,6 +225,7 @@
         "total": "Keine Formulare | {n} Formular | {n} Formulare",
         "searchPlaceholder": "Formulare suchen…",
         "noSearchResults": "Keine Ergebnisse für '{query}'.",
+        "updated": "Zuletzt aktualisiert",
         "delete": {
             "title": "Löschen",
             "confirm": "Formular löschen",
@@ -235,7 +236,7 @@
     },
     "dashboard": {
         "welcomeTitle": "Willkommen, {name}",
-        "welcomeDescription": "Verwalten Sie Formulare, Benutzer und Berechtigungen für Ihre Organisation.",
+        "welcomeDescription": "Formulare erstellen, verwalten und bereitstellen — alles an einem Ort.",
         "recentForms": "Kürzlich hinzugefügte Formulare",
         "recentFormsEmpty": "Noch keine Formulare — erstellen Sie jetzt eines!",
         "allForms": "Alle Formulare",
@@ -270,6 +271,15 @@
         "showingEntries": "{start}-{end} von {total}",
         "totalCount": "Keine Elemente | {n} Element | {n} Elemente",
         "close": "Schließen"
+    },
+    "settings": {
+        "general": "Allgemein",
+        "generalDescription": "Verwalte grundlegende Metadaten für dieses Element.",
+        "advanced": "Erweitert",
+        "advancedDescription": "Gefahrenzone — irreversible Aktionen wie das Löschen.",
+        "save": "Änderungen speichern",
+        "saved": "Änderungen erfolgreich gespeichert.",
+        "saveError": "Änderungen konnten nicht gespeichert werden."
     },
     "theme": {
         "label": "Farbschema",
