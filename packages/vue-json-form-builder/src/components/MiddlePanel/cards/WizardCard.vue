@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { BModal, BButton } from 'bootstrap-vue-next';
+import {
+    PhList,
+    PhTable,
+    PhFolder,
+    PhBook,
+    PhPlus,
+    PhX,
+} from '@phosphor-icons/vue';
+import EmptyDropTarget from '@/components/shared/EmptyDropTarget.vue';
 import { useFormStore } from '@/stores/formStore';
 import type { WizardElement, WizardPage, FormElement } from '@/types/formTypes';
 import DropZone from './DropZone.vue';
@@ -31,9 +40,9 @@ const pageChildren = computed({
 });
 
 const layoutTypeOpts = [
-    { label: 'Vertical', value: 'VerticalLayout', icon: 'bi bi-list' },
-    { label: 'Horizontal', value: 'HorizontalLayout', icon: 'bi bi-table' },
-    { label: 'Group', value: 'Group', icon: 'bi bi-folder' },
+    { label: 'Vertical', value: 'VerticalLayout', icon: PhList },
+    { label: 'Horizontal', value: 'HorizontalLayout', icon: PhTable },
+    { label: 'Group', value: 'Group', icon: PhFolder },
 ];
 
 function setPageType(type: 'VerticalLayout' | 'HorizontalLayout' | 'Group') {
@@ -57,7 +66,9 @@ function removePage(index: number) {
 }
 
 const showSwitchConfirm = ref(false);
-const pendingSwitchType = ref<'VerticalLayout' | 'HorizontalLayout' | 'Group'>('VerticalLayout');
+const pendingSwitchType = ref<'VerticalLayout' | 'HorizontalLayout' | 'Group'>(
+    'VerticalLayout'
+);
 
 function switchToLayout(type: 'VerticalLayout' | 'HorizontalLayout' | 'Group') {
     const hasContent = props.element.pages.some((p) => p.elements.length > 0);
@@ -78,60 +89,68 @@ function doSwitchToLayout() {
     <!-- Root toolbar -->
     <div
         v-if="isRoot"
-        class="d-flex align-items-center gap-1 px-2 py-1 border-bottom flex-wrap"
+        class="d-flex align-items-center px-2 py-1 border-bottom flex-wrap gap-1"
         @click.stop
     >
-        <b-button
-            v-for="opt in layoutTypeOpts"
-            :key="opt.value"
-            variant="outline-secondary"
-            size="sm"
-            class="py-0 px-1"
-            @click="switchToLayout(opt.value as any)"
-        >
-            <i :class="opt.icon" class="me-1" />{{ opt.label }}
-        </b-button>
-        <div class="vr" />
-        <b-button
-            variant="primary"
-            size="sm"
-            class="py-0 px-1 disabled"
-        >
-            <i class="bi bi-book me-1" />Wizard
-        </b-button>
+        <div class="btn-group btn-group-sm" role="group">
+            <BButton
+                v-for="opt in layoutTypeOpts"
+                :key="opt.value"
+                variant="outline-secondary"
+                size="sm"
+                @click="switchToLayout(opt.value as any)"
+            >
+                <component
+                    :is="opt.icon"
+                    :size="12"
+                    weight="bold"
+                    class="me-1"
+                />
+                {{ opt.label }}
+            </BButton>
+        </div>
+        <div class="vr mx-1" />
+        <BButton variant="primary" size="sm">
+            <PhBook :size="12" weight="bold" class="me-1" />Wizard
+        </BButton>
     </div>
 
-    <!-- Page tabs -->
-    <div
-        class="d-flex align-items-center gap-1 px-2 py-1 border-bottom overflow-x-auto"
-        @click.stop
-    >
-        <b-button
-            v-for="(page, i) in element.pages"
-            :key="page._id"
-            size="sm"
-            class="py-0 px-2 text-xs flex-shrink-0"
-            :variant="
-                i === activeIdx ? 'primary' : 'outline-secondary'
-            "
-            @click="store.activeWizardPageIndex = i"
+    <!-- Page tabs as nav-pills -->
+    <div class="d-flex align-items-center border-bottom" @click.stop>
+        <div
+            class="btn-group btn-group-sm flex-nowrap overflow-x-auto py-1 ps-1 pe-0 gap-1"
         >
-            {{ page.options?.label ?? `Page ${i + 1}` }}
-            <i
-                v-if="element.pages.length > 1"
-                class="bi bi-x ms-1 opacity-75"
-                @click.stop="removePage(i)"
-            />
-        </b-button>
-        <b-button
+            <button
+                v-for="(page, i) in element.pages"
+                :key="page._id"
+                class="btn btn-sm py-1 px-2 text-nowrap text-xs"
+                :class="
+                    store.activeWizardPageIndex === i
+                        ? 'btn-primary'
+                        : 'btn-outline-secondary'
+                "
+                @click="store.activeWizardPageIndex = i"
+            >
+                {{ page.options?.label ?? `Page ${i + 1}` }}
+                <PhX
+                    v-if="element.pages.length > 1"
+                    :size="10"
+                    weight="bold"
+                    class="ms-1"
+                    style="cursor: pointer"
+                    @click.stop="removePage(i)"
+                />
+            </button>
+        </div>
+        <BButton
             variant="outline-secondary"
             size="sm"
-            class="py-0 px-1 flex-shrink-0"
+            class="py-0 px-1 flex-shrink-0 ms-auto me-1"
             title="Add page"
             @click.stop="store.addWizardPage()"
         >
-            <i class="bi bi-plus" />
-        </b-button>
+            <PhPlus :size="12" weight="bold" />
+        </BButton>
     </div>
 
     <!-- Active page layout switcher -->
@@ -141,20 +160,27 @@ function doSwitchToLayout() {
         @click.stop
     >
         <span class="text-xs text-body me-1">Page layout:</span>
-        <b-button
-            v-for="opt in layoutTypeOpts"
-            :key="opt.value"
-            size="sm"
-            class="py-0 px-1 text-xs"
-            :variant="
-                activePage.type === opt.value
-                    ? 'primary'
-                    : 'outline-secondary'
-            "
-            @click="setPageType(opt.value as any)"
-        >
-            <i :class="opt.icon" class="me-1" />{{ opt.label }}
-        </b-button>
+        <div class="btn-group btn-group-sm" role="group">
+            <BButton
+                v-for="opt in layoutTypeOpts"
+                :key="opt.value"
+                size="sm"
+                :variant="
+                    activePage.type === opt.value
+                        ? 'primary'
+                        : 'outline-secondary'
+                "
+                @click="setPageType(opt.value as any)"
+            >
+                <component
+                    :is="opt.icon"
+                    :size="12"
+                    weight="bold"
+                    class="me-1"
+                />
+                {{ opt.label }}
+            </BButton>
+        </div>
     </div>
 
     <!-- Drop zone for active page -->
@@ -169,16 +195,7 @@ function doSwitchToLayout() {
         :parent-id="activePage._id"
     >
         <template v-if="isRoot && pageChildren.length === 0" #empty>
-            <div
-                class="d-flex flex-column align-items-center justify-content-center py-5 text-body canvas-preview"
-            >
-                <i
-                    class="bi bi-arrow-left d-block mb-2"
-                    style="font-size: 1.5rem"
-                />
-                <p class="small fw-medium mb-0">Drag fields here to build this page</p>
-                <p class="text-xs mt-1 mb-0">Or click a field in the left panel</p>
-            </div>
+            <EmptyDropTarget message="Drag fields here to build this page" />
         </template>
     </DropZone>
 
@@ -191,6 +208,7 @@ function doSwitchToLayout() {
         cancel-title="Cancel"
         @ok="doSwitchToLayout"
     >
-        Switching to Layout will remove all Wizard pages and their elements. Continue?
+        Switching to Layout will remove all Wizard pages and their elements.
+        Continue?
     </BModal>
 </template>

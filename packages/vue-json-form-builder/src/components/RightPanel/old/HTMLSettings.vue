@@ -18,7 +18,7 @@ function update(updates: Partial<HTMLElement_>) {
 
 <template>
     <div class="vstack gap-1">
-        <SettingsSection title="HTML Content" icon="bi bi-code-slash">
+        <SettingsSection title="HTML Content" icon="ph ph-code">
             <FieldGroup
                 label="HTML"
                 hint="⚠ HTML will be sanitized before rendering"
@@ -28,12 +28,21 @@ function update(updates: Partial<HTMLElement_>) {
                     class="form-control form-control-sm font-mono text-xs"
                     rows="8"
                     placeholder="<p>Your HTML content here</p>"
-                    @input="update({ htmlData: ($event.target as HTMLTextAreaElement).value })"
+                    @input="
+                        update({
+                            htmlData: ($event.target as HTMLTextAreaElement)
+                                .value,
+                        })
+                    "
                 />
             </FieldGroup>
         </SettingsSection>
 
-        <SettingsSection title="Visibility Rule (ShowOn)" icon="bi bi-eye-slash" collapsible>
+        <SettingsSection
+            title="Visibility Rule (ShowOn)"
+            icon="ph ph-eye-slash"
+            collapsible
+        >
             <ShowOnEditor :element-id="element._id" :show-on="element.showOn" />
         </SettingsSection>
     </div>

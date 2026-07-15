@@ -10,14 +10,18 @@ const store = useFormStore();
 
 <template>
     <div class="vstack gap-1">
-        <SettingsSection title="Array Identity" icon="bi bi-list-ul">
+        <SettingsSection title="Array Identity" icon="ph ph-list">
             <FieldGroup label="Property Key" hint="Key in the JSON schema">
                 <input
                     type="text"
                     class="form-control form-control-sm"
                     :value="element.key"
                     placeholder="arrayKey"
-                    @change="store.updateElement(element._id, { key: ($event.target as HTMLInputElement).value } as any)"
+                    @change="
+                        store.updateElement(element._id, {
+                            key: ($event.target as HTMLInputElement).value,
+                        } as any)
+                    "
                 />
             </FieldGroup>
             <FieldGroup label="Label">
@@ -26,12 +30,18 @@ const store = useFormStore();
                     class="form-control form-control-sm"
                     :value="element.title ?? ''"
                     placeholder="Array label"
-                    @input="store.updateElement(element._id, { title: ($event.target as HTMLInputElement).value || undefined } as any)"
+                    @input="
+                        store.updateElement(element._id, {
+                            title:
+                                ($event.target as HTMLInputElement).value ||
+                                undefined,
+                        } as any)
+                    "
                 />
             </FieldGroup>
         </SettingsSection>
 
-        <SettingsSection title="Constraints" icon="bi bi-sliders" collapsible>
+        <SettingsSection title="Constraints" icon="ph ph-sliders" collapsible>
             <FieldGroup label="Min Items">
                 <input
                     type="number"
@@ -39,7 +49,17 @@ const store = useFormStore();
                     :value="element.minItems ?? ''"
                     min="0"
                     placeholder="No minimum"
-                    @input="store.updateElement(element._id, { minItems: ($event.target as HTMLInputElement).value !== '' ? Number(($event.target as HTMLInputElement).value) : undefined } as any)"
+                    @input="
+                        store.updateElement(element._id, {
+                            minItems:
+                                ($event.target as HTMLInputElement).value !== ''
+                                    ? Number(
+                                          ($event.target as HTMLInputElement)
+                                              .value
+                                      )
+                                    : undefined,
+                        } as any)
+                    "
                 />
             </FieldGroup>
             <FieldGroup label="Max Items">
@@ -49,29 +69,51 @@ const store = useFormStore();
                     :value="element.maxItems ?? ''"
                     min="0"
                     placeholder="No maximum"
-                    @input="store.updateElement(element._id, { maxItems: ($event.target as HTMLInputElement).value !== '' ? Number(($event.target as HTMLInputElement).value) : undefined } as any)"
+                    @input="
+                        store.updateElement(element._id, {
+                            maxItems:
+                                ($event.target as HTMLInputElement).value !== ''
+                                    ? Number(
+                                          ($event.target as HTMLInputElement)
+                                              .value
+                                      )
+                                    : undefined,
+                        } as any)
+                    "
                 />
             </FieldGroup>
         </SettingsSection>
 
         <div class="alert alert-danger py-2 px-3 text-xs">
-            <i class="bi bi-info-circle me-1" />
+            <i class="ph ph-info me-1" />
             Drag field controls into this array to define the item template.
         </div>
 
         <SettingsSection
-            v-if="Object.keys((element.items as { properties?: Record<string, unknown> })?.properties ?? {}).length"
+            v-if="
+                Object.keys(
+                    (element.items as { properties?: Record<string, unknown> })
+                        ?.properties ?? {}
+                ).length
+            "
             title="Item fields"
-            icon="bi bi-list-ul"
+            icon="ph ph-list"
             collapsible
         >
             <div
-                v-for="(prop, k) in (element.items as { properties?: Record<string, { type?: unknown }> })?.properties"
+                v-for="(prop, k) in (
+                    element.items as {
+                        properties?: Record<string, { type?: unknown }>;
+                    }
+                )?.properties"
                 :key="k"
                 class="d-flex align-items-center justify-content-between py-1 border-bottom"
             >
                 <span class="text-xs font-mono text-body">{{ k }}</span>
-                <span class="badge bg-secondary bg-opacity-25 text-body text-xs">{{ prop.type }}</span>
+                <span
+                    class="badge bg-secondary bg-opacity-25 text-body text-xs"
+                    >{{ prop.type }}</span
+                >
             </div>
         </SettingsSection>
     </div>

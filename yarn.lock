@@ -984,6 +984,7 @@ __metadata:
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@phosphor-icons/vue": "npm:^2.2.1"
     "@popperjs/core": "npm:^2.11.8"
     "@semantic-release/exec": "npm:^7.1.0"
     "@vitejs/plugin-vue": "npm:^6.0.7"
@@ -991,6 +992,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:^0.45.7"
+    phosphor-icons: "npm:^1.3.0"
     pinia: "npm:^3.0.4"
     pinia-plugin-persistedstate: "npm:^4.7.1"
     prettier: "npm:^3.8.3"
@@ -14705,6 +14707,13 @@ __metadata:
   dependencies:
     split2: "npm:^4.1.0"
   checksum: 10/0a6f3bf76e36bdb3c20a7e8033140c732767bba7e81f845f7489fc3123a2bd6e3b8e704f08cba86b117435414b5d2422e20ba9d5f2efb6f0c75c9efca73e8e87
+  languageName: node
+  linkType: hard
+
+"phosphor-icons@npm:^1.3.0":
+  version: 1.4.2
+  resolution: "phosphor-icons@npm:1.4.2"
+  checksum: 10/2eb084af4e96926e128527d5f9c44ac4b84a64888fc708e917a5507d7afd2e83ba85609f21bff0f26a96e0971db48a71a1393a8fa62525e6375aa476b11b8d2e
   languageName: node
   linkType: hard
 

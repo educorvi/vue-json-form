@@ -20,12 +20,12 @@ function select() {
         <div
             class="d-flex align-items-center gap-1 py-1 px-2 rounded small"
             :style="{
-                paddingLeft: `${node.depth * 14 + 8}px !important`,
+                paddingLeft: `${node.depth * 14 + 8}px`,
                 cursor: 'pointer',
             }"
             :class="
                 store.selectedElementId === node.id
-                    ? 'bg-primary bg-opacity-10 text-primary'
+                    ? 'text-primary fw-medium'
                     : 'text-body'
             "
             @click="select"
@@ -37,15 +37,15 @@ function select() {
                 @click.stop="expanded = !expanded"
             >
                 <i
-                    :class="
-                        expanded ? 'bi bi-chevron-down' : 'bi bi-chevron-right'
-                    "
+                    :class="expanded ? 'ph ph-caret-down' : 'ph ph-caret-right'"
                     class="text-xs"
                 />
             </button>
             <span v-else style="width: 1rem" class="flex-shrink-0" />
-            <!--            <i :class="node.icon" class="text-xs flex-shrink-0" />-->
-            <span class="text-truncate text-xs">{{ node.label }}</span>
+            <i :class="node.icon" class="text-xs flex-shrink-0 opacity-50" />
+            <span class="text-truncate text-xs flex-grow-1">{{
+                node.label
+            }}</span>
             <span class="ms-auto text-xs text-muted flex-shrink-0">{{
                 node.type
             }}</span>
@@ -60,9 +60,7 @@ function select() {
             <div
                 v-if="node.children.length === 0"
                 class="text-xs text-muted fst-italic py-1"
-                :style="{
-                    paddingLeft: `${(node.depth + 1) * 14 + 8}px !important;`,
-                }"
+                :style="{ paddingLeft: `${(node.depth + 1) * 14 + 8}px` }"
             >
                 Empty
             </div>

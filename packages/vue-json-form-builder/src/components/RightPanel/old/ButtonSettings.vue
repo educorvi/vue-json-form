@@ -40,14 +40,18 @@ const variantOptions = [
 
 <template>
     <div class="vstack gap-1">
-        <SettingsSection title="Button Settings" icon="bi bi-send">
+        <SettingsSection title="Button Settings" icon="ph ph-paper-plane-right">
             <FieldGroup label="Button Text">
                 <input
                     type="text"
                     class="form-control form-control-sm"
                     :value="element.text"
                     placeholder="Button Label"
-                    @input="update({ text: ($event.target as HTMLInputElement).value })"
+                    @input="
+                        update({
+                            text: ($event.target as HTMLInputElement).value,
+                        })
+                    "
                 />
             </FieldGroup>
 
@@ -55,9 +59,20 @@ const variantOptions = [
                 <select
                     class="form-select form-select-sm"
                     :value="element.buttonType"
-                    @change="update({ buttonType: ($event.target as HTMLSelectElement).value as any })"
+                    @change="
+                        update({
+                            buttonType: ($event.target as HTMLSelectElement)
+                                .value as any,
+                        })
+                    "
                 >
-                    <option v-for="opt in buttonTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                    <option
+                        v-for="opt in buttonTypeOptions"
+                        :key="opt.value"
+                        :value="opt.value"
+                    >
+                        {{ opt.label }}
+                    </option>
                 </select>
             </FieldGroup>
 
@@ -65,10 +80,22 @@ const variantOptions = [
                 <select
                     class="form-select form-select-sm"
                     :value="element.options?.variant ?? ''"
-                    @change="updateOptions({ variant: ($event.target as HTMLSelectElement).value as any || undefined })"
+                    @change="
+                        updateOptions({
+                            variant:
+                                (($event.target as HTMLSelectElement)
+                                    .value as any) || undefined,
+                        })
+                    "
                 >
                     <option value="">Default</option>
-                    <option v-for="opt in variantOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                    <option
+                        v-for="opt in variantOptions"
+                        :key="opt.value"
+                        :value="opt.value"
+                    >
+                        {{ opt.label }}
+                    </option>
                 </select>
             </FieldGroup>
 
@@ -78,7 +105,11 @@ const variantOptions = [
                     class="form-control form-control-sm"
                     :value="element.options?.cssClass ?? ''"
                     placeholder="e.g. btn-lg"
-                    @input="updateOptions({ cssClass: ($event.target as HTMLInputElement).value })"
+                    @input="
+                        updateOptions({
+                            cssClass: ($event.target as HTMLInputElement).value,
+                        })
+                    "
                 />
             </FieldGroup>
 
@@ -90,26 +121,43 @@ const variantOptions = [
                         type="checkbox"
                         role="switch"
                         :checked="element.options?.disabled ?? false"
-                        @change="updateOptions({ disabled: ($event.target as HTMLInputElement).checked })"
+                        @change="
+                            updateOptions({
+                                disabled: ($event.target as HTMLInputElement)
+                                    .checked,
+                            })
+                        "
                     />
                 </div>
             </div>
 
             <div class="d-flex align-items-center justify-content-between py-1">
-                <label class="text-xs fw-medium text-body">No Validate on Submit</label>
+                <label class="text-xs fw-medium text-body"
+                    >No Validate on Submit</label
+                >
                 <div class="form-check form-switch mb-0">
                     <input
                         class="form-check-input"
                         type="checkbox"
                         role="switch"
                         :checked="element.options?.formnovalidate ?? false"
-                        @change="updateOptions({ formnovalidate: ($event.target as HTMLInputElement).checked })"
+                        @change="
+                            updateOptions({
+                                formnovalidate: (
+                                    $event.target as HTMLInputElement
+                                ).checked,
+                            })
+                        "
                     />
                 </div>
             </div>
         </SettingsSection>
 
-        <SettingsSection title="Visibility Rule (ShowOn)" icon="bi bi-eye-slash" collapsible>
+        <SettingsSection
+            title="Visibility Rule (ShowOn)"
+            icon="ph ph-eye-slash"
+            collapsible
+        >
             <ShowOnEditor :element-id="element._id" :show-on="element.showOn" />
         </SettingsSection>
     </div>

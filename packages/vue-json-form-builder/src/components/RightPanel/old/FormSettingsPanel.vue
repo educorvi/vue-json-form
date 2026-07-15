@@ -26,12 +26,12 @@ const layoutTypeOptions = [
             class="mb-4 p-3 bg-primary-50 dark:bg-primary-950/30 rounded-lg border border-primary-100 dark:border-primary-900"
         >
             <p class="text-xs text-primary-700 dark:text-primary-400">
-                <i class="bi bi-info-circle mr-1" />
+                <i class="ph ph-info me-1" />
                 Select an element on the canvas to edit its settings.
             </p>
         </div>
 
-        <SettingsSection title="Form Metadata" icon="bi bi-file-edit">
+        <SettingsSection title="Form Metadata" icon="ph ph-file-edit">
             <FieldGroup label="Form Title">
                 <InputText
                     :model-value="store.jsonSchema.title"
@@ -58,7 +58,7 @@ const layoutTypeOptions = [
             </FieldGroup>
         </SettingsSection>
 
-        <SettingsSection title="Root Layout" icon="bi bi-layout">
+        <SettingsSection title="Root Layout" icon="ph ph-layout">
             <FieldGroup label="Layout Type">
                 <Select
                     v-model="rootType"
@@ -95,13 +95,9 @@ const layoutTypeOptions = [
             </FieldGroup>
         </SettingsSection>
 
-        <SettingsSection
-            title="Danger Zone"
-            icon="bi bi-exclamation-triangle"
-            collapsible
-        >
+        <SettingsSection title="Danger Zone" icon="ph ph-warning" collapsible>
             <Button
-                icon="bi bi-trash"
+                icon="ph ph-trash"
                 label="Clear all elements"
                 severity="danger"
                 outlined

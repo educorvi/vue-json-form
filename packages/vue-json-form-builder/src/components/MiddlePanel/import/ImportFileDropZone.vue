@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { BButton } from 'bootstrap-vue-next';
+import { PhFile, PhFileArrowUp, PhFolderOpen, PhX } from '@phosphor-icons/vue';
 
 const props = defineProps<{
     file: File | null;
@@ -32,6 +34,10 @@ function clear() {
     emit('update:error', null);
     if (fileInputRef.value) fileInputRef.value.value = '';
 }
+
+function triggerBrowse() {
+    fileInputRef.value?.click();
+}
 </script>
 
 <template>
@@ -50,15 +56,8 @@ function clear() {
             @dragover.prevent
             @drop.prevent="onDrop"
         >
-            <i
-                class="d-block"
-                :class="
-                    file
-                        ? 'bi bi-file-earmark-check text-primary'
-                        : 'bi bi-file-earmark-arrow-up text-body'
-                "
-                style="font-size: 2rem"
-            />
+            <PhFile v-if="file" :size="32" weight="bold" class="text-primary" />
+            <PhFileArrowUp v-else :size="32" weight="bold" class="text-body" />
 
             <div>
                 <p class="mb-0 small fw-medium">
@@ -74,27 +73,31 @@ function clear() {
             </div>
 
             <div class="d-flex gap-2">
-                <label
-                    class="btn btn-sm btn-outline-secondary mb-0"
-                    style="cursor: pointer"
+                <input
+                    :id="inputId"
+                    ref="fileInputRef"
+                    type="file"
+                    accept=".json,application/json"
+                    class="d-none"
+                    @change="onFileChange"
+                />
+                <BButton
+                    size="sm"
+                    variant="outline-secondary"
+                    @click="triggerBrowse"
                 >
+                    <PhFolderOpen :size="14" weight="bold" class="me-1" />
                     {{ file ? 'Replace' : 'Browse' }}
-                    <input
-                        :id="inputId"
-                        ref="fileInputRef"
-                        type="file"
-                        accept=".json,application/json"
-                        class="d-none"
-                        @change="onFileChange"
-                    />
-                </label>
-                <button
+                </BButton>
+                <BButton
                     v-if="file"
-                    class="btn btn-sm btn-outline-danger"
+                    size="sm"
+                    variant="outline-danger"
                     @click="clear"
                 >
+                    <PhX :size="14" weight="bold" class="me-1" />
                     Remove
-                </button>
+                </BButton>
             </div>
         </div>
 

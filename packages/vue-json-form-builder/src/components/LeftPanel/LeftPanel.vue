@@ -2,19 +2,20 @@
 import { ref, type Component } from 'vue';
 import FieldPalette from './FieldPalette.vue';
 import TreeViewPanel from './TreeViewPanel.vue';
-import {BButton} from "bootstrap-vue-next";
+import { BButton } from 'bootstrap-vue-next';
+import { PhGridFour, PhTreeStructure, PhCaretLeft } from '@phosphor-icons/vue';
 
 const emit = defineEmits<{ toggleCollapse: [] }>();
 
 interface Tab {
     label: string;
-    icon: string;
+    icon: Component;
     component: Component;
 }
 
 const tabs: Tab[] = [
-    { label: 'Fields', icon: 'bi bi-grid', component: FieldPalette },
-    { label: 'Tree', icon: 'bi bi-diagram-3', component: TreeViewPanel },
+    { label: 'Fields', icon: PhGridFour, component: FieldPalette },
+    { label: 'Tree', icon: PhTreeStructure, component: TreeViewPanel },
 ];
 
 const activeIndex = ref(0);
@@ -41,7 +42,12 @@ const activeIndex = ref(0);
                 style="border-bottom-width: 2px !important"
                 @click="activeIndex = i"
             >
-                <i :class="tab.icon" class="me-1" />
+                <component
+                    :is="tab.icon"
+                    :size="14"
+                    weight="bold"
+                    class="me-1"
+                />
                 {{ tab.label }}
             </b-button>
 
@@ -52,7 +58,7 @@ const activeIndex = ref(0);
                 title="Collapse panel"
                 @click="emit('toggleCollapse')"
             >
-                <i class="bi bi-chevron-left" />
+                <PhCaretLeft :size="14" weight="bold" />
             </b-button>
         </div>
 

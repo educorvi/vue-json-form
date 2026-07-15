@@ -26,14 +26,25 @@ const layoutTypeOptions = [
 
 <template>
     <div class="vstack gap-1">
-        <SettingsSection title="Layout Settings" icon="bi bi-layout-split">
+        <SettingsSection title="Layout Settings" icon="ph ph-layout">
             <FieldGroup label="Layout Type">
                 <select
                     class="form-select form-select-sm"
                     :value="element.type"
-                    @change="store.updateElement(element._id, { type: ($event.target as HTMLSelectElement).value as any } as Partial<LayoutElement>)"
+                    @change="
+                        store.updateElement(element._id, {
+                            type: ($event.target as HTMLSelectElement)
+                                .value as any,
+                        } as Partial<LayoutElement>)
+                    "
                 >
-                    <option v-for="opt in layoutTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                    <option
+                        v-for="opt in layoutTypeOptions"
+                        :key="opt.value"
+                        :value="opt.value"
+                    >
+                        {{ opt.label }}
+                    </option>
                 </select>
             </FieldGroup>
 
@@ -44,7 +55,12 @@ const layoutTypeOptions = [
                         class="form-control form-control-sm"
                         :value="element.options?.label ?? ''"
                         placeholder="Group title"
-                        @input="updateOptions({ label: ($event.target as HTMLInputElement).value })"
+                        @input="
+                            updateOptions({
+                                label: ($event.target as HTMLInputElement)
+                                    .value,
+                            })
+                        "
                     />
                 </FieldGroup>
                 <FieldGroup label="Group Description">
@@ -53,7 +69,13 @@ const layoutTypeOptions = [
                         :value="element.options?.description ?? ''"
                         rows="2"
                         placeholder="Group description..."
-                        @input="updateOptions({ description: ($event.target as HTMLTextAreaElement).value })"
+                        @input="
+                            updateOptions({
+                                description: (
+                                    $event.target as HTMLTextAreaElement
+                                ).value,
+                            })
+                        "
                     />
                 </FieldGroup>
             </template>
@@ -64,12 +86,20 @@ const layoutTypeOptions = [
                     class="form-control form-control-sm"
                     :value="element.options?.cssClass ?? ''"
                     placeholder="e.g. my-layout"
-                    @input="updateOptions({ cssClass: ($event.target as HTMLInputElement).value })"
+                    @input="
+                        updateOptions({
+                            cssClass: ($event.target as HTMLInputElement).value,
+                        })
+                    "
                 />
             </FieldGroup>
         </SettingsSection>
 
-        <SettingsSection title="Visibility Rule (ShowOn)" icon="bi bi-eye-slash" collapsible>
+        <SettingsSection
+            title="Visibility Rule (ShowOn)"
+            icon="ph ph-eye-slash"
+            collapsible
+        >
             <ShowOnEditor :element-id="element._id" :show-on="element.showOn" />
         </SettingsSection>
     </div>

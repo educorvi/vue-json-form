@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFormStore } from '@/stores/formStore';
+import { PhPencilSimple } from '@phosphor-icons/vue';
 import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 
@@ -16,10 +17,7 @@ async function handleSubmit(data: Record<string, unknown>) {
             v-if="store.formIsEmpty"
             class="d-flex flex-column align-items-center justify-content-center py-5 text-body"
         >
-            <i
-                class="bi bi-pencil-square d-block mb-2"
-                style="font-size: 2rem"
-            />
+            <PhPencilSimple :size="32" weight="bold" class="d-block mb-2" />
             <p class="small fw-medium">Add some fields to preview the form</p>
         </div>
         <vue-json-form

@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { BButton } from 'bootstrap-vue-next';
+import {
+    PhMagnifyingGlass,
+    PhFolder,
+    PhCaretRight,
+    PhCaretDown,
+} from '@phosphor-icons/vue';
 import { paletteSections, getAllPaletteFields } from '@/types/paletteFields';
 import { useFormStore } from '@/stores/formStore';
 import PaletteFieldGrid from './PaletteFieldGrid.vue';
@@ -55,7 +62,7 @@ function addField(fieldId: string) {
         <div class="p-2 flex-shrink-0">
             <div class="input-group input-group-sm">
                 <span class="input-group-text"
-                    ><i class="bi bi-search"
+                    ><PhMagnifyingGlass :size="14" weight="bold"
                 /></span>
                 <input
                     v-model="searchQuery"
@@ -75,9 +82,9 @@ function addField(fieldId: string) {
             />
             <div
                 v-if="searchResults.length === 0"
-                class="text-center text-body small py-4"
+                class="text-center text-body-tertiary small py-4"
             >
-                <i class="bi bi-search" />
+                <PhMagnifyingGlass :size="16" weight="bold" />
                 No fields match "{{ searchQuery }}"
             </div>
         </div>
@@ -89,26 +96,35 @@ function addField(fieldId: string) {
                 :key="section.id"
                 class="mb-1"
             >
-                <button
-                    class="w-100 btn btn-sm btn-link text-body text-decoration-none d-flex align-items-center gap-1 px-1 py-1"
+                <BButton
+                    variant="link"
+                    size="sm"
+                    class="w-100 text-decoration-none d-flex align-items-center gap-1 px-1 py-1 text-body-secondary"
                     @click="toggleSection(section.id)"
                 >
                     <i
-                        :class="section.icon ?? 'bi bi-folder'"
-                        class="text-xs text-body"
+                        :class="section.icon ?? 'ph ph-folder'"
+                        class="text-body-secondary"
+                        style="font-size: 0.75rem"
                     />
-                    <span class="text-xs fw-semibold text-uppercase flex-grow-1 text-start">
+                    <span
+                        class="text-xs fw-semibold text-uppercase flex-grow-1 text-start text-body-secondary"
+                    >
                         {{ section.label }}
                     </span>
-                    <i
-                        :class="
-                            collapsed.has(section.id)
-                                ? 'bi bi-chevron-right'
-                                : 'bi bi-chevron-down'
-                        "
-                        class="text-xs text-body"
+                    <PhCaretDown
+                        v-if="!collapsed.has(section.id)"
+                        :size="12"
+                        weight="bold"
+                        class="text-body-secondary"
                     />
-                </button>
+                    <PhCaretRight
+                        v-else
+                        :size="12"
+                        weight="bold"
+                        class="text-body-secondary"
+                    />
+                </BButton>
 
                 <div v-if="!collapsed.has(section.id)" class="ps-1 pb-1">
                     <PaletteFieldGrid
@@ -124,32 +140,41 @@ function addField(fieldId: string) {
                         :key="sub.id"
                         class="mb-1"
                     >
-                        <button
-                            class="w-100 btn btn-sm btn-link text-body text-decoration-none d-flex align-items-center gap-1 px-1 py-1"
+                        <BButton
+                            variant="link"
+                            size="sm"
+                            class="w-100 text-decoration-none d-flex align-items-center gap-1 px-1 py-0 text-body-secondary"
                             @click="toggleSection(sub.id)"
                         >
                             <i
-                                :class="sub.icon ?? 'bi bi-circle'"
-                                class="text-xs text-body"
+                                :class="sub.icon ?? 'ph ph-circle'"
+                                class="text-body-secondary"
+                                style="font-size: 0.65rem"
                             />
                             <span
-                                class="text-xs flex-grow-1 text-start"
-                            >{{ sub.label }}</span>
-                            <i
-                                :class="
-                                    collapsed.has(sub.id)
-                                        ? 'bi bi-chevron-right'
-                                        : 'bi bi-chevron-down'
-                                "
-                                class="text-xs"
+                                class="text-xs flex-grow-1 text-start text-body-secondary"
+                                >{{ sub.label }}</span
+                            >
+                            <PhCaretDown
+                                v-if="!collapsed.has(sub.id)"
+                                :size="11"
+                                weight="bold"
+                                class="text-body-secondary"
                             />
-                        </button>
+                            <PhCaretRight
+                                v-else
+                                :size="11"
+                                weight="bold"
+                                class="text-body-secondary"
+                            />
+                        </BButton>
 
                         <PaletteFieldGrid
                             v-if="!collapsed.has(sub.id) && sub.fields?.length"
                             :fields="sub.fields"
                             :clone="cloneItem"
-                            class="ps-1 mt-1 mb-1"
+                            compact
+                            class="ps-1 mt-0 mb-1"
                             @field-click="addField"
                         />
                     </div>

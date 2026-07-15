@@ -4,7 +4,8 @@ import { createPinia, getActivePinia, setActivePinia } from 'pinia';
 setActivePinia(getActivePinia() || createPinia());
 
 import { ref, watch, type Ref } from 'vue';
-import { BApp } from 'bootstrap-vue-next';
+import { BApp, BButton } from 'bootstrap-vue-next';
+import { PhPencilSimple, PhCaretRight } from '@phosphor-icons/vue';
 import { useFormStore } from './stores/formStore';
 import LeftPanel from './components/LeftPanel/LeftPanel.vue';
 import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
@@ -36,6 +37,8 @@ function makeResizer(
     max: number
 ) {
     return (e: MouseEvent) => {
+        e.preventDefault();
+        document.body.classList.add('is-resizing');
         const startX = e.clientX;
         const startW = widthRef.value;
         const onMove = (ev: MouseEvent) => {
@@ -46,6 +49,7 @@ function makeResizer(
             );
         };
         const onUp = () => {
+            document.body.classList.remove('is-resizing');
             window.removeEventListener('mousemove', onMove);
             window.removeEventListener('mouseup', onUp);
         };
@@ -108,6 +112,12 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
 });
 </script>
 
+<style scoped>
+.resize-handle:hover {
+    background-color: var(--bs-primary, #0d6efd) !important;
+}
+</style>
+
 <template>
     <BApp class="d-flex flex-column" style="flex: 1; min-height: 0">
         <div
@@ -121,7 +131,7 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                 class="app-header d-flex align-items-center px-3 gap-2 bg-dark shadow-sm"
                 data-bs-theme="dark"
             >
-                <i class="bi bi-pencil-square text-primary" />
+                <PhPencilSimple :size="16" class="text-primary" weight="bold" />
                 <span class="text-white fw-semibold small"
                     >JSON Forms Generator</span
                 >
@@ -148,20 +158,28 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                             @toggle-collapse="leftCollapsed = !leftCollapsed"
                         />
                     </div>
-                    <button
+                    <BButton
                         v-if="leftCollapsed"
-                        class="btn btn-sm btn-light border-end px-1 rounded-0 flex-shrink-0"
+                        variant="light"
+                        size="sm"
+                        class="border-end px-1 rounded-0 flex-shrink-0"
                         title="Expand panel"
                         @click="leftCollapsed = false"
                     >
-                        <i class="bi bi-chevron-right" />
-                    </button>
+                        <PhCaretRight :size="12" weight="bold" />
+                    </BButton>
                 </div>
 
                 <!-- Left Resize Handle -->
                 <div
                     v-if="!leftCollapsed"
-                    class="resize-handle"
+                    class="resize-handle flex-shrink-0"
+                    style="
+                        width: 4px;
+                        cursor: col-resize;
+                        background-color: #adb5bd;
+                        transition: background-color 0.15s;
+                    "
                     @mousedown="startResizeLeft"
                 />
 
@@ -173,7 +191,13 @@ watch([() => store.jsonSchema, () => store.uiSchema], () => {
                 <!-- Right Resize Handle -->
                 <div
                     v-if="rightVisible && store.selectedElementId"
-                    class="resize-handle"
+                    class="resize-handle flex-shrink-0"
+                    style="
+                        width: 4px;
+                        cursor: col-resize;
+                        background-color: #adb5bd;
+                        transition: background-color 0.15s;
+                    "
                     @mousedown="startResizeRight"
                 />
 

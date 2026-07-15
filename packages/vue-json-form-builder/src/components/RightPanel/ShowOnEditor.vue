@@ -123,25 +123,41 @@ function clearShowOn() {
             <div class="btn-group btn-group-sm w-100">
                 <button
                     class="btn"
-                    :class="mode === 'legacy' ? 'btn-primary' : 'btn-outline-secondary'"
+                    :class="
+                        mode === 'legacy'
+                            ? 'btn-primary'
+                            : 'btn-outline-secondary'
+                    "
                     @click="mode = 'legacy'"
-                >Simple Rule</button>
+                >
+                    Simple Rule
+                </button>
                 <button
                     class="btn"
-                    :class="mode === 'rule' ? 'btn-primary' : 'btn-outline-secondary'"
+                    :class="
+                        mode === 'rule'
+                            ? 'btn-primary'
+                            : 'btn-outline-secondary'
+                    "
                     @click="mode = 'rule'"
-                >Rita Rule (JSON)</button>
+                >
+                    Rita Rule (JSON)
+                </button>
             </div>
 
             <!-- Legacy simple rule -->
             <template v-if="mode === 'legacy'">
                 <div class="vstack gap-2">
                     <div>
-                        <label class="text-xs text-body mb-1 d-block">Field path</label>
+                        <label class="text-xs text-body mb-1 d-block"
+                            >Field path</label
+                        >
                         <FieldPathPicker v-model="legacyPath" />
                     </div>
                     <div>
-                        <label class="text-xs text-body mb-1 d-block">Condition</label>
+                        <label class="text-xs text-body mb-1 d-block"
+                            >Condition</label
+                        >
                         <select
                             v-model="legacyType"
                             class="form-select form-select-sm"
@@ -150,11 +166,15 @@ function clearShowOn() {
                                 v-for="opt in legacyTypeOptions"
                                 :key="opt.value"
                                 :value="opt.value"
-                            >{{ opt.label }}</option>
+                            >
+                                {{ opt.label }}
+                            </option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-xs text-body mb-1 d-block">Reference value</label>
+                        <label class="text-xs text-body mb-1 d-block"
+                            >Reference value</label
+                        >
                         <input
                             v-model="legacyRef"
                             type="text"
@@ -174,7 +194,8 @@ function clearShowOn() {
                             href="https://github.com/educorvi/rita"
                             target="_blank"
                             class="ms-1"
-                        >(docs)</a>
+                            >(docs)</a
+                        >
                     </label>
                     <textarea
                         v-model="ruleJson"
@@ -188,11 +209,8 @@ function clearShowOn() {
                 </div>
             </template>
 
-            <button
-                class="btn btn-primary btn-sm w-100"
-                @click="applyChanges"
-            >
-                <i class="bi bi-check me-1" />Apply Rule
+            <button class="btn btn-primary btn-sm w-100" @click="applyChanges">
+                <i class="ph ph-check me-1" />Apply Rule
             </button>
         </template>
 
@@ -202,9 +220,11 @@ function clearShowOn() {
             class="p-2 bg-warning bg-opacity-10 rounded border border-warning-subtle text-xs"
         >
             <p class="fw-medium text-warning-emphasis mb-1">
-                <i class="bi bi-eye-slash me-1" />Active Rule
+                <i class="ph ph-eye-slash me-1" />Active Rule
             </p>
-            <pre class="text-xs mb-0 overflow-auto" style="max-height: 6rem">{{ JSON.stringify(showOn, null, 2) }}</pre>
+            <pre class="text-xs mb-0 overflow-auto" style="max-height: 6rem">{{
+                JSON.stringify(showOn, null, 2)
+            }}</pre>
         </div>
     </div>
 </template>

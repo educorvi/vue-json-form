@@ -5,6 +5,8 @@ import { useFormStore } from '@/stores/formStore';
 import type { LayoutElement, FormElement } from '@/types/formTypes';
 import { wrapElement } from '@/types/elements/index';
 import DropZone from './DropZone.vue';
+import { PhList, PhTable, PhFolder, PhBook } from '@phosphor-icons/vue';
+import EmptyDropTarget from '@/components/shared/EmptyDropTarget.vue';
 
 const props = defineProps<{
     element: LayoutElement;
@@ -24,9 +26,9 @@ const children = computed({
 });
 
 const layoutTypeOpts = [
-    { label: 'Vertical', value: 'VerticalLayout', icon: 'bi bi-list' },
-    { label: 'Horizontal', value: 'HorizontalLayout', icon: 'bi bi-table' },
-    { label: 'Group', value: 'Group', icon: 'bi bi-folder' },
+    { label: 'Vertical', value: 'VerticalLayout', icon: PhList },
+    { label: 'Horizontal', value: 'HorizontalLayout', icon: PhTable },
+    { label: 'Group', value: 'Group', icon: PhFolder },
 ];
 
 const showWizardConfirm = ref(false);
@@ -47,31 +49,38 @@ function doSwitchToWizard() {
 <template>
     <!-- Layout type switcher -->
     <div
-        class="d-flex align-items-center gap-1 px-2 py-1 border-bottom flex-wrap"
+        class="d-flex align-items-center px-2 py-1 border-bottom flex-wrap gap-1"
         @click.stop
     >
-        <b-button
-            v-for="opt in layoutTypeOpts"
-            :key="opt.value"
-            size="sm"
-            :variant="
-                element.type === opt.value ? 'primary' : 'outline-secondary'
-            "
-            @click="
-                store.updateElement(element._id, { type: opt.value as any })
-            "
-        >
-            <i :class="opt.icon" class="me-1" />{{ opt.label }}
-        </b-button>
-        <template v-if="isRoot">
-            <div class="vr" />
+        <div class="btn-group btn-group-sm" role="group">
             <b-button
+                v-for="opt in layoutTypeOpts"
+                :key="opt.value"
+                size="sm"
+                :variant="
+                    element.type === opt.value ? 'primary' : 'outline-secondary'
+                "
+                @click="
+                    store.updateElement(element._id, { type: opt.value as any })
+                "
+            >
+                <component
+                    :is="opt.icon"
+                    :size="12"
+                    weight="bold"
+                    class="me-1"
+                />{{ opt.label }}
+            </b-button>
+        </div>
+        <template v-if="isRoot">
+            <div class="vr mx-1" />
+            <BButton
                 @click="switchToWizard"
                 size="sm"
                 variant="outline-secondary"
             >
-                <i class="bi bi-book me-1" />Wizard
-            </b-button>
+                <PhBook :size="12" weight="bold" class="me-1" />Wizard
+            </BButton>
         </template>
     </div>
 
@@ -84,20 +93,7 @@ function doSwitchToWizard() {
         :parent-id="element._id"
     >
         <template v-if="isRoot && children.length === 0" #empty>
-            <div
-                class="d-flex flex-column align-items-center justify-content-center py-5 text-body canvas-preview"
-            >
-                <i
-                    class="bi bi-arrow-left d-block mb-2"
-                    style="font-size: 1.5rem"
-                />
-                <p class="small fw-medium mb-0">
-                    Drag fields here to build your form
-                </p>
-                <p class="text-xs mt-1 mb-0">
-                    Or click a field in the left panel
-                </p>
-            </div>
+            <EmptyDropTarget message="Drag fields here to build your form" />
         </template>
     </DropZone>
 
@@ -113,4 +109,3 @@ function doSwitchToWizard() {
         Switching to Wizard will remove all current elements. Continue?
     </BModal>
 </template>
-

@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { BButton, BBadge } from 'bootstrap-vue-next';
+import {
+    PhClipboard,
+    PhTrash,
+    PhEye,
+    PhEyeSlash,
+    PhAsterisk,
+} from '@phosphor-icons/vue';
 import {
     supportedUiSchemaVersion,
     VueJsonForm,
@@ -18,15 +25,29 @@ import WizardCard from './cards/WizardCard.vue';
 
 const props = defineProps<{
     element: FormElement;
-    parentId: string;
 }>();
 
 const store = useFormStore();
+
+const hovered = ref(false);
+const isDragging = computed(() => store.dragSourceType !== null);
+const isDragOverContainer = computed(
+    () => isDragging.value && store.dragOverContainerId === props.element._id
+);
 
 const isSelected = computed(
     () => store.selectedElementId === props.element._id
 );
 const isRootEl = computed(() => props.element._id === store.rootLayout._id);
+
+// Outline: solid when selected, dashed when hovered, otherwise none
+const outlineStyle = computed(() => {
+    if (isSelected.value) return '2px solid var(--bs-primary)';
+    if (isDragOverContainer.value) return '2px dashed var(--bs-primary)';
+    if (isDragging.value) return '2px solid transparent';
+    if (hovered.value) return '2px dashed var(--bs-primary)';
+    return '2px solid transparent';
+});
 
 const node$ = computed(() => wrapElement(props.element));
 const fieldIcon = computed(() => node$.value.icon);
@@ -92,6 +113,14 @@ function duplicate(e: Event) {
     e.stopPropagation();
     store.duplicateElement(props.element._id);
 }
+
+function onMouseEnter() {
+    if (!isDragging.value) hovered.value = true;
+}
+
+function onMouseLeave() {
+    hovered.value = false;
+}
 </script>
 
 <template>
@@ -99,17 +128,24 @@ function duplicate(e: Event) {
         class="canvas-element-wrapper"
         :class="{ selected: isSelected }"
         :data-element-type="element.type"
+        :data-element-id="element._id"
+        :style="{
+            outline: outlineStyle,
+            outlineOffset: '2px',
+            borderRadius: '6px',
+            transition: 'outline-color 0.15s, outline-style 0.15s',
+        }"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
         @click="select"
     >
         <div class="canvas-element-inner rounded overflow-hidden">
             <!-- Header -->
             <div
                 :class="[
-                    'd-flex align-items-center gap-2 px-2 py-1',
-                    isRootEl
-                        ? 'bg-body-secondary'
-                        : 'drag-handle bg-body-secondary',
-                    isSelected ? 'bg-primary bg-opacity-10' : '',
+                    'canvas-element-header d-flex align-items-center gap-2 px-2 py-1 bg-body-tertiary',
+                    isRootEl ? '' : 'drag-handle',
+                    isSelected ? 'bg-primary-subtle border-primary' : '',
                 ]"
             >
                 <i :class="fieldIcon" class="text-xs text-body flex-shrink-0" />
@@ -119,34 +155,39 @@ function duplicate(e: Event) {
                 >
 
                 <!-- Data type badge -->
-                <b-badge
+                <BBadge
                     v-if="element.type === 'Control' && controlType"
-                    variant="secondary"
-                    class="bg-opacity-25 text-body text-xs flex-shrink-0"
-                    >{{ controlType }}</b-badge
+                    class="text-body text-xs flex-shrink-0"
+                    >{{ controlType }}</BBadge
                 >
 
                 <!-- ShowOn indicator -->
-                <i
+                <PhEye
                     v-if="(element as any).showOn"
-                    class="bi bi-eye text-xs text-warning flex-shrink-0"
+                    :size="12"
+                    class="text-warning flex-shrink-0"
+                    weight="bold"
                     title="Visibility condition"
                 />
 
                 <!-- Required indicator -->
-                <i
+                <PhAsterisk
                     v-if="isFieldRequired"
-                    class="bi bi-asterisk text-xs text-danger flex-shrink-0"
+                    :size="12"
+                    class="text-danger flex-shrink-0"
+                    weight="bold"
                     title="Required field"
                 />
 
                 <!-- Hidden indicator -->
-                <i
+                <PhEyeSlash
                     v-if="
                         element.type === 'Control' &&
                         (element as ControlElement).options?.hidden
                     "
-                    class="bi bi-eye-slash text-xs text-body flex-shrink-0"
+                    :size="12"
+                    class="text-body flex-shrink-0"
+                    weight="bold"
                     title="Hidden element"
                 />
 
@@ -164,7 +205,7 @@ function duplicate(e: Event) {
                         title="Duplicate"
                         @click="duplicate"
                     >
-                        <i class="bi bi-clipboard text-xs" />
+                        <PhClipboard :size="12" weight="bold" />
                     </b-button>
                     <b-button
                         variant="link"
@@ -173,7 +214,7 @@ function duplicate(e: Event) {
                         title="Delete"
                         @click="deleteEl"
                     >
-                        <i class="bi bi-trash text-xs" />
+                        <PhTrash :size="12" weight="bold" />
                     </b-button>
                 </div>
             </div>

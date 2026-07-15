@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { BButton } from 'bootstrap-vue-next';
+import { PhSliders, PhX, PhMinus } from '@phosphor-icons/vue';
 import { useFormStore } from '@/stores/formStore';
 import ControlSettings from './old/ControlSettings.vue';
 import LayoutSettings from './old/LayoutSettings.vue';
@@ -47,24 +49,24 @@ const typeLabel = computed(() => {
 </script>
 
 <template>
-    <div
-        class="d-flex flex-column h-100 border-start bg-body overflow-hidden"
-    >
+    <div class="d-flex flex-column h-100 border-start bg-body overflow-hidden">
         <!-- Header -->
         <div
             class="d-flex align-items-center gap-2 px-3 py-2 border-bottom flex-shrink-0"
         >
-            <i class="bi bi-sliders text-primary" />
+            <PhSliders :size="16" class="text-primary" weight="bold" />
             <span class="small fw-semibold text-body text-truncate flex-grow-1">
                 {{ typeLabel }}
             </span>
-            <button
-                class="btn btn-sm btn-link text-body p-0 ms-auto"
+            <BButton
+                variant="link"
+                size="sm"
+                class="p-0 border-0 text-body text-decoration-none ms-auto"
                 title="Close panel"
                 @click="closePanel"
             >
-                <i class="bi bi-x" style="font-size: 1rem" />
-            </button>
+                <PhX :size="16" weight="bold" />
+            </BButton>
         </div>
 
         <!-- Settings content -->
@@ -103,9 +105,10 @@ const typeLabel = computed(() => {
                 :element="store.selectedElement as WizardElement"
             />
             <div v-else class="text-center text-body py-4">
-                <i
-                    class="bi bi-dash d-block mb-2"
-                    style="font-size: 1.5rem"
+                <PhMinus
+                    :size="24"
+                    weight="bold"
+                    class="d-block mb-2 mx-auto"
                 />
                 <p class="small">No settings for this element</p>
             </div>

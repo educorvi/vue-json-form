@@ -7,6 +7,6 @@ const store = useFormStore();
 
 <template>
     <div class="rounded-3 overflow-hidden bg-body shadow-sm border">
-        <CanvasElement :element="store.rootLayout" parent-id="" />
+        <CanvasElement :element="store.rootLayout" />
     </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
+import { PhPlusCircle, PhXCircle } from '@phosphor-icons/vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useFormStore } from '@/stores/formStore';
 import type { FormElement } from '@/types/formTypes';
@@ -35,7 +36,24 @@ const model = computed({
     set: (val) => emit('update:children', val),
 });
 
+const isDragging = computed(() => store.dragSourceType !== null);
+const isDragOverThisZone = computed(
+    () => store.dragOverContainerId === props.parentId
+);
+
+const canAccept = computed(() => {
+    if (!isDragging.value) return false;
+    if (props.allowedTypes === '*') return true;
+    return (props.allowedTypes as string[]).includes(store.dragSourceType!);
+});
+
+// Highlight only the currently hovered container while dragging.
+const dropZoneActive = computed(
+    () => isDragging.value && canAccept.value && isDragOverThisZone.value
+);
+
 const showBadDrop = computed(() => {
+    if (!isDragOverThisZone.value) return false;
     if (props.allowedTypes === '*') return false;
     const src = store.dragSourceType;
     return src !== null && !(props.allowedTypes as string[]).includes(src);
@@ -68,9 +86,32 @@ function onChildAdd(event: any) {
 }
 
 function onDragStart(e: any) {
+    const draggedId = e?.item?.dataset?.elementId as string | undefined;
+    const draggedType = e?.item?.dataset?.elementType as string | undefined;
     const child = model.value[e.oldIndex];
     _draggedEl = child ?? null;
-    if (child) store.setDragSource(child.type);
+    store.setDragOverContainer(props.parentId);
+
+    const sourceType = draggedType ?? child?.type ?? null;
+    if (sourceType) {
+        store.setDragSource(sourceType);
+    }
+    // Always select dragged element at drag start, even if it wasn't selected.
+    if (draggedId) {
+        store.selectElement(draggedId);
+    } else if (child) {
+        store.selectElement(child._id);
+    }
+    document.body.classList.add('sortable-drag-active');
+}
+
+function onDragMove(event: any) {
+    const toEl = event?.to as HTMLElement | undefined;
+    const targetZone =
+        toEl?.dataset?.dropZoneId ??
+        toEl?.closest('[data-drop-zone-id]')?.getAttribute('data-drop-zone-id');
+    store.setDragOverContainer(targetZone ?? null);
+    return true;
 }
 
 function onChildRemove() {
@@ -80,6 +121,8 @@ function onChildRemove() {
 function onDragEnd() {
     _draggedEl = null;
     store.setDragSource(null);
+    store.setDragOverContainer(null);
+    document.body.classList.remove('sortable-drag-active');
 }
 
 const wrapperClass = computed(() => {
@@ -88,25 +131,31 @@ const wrapperClass = computed(() => {
     return 'vstack gap-2';
 });
 
-const draggableClass = computed(() => {
+// Increase gap and padding for better drop targets — makes it easier to
+// drop elements between other elements or into containers.
+const paddedDraggableClass = computed(() => {
     if (props.layout === 'horizontal')
-        return 'min-h-14 flex-grow-1 d-flex flex-row gap-2 flex-wrap';
+        return 'min-h-20 flex-grow-1 d-flex flex-row gap-3 flex-wrap py-2';
     if (props.layout === 'flex-row')
-        return 'd-flex flex-row flex-wrap gap-2 min-h-10';
-    return 'min-h-12 vstack gap-2 flex-grow-1';
+        return 'd-flex flex-row flex-wrap gap-3 min-h-14 py-2';
+    return 'min-h-16 vstack gap-3 flex-grow-1 py-1';
 });
 
 const emptyClass = computed(() => {
     if (props.layout === 'flex-row')
-        return 'd-flex align-items-center min-h-10 text-xs text-body pe-none';
+        return 'd-flex align-items-center min-h-10 text-xs text-body-secondary pe-none flex-grow-1';
     if (props.layout === 'horizontal')
-        return 'd-flex align-items-center justify-content-center min-h-14 text-xs text-body pe-none';
-    return 'd-flex align-items-center justify-content-center min-h-12 text-xs text-body pe-none';
+        return 'd-flex align-items-center justify-content-center min-h-14 text-xs text-body-secondary pe-none flex-grow-1 w-100';
+    return 'd-flex align-items-center justify-content-center min-h-12 text-xs text-body-secondary pe-none flex-grow-1 w-100';
 });
 </script>
 
 <template>
-    <div class="p-2 position-relative" :class="wrapperClass">
+    <div
+        class="p-2 position-relative"
+        :data-drop-zone-id="parentId"
+        :class="[wrapperClass, { 'drop-zone-active': dropZoneActive }]"
+    >
         <!-- Blocked-type overlay -->
         <Transition name="fade">
             <div
@@ -114,8 +163,10 @@ const emptyClass = computed(() => {
                 class="position-absolute top-0 start-0 end-0 bottom-0 d-flex align-items-center justify-content-center bg-danger bg-opacity-10 border border-danger border-2 rounded z-3 pe-none"
                 style="border-style: dashed !important"
             >
-                <span class="d-flex align-items-center gap-1 text-danger text-xs fw-semibold">
-                    <i class="bi bi-x-circle" />
+                <span
+                    class="d-flex align-items-center gap-1 text-danger text-xs fw-semibold"
+                >
+                    <PhXCircle :size="14" weight="bold" class="me-1" />
                     {{
                         allowedTypes === '*'
                             ? 'Any element'
@@ -132,11 +183,13 @@ const emptyClass = computed(() => {
             draggable=".canvas-element-wrapper"
             ghost-class="sortable-ghost"
             chosen-class="sortable-chosen"
-            :animation="150"
-            :class="draggableClass"
+            :animation="200"
+            :class="paddedDraggableClass"
+            :data-drop-zone-id="parentId"
             @add="onChildAdd"
             @remove="onChildRemove"
             @start="onDragStart"
+            @move="onDragMove"
             @end="onDragEnd"
             @click.stop
         >
@@ -144,11 +197,17 @@ const emptyClass = computed(() => {
                 v-for="child in model"
                 :key="child._id"
                 :element="child"
-                :parent-id="parentId"
             />
-            <div v-if="model.length === 0" :class="emptyClass">
+            <div
+                v-if="model.length === 0"
+                :class="[emptyClass, 'drop-zone-empty']"
+            >
                 <slot name="empty">
-                    <i class="bi bi-plus-circle me-1 opacity-50" />
+                    <PhPlusCircle
+                        :size="12"
+                        weight="bold"
+                        class="me-1 opacity-50"
+                    />
                     {{ emptyLabel }}
                 </slot>
             </div>

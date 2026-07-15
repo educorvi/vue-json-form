@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { BModal, BButton, BFormInput } from 'bootstrap-vue-next';
+import {
+    PhPencilSimple,
+    PhMoon,
+    PhSun,
+    PhEye,
+    PhPencil,
+    PhDownload,
+    PhUpload,
+    PhArrowsClockwise,
+} from '@phosphor-icons/vue';
 import { useFormStore } from '@/stores/formStore';
 import ExportDialog from './ExportDialog.vue';
 import ImportDialog from './ImportDialog.vue';
@@ -23,7 +33,7 @@ function doReset() {
     >
         <!-- Left side: form title -->
         <div class="d-flex align-items-center gap-2 me-auto">
-            <i class="bi bi-pencil-square text-primary" />
+            <PhPencilSimple :size="16" class="text-primary" weight="bold" />
             <b-form-input
                 v-model="store.jsonSchema.title"
                 size="sm"
@@ -43,11 +53,12 @@ function doReset() {
             "
             @click="toggleTheme"
         >
-            <i
-                :class="
-                    store.themeMode === 'light' ? 'bi bi-moon' : 'bi bi-sun'
-                "
+            <PhMoon
+                v-if="store.themeMode === 'light'"
+                :size="14"
+                weight="bold"
             />
+            <PhSun v-else :size="14" weight="bold" />
         </b-button>
 
         <div class="vr" />
@@ -58,10 +69,14 @@ function doReset() {
             :variant="store.isPreviewInline ? 'secondary' : 'outline-secondary'"
             @click="store.togglePreviewInline()"
         >
-            <i
-                :class="store.isPreviewInline ? 'bi bi-pencil' : 'bi bi-eye'"
+            <PhPencil
+                v-if="store.isPreviewInline"
+                :size="14"
+                weight="bold"
                 class="me-1"
-            />{{ store.isPreviewInline ? 'Edit' : 'Preview' }}
+            />
+            <PhEye v-else :size="14" weight="bold" class="me-1" />
+            {{ store.isPreviewInline ? 'Edit' : 'Preview' }}
         </b-button>
 
         <!-- Export -->
@@ -71,7 +86,7 @@ function doReset() {
             title="Export JSON &amp; UI Schema"
             @click="store.openExport()"
         >
-            <i class="bi bi-download me-1" />Export
+            <PhDownload :size="14" weight="bold" class="me-1" />Export
         </b-button>
 
         <!-- Import -->
@@ -81,7 +96,7 @@ function doReset() {
             title="Import JSON &amp; UI Schema"
             @click="store.openImport()"
         >
-            <i class="bi bi-upload me-1" />Import
+            <PhUpload :size="14" weight="bold" class="me-1" />Import
         </b-button>
 
         <!-- Reset -->
@@ -91,7 +106,7 @@ function doReset() {
             title="Reset form to empty state"
             @click="showResetModal = true"
         >
-            <i class="bi bi-arrow-clockwise me-1" />Reset
+            <PhArrowsClockwise :size="14" weight="bold" class="me-1" />Reset
         </b-button>
 
         <!-- Export dialog -->

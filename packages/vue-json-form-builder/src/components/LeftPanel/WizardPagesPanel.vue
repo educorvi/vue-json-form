@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { BButton } from 'bootstrap-vue-next';
+import {
+    PhPlus,
+    PhBook,
+    PhList,
+    PhFile,
+    PhPencil,
+    PhTrash,
+    PhInfo,
+} from '@phosphor-icons/vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useFormStore } from '@/stores/formStore';
 import type { WizardElement, WizardPage } from '@/types/formTypes';
@@ -77,13 +87,15 @@ function pageLabel(page: WizardPage, index: number): string {
             class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom flex-shrink-0"
         >
             <span class="text-xs text-body">Wizard Pages</span>
-            <button
-                class="btn btn-primary btn-sm py-0 text-xs"
+            <BButton
+                variant="primary"
+                size="sm"
+                class="py-0 text-xs"
                 title="Add page"
                 @click="store.addWizardPage()"
             >
-                <i class="bi bi-plus" /> Add Page
-            </button>
+                <PhPlus :size="12" weight="bold" class="me-1" /> Add Page
+            </BButton>
         </div>
 
         <!-- No wizard fallback -->
@@ -92,10 +104,7 @@ function pageLabel(page: WizardPage, index: number): string {
             class="flex-grow-1 d-flex align-items-center justify-content-center text-body small p-3 text-center"
         >
             <div>
-                <i
-                    class="bi bi-book d-block mb-2"
-                    style="font-size: 1.5rem"
-                />
+                <PhBook :size="24" weight="bold" class="d-block mb-2 mx-auto" />
                 Switch the root layout to Wizard to manage pages here.
             </div>
         </div>
@@ -122,12 +131,14 @@ function pageLabel(page: WizardPage, index: number): string {
                     @click="activatePage(i)"
                     @dblclick="startEdit(i)"
                 >
-                    <i
-                        class="page-drag-handle bi bi-list text-xs text-body flex-shrink-0"
+                    <PhList
+                        class="page-drag-handle flex-shrink-0 text-body"
+                        :size="12"
                         style="cursor: grab"
                     />
-                    <i
-                        class="bi bi-file-earmark text-xs flex-shrink-0"
+                    <PhFile
+                        :size="12"
+                        class="flex-shrink-0"
                         :class="
                             store.activeWizardPageIndex === i
                                 ? 'text-primary'
@@ -155,29 +166,42 @@ function pageLabel(page: WizardPage, index: number): string {
                                 ? 'text-primary fw-medium'
                                 : 'text-body'
                         "
-                    >{{ pageLabel(page, i) }}</span>
+                        >{{ pageLabel(page, i) }}</span
+                    >
 
                     <div
                         class="d-flex align-items-center gap-1 flex-shrink-0"
                         @click.stop
                     >
-                        <button
-                            class="btn btn-sm p-0 border-0 text-body"
-                            style="width: 1.2rem; height: 1.2rem; line-height: 1"
+                        <BButton
+                            variant="link"
+                            size="sm"
+                            class="p-0 border-0 text-body text-decoration-none"
+                            style="
+                                width: 1.2rem;
+                                height: 1.2rem;
+                                line-height: 1;
+                            "
                             title="Rename page"
                             @click.stop="startEdit(i)"
                         >
-                            <i class="bi bi-pencil text-xs" />
-                        </button>
-                        <button
+                            <PhPencil :size="10" weight="bold" />
+                        </BButton>
+                        <BButton
                             v-if="wizard.pages.length > 1"
-                            class="btn btn-sm p-0 border-0 text-danger"
-                            style="width: 1.2rem; height: 1.2rem; line-height: 1"
+                            variant="link"
+                            size="sm"
+                            class="p-0 border-0 text-danger text-decoration-none"
+                            style="
+                                width: 1.2rem;
+                                height: 1.2rem;
+                                line-height: 1;
+                            "
                             title="Remove page"
                             @click.stop="removePage(i)"
                         >
-                            <i class="bi bi-trash text-xs" />
-                        </button>
+                            <PhTrash :size="10" weight="bold" />
+                        </BButton>
                     </div>
                 </div>
             </VueDraggable>
@@ -195,8 +219,9 @@ function pageLabel(page: WizardPage, index: number): string {
             v-if="wizard"
             class="px-3 py-2 text-xs text-body border-top flex-shrink-0"
         >
-            <i class="bi bi-info-circle me-1" />
-            Drag <i class="bi bi-list" /> to reorder · Double-click to rename
+            <PhInfo :size="12" weight="bold" class="me-1" />
+            Drag <PhList :size="12" weight="bold" class="mx-1" /> to reorder ·
+            Double-click to rename
         </div>
     </div>
 </template>

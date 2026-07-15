@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { computed, provide, watch } from 'vue';
-import { BModal, BTabs, BTab, BAlert } from 'bootstrap-vue-next';
+import { BModal, BTabs, BTab, BAlert, BButton } from 'bootstrap-vue-next';
+import {
+    PhPencil,
+    PhUpload,
+    PhWarning,
+    PhCheck,
+    PhX,
+} from '@phosphor-icons/vue';
 import { useToast } from 'bootstrap-vue-next';
 import { useFormStore } from '@/stores/formStore';
 import { useImportState, IMPORT_STATE_KEY } from './import/useImportState';
@@ -63,24 +70,55 @@ async function handleImport() {
         v-model="visible"
         title="Import Schemas"
         size="lg"
-        ok-title="Import"
-        cancel-title="Cancel"
-        :ok-disabled="!canImport"
-        @ok.prevent="handleImport"
+        :hide-footer="true"
         @hide="reset"
     >
         <BAlert variant="warning" :model-value="true" class="mb-3">
-            <span class="fw-medium">Importing will replace your current form.</span>
+            <PhWarning :size="16" weight="bold" class="me-1" />
+            <span class="fw-medium"
+                >Importing will replace your current form.</span
+            >
             All existing fields and settings will be overwritten.
         </BAlert>
 
-        <BTabs :model-value="String(activeTab)" @update:model-value="activeTab = Number($event)">
+        <BTabs :index="activeTab" @update:index="activeTab = $event">
             <BTab title="Paste JSON">
+                <template #title>
+                    <PhPencil :size="14" weight="bold" class="me-1" />
+                    Paste JSON
+                </template>
                 <div class="pt-3"><ImportPasteTab /></div>
             </BTab>
             <BTab title="Upload Files">
+                <template #title>
+                    <PhUpload :size="14" weight="bold" class="me-1" />
+                    Upload Files
+                </template>
                 <div class="pt-3"><ImportUploadTab /></div>
             </BTab>
         </BTabs>
+
+        <template #footer>
+            <BButton variant="outline-secondary" @click="visible = false">
+                <PhX :size="14" weight="bold" class="me-1" />Cancel
+            </BButton>
+            <BButton
+                variant="primary"
+                :disabled="!canImport"
+                :class="{ 'btn-loading': importing }"
+                @click="handleImport"
+            >
+                <template v-if="importing">
+                    <span
+                        class="spinner-border spinner-border-sm me-1"
+                        role="status"
+                    />
+                    Importing...
+                </template>
+                <template v-else>
+                    <PhCheck :size="14" weight="bold" class="me-1" />Import
+                </template>
+            </BButton>
+        </template>
     </BModal>
 </template>

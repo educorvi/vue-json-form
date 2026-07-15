@@ -3,12 +3,15 @@ import { VueDraggable } from 'vue-draggable-plus';
 import PaletteItem from './PaletteItem.vue';
 import type { PaletteField, FormElement } from '@/types/formTypes';
 import { useFormStore } from '@/stores/formStore';
-import { BCardGroup } from 'bootstrap-vue-next';
 
-const props = defineProps<{
-    fields: PaletteField[];
-    clone: (field: PaletteField) => FormElement;
-}>();
+const props = withDefaults(
+    defineProps<{
+        fields: PaletteField[];
+        clone: (field: PaletteField) => FormElement;
+        compact?: boolean;
+    }>(),
+    { compact: false }
+);
 
 const emit = defineEmits<{ fieldClick: [id: string] }>();
 
@@ -44,6 +47,7 @@ function onDragEnd() {
         <div v-for="field in fields" :key="field.id" class="col-6">
             <PaletteItem
                 :field="field"
+                :compact="compact"
                 @click="emit('fieldClick', field.id)"
             />
         </div>

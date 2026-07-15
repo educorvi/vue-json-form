@@ -156,3 +156,6 @@ dist
 playwright-report/
 test-results/
 playwright/.cache/
+
+# extern
+extern
