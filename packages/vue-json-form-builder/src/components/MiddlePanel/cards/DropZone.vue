@@ -37,8 +37,8 @@ const model = computed({
 });
 
 const isDragging = computed(() => store.dragSourceType !== null);
-const isDragOverThisZone = computed(
-    () => store.dragOverContainerId === props.parentId
+const isDragOverThisZone = computed(() =>
+    store.dragOverAncestorIds.includes(props.parentId)
 );
 
 const canAccept = computed(() => {
@@ -85,12 +85,23 @@ function onChildAdd(event: any) {
     store.selectElement(el._id);
 }
 
+function collectAncestorDropZoneIds(el: HTMLElement | null): string[] {
+    const ids: string[] = [];
+    let current: HTMLElement | null = el;
+    while (current) {
+        const id = current.getAttribute('data-drop-zone-id');
+        if (id) ids.push(id);
+        current = current.parentElement?.closest('[data-drop-zone-id]') ?? null;
+    }
+    return ids;
+}
+
 function onDragStart(e: any) {
     const draggedId = e?.item?.dataset?.elementId as string | undefined;
     const draggedType = e?.item?.dataset?.elementType as string | undefined;
     const child = model.value[e.oldIndex];
     _draggedEl = child ?? null;
-    store.setDragOverContainer(props.parentId);
+    store.setDragOverAncestorIds(collectAncestorDropZoneIds(e?.item ?? null));
 
     const sourceType = draggedType ?? child?.type ?? null;
     if (sourceType) {
@@ -106,11 +117,17 @@ function onDragStart(e: any) {
 }
 
 function onDragMove(event: any) {
-    const toEl = event?.to as HTMLElement | undefined;
-    const targetZone =
-        toEl?.dataset?.dropZoneId ??
-        toEl?.closest('[data-drop-zone-id]')?.getAttribute('data-drop-zone-id');
-    store.setDragOverContainer(targetZone ?? null);
+    try {
+        const toEl = event?.to as HTMLElement | undefined;
+        const targetEl = toEl?.dataset?.dropZoneId
+            ? toEl
+            : (toEl?.closest('[data-drop-zone-id]') ?? null);
+        store.setDragOverAncestorIds(
+            collectAncestorDropZoneIds(targetEl as HTMLElement | null)
+        );
+    } catch {
+        // ignore move event errors
+    }
     return true;
 }
 
@@ -121,7 +138,7 @@ function onChildRemove() {
 function onDragEnd() {
     _draggedEl = null;
     store.setDragSource(null);
-    store.setDragOverContainer(null);
+    store.setDragOverAncestorIds([]);
     document.body.classList.remove('sortable-drag-active');
 }
 

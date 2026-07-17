@@ -118,25 +118,7 @@ body.is-resizing {
     transform: scale(0.95);
 }
 
-/* Code block - dark terminal style */
-.modal-body pre.code-block,
-pre.code-block {
-    background-color: #1e1e2e !important;
-    color: #cdd6f4 !important;
-    border-radius: 0.375rem;
-    padding: 1rem;
-    overflow: auto;
-    max-height: 24rem;
-    font-size: 0.75rem;
-    font-family: monospace !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-shadow: none;
-}
 
-.modal-body pre.code-block code,
-pre.code-block code {
-    color: #cdd6f4 !important;
-}
 
 /* App header */
 .app-header {

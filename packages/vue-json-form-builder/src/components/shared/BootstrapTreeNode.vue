@@ -45,9 +45,10 @@ function select() {
             :style="{ paddingLeft: `${depth * 12 + 6}px`, cursor: 'pointer' }"
             :class="
                 selectedId === node.id
-                    ? 'bg-primary-subtle text-primary fw-medium'
+                    ? 'bg-primary-subtle text-primary fw-medium border border-primary'
                     : 'text-body'
             "
+            style="border-width: 1.5px !important"
             @click="select"
         >
             <!-- Expand/collapse caret -->

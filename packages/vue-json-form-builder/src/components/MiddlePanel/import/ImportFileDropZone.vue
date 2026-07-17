@@ -45,7 +45,7 @@ function triggerBrowse() {
         <label class="form-label fw-medium small">{{ label }}</label>
 
         <div
-            class="border border-2 border-dashed rounded p-4 d-flex flex-column align-items-center gap-2 text-center"
+            class="border border-2 rounded p-4 d-flex flex-column align-items-center gap-2 text-center"
             :class="
                 error
                     ? 'border-danger bg-danger bg-opacity-10'
@@ -53,17 +53,23 @@ function triggerBrowse() {
                       ? 'border-primary bg-primary bg-opacity-10'
                       : 'border-secondary'
             "
+            style="border-style: dashed !important"
             @dragover.prevent
             @drop.prevent="onDrop"
         >
             <PhFile v-if="file" :size="32" weight="bold" class="text-primary" />
-            <PhFileArrowUp v-else :size="32" weight="bold" class="text-body" />
+            <PhFileArrowUp
+                v-else
+                :size="32"
+                weight="bold"
+                class="text-body-secondary"
+            />
 
             <div>
-                <p class="mb-0 small fw-medium">
+                <p class="mb-0 small fw-medium text-body-secondary">
                     {{ file ? file.name : 'Drop file or click to browse' }}
                 </p>
-                <p class="mb-0 text-body" style="font-size: 0.7rem">
+                <p class="mb-0 text-body-secondary" style="font-size: 0.7rem">
                     {{
                         file
                             ? `${(file.size / 1024).toFixed(1)} KB`

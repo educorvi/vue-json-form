@@ -7,7 +7,7 @@ const emit = defineEmits<{ click: [id: string] }>();
 
 <template>
     <div
-        class="palette-item d-flex flex-column align-items-center gap-1 p-2 rounded border border-dark-subtle text-center"
+        class="palette-item d-flex flex-column align-items-center justify-content-center gap-1 p-2 rounded border border-dark-subtle text-center h-100"
         :class="compact ? 'py-1 px-1' : ''"
         :title="field.description"
         @click="emit('click', field.id)"

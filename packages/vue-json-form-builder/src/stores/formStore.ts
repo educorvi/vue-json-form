@@ -108,7 +108,9 @@ export interface FormStore {
     isExportOpen: Ref<boolean>;
     isImportOpen: Ref<boolean>;
     dragSourceType: Ref<string | null>;
-    dragOverContainerId: Ref<string | null>;
+    dragOverAncestorIds: Ref<string[]>;
+    draggedElementId: Ref<string | null>;
+    isDragOverTrash: Ref<boolean>;
     activeWizardPageIndex: Ref<number>;
     uiSchema: ComputedRef<UISchema>;
     exportedJsonSchema: ComputedRef<JSONSchema>;
@@ -142,7 +144,8 @@ export interface FormStore {
     openImport: () => void;
     closeImport: () => void;
     setDragSource: (type: string | null) => void;
-    setDragOverContainer: (id: string | null) => void;
+    setDragOverAncestorIds: (ids: string[]) => void;
+    setDraggedElement: (id: string | null) => void;
     setRootToWizard: () => void;
     setRootToLayout: (
         type?: 'VerticalLayout' | 'HorizontalLayout' | 'Group'
@@ -180,7 +183,9 @@ function setupFormStore(): FormStore {
     const isExportOpen = ref(false);
     const isImportOpen = ref(false);
     const dragSourceType = ref<string | null>(null);
-    const dragOverContainerId = ref<string | null>(null);
+    const dragOverAncestorIds = ref<string[]>([]);
+    const draggedElementId = ref<string | null>(null);
+    const isDragOverTrash = ref(false);
     const activeWizardPageIndex = ref(0);
 
     // ── Root-aware helpers ─────────────────────────────────────────────────────
@@ -479,8 +484,16 @@ function setupFormStore(): FormStore {
         dragSourceType.value = type;
     }
 
-    function setDragOverContainer(id: string | null): void {
-        dragOverContainerId.value = id;
+    function setDragOverAncestorIds(ids: string[]): void {
+        dragOverAncestorIds.value = ids;
+    }
+
+    function setDraggedElement(id: string | null): void {
+        draggedElementId.value = id;
+    }
+
+    function setDragOverTrash(over: boolean): void {
+        isDragOverTrash.value = over;
     }
 
     /**
@@ -639,7 +652,9 @@ function setupFormStore(): FormStore {
         isExportOpen,
         isImportOpen,
         dragSourceType,
-        dragOverContainerId,
+        dragOverAncestorIds,
+        draggedElementId,
+        isDragOverTrash,
         activeWizardPageIndex,
         uiSchema,
         exportedJsonSchema,
@@ -661,12 +676,14 @@ function setupFormStore(): FormStore {
         renameControlKey,
         setThemeMode,
         togglePreviewInline,
+        setDragOverTrash,
         openExport,
         closeExport,
         openImport,
         closeImport,
         setDragSource,
-        setDragOverContainer,
+        setDragOverAncestorIds,
+        setDraggedElement,
         setRootToWizard,
         setRootToLayout,
         addWizardPage,

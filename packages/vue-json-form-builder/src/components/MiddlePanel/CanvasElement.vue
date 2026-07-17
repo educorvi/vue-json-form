@@ -32,7 +32,9 @@ const store = useFormStore();
 const hovered = ref(false);
 const isDragging = computed(() => store.dragSourceType !== null);
 const isDragOverContainer = computed(
-    () => isDragging.value && store.dragOverContainerId === props.element._id
+    () =>
+        isDragging.value &&
+        store.dragOverAncestorIds.includes(props.element._id)
 );
 
 const isSelected = computed(

@@ -54,3 +54,18 @@ function download() {
         <pre class="code-block">{{ code }}</pre>
     </div>
 </template>
+
+<style scoped>
+.code-block {
+    background-color: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    overflow: auto;
+    max-height: 24rem;
+    font-size: 0.75rem;
+    font-family: monospace;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: none;
+}
+</style>

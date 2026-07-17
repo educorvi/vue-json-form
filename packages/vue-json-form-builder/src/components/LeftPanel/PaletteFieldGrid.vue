@@ -40,14 +40,17 @@ function onDragEnd() {
         :group="{ name: 'form-elements', pull: 'clone', put: false }"
         :sort="false"
         :clone="clone"
+        drag-class="sortable-drag"
+        chosen-class="sortable-chosen"
         class="row g-1"
         @start="onDragStart"
         @end="onDragEnd"
     >
-        <div v-for="field in fields" :key="field.id" class="col-6">
+        <div v-for="field in fields" :key="field.id" class="col-6 d-flex">
             <PaletteItem
                 :field="field"
                 :compact="compact"
+                class="w-100"
                 @click="emit('fieldClick', field.id)"
             />
         </div>

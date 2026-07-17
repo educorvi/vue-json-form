@@ -44,7 +44,16 @@ const treeData = computed((): BootstrapTreeItem[] => {
             },
         ];
     }
-    return buildTreeItems(root.elements);
+    const root$ = wrapElement(root);
+    return [
+        {
+            id: root._id,
+            label: root$.getLabel(store.jsonSchema as any),
+            icon: root$.icon,
+            type: root.type,
+            children: buildTreeItems((root as any).elements ?? []),
+        },
+    ];
 });
 
 const selectedId = computed(() => store.selectedElementId);
