@@ -19,6 +19,7 @@ type OrderBy = GroupsQuery['order_by'];
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
+const { notify } = useNotify();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
@@ -74,19 +75,15 @@ async function onDeleteConfirm(item: any) {
     deletePending.value = true;
     deleteError.value = null;
     try {
-        await orpc.groups.update({
-            params: { id: String(item.id) },
-            body: {
-                title: item.title ?? item.name ?? '',
-                created_by: null as any,
-                updated_by: null as any,
-            },
-        });
+        await orpc.groups.delete({ params: { id: String(item.id) } });
         showDeleteModal.value = false;
         deleteTarget.value = null;
+        notify(t('groups.detail.deleteSuccess'), 'success');
         refreshNuxtData('groups');
     } catch (err: any) {
-        deleteError.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        deleteError.value = msg;
+        notify(msg, 'danger');
     } finally {
         deletePending.value = false;
     }

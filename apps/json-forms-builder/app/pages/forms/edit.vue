@@ -9,6 +9,7 @@ import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
+const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
@@ -46,17 +47,40 @@ const editSlug = ref('');
 const saving = ref(false);
 const savedMsg = ref(false);
 const saveErrorMsg = ref<string | null>(null);
+const formTouched = ref(false);
 
-watch(form, (f) => {
-    if (f) {
-        editTitle.value = f.title ?? '';
-        editDescription.value = f.description ?? '';
-        editSlug.value = f.name ?? '';
-    }
+const showTitleInvalid = computed(
+    () => formTouched.value && !editTitle.value.trim()
+);
+function titleState(): boolean | undefined {
+    return showTitleInvalid.value ? false : undefined;
+}
+
+watch(
+    form,
+    (f) => {
+        if (f) {
+            editTitle.value = f.title ?? '';
+            editDescription.value = f.description ?? '';
+            editSlug.value = f.name ?? '';
+        }
+    },
+    { immediate: true }
+);
+
+const hasChanges = computed(() => {
+    if (!form.value) return false;
+    return (
+        editTitle.value.trim() !== (form.value.title ?? '') ||
+        (editDescription.value.trim() || null) !==
+            (form.value.description ?? null)
+    );
 });
 
 async function onSaveGeneral() {
     if (!form.value) return;
+    formTouched.value = true;
+    if (!editTitle.value.trim()) return;
     saving.value = true;
     savedMsg.value = false;
     saveErrorMsg.value = null;
@@ -67,12 +91,17 @@ async function onSaveGeneral() {
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
+                created_by: null,
+                updated_by: null,
             } as any,
         });
         savedMsg.value = true;
+        notify(t('settings.saved'), 'success');
         refreshNuxtData(`form-${formPath.value}`);
     } catch (err: any) {
-        saveErrorMsg.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        saveErrorMsg.value = msg;
+        notify(msg, 'danger');
     } finally {
         saving.value = false;
     }
@@ -92,7 +121,9 @@ async function onDeleteConfirm() {
         showDeleteModal.value = false;
         router.push(Routes.FORMS);
     } catch (err: any) {
-        deleteError.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        deleteError.value = msg;
+        notify(msg, 'danger');
     } finally {
         deletePending.value = false;
     }
@@ -160,6 +191,8 @@ function goDetail() {
                 :saving="saving"
                 :saved-msg="savedMsg"
                 :save-error="saveErrorMsg"
+                :has-changes="hasChanges"
+                :title-state="titleState()"
                 @update:description="editDescription = $event"
                 @save="onSaveGeneral"
             />

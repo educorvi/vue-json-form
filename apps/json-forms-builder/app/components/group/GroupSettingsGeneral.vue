@@ -11,6 +11,8 @@ defineProps<{
     saving?: boolean;
     savedMsg?: boolean;
     saveError?: string | null;
+    hasChanges?: boolean;
+    titleState?: boolean | undefined;
 }>();
 
 const emit = defineEmits<{
@@ -29,7 +31,7 @@ const emit = defineEmits<{
             <BButton
                 variant="primary"
                 size="sm"
-                :disabled="saving"
+                :disabled="!hasChanges || saving"
                 @click="emit('save')"
             >
                 <BSpinner v-if="saving" small class="me-1" />
@@ -84,8 +86,12 @@ const emit = defineEmits<{
             <BFormInput
                 :model-value="modelValue"
                 :placeholder="$t('groups.edit.fields.titlePlaceholder')"
+                :state="titleState"
                 @update:model-value="emit('update:modelValue', $event)"
             />
+            <BFormInvalidFeedback :force-show="titleState === false">
+                {{ $t('common.required') }}
+            </BFormInvalidFeedback>
         </BFormGroup>
 
         <BFormGroup

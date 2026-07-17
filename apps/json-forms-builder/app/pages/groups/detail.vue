@@ -11,6 +11,7 @@ import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
+const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
@@ -104,21 +105,17 @@ async function onDeleteConfirm(item: any) {
         if (item.type === 'form') {
             await orpc.forms.delete({ params: { id: String(item.id) } });
         } else {
-            await orpc.groups.update({
-                params: { id: String(item.id) },
-                body: {
-                    title: item.title ?? item.name ?? '',
-                    created_by: null as any,
-                    updated_by: null as any,
-                },
-            });
+            await orpc.groups.delete({ params: { id: String(item.id) } });
         }
         showDeleteModal.value = false;
         deleteTarget.value = null;
+        notify(t('groups.detail.deleteSuccess'), 'success');
         refreshNuxtData(`group-children-${groupPath.value}`);
         refreshNuxtData(`group-detail-${groupPath.value}`);
     } catch (err: any) {
-        deleteError.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        deleteError.value = msg;
+        notify(msg, 'danger');
     } finally {
         deletePending.value = false;
     }

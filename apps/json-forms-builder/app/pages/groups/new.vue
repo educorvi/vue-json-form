@@ -75,7 +75,7 @@ function onSlugInput() {
 }
 
 // ── Validation ─────────────────────────────────────────────────────────────
-const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
 const slugError = computed(() => {
     if (!slug.value.trim()) return null;
@@ -109,6 +109,7 @@ const formValid = computed(
 // ── Submission ─────────────────────────────────────────────────────────────
 const submitting = ref(false);
 const errorMessage = ref<string | null>(null);
+const { notify } = useNotify();
 
 async function submit() {
     formTouched.value = true;
@@ -136,8 +137,10 @@ async function submit() {
         );
         await router.push(Routes.groupsDetail(path));
     } catch (err: any) {
-        errorMessage.value =
+        const msg =
             err?.message ?? err?.data?.message ?? t('groups.new.createError');
+        errorMessage.value = msg;
+        notify(msg, 'danger');
     } finally {
         submitting.value = false;
     }
@@ -162,6 +165,7 @@ function cancel() {
             <BCardBody>
                 <BForm
                     class="d-flex flex-column gap-3"
+                    novalidate
                     :validated="formTouched"
                     @submit.prevent="submit"
                 >

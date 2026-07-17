@@ -11,6 +11,7 @@ import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
+const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
@@ -47,16 +48,39 @@ const editDescription = ref('');
 const saving = ref(false);
 const savedMsg = ref(false);
 const saveErrorMsg = ref<string | null>(null);
+const formTouched = ref(false);
 
-watch(group, (g) => {
-    if (g) {
-        editTitle.value = g.title ?? '';
-        editDescription.value = g.description ?? '';
-    }
+const showTitleInvalid = computed(
+    () => formTouched.value && !editTitle.value.trim()
+);
+function titleState(): boolean | undefined {
+    return showTitleInvalid.value ? false : undefined;
+}
+
+watch(
+    group,
+    (g) => {
+        if (g) {
+            editTitle.value = g.title ?? '';
+            editDescription.value = g.description ?? '';
+        }
+    },
+    { immediate: true }
+);
+
+const hasChanges = computed(() => {
+    if (!group.value) return false;
+    return (
+        editTitle.value.trim() !== (group.value.title ?? '') ||
+        (editDescription.value.trim() || null) !==
+            (group.value.description ?? null)
+    );
 });
 
 async function onSaveGeneral() {
     if (!group.value) return;
+    formTouched.value = true;
+    if (!editTitle.value.trim()) return;
     saving.value = true;
     savedMsg.value = false;
     saveErrorMsg.value = null;
@@ -69,9 +93,12 @@ async function onSaveGeneral() {
             } as any,
         });
         savedMsg.value = true;
+        notify(t('settings.saved'), 'success');
         refreshNuxtData(`group-${groupPath.value}`);
     } catch (err: any) {
-        saveErrorMsg.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        saveErrorMsg.value = msg;
+        notify(msg, 'danger');
     } finally {
         saving.value = false;
     }
@@ -87,18 +114,14 @@ async function onDeleteConfirm() {
     deletePending.value = true;
     deleteError.value = null;
     try {
-        await orpc.groups.update({
-            params: { id: groupPath.value },
-            body: {
-                title: editTitle.value.trim() || 'deleted',
-                created_by: null as any,
-                updated_by: null as any,
-            },
-        });
+        await orpc.groups.delete({ params: { id: String(group.value.id) } });
         showDeleteModal.value = false;
+        notify(t('groups.detail.deleteSuccess'), 'success');
         router.push(Routes.GROUPS);
     } catch (err: any) {
-        deleteError.value = err?.message ?? String(err);
+        const msg = err?.message ?? String(err);
+        deleteError.value = msg;
+        notify(msg, 'danger');
     } finally {
         deletePending.value = false;
     }
@@ -167,6 +190,8 @@ function goDetail() {
                 :saving="saving"
                 :saved-msg="savedMsg"
                 :save-error="saveErrorMsg"
+                :has-changes="hasChanges"
+                :title-state="titleState()"
                 @update:description="editDescription = $event"
                 @save="onSaveGeneral"
             />

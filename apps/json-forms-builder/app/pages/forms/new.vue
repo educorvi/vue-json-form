@@ -75,7 +75,7 @@ function onSlugInput() {
 }
 
 // ── Validation ─────────────────────────────────────────────────────────────
-const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_RE = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
 const slugError = computed(() => {
     if (!slug.value.trim()) return null;
@@ -109,6 +109,7 @@ const formValid = computed(
 // ── Submission ─────────────────────────────────────────────────────────────
 const submitting = ref(false);
 const errorMessage = ref<string | null>(null);
+const { notify } = useNotify();
 
 async function submit() {
     formTouched.value = true;
@@ -118,18 +119,22 @@ async function submit() {
 
     try {
         const created = await orpc.forms.create({
-            query: { id: parentPath.value ?? '' },
+            query: { id: parentId.value != null ? String(parentId.value) : '' },
             body: {
                 title: title.value.trim(),
                 name: slug.value.trim(),
                 description: description.value.trim() || null,
+                created_by: null,
+                updated_by: null,
             } as any,
         });
         const path = buildFormUrlPath(created as any);
         router.push(Routes.formsDetail(path));
     } catch (err: any) {
-        errorMessage.value =
+        const msg =
             err?.message ?? err?.data?.message ?? t('forms.new.createError');
+        errorMessage.value = msg;
+        notify(msg, 'danger');
     } finally {
         submitting.value = false;
     }
@@ -154,6 +159,7 @@ function cancel() {
             <BCardBody>
                 <BForm
                     class="d-flex flex-column gap-3"
+                    novalidate
                     :validated="formTouched"
                     @submit.prevent="submit"
                 >
@@ -177,7 +183,7 @@ function cancel() {
                         </BFormInvalidFeedback>
                     </BFormGroup>
 
-                    <!-- Parent group -->
+                    <!-- Parent group (optional) -->
                     <BFormGroup
                         :label="t('forms.new.fields.parent')"
                         label-class="fw-medium"
