@@ -46,6 +46,8 @@ tags:
     description: Group hierarchy management
   - name: Forms
     description: Form management
+  - name: API Keys
+    description: API key management for programmatic access
   # - name: Permissions
   #   description: Permission management for forms and groups
 
@@ -924,6 +926,91 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  # ── API KEYS ────────────────────────────────────────────────────────────────
+
+  /api-keys:
+    get:
+      tags: [API Keys]
+      summary: List API keys
+      description: |
+        Returns all API keys belonging to the authenticated user.
+        Only the current user's own keys are visible.
+      operationId: listApiKeys
+      responses:
+        '200':
+          description: List of API keys for the current user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKey'
+    post:
+      tags: [API Keys]
+      summary: Create an API key
+      description: |
+        Creates a new API key for the authenticated user.
+        The response includes the full `token` value — this is the only
+        time the token is returned and cannot be retrieved later.
+      operationId: createApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyCreate'
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyCreated'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /api-keys/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ApiKeyId'
+    patch:
+      tags: [API Keys]
+      summary: Update an API key
+      description: |
+        Updates the `name` and/or `description` of an API key.
+        Only the authenticated owner of the key may update it.
+      operationId: patchApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiKeyPatch'
+      responses:
+        '200':
+          description: API key updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [API Keys]
+      summary: Delete an API key
+      description: |
+        Permanently deletes an API key. Only the authenticated owner
+        of the key may delete it.
+      operationId: deleteApiKey
+      responses:
+        '204':
+          description: API key deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 # ---------------------------------------------------------------------------
 # COMPONENTS
 # ---------------------------------------------------------------------------
@@ -1052,6 +1139,15 @@ components:
           type: string
           enum: [group, form]
 
+    ApiKeyId:
+      name: id
+      in: path
+      required: true
+      description: ID of the API key
+      schema:
+        type: integer
+        minimum: 1
+
     # Could also be implemented by using a path parameter for form operations
     GroupIdOrPathQuery:
       name: id
@@ -1116,6 +1212,13 @@ components:
       description: |
         Whether this permission was granted directly on the resource (`direct`) or
         propagated from a parent group (`inherited`).
+
+    Visibility:
+      type: string
+      enum: [visible, private]
+      description: |
+        Visibility of a group or form. `visible` means all users can see it,
+        `private` means only users with an explicit permission can access it.
 
     # ── Shared mixins ────────────────────────────────────────────────────────
 
@@ -1291,6 +1394,8 @@ components:
           type: string
           maxLength: 255
           description: Display name of the group
+        visibility:
+          $ref: '#/components/schemas/Visibility'
         children:
           type:
             - array
@@ -1315,6 +1420,8 @@ components:
           type: string
           maxLength: 255
           description: Display name of the group
+        visibility:
+          $ref: '#/components/schemas/Visibility'
         member_count:
           type: integer
           readOnly: true
@@ -1372,7 +1479,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/GroupPatch'
       type: object
-      required: [name, title, description, permissions]
+      required: [name, title, description, visibility, permissions]
 
     # Child elements within a group need to be differentiated with a discriminator
 
@@ -1432,6 +1539,8 @@ components:
                 - string
                 - "null"
               description: Description of the form
+            visibility:
+              $ref: '#/components/schemas/Visibility'
             parent_path:
               anyOf:
                 - $ref: '#/components/schemas/ParentPath'
@@ -1477,7 +1586,7 @@ components:
       description: |
         Form metadata. The schema (JSON Schema and UI Schema) is managed separately
         via `/forms/{id}/schema` endpoints and is not included here.
-      required: [title, name, description, permissions]
+      required: [title, name, description, visibility, permissions]
 
     # Schema payload for read operations (GET /forms/{id}/schema)
     FormSchemaPayloadPatch:
@@ -1523,6 +1632,89 @@ components:
           type: object
           description: UI Schema (replaces only the UI part)
           additionalProperties: true
+
+    # ── API Key ──────────────────────────────────────────────────────────────
+
+    ApiKeyShared:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+          description: Human-readable name to identify the API key
+        description:
+          type:
+            - string
+            - "null"
+          description: Optional description of the API key's purpose
+        identifier:
+          type: string
+          readOnly: true
+          description: >
+            Partial token showing only the first and last few characters
+            (e.g. "sk_a4…f7").
+        expires_at:
+          type: string
+          format: date
+          nullable: true
+          description: Optional expiry date after which the key becomes invalid
+
+    ApiKeyCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: Human-readable name to identify the API key
+        description:
+          type:
+            - string
+            - "null"
+          description: Optional description of the API key's purpose
+        expires_at:
+          type: string
+          format: date
+          nullable: true
+          description: Optional expiry date after which the key becomes invalid
+
+    ApiKeyCreated:
+      allOf:
+        - $ref: '#/components/schemas/ApiKeyShared'
+        - type: object
+          required: [token]
+          properties:
+            token:
+              type: string
+              description: >
+                The full API key token. This is only returned once at creation
+                and cannot be retrieved later.
+
+    ApiKeyPatch:
+      type: object
+      description: |
+        Allows updating the `name` and/or `description` of an API key.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          description: New human-readable name for the API key
+        description:
+          type:
+            - string
+            - "null"
+          description: New description for the API key
+
+    ApiKey:
+      allOf:
+        - $ref: '#/components/schemas/ApiKeyShared'
+      description: |
+        An API key belonging to the authenticated user. The full `token`
+        is never exposed — only the `identifier` fragment is shown.
 
     # ── Form Revision ────────────────────────────────────────────────────────
 

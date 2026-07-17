@@ -2,7 +2,7 @@
 
 PostgreSQL is used as the database for the application. For development purposes a docker compose exists to start a database instance. [TypeORM](https://typeorm.io/) is used as the ORM to manage the database connection and schema. The database schema is automatically created by TypeORM when the backend service starts.
 
-![Database Schema](assets/db.svg)
+![Database Schema](./db.svg)
 
 ```mermaid
 
@@ -129,7 +129,7 @@ erDiagram
 
 ## Workflow: DrawDB and TypeORM
 
-For visualization purposes and easier database design, the database is modeled using [DrawDB](https://github.com/drawdb-io/drawdb) and the db file [db.ddb](assets/db.ddb) can be opened with the tool to see a visual representation of the database. This database file is then manually converted to a TypeORM entity structure in the [server/db/entities](../server/db/entities/) folder. When starting the backend, TypeORM automatically creates the database schema based on the entity structure if it wasn't already created before. Migration of the database schema is also handled by TypeORM and has to be defined manually in the [server/db/migrations](../server/db/migrations/) folder.
+For visualization purposes and easier database design, the database is modeled using [DrawDB](https://github.com/drawdb-io/drawdb) and the db file [db.ddb](./db.ddb) can be opened with the tool to see a visual representation of the database (The tool is also used to generate the `Mermaid`, `PNG` and `SVG`-Export of the db) This database file is then manually converted to a TypeORM entity structure in the [server/db/entities](../../server/db/entities/) folder. When starting the backend, TypeORM automatically creates the database schema based on the entity structure if it wasn't already created before. Migration of the database schema is also handled by TypeORM and has to be defined manually in the [server/db/migrations](../../server/db/migrations/) folder.
 
 ## Database Structure
 
