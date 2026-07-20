@@ -11,16 +11,16 @@
         "@vueuse/core": "^14.3.0",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
-        "bootstrap-vue-next": "0.45.7",
+        "bootstrap-vue-next": "0.45.8",
         "decimal.js": "^10.6.0",
         "deepmerge": "^4.3.1",
         "fast-deep-equal": "^3.1.3",
         "json-pointer": "^0.6.2",
         "pinia": "^3.0.4",
-        "sanitize-html": "^2.17.5",
+        "sanitize-html": "^2.17.6",
         "uuid": "^14.0.1",
-        "vue": "^3.5.39",
-        "vue-component-type-helpers": "^3.3.5",
+        "vue": "^3.5.40",
+        "vue-component-type-helpers": "^3.3.7",
         "vue-draggable-plus": "^0.6.1"
     },
     "devDependencies": {
@@ -67,7 +67,7 @@
         "vite-plugin-vue-devtools": "^8.1.5",
         "vitest": "^4.1.9",
         "vue-eslint-parser": "^10.4.1",
-        "vue-router": "^5.1.0",
+        "vue-router": "^5.2.0",
         "vue-tsc": "^3.3.5"
     },
     "exports": {
