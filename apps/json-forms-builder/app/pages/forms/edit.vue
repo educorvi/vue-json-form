@@ -87,7 +87,6 @@ async function onSaveGeneral() {
     try {
         await orpc.forms.update({
             params: { id: formPath.value },
-            query: { id: formPath.value },
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
@@ -195,6 +194,13 @@ function goDetail() {
                 :title-state="titleState()"
                 @update:description="editDescription = $event"
                 @save="onSaveGeneral"
+            />
+
+            <!-- Permission settings -->
+            <PermissionSettings
+                :orpc="orpc"
+                resource-type="forms"
+                :resource-id="formPath"
             />
 
             <!-- Advanced settings -->

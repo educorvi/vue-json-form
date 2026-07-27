@@ -5,6 +5,11 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
+const router = useRouter();
+
+function navigateToForm(form: any) {
+    router.push(Routes.formDetailPath(form));
+}
 </script>
 
 <template>
@@ -50,10 +55,18 @@ const { t } = useI18n();
         </div>
 
         <div v-else class="row g-3">
-            <div v-for="form in forms" :key="form.id" class="col-lg-4 col-md-6">
-                <NuxtLink
-                    :to="Routes.formDetailPath(form)"
-                    class="text-decoration-none"
+            <div
+                v-for="form in forms"
+                :key="form.id"
+                class="col-lg-4 col-md-6 d-flex"
+            >
+                <div
+                    class="d-flex flex-column flex-grow-1 text-decoration-none"
+                    style="cursor: pointer"
+                    @click="navigateToForm(form)"
+                    @keydown.enter="navigateToForm(form)"
+                    role="link"
+                    tabindex="0"
                 >
                     <BCard class="h-100 dashboard-card">
                         <BCardBody class="d-flex flex-column h-100">
@@ -112,7 +125,7 @@ const { t } = useI18n();
                             </div>
                         </BCardBody>
                     </BCard>
-                </NuxtLink>
+                </div>
             </div>
         </div>
     </section>

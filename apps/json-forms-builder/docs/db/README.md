@@ -157,6 +157,8 @@ Each user can generate API Keys to access the form builder programmatically via 
 
 The API Key additionally stores a `hash` of the token as well as a `identifier` which only includes the first and last view characters of the token. Also a `name` and optional `expire` date are provided for the token.
 
+__Note:__: In the Future, the API keys should also be able to be scoped to projects. For this to work, a separate table is needed which stores an api key and project or group reference. This would allow for scoping the API key to only access specific resources within a project or group. It could also be made possible to create an api key with a custom name and email. This allows either to use bot accounts or another application managing their ow users to create api keys for their users without having to create a user in the form builder. This would also allow for better auditing of api key usage. When using na api key, it has to be checked if custom details are specified and if so, set them for the user context in the request and otherwise, use the user itself.
+
 ### Permissions
 
 The permissions were already mentioned a few times in the previous sections. The permission system is a simple role based access control system where each user has a global role and each resource (Form or Group) can have a specific role assigned to a user or userGroup. The roles are defined as follows:

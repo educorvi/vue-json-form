@@ -20,6 +20,11 @@ import {
     createGroup,
     updateGroup,
     replaceGroup,
+    deleteGroup,
+    listGroupPermissions,
+    createGroupPermission,
+    patchGroupPermission,
+    deleteGroupPermission,
     listForms,
     getForm,
     createForm,
@@ -30,6 +35,14 @@ import {
     importFormSchema,
     getFormLatestJsonSchema,
     getFormLatestUiSchema,
+    listFormPermissions,
+    createFormPermission,
+    patchFormPermission,
+    deleteFormPermission,
+    listApiKeys,
+    createApiKey,
+    deleteApiKey,
+    patchApiKey,
 } from './generated/orpc.gen';
 
 export const appContract = {
@@ -43,6 +56,13 @@ export const appContract = {
         create: createGroup,
         update: updateGroup,
         replace: replaceGroup,
+        delete: deleteGroup,
+        permissions: {
+            list: listGroupPermissions,
+            create: createGroupPermission,
+            patch: patchGroupPermission,
+            delete: deleteGroupPermission,
+        },
     },
     forms: {
         list: listForms,
@@ -57,5 +77,17 @@ export const appContract = {
             getLatestJson: getFormLatestJsonSchema,
             getLatestUi: getFormLatestUiSchema,
         },
+        permissions: {
+            list: listFormPermissions,
+            create: createFormPermission,
+            patch: patchFormPermission,
+            delete: deleteFormPermission,
+        },
+    },
+    apiKeys: {
+        list: listApiKeys,
+        create: createApiKey,
+        delete: deleteApiKey,
+        patch: patchApiKey,
     },
 };

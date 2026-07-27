@@ -196,6 +196,13 @@ function goDetail() {
                 @save="onSaveGeneral"
             />
 
+            <!-- Permission settings -->
+            <PermissionSettings
+                :orpc="orpc"
+                resource-type="groups"
+                :resource-id="groupPath"
+            />
+
             <!-- Advanced settings -->
             <GroupSettingsAdvanced @delete="showDeleteModal = true" />
         </template>

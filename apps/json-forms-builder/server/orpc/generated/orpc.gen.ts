@@ -3,7 +3,7 @@
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
 
-import { zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestJsonSchemaPath, zGetFormLatestJsonSchemaResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormLatestUiSchemaPath, zGetFormLatestUiSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetFormSchemaVersionJsonPath, zGetFormSchemaVersionJsonResponse, zGetFormSchemaVersionUiPath, zGetFormSchemaVersionUiResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zImportFormSchemaBody, zImportFormSchemaPath, zImportFormSchemaResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
+import { zCreateApiKeyBody, zCreateApiKeyResponse, zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteApiKeyPath, zDeleteApiKeyResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestJsonSchemaPath, zGetFormLatestJsonSchemaResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormLatestUiSchemaPath, zGetFormLatestUiSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetFormSchemaVersionJsonPath, zGetFormSchemaVersionJsonResponse, zGetFormSchemaVersionUiPath, zGetFormSchemaVersionUiResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zImportFormSchemaBody, zImportFormSchemaPath, zImportFormSchemaResponse, zListApiKeysResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchApiKeyBody, zPatchApiKeyPath, zPatchApiKeyResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
 
 /**
  * Health check
@@ -534,6 +534,77 @@ export const patchFormPermission = oc.route({
     tags: ['Forms']
 }).input(z.object({ body: zPatchFormPermissionBody, params: zPatchFormPermissionPath })).output(zPatchFormPermissionResponse);
 
+/**
+ * List API keys
+ *
+ * Returns all API keys belonging to the authenticated user.
+ * Only the current user's own keys are visible.
+ *
+ */
+export const listApiKeys = oc.route({
+    description: 'Returns all API keys belonging to the authenticated user.\nOnly the current user\'s own keys are visible.\n',
+    inputStructure: 'detailed',
+    method: 'GET',
+    operationId: 'listApiKeys',
+    path: '/api-keys',
+    summary: 'List API keys',
+    tags: ['API Keys']
+}).output(zListApiKeysResponse);
+
+/**
+ * Create an API key
+ *
+ * Creates a new API key for the authenticated user.
+ * The response includes the full `token` value — this is the only
+ * time the token is returned and cannot be retrieved later.
+ *
+ */
+export const createApiKey = oc.route({
+    description: 'Creates a new API key for the authenticated user.\nThe response includes the full `token` value — this is the only\ntime the token is returned and cannot be retrieved later.\n',
+    inputStructure: 'detailed',
+    method: 'POST',
+    operationId: 'createApiKey',
+    path: '/api-keys',
+    successStatus: 201,
+    summary: 'Create an API key',
+    tags: ['API Keys']
+}).input(z.object({ body: zCreateApiKeyBody })).output(zCreateApiKeyResponse);
+
+/**
+ * Delete an API key
+ *
+ * Permanently deletes an API key. Only the authenticated owner
+ * of the key may delete it.
+ *
+ */
+export const deleteApiKey = oc.route({
+    description: 'Permanently deletes an API key. Only the authenticated owner\nof the key may delete it.\n',
+    inputStructure: 'detailed',
+    method: 'DELETE',
+    operationId: 'deleteApiKey',
+    path: '/api-keys/{id}',
+    successStatus: 204,
+    summary: 'Delete an API key',
+    tags: ['API Keys']
+}).input(z.object({ params: zDeleteApiKeyPath })).output(zDeleteApiKeyResponse);
+
+/**
+ * Update an API key
+ *
+ * Updates the `name` and/or `description` of an API key.
+ * Only the authenticated owner of the key may update it.
+ *
+ */
+export const patchApiKey = oc.route({
+    description: 'Updates the `name` and/or `description` of an API key.\nOnly the authenticated owner of the key may update it.\n',
+    inputStructure: 'detailed',
+    method: 'PATCH',
+    operationId: 'patchApiKey',
+    path: '/api-keys/{id}',
+    summary: 'Update an API key',
+    tags: ['API Keys']
+}).input(z.object({ body: zPatchApiKeyBody, params: zPatchApiKeyPath })).output(zPatchApiKeyResponse);
+
 export const contract = {
     getStatus,
     listUsers,
@@ -568,5 +639,9 @@ export const contract = {
     listFormPermissions,
     createFormPermission,
     deleteFormPermission,
-    patchFormPermission
+    patchFormPermission,
+    listApiKeys,
+    createApiKey,
+    deleteApiKey,
+    patchApiKey
 };

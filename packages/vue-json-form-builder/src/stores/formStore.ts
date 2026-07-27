@@ -146,6 +146,7 @@ export interface FormStore {
     setDragSource: (type: string | null) => void;
     setDragOverAncestorIds: (ids: string[]) => void;
     setDraggedElement: (id: string | null) => void;
+    setDragOverTrash: (over: boolean) => void;
     setRootToWizard: () => void;
     setRootToLayout: (
         type?: 'VerticalLayout' | 'HorizontalLayout' | 'Group'

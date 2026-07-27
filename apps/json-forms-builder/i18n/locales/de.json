@@ -261,6 +261,7 @@
         "cancel": "Abbrechen",
         "clear": "Löschen",
         "edit": "Bearbeiten",
+        "delete": "Entfernen",
         "required": "Dieses Feld ist erforderlich",
         "errorTitle": "Etwas ist schiefgelaufen",
         "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
@@ -277,9 +278,70 @@
         "generalDescription": "Verwalte grundlegende Metadaten für dieses Element.",
         "advanced": "Erweitert",
         "advancedDescription": "Gefahrenzone — irreversible Aktionen wie das Löschen.",
+        "permissions": "Berechtigungen",
+        "permissionsDescription": "Verwalte, wer Zugriff auf dieses Element hat und was sie tun können.",
         "save": "Änderungen speichern",
         "saved": "Änderungen erfolgreich gespeichert.",
         "saveError": "Änderungen konnten nicht gespeichert werden."
+    },
+    "permissions": {
+        "title": "Berechtigungen",
+        "description": "Benutzerberechtigungen und Rollen für dieses Element verwalten.",
+        "addButton": "Berechtigung hinzufügen",
+        "addTitle": "Berechtigung hinzufügen",
+        "editTitle": "Berechtigung bearbeiten",
+        "deleteTitle": "Berechtigung entfernen",
+        "deleteConfirm": "Bist du sicher, dass du diese Berechtigung entfernen möchtest?",
+        "columns": {
+            "user": "Benutzer",
+            "role": "Rolle",
+            "scope": "Quelle",
+            "expires": "Läuft ab",
+            "added": "Hinzugefügt",
+            "actions": "Aktionen"
+        },
+        "scope": {
+            "direct": "Direkt",
+            "inherited": "Vererbt"
+        },
+        "inheritedFrom": "Vererbt von {group}",
+        "noPermissions": "Keine Berechtigungen gefunden.",
+        "loadError": "Berechtigungen konnten nicht geladen werden.",
+        "createError": "Berechtigung konnte nicht hinzugefügt werden.",
+        "patchError": "Berechtigung konnte nicht aktualisiert werden.",
+        "deleteError": "Berechtigung konnte nicht entfernt werden.",
+        "addSuccess": "Berechtigung erfolgreich hinzugefügt.",
+        "patchSuccess": "Berechtigung erfolgreich aktualisiert.",
+        "deleteSuccess": "Berechtigung erfolgreich entfernt.",
+        "form": {
+            "user": "Benutzer",
+            "userPlaceholder": "Suche nach einem Benutzer…",
+            "userNotFound": "Kein Benutzer mit dieser E-Mail oder diesem Namen gefunden.",
+            "role": "Rolle",
+            "rolePlaceholder": "Wähle eine Rolle…",
+            "expire": "Ablaufdatum",
+            "expireHint": "Optional — leer lassen für kein Ablaufdatum.",
+            "inheritHint": "Dieser Benutzer hat bereits die Rolle {role} von einer übergeordneten Gruppe. Du kannst nur eine höhere Rolle zuweisen."
+        },
+        "roles": {
+            "owner": "Besitzer",
+            "ownerDescription": "Vollständige Kontrolle — kann Berechtigungen verwalten, Einstellungen bearbeiten und das Element löschen.",
+            "editor": "Bearbeiter",
+            "editorDescription": "Kann das Element und seine Einstellungen ansehen und bearbeiten, aber keine Berechtigungen verwalten oder löschen.",
+            "guest": "Gast",
+            "guestDescription": "Kann das Element und seine Inhalte nur ansehen."
+        },
+        "sortBy": {
+            "name": "Name",
+            "email": "E-Mail",
+            "role": "Rolle",
+            "scope": "Quelle",
+            "expire": "Läuft ab",
+            "created": "Hinzugefügt",
+            "lastname": "Name"
+        },
+        "expired": "Abgelaufen",
+        "never": "Nie"
     },
     "theme": {
         "label": "Farbschema",

@@ -59,6 +59,13 @@ export default defineEventHandler(async (event) => {
                         type: 'openIdConnect',
                         openIdConnectUrl: `${keycloakBase}/.well-known/openid-configuration`,
                     },
+                    BearerAuth: {
+                        type: 'http',
+                        scheme: 'bearer',
+                        bearerFormat: 'API Key (fb_...)',
+                        description:
+                            'API key token generated via POST /api-keys. Prefix: `fb_`.',
+                    },
                 },
             },
             commonSchemas: {

@@ -3,6 +3,11 @@ const { t } = useI18n();
 const { user, clear: clearSession } = useUserSession();
 
 const userName = computed(() => (user as { name?: string })?.name ?? 'User');
+const userRole = computed(() => (user as { role?: string })?.role ?? null);
+
+function roleBadgeVariant(role: string): string {
+    return role === 'admin' ? 'danger' : 'secondary';
+}
 
 async function logout() {
     await $fetch('/auth/logout', { method: 'POST' });
@@ -18,7 +23,17 @@ async function logout() {
     >
         <PhosphorIcon name="user" />
         <div class="d-flex flex-column">
-            <span class="fw-medium">{{ userName }}</span>
+            <span class="fw-medium d-flex align-items-center gap-2">
+                {{ userName }}
+                <span
+                    v-if="userRole"
+                    :class="'badge bg-' + roleBadgeVariant(userRole)"
+                    class="text-uppercase"
+                    style="font-size: 0.6rem"
+                >
+                    {{ userRole }}
+                </span>
+            </span>
             <span class="small text-secondary">{{
                 (user as { email?: string })?.email ?? ''
             }}</span>

@@ -6,11 +6,13 @@
 defineProps<{
     title: string;
     description: string;
+    /** Optional HTML id attribute for fragment navigation (e.g. '#permissions') */
+    id?: string;
 }>();
 </script>
 
 <template>
-    <BCard class="mb-3">
+    <BCard :id="id" class="mb-3">
         <BCardBody class="p-0">
             <div class="d-flex align-items-center px-3 py-3 gap-3">
                 <div class="flex-grow-1 min-w-0">

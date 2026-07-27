@@ -10,6 +10,8 @@
 <script setup lang="ts">
 defineProps<{
     parentPath: Array<{ name: string; path_segment?: string }>;
+    /** Optional URL fragment (e.g. '#permissions') to append to each link */
+    fragment?: string;
 }>();
 </script>
 
@@ -25,9 +27,10 @@ defineProps<{
                             .slice(0, idx + 1)
                             .map((e) => e.path_segment ?? e.name)
                             .join('/')
-                    )
+                    ) + (fragment ? `#${fragment}` : '')
                 "
                 class="text-secondary text-decoration-none"
+                @click.stop
             >
                 {{ entry.name }}
             </NuxtLink>

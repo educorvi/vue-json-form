@@ -261,6 +261,7 @@
         "cancel": "Cancel",
         "clear": "Clear",
         "edit": "Edit",
+        "delete": "Delete",
         "required": "This field is required",
         "errorTitle": "Something went wrong",
         "errorDescription": "An unexpected error occurred. Please try again.",
@@ -277,9 +278,70 @@
         "generalDescription": "Manage basic metadata for this item.",
         "advanced": "Advanced",
         "advancedDescription": "Danger zone — irreversible actions like deletion.",
+        "permissions": "Permissions",
+        "permissionsDescription": "Manage who has access to this item and what they can do.",
         "save": "Save Changes",
         "saved": "Changes saved successfully.",
         "saveError": "Failed to save changes."
+    },
+    "permissions": {
+        "title": "Permissions",
+        "description": "Manage user permissions and roles for this item.",
+        "addButton": "Add Permission",
+        "addTitle": "Add Permission",
+        "editTitle": "Edit Permission",
+        "deleteTitle": "Remove Permission",
+        "deleteConfirm": "Are you sure you want to remove this permission?",
+        "columns": {
+            "user": "User",
+            "role": "Role",
+            "scope": "Source",
+            "expires": "Expires",
+            "added": "Added",
+            "actions": "Actions"
+        },
+        "scope": {
+            "direct": "Direct",
+            "inherited": "Inherited"
+        },
+        "inheritedFrom": "Inherited from {group}",
+        "noPermissions": "No permissions found.",
+        "loadError": "Failed to load permissions.",
+        "createError": "Failed to add permission.",
+        "patchError": "Failed to update permission.",
+        "deleteError": "Failed to remove permission.",
+        "addSuccess": "Permission added successfully.",
+        "patchSuccess": "Permission updated successfully.",
+        "deleteSuccess": "Permission removed successfully.",
+        "form": {
+            "user": "User",
+            "userPlaceholder": "Search for a user…",
+            "userNotFound": "No user found with this email or name.",
+            "role": "Role",
+            "rolePlaceholder": "Select a role…",
+            "expire": "Expiration Date",
+            "expireHint": "Optional — leave empty for no expiration.",
+            "inheritHint": "This user already has the role {role} from a parent group. You can only assign a higher role."
+        },
+        "roles": {
+            "owner": "Owner",
+            "ownerDescription": "Full control — can manage permissions, edit settings, and delete the item.",
+            "editor": "Editor",
+            "editorDescription": "Can view and edit the item content and settings, but cannot manage permissions or delete.",
+            "guest": "Guest",
+            "guestDescription": "Can only view the item and its contents."
+        },
+        "sortBy": {
+            "name": "Name",
+            "email": "Email",
+            "role": "Role",
+            "scope": "Source",
+            "expire": "Expires",
+            "created": "Added",
+            "lastname": "Name"
+        },
+        "expired": "Expired",
+        "never": "Never"
     },
     "theme": {
         "label": "Theme",

@@ -17,9 +17,7 @@ export default defineNitroPlugin(async (nitroApp) => {
                     '[db] Failed to connect to database:',
                     err instanceof Error ? err.message : err
                 );
-                console.warn(
-                    '[db] Server is running but database is unavailable. API calls requiring the DB will fail.'
-                );
+                throw err;
             });
         await _initPromise;
     }

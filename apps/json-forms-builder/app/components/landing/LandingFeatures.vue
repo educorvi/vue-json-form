@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FeatureChip } from '@/components/landing/FeatureCard.vue';
+import FeatureCard from '@/components/landing/FeatureCard.vue';
 import { APP_LINKS } from '@/utils/links';
 
 const { t } = useI18n();

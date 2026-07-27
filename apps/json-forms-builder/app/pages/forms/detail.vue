@@ -14,6 +14,25 @@ const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
+// The form builder handles its own internal scrolling, so prevent the
+// surrounding layout from scrolling while this page is active. Restore
+// it on unmount so subsequent pages (e.g. edit) are not broken.
+const layoutMainEl = ref<HTMLElement | null>(null);
+onMounted(() => {
+    const main = document.querySelector<HTMLElement>(
+        '.d-flex.flex-column.vh-100 > main.overflow-y-auto'
+    );
+    if (main) {
+        layoutMainEl.value = main;
+        main.style.overflow = 'hidden';
+    }
+});
+onUnmounted(() => {
+    if (layoutMainEl.value) {
+        layoutMainEl.value.style.overflow = '';
+    }
+});
+
 const formPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
@@ -192,11 +211,3 @@ async function onSchemasChange(json: any, ui: any) {
         </div>
     </Teleport>
 </template>
-
-<style>
-/* Prevent the surrounding Nuxt layout from scrolling.
-   The form builder component handles its own internal scrolling. */
-.d-flex.flex-column.vh-100 > main.overflow-y-auto {
-    overflow: hidden !important;
-}
-</style>

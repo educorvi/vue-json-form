@@ -1,8 +1,30 @@
-import { os, authMiddleware } from '../init';
+import { ORPCError } from '@orpc/server';
+import { os, authMiddleware, getUserFromContext } from '../init';
 import { AppDataSource } from '~~/server/db/data-source';
 import { FormService } from '~~/server/services/FormService';
 import { GroupService } from '~~/server/services/GroupService';
-import { zListFormsQuery } from '../generated/zod.gen';
+import { PermissionService } from '~~/server/services/PermissionService';
+import {
+    zListFormPermissionsQuery,
+    zListFormsQuery,
+} from '../generated/zod.gen';
+import {
+    requireFormAccess,
+    canAccessGroup,
+    resolveAccessibleFormIds,
+} from '~~/server/lib/access-control';
+import { validateUrlName } from '~~/server/lib/validation';
+import {
+    ResourceViewPermission,
+    ResourceUpdatePermission,
+    ResourceDeletePermission,
+    ResourceCreateChildPermission,
+    ResourceManagePermissionsPermission,
+} from '~~/server/lib/permissions';
+import {
+    mapPermissionToApi,
+    mapResolvedPermissionToApi,
+} from '../mapping/permission';
 
 const ORDER_BY_MAP: Record<string, string> = {
     id: 'id',
@@ -28,83 +50,182 @@ async function resolveParentGroupId(
 }
 
 export const formsRouter = {
-    list: os.forms.list.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        const q = input.query ?? zListFormsQuery.parse({});
-        const parentId = q.filter_parent_group
-            ? parseInt(q.filter_parent_group, 10)
-            : undefined;
-        const orderBy = ORDER_BY_MAP[q.order_by] ?? 'title';
-        return service.list(
-            {
-                page: q.page,
-                pageSize: q.page_size,
-                sortOrder: q.sort_order === 'asc' ? 'ASC' : 'DESC',
-                search: q.search ?? '',
-            },
-            orderBy as 'id' | 'title' | 'created' | 'updated',
-            parentId
-        );
-    }),
+    list: os.forms.list
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const q = input?.query ?? zListFormsQuery.parse({});
+            const parentId = q.filter_parent_group
+                ? parseInt(q.filter_parent_group, 10)
+                : undefined;
+            const orderBy = ORDER_BY_MAP[q.order_by] ?? 'title';
+            const accessibleFormIds = ResourceViewPermission.isSkippedForRole(
+                user.role
+            )
+                ? null
+                : await resolveAccessibleFormIds(
+                      AppDataSource,
+                      user.id,
+                      ResourceViewPermission
+                  );
+            return service.list(
+                {
+                    page: q.page,
+                    pageSize: q.page_size,
+                    sortOrder: q.sort_order === 'asc' ? 'ASC' : 'DESC',
+                    search: q.search ?? '',
+                },
+                orderBy as any,
+                parentId,
+                accessibleFormIds
+            );
+        }),
 
-    get: os.forms.get.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        return service.getByIdOrSlug(input.params.id);
-    }),
+    get: os.forms.get
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const form = await service.getByIdOrSlug(input.params.id);
+            await requireFormAccess(
+                AppDataSource,
+                user,
+                form.id,
+                ResourceViewPermission
+            );
+            return form;
+        }),
 
-    create: os.forms.create.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        const body = input.body;
-        const parentGroupId = await resolveParentGroupId(input.query?.id);
-        return service.create({
-            title: body.title ?? '',
-            name:
+    create: os.forms.create
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const body = input.body;
+            const parentGroupId = await resolveParentGroupId(input.query?.id);
+
+            if (parentGroupId) {
+                const ok = await canAccessGroup(
+                    AppDataSource,
+                    user,
+                    parentGroupId,
+                    ResourceCreateChildPermission
+                );
+                if (!ok) {
+                    throw new ORPCError('FORBIDDEN', {
+                        message:
+                            'You need at least editor access on the parent group to create forms.',
+                    });
+                }
+            }
+
+            const finalName =
                 body.name ??
                 (body.title
-                    ? (body.title as string).toLowerCase().replace(/\s+/g, '-')
-                    : 'untitled'),
-            description: body.description ?? null,
-            group_id: parentGroupId,
-            path: parentGroupId ? String(parentGroupId) : '',
-        });
-    }),
+                    ? String(body.title).toLowerCase().replace(/\s+/g, '-')
+                    : 'untitled');
+            validateUrlName(finalName, 'Form name');
 
-    update: os.forms.update.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        const body = input.body;
-        // Resolve form by slug (supports both numeric ID and path)
-        const form = await service.getByIdOrSlug(input.params.id);
-        const data: Record<string, any> = {};
-        if (body.title !== undefined) data.title = body.title;
-        if (body.description !== undefined) data.description = body.description;
-        if (input.query?.id) {
-            const gid = await resolveParentGroupId(input.query.id);
-            if (gid) data.group_id = gid;
-        }
-        return service.patch(form.id, data);
-    }),
+            const existing = await service.findByNameAndGroup(
+                finalName,
+                parentGroupId ?? null
+            );
+            if (existing) {
+                throw new ORPCError('CONFLICT', {
+                    message: `A form with name "${finalName}" already exists at this location.`,
+                });
+            }
 
-    replace: os.forms.replace.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        const body = input.body;
-        const form = await service.getByIdOrSlug(input.params.id);
-        const parentGroupId = await resolveParentGroupId(input.query?.id);
-        return service.replace(form.id, {
-            title: body.title ?? '',
-            name: body.title
-                ? (body.title as string).toLowerCase().replace(/\s+/g, '-')
-                : 'untitled',
-            description: body.description ?? null,
-            group_id: parentGroupId,
-            path: parentGroupId ? String(parentGroupId) : '',
-        });
-    }),
+            // Create form + auto-grant owner permission in one transaction
+            return service.create(
+                {
+                    title: body.title ?? '',
+                    name: finalName,
+                    description: body.description ?? null,
+                    visibility: body.visibility ?? 'visible',
+                    group: parentGroupId ? { id: parentGroupId } : null,
+                    path: parentGroupId ? String(parentGroupId) : '',
+                },
+                user.id
+            );
+        }),
 
-    delete: os.forms.delete.use(authMiddleware).handler(async ({ input }) => {
-        const service = new FormService(AppDataSource);
-        const form = await service.getByIdOrSlug(input.params.id);
-        await service.softDelete(form.id);
-    }),
+    update: os.forms.update
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const body = input.body;
+            const form = await service.getByIdOrSlug(input.params.id);
+            await requireFormAccess(
+                AppDataSource,
+                user,
+                form.id,
+                ResourceUpdatePermission
+            );
+
+            const data: Record<string, any> = {};
+            if (body.title !== undefined) {
+                if (!body.title || body.title.trim().length === 0) {
+                    throw new ORPCError('BAD_REQUEST', {
+                        message: 'Title cannot be empty.',
+                    });
+                }
+                data.title = body.title;
+            }
+            if (body.description !== undefined)
+                data.description = body.description;
+            if (body.visibility !== undefined)
+                data.visibility = body.visibility;
+            if (input.query?.id) {
+                const gid = await resolveParentGroupId(input.query.id);
+                if (gid) data.group = { id: gid };
+            }
+            return service.patch(form.id, data);
+        }),
+
+    replace: os.forms.replace
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const body = input.body;
+            const form = await service.getByIdOrSlug(input.params.id);
+            await requireFormAccess(
+                AppDataSource,
+                user,
+                form.id,
+                ResourceUpdatePermission
+            );
+
+            const parentGroupId = await resolveParentGroupId(input.query?.id);
+            return service.replace(form.id, {
+                title: body.title ?? '',
+                name: body.title
+                    ? String(body.title).toLowerCase().replace(/\s+/g, '-')
+                    : 'untitled',
+                description: body.description ?? null,
+                visibility: body.visibility ?? 'visible',
+                group: parentGroupId ? { id: parentGroupId } : null,
+                path: parentGroupId ? String(parentGroupId) : '',
+            });
+        }),
+
+    delete: os.forms.delete
+        .use(authMiddleware)
+        .handler(async ({ input, context }) => {
+            const user = getUserFromContext(context);
+            const service = new FormService(AppDataSource);
+            const form = await service.getByIdOrSlug(input.params.id);
+            await requireFormAccess(
+                AppDataSource,
+                user,
+                form.id,
+                ResourceDeletePermission
+            );
+            await service.softDelete(form.id);
+        }),
 
     // ── Schema endpoints ────────────────────────────────────────────────
 
@@ -160,6 +281,118 @@ export const formsRouter = {
                 const form = await service.getByIdOrSlug(input.params.id);
                 const ui = await service.getFormUiSchema(form.id);
                 return ui ?? {};
+            }),
+    },
+
+    // ── Permission procedures ──────────────────────────────────────────────
+
+    permissions: {
+        list: os.forms.permissions.list
+            .use(authMiddleware)
+            .handler(async ({ input, context }) => {
+                const user = getUserFromContext(context);
+                const formService = new FormService(AppDataSource);
+                const form = await formService.getByIdOrSlug(input.params.id);
+                await requireFormAccess(
+                    AppDataSource,
+                    user,
+                    form.id,
+                    ResourceViewPermission
+                );
+                const permService = new PermissionService(AppDataSource);
+                const q = input.query ?? zListFormPermissionsQuery.parse({});
+                const page = q.page;
+                const pageSize = q.page_size;
+                const { data, total } =
+                    await permService.getResolvedFormPermissions(
+                        form.id,
+                        page,
+                        pageSize
+                    );
+                return {
+                    page,
+                    page_size: pageSize,
+                    total_count: total,
+                    total_pages: Math.max(Math.ceil(total / pageSize), 1),
+                    elements: data.map(mapResolvedPermissionToApi),
+                };
+            }),
+
+        create: os.forms.permissions.create
+            .use(authMiddleware)
+            .handler(async ({ input, context }) => {
+                const user = getUserFromContext(context);
+                const formService = new FormService(AppDataSource);
+                const form = await formService.getByIdOrSlug(input.params.id);
+                await requireFormAccess(
+                    AppDataSource,
+                    user,
+                    form.id,
+                    ResourceManagePermissionsPermission
+                );
+                const body = input.body;
+                if (body.type !== 'user') {
+                    throw new ORPCError('BAD_REQUEST', {
+                        message: 'Only user permissions are supported.',
+                    });
+                }
+                const permService = new PermissionService(AppDataSource);
+                const created = await permService.createForForm(
+                    form.id,
+                    {
+                        role: body.role!,
+                        user_id: body.user_id!,
+                        expire: body.expire ?? null,
+                    },
+                    user.id
+                );
+                return mapPermissionToApi(created);
+            }),
+
+        patch: os.forms.permissions.patch
+            .use(authMiddleware)
+            .handler(async ({ input, context }) => {
+                const user = getUserFromContext(context);
+                const formService = new FormService(AppDataSource);
+                const form = await formService.getByIdOrSlug(input.params.id);
+                await requireFormAccess(
+                    AppDataSource,
+                    user,
+                    form.id,
+                    ResourceManagePermissionsPermission
+                );
+                const permService = new PermissionService(AppDataSource);
+                const updated = await permService.patch(
+                    input.params.permissionId,
+                    'form',
+                    form.id,
+                    {
+                        role: input.body.role,
+                        expire: input.body.expire ?? null,
+                    },
+                    user.id
+                );
+                return mapPermissionToApi(updated);
+            }),
+
+        delete: os.forms.permissions.delete
+            .use(authMiddleware)
+            .handler(async ({ input, context }) => {
+                const user = getUserFromContext(context);
+                const formService = new FormService(AppDataSource);
+                const form = await formService.getByIdOrSlug(input.params.id);
+                await requireFormAccess(
+                    AppDataSource,
+                    user,
+                    form.id,
+                    ResourceManagePermissionsPermission
+                );
+                const permService = new PermissionService(AppDataSource);
+                await permService.delete(
+                    input.params.permissionId,
+                    'form',
+                    form.id
+                );
             }),
     },
 };

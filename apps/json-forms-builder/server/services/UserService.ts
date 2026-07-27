@@ -4,43 +4,37 @@ import {
     type FindOptionsWhere,
     type DataSource,
     type Repository,
+    FindOptionsOrderValue,
 } from 'typeorm';
 import { User as DbUser } from '~~/server/db/entities/User';
-import { paginatedResponse } from '~~/server/utils/helpers';
+import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import type { User as AuthUser } from '#auth-utils';
 import {
     zListUsersQuery,
     zListUsersResponse,
     zUser,
+    // zUserRef,
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
+import { mapAuthRolesToDbRole } from '../lib/auth';
+import {
+    MAP_API_ORDER_BY_TO_DB,
+    mapDbUserToApiUser,
+} from '../orpc/mapping/user';
+import { mapApiSortOrderToDbSortOrder } from '../orpc/mapping/shared';
 
-// export interface ListParams {
-//     page: number;
-//     pageSize: number;
-//     sortOrder: 'ASC' | 'DESC';
-//     search: string;
-// }
-
-type ApiUser = z.infer<typeof zUser>;
+export type ApiUser = z.infer<typeof zUser>;
 
 type ApiListUser = z.infer<typeof zListUsersResponse>;
 
 type ApiListUserQuery = z.infer<typeof zListUsersQuery>;
 
-// type ApiUserOrderBy = ApiListUserQuery['order_by'];
-
-const dbUserToApiUser = (u: DbUser): ApiUser => ({
-    id: u.id,
-    name: u.name,
-    email: u.email,
-    role: u.role,
-    created: u.created.toISOString(),
-    updated: u.updated.toISOString(),
-});
+export type ApiUserOrderBy = ApiListUserQuery['order_by'];
 
 const userDataChanged = (existing: DbUser, newData: AuthUser): boolean =>
-    existing.name !== newData.name || existing.email !== newData.email;
+    existing.name !== newData.username ||
+    existing.email !== newData.email ||
+    existing.role !== mapAuthRolesToDbRole(newData.roles);
 
 export class UserService {
     private readonly repo: Repository<DbUser>;
@@ -59,18 +53,23 @@ export class UserService {
 
         if (existing) {
             if (userDataChanged(existing, data)) {
-                existing.name = data.name;
-                return dbUserToApiUser(await this.repo.save(existing));
+                this.repo.merge(existing, {
+                    name: data.username,
+                    email: data.email,
+                    role: mapAuthRolesToDbRole(data.roles),
+                });
+                return mapDbUserToApiUser(await this.repo.save(existing));
             }
-            return dbUserToApiUser(existing);
+            return mapDbUserToApiUser(existing);
         }
 
         const user = this.repo.create({
+            id: data.id,
             email: data.email,
-            name: data.name,
-            role: 'user',
+            name: data.username,
+            role: mapAuthRolesToDbRole(data.roles),
         });
-        return dbUserToApiUser(await this.repo.save(user));
+        return mapDbUserToApiUser(await this.repo.save(user));
     }
 
     /**
@@ -79,19 +78,17 @@ export class UserService {
     async list(params: ApiListUserQuery): Promise<ApiListUser> {
         const { page, page_size, sort_order, order_by, search } = params;
 
-        let order_by_subset = order_by;
-        if (order_by == 'last_activity') {
-            order_by_subset = 'name';
-        }
-
         const where: FindOptionsWhere<DbUser>[] = search
             ? [{ name: ILike(`%${search}%`) }, { email: ILike(`%${search}%`) }]
             : [];
 
-        // TODO: no validation that ApiUserOrderBy are valid column names. Also the api column names don't have to be the same like in the database, so abstraction is needed
-        const order: FindOptionsOrder<DbUser> = order_by_subset
-            ? { [order_by_subset]: sort_order === 'asc' ? 'ASC' : 'DESC' }
-            : {};
+        const order: FindOptionsOrder<DbUser> =
+            order_by && MAP_API_ORDER_BY_TO_DB[order_by]
+                ? {
+                      [MAP_API_ORDER_BY_TO_DB[order_by]]:
+                          mapApiSortOrderToDbSortOrder(sort_order),
+                  }
+                : {};
 
         const [rows, total] = await this.repo.findAndCount({
             where: where.length ? where : undefined,
@@ -100,13 +97,7 @@ export class UserService {
             take: page_size,
         });
 
-        const data = rows.map(dbUserToApiUser);
-        // sleep 2 seconds for testing loading state
-        // await new Promise((resolve) => setTimeout(resolve, 2000));
+        const data = rows.map(mapDbUserToApiUser);
         return paginatedResponse(data, total, page, page_size);
     }
-
-    // async findById(id: number): Promise<DbUser | null> {
-    //     return this.repo.findOne({ where: { id } });
-    // }
 }

@@ -6,8 +6,12 @@ import {
     TreeChildren,
     TreeParent,
     JoinColumn,
+    OneToMany,
 } from 'typeorm';
+import { Permission } from './Permission';
+import { Form } from './Form';
 import { BaseAuditedEntity } from './BaseEntities';
+import { Visibility } from './BaseEntities';
 
 @Entity({ name: 'group' })
 @Tree('materialized-path')
@@ -30,4 +34,18 @@ export class Group extends BaseAuditedEntity {
 
     @Column({ type: 'text' })
     name!: string;
+
+    @Column({
+        type: 'enum',
+        enum: Visibility,
+        enumName: 'group_visibility',
+        default: Visibility.Visible,
+    })
+    visibility!: Visibility;
+
+    @OneToMany(() => Permission, (permission) => permission.group)
+    permissions!: Permission[];
+
+    @OneToMany(() => Form, (form) => form.group)
+    forms!: Form[];
 }

@@ -90,19 +90,29 @@ async function onDeleteConfirm(item: any) {
 }
 
 function onEdit(item: any) {
-    const path = buildGroupUrlPath(
-        item.parent_path,
-        item.name ?? String(item.id)
-    );
-    router.push(Routes.groupsEdit(path));
+    if (item.type === 'form') {
+        const path = buildFormUrlPath(item);
+        router.push(Routes.formsEdit(path));
+    } else {
+        const path = buildGroupUrlPath(
+            item.parent_path,
+            item.name ?? String(item.id)
+        );
+        router.push(Routes.groupsEdit(path));
+    }
 }
 
 function onNavigate(item: any) {
-    const path = buildGroupUrlPath(
-        item.parent_path,
-        item.name ?? String(item.id)
-    );
-    router.push(Routes.groupsDetail(path));
+    if (item.type === 'form') {
+        const path = buildFormUrlPath(item);
+        router.push(Routes.formsDetail(path));
+    } else {
+        const path = buildGroupUrlPath(
+            item.parent_path,
+            item.name ?? String(item.id)
+        );
+        router.push(Routes.groupsDetail(path));
+    }
 }
 
 // ── Description ─────────────────────────────────────────────────────────────
@@ -204,9 +214,9 @@ const pageDescription = computed(() => {
                     <GroupTreeTable
                         v-else
                         :items="stableItems"
-                        @edit="onEdit"
-                        @delete="onDelete"
-                        @navigate="onNavigate"
+                        @edit="(item) => onEdit(item)"
+                        @delete="(item) => onDelete(item)"
+                        @navigate="(item) => onNavigate(item)"
                     />
                 </BCardBody>
 

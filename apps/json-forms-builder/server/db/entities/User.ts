@@ -1,19 +1,37 @@
 // import 'reflect-metadata';
-import { Entity, Column } from 'typeorm';
-import { BaseTimestampedEntity } from './BaseEntities';
+import {
+    Entity,
+    Column,
+    PrimaryColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 /**
- * The User entity intentionally does NOT extend BaseAuditedEntity because
- * user accounts are managed by an external auth system — there is no
- * created_by / updated_by FK on users themselves.
+ * The User entity stores profile info synced from the Keycloak identity
+ * provider. The primary key is the Keycloak `sub` (UUID), so no separate
+ * auto-increment ID is needed — the token carries the DB key directly.
+ *
+ * Users are auto-created / updated via the session hook
+ * (`server/plugins/session.ts`) on every session fetch, so the DB is
+ * always in sync with Keycloak without relying on the frontend.
  */
 @Entity({ name: 'user' })
-export class User extends BaseTimestampedEntity {
+export class User {
+    @PrimaryColumn({ type: 'varchar', length: 255 })
+    id!: string;
+
     @Column({ type: 'varchar', length: 255 })
     name!: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     email!: string;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    firstName!: string | null;
+
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    lastName!: string | null;
 
     @Column({
         type: 'enum',
@@ -22,4 +40,10 @@ export class User extends BaseTimestampedEntity {
         default: 'user',
     })
     role!: 'admin' | 'user';
+
+    @CreateDateColumn({ type: 'timestamp' })
+    created!: Date;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    updated!: Date;
 }

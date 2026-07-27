@@ -1,4 +1,9 @@
-import { implement, ORPCError } from '@orpc/server';
+import {
+    implement,
+    IntersectPick,
+    MergedCurrentContext,
+    ORPCError,
+} from '@orpc/server';
 import { oo } from '@orpc/openapi';
 import type { User } from '#auth-utils';
 import { appContract } from './contract';
@@ -16,6 +21,8 @@ export const os = implement(appContract).$context<AppContext>();
 
 /**
  * Protected middleware — throws UNAUTHORIZED if no user session.
+ * The user is already synced to the DB by the session hook
+ * (`server/plugins/session.ts`), so we only enforce auth here.
  * Wrapped with oo.spec so every procedure using it automatically
  * gets `security: [{ OidcAuth: [] }]` in the generated OpenAPI spec.
  */
@@ -26,7 +33,23 @@ export const authMiddleware = oo.spec(
                 message: 'Authentication required.',
             });
         }
-        return next({ context: { ...context, user: context.user! } });
+        return next({ context });
     }),
     { security: [{ OidcAuth: [] }] }
 );
+
+/** Helper to safely get user context */
+export function getUserFromContext(
+    context: MergedCurrentContext<
+        AppContext,
+        IntersectPick<AppContext, unknown>
+    >
+): User {
+    const user = context.user;
+    if (!user)
+        throw new ORPCError('INTERNAL_SERVER_ERROR', {
+            message:
+                'User context is missing. Authentication went wrong in auth middleware',
+        });
+    return user;
+}

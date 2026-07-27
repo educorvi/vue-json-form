@@ -2,6 +2,7 @@
 defineProps<{
     name: string;
     email: string;
+    role?: string;
 }>();
 
 function initials(name: string): string {
@@ -10,6 +11,10 @@ function initials(name: string): string {
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase() ?? '')
         .join('');
+}
+
+function roleBadgeVariant(role: string): string {
+    return role === 'admin' ? 'danger' : 'secondary';
 }
 </script>
 
@@ -26,7 +31,17 @@ function initials(name: string): string {
             {{ initials(name) }}
         </span>
         <div class="d-flex flex-column">
-            <span class="fw-medium">{{ name }}</span>
+            <span class="fw-medium d-flex align-items-center gap-2">
+                {{ name }}
+                <span
+                    v-if="role"
+                    :class="'badge bg-' + roleBadgeVariant(role)"
+                    class="text-uppercase"
+                    style="font-size: 0.6rem"
+                >
+                    {{ role }}
+                </span>
+            </span>
             <span class="small text-secondary">{{ email }}</span>
         </div>
     </div>

@@ -7,12 +7,14 @@ import {
     type FindOptionsOrder,
 } from 'typeorm';
 import { Group } from '~~/server/db/entities/Group';
+import { Permission } from '~~/server/db/entities/Permission';
+import { Visibility } from '~~/server/db/entities/BaseEntities';
+import { buildVisibilityWhere } from '~~/server/lib/access-control';
 import {
     throwNotFound,
     throwConflict,
     paginatedResponse,
-    apiSortOrderToDbSortOrder,
-} from '~~/server/utils/helpers';
+} from '~~/server/orpc/api-helpers';
 import { ErrorCode } from '~~/server/models/errors';
 import {
     zListGroupsQuery,
@@ -22,25 +24,20 @@ import {
     zParentPath,
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
+import { toApiGroup, toHierarchyNode } from '../orpc/mapping/group';
+import { mapApiSortOrderToDbSortOrder } from '../orpc/mapping/shared';
 
-type ApiGroup = z.infer<typeof zGroup>;
+export type ApiGroup = z.infer<typeof zGroup>;
 type ApiListGroupQuery = z.infer<typeof zListGroupsQuery>;
 type ApiListGroup = z.infer<typeof zListGroupsResponse>;
-type ApiGroupHierarchyNode = z.infer<typeof zGroupHierarchyNode>;
-type ApiParentPath = z.infer<typeof zParentPath>;
+export type ApiGroupHierarchyNode = z.infer<typeof zGroupHierarchyNode>;
+export type ApiParentPath = z.infer<typeof zParentPath>;
 
-interface GroupStats {
-    member_count: number;
-    group_count: number;
-    form_count: number;
-}
-
-interface GroupStatsRow {
-    g_id: number;
-    member_count: number | string;
-    group_count: number | string;
-    form_count: number | string;
-}
+/** Stats derived from zGroup schema fields */
+export type GroupStats = Pick<
+    ApiGroup,
+    'member_count' | 'group_count' | 'form_count'
+>;
 
 const ZERO_STATS: GroupStats = {
     member_count: 0,
@@ -49,48 +46,6 @@ const ZERO_STATS: GroupStats = {
 };
 
 const SAFE_ORDER_COLS = new Set(['id', 'title', 'name', 'created', 'updated']);
-
-function toApiGroup(
-    g: Group,
-    stats: GroupStats,
-    parentPath: ApiParentPath | null = null
-): ApiGroup {
-    return {
-        id: g.id,
-        name: g.name,
-        title: g.title,
-        description: g.description ?? null,
-        parent_id: g.parent_id ?? null,
-        parent_path: parentPath,
-        member_count: stats.member_count,
-        group_count: stats.group_count,
-        form_count: stats.form_count,
-        created_by: {
-            id: g.created_by?.id ?? 0,
-            name: g.created_by?.name ?? 'System',
-            email: g.created_by?.email ?? 'system@example.com',
-            timestamp: g.created.toISOString(),
-        },
-        updated_by: {
-            id: g.updated_by?.id ?? 0,
-            name: g.updated_by?.name ?? 'System',
-            email: g.updated_by?.email ?? 'system@example.com',
-            timestamp: g.updated.toISOString(),
-        },
-    };
-}
-
-function toHierarchyNode(g: Group): ApiGroupHierarchyNode {
-    return {
-        id: g.id,
-        name: g.name,
-        title: g.title,
-        children:
-            g.children && g.children.length > 0
-                ? g.children.map(toHierarchyNode)
-                : null,
-    };
-}
 
 export class GroupService {
     private readonly treeRepo: TreeRepository<Group>;
@@ -103,23 +58,33 @@ export class GroupService {
 
     async list(
         query: ApiListGroupQuery,
-        parentId: number
+        parentId: number,
+        accessibleGroupIds?: Set<number>
+        // creatableGroupIds?: Set<number>
     ): Promise<ApiListGroup> {
         const { page, page_size, sort_order, order_by, search } = query;
 
-        const parentWhere: FindOptionsWhere<Group> =
+        const parentWhere: Record<string, any> =
             parentId === 0 ? { parent_id: IsNull() } : { parent_id: parentId };
 
-        const where: FindOptionsWhere<Group>[] = search
-            ? [
-                  { ...parentWhere, title: ILike(`%${search}%`) },
-                  { ...parentWhere, name: ILike(`%${search}%`) },
-              ]
-            : [parentWhere];
+        const where = accessibleGroupIds
+            ? buildVisibilityWhere(
+                  parentWhere,
+                  accessibleGroupIds,
+                  search,
+                  'title',
+                  'name'
+              )
+            : search
+              ? [
+                    { ...parentWhere, title: ILike(`%${search}%`) },
+                    { ...parentWhere, name: ILike(`%${search}%`) },
+                ]
+              : [parentWhere];
 
         const safeCol = SAFE_ORDER_COLS.has(order_by) ? order_by : 'title';
         const order: FindOptionsOrder<Group> = {
-            [safeCol]: apiSortOrderToDbSortOrder(sort_order),
+            [safeCol]: mapApiSortOrderToDbSortOrder(sort_order),
         };
 
         const [entities, total] = await this.treeRepo.findAndCount({
@@ -134,7 +99,13 @@ export class GroupService {
         const data = await Promise.all(
             entities.map(async (g) => {
                 const parentPath = await this._getParentPath(g);
-                return toApiGroup(g, stats[g.id] ?? ZERO_STATS, parentPath);
+                // const canCreate = creatableGroupIds?.has(g.id);
+                return toApiGroup(
+                    g,
+                    stats[g.id] ?? ZERO_STATS,
+                    parentPath
+                    // canCreate
+                );
             })
         );
         return paginatedResponse(data, total, page, page_size);
@@ -147,6 +118,21 @@ export class GroupService {
         });
         if (!group) throwNotFound('Group not found', ErrorCode.GROUP_NOT_FOUND);
         return group;
+    }
+
+    /**
+     * Find a group by name and parent_id. Returns null if not found.
+     */
+    async findByNameAndParent(
+        name: string,
+        parentId: number | null
+    ): Promise<Group | null> {
+        return this.treeRepo.findOne({
+            where:
+                parentId === null
+                    ? { name, parent_id: IsNull() as any }
+                    : ({ name, parent_id: parentId } as any),
+        });
     }
 
     /**
@@ -166,7 +152,7 @@ export class GroupService {
         for (const segment of segments) {
             const where: FindOptionsWhere<Group> = {
                 name: segment,
-                parent_id: parentId == null ? IsNull() : parentId,
+                parent_id: parentId == null ? (IsNull() as any) : parentId,
             };
             const group = await this.treeRepo.findOne({
                 where,
@@ -193,6 +179,9 @@ export class GroupService {
      *
      * - If `idOrSlug` contains only digits, it is treated as a numeric ID.
      * - Otherwise it is treated as a `/`-separated path.
+     *
+     * Purely numeric group names are blocked by name validation at creation,
+     * so the numeric check is unambiguous.
      */
     async getByIdOrSlug(idOrSlug: string): Promise<ApiGroup> {
         const isNumeric = /^\d+$/.test(idOrSlug);
@@ -214,24 +203,100 @@ export class GroupService {
         return roots.map(toHierarchyNode);
     }
 
-    async create(data: {
-        title: string;
-        name: string;
-        description?: string | null;
-        parent_id?: number | null;
-    }): Promise<ApiGroup> {
-        const parent = data.parent_id
-            ? await this.treeRepo.findOne({ where: { id: data.parent_id } })
+    /**
+     * Get the hierarchy filtered by visibility+permissions.
+     * Private groups the user has no permission on are pruned from the tree.
+     */
+    async getHierarchyAccessible(
+        accessibleIds: Set<number>
+    ): Promise<ApiGroupHierarchyNode[]> {
+        if (accessibleIds.size === 0) {
+            // Only visible groups — get full tree and filter
+            const roots = await this.treeRepo.findTrees();
+            return this._pruneTree(roots, accessibleIds);
+        }
+        const roots = await this.treeRepo.findTrees();
+        return this._pruneTree(roots, accessibleIds);
+    }
+
+    /**
+     * Recursively prune private nodes from a tree that the user can't access.
+     */
+    private _pruneTree(
+        nodes: Group[],
+        accessibleIds: Set<number>
+    ): ApiGroupHierarchyNode[] {
+        const result: ApiGroupHierarchyNode[] = [];
+        for (const node of nodes) {
+            const isPrivate = node.visibility === Visibility.Private;
+            const hasAccess = accessibleIds.has(node.id);
+            if (isPrivate && !hasAccess) continue; // skip
+
+            const children = node.children
+                ? this._pruneTree(node.children, accessibleIds)
+                : [];
+
+            result.push({
+                id: node.id,
+                name: node.name,
+                title: node.title,
+                visibility: node.visibility,
+                children: children.length > 0 ? children : null,
+            });
+        }
+        return result;
+    }
+
+    async create(
+        data: {
+            title: string;
+            name: string;
+            description?: string | null;
+            visibility?: string | null;
+            parent_id?: number | null;
+        },
+        createdById?: string
+    ): Promise<ApiGroup> {
+        const { savedGroup, parent } = await this.dataSource.transaction(
+            async (manager) => {
+                const treeRepo = manager.getTreeRepository(Group);
+                const parent = data.parent_id
+                    ? await treeRepo.findOne({ where: { id: data.parent_id } })
+                    : null;
+                const group = treeRepo.create({
+                    title: data.title,
+                    name: data.name,
+                    description: data.description ?? null,
+                    visibility: (data.visibility as any) ?? 'visible',
+                    parent: parent ?? undefined,
+                });
+                const savedGroup = await treeRepo.save(group);
+
+                if (createdById) {
+                    const permRepo = manager.getRepository(Permission);
+                    await permRepo.save(
+                        permRepo.create({
+                            user: { id: createdById },
+                            role: 'owner',
+                            group: { id: savedGroup.id },
+                        } as any)
+                    );
+                }
+
+                return { savedGroup, parent };
+            }
+        );
+
+        // Stats and parent path are read-only queries, done outside the transaction.
+        const parentPath = parent
+            ? await this._getParentPath(savedGroup)
             : null;
-        const group = this.treeRepo.create({
-            title: data.title,
-            name: data.name,
-            description: data.description ?? null,
-            parent_id: data.parent_id ?? null,
-            parent: parent ?? undefined,
-        });
-        const saved = await this.treeRepo.save(group);
-        return this.get(saved.id);
+        const stats = await this._batchStats([savedGroup.id]);
+        return toApiGroup(
+            savedGroup,
+            stats[savedGroup.id] ?? ZERO_STATS,
+            parentPath
+        );
     }
 
     async replace(
@@ -240,6 +305,7 @@ export class GroupService {
             title: string;
             name: string;
             description?: string | null;
+            visibility?: string | null;
             parent_id?: number | null;
         }
     ): Promise<ApiGroup> {
@@ -257,7 +323,7 @@ export class GroupService {
             title: data.title,
             name: data.name,
             description: data.description ?? null,
-            parent_id: data.parent_id ?? null,
+            visibility: data.visibility ?? existing.visibility,
             parent: parent ?? undefined,
         });
         return this.get(id);
@@ -269,6 +335,7 @@ export class GroupService {
             title?: string;
             name?: string;
             description?: string | null;
+            visibility?: string | null;
             parent_id?: number | null;
         }
     ): Promise<ApiGroup> {
@@ -281,9 +348,10 @@ export class GroupService {
                       })
                     : null
                 : existing.parent;
+        const { parent_id: _unused, ...cleanData } = data;
         await this.treeRepo.save({
             ...existing,
-            ...data,
+            ...cleanData,
             parent: parent ?? undefined,
         });
         return this.get(id);
@@ -309,7 +377,12 @@ export class GroupService {
     ): Promise<Record<number, GroupStats>> {
         if (ids.length === 0) return {};
 
-        const rows: GroupStatsRow[] = await this.dataSource.query(
+        const rows: {
+            g_id: number;
+            member_count: number | string;
+            group_count: number | string;
+            form_count: number | string;
+        }[] = await this.dataSource.query(
             `SELECT
                 g.id AS g_id,
                 (SELECT COUNT(*)::int FROM permissions p
@@ -339,7 +412,8 @@ export class GroupService {
     private async _getParentPath(group: Group): Promise<ApiParentPath> {
         if (!group.parent_id) return [];
         const ancestors = await this.treeRepo.findAncestors(group);
-        // Build ordered chain (root → direct parent) using parent_id links
+        // findAncestors uses WHERE id IN (...); results may not be ordered.
+        // Reconstruct the chain by walking parent_id links for correct order.
         const map = new Map(ancestors.map((a) => [a.id, a]));
         const chain: Group[] = [];
         let id: number | null = group.parent_id;

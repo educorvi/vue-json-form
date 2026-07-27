@@ -8,52 +8,26 @@ import {
 } from 'typeorm';
 import { Form } from '~~/server/db/entities/Form';
 import { FormRevision } from '~~/server/db/entities/FormRevision';
+import { Permission } from '~~/server/db/entities/Permission';
 import { Group } from '~~/server/db/entities/Group';
+import { Visibility } from '~~/server/db/entities/BaseEntities';
+import { buildVisibilityWhere } from '~~/server/lib/access-control';
 import {
     throwNotFound,
     throwConflict,
     paginatedResponse,
-} from '~~/server/utils/helpers';
-import type { PaginationParams } from '~~/server/utils/helpers';
+} from '~~/server/orpc/api-helpers';
+import type { PaginationParams } from '~~/server/orpc/api-helpers';
 import { ErrorCode } from '~~/server/models/errors';
 import { User } from '#server/db/entities/User';
 import { zForm, zParentPath } from '../orpc/generated/zod.gen';
 import z from 'zod';
-import { GroupService } from './GroupService';
+import { mapDbFormToApiForm } from '../orpc/mapping/form';
 
-type ApiForm = z.infer<typeof zForm>;
-type ApiParentPath = z.infer<typeof zParentPath>;
+export type ApiForm = z.infer<typeof zForm>;
+export type ApiParentPath = z.infer<typeof zParentPath>;
 
-const RELATIONS = { created_by: true, updated_by: true } as const;
-
-function toApiForm(
-    form: Form,
-    parentPath: ApiParentPath | null = null
-): ApiForm {
-    const userRef = (u: typeof form.created_by) => ({
-        id: u?.id ?? 0,
-        name: u?.name ?? 'System',
-        email: u?.email ?? 'system@example.com',
-    });
-    return {
-        id: form.id,
-        title: form.title,
-        description: form.description,
-        parent_path: parentPath,
-        parent_id: form.group_id ?? null,
-        created_by: {
-            ...userRef(form.created_by),
-            timestamp: form.created.toISOString(),
-        },
-        updated_by: {
-            ...userRef(form.updated_by),
-            timestamp: form.updated.toISOString(),
-        },
-        // Extra fields not in generated schema — passed through by oRPC
-        name: form.name,
-        path: form.path,
-    } as ApiForm;
-}
+const RELATIONS = { created_by: true, updated_by: true, group: true } as const;
 
 export class FormService {
     private readonly formRepo: Repository<Form>;
@@ -69,20 +43,23 @@ export class FormService {
     async list(
         params: PaginationParams,
         orderByCol: keyof Form,
-        groupId?: number | null
+        groupId?: number | null,
+        accessibleFormIds?: Set<number>
     ) {
         const { page, pageSize, sortOrder, search } = params;
 
-        const base: FindOptionsWhere<Form> =
+        const base: Record<string, any> =
             groupId === 0
-                ? { group_id: IsNull() }
+                ? { group: IsNull() }
                 : groupId != null
-                  ? { group_id: groupId }
+                  ? { group: { id: groupId } }
                   : {};
 
-        const where: FindOptionsWhere<Form>[] = search
-            ? [{ ...base, title: ILike(`%${search}%`) }]
-            : [base];
+        const where = accessibleFormIds
+            ? buildVisibilityWhere(base, accessibleFormIds, search, 'title')
+            : search
+              ? [{ ...base, title: ILike(`%${search}%`) }]
+              : [base];
 
         const order: FindOptionsOrder<Form> = { [orderByCol]: sortOrder };
 
@@ -98,7 +75,7 @@ export class FormService {
         const paths = await this._batchParentPaths(rows);
 
         return paginatedResponse(
-            rows.map((f) => toApiForm(f, paths.get(f.id) ?? null)),
+            rows.map((f) => mapDbFormToApiForm(f, paths.get(f.id) ?? null)),
             total,
             page,
             pageSize
@@ -112,7 +89,7 @@ export class FormService {
         });
         if (!form) throwNotFound('Form not found', ErrorCode.FORM_NOT_FOUND);
         const parentPath = await this._resolveParentPath(form);
-        return toApiForm(form, parentPath);
+        return mapDbFormToApiForm(form, parentPath);
     }
 
     async findEntityById(id: number): Promise<Form> {
@@ -121,8 +98,40 @@ export class FormService {
         return form;
     }
 
-    async create(data: Partial<Form>): Promise<ApiForm> {
-        const saved = await this.formRepo.save(this.formRepo.create(data));
+    /**
+     * Find a form by name and group_id. Returns null if not found.
+     */
+    async findByNameAndGroup(
+        name: string,
+        groupId: number | null
+    ): Promise<Form | null> {
+        return this.formRepo.findOne({
+            where:
+                groupId === null
+                    ? { name, group: IsNull() as any }
+                    : ({ name, group: { id: groupId } } as any),
+        });
+    }
+
+    async create(data: Partial<Form>, createdById?: string): Promise<ApiForm> {
+        const saved = await this.dataSource.transaction(async (manager) => {
+            const formRepo = manager.getRepository(Form);
+            const form = formRepo.create(data);
+            const saved = await formRepo.save(form);
+
+            if (createdById) {
+                const permRepo = manager.getRepository(Permission);
+                await permRepo.save(
+                    permRepo.create({
+                        user: { id: createdById },
+                        role: 'owner',
+                        form: { id: saved.id },
+                    } as any)
+                );
+            }
+
+            return saved;
+        });
         return this.findById(saved.id);
     }
 
@@ -146,7 +155,42 @@ export class FormService {
     // ── Path-based lookup ─────────────────────────────────────────────────
 
     /**
+     * Walk the group tree segment by segment to find a group by its path.
+     * Uses the `parent_id` column directly (more reliable with TreeRepository).
+     */
+    private async _resolveGroupByPath(segments: string[]): Promise<Group> {
+        if (segments.length === 0) {
+            throwNotFound('Empty group path', ErrorCode.GROUP_NOT_FOUND);
+        }
+
+        const treeRepo = this.dataSource.getTreeRepository(Group);
+        let parentId: number | null = null;
+        let group: Group | null = null;
+
+        for (const segment of segments) {
+            group = await treeRepo.findOne({
+                where: {
+                    name: segment,
+                    parent_id: parentId == null ? (IsNull() as any) : parentId,
+                } as any,
+            });
+            if (!group) {
+                throwNotFound(
+                    `Group not found at path "${segments.join('/')}"`,
+                    ErrorCode.GROUP_NOT_FOUND
+                );
+            }
+            parentId = group.id;
+        }
+
+        return group!;
+    }
+
+    /**
      * Find a form by its URL path (group path segments + form name).
+     *
+     * Does NOT rely on the Form's `path` column — walks the group tree
+     * via `parent_id` links, then finds the form within the parent group.
      *
      * Example: `findByPath(['bug-report', 'example-bug-report'])` resolves
      * the parent group "bug-report", then finds the form named
@@ -164,19 +208,18 @@ export class FormService {
         let groupId: number | null = null;
 
         if (groupSegments.length > 0) {
-            const groupService = new GroupService(this.dataSource);
-            const group = await groupService.findByPath(groupSegments);
+            const group = await this._resolveGroupByPath(groupSegments);
             groupId = group.id;
         }
 
         // Try to find the form by name first
         const whereByName: FindOptionsWhere<Form> =
             groupId == null
-                ? { name: formNameOrId, group_id: IsNull() }
-                : { name: formNameOrId, group_id: groupId };
+                ? { name: formNameOrId, group: IsNull() }
+                : { name: formNameOrId, group: { id: groupId } };
 
         let form = await this.formRepo.findOne({
-            where: whereByName,
+            where: whereByName as any,
             relations: RELATIONS,
         });
 
@@ -184,10 +227,13 @@ export class FormService {
         if (!form && /^\d+$/.test(formNameOrId)) {
             const whereById: FindOptionsWhere<Form> =
                 groupId == null
-                    ? { id: parseInt(formNameOrId, 10), group_id: IsNull() }
-                    : { id: parseInt(formNameOrId, 10), group_id: groupId };
+                    ? { id: parseInt(formNameOrId, 10), group: IsNull() }
+                    : {
+                          id: parseInt(formNameOrId, 10),
+                          group: { id: groupId },
+                      };
             form = await this.formRepo.findOne({
-                where: whereById,
+                where: whereById as any,
                 relations: RELATIONS,
             });
         }
@@ -200,7 +246,7 @@ export class FormService {
         }
 
         const parentPath = await this._resolveParentPath(form);
-        return toApiForm(form, parentPath);
+        return mapDbFormToApiForm(form, parentPath);
     }
 
     /**
@@ -208,6 +254,9 @@ export class FormService {
      *
      * - If `idOrSlug` contains only digits, it is treated as a numeric ID.
      * - Otherwise it is treated as a `/`-separated path.
+     *
+     * Purely numeric form names are blocked by name validation at creation,
+     * so the numeric check is unambiguous.
      */
     async getByIdOrSlug(idOrSlug: string): Promise<ApiForm> {
         const isNumeric = /^\d+$/.test(idOrSlug);
@@ -221,25 +270,24 @@ export class FormService {
     private async _resolveParentPath(
         form: Form
     ): Promise<ApiParentPath | null> {
-        if (!form.group_id) return null;
+        if (!form.group?.id) return null;
         try {
             const groupRepo = this.dataSource.getTreeRepository(Group);
-            const parentGroup = await groupRepo.findOne({
-                where: { id: form.group_id },
-            });
-            if (!parentGroup) return null;
-            const ancestors = await groupRepo.findAncestors(parentGroup);
+            // findAncestors on materialized-path trees returns ALL IDs in
+            // the path — including the entity itself — but results may not
+            // be ordered. Walk parent_id links for guaranteed order.
+            const ancestors = await groupRepo.findAncestors(form.group);
             const map = new Map(ancestors.map((a) => [a.id, a]));
             const chain: Group[] = [];
-            let id: number | null = parentGroup.parent_id;
+            let id: number | null = form.group.parent_id;
             while (id != null) {
                 const anc = map.get(id);
                 if (!anc) break;
                 chain.unshift(anc);
                 id = anc.parent_id;
             }
-            // Include the direct parent group (not just its ancestors)
-            chain.push(parentGroup);
+            // Append the group itself as the last entry
+            chain.push(form.group);
             return chain.map((a) => ({
                 id: a.id,
                 name: a.title,
@@ -268,7 +316,7 @@ export class FormService {
         await this.findById(formId);
         const { page, pageSize } = params;
         const [rows, total] = await this.revisionRepo.findAndCount({
-            where: { form_id: formId },
+            where: { form: { id: formId } },
             order: { version: 'DESC' },
             skip: (page - 1) * pageSize,
             take: pageSize,
@@ -285,7 +333,7 @@ export class FormService {
     ): Promise<FormRevision> {
         await this.findById(formId);
         const latest = await this.revisionRepo.findOne({
-            where: { form_id: formId },
+            where: { form: { id: formId } },
             order: { version: 'DESC' },
         });
         if (latest && version <= latest.version) {
@@ -295,7 +343,7 @@ export class FormService {
             );
         }
         const rev = this.revisionRepo.create({
-            form_id: formId,
+            form: { id: formId },
             version,
             schema,
             comment,
@@ -308,7 +356,7 @@ export class FormService {
     async getLatestSchema(formId: number): Promise<FormRevision> {
         await this.findById(formId);
         const rev = await this.revisionRepo.findOne({
-            where: { form_id: formId },
+            where: { form: { id: formId } },
             order: { version: 'DESC' },
         });
         if (!rev)
@@ -324,7 +372,7 @@ export class FormService {
         version: number
     ): Promise<FormRevision> {
         const rev = await this.revisionRepo.findOne({
-            where: { form_id: formId, version },
+            where: { form: { id: formId }, version },
         });
         if (!rev)
             throwNotFound('Version not found', ErrorCode.VERSION_NOT_FOUND);
@@ -333,9 +381,7 @@ export class FormService {
 
     // ── Schema (direct on Form entity) ─────────────────────────────────────
 
-    async getFormSchema(
-        formId: number
-    ): Promise<{
+    async getFormSchema(formId: number): Promise<{
         json: Record<string, unknown> | null;
         ui: Record<string, unknown> | null;
     } | null> {

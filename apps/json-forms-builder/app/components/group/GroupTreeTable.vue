@@ -208,11 +208,11 @@ function itemLink(item: ChildItem): string {
                         <template #button-content>
                             <PhosphorIcon name="dots-three" :size="18" />
                         </template>
-                        <BDropdownItem @click="emit('edit', item)">
+                        <BDropdownItem @mousedown.stop="emit('edit', item)">
                             <PhosphorIcon name="pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
-                        <BDropdownItem @click="emit('delete', item)">
+                        <BDropdownItem @mousedown.stop="emit('delete', item)">
                             <PhosphorIcon name="trash" />
                             {{ t('groups.delete.title') }}
                         </BDropdownItem>
@@ -270,11 +270,11 @@ function itemLink(item: ChildItem): string {
                         <template #button-content>
                             <PhosphorIcon name="dots-three" :size="18" />
                         </template>
-                        <BDropdownItem @click="emit('edit', item)">
+                        <BDropdownItem @mousedown.stop="emit('edit', item)">
                             <PhosphorIcon name="pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
-                        <BDropdownItem @click="emit('delete', item)">
+                        <BDropdownItem @mousedown.stop="emit('delete', item)">
                             <PhosphorIcon name="trash" />
                             {{ t('forms.delete.title') }}
                         </BDropdownItem>

@@ -3,8 +3,10 @@ export default defineOAuthKeycloakEventHandler({
         await setUserSession(event, {
             user: {
                 id: user.sub as string,
-                name: (user.name ?? user.preferred_username) as string,
+                username: (user.name ?? user.preferred_username) as string,
                 email: user.email as string,
+                firstName: (user.given_name as string) ?? undefined,
+                lastName: (user.family_name as string) ?? undefined,
                 roles:
                     (user as { realm_access?: { roles?: string[] } })
                         .realm_access?.roles ?? [],

@@ -8,36 +8,148 @@
 import type { DataSource } from 'typeorm';
 import { Group } from './entities/Group';
 import { Form } from './entities/Form';
+import { User } from './entities/User';
+import { Permission } from './entities/Permission';
+
+import { Visibility } from './entities/BaseEntities';
 import jsonSchema from './entities/seed-data/json-schema.json';
 import uiSchema from './entities/seed-data/ui-schema.json';
+
+// ── User constants ────────────────────────────────────────────────────────────
+
+const USER_TEST = 'test@educorvi.de';
+const USER_LIMITED = 'user2@educorvi.de';
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface PermissionSeed {
+    userEmail: string;
+    role: 'owner' | 'editor' | 'guest';
+}
 
 interface GroupSeed {
     title: string;
     name: string;
     description?: string;
     parentPath?: string; // path of the parent group, used to look up its ID
+    visibility?: Visibility;
+    forms?: FormSeed[]; // forms belonging to this group
+    permissions?: PermissionSeed[]; // group-level permissions
 }
+
+interface FormSeed {
+    title: string;
+    name: string;
+    description?: string;
+    visibility?: Visibility;
+    permissions?: PermissionSeed[]; // form-level permissions
+}
+
+// ── Helper: batch-insert groups and return a path→entity map ─────────────────
+
+export async function groupSeedToDb(
+    dataSource: DataSource,
+    groups: GroupSeed[],
+    userByEmail: Map<string, User>
+): Promise<Map<string, Group>> {
+    const treeRepo = dataSource.getTreeRepository(Group);
+    const formRepo = dataSource.getRepository(Form);
+    const permissionRepo = dataSource.getRepository(Permission);
+    const pathMap = new Map<string, Group>();
+
+    for (const s of groups) {
+        const parent = s.parentPath
+            ? (pathMap.get(s.parentPath) ?? null)
+            : null;
+        const pathKey = parent ? `${s.parentPath}/${s.name}` : s.name;
+
+        const group = treeRepo.create({
+            title: s.title,
+            name: s.name,
+            description: s.description ?? null,
+            visibility: s.visibility ?? Visibility.Visible,
+            parent: parent ?? undefined,
+            parent_id: parent?.id ?? null,
+        });
+        const saved = await treeRepo.save(group);
+        pathMap.set(pathKey, saved);
+
+        // Create group-level permissions
+        if (s.permissions) {
+            for (const p of s.permissions) {
+                const user = userByEmail.get(p.userEmail);
+                if (!user) continue;
+                const perm = permissionRepo.create({
+                    group: { id: saved.id },
+                    user: { id: user.id },
+                    role: p.role,
+                } as any);
+                await permissionRepo.save(perm);
+            }
+        }
+
+        // Insert any forms nested under this group
+        if (s.forms) {
+            for (const f of s.forms) {
+                const form = formRepo.create({
+                    title: f.title,
+                    name: f.name,
+                    description: f.description ?? null,
+                    visibility: f.visibility ?? Visibility.Visible,
+                    group: saved,
+                    path: `${pathKey}/${f.name}`,
+                });
+                await formRepo.save(form);
+
+                // Create form-level permissions
+                if (f.permissions) {
+                    for (const p of f.permissions) {
+                        const user = userByEmail.get(p.userEmail);
+                        if (!user) continue;
+                        const perm = permissionRepo.create({
+                            form: { id: form.id },
+                            user: { id: user.id },
+                            role: p.role,
+                        } as any);
+                        await permissionRepo.save(perm);
+                    }
+                }
+            }
+        }
+    }
+
+    return pathMap;
+}
+
+// ── Seed data definitions ─────────────────────────────────────────────────────
 
 const ROOT_GROUPS: GroupSeed[] = [
     {
         title: 'DGUV',
         name: 'dguv',
         description: 'Unfallversicherungen und Berufsgenossenschaften',
+        permissions: [
+            { userEmail: USER_TEST, role: 'owner' },
+            { userEmail: USER_LIMITED, role: 'guest' },
+        ],
     },
     {
         title: 'Educorvi',
         name: 'educorvi',
         description: 'Interne Formulare Educorvi',
+        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
     },
     {
         title: 'BG Phoenics',
         name: 'bg-phoenics',
         description: 'Formulare BG Phoenics',
+        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
     },
     {
         title: 'Develop',
         name: 'develop',
         description: 'Entwicklerbereich für Tests, Bug Reports',
+        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
     },
 ];
 
@@ -49,6 +161,19 @@ const BG_GROUPS: GroupSeed[] = [
         name: 'bgbau',
         description: 'Berufsgenossenschaft der Bauwirtschaft',
         parentPath: 'dguv',
+        forms: [
+            {
+                title: 'Baustellenmeldung',
+                name: 'baustellenmeldung',
+                description: 'Meldung neuer Baustellen',
+            },
+            {
+                title: 'Gefährdungsbeurteilung',
+                name: 'gefaehrdungsbeurteilung',
+                description:
+                    'Vorlage für Gefährdungsbeurteilungen auf Baustellen',
+            },
+        ],
     },
     {
         title: 'BG ETEM',
@@ -56,6 +181,14 @@ const BG_GROUPS: GroupSeed[] = [
         description:
             'Berufsgenossenschaft Energie Textil Elektro Medienerzeugnisse',
         parentPath: 'dguv',
+        permissions: [{ userEmail: USER_LIMITED, role: 'editor' }],
+        forms: [
+            {
+                title: 'Unfallanzeige',
+                name: 'unfallanzeige',
+                description: 'Formular zur Meldung von Arbeitsunfällen',
+            },
+        ],
     },
     {
         title: 'BG RCI',
@@ -241,6 +374,20 @@ const BGETEM_GROUPS: GroupSeed[] = [
         name: 'rul',
         description: 'Formulare für Rehabilitation und Leistungen',
         parentPath: 'dguv/bgetem',
+        forms: [
+            {
+                title: 'Beitragsnachweis',
+                name: 'beitragsnachweis',
+                description:
+                    'Jährlicher Beitragsnachweis für Mitgliedsunternehmen',
+                permissions: [{ userEmail: USER_LIMITED, role: 'owner' }],
+            },
+            {
+                title: 'Rehabilitationsantrag',
+                name: 'rehabilitationsantrag',
+                description: 'Antrag auf medizinische Rehabilitation',
+            },
+        ],
     },
     {
         title: 'Mitgliedschaft und Beitrag',
@@ -249,6 +396,7 @@ const BGETEM_GROUPS: GroupSeed[] = [
         parentPath: 'dguv/bgetem',
     },
 ];
+
 // ── Educorvi Sub Groups ────────────────────────────────────────────────────────
 
 const EDUCORVI_GROUPS: GroupSeed[] = [
@@ -269,22 +417,50 @@ const EDUCORVI_GROUPS: GroupSeed[] = [
         name: 'test1',
         description: 'Untergruppe für Tests',
         parentPath: 'educorvi',
+        forms: [
+            {
+                title: 'Test Survey',
+                name: 'test-survey',
+                description: 'A simple test survey form',
+            },
+        ],
     },
     {
         title: 'Testgruppe 2',
         name: 'test2',
         description: 'Untergruppe für Tests',
         parentPath: 'educorvi',
+        forms: [
+            {
+                title: 'QA Checklist',
+                name: 'qa-checklist',
+                description: 'Quality assurance checklist for testing',
+            },
+        ],
     },
     {
         title: 'Onboarding',
         name: 'onboarding',
         description: 'Formulare für das Onboarding neuer Mitarbeiter',
         parentPath: 'educorvi',
+        forms: [
+            {
+                title: 'Onboarding 01',
+                name: 'onboarding01',
+                description:
+                    'Beispiel-Formular für das Onboarding neuer Mitarbeiter',
+            },
+            {
+                title: 'Equipment Request',
+                name: 'equipment-request',
+                description:
+                    'Bestellung von Arbeitsmitteln für neue Mitarbeiter',
+            },
+        ],
     },
 ];
 
-// ── Development Sub Groups ─────────────────────────────────────────────────────
+// ── Development Sub Groups (public) ───────────────────────────────────────────
 
 const DEV_GROUPS: GroupSeed[] = [
     {
@@ -293,12 +469,31 @@ const DEV_GROUPS: GroupSeed[] = [
         description:
             'Gruppe zum Reproduzieren von Bugs und Problemen, z.B. aus Supporttickets.',
         parentPath: 'develop',
+        forms: [
+            {
+                title: 'Example Bug Report',
+                name: 'example-bug-report',
+                description: 'Report a software bug',
+            },
+            {
+                title: 'Feedback Form',
+                name: 'feedback-form',
+                description: 'General feedback and feature requests',
+            },
+        ],
     },
     {
         title: 'New Features',
         name: 'nw-features',
         description: 'Gruppe zum Entwickeln und Testen neuer Features.',
         parentPath: 'develop',
+        forms: [
+            {
+                title: 'Feature: Dynamic Sections',
+                name: 'feature-dynamic-sections',
+                description: 'Test form for dynamic section add/remove',
+            },
+        ],
     },
     {
         title: 'Sandbox',
@@ -306,128 +501,71 @@ const DEV_GROUPS: GroupSeed[] = [
         description:
             'Gruppe zum Testen von Ideen, Prototypen und Experimenten.',
         parentPath: 'develop',
+        forms: [
+            {
+                title: 'Prototype: Contact Form',
+                name: 'prototype-contact',
+                description: 'Prototype for a contact form layout',
+            },
+            {
+                title: 'UI Component Test',
+                name: 'ui-component-test',
+                description: 'Form to test various UI components and layouts',
+            },
+        ],
     },
 ];
 
-const GROUPS: GroupSeed[] = [
-    ...ROOT_GROUPS,
-    ...BG_GROUPS,
-    ...UK_GROUPS,
-    ...EDUCORVI_GROUPS,
-    ...DEV_GROUPS,
-    ...BGETEM_GROUPS,
+// ── Private test groups (visibility-based access control) ─────────────────────
+
+const PRIVATE_TEST_GROUPS: GroupSeed[] = [
+    {
+        title: 'Test Group Access',
+        name: 'test-group-access',
+        description:
+            'Private Gruppe — Testnutzer hat Zugriff (via Berechtigung).',
+        parentPath: 'develop',
+        visibility: Visibility.Private,
+        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
+        forms: [
+            {
+                title: 'Confidential Report',
+                name: 'confidential-report',
+                description:
+                    'Internes Formular — nur für berechtigte Nutzer sichtbar.',
+                visibility: Visibility.Private,
+            },
+            {
+                title: 'Member Bulletin',
+                name: 'member-bulletin',
+                description: 'Rundschreiben für Gruppenmitglieder.',
+                visibility: Visibility.Private,
+            },
+        ],
+    },
+    {
+        title: 'Test Group No Access',
+        name: 'test-group-no-access',
+        description: 'Private Gruppe — Testnutzer hat KEINEN Zugriff.',
+        parentPath: 'develop',
+        visibility: Visibility.Private,
+        forms: [
+            {
+                title: 'Restricted Document',
+                name: 'restricted-document',
+                description:
+                    'Streng vertrauliches Formular — nicht für den Testnutzer.',
+                visibility: Visibility.Private,
+            },
+        ],
+    },
 ];
 
-interface FormSeed {
-    title: string;
-    name: string;
-    description?: string;
-    groupPath: string;
-}
-
-const FORMS: FormSeed[] = [
-    // ── Bug Report ──────────────────────────────────────────────────────────
-    {
-        title: 'Example Bug Report',
-        name: 'example-bug-report',
-        description: 'Report a software bug',
-        groupPath: 'bug-report',
-    },
-    {
-        title: 'Feedback Form',
-        name: 'feedback-form',
-        description: 'General feedback and feature requests',
-        groupPath: 'bug-report',
-    },
-
-    // ── Educorvi / Onboarding ──────────────────────────────────────────────
-    {
-        title: 'Onboarding 01',
-        name: 'onboarding01',
-        description: 'Beispiel-Formular für das Onboarding neuer Mitarbeiter',
-        groupPath: 'educorvi/onboarding',
-    },
-    {
-        title: 'Equipment Request',
-        name: 'equipment-request',
-        description: 'Bestellung von Arbeitsmitteln für neue Mitarbeiter',
-        groupPath: 'educorvi/onboarding',
-    },
-
-    // ── Educorvi / Testgruppen ─────────────────────────────────────────────
-    {
-        title: 'Test Survey',
-        name: 'test-survey',
-        description: 'A simple test survey form',
-        groupPath: 'educorvi/test1',
-    },
-    {
-        title: 'QA Checklist',
-        name: 'qa-checklist',
-        description: 'Quality assurance checklist for testing',
-        groupPath: 'educorvi/test2',
-    },
-
-    // ── Develop / Sandbox ──────────────────────────────────────────────────
-    {
-        title: 'Prototype: Contact Form',
-        name: 'prototype-contact',
-        description: 'Prototype for a contact form layout',
-        groupPath: 'develop/sandbox',
-    },
-    {
-        title: 'UI Component Test',
-        name: 'ui-component-test',
-        description: 'Form to test various UI components and layouts',
-        groupPath: 'develop/sandbox',
-    },
-
-    // ── Develop / New Features ─────────────────────────────────────────────
-    {
-        title: 'Feature: Dynamic Sections',
-        name: 'feature-dynamic-sections',
-        description: 'Test form for dynamic section add/remove',
-        groupPath: 'develop/nw-features',
-    },
-
-    // ── DGUV / BG ETEM ────────────────────────────────────────────────────
-    {
-        title: 'Unfallanzeige',
-        name: 'unfallanzeige',
-        description: 'Formular zur Meldung von Arbeitsunfällen',
-        groupPath: 'dguv/bgetem',
-    },
-    {
-        title: 'Beitragsnachweis',
-        name: 'beitragsnachweis',
-        description: 'Jährlicher Beitragsnachweis für Mitgliedsunternehmen',
-        groupPath: 'dguv/bgetem/rul',
-    },
-    {
-        title: 'Rehabilitationsantrag',
-        name: 'rehabilitationsantrag',
-        description: 'Antrag auf medizinische Rehabilitation',
-        groupPath: 'dguv/bgetem/rul',
-    },
-
-    // ── DGUV / BG Bau ──────────────────────────────────────────────────────
-    {
-        title: 'Baustellenmeldung',
-        name: 'baustellenmeldung',
-        description: 'Meldung neuer Baustellen',
-        groupPath: 'dguv/bgbau',
-    },
-    {
-        title: 'Gefährdungsbeurteilung',
-        name: 'gefaehrdungsbeurteilung',
-        description: 'Vorlage für Gefährdungsbeurteilungen auf Baustellen',
-        groupPath: 'dguv/bgbau',
-    },
-];
+// ── Main seed entry point ─────────────────────────────────────────────────────
 
 export async function seed(dataSource: DataSource): Promise<void> {
     const treeRepo = dataSource.getTreeRepository(Group);
-    const formRepo = dataSource.getRepository(Form);
+    const userRepo = dataSource.getRepository(User);
 
     const existingCount = await treeRepo.count();
     if (existingCount > 0) {
@@ -437,39 +575,54 @@ export async function seed(dataSource: DataSource): Promise<void> {
 
     console.log('[seed] Seeding development data…');
 
-    // Build a name → Group map as we insert (keyed by parentPath/name path)
-    const pathMap = new Map<string, Group>();
-
-    for (const s of GROUPS) {
-        const parent = s.parentPath
-            ? (pathMap.get(s.parentPath) ?? null)
-            : null;
-        const pathKey = parent ? `${s.parentPath}/${s.name}` : s.name;
-
-        const group = treeRepo.create({
-            title: s.title,
-            name: s.name,
-            description: s.description ?? null,
-            parent: parent ?? undefined,
-            parent_id: parent?.id ?? null,
+    // 1. Create test users (must exist before groups so permissions can
+    //    reference them via the inline seed data).
+    let testUser = await userRepo.findOne({
+        where: { email: USER_TEST },
+    });
+    if (!testUser) {
+        testUser = userRepo.create({
+            id: '897f0982-2ae7-445d-aaa1-0da4eb10dec4',
+            email: USER_TEST,
+            name: 'Test User',
+            role: 'user',
         });
-        const saved = await treeRepo.save(group);
-        pathMap.set(pathKey, saved);
+        testUser = await userRepo.save(testUser);
     }
 
-    for (const s of FORMS) {
-        const group = pathMap.get(s.groupPath) ?? null;
-        const form = formRepo.create({
-            title: s.title,
-            name: s.name,
-            description: s.description ?? null,
-            group_id: group?.id ?? null,
-            path: s.groupPath ? `${s.groupPath}/${s.name}` : s.name,
+    let limitedUser = await userRepo.findOne({
+        where: { email: USER_LIMITED },
+    });
+    if (!limitedUser) {
+        limitedUser = userRepo.create({
+            id: '451a7cd3-2bd1-4458-ae85-691886f14734',
+            email: USER_LIMITED,
+            name: 'John Doe',
+            role: 'user',
         });
-        await formRepo.save(form);
+        limitedUser = await userRepo.save(limitedUser);
     }
 
-    // Assign seed schemas to a few forms for demo purposes
+    const userByEmail = new Map<string, User>([
+        [USER_TEST, testUser],
+        [USER_LIMITED, limitedUser],
+    ]);
+
+    // 2. Insert all groups and forms — permissions are created inline by
+    //    groupSeedToDb based on the `permissions` arrays in the seed data.
+    const allGroups = [
+        ...ROOT_GROUPS,
+        ...BG_GROUPS,
+        ...UK_GROUPS,
+        ...EDUCORVI_GROUPS,
+        ...DEV_GROUPS,
+        ...BGETEM_GROUPS,
+        ...PRIVATE_TEST_GROUPS,
+    ];
+    await groupSeedToDb(dataSource, allGroups, userByEmail);
+
+    // 3. Assign seed schemas to a few forms for demo purposes
+    const formRepo = dataSource.getRepository(Form);
     const schemaForms = [
         'unfallanzeige',
         'beitragsnachweis',
@@ -487,7 +640,11 @@ export async function seed(dataSource: DataSource): Promise<void> {
         }
     }
 
+    const formCount = allGroups.reduce(
+        (sum, g) => sum + (g.forms?.length ?? 0),
+        0
+    );
     console.log(
-        `[seed] Done — inserted ${ROOT_GROUPS.length} root groups, ${BG_GROUPS.length} BGs, ${UK_GROUPS.length} UKs, and ${FORMS.length} forms.`
+        `[seed] Done — inserted ${allGroups.length} groups and ${formCount} forms.`
     );
 }

@@ -21,6 +21,7 @@ type FormRow = z.infer<typeof zForm>;
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
+const { notify } = useNotify();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
@@ -201,7 +202,7 @@ const pageDescription = computed(() => {
                             @click="onNavigate(form)"
                         >
                             <!-- Path breadcrumb + title -->
-                            <div class="flex-grow-1 min-w-0" @click.stop>
+                            <div class="flex-grow-1 min-w-0">
                                 <div class="d-flex align-items-center gap-0">
                                     <BreadcrumbInline
                                         v-if="(form as any).parent_path?.length"
@@ -212,13 +213,9 @@ const pageDescription = computed(() => {
                                         class="text-secondary opacity-50 mx-1"
                                         >/</span
                                     >
-                                    <NuxtLink
-                                        :to="formLink(form)"
-                                        class="fw-bold text-decoration-none text-body"
-                                        @click.stop="onNavigate(form)"
-                                    >
+                                    <span class="fw-bold text-body">
                                         {{ form.title }}
-                                    </NuxtLink>
+                                    </span>
                                 </div>
                                 <div
                                     v-if="(form as any).description"

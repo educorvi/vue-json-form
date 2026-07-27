@@ -1,0 +1,125 @@
+<!--
+    PermissionEditModal – Modal for editing an existing permission (role, expiration).
+
+    Changes are patched instantly on submit.
+-->
+<script setup lang="ts">
+import type { PermissionEntry } from '@/composables/usePermission';
+import { isRoleAssignable } from '@/composables/usePermission';
+
+const props = defineProps<{
+    modelValue: boolean;
+    permission: PermissionEntry | null;
+    /** The inherited role for this user (if any) – used to restrict role downgrades */
+    inheritedRole: string | null;
+}>();
+
+const emit = defineEmits<{
+    'update:modelValue': [value: boolean];
+    save: [
+        permissionId: number,
+        data: { role?: string; expire?: string | null },
+    ];
+}>();
+
+const { t } = useI18n();
+
+const ROLES = ['owner', 'editor', 'guest'] as const;
+type Role = (typeof ROLES)[number];
+const editRole = ref<Role>('editor');
+const editExpire = ref('');
+
+const roleOptions = computed(() => {
+    return ROLES.map((role) => {
+        const assignable = isRoleAssignable(role, props.inheritedRole);
+        return {
+            value: role,
+            label: t(`permissions.roles.${role}`),
+            disabled: !assignable,
+        };
+    });
+});
+
+const canSubmit = computed(() => !!editRole.value);
+
+function handleSave() {
+    if (!props.permission) return;
+    const data: { role?: string; expire?: string | null } = {};
+    if (editRole.value !== props.permission.role) {
+        data.role = editRole.value;
+    }
+    const newExpire = editExpire.value || null;
+    if (newExpire !== props.permission.expire) {
+        data.expire = newExpire;
+    }
+    emit('save', props.permission.id, data);
+}
+
+// Reset form when modal opens
+watch(
+    () => props.modelValue,
+    (open) => {
+        if (open && props.permission) {
+            editRole.value = (props.permission.role as Role) ?? 'editor';
+            editExpire.value = props.permission.expire
+                ? props.permission.expire.slice(0, 10)
+                : '';
+        }
+    }
+);
+</script>
+
+<template>
+    <BModal
+        :model-value="modelValue"
+        :title="t('permissions.editTitle')"
+        @update:model-value="emit('update:modelValue', $event)"
+        @ok="handleSave"
+        :ok-disabled="!canSubmit"
+        :ok-title="t('settings.save')"
+        :cancel-title="t('common.cancel')"
+    >
+        <div v-if="permission" class="mb-3">
+            <UserPreviewCell
+                :name="permission.user?.name ?? ''"
+                :email="permission.user?.email ?? ''"
+            />
+        </div>
+
+        <BFormGroup
+            :label="t('permissions.form.role')"
+            label-class="fw-medium"
+            class="mb-3"
+        >
+            <BFormSelect
+                v-model="editRole"
+                :options="roleOptions"
+                text-field="label"
+                value-field="value"
+                :placeholder="t('permissions.form.rolePlaceholder')"
+                class="w-100"
+            />
+            <BFormText
+                v-if="inheritedRole"
+                class="text-warning d-flex align-items-center gap-1"
+            >
+                <PhosphorIcon name="info" :size="14" />
+                {{
+                    t('permissions.form.inheritHint', {
+                        role: t(`permissions.roles.${inheritedRole}`),
+                    })
+                }}
+            </BFormText>
+        </BFormGroup>
+
+        <BFormGroup
+            :label="t('permissions.form.expire')"
+            label-class="fw-medium"
+        >
+            <BFormInput v-model="editExpire" type="date" />
+            <BFormText>
+                {{ t('permissions.form.expireHint') }}
+            </BFormText>
+        </BFormGroup>
+    </BModal>
+</template>

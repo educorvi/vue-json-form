@@ -1345,7 +1345,7 @@ components:
       readOnly: true
       properties:
         id:
-          type: integer
+          type: string
           readOnly: true
         name:
           type: string
@@ -1759,10 +1759,29 @@ components:
               description: True when `expire` is set and the date has passed
             role:
               $ref: '#/components/schemas/ElementRole'
+            inherited_role:
+              allOf:
+                - $ref: '#/components/schemas/ElementRole'
+                - nullable: true
+              readOnly: true
+              description: |
+                For direct permissions, the highest inherited role from parent
+                groups, or null if there is no inheritance (root-level resource
+                or no inherited permissions). For inherited permissions this
+                is always null.
             expire:
               type: string
               format: date
               description: Optional expiry date after which the permission is no longer active
+            source_group_path:
+              anyOf:
+                - $ref: '#/components/schemas/ParentPath'
+                - type: "null"
+              readOnly: true
+              description: |
+                Full path of the group from which this permission is inherited, or null if the permission is direct.
+                The last entry is the group itself.
+                Contains `id`, `name`, and `path_segment` for each node in the chain.
         - $ref: '#/components/schemas/ResourceModification'
 
     UserPermission:
@@ -1779,7 +1798,7 @@ components:
                 - $ref: '#/components/schemas/UserRef'
               readOnly: true
             user_id:
-              type: integer
+              type: string
               writeOnly: true
               description: ID of the user this permission applies to
 

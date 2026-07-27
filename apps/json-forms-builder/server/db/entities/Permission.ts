@@ -17,35 +17,15 @@ export class Permission extends BaseAuditedEntity {
     @Column({ type: 'date', nullable: true })
     expire!: Date | null;
 
-    /** FK to user (null for group-subject permissions) */
-    @Column({ type: 'int', nullable: true, name: 'user_id' })
-    user_id!: number | null;
-
-    /** FK to the group this permission grants access to (null for form permissions) */
-    @Column({ type: 'int', nullable: true, name: 'group_id' })
-    group_id!: number | null;
-
-    /** FK to the form this permission grants access to (null for group permissions) */
-    @Column({ type: 'int', nullable: true, name: 'form_id' })
-    form_id!: number | null;
-
-    /** FK to the group that is the subject of this permission (group-grants) */
-    @Column({ type: 'int', nullable: true, name: 'subject_group_id' })
-    subject_group_id!: number | null;
-
-    @ManyToOne(() => User, { nullable: true, eager: false })
+    @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'user_id' })
     user!: User | null;
 
-    @ManyToOne(() => Group, { nullable: true, eager: false })
+    @ManyToOne(() => Group, (group) => group.permissions, { nullable: true })
     @JoinColumn({ name: 'group_id' })
     group!: Group | null;
 
-    @ManyToOne(() => Form, { nullable: true, eager: false })
+    @ManyToOne(() => Form, (form) => form.permissions, { nullable: true })
     @JoinColumn({ name: 'form_id' })
     form!: Form | null;
-
-    @ManyToOne(() => Group, { nullable: true, eager: false })
-    @JoinColumn({ name: 'subject_group_id' })
-    subjectGroup!: Group | null;
 }

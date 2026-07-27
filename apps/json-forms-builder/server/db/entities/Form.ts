@@ -1,7 +1,10 @@
 // import 'reflect-metadata';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 import { Group } from './Group';
+import { Visibility } from './BaseEntities';
+import { Permission } from './Permission';
+import { FormRevision } from './FormRevision';
 
 @Entity({ name: 'form' })
 export class Form extends BaseAuditedEntity {
@@ -11,10 +14,7 @@ export class Form extends BaseAuditedEntity {
     @Column({ type: 'text', nullable: true })
     description!: string | null;
 
-    @Column({ type: 'int', nullable: true, name: 'group_id' })
-    group_id!: number | null;
-
-    @ManyToOne(() => Group, { nullable: true })
+    @ManyToOne(() => Group, (group) => group.forms, { nullable: true })
     @JoinColumn({ name: 'group_id' })
     group!: Group | null;
 
@@ -29,4 +29,18 @@ export class Form extends BaseAuditedEntity {
         json: Record<string, unknown> | null;
         ui: Record<string, unknown> | null;
     } | null;
+
+    @Column({
+        type: 'enum',
+        enum: Visibility,
+        enumName: 'form_visibility',
+        default: Visibility.Visible,
+    })
+    visibility!: Visibility;
+
+    @OneToMany(() => Permission, (permission) => permission.form)
+    permissions!: Permission[];
+
+    @OneToMany(() => FormRevision, (revision) => revision.form)
+    revisions!: FormRevision[];
 }

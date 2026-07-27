@@ -23,6 +23,13 @@ export const zElementRole = z.enum([
  */
 export const zPermissionScope = z.enum(['direct', 'inherited']).readonly();
 
+/**
+ * Visibility of a group or form. `visible` means all users can see it,
+ * `private` means only users with an explicit permission can access it.
+ *
+ */
+export const zVisibility = z.enum(['visible', 'private']);
+
 export const zTimestamps = z.object({
     created: z.iso.datetime().readonly(),
     updated: z.iso.datetime().readonly()
@@ -66,7 +73,7 @@ export const zParentPathEntry = z.object({
 export const zParentPath = z.array(zParentPathEntry);
 
 export const zUserShared = z.object({
-    id: z.int().readonly(),
+    id: z.string().readonly(),
     name: z.string().readonly(),
     email: z.email().readonly()
 }).readonly();
@@ -90,6 +97,7 @@ export const zGroupHierarchyNode = z.object({
     id: z.int().readonly(),
     name: z.string().max(255),
     title: z.string().max(255),
+    visibility: zVisibility.optional(),
     children: z.array(z.lazy((): any => zGroupHierarchyNode)).nullish()
 });
 
@@ -97,6 +105,7 @@ export const zGroupShared = z.object({
     id: z.int().readonly(),
     name: z.string().max(255).optional(),
     title: z.string().max(255).optional(),
+    visibility: zVisibility.optional(),
     member_count: z.int().readonly()
 });
 
@@ -121,6 +130,7 @@ export const zFormPatch = z.object({
     title: z.string().max(255).optional(),
     name: z.string().max(255).optional(),
     description: z.string().nullish(),
+    visibility: zVisibility.optional(),
     parent_path: zParentPath.nullable(),
     parent_id: z.int().readonly().nullable()
 }).and(zResourceModification);
@@ -168,6 +178,40 @@ export const zSchemaImportPayload = z.object({
     ui_schema: z.record(z.string(), z.unknown()).optional()
 });
 
+export const zApiKeyShared = z.object({
+    id: z.int().readonly(),
+    name: z.string().max(255),
+    description: z.string().nullish(),
+    identifier: z.string().readonly().optional(),
+    expires_at: z.iso.date().optional()
+});
+
+export const zApiKeyCreate = z.object({
+    name: z.string().max(255),
+    description: z.string().nullish(),
+    expires_at: z.iso.date().optional()
+});
+
+export const zApiKeyCreated = zApiKeyShared.and(z.object({
+    token: z.string()
+}));
+
+/**
+ * Allows updating the `name` and/or `description` of an API key.
+ *
+ */
+export const zApiKeyPatch = z.object({
+    name: z.string().max(255).optional(),
+    description: z.string().nullish()
+});
+
+/**
+ * An API key belonging to the authenticated user. The full `token`
+ * is never exposed — only the `identifier` fragment is shown.
+ *
+ */
+export const zApiKey = zApiKeyShared;
+
 export const zFormVersionRef = z.object({
     version: z.string(),
     comment: z.string()
@@ -180,7 +224,9 @@ export const zPermissionMeta = z.object({
     scope: zPermissionScope,
     expired: z.boolean().readonly(),
     role: zElementRole.optional(),
-    expire: z.iso.date().optional()
+    inherited_role: zElementRole.and(z.unknown()).optional(),
+    expire: z.iso.date().optional(),
+    source_group_path: zParentPath.nullish()
 }).and(zResourceModification);
 
 export const zUserPermission = zPermissionMeta.and(z.object({
@@ -214,15 +260,34 @@ export const zUserWritable = z.object({
 export const zGroupHierarchyNodeWritable = z.object({
     name: z.string().max(255),
     title: z.string().max(255),
+    visibility: zVisibility.optional(),
     children: z.array(z.lazy((): any => zGroupHierarchyNodeWritable)).nullish()
 });
 
 export const zGroupSharedWritable = z.object({
     name: z.string().max(255).optional(),
-    title: z.string().max(255).optional()
+    title: z.string().max(255).optional(),
+    visibility: zVisibility.optional()
 });
 
 export const zGroupRefWritable = zGroupSharedWritable;
+
+export const zApiKeySharedWritable = z.object({
+    name: z.string().max(255),
+    description: z.string().nullish(),
+    expires_at: z.iso.date().optional()
+});
+
+export const zApiKeyCreatedWritable = zApiKeySharedWritable.and(z.object({
+    token: z.string()
+}));
+
+/**
+ * An API key belonging to the authenticated user. The full `token`
+ * is never exposed — only the `identifier` fragment is shown.
+ *
+ */
+export const zApiKeyWritable = zApiKeySharedWritable;
 
 export const zFormVersionRefWritable = z.object({
     version: z.string(),
@@ -238,7 +303,7 @@ export const zPermissionMetaWritable = z.object({
 
 export const zUserPermissionWritable = zPermissionMetaWritable.and(z.object({
     type: z.enum(['user']),
-    user_id: z.int().optional()
+    user_id: z.string().optional()
 }));
 
 export const zGroupPermissionWritable = zPermissionMetaWritable.and(z.object({
@@ -270,6 +335,7 @@ export const zFormPatchWritable = z.object({
     title: z.string().max(255).optional(),
     name: z.string().max(255).optional(),
     description: z.string().nullish(),
+    visibility: zVisibility.optional(),
     permissions: z.array(zPermissionElementWritable).nullish(),
     schema: zFormSchemaPayload.optional(),
     json_schema: z.record(z.string(), z.unknown()).optional(),
@@ -351,6 +417,11 @@ export const zPermissionTypeFilter = z.array(z.enum(['user', 'group']));
  *
  */
 export const zChildTypeFilter = z.array(z.enum(['group', 'form']));
+
+/**
+ * ID of the API key
+ */
+export const zApiKeyId = z.int().gte(1);
 
 /**
  * Integer ID **or** URL-encoded full path of the group.
@@ -796,3 +867,35 @@ export const zPatchFormPermissionPath = z.object({
  * Permission updated
  */
 export const zPatchFormPermissionResponse = zPermissionElement;
+
+/**
+ * List of API keys for the current user
+ */
+export const zListApiKeysResponse = z.array(zApiKey);
+
+export const zCreateApiKeyBody = zApiKeyCreate;
+
+/**
+ * API key created
+ */
+export const zCreateApiKeyResponse = zApiKeyCreated;
+
+export const zDeleteApiKeyPath = z.object({
+    id: z.int().gte(1)
+});
+
+/**
+ * API key deleted
+ */
+export const zDeleteApiKeyResponse = z.void();
+
+export const zPatchApiKeyBody = zApiKeyPatch;
+
+export const zPatchApiKeyPath = z.object({
+    id: z.int().gte(1)
+});
+
+/**
+ * API key updated
+ */
+export const zPatchApiKeyResponse = zApiKey;

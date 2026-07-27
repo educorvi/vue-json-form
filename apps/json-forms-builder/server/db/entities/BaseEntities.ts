@@ -43,3 +43,20 @@ export abstract class BaseAuditedEntity extends BaseTimestampedEntity {
     @JoinColumn({ name: 'updated_by' })
     updated_by!: User | null;
 }
+
+/**
+ * Base class for all entities that track when they were created/updated/deleted,
+ */
+export enum Visibility {
+    Visible = 'visible',
+    Private = 'private',
+}
+
+export abstract class BaseCreatedEntity extends BaseEntity {
+    @CreateDateColumn({ type: 'timestamp' })
+    created!: Date;
+
+    @ManyToOne(() => User, { nullable: true })
+    @JoinColumn({ name: 'created_by' })
+    created_by!: User | null;
+}
