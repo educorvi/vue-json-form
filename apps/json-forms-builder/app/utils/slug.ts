@@ -33,11 +33,13 @@ export function toSlug(input: string): string {
  * @returns The URL path segments joined by `/`, e.g. `"projects/frontend/team-a"`
  */
 export function buildGroupUrlPath(
-    parentPath: Array<{
-        id?: number;
-        name: string;
-        path_segment?: string;
-    }> | null,
+    parentPath:
+        | {
+              id?: number;
+              name: string;
+              path_segment?: string;
+          }[]
+        | null,
     ownSlug: string
 ): string {
     const segments: string[] = [];
@@ -56,7 +58,12 @@ export function buildGroupUrlPath(
  */
 export function buildFormUrlPath(
     form: {
-        parent_path?: Array<{ name: string; path_segment?: string }> | null;
+        parent_path?:
+            | {
+                  name: string;
+                  path_segment?: string;
+              }[]
+            | null;
         name?: string;
         id?: number;
     } | null

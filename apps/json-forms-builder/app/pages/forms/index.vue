@@ -48,7 +48,7 @@ const queryInput = computed<FormsQuery>(() => ({
     order_by: orderBy.value,
 }));
 
-const { data, pending, error } = useLazyAsyncData(
+const { data, pending, error } = useAsyncData(
     'forms',
     () => orpc.forms.list({ query: queryInput.value }),
     { watch: [queryInput] }
@@ -78,28 +78,30 @@ async function onDeleteConfirm(form: FormRow) {
         await orpc.forms.delete({ params: { id: String(form.id) } });
         showDeleteModal.value = false;
         deleteTarget.value = null;
+        notify(t('forms.delete.deleteSuccess'), 'success');
         refreshNuxtData('forms');
     } catch (err: any) {
         deleteError.value = err?.message ?? String(err);
+        notify(deleteError.value, 'danger');
     } finally {
         deletePending.value = false;
     }
 }
 
 function onEdit(form: FormRow) {
-    const path = buildFormUrlPath(form as any);
+    const path = buildFormUrlPath(form);
     if (path) {
         router.push(Routes.formsEdit(path));
     }
 }
 
 function onNavigate(form: FormRow) {
-    const path = buildFormUrlPath(form as any);
+    const path = buildFormUrlPath(form);
     router.push(Routes.formsDetail(path));
 }
 
 function formLink(form: FormRow): string {
-    const path = buildFormUrlPath(form as any);
+    const path = buildFormUrlPath(form);
     return path ? Routes.formsDetail(path) : '';
 }
 
@@ -205,11 +207,11 @@ const pageDescription = computed(() => {
                             <div class="flex-grow-1 min-w-0">
                                 <div class="d-flex align-items-center gap-0">
                                     <BreadcrumbInline
-                                        v-if="(form as any).parent_path?.length"
-                                        :parent-path="(form as any).parent_path"
+                                        v-if="form.parent_path?.length"
+                                        :parent-path="form.parent_path"
                                     />
                                     <span
-                                        v-if="(form as any).parent_path?.length"
+                                        v-if="form.parent_path?.length"
                                         class="text-secondary opacity-50 mx-1"
                                         >/</span
                                     >
@@ -218,10 +220,10 @@ const pageDescription = computed(() => {
                                     </span>
                                 </div>
                                 <div
-                                    v-if="(form as any).description"
+                                    v-if="form.description"
                                     class="text-secondary small text-truncate"
                                 >
-                                    {{ (form as any).description }}
+                                    {{ form.description }}
                                 </div>
                             </div>
 

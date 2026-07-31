@@ -2,7 +2,7 @@
     <div>
         <NuxtRouteAnnouncer />
         <NuxtLayout>
-            <NuxtPage />
+            <NuxtPage :key="$route.fullPath" />
         </NuxtLayout>
         <ToastContainer />
     </div>

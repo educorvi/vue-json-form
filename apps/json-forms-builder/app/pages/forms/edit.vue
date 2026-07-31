@@ -14,6 +14,8 @@ const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const formPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
@@ -25,20 +27,17 @@ const {
 } = useAsyncData(
     () => `form-edit-${formPath.value}`,
     () => orpc.forms.get({ params: { id: formPath.value } }),
-    { watch: [formPath] }
+    {
+        watch: [formPath],
+        transform: (raw: any) => {
+            if (raw) setBreadcrumb('forms', raw, t('forms.edit.title'));
+            return raw;
+        },
+    }
 );
 const pending = computed(() => status.value === 'pending');
 
 const { isNotFound, hasError, errorMessage } = usePageError(formError, status);
-
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    form,
-    (f) => {
-        if (f) setBreadcrumb('forms', f, t('forms.edit.title'));
-    },
-    { immediate: true }
-);
 
 // ── General section state ─────────────────────────────────────────────────
 const editTitle = ref('');
@@ -87,12 +86,11 @@ async function onSaveGeneral() {
     try {
         await orpc.forms.update({
             params: { id: formPath.value },
+            query: { id: formPath.value },
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
-                created_by: null,
-                updated_by: null,
-            } as any,
+            },
         });
         savedMsg.value = true;
         notify(t('settings.saved'), 'success');
@@ -118,6 +116,7 @@ async function onDeleteConfirm() {
     try {
         await orpc.forms.delete({ params: { id: String(form.value.id) } });
         showDeleteModal.value = false;
+        notify(t('forms.delete.deleteSuccess'), 'success');
         router.push(Routes.FORMS);
     } catch (err: any) {
         const msg = err?.message ?? String(err);
@@ -197,11 +196,7 @@ function goDetail() {
             />
 
             <!-- Permission settings -->
-            <PermissionSettings
-                :orpc="orpc"
-                resource-type="forms"
-                :resource-id="formPath"
-            />
+            <PermissionSettings resource-type="forms" :resource-id="formPath" />
 
             <!-- Advanced settings -->
             <FormSettingsAdvanced @delete="showDeleteModal = true" />

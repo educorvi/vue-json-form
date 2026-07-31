@@ -8,7 +8,7 @@ defineProps<{
     updated?: Timestamp;
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 </script>
 
 <template>
@@ -16,14 +16,18 @@ const { t } = useI18n();
         <IconTextDetail
             v-if="created"
             icon="calendar"
-            :text="formatDate(created)"
-            :title="t('groups.created') + ': ' + formatDate(created, true)"
+            :text="formatDate(created, false, locale)"
+            :title="
+                t('groups.created') + ': ' + formatDate(created, true, locale)
+            "
         />
         <IconTextDetail
             v-if="updated"
             icon="clock-clockwise"
-            :text="formatDate(updated)"
-            :title="t('groups.updated') + ': ' + formatDate(updated, true)"
+            :text="formatDate(updated, false, locale)"
+            :title="
+                t('groups.updated') + ': ' + formatDate(updated, true, locale)
+            "
         />
     </div>
 </template>

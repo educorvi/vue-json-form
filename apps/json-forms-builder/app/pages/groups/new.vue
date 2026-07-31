@@ -19,23 +19,22 @@ const parentPath = ref<string | null>(
     route.query.parent ? decodeURIComponent(String(route.query.parent)) : null
 );
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const { data: parentGroup } = useAsyncData(
     () => `parent-group-for-subgroup-${parentPath.value}`,
     () =>
         parentPath.value
             ? orpc.groups.get({ params: { id: parentPath.value } })
             : Promise.resolve(null),
-    { watch: [parentPath], immediate: true }
-);
-
-// Breadcrumb — updated when parent group data arrives
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    parentGroup,
-    (g) => {
-        setBreadcrumb('groups', g, t('groups.new.title'));
-    },
-    { immediate: true }
+    {
+        watch: [parentPath],
+        immediate: true,
+        transform: (raw: any): any => {
+            setBreadcrumb('groups', raw, t('groups.new.title'));
+            return raw;
+        },
+    }
 );
 
 // ── Form state ─────────────────────────────────────────────────────────────
@@ -49,7 +48,7 @@ watch(
     parentGroup,
     (g) => {
         if (g && parentId.value === null) {
-            parentId.value = (g as any).id;
+            parentId.value = g.id;
         }
     },
     { immediate: true }
@@ -127,13 +126,12 @@ async function submit() {
                 title: title.value.trim(),
                 name: slug.value.trim(),
                 description: description.value.trim() || undefined,
-                created_by: null,
-                updated_by: null,
             },
         });
+        notify(t('groups.new.createSuccess'), 'success');
         const path = buildGroupUrlPath(
-            (created as any).parent_path,
-            (created as any).name ?? ''
+            created.parent_path ?? null,
+            created.name ?? ''
         );
         await router.push(Routes.groupsDetail(path));
     } catch (err: any) {
@@ -196,7 +194,7 @@ function cancel() {
                     >
                         <GroupTreeSelect
                             v-model="parentId"
-                            :current-group-id="(parentGroup as any)?.id ?? null"
+                            :current-group-id="parentGroup?.id ?? null"
                         />
                         <BFormText>{{
                             t('groups.new.fields.parentHint')

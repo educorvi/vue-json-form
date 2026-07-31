@@ -120,7 +120,7 @@ export class ApiKeyService {
      * Update an API key's name and/or description.
      */
     async patch(
-        id: number,
+        id: string,
         userId: string,
         dto: PatchApiKeyBody
     ): Promise<ResponseApiKey> {
@@ -148,7 +148,7 @@ export class ApiKeyService {
 
         // Find the key and ensure it belongs to the user
         const key = await this.repo.findOne({
-            where: { id, user: { id: userId } } as any,
+            where: { id, user: { id: userId } },
         });
         if (!key) {
             throw new ORPCError('NOT_FOUND', { message: 'API key not found' });
@@ -170,9 +170,9 @@ export class ApiKeyService {
     /**
      * Delete an API key.
      */
-    async delete(id: number, userId: string): Promise<void> {
+    async delete(id: string, userId: string): Promise<void> {
         const key = await this.repo.findOne({
-            where: { id, user: { id: userId } } as any,
+            where: { id, user: { id: userId } },
         });
         if (!key) {
             throw new ORPCError('NOT_FOUND', { message: 'API key not found' });

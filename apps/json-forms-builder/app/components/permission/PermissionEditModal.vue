@@ -4,8 +4,9 @@
     Changes are patched instantly on submit.
 -->
 <script setup lang="ts">
-import type { PermissionEntry } from '@/composables/usePermission';
+import type { PermissionEntry, ElementRole } from '@/composables/usePermission';
 import { isRoleAssignable } from '@/composables/usePermission';
+import BootstrapSelect from '~/components/custom/BootstrapSelect.vue';
 
 const props = defineProps<{
     modelValue: boolean;
@@ -18,15 +19,14 @@ const emit = defineEmits<{
     'update:modelValue': [value: boolean];
     save: [
         permissionId: number,
-        data: { role?: string; expire?: string | null },
+        data: { role?: ElementRole; expire?: string | null },
     ];
 }>();
 
 const { t } = useI18n();
 
 const ROLES = ['owner', 'editor', 'guest'] as const;
-type Role = (typeof ROLES)[number];
-const editRole = ref<Role>('editor');
+const editRole = ref<ElementRole>('editor');
 const editExpire = ref('');
 
 const roleOptions = computed(() => {
@@ -44,7 +44,7 @@ const canSubmit = computed(() => !!editRole.value);
 
 function handleSave() {
     if (!props.permission) return;
-    const data: { role?: string; expire?: string | null } = {};
+    const data: { role?: ElementRole; expire?: string | null } = {};
     if (editRole.value !== props.permission.role) {
         data.role = editRole.value;
     }
@@ -60,7 +60,7 @@ watch(
     () => props.modelValue,
     (open) => {
         if (open && props.permission) {
-            editRole.value = (props.permission.role as Role) ?? 'editor';
+            editRole.value = (props.permission.role as ElementRole) ?? 'editor';
             editExpire.value = props.permission.expire
                 ? props.permission.expire.slice(0, 10)
                 : '';
@@ -91,11 +91,11 @@ watch(
             label-class="fw-medium"
             class="mb-3"
         >
-            <BFormSelect
+            <BootstrapSelect
                 v-model="editRole"
                 :options="roleOptions"
-                text-field="label"
-                value-field="value"
+                option-label="label"
+                option-value="value"
                 :placeholder="t('permissions.form.rolePlaceholder')"
                 class="w-100"
             />

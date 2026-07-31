@@ -87,7 +87,9 @@ const emit = defineEmits<{
                 :model-value="modelValue"
                 :placeholder="$t('groups.edit.fields.titlePlaceholder')"
                 :state="titleState"
-                @update:model-value="emit('update:modelValue', $event)"
+                @update:model-value="
+                    emit('update:modelValue', String($event ?? ''))
+                "
             />
             <BFormInvalidFeedback :force-show="titleState === false">
                 {{ $t('common.required') }}
@@ -103,7 +105,9 @@ const emit = defineEmits<{
                 :model-value="description"
                 :placeholder="$t('groups.edit.fields.descriptionPlaceholder')"
                 rows="2"
-                @update:model-value="emit('update:description', $event)"
+                @update:model-value="
+                    emit('update:description', String($event ?? ''))
+                "
             />
         </BFormGroup>
 

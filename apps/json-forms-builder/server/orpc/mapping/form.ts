@@ -1,5 +1,7 @@
 import { Form } from '~~/server/db/entities/Form';
-import { ApiParentPath, ApiForm } from '~~/server/services/FormService';
+import type { ApiForm } from '~~/server/services/FormService';
+import type { ApiParentPath } from '~~/server/services/GroupService';
+import { mapVisibilityToApi } from './shared';
 
 export function mapDbFormToApiForm(
     form: Form,
@@ -10,7 +12,7 @@ export function mapDbFormToApiForm(
         title: form.title,
         name: form.name,
         description: form.description,
-        visibility: form.visibility,
+        visibility: mapVisibilityToApi(form.visibility),
         parent_path: parentPath,
         parent_id: form.group?.id ?? null,
         created_by: {
@@ -25,6 +27,5 @@ export function mapDbFormToApiForm(
             email: form.updated_by?.email ?? 'system@example.com',
             timestamp: form.updated.toISOString(),
         },
-        path: form.path,
-    } as ApiForm;
+    };
 }

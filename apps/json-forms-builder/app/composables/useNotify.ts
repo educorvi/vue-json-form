@@ -12,19 +12,20 @@ export interface Toast {
     title?: string;
 }
 
-const toasts = ref<Toast[]>([]);
-let nextId = 0;
-
 /**
  * Push a toast notification. Returns the notification id.
  */
 export function useNotify() {
+    const toasts = useState<Toast[]>('notify-toasts', () => []);
+    const nextId = useState('notify-next-id', () => 0);
+
     function notify(
         text: string,
         variant: Toast['variant'] = 'danger',
         title?: string
     ): number {
-        const id = ++nextId;
+        nextId.value++;
+        const id = nextId.value;
         toasts.value = [...toasts.value, { id, text, variant, title }];
         return id;
     }

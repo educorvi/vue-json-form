@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { BaseCreatedEntity } from './BaseEntities';
+import { BaseUuidCreatedEntity } from './BaseEntities';
 import { User } from './User';
 
 @Entity({ name: 'api_key' })
-export class ApiKey extends BaseCreatedEntity {
+export class ApiKey extends BaseUuidCreatedEntity {
     @ManyToOne(() => User, (user) => user.api_keys, { nullable: false })
     @JoinColumn({ name: 'user_id' })
     user!: User;

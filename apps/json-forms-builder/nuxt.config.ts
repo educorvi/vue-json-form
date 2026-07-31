@@ -13,21 +13,31 @@ export default defineNuxtConfig({
     ],
 
     // The form-builder is a complex client-side component using localStorage,
-    // custom Pinia stores with persisted state, and heavy browser APIs.
+    // custom Pinia stores with persisted state.
     // Render it entirely on the client (SPA mode for these routes).
     routeRules: {
-        '/form-builder': { ssr: false },
-        '/form-builder/**': { ssr: false },
         '/forms/detail': { ssr: false },
     },
 
     // TypeORM uses legacy (experimental) decorators.
-    // The standard TC39 decorator protocol passes `undefined` as the target
-    // for field decorators, which breaks TypeORM's `object.constructor` access.
-    nitro: {
-        experimental: {
-            openAPI: true,
+    hooks: {
+        'prepare:types'(opts: any) {
+            // opts.tsConfig.compilerOptions.experimentalDecorators = true;
+            // opts.tsConfig.compilerOptions.useDefineForClassFields = false;
+            // opts.nodeTsConfig.compilerOptions.experimentalDecorators = true;
+            // opts.nodeTsConfig.compilerOptions.useDefineForClassFields = false;
+            // opts.sharedTsConfig.compilerOptions.experimentalDecorators = true;
+            // opts.sharedTsConfig.compilerOptions.useDefineForClassFields = false;
         },
+        'nitro:config'(nitroConfig: any) {
+            nitroConfig.typescript.tsConfig.compilerOptions.experimentalDecorators = true;
+            nitroConfig.typescript.tsConfig.compilerOptions.useDefineForClassFields = false;
+        },
+    },
+    nitro: {
+        // experimental: {
+        //     openAPI: true,
+        // },
         esbuild: {
             options: {
                 tsconfigRaw: {

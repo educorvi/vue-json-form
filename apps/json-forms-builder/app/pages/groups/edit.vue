@@ -16,6 +16,8 @@ const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const groupPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
@@ -27,20 +29,17 @@ const {
 } = useAsyncData(
     () => `group-edit-${groupPath.value}`,
     () => orpc.groups.get({ params: { id: groupPath.value } }),
-    { watch: [groupPath] }
+    {
+        watch: [groupPath],
+        transform: (raw: any) => {
+            if (raw) setBreadcrumb('groups', raw, t('groups.edit.title'));
+            return raw;
+        },
+    }
 );
 const pending = computed(() => status.value === 'pending');
 
 const { isNotFound, hasError, errorMessage } = usePageError(groupError, status);
-
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    group,
-    (g) => {
-        if (g) setBreadcrumb('groups', g, t('groups.edit.title'));
-    },
-    { immediate: true }
-);
 
 // ── General section state ─────────────────────────────────────────────────
 const editTitle = ref('');
@@ -90,7 +89,7 @@ async function onSaveGeneral() {
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
-            } as any,
+            },
         });
         savedMsg.value = true;
         notify(t('settings.saved'), 'success');
@@ -116,7 +115,7 @@ async function onDeleteConfirm() {
     try {
         await orpc.groups.delete({ params: { id: String(group.value.id) } });
         showDeleteModal.value = false;
-        notify(t('groups.detail.deleteSuccess'), 'success');
+        notify(t('groups.delete.deleteSuccess'), 'success');
         router.push(Routes.GROUPS);
     } catch (err: any) {
         const msg = err?.message ?? String(err);
@@ -198,7 +197,6 @@ function goDetail() {
 
             <!-- Permission settings -->
             <PermissionSettings
-                :orpc="orpc"
                 resource-type="groups"
                 :resource-id="groupPath"
             />

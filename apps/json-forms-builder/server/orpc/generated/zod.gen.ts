@@ -28,7 +28,7 @@ export const zPermissionScope = z.enum(['direct', 'inherited']).readonly();
  * `private` means only users with an explicit permission can access it.
  *
  */
-export const zVisibility = z.enum(['visible', 'private']);
+export const zVisibility = z.enum(['visible', 'private']).default('visible');
 
 export const zTimestamps = z.object({
     created: z.iso.datetime().readonly(),
@@ -36,10 +36,10 @@ export const zTimestamps = z.object({
 });
 
 export const zPaginatedMeta = z.object({
-    page: z.int(),
-    page_size: z.int(),
-    total_count: z.int(),
-    total_pages: z.int()
+    page: z.int().gte(1),
+    page_size: z.int().gte(1).lte(100),
+    total_count: z.int().gte(0),
+    total_pages: z.int().gte(0)
 });
 
 export const zErrorResponse = z.object({
@@ -73,25 +73,31 @@ export const zParentPathEntry = z.object({
 export const zParentPath = z.array(zParentPathEntry);
 
 export const zUserShared = z.object({
-    id: z.string().readonly(),
+    id: z.string(),
     name: z.string().readonly(),
     email: z.email().readonly()
-}).readonly();
+});
 
+/**
+ * Full user object with role and timestamps
+ */
 export const zUser = zUserShared.and(z.object({
     role: zGlobalRole
 })).and(zTimestamps);
 
-export const zUserRef = zUserShared.and(z.record(z.string(), z.unknown()));
+/**
+ * Lightweight user reference for entities referencing responsible users
+ */
+export const zUserRef = zUserShared;
 
 export const zResourceModification = z.object({
     created_by: zUserRef.and(z.object({
-        timestamp: z.iso.datetime().readonly()
+        timestamp: z.iso.datetime()
     })),
     updated_by: zUserRef.and(z.object({
-        timestamp: z.iso.datetime().readonly()
+        timestamp: z.iso.datetime()
     }))
-}).readonly();
+});
 
 export const zGroupHierarchyNode = z.object({
     id: z.int().readonly(),
@@ -111,11 +117,11 @@ export const zGroupShared = z.object({
 
 export const zGroupPatch = zGroupShared.and(z.object({
     description: z.string().nullish(),
-    group_count: z.int().readonly(),
-    form_count: z.int().readonly(),
+    group_count: z.int().gte(0).readonly(),
+    form_count: z.int().gte(0).readonly(),
     parent_path: zParentPath.nullable(),
     parent_id: z.int().readonly().nullable()
-})).and(zResourceModification);
+})).and(zResourceModification).readonly();
 
 export const zGroupRef = zGroupShared;
 
@@ -130,10 +136,10 @@ export const zFormPatch = z.object({
     title: z.string().max(255).optional(),
     name: z.string().max(255).optional(),
     description: z.string().nullish(),
-    visibility: zVisibility.optional(),
+    visibility: zVisibility.optional().default('visible'),
     parent_path: zParentPath.nullable(),
     parent_id: z.int().readonly().nullable()
-}).and(zResourceModification);
+}).and(zResourceModification).readonly();
 
 /**
  * Form metadata. The schema (JSON Schema and UI Schema) is managed separately
@@ -156,14 +162,32 @@ export const zGroupElement = z.union([
 ]);
 
 /**
- * Schema definitions returned from the schema endpoint.
+ * JSON Schema (Draft-07 or later) defining the data model
  */
-export const zFormSchemaPayloadPatch = z.object({
-    json: z.record(z.string(), z.unknown()).nullish(),
-    ui: z.record(z.string(), z.unknown()).nullish()
-}).nullable();
+export const zFormSchemaPayloadArtifactsJson = z.record(z.string(), z.unknown());
 
-export const zFormSchemaPayload = zFormSchemaPayloadPatch;
+/**
+ * UI Schema controlling how the form is rendered
+ */
+export const zFormSchemaPayloadArtifactsUi = z.record(z.string(), z.unknown());
+
+/**
+ * Form schema definition as artifacts (JSON Schema and UI Schema)
+ */
+export const zFormSchemaPayloadArtifacts = z.object({
+    json: zFormSchemaPayloadArtifactsJson.optional(),
+    ui: zFormSchemaPayloadArtifactsUi.optional()
+});
+
+export const zFormSchemaPayloadArtifactsCreate = zFormSchemaPayloadArtifacts.and(z.record(z.string(), z.unknown()));
+
+/**
+ * Form schema definition
+ */
+export const zFormSchemaPayload = z.object({
+    json: zFormSchemaPayloadArtifactsJson,
+    ui: zFormSchemaPayloadArtifactsUi
+});
 
 /**
  * Payload for importing a schema. At least one field should be provided.
@@ -179,7 +203,7 @@ export const zSchemaImportPayload = z.object({
 });
 
 export const zApiKeyShared = z.object({
-    id: z.int().readonly(),
+    id: z.uuid().readonly(),
     name: z.string().max(255),
     description: z.string().nullish(),
     identifier: z.string().readonly().optional(),
@@ -215,7 +239,7 @@ export const zApiKey = zApiKeyShared;
 export const zFormVersionRef = z.object({
     version: z.string(),
     comment: z.string()
-}).and(zFormSchemaPayload).and(zResourceModification);
+}).and(zFormSchemaPayload).and(zResourceModification).readonly();
 
 export const zFormVersion = zFormVersionRef.and(zFormSchemaPayload);
 
@@ -227,34 +251,35 @@ export const zPermissionMeta = z.object({
     inherited_role: zElementRole.and(z.unknown()).optional(),
     expire: z.iso.date().optional(),
     source_group_path: zParentPath.nullish()
-}).and(zResourceModification);
+}).and(zResourceModification).readonly();
 
-export const zUserPermission = zPermissionMeta.and(z.object({
-    type: z.enum(['user']),
+export const zPermission = zPermissionMeta.and(z.object({
     user: zUserRef.readonly()
 }));
 
-export const zGroupPermission = zPermissionMeta.and(z.object({
-    type: z.enum(['group']),
-    group: zGroupRef.readonly()
+export const zUserSharedWritable = z.object({
+    id: z.string()
+});
+
+/**
+ * Full user object with role and timestamps
+ */
+export const zUserWritable = zUserSharedWritable.and(z.object({
+    role: zGlobalRole
 }));
 
-export const zPermissionElement = z.union([
-    z.object({
-        type: z.literal('user')
-    }).and(zUserPermission),
-    z.object({
-        type: z.literal('group')
-    }).and(zGroupPermission)
-]);
+/**
+ * Lightweight user reference for entities referencing responsible users
+ */
+export const zUserRefWritable = zUserSharedWritable;
 
 export const zResourceModificationWritable = z.object({
-    created_by: z.unknown(),
-    updated_by: z.unknown()
-}).readonly();
-
-export const zUserWritable = z.object({
-    role: zGlobalRole
+    created_by: zUserRefWritable.and(z.object({
+        timestamp: z.iso.datetime()
+    })),
+    updated_by: zUserRefWritable.and(z.object({
+        timestamp: z.iso.datetime()
+    }))
 });
 
 export const zGroupHierarchyNodeWritable = z.object({
@@ -270,7 +295,44 @@ export const zGroupSharedWritable = z.object({
     visibility: zVisibility.optional()
 });
 
+export const zGroupPatchWritable = zGroupSharedWritable.and(z.object({
+    description: z.string().nullish()
+}));
+
 export const zGroupRefWritable = zGroupSharedWritable;
+
+export const zGroupWritable = zGroupPatchWritable;
+
+export const zChildGroupWritable = z.object({
+    type: z.enum(['group'])
+}).and(zGroupWritable);
+
+export const zFormPatchWritable = z.object({
+    title: z.string().max(255).optional(),
+    name: z.string().max(255).optional(),
+    description: z.string().nullish(),
+    visibility: zVisibility.optional().default('visible')
+});
+
+/**
+ * Form metadata. The schema (JSON Schema and UI Schema) is managed separately
+ * via `/forms/{id}/schema` endpoints and is not included here.
+ *
+ */
+export const zFormWritable = zFormPatchWritable;
+
+export const zChildFormWritable = z.object({
+    type: z.enum(['form'])
+}).and(zFormWritable);
+
+export const zGroupElementWritable = z.union([
+    z.object({
+        type: z.literal('group')
+    }).and(zChildGroupWritable),
+    z.object({
+        type: z.literal('form')
+    }).and(zChildFormWritable)
+]);
 
 export const zApiKeySharedWritable = z.object({
     name: z.string().max(255),
@@ -292,75 +354,18 @@ export const zApiKeyWritable = zApiKeySharedWritable;
 export const zFormVersionRefWritable = z.object({
     version: z.string(),
     comment: z.string()
-}).and(zFormSchemaPayload).and(zResourceModificationWritable);
+}).and(zFormSchemaPayload);
 
 export const zFormVersionWritable = zFormVersionRefWritable.and(zFormSchemaPayload);
 
 export const zPermissionMetaWritable = z.object({
     role: zElementRole.optional(),
     expire: z.iso.date().optional()
-}).and(zResourceModificationWritable);
+});
 
-export const zUserPermissionWritable = zPermissionMetaWritable.and(z.object({
-    type: z.enum(['user']),
+export const zPermissionWritable = zPermissionMetaWritable.and(z.object({
     user_id: z.string().optional()
 }));
-
-export const zGroupPermissionWritable = zPermissionMetaWritable.and(z.object({
-    type: z.enum(['group']),
-    group_id: z.int().optional()
-}));
-
-export const zPermissionElementWritable = z.union([
-    z.object({
-        type: z.literal('user')
-    }).and(zUserPermissionWritable),
-    z.object({
-        type: z.literal('group')
-    }).and(zGroupPermissionWritable)
-]);
-
-export const zGroupPatchWritable = zGroupSharedWritable.and(z.object({
-    description: z.string().nullish(),
-    permissions: z.array(zPermissionElementWritable).nullish()
-})).and(zResourceModificationWritable);
-
-export const zGroupWritable = zGroupPatchWritable;
-
-export const zChildGroupWritable = z.object({
-    type: z.enum(['group'])
-}).and(zGroupWritable);
-
-export const zFormPatchWritable = z.object({
-    title: z.string().max(255).optional(),
-    name: z.string().max(255).optional(),
-    description: z.string().nullish(),
-    visibility: zVisibility.optional(),
-    permissions: z.array(zPermissionElementWritable).nullish(),
-    schema: zFormSchemaPayload.optional(),
-    json_schema: z.record(z.string(), z.unknown()).optional(),
-    ui_schema: z.record(z.string(), z.unknown()).optional()
-}).and(zResourceModificationWritable);
-
-/**
- * Form metadata. The schema (JSON Schema and UI Schema) is managed separately
- * via `/forms/{id}/schema` endpoints and is not included here.
- *
- */
-export const zFormWritable = zFormPatchWritable;
-
-export const zChildFormWritable = z.object({
-    type: z.enum(['form'])
-}).and(zFormWritable);
-
-export const zGroupElementWritable = z.union([
-    z.object({
-        type: z.literal('group')
-    }).and(zChildGroupWritable),
-    z.object({
-        type: z.literal('form')
-    }).and(zChildFormWritable)
-]);
 
 /**
  * Integer ID **or** URL-encoded full path of the group.
@@ -407,12 +412,6 @@ export const zSortOrder = z.enum(['asc', 'desc']).default('desc');
 export const zPermissionScopeFilter = z.array(z.enum(['direct', 'inherited']));
 
 /**
- * Filter by permission subject type. Omit to return both users and groups. Since values are exclusive, multiple values can be supplied to return both types (logical OR).
- *
- */
-export const zPermissionTypeFilter = z.array(z.enum(['user', 'group']));
-
-/**
  * Filter by element type. Omit to return both groups and forms. Since values are exclusive, multiple values can be supplied to return both types (logical OR).
  *
  */
@@ -421,7 +420,7 @@ export const zChildTypeFilter = z.array(z.enum(['group', 'form']));
 /**
  * ID of the API key
  */
-export const zApiKeyId = z.int().gte(1);
+export const zApiKeyId = z.uuid();
 
 /**
  * Integer ID **or** URL-encoded full path of the group.
@@ -429,6 +428,17 @@ export const zApiKeyId = z.int().gte(1);
  *
  */
 export const zGroupIdOrPathQuery = z.string();
+
+/**
+ * Semantic version string (e.g., "1.0.0")
+ */
+export const zSemanticVersion = z.string().regex(/^\d+\.\d+\.\d+$/);
+
+/**
+ * Which artifacts to include in the response. By default all are included. Provide the enum of artifacts as an array
+ *
+ */
+export const zFormArtifactsQuery = z.array(z.enum(['json', 'ui']));
 
 /**
  * Service is healthy
@@ -582,23 +592,23 @@ export const zListGroupPermissionsQuery = z.object({
         'updated',
         'expire',
         'role',
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'scope',
         'type'
     ]).optional().default('lastname'),
-    filter_scope: z.array(z.enum(['direct', 'inherited'])).optional(),
-    filter_type: z.array(z.enum(['user', 'group'])).optional()
+    filter_scope: z.array(z.enum(['direct', 'inherited'])).optional()
 });
 
 /**
  * Paginated permission list
  */
 export const zListGroupPermissionsResponse = zPaginatedMeta.and(z.object({
-    elements: z.array(zPermissionElement)
+    data: z.array(zPermission)
 }));
 
-export const zCreateGroupPermissionBody = zPermissionElementWritable;
+export const zCreateGroupPermissionBody = zPermissionWritable;
 
 export const zCreateGroupPermissionPath = z.object({
     id: z.string()
@@ -607,7 +617,7 @@ export const zCreateGroupPermissionPath = z.object({
 /**
  * Permission created
  */
-export const zCreateGroupPermissionResponse = zPermissionElement;
+export const zCreateGroupPermissionResponse = zPermission;
 
 export const zDeleteGroupPermissionPath = z.object({
     id: z.string(),
@@ -629,7 +639,7 @@ export const zPatchGroupPermissionPath = z.object({
 /**
  * Permission updated
  */
-export const zPatchGroupPermissionResponse = zPermissionElement;
+export const zPatchGroupPermissionResponse = zPermission;
 
 export const zListFormsQuery = z.object({
     page: z.int().gte(1).optional().default(1),
@@ -711,6 +721,50 @@ export const zReplaceFormQuery = z.object({
  */
 export const zReplaceFormResponse = zForm;
 
+export const zGetFormLatestSchemaPath = z.object({
+    id: z.string()
+});
+
+/**
+ * JSON Schema and UI Schema for the latest revision
+ */
+export const zGetFormLatestSchemaResponse = zFormSchemaPayload;
+
+export const zImportFormSchemaBody = zFormSchemaPayload;
+
+export const zImportFormSchemaPath = z.object({
+    id: z.string()
+});
+
+/**
+ * Schema replaced
+ */
+export const zImportFormSchemaResponse = zFormSchemaPayload;
+
+export const zGetFormLatestSchemaJsonUiPath = z.object({
+    id: z.string()
+});
+
+/**
+ * JSON Schema and UI Schema for the latest revision
+ */
+export const zGetFormLatestSchemaJsonUiResponse = zFormSchemaPayloadArtifacts;
+
+export const zImportFormSchemaJsonUiBody = zFormSchemaPayloadArtifactsCreate;
+
+export const zImportFormSchemaJsonUiPath = z.object({
+    id: z.string()
+});
+
+export const zImportFormSchemaJsonUiQuery = z.object({
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
+});
+
+/**
+ * Schema replaced successfully
+ */
+export const zImportFormSchemaJsonUiResponse = zFormSchemaPayloadArtifacts;
+
 export const zListFormVersionsPath = z.object({
     id: z.string()
 });
@@ -739,29 +793,9 @@ export const zCreateFormVersionPath = z.object({
  */
 export const zCreateFormVersionResponse = zFormVersionRef;
 
-export const zGetFormLatestSchemaPath = z.object({
-    id: z.string()
-});
-
-/**
- * JSON Schema and UI Schema for the latest revision
- */
-export const zGetFormLatestSchemaResponse = zFormSchemaPayload;
-
-export const zImportFormSchemaBody = zSchemaImportPayload;
-
-export const zImportFormSchemaPath = z.object({
-    id: z.string()
-});
-
-/**
- * Schema replaced, new version created
- */
-export const zImportFormSchemaResponse = zFormVersion;
-
 export const zGetFormSchemaByVersionPath = z.object({
     id: z.string(),
-    version: z.string()
+    version: z.string().regex(/^\d+\.\d+\.\d+$/)
 });
 
 /**
@@ -769,43 +803,19 @@ export const zGetFormSchemaByVersionPath = z.object({
  */
 export const zGetFormSchemaByVersionResponse = zFormVersion;
 
-export const zGetFormLatestJsonSchemaPath = z.object({
-    id: z.string()
-});
-
-/**
- * Arbitrary JSON object representing the JSON Schema
- */
-export const zGetFormLatestJsonSchemaResponse = z.record(z.string(), z.unknown());
-
-export const zGetFormLatestUiSchemaPath = z.object({
-    id: z.string()
-});
-
-/**
- * Arbitrary JSON object representing the UI Schema
- */
-export const zGetFormLatestUiSchemaResponse = z.record(z.string(), z.unknown());
-
-export const zGetFormSchemaVersionJsonPath = z.object({
+export const zGetFormSchemaVersionArtifactsPath = z.object({
     id: z.string(),
-    version: z.string()
+    version: z.string().regex(/^\d+\.\d+\.\d+$/)
+});
+
+export const zGetFormSchemaVersionArtifactsQuery = z.object({
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**
- * Arbitrary JSON object representing the JSON Schema
+ * JSON Schema and UI Schema for the specified version
  */
-export const zGetFormSchemaVersionJsonResponse = z.record(z.string(), z.unknown());
-
-export const zGetFormSchemaVersionUiPath = z.object({
-    id: z.string(),
-    version: z.string()
-});
-
-/**
- * Arbitrary JSON object representing the UI Schema
- */
-export const zGetFormSchemaVersionUiResponse = z.record(z.string(), z.unknown());
+export const zGetFormSchemaVersionArtifactsResponse = zFormSchemaPayloadArtifacts;
 
 export const zListFormPermissionsPath = z.object({
     id: z.string()
@@ -824,18 +834,17 @@ export const zListFormPermissionsQuery = z.object({
         'scope',
         'type'
     ]).optional().default('name'),
-    filter_scope: z.array(z.enum(['direct', 'inherited'])).optional(),
-    filter_type: z.array(z.enum(['user', 'group'])).optional()
+    filter_scope: z.array(z.enum(['direct', 'inherited'])).optional()
 });
 
 /**
  * Paginated permission list
  */
 export const zListFormPermissionsResponse = zPaginatedMeta.and(z.object({
-    elements: z.array(zPermissionElement)
+    data: z.array(zPermission)
 }));
 
-export const zCreateFormPermissionBody = zPermissionElementWritable;
+export const zCreateFormPermissionBody = zPermissionWritable;
 
 export const zCreateFormPermissionPath = z.object({
     id: z.string()
@@ -844,7 +853,7 @@ export const zCreateFormPermissionPath = z.object({
 /**
  * Permission created
  */
-export const zCreateFormPermissionResponse = zPermissionElement;
+export const zCreateFormPermissionResponse = zPermission;
 
 export const zDeleteFormPermissionPath = z.object({
     id: z.string(),
@@ -866,7 +875,7 @@ export const zPatchFormPermissionPath = z.object({
 /**
  * Permission updated
  */
-export const zPatchFormPermissionResponse = zPermissionElement;
+export const zPatchFormPermissionResponse = zPermission;
 
 /**
  * List of API keys for the current user
@@ -881,7 +890,7 @@ export const zCreateApiKeyBody = zApiKeyCreate;
 export const zCreateApiKeyResponse = zApiKeyCreated;
 
 export const zDeleteApiKeyPath = z.object({
-    id: z.int().gte(1)
+    id: z.uuid()
 });
 
 /**
@@ -892,7 +901,7 @@ export const zDeleteApiKeyResponse = z.void();
 export const zPatchApiKeyBody = zApiKeyPatch;
 
 export const zPatchApiKeyPath = z.object({
-    id: z.int().gte(1)
+    id: z.uuid()
 });
 
 /**

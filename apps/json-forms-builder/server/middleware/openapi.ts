@@ -17,10 +17,6 @@
 //     return spec;
 // });
 
-import { OpenAPIGenerator } from '@orpc/openapi';
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
-import { appRouter } from '~~/server/orpc/routers';
-import { zGroup, zStatusResponse, zUser } from '../orpc/generated/zod.gen';
 // import { StatusResponseSchema } from '~~/server/models/status';
 // import {
 //     UserSchema,
@@ -33,64 +29,67 @@ import { zGroup, zStatusResponse, zUser } from '../orpc/generated/zod.gen';
 //     TimestampsSchema,
 // } from '~~/server/models/shared';
 
-const generator = new OpenAPIGenerator({
-    schemaConverters: [new ZodToJsonSchemaConverter()],
-});
+// UNCOMMENT BELOW: enables nuxt open api files to be provided, also uncomment experimental features in nuxt.config for openapi
 
-let specCache: unknown = null;
+// import { OpenAPIGenerator } from '@orpc/openapi';
+// import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
+// import { appRouter } from '~~/server/orpc/routers';
+// import { zGroup, zStatusResponse, zUser } from '../orpc/generated/zod.gen';
+
+// const generator = new OpenAPIGenerator({
+//     schemaConverters: [new ZodToJsonSchemaConverter()],
+// });
+
+// let specCache: unknown = null;
 
 export default defineEventHandler(async (event) => {
-    if (event.path !== '/_openapi.json') return;
-
-    if (!specCache || import.meta.dev) {
-        const keycloakBase = `${process.env.NUXT_OAUTH_KEYCLOAK_SERVER_URL ?? 'http://localhost:8080'}/realms/${process.env.NUXT_OAUTH_KEYCLOAK_REALM ?? 'dev'}`;
-        const baseUrl = `${process.env.BASE_URL ?? 'http://localhost:3000'}/api/v1`;
-
-        specCache = await generator.generate(appRouter, {
-            info: {
-                title: 'Form Builder API',
-                description: 'API for the Form Builder application.',
-                version: '1.0.0',
-            },
-            servers: [{ url: baseUrl }],
-            components: {
-                securitySchemes: {
-                    OidcAuth: {
-                        type: 'openIdConnect',
-                        openIdConnectUrl: `${keycloakBase}/.well-known/openid-configuration`,
-                    },
-                    BearerAuth: {
-                        type: 'http',
-                        scheme: 'bearer',
-                        bearerFormat: 'API Key (fb_...)',
-                        description:
-                            'API key token generated via POST /api-keys. Prefix: `fb_`.',
-                    },
-                },
-            },
-            commonSchemas: {
-                // StatusResponse: { schema: StatusResponseSchema },
-                // User: { schema: UserSchema },
-                // UserList: { schema: ListUsersResponseSchema },
-                // UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
-                // GlobalRole: { schema: GlobalRoleSchema },
-                // PaginatedMeta: { schema: PaginatedMetaSchema },
-                // Timestamps: { schema: TimestampsSchema },
-                Status: {
-                    schema: zStatusResponse,
-                },
-                User: {
-                    schema: zUser,
-                },
-                Group: {
-                    schema: zGroup,
-                },
-                // GroupList: {
-
-                // },
-            },
-        });
-    }
-
-    return specCache;
+    //     if (event.path !== '/_openapi.json') return;
+    //     if (!specCache || import.meta.dev) {
+    //         const keycloakBase = `${process.env.NUXT_OAUTH_KEYCLOAK_SERVER_URL ?? 'http://localhost:8080'}/realms/${process.env.NUXT_OAUTH_KEYCLOAK_REALM ?? 'dev'}`;
+    //         const baseUrl = `${process.env.BASE_URL ?? 'http://localhost:3000'}/api/v1`;
+    //         specCache = await generator.generate(appRouter, {
+    //             info: {
+    //                 title: 'Form Builder API',
+    //                 description: 'API for the Form Builder application.',
+    //                 version: '1.0.0',
+    //             },
+    //             servers: [{ url: baseUrl }],
+    //             components: {
+    //                 securitySchemes: {
+    //                     OidcAuth: {
+    //                         type: 'openIdConnect',
+    //                         openIdConnectUrl: `${keycloakBase}/.well-known/openid-configuration`,
+    //                     },
+    //                     BearerAuth: {
+    //                         type: 'http',
+    //                         scheme: 'bearer',
+    //                         bearerFormat: 'API Key (fb_...)',
+    //                         description:
+    //                             'API key token generated via POST /api-keys. Prefix: `fb_`.',
+    //                     },
+    //                 },
+    //             },
+    //             commonSchemas: {
+    //                 // StatusResponse: { schema: StatusResponseSchema },
+    //                 // User: { schema: UserSchema },
+    //                 // UserList: { schema: ListUsersResponseSchema },
+    //                 // UsersQuery: { strategy: 'input', schema: UsersQuerySchema },
+    //                 // GlobalRole: { schema: GlobalRoleSchema },
+    //                 // PaginatedMeta: { schema: PaginatedMetaSchema },
+    //                 // Timestamps: { schema: TimestampsSchema },
+    //                 Status: {
+    //                     schema: zStatusResponse,
+    //                 },
+    //                 User: {
+    //                     schema: zUser,
+    //                 },
+    //                 Group: {
+    //                     schema: zGroup,
+    //                 },
+    //                 // GroupList: {
+    //                 // },
+    //             },
+    //         });
+    //     }
+    //     return specCache;
 });

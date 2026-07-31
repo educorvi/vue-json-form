@@ -1,22 +1,22 @@
 import { Group } from '~~/server/db/entities/Group';
-import {
+import type {
     GroupStats,
     ApiParentPath,
     ApiGroup,
     ApiGroupHierarchyNode,
 } from '~~/server/services/GroupService';
+import { mapVisibilityToApi } from './shared';
 
 export function toApiGroup(
     g: Group,
     stats: GroupStats,
     parentPath: ApiParentPath | null = null
-    // canCreate?: boolean
 ): ApiGroup {
     return {
         id: g.id,
         name: g.name,
         title: g.title,
-        visibility: g.visibility,
+        visibility: mapVisibilityToApi(g.visibility),
         description: g.description ?? null,
         parent_id: g.parent_id ?? null,
         parent_path: parentPath,
@@ -42,7 +42,7 @@ export function toHierarchyNode(g: Group): ApiGroupHierarchyNode {
         id: g.id,
         name: g.name,
         title: g.title,
-        visibility: g.visibility,
+        visibility: mapVisibilityToApi(g.visibility),
         children:
             g.children && g.children.length > 0
                 ? g.children.map(toHierarchyNode)

@@ -19,11 +19,12 @@ type Timestamp = z.infer<typeof z.iso.datetime>;
  */
 export function formatDate(
     iso: Timestamp | string,
-    detailed: boolean = false
+    detailed: boolean = false,
+    locale: string = 'en-US'
 ): string {
     if (!iso) return '';
     const date = new Date(iso.toString());
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric',

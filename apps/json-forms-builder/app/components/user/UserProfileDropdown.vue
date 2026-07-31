@@ -1,13 +1,11 @@
 <script setup lang="ts">
+import UserRoleCell from '~/components/user/UserRoleCell.vue';
+
 const { t } = useI18n();
 const { user, clear: clearSession } = useUserSession();
 
 const userName = computed(() => (user as { name?: string })?.name ?? 'User');
 const userRole = computed(() => (user as { role?: string })?.role ?? null);
-
-function roleBadgeVariant(role: string): string {
-    return role === 'admin' ? 'danger' : 'secondary';
-}
 
 async function logout() {
     await $fetch('/auth/logout', { method: 'POST' });
@@ -25,14 +23,7 @@ async function logout() {
         <div class="d-flex flex-column">
             <span class="fw-medium d-flex align-items-center gap-2">
                 {{ userName }}
-                <span
-                    v-if="userRole"
-                    :class="'badge bg-' + roleBadgeVariant(userRole)"
-                    class="text-uppercase"
-                    style="font-size: 0.6rem"
-                >
-                    {{ userRole }}
-                </span>
+                <UserRoleCell v-if="userRole" :role="userRole" />
             </span>
             <span class="small text-secondary">{{
                 (user as { email?: string })?.email ?? ''
@@ -44,7 +35,9 @@ async function logout() {
         <label class="form-label small text-secondary mb-1 d-block">
             {{ t('theme.label') }}
         </label>
-        <ThemeSwitcher class="w-100" />
+        <ClientOnly>
+            <ThemeSwitcher class="w-100" />
+        </ClientOnly>
     </li>
     <li class="px-3 py-1" @click.stop>
         <label class="form-label small text-secondary mb-1 d-block">

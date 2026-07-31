@@ -5,7 +5,10 @@ import {
     PrimaryColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from 'typeorm';
+import { ApiKey } from './ApiKey';
+// import { UserGroupUser } from './UserGroup';
 
 /**
  * The User entity stores profile info synced from the Keycloak identity
@@ -46,4 +49,10 @@ export class User {
 
     @UpdateDateColumn({ type: 'timestamp' })
     updated!: Date;
+
+    @OneToMany(() => ApiKey, (apiKey) => apiKey.user)
+    api_keys!: ApiKey[];
+
+    // @OneToMany(() => UserGroupUser, (userGroupUser) => userGroupUser.user)
+    // userGroupUsers!: UserGroupUser[];
 }

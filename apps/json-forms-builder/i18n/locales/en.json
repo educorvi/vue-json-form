@@ -140,6 +140,7 @@
             "addSubGroup": "New Sub-Group",
             "subtitle": "Create a new group in the hierarchy.",
             "create": "Create Group",
+            "createSuccess": "Group created successfully.",
             "createError": "Failed to create group.",
             "fields": {
                 "title": "Title",
@@ -181,6 +182,7 @@
             "title": "New Form",
             "subtitle": "Create a new form in a group.",
             "create": "Create Form",
+            "createSuccess": "Form created successfully.",
             "createError": "Failed to create form.",
             "fields": {
                 "title": "Title",
@@ -212,7 +214,9 @@
         },
         "detail": {
             "notFound": "Form not found",
-            "backToForms": "Back to Forms"
+            "backToForms": "Back to Forms",
+            "schemaSaveSuccess": "Schema saved successfully.",
+            "schemaSaveError": "Failed to save schema."
         },
         "sortBy": {
             "title": "Title",
@@ -231,6 +235,7 @@
             "confirm": "Delete Form",
             "warning": "This will permanently delete this form and all its versions. This action cannot be undone.",
             "confirmPrompt": "Type \"{name}\" to confirm deletion:",
+            "deleteSuccess": "Form deleted successfully.",
             "deleteError": "Failed to delete form."
         }
     },

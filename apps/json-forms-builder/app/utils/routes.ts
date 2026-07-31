@@ -20,7 +20,7 @@
 // ── Entity-like interface for high-level helpers ────────────────────────────
 
 interface EntityLike {
-    parent_path?: Array<{ name: string; path_segment?: string }> | null;
+    parent_path?: { name: string; path_segment?: string }[] | null;
     name?: string;
     id?: number;
 }
@@ -63,7 +63,7 @@ export class Routes {
     /** /forms/detail?path=<encoded> from a form entity object */
     static formDetailPath(form: EntityLike | null): string {
         if (!form) return '';
-        const path = buildFormUrlPath(form as any);
+        const path = buildFormUrlPath(form);
         return path ? Routes.formsDetail(path) : '';
     }
 
@@ -101,7 +101,7 @@ export class Routes {
     /** Link for a child item in a group tree (both forms & groups). */
     static childItemPath(item: {
         type?: 'form' | 'group';
-        parent_path?: Array<{ name: string; path_segment?: string }> | null;
+        parent_path?: { name: string; path_segment?: string }[] | null;
         name?: string;
         id?: number;
     }): string {

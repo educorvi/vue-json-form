@@ -4,7 +4,7 @@ defineProps<{
     pending: boolean;
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 
 function navigateToForm(form: any) {
@@ -118,7 +118,8 @@ function navigateToForm(form: any) {
                                     <span>{{
                                         formatDate(
                                             form.updated_by?.timestamp,
-                                            true
+                                            true,
+                                            locale
                                         )
                                     }}</span>
                                 </div>

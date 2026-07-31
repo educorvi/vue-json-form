@@ -83,7 +83,7 @@ export async function groupSeedToDb(
                     group: { id: saved.id },
                     user: { id: user.id },
                     role: p.role,
-                } as any);
+                });
                 await permissionRepo.save(perm);
             }
         }
@@ -110,7 +110,7 @@ export async function groupSeedToDb(
                             form: { id: form.id },
                             user: { id: user.id },
                             role: p.role,
-                        } as any);
+                        });
                         await permissionRepo.save(perm);
                     }
                 }

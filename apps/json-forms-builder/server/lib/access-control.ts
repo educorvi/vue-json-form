@@ -78,13 +78,13 @@ export async function resolveGroupPath(
     groupId: number
 ): Promise<{ id: number; name: string; path_segment: string }[]> {
     const treeRepo = dataSource.getTreeRepository(Group);
-    const target = await treeRepo.findOne({ where: { id: groupId } as any });
+    const target = await treeRepo.findOne({ where: { id: groupId } });
     if (!target) return [];
 
     const ancestors = await treeRepo.findAncestors(target);
     const map = new Map(ancestors.map((a) => [a.id, a]));
     const chain: Group[] = [];
-    let id: number | null = (target as any).parent_id ?? null;
+    let id = target.parent_id;
     while (id != null) {
         const anc = map.get(id);
         if (!anc) break;
@@ -124,7 +124,7 @@ export async function loadGroupAccessData(
 
     // 1. Load the group entity
     const group = await groupRepo.findOne({
-        where: { id: groupId } as any,
+        where: { id: groupId },
         relations: { created_by: true, updated_by: true },
     });
     if (!group) {
@@ -145,7 +145,7 @@ export async function loadGroupAccessData(
         where: {
             group: { id: In(accessorIds) },
             user: { id: userId },
-        } as any,
+        },
     });
 
     // Split into direct vs ancestor
@@ -181,7 +181,7 @@ export async function loadFormAccessData(
 
     // 1. Load the form entity with its parent group
     const form = await formRepo.findOne({
-        where: { id: formId } as any,
+        where: { id: formId },
         relations: { group: true, created_by: true, updated_by: true },
     });
     if (!form) {
@@ -190,7 +190,7 @@ export async function loadFormAccessData(
 
     // 2. Load direct form permissions for this user
     const directPermissions = await permRepo.find({
-        where: { form: { id: formId }, user: { id: userId } } as any,
+        where: { form: { id: formId }, user: { id: userId } },
     });
 
     // 3. Load inherited permissions from parent group chain
@@ -209,7 +209,7 @@ export async function loadFormAccessData(
             where: {
                 group: { id: In(accessorGroupIds) },
                 user: { id: userId },
-            } as any,
+            },
         });
     }
 
@@ -244,7 +244,7 @@ export async function requireGroupAccess(
     const data = await loadGroupAccessData(dataSource, groupId, user.id);
 
     // 3. Check visibility grant (fast path)
-    const groupVisibility = (data.group as any).visibility ?? 'private';
+    const groupVisibility = data.group.visibility;
     if (policy.isSatisfiedByVisibility(groupVisibility)) return;
 
     // 4. Compute effective role from loaded permissions
@@ -281,7 +281,7 @@ export async function requireFormAccess(
     const data = await loadFormAccessData(dataSource, formId, user.id);
 
     // 3. Check visibility grant (fast path)
-    const formVisibility = (data.form as any).visibility ?? 'private';
+    const formVisibility = data.form.visibility;
     if (policy.isSatisfiedByVisibility(formVisibility)) return;
 
     // 4. Compute effective role from loaded permissions
@@ -313,7 +313,7 @@ export async function canAccessGroup(
     if (policy.isSkippedForRole(user.role)) return true;
 
     const data = await loadGroupAccessData(dataSource, groupId, user.id);
-    const groupVisibility = (data.group as any).visibility ?? 'private';
+    const groupVisibility = data.group.visibility;
 
     if (policy.isSatisfiedByVisibility(groupVisibility)) return true;
 
@@ -338,7 +338,7 @@ export async function canAccessForm(
     if (policy.isSkippedForRole(user.role)) return true;
 
     const data = await loadFormAccessData(dataSource, formId, user.id);
-    const formVisibility = (data.form as any).visibility ?? 'private';
+    const formVisibility = data.form.visibility;
 
     if (policy.isSatisfiedByVisibility(formVisibility)) return true;
 
@@ -578,6 +578,6 @@ export async function grantOwnerPermission(
         role: 'owner',
         group: target.group_id ? { id: target.group_id } : null,
         form: target.form_id ? { id: target.form_id } : null,
-    } as any);
-    await permRepo.save(perm as any);
+    });
+    await permRepo.save(perm);
 }

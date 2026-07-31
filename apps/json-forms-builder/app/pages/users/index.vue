@@ -37,7 +37,7 @@ const queryInput = computed<UsersQuery>(() => ({
     order_by: orderBy.value,
 }));
 
-const { data, pending, error } = useLazyAsyncData(
+const { data, pending, error } = useAsyncData(
     'users',
     () => orpc.users.list({ query: queryInput.value }),
     { watch: [queryInput] }

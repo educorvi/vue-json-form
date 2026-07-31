@@ -1,12 +1,15 @@
 import {
     implement,
-    IntersectPick,
-    MergedCurrentContext,
+    type IntersectPick,
+    type MergedCurrentContext,
     ORPCError,
 } from '@orpc/server';
 import { oo } from '@orpc/openapi';
 import type { User } from '#auth-utils';
-import { appContract } from './contract';
+import { appContract } from './contract-with-errors';
+
+/** The augmented #auth-utils User — non-null variant for handler use. */
+export type SessionUser = User;
 
 export type AppContext = {
     user: User | null;
@@ -44,12 +47,13 @@ export function getUserFromContext(
         AppContext,
         IntersectPick<AppContext, unknown>
     >
-): User {
+): SessionUser {
     const user = context.user;
     if (!user)
         throw new ORPCError('INTERNAL_SERVER_ERROR', {
             message:
                 'User context is missing. Authentication went wrong in auth middleware',
         });
-    return user;
+    // context.user is the augmented #auth-utils User; cast to our local shape
+    return user as SessionUser;
 }

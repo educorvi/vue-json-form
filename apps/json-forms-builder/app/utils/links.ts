@@ -26,8 +26,8 @@ export const APP_LINKS = {
     flutterDemo: 'https://educorvi.github.io/flutter_json_form/',
 
     /** --- API --- */
-    swagger: '/_swagger',
-    scalar: '/_scalar',
+    swagger: '/api/v1/swagger', //'/_swagger',
+    scalar: '/api/v1/scalar', //'/_scalar',
 
     /** --- Docs --- */
     jsonForms: 'https://jsonforms.io/',

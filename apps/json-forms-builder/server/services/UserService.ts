@@ -4,16 +4,14 @@ import {
     type FindOptionsWhere,
     type DataSource,
     type Repository,
-    FindOptionsOrderValue,
 } from 'typeorm';
 import { User as DbUser } from '~~/server/db/entities/User';
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
-import type { User as AuthUser } from '#auth-utils';
+import type { User } from '#auth-utils';
 import {
     zListUsersQuery,
     zListUsersResponse,
     zUser,
-    // zUserRef,
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
 import { mapAuthRolesToDbRole } from '../lib/auth';
@@ -31,7 +29,7 @@ type ApiListUserQuery = z.infer<typeof zListUsersQuery>;
 
 export type ApiUserOrderBy = ApiListUserQuery['order_by'];
 
-const userDataChanged = (existing: DbUser, newData: AuthUser): boolean =>
+const userDataChanged = (existing: DbUser, newData: User): boolean =>
     existing.name !== newData.username ||
     existing.email !== newData.email ||
     existing.role !== mapAuthRolesToDbRole(newData.roles);
@@ -46,7 +44,7 @@ export class UserService {
     /**
      * Upsert: create if new, update name if it changed.
      */
-    async upsert(data: AuthUser): Promise<ApiUser> {
+    async upsert(data: User): Promise<ApiUser> {
         const existing = await this.repo.findOne({
             where: { email: data.email },
         });

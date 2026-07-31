@@ -7,39 +7,44 @@
 
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import {
+    zPermission,
+    zElementRole,
+    zListGroupPermissionsQuery,
+    zListFormPermissionsQuery,
+} from '~~/server/orpc/generated/zod.gen';
+import type z from 'zod';
 
-export interface PermissionEntry {
-    id: number;
-    role: string;
-    scope: 'direct' | 'inherited';
-    /** For direct permissions: the highest inherited role from parent
-     *  groups, or null. For inherited permissions: always null. */
-    inherited_role?: string | null;
-    expired: boolean;
-    expire: string | null;
-    type: 'user';
-    user: {
-        id: string;
-        name: string;
-        email: string;
-        role?: string;
-    };
-    source_group_id?: number | null;
-    source_group_name?: string | null;
-    source_group_path?:
-        { id: number; name: string; path_segment: string }[] | null;
-    created?: string | null;
-    updated?: string | null;
-    created_by?: unknown;
-    updated_by?: unknown;
+export type PermissionEntry = z.infer<typeof zPermission>;
+export type ElementRole = z.infer<typeof zElementRole>;
+
+/**
+ * Allowed sort values derived from the generated query schemas.
+ * Groups use `order_by`, forms use `sortBy` — both are exposed here so the
+ * shared sort state is typed against the actual API enums (no casts).
+ */
+export type GroupPermissionOrderBy = NonNullable<
+    z.infer<typeof zListGroupPermissionsQuery>['order_by']
+>;
+export type FormPermissionSortBy = NonNullable<
+    z.infer<typeof zListFormPermissionsQuery>['sortBy']
+>;
+export type PermissionSortBy = GroupPermissionOrderBy | FormPermissionSortBy;
+
+/** Validate/narrow a shared sort value against the group `order_by` enum. */
+function toGroupOrderBy(
+    value: PermissionSortBy
+): GroupPermissionOrderBy | undefined {
+    const parsed = zListGroupPermissionsQuery.shape.order_by.safeParse(value);
+    return parsed.success ? parsed.data : undefined;
 }
 
-export interface PermissionPaginated {
-    page: number;
-    page_size: number;
-    total_count: number;
-    total_pages: number;
-    elements: PermissionEntry[];
+/** Validate/narrow a shared sort value against the form `sortBy` enum. */
+function toFormSortBy(
+    value: PermissionSortBy
+): FormPermissionSortBy | undefined {
+    const parsed = zListFormPermissionsQuery.shape.sortBy.safeParse(value);
+    return parsed.success ? parsed.data : undefined;
 }
 
 /**
@@ -111,6 +116,9 @@ export function usePermission(
     const totalPages = ref(0);
     const currentPage = ref(1);
     const pageSize = ref(20);
+    const search = ref('');
+    const sortOrder = ref<'asc' | 'desc'>('desc');
+    const orderBy = ref<PermissionSortBy>('created');
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -121,15 +129,34 @@ export function usePermission(
         loading.value = true;
         error.value = null;
         try {
-            const router = resourceType === 'groups' ? orpc.groups : orpc.forms;
-            const result = (await (router as any).permissions.list({
-                params: { id: resolvedId.value },
-                query: {
-                    page: currentPage.value,
-                    page_size: pageSize.value,
-                },
-            })) as PermissionPaginated;
-            permissions.value = result.elements ?? [];
+            const params = { id: resolvedId.value };
+            const page = currentPage.value;
+            const page_size = pageSize.value;
+            const searchVal = search.value || undefined;
+            const sort_order = sortOrder.value;
+            const result =
+                resourceType === 'groups'
+                    ? await orpc.groups.permissions.list({
+                          params,
+                          query: {
+                              page,
+                              page_size,
+                              search: searchVal,
+                              sort_order,
+                              order_by: toGroupOrderBy(orderBy.value),
+                          },
+                      })
+                    : await orpc.forms.permissions.list({
+                          params,
+                          query: {
+                              page,
+                              page_size,
+                              search: searchVal,
+                              sort_order,
+                              sortBy: toFormSortBy(orderBy.value),
+                          },
+                      });
+            permissions.value = result.data;
             totalCount.value = result.total_count ?? 0;
             totalPages.value = result.total_pages ?? 0;
         } catch (err: any) {
@@ -144,45 +171,42 @@ export function usePermission(
     // ── Create permission ────────────────────────────────────────────────
 
     async function createPermission(data: {
-        role: string;
+        role: ElementRole;
         user_id: string;
         expire?: string | null;
     }): Promise<PermissionEntry> {
         const router = resourceType === 'groups' ? orpc.groups : orpc.forms;
-        const result = (await (router as any).permissions.create({
+        return router.permissions.create({
             params: { id: resolvedId.value },
             body: {
-                type: 'user',
                 role: data.role,
                 user_id: data.user_id,
-                expire: data.expire ?? null,
+                expire: data.expire ?? undefined,
             },
-        })) as PermissionEntry;
-        return result;
+        });
     }
 
     // ── Patch permission ─────────────────────────────────────────────────
 
     async function patchPermission(
         permissionId: number,
-        data: { role?: string; expire?: string | null }
+        data: { role?: ElementRole; expire?: string | null }
     ): Promise<PermissionEntry> {
         const router = resourceType === 'groups' ? orpc.groups : orpc.forms;
-        const result = (await (router as any).permissions.patch({
+        return router.permissions.patch({
             params: { id: resolvedId.value, permissionId },
             body: {
                 role: data.role,
-                expire: data.expire ?? null,
+                expire: data.expire ?? undefined,
             },
-        })) as PermissionEntry;
-        return result;
+        });
     }
 
     // ── Delete permission ────────────────────────────────────────────────
 
     async function deletePermission(permissionId: number): Promise<void> {
         const router = resourceType === 'groups' ? orpc.groups : orpc.forms;
-        await (router as any).permissions.delete({
+        await router.permissions.delete({
             params: { id: resolvedId.value, permissionId },
         });
     }
@@ -190,7 +214,7 @@ export function usePermission(
     // ── Watchers ─────────────────────────────────────────────────────────
 
     watch(
-        [currentPage, pageSize, resolvedId],
+        [currentPage, pageSize, search, sortOrder, orderBy, resolvedId],
         () => {
             fetchPermissions();
         },
@@ -204,6 +228,9 @@ export function usePermission(
         totalPages,
         currentPage,
         pageSize,
+        search,
+        sortOrder,
+        orderBy,
         loading,
         error,
         // Actions

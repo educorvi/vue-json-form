@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UserRoleCell from '~/components/user/UserRoleCell.vue';
+
 defineProps<{
     name: string;
     email: string;
@@ -11,10 +13,6 @@ function initials(name: string): string {
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase() ?? '')
         .join('');
-}
-
-function roleBadgeVariant(role: string): string {
-    return role === 'admin' ? 'danger' : 'secondary';
 }
 </script>
 
@@ -33,14 +31,7 @@ function roleBadgeVariant(role: string): string {
         <div class="d-flex flex-column">
             <span class="fw-medium d-flex align-items-center gap-2">
                 {{ name }}
-                <span
-                    v-if="role"
-                    :class="'badge bg-' + roleBadgeVariant(role)"
-                    class="text-uppercase"
-                    style="font-size: 0.6rem"
-                >
-                    {{ role }}
-                </span>
+                <UserRoleCell v-if="role" :role="role" />
             </span>
             <span class="small text-secondary">{{ email }}</span>
         </div>

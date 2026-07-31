@@ -9,99 +9,97 @@
 <script setup lang="ts">
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
-import type { PermissionEntry } from '@/composables/usePermission';
+import type { PermissionEntry, ElementRole } from '@/composables/usePermission';
 import {
-    ROLE_HIERARCHY,
     isRoleAssignable,
     getHighestInheritedRole,
 } from '@/composables/usePermission';
+import BootstrapSelect from '~/components/custom/BootstrapSelect.vue';
 
 const props = defineProps<{
     modelValue: boolean;
-    orpc: RouterClient<AppRouter>;
     /** The inherited/existing permissions – used to suggest minimum role */
     existingPermissions: PermissionEntry[];
 }>();
 
+const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+
 const emit = defineEmits<{
     'update:modelValue': [value: boolean];
-    add: [data: { role: string; user_id: string; expire: string | null }];
+    add: [data: { role: ElementRole; user_id: string; expire: string | null }];
 }>();
 
 const { t } = useI18n();
 
-// ── User search ───────────────────────────────────────────────────────────
+// ── User search (async via BootstrapSelect filter) ────────────────────────
 
-const searchFilterText = ref('');
 const userOptions = ref<Array<{ id: string; name: string; email: string }>>([]);
 const searching = ref(false);
 const selectedUser = ref<string | null>(null);
+const userFilterText = ref('');
+/** Cached info of the selected user — survives search filtering */
+const selectedUserInfo = ref<{ name: string; email: string } | null>(null);
 
-let searchTimer: ReturnType<typeof setTimeout> | null = null;
+let userSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
-const userDisplayCache = computed(() => {
-    const u = selectedUser.value;
-    if (!u) return null;
-    return userOptions.value.find((o) => o.id === u) ?? null;
-});
-
-watch(searchFilterText, (val) => {
-    if (searchTimer) clearTimeout(searchTimer);
-    if (!val || val.length < 2) {
+async function loadUsers(searchTerm?: string) {
+    searching.value = true;
+    try {
+        const result = await orpc.users.list({
+            query: {
+                page: 1,
+                page_size: 20,
+                search: searchTerm || undefined,
+                sort_order: 'desc',
+                order_by: 'last_activity',
+            },
+        });
+        userOptions.value = (result?.data ?? []).map((u) => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+        }));
+    } catch {
         userOptions.value = [];
+    } finally {
+        searching.value = false;
+    }
+}
+
+watch(userFilterText, (val) => {
+    if (userSearchTimer) clearTimeout(userSearchTimer);
+    if (!val || val.length < 2) {
+        // Show all users when filter is empty/short
+        loadUsers();
         return;
     }
-    searchTimer = setTimeout(async () => {
-        searching.value = true;
-        try {
-            const result = (await (props.orpc.users as any).list({
-                query: {
-                    page: 1,
-                    page_size: 20,
-                    search: val,
-                    sort_order: 'desc',
-                    order_by: 'last_activity',
-                },
-            })) as {
-                data: Array<{
-                    id: string;
-                    name: string;
-                    email: string;
-                }>;
-            };
-            userOptions.value = result?.data ?? [];
-        } catch {
-            userOptions.value = [];
-        } finally {
-            searching.value = false;
-        }
+    userSearchTimer = setTimeout(() => {
+        loadUsers(val);
     }, 300);
 });
 
-function selectUser(userId: string) {
-    selectedUser.value = userId;
+// Overwrite the selectedUserInfo when user picks someone
+watch(selectedUser, (userId) => {
+    if (!userId) {
+        selectedUserInfo.value = null;
+        suggestedMinRole.value = null;
+        return;
+    }
     const user = userOptions.value.find((u) => u.id === userId);
     if (user) {
-        const inheritedRole = getHighestInheritedRole(
-            props.existingPermissions,
-            userId
-        );
-        suggestedMinRole.value = inheritedRole;
+        selectedUserInfo.value = { name: user.name, email: user.email };
     }
-}
-
-function clearUserSelection() {
-    selectedUser.value = null;
-    searchFilterText.value = '';
-    userOptions.value = [];
-    suggestedMinRole.value = null;
-}
+    const inheritedRole = getHighestInheritedRole(
+        props.existingPermissions,
+        userId
+    );
+    suggestedMinRole.value = inheritedRole;
+});
 
 // ── Role selection ────────────────────────────────────────────────────────
 
 const ROLES = ['owner', 'editor', 'guest'] as const;
-type Role = (typeof ROLES)[number];
-const selectedRole = ref<Role>('editor');
+const selectedRole = ref<ElementRole>('editor');
 const suggestedMinRole = ref<string | null>(null);
 
 const roleOptions = computed(() => {
@@ -140,12 +138,14 @@ watch(
     () => props.modelValue,
     (open) => {
         if (open) {
-            searchFilterText.value = '';
-            userOptions.value = [];
             selectedUser.value = null;
+            selectedUserInfo.value = null;
+            userFilterText.value = '';
             selectedRole.value = 'editor';
             expireDate.value = '';
             suggestedMinRole.value = null;
+            // Load the first page of users so the dropdown has content
+            loadUsers();
         }
     }
 );
@@ -161,69 +161,47 @@ watch(
         :ok-title="t('permissions.addButton')"
         :cancel-title="t('common.cancel')"
     >
-        <!-- User search -->
+        <!-- User search (async with BootstrapSelect) -->
         <BFormGroup
             :label="t('permissions.form.user')"
             label-class="fw-medium"
             class="mb-3"
         >
-            <BFormInput
-                v-model="searchFilterText"
+            <BootstrapSelect
+                v-model="selectedUser"
+                :options="userOptions"
+                option-label="name"
+                option-value="id"
                 :placeholder="t('permissions.form.userPlaceholder')"
-                autocomplete="off"
-                :state="selectedUser ? true : null"
-            />
-
-            <!-- Selected user display -->
-            <div v-if="selectedUser && userDisplayCache" class="mt-2">
-                <UserPreviewCell
-                    :name="userDisplayCache.name"
-                    :email="userDisplayCache.email"
-                />
-            </div>
-
-            <!-- Search results -->
-            <div
-                v-if="searchFilterText.length >= 2 && !selectedUser && userOptions.length > 0"
-                class="border rounded mt-1 overflow-auto"
-                style="max-height: 200px"
+                :empty-text="t('permissions.form.userNotFound')"
+                filter
+                filter-placeholder="Search users..."
+                v-model:filter-text="userFilterText"
+                :loading="searching"
+                show-clear
+                class="w-100"
             >
-                <div
-                    v-for="user in userOptions"
-                    :key="user.id"
-                    class="p-2 border-bottom"
-                    style="cursor: pointer"
-                    @click="selectUser(user.id)"
-                >
+                <template #value="{ value }">
+                    <div
+                        v-if="value && selectedUserInfo"
+                        class="d-flex align-items-center gap-2 w-100"
+                    >
+                        <UserPreviewCell
+                            :name="selectedUserInfo.name"
+                            :email="selectedUserInfo.email"
+                        />
+                    </div>
+                    <span v-else class="text-body-tertiary">{{
+                        t('permissions.form.userPlaceholder')
+                    }}</span>
+                </template>
+                <template #option="{ option }">
                     <UserPreviewCell
-                        :name="user.name"
-                        :email="user.email"
+                        :name="option.name"
+                        :email="option.email"
                     />
-                </div>
-            </div>
-            <div
-                v-else-if="searchFilterText.length >= 2 && !selectedUser && searching"
-                class="text-secondary small mt-1"
-            >
-                <BSpinner small /> {{ t('common.loading') }}
-            </div>
-            <div
-                v-else-if="searchFilterText.length >= 2 && !selectedUser && !searching && userOptions.length === 0"
-                class="text-secondary small mt-1"
-            >
-                {{ t('permissions.form.userNotFound') }}
-            </div>
-
-            <!-- Clear selection -->
-            <BButton
-                v-if="selectedUser"
-                variant="link"
-                size="sm"
-                class="p-0 mt-1"
-                @click="clearUserSelection"
-            >
-                {{ t('common.clear') }}
-            </BButton>
+                </template>
+            </BootstrapSelect>
 
             <BFormText v-if="suggestedMinRole" class="text-warning">
                 <PhosphorIcon name="info" :size="14" class="me-1" />
@@ -235,17 +213,17 @@ watch(
             </BFormText>
         </BFormGroup>
 
-        <!-- Role selection -->
+        <!-- Role selection (BootstrapSelect) -->
         <BFormGroup
             :label="t('permissions.form.role')"
             label-class="fw-medium"
             class="mb-3"
         >
-            <BFormSelect
+            <BootstrapSelect
                 v-model="selectedRole"
                 :options="roleOptions"
-                text-field="label"
-                value-field="value"
+                option-label="label"
+                option-value="value"
                 :placeholder="t('permissions.form.rolePlaceholder')"
                 class="w-100"
             />

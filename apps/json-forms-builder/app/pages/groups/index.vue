@@ -49,7 +49,7 @@ const queryInput = computed<GroupsQuery>(() => ({
     order_by: orderBy.value,
 }));
 
-const { data, pending, error } = useLazyAsyncData(
+const { data, pending, error } = useAsyncData(
     'groups',
     () => orpc.groups.list({ query: queryInput.value }),
     { watch: [queryInput] }
@@ -78,7 +78,7 @@ async function onDeleteConfirm(item: any) {
         await orpc.groups.delete({ params: { id: String(item.id) } });
         showDeleteModal.value = false;
         deleteTarget.value = null;
-        notify(t('groups.detail.deleteSuccess'), 'success');
+        notify(t('groups.delete.deleteSuccess'), 'success');
         refreshNuxtData('groups');
     } catch (err: any) {
         const msg = err?.message ?? String(err);
@@ -114,6 +114,12 @@ function onNavigate(item: any) {
         router.push(Routes.groupsDetail(path));
     }
 }
+
+// ── Build stable items with type discriminator ──────────────────────────
+
+const treeItems = computed(() =>
+    (data.value?.data ?? []).map((g) => ({ ...g, type: 'group' as const }))
+);
 
 // ── Description ─────────────────────────────────────────────────────────────
 const pageDescription = computed(() => {
@@ -154,7 +160,7 @@ const pageDescription = computed(() => {
 
         <!-- Data container: handles skeleton / error / empty -->
         <ListDataContainer
-            :items="data?.data ?? []"
+            :items="treeItems"
             :pending="pending"
             :error="error ?? null"
             v-slot="{

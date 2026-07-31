@@ -1,9 +1,8 @@
 import { os, authMiddleware } from '../init';
 import { AppDataSource } from '~~/server/db/data-source';
 import { UserService } from '~~/server/services/UserService';
-import { zCreateUserResponse, zListUsersQuery } from '../generated/zod.gen';
-import z from 'zod';
-import { ORPCError } from '@orpc/server';
+import { zListUsersQuery } from '../generated/zod.gen';
+// import z from 'zod';
 
 // const ORDER_BY_MAP: Record<string, string> = {
 //     id: 'id',
@@ -14,19 +13,21 @@ import { ORPCError } from '@orpc/server';
 //     role: 'role',
 // };
 
-type CreateUserResponseApi = z.infer<typeof zCreateUserResponse>;
+// type CreateUserResponseApi = z.infer<typeof zCreateUserResponse>;
 
 export const usersRouter = {
-    create: os.users.create.use(authMiddleware).handler(async ({ context }) => {
-        if (!context.user) {
-            throw new ORPCError('INTERNAL_SERVER_ERROR', {
-                message:
-                    'User context is missing. Authentication went wrong in auth middleware',
-            });
-        }
-        const service = new UserService(AppDataSource);
-        return service.upsert(context.user) as Promise<CreateUserResponseApi>;
-    }),
+    create: os.users.create
+        .use(authMiddleware)
+        .handler(async ({ context, errors }) => {
+            if (!context.user) {
+                throw errors.INTERNAL_SERVER_ERROR({
+                    message:
+                        'User context is missing. Authentication went wrong in auth middleware',
+                });
+            }
+            const service = new UserService(AppDataSource);
+            return service.upsert(context.user);
+        }),
     list: os.users.list.use(authMiddleware).handler(async ({ input }) => {
         const service = new UserService(AppDataSource);
         const q = input?.query ?? zListUsersQuery.parse({});

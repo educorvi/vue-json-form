@@ -1,20 +1,16 @@
+import { ORPCError } from '@orpc/server';
 import { type DataSource, type Repository } from 'typeorm';
 import { Permission } from '~~/server/db/entities/Permission';
 import { Group } from '~~/server/db/entities/Group';
 import { Form } from '~~/server/db/entities/Form';
-import {
-    throwNotFound,
-    throwConflict,
-    paginatedResponse,
-} from '~~/server/orpc/api-helpers';
+import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import type { PaginationParams } from '~~/server/orpc/api-helpers';
-import { ErrorCode } from '~~/server/models/errors';
 import { type Role } from '~~/server/lib/permissions/roles';
 import { resolveGroupPath } from '~~/server/lib/access-control';
 
 import {
     zPermissionMetaWritable,
-    zUserPermissionWritable,
+    zPermissionWritable,
 } from '~~/server/orpc/generated/zod.gen';
 import z from 'zod';
 
@@ -22,7 +18,7 @@ import z from 'zod';
 export type PatchPermissionDto = z.infer<typeof zPermissionMetaWritable>;
 
 /** Write-model for creating a permission. */
-export type CreatePermissionDto = z.infer<typeof zUserPermissionWritable>;
+export type CreatePermissionDto = z.infer<typeof zPermissionWritable>;
 
 /**
  * A resolved permission entry with scope information.
@@ -71,7 +67,7 @@ export class PermissionService {
     async listForGroup(groupId: number, params: PaginationParams) {
         const { page, pageSize } = params;
         const [rows, total] = await this.repo.findAndCount({
-            where: { group: { id: groupId } } as any,
+            where: { group: { id: groupId } },
             relations: { user: true },
             skip: (page - 1) * pageSize,
             take: pageSize,
@@ -82,7 +78,7 @@ export class PermissionService {
     async listForForm(formId: number, params: PaginationParams) {
         const { page, pageSize } = params;
         const [rows, total] = await this.repo.findAndCount({
-            where: { form: { id: formId } } as any,
+            where: { form: { id: formId } },
             relations: { user: true },
             skip: (page - 1) * pageSize,
             take: pageSize,
@@ -96,21 +92,20 @@ export class PermissionService {
         actorId: string
     ): Promise<Permission> {
         const existing = await this.repo.findOne({
-            where: { group: { id: groupId }, user: { id: dto.user_id } } as any,
+            where: { group: { id: groupId }, user: { id: dto.user_id } },
         });
         if (existing)
-            throwConflict(
-                'Permission already exists',
-                ErrorCode.PERMISSION_DUPLICATE
-            );
+            throw new ORPCError('CONFLICT', {
+                message: 'Permission already exists',
+            });
 
         const perm = this.repo.create({
             role: dto.role,
             expire: dto.expire ? new Date(dto.expire) : null,
             user: { id: dto.user_id },
             group: { id: groupId },
-        } as any);
-        return this.repo.save(perm as any) as any;
+        });
+        return this.repo.save(perm);
     }
 
     async createForForm(
@@ -119,21 +114,20 @@ export class PermissionService {
         actorId: string
     ): Promise<Permission> {
         const existing = await this.repo.findOne({
-            where: { form: { id: formId }, user: { id: dto.user_id } } as any,
+            where: { form: { id: formId }, user: { id: dto.user_id } },
         });
         if (existing)
-            throwConflict(
-                'Permission already exists',
-                ErrorCode.PERMISSION_DUPLICATE
-            );
+            throw new ORPCError('CONFLICT', {
+                message: 'Permission already exists',
+            });
 
         const perm = this.repo.create({
             role: dto.role,
             expire: dto.expire ? new Date(dto.expire) : null,
             user: { id: dto.user_id },
             form: { id: formId },
-        } as any);
-        return this.repo.save(perm as any) as any;
+        });
+        return this.repo.save(perm);
     }
 
     async patch(
@@ -144,13 +138,12 @@ export class PermissionService {
         actorId: string
     ): Promise<Permission> {
         const perm = await this.repo.findOne({
-            where: { id, [scopeKey]: { id: scopeValue } } as any,
+            where: { id, [scopeKey]: { id: scopeValue } },
         });
         if (!perm)
-            throwNotFound(
-                'Permission not found',
-                ErrorCode.PERMISSION_NOT_FOUND
-            );
+            throw new ORPCError('NOT_FOUND', {
+                message: 'Permission not found',
+            });
         // Use update to avoid DeepPartial issues
         await this.repo.update(id, {
             ...(dto.role ? { role: dto.role } : {}),
@@ -160,8 +153,8 @@ export class PermissionService {
                         ? new Date(dto.expire)
                         : null
                     : undefined,
-        } as any);
-        return this.repo.findOneOrFail({ where: { id } as any });
+        });
+        return this.repo.findOneOrFail({ where: { id } });
     }
 
     async delete(
@@ -170,13 +163,12 @@ export class PermissionService {
         scopeValue: number
     ): Promise<void> {
         const perm = await this.repo.findOne({
-            where: { id, [scopeKey]: { id: scopeValue } } as any,
+            where: { id, [scopeKey]: { id: scopeValue } },
         });
         if (!perm)
-            throwNotFound(
-                'Permission not found',
-                ErrorCode.PERMISSION_NOT_FOUND
-            );
+            throw new ORPCError('NOT_FOUND', {
+                message: 'Permission not found',
+            });
         await this.repo.delete(id);
     }
 

@@ -1,14 +1,7 @@
 /**
  * Application contract — groups the generated oRPC procedure contracts into
  * the same shape as the router so implement() can enforce them end-to-end.
- *
- * URL query parameters always arrive as strings, but the generated zod.gen.ts
- * uses z.int() which rejects strings. We override the listUsers input with
- * z.coerce so '1' → 1 before validation. This thin wrapper is the correct
- * place for transport-layer coercion — separate from business logic.
  */
-import { oc } from '@orpc/contract';
-import * as z from 'zod';
 import {
     getStatus,
     listUsers,
@@ -33,8 +26,8 @@ import {
     deleteForm,
     getFormLatestSchema,
     importFormSchema,
-    getFormLatestJsonSchema,
-    getFormLatestUiSchema,
+    getFormLatestSchemaJsonUi,
+    importFormSchemaJsonUi,
     listFormPermissions,
     createFormPermission,
     patchFormPermission,
@@ -43,6 +36,10 @@ import {
     createApiKey,
     deleteApiKey,
     patchApiKey,
+    listFormVersions,
+    createFormVersion,
+    getFormSchemaByVersion,
+    getFormSchemaVersionArtifacts,
 } from './generated/orpc.gen';
 
 export const appContract = {
@@ -74,14 +71,20 @@ export const appContract = {
         schema: {
             getLatest: getFormLatestSchema,
             import: importFormSchema,
-            getLatestJson: getFormLatestJsonSchema,
-            getLatestUi: getFormLatestUiSchema,
+            getLatestJsonUi: getFormLatestSchemaJsonUi,
+            importJsonUi: importFormSchemaJsonUi,
         },
         permissions: {
             list: listFormPermissions,
             create: createFormPermission,
             patch: patchFormPermission,
             delete: deleteFormPermission,
+        },
+        versions: {
+            list: listFormVersions,
+            create: createFormVersion,
+            getByVersion: getFormSchemaByVersion,
+            getVersionArtifacts: getFormSchemaVersionArtifacts,
         },
     },
     apiKeys: {

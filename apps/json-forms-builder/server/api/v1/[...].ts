@@ -1,25 +1,54 @@
 /**
- * oRPC OpenAPI REST handler — serves the API at /api/v1/**
- * All procedures with .route() definitions are accessible here as standard REST endpoints.
- * Auth is handled by oRPC's `authed` procedure middleware (returns HTTP 401 if no session).
+ * oRPC OpenAPI REST handler — serves the REST API at /api/v1/**
+ * and the API reference docs (Scalar, Swagger).
+ *
+ * The OpenAPI spec (JSON + YAML) is served from dedicated Nitro routes:
+ *   - /api/v1/spec.json
+ *   - /api/v1/spec.yaml
  */
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
-import { onError, ORPCError } from '@orpc/server';
+import { onError } from '@orpc/server';
 import { appRouter } from '~~/server/orpc/routers';
 import { SmartCoercionPlugin } from '@orpc/json-schema';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
+import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
+import {
+    schemaConverters,
+    specGenerateOptions,
+} from '~~/server/orpc/openapi-spec';
+
+const docsConfig = {
+    authentication: {
+        securitySchemes: {
+            BearerAuth: {
+                token: 'default-token',
+            },
+        },
+    },
+};
 
 const handler = new OpenAPIHandler(appRouter, {
     interceptors: [
         onError((error) => {
             console.error(error);
-            // if (!(error instanceof ORPCError))
-            //     console.error('[oRPC OpenAPI]', error);
         }),
     ],
     plugins: [
-        new SmartCoercionPlugin({
-            schemaConverters: [new ZodToJsonSchemaConverter()],
+        new SmartCoercionPlugin({ schemaConverters }),
+        new OpenAPIReferencePlugin({
+            docsProvider: 'scalar',
+            docsPath: '/scalar',
+            specPath: '/spec.json',
+            schemaConverters,
+            specGenerateOptions,
+            docsConfig: docsConfig,
+        }),
+        new OpenAPIReferencePlugin({
+            docsProvider: 'swagger',
+            docsPath: '/swagger',
+            schemaConverters,
+            specGenerateOptions,
+            docsConfig: docsConfig,
         }),
     ],
 });

@@ -28,9 +28,7 @@ const { data: recentData, pending: recentPending } = useLazyAsyncData(
     { default: () => ({ data: [], total_count: 0 }) }
 );
 
-const recentForms = computed<any[]>(
-    () => (recentData.value?.data ?? []) as any[]
-);
+const recentForms = computed(() => recentData.value?.data ?? []);
 </script>
 
 <template>

@@ -39,7 +39,7 @@ const emit = defineEmits<{
     navigate: [item: ChildItem];
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 const router = useRouter();
 
@@ -83,8 +83,8 @@ async function fetchChildren(group: ChildItem) {
             },
         });
         st.items = (result.data as ChildItem[]) ?? [];
-        st.totalCount = (result as any).total_count ?? st.items.length;
-        st.totalPages = (result as any).total_pages ?? 1;
+        st.totalCount = result.total_count ?? st.items.length;
+        st.totalPages = result.total_pages ?? 1;
         st.loaded = true;
     } catch (err: any) {
         st.error = err?.message ?? String(err);
@@ -122,7 +122,7 @@ function onChildPageChange(item: ChildItem, newPage: number) {
 function formatTimestamp(iso: string | undefined): string {
     if (!iso) return '';
     const date = new Date(iso);
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(locale.value, {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -135,6 +135,13 @@ function isGroup(item: ChildItem): boolean {
 
 function isForm(item: ChildItem): boolean {
     return item.type === 'form';
+}
+
+function hasChildren(item: ChildItem): boolean {
+    return (
+        item.type === 'group' &&
+        ((item.group_count ?? 0) > 0 || (item.form_count ?? 0) > 0)
+    );
 }
 
 function itemLink(item: ChildItem): string {
@@ -161,7 +168,7 @@ function itemLink(item: ChildItem): string {
             >
                 <!-- Expand toggle -->
                 <BButton
-                    v-if="item.group_count > 0 || item.form_count > 0"
+                    v-if="hasChildren(item)"
                     variant="link"
                     class="text-secondary p-0 lh-1"
                     :aria-label="
@@ -195,7 +202,10 @@ function itemLink(item: ChildItem): string {
                     @click.stop
                 >
                     <div class="d-flex flex-column align-items-end gap-0">
-                        <GroupDetailStats :childGroup="item" />
+                        <GroupDetailStats
+                            v-if="isGroup(item)"
+                            :childGroup="item as any"
+                        />
                         <TimestampStats :created="item.created_by?.timestamp" />
                     </div>
 

@@ -20,6 +20,8 @@ const groupPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const {
     data: group,
     error: groupError,
@@ -27,7 +29,13 @@ const {
 } = useAsyncData(
     () => `group-detail-${groupPath.value}`,
     () => orpc.groups.get({ params: { id: groupPath.value } }),
-    { watch: [groupPath] }
+    {
+        watch: [groupPath],
+        transform: (raw: any) => {
+            if (raw) setBreadcrumb('groups', raw);
+            return raw;
+        },
+    }
 );
 const pending = computed(() => status.value === 'pending');
 
@@ -38,15 +46,6 @@ const childPageSize = ref(20);
 const childSearch = ref('');
 const childSortOrder = ref<'asc' | 'desc'>('asc');
 const childOrderBy = ref<'title' | 'created' | 'updated'>('title');
-
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    group,
-    (g) => {
-        if (g) setBreadcrumb('groups', g);
-    },
-    { immediate: true }
-);
 
 const sortOptions = [
     { label: t('groups.sortBy.title'), value: 'title' as const },
@@ -109,7 +108,7 @@ async function onDeleteConfirm(item: any) {
         }
         showDeleteModal.value = false;
         deleteTarget.value = null;
-        notify(t('groups.detail.deleteSuccess'), 'success');
+        notify(t('groups.delete.deleteSuccess'), 'success');
         refreshNuxtData(`group-children-${groupPath.value}`);
         refreshNuxtData(`group-detail-${groupPath.value}`);
     } catch (err: any) {

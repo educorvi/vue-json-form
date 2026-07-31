@@ -18,8 +18,8 @@ export default defineNitroPlugin(() => {
         const { id, username, email, firstName, lastName, roles } =
             session.user;
 
-        const existing = await repo.findOne({ where: { id } as any });
-        // let existing = await repo.findOne({ where: { id } as any });
+        const existing = await repo.findOne({ where: { id } });
+        // let existing = await repo.findOne({ where: { id } });
 
         // // Fallback: look up by email (handles migration from numeric IDs).
         // if (!existing && email) {

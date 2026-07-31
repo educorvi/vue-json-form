@@ -1,3 +1,4 @@
+import { ORPCError } from '@orpc/server';
 import {
     ILike,
     IsNull,
@@ -10,12 +11,7 @@ import { Group } from '~~/server/db/entities/Group';
 import { Permission } from '~~/server/db/entities/Permission';
 import { Visibility } from '~~/server/db/entities/BaseEntities';
 import { buildVisibilityWhere } from '~~/server/lib/access-control';
-import {
-    throwNotFound,
-    throwConflict,
-    paginatedResponse,
-} from '~~/server/orpc/api-helpers';
-import { ErrorCode } from '~~/server/models/errors';
+import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import {
     zListGroupsQuery,
     zListGroupsResponse,
@@ -116,7 +112,8 @@ export class GroupService {
             where: { id },
             relations: { created_by: true, updated_by: true },
         });
-        if (!group) throwNotFound('Group not found', ErrorCode.GROUP_NOT_FOUND);
+        if (!group)
+            throw new ORPCError('NOT_FOUND', { message: 'Group not found' });
         return group;
     }
 
@@ -130,8 +127,8 @@ export class GroupService {
         return this.treeRepo.findOne({
             where:
                 parentId === null
-                    ? { name, parent_id: IsNull() as any }
-                    : ({ name, parent_id: parentId } as any),
+                    ? { name, parent_id: IsNull() }
+                    : { name, parent_id: parentId },
         });
     }
 
@@ -143,7 +140,7 @@ export class GroupService {
      */
     async findByPath(segments: string[]): Promise<Group> {
         if (segments.length === 0) {
-            throwNotFound('Empty group path', ErrorCode.GROUP_NOT_FOUND);
+            throw new ORPCError('NOT_FOUND', { message: 'Empty group path' });
         }
 
         let parentId: number | null = null;
@@ -159,17 +156,16 @@ export class GroupService {
                 relations: { created_by: true, updated_by: true },
             });
             if (!group) {
-                throwNotFound(
-                    `Group not found at path "${segments.join('/')}"`,
-                    ErrorCode.GROUP_NOT_FOUND
-                );
+                throw new ORPCError('NOT_FOUND', {
+                    message: `Group not found at path "${segments.join('/')}"`,
+                });
             }
             currentGroup = group;
             parentId = group.id;
         }
 
         if (!currentGroup) {
-            throwNotFound('Group not found', ErrorCode.GROUP_NOT_FOUND);
+            throw new ORPCError('NOT_FOUND', { message: 'Group not found' });
         }
         return currentGroup;
     }
@@ -193,10 +189,10 @@ export class GroupService {
         return toApiGroup(g, stats[g.id] ?? ZERO_STATS, parentPath);
     }
 
-    /** @deprecated Use getByIdOrSlug instead */
-    async get(id: number): Promise<ApiGroup> {
-        return this.getByIdOrSlug(String(id));
-    }
+    // /** @deprecated Use getByIdOrSlug instead */
+    // async get(id: number): Promise<ApiGroup> {
+    //     return this.getByIdOrSlug(String(id));
+    // }
 
     async getHierarchy(): Promise<ApiGroupHierarchyNode[]> {
         const roots = await this.treeRepo.findTrees();
@@ -247,6 +243,7 @@ export class GroupService {
         return result;
     }
 
+    // TODO: use other data type
     async create(
         data: {
             title: string;
@@ -279,7 +276,7 @@ export class GroupService {
                             user: { id: createdById },
                             role: 'owner',
                             group: { id: savedGroup.id },
-                        } as any)
+                        })
                     );
                 }
 
@@ -319,14 +316,14 @@ export class GroupService {
                     : null
                 : existing.parent;
         await this.treeRepo.save({
-            ...existing,
+            id,
             title: data.title,
             name: data.name,
             description: data.description ?? null,
             visibility: data.visibility ?? existing.visibility,
             parent: parent ?? undefined,
-        });
-        return this.get(id);
+        } as any);
+        return this.getByIdOrSlug(id.toString());
     }
 
     async patch(
@@ -350,11 +347,11 @@ export class GroupService {
                 : existing.parent;
         const { parent_id: _unused, ...cleanData } = data;
         await this.treeRepo.save({
-            ...existing,
+            id,
             ...cleanData,
             parent: parent ?? undefined,
-        });
-        return this.get(id);
+        } as any);
+        return this.getByIdOrSlug(id.toString());
     }
 
     async softDelete(id: number): Promise<void> {
@@ -363,10 +360,9 @@ export class GroupService {
             where: { parent_id: id },
         });
         if (childCount > 0)
-            throwConflict(
-                'Group has children — remove them first',
-                ErrorCode.GROUP_HAS_CHILDREN
-            );
+            throw new ORPCError('CONFLICT', {
+                message: 'Group has children — remove them first',
+            });
         await this.treeRepo.softDelete(id);
     }
 

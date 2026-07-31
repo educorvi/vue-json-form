@@ -19,23 +19,22 @@ const parentPath = ref<string | null>(
     route.query.parent ? decodeURIComponent(String(route.query.parent)) : null
 );
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const { data: parentGroup } = useAsyncData(
     () => `parent-group-for-form-${parentPath.value}`,
     () =>
         parentPath.value
             ? orpc.groups.get({ params: { id: parentPath.value } })
             : Promise.resolve(null),
-    { watch: [parentPath], immediate: true }
-);
-
-// Breadcrumb — updated when parent group data arrives
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    parentGroup,
-    (g) => {
-        setBreadcrumb('forms', g, t('forms.new.title'));
-    },
-    { immediate: true }
+    {
+        watch: [parentPath],
+        immediate: true,
+        transform: (raw: any): any => {
+            setBreadcrumb('forms', raw, t('forms.new.title'));
+            return raw;
+        },
+    }
 );
 
 // ── Form state ─────────────────────────────────────────────────────────────
@@ -49,7 +48,7 @@ watch(
     parentGroup,
     (g) => {
         if (g && parentId.value === null) {
-            parentId.value = (g as any).id;
+            parentId.value = g.id;
         }
     },
     { immediate: true }
@@ -124,11 +123,10 @@ async function submit() {
                 title: title.value.trim(),
                 name: slug.value.trim(),
                 description: description.value.trim() || null,
-                created_by: null,
-                updated_by: null,
-            } as any,
+            },
         });
-        const path = buildFormUrlPath(created as any);
+        notify(t('forms.new.createSuccess'), 'success');
+        const path = buildFormUrlPath(created);
         router.push(Routes.formsDetail(path));
     } catch (err: any) {
         const msg =
@@ -190,7 +188,7 @@ function cancel() {
                     >
                         <GroupTreeSelect
                             v-model="parentId"
-                            :current-group-id="(parentGroup as any)?.id ?? null"
+                            :current-group-id="parentGroup?.id ?? null"
                         />
                         <BFormText>{{
                             t('forms.new.fields.parentHint')

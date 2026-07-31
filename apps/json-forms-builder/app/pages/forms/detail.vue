@@ -33,6 +33,8 @@ onUnmounted(() => {
     }
 });
 
+const { set: setBreadcrumb } = useAppBreadcrumb();
+
 const formPath = computed(() =>
     decodeURIComponent((route.query.path as string) ?? '')
 );
@@ -45,7 +47,13 @@ const {
 } = useAsyncData(
     `form-detail-${formPath.value}`,
     () => orpc.forms.get({ params: { id: formPath.value } }),
-    { watch: [formPath] }
+    {
+        watch: [formPath],
+        transform: (raw: any) => {
+            if (raw) setBreadcrumb('forms', raw);
+            return raw;
+        },
+    }
 );
 const pending = computed(() => status.value === 'pending');
 
@@ -69,16 +77,6 @@ const uiSchemaString = computed(() => {
     return JSON.stringify(schema.value.ui);
 });
 
-// Breadcrumb (BasePage reads the trail automatically)
-const { set: setBreadcrumb } = useAppBreadcrumb();
-watch(
-    form,
-    (f) => {
-        if (f) setBreadcrumb('forms', f);
-    },
-    { immediate: true }
-);
-
 function goEdit() {
     router.push(Routes.formsEdit(formPath.value));
 }
@@ -88,6 +86,7 @@ const builderExpanded = ref(false);
 
 // Debounced save of schema changes
 const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const { notify } = useNotify();
 
 async function onSchemasChange(json: any, ui: any) {
     const formId = form.value?.id;
@@ -97,10 +96,13 @@ async function onSchemasChange(json: any, ui: any) {
         try {
             await orpc.forms.schema.import({
                 params: { id: String(formId) },
-                body: { schema: { json, ui } },
+                body: { json, ui },
             });
+            notify(t('forms.detail.schemaSaveSuccess'), 'success');
         } catch (err: any) {
             console.error('Failed to save schema', err);
+            const msg = err?.message ?? String(err);
+            notify(`${t('forms.detail.schemaSaveError')}: ${msg}`, 'danger');
         }
     }, 1000);
 }

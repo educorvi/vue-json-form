@@ -12,7 +12,10 @@ export class FormRevision extends BaseAuditedEntity {
     comment!: string | null;
 
     @Column({ type: 'jsonb' })
-    schema!: { json: object | null; ui: object | null };
+    schema!: {
+        json: Record<string, unknown> | null;
+        ui: Record<string, unknown> | null;
+    };
 
     @ManyToOne(() => Form, (form) => form.revisions)
     @JoinColumn({ name: 'form_id' })

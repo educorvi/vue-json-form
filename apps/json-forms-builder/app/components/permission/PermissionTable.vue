@@ -26,13 +26,17 @@ const emit = defineEmits<{
     delete: [permission: PermissionEntry];
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 function formatDate(dateStr: string | null | undefined): string {
     if (!dateStr) return t('permissions.never');
     const d = new Date(dateStr);
     if (isNaN(d.getTime())) return t('permissions.never');
-    return d.toLocaleDateString();
+    return new Intl.DateTimeFormat(locale.value, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    }).format(d);
 }
 
 function formatExpire(
@@ -100,17 +104,26 @@ function formatExpire(
                             <span class="text-secondary">
                                 {{ t('permissions.scope.inherited') }}
                             </span>
-                            <span
-                                v-if="perm.source_group_name"
-                                class="d-block text-muted small"
-                            >
-                                {{ t('permissions.inheritedFrom', { group: perm.source_group_name }) }}
-                            </span>
-                            <BreadcrumbInline
+                            <div
                                 v-if="perm.source_group_path?.length"
-                                :parent-path="perm.source_group_path as any"
-                                fragment="permissions"
-                            />
+                                class="d-block"
+                            >
+                                <span class="text-muted small d-block">
+                                    {{
+                                        t('permissions.inheritedFrom', {
+                                            group:
+                                                perm.source_group_path[
+                                                    perm.source_group_path
+                                                        .length - 1
+                                                ]?.name ?? '',
+                                        })
+                                    }}
+                                </span>
+                                <BreadcrumbInline
+                                    :parent-path="perm.source_group_path"
+                                    fragment="permissions"
+                                />
+                            </div>
                         </template>
                     </BTd>
 
@@ -129,8 +142,8 @@ function formatExpire(
                     <!-- Added timestamp (using created_by/updated_by like user tables) -->
                     <BTd class="text-secondary">
                         <TimestampStats
-                            :created="(perm as any).created_by?.timestamp"
-                            :updated="(perm as any).updated_by?.timestamp"
+                            :created="perm.created_by?.timestamp"
+                            :updated="perm.updated_by?.timestamp"
                         />
                     </BTd>
 

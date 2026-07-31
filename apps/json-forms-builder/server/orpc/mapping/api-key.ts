@@ -1,5 +1,5 @@
 import { ApiKey } from '~~/server/db/entities/ApiKey';
-import { ResponseApiKey } from '~~/server/services/ApiKeyService';
+import type { ResponseApiKey } from '~~/server/services/ApiKeyService';
 
 // Helpers
 export function mapDbApiKeyToResponse(key: ApiKey): ResponseApiKey {

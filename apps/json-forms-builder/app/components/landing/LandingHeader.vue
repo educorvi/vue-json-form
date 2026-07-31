@@ -57,7 +57,18 @@ const { t } = useI18n();
                 </BNavItem>
                 <div class="d-flex align-items-center gap-2 px-2">
                     <LocaleSwitcher />
-                    <ThemeSwitcher />
+                    <ClientOnly>
+                        <ThemeSwitcher />
+                        <template #fallback>
+                            <BButton
+                                variant="outline-secondary"
+                                size="sm"
+                                disabled
+                            >
+                                <PhosphorIcon name="monitor" />
+                            </BButton>
+                        </template>
+                    </ClientOnly>
                 </div>
             </BNavbarNav>
         </BCollapse>

@@ -6,6 +6,7 @@
       modelValue (v-model)
       options        — Array of { label, value } or primitives
       placeholder    — Shown when no value selected
+      emptyText      — Text shown when no options match the filter (default: common.noResults)
       filter         — Show search input
       filterText     — v-model:filterText for async search
       showClear      — Show × to clear
@@ -13,6 +14,7 @@
       disabled       — Disable interaction
 
     Slots:
+      #value="{ value, placeholder }" — Custom selected value display
       #option="{ option, label }" — Custom option content
 -->
 <script setup lang="ts">
@@ -23,6 +25,7 @@ const props = withDefaults(
         optionLabel?: string;
         optionValue?: string;
         placeholder?: string;
+        emptyText?: string;
         filter?: boolean;
         filterPlaceholder?: string;
         filterText?: string;
@@ -72,6 +75,7 @@ function select(opt: any) {
 function onClear(e: MouseEvent) {
     e.stopPropagation();
     emit('update:modelValue', null);
+    open.value = false;
 }
 
 const displayText = computed(() => {
@@ -112,7 +116,9 @@ onMounted(() => document.addEventListener('mousedown', onMouseDown));
 onBeforeUnmount(() => document.removeEventListener('mousedown', onMouseDown));
 
 watch(open, (v) => {
-    if (v) query.value = '';
+    // Only clear the local query without emitting to parent (filterText),
+    // so the parent's options don't disappear when the dropdown opens.
+    if (v) localQ.value = '';
 });
 </script>
 
@@ -189,12 +195,20 @@ watch(open, (v) => {
             </li>
 
             <li
-                v-if="visibleOptions.length === 0"
+                v-if="loading"
                 class="dropdown-item text-muted text-center small py-3"
                 role="option"
                 aria-disabled="true"
             >
-                {{ t('common.noResults') }}
+                {{ t('common.loading') }}
+            </li>
+            <li
+                v-else-if="visibleOptions.length === 0"
+                class="dropdown-item text-muted text-center small py-3"
+                role="option"
+                aria-disabled="true"
+            >
+                {{ emptyText ?? t('common.noResults') }}
             </li>
 
             <li

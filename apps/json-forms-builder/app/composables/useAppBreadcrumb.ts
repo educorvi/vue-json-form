@@ -23,11 +23,9 @@ const ENTITY_CONFIG = {
     users: { labelKey: 'nav.users', icon: 'users', route: '/users' },
 } as const;
 
-// Module-level reactive state — singletons per request in Nuxt
-const trail = ref<BreadcrumbItem[]>([]);
-
 export function useAppBreadcrumb() {
     const { t } = useI18n();
+    const trail = useState<BreadcrumbItem[]>('breadcrumb-trail', () => []);
 
     /**
      * Set the breadcrumb trail for the current page.

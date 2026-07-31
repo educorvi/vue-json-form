@@ -1,3 +1,4 @@
+import { ORPCError } from '@orpc/server';
 import {
     ILike,
     IsNull,
@@ -5,21 +6,15 @@ import {
     type FindOptionsWhere,
     type DataSource,
     type Repository,
+    type DeepPartial,
 } from 'typeorm';
 import { Form } from '~~/server/db/entities/Form';
 import { FormRevision } from '~~/server/db/entities/FormRevision';
 import { Permission } from '~~/server/db/entities/Permission';
 import { Group } from '~~/server/db/entities/Group';
-import { Visibility } from '~~/server/db/entities/BaseEntities';
 import { buildVisibilityWhere } from '~~/server/lib/access-control';
-import {
-    throwNotFound,
-    throwConflict,
-    paginatedResponse,
-} from '~~/server/orpc/api-helpers';
+import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import type { PaginationParams } from '~~/server/orpc/api-helpers';
-import { ErrorCode } from '~~/server/models/errors';
-import { User } from '#server/db/entities/User';
 import { zForm, zParentPath } from '../orpc/generated/zod.gen';
 import z from 'zod';
 import { mapDbFormToApiForm } from '../orpc/mapping/form';
@@ -87,14 +82,16 @@ export class FormService {
             where: { id },
             relations: RELATIONS,
         });
-        if (!form) throwNotFound('Form not found', ErrorCode.FORM_NOT_FOUND);
+        if (!form)
+            throw new ORPCError('NOT_FOUND', { message: 'Form not found' });
         const parentPath = await this._resolveParentPath(form);
         return mapDbFormToApiForm(form, parentPath);
     }
 
     async findEntityById(id: number): Promise<Form> {
         const form = await this.formRepo.findOne({ where: { id } });
-        if (!form) throwNotFound('Form not found', ErrorCode.FORM_NOT_FOUND);
+        if (!form)
+            throw new ORPCError('NOT_FOUND', { message: 'Form not found' });
         return form;
     }
 
@@ -108,12 +105,15 @@ export class FormService {
         return this.formRepo.findOne({
             where:
                 groupId === null
-                    ? { name, group: IsNull() as any }
-                    : ({ name, group: { id: groupId } } as any),
+                    ? { name, group: IsNull() }
+                    : { name, group: { id: groupId } },
         });
     }
 
-    async create(data: Partial<Form>, createdById?: string): Promise<ApiForm> {
+    async create(
+        data: DeepPartial<Form>,
+        createdById?: string
+    ): Promise<ApiForm> {
         const saved = await this.dataSource.transaction(async (manager) => {
             const formRepo = manager.getRepository(Form);
             const form = formRepo.create(data);
@@ -126,7 +126,7 @@ export class FormService {
                         user: { id: createdById },
                         role: 'owner',
                         form: { id: saved.id },
-                    } as any)
+                    })
                 );
             }
 
@@ -135,13 +135,13 @@ export class FormService {
         return this.findById(saved.id);
     }
 
-    async replace(id: number, data: Partial<Form>): Promise<ApiForm> {
+    async replace(id: number, data: DeepPartial<Form>): Promise<ApiForm> {
         const existing = await this.findEntityById(id);
         await this.formRepo.save({ ...existing, ...data, id });
         return this.findById(id);
     }
 
-    async patch(id: number, data: Partial<Form>): Promise<ApiForm> {
+    async patch(id: number, data: DeepPartial<Form>): Promise<ApiForm> {
         const existing = await this.findEntityById(id);
         await this.formRepo.save({ ...existing, ...data });
         return this.findById(id);
@@ -160,7 +160,7 @@ export class FormService {
      */
     private async _resolveGroupByPath(segments: string[]): Promise<Group> {
         if (segments.length === 0) {
-            throwNotFound('Empty group path', ErrorCode.GROUP_NOT_FOUND);
+            throw new ORPCError('NOT_FOUND', { message: 'Empty group path' });
         }
 
         const treeRepo = this.dataSource.getTreeRepository(Group);
@@ -171,14 +171,13 @@ export class FormService {
             group = await treeRepo.findOne({
                 where: {
                     name: segment,
-                    parent_id: parentId == null ? (IsNull() as any) : parentId,
-                } as any,
+                    parent_id: parentId == null ? IsNull() : parentId,
+                },
             });
             if (!group) {
-                throwNotFound(
-                    `Group not found at path "${segments.join('/')}"`,
-                    ErrorCode.GROUP_NOT_FOUND
-                );
+                throw new ORPCError('NOT_FOUND', {
+                    message: `Group not found at path "${segments.join('/')}"`,
+                });
             }
             parentId = group.id;
         }
@@ -198,11 +197,16 @@ export class FormService {
      */
     async findByPath(segments: string[]): Promise<ApiForm> {
         if (segments.length === 0) {
-            throwNotFound('Empty form path', ErrorCode.FORM_NOT_FOUND);
+            throw new ORPCError('NOT_FOUND', { message: 'Empty form path' });
         }
 
         // Last segment is the form name; everything before is the group path.
         const formNameOrId = segments[segments.length - 1];
+        if (!formNameOrId) {
+            throw new ORPCError('NOT_FOUND', {
+                message: 'Empty form path segment',
+            });
+        }
         const groupSegments = segments.slice(0, -1);
 
         let groupId: number | null = null;
@@ -219,7 +223,7 @@ export class FormService {
                 : { name: formNameOrId, group: { id: groupId } };
 
         let form = await this.formRepo.findOne({
-            where: whereByName as any,
+            where: whereByName,
             relations: RELATIONS,
         });
 
@@ -233,16 +237,15 @@ export class FormService {
                           group: { id: groupId },
                       };
             form = await this.formRepo.findOne({
-                where: whereById as any,
+                where: whereById,
                 relations: RELATIONS,
             });
         }
 
         if (!form) {
-            throwNotFound(
-                `Form not found at path "${segments.join('/')}"`,
-                ErrorCode.FORM_NOT_FOUND
-            );
+            throw new ORPCError('NOT_FOUND', {
+                message: `Form not found at path "${segments.join('/')}"`,
+            });
         }
 
         const parentPath = await this._resolveParentPath(form);
@@ -327,9 +330,12 @@ export class FormService {
     async createVersion(
         formId: number,
         version: number,
-        schema: { json: object | null; ui: object | null },
+        schema: {
+            json: Record<string, unknown> | null;
+            ui: Record<string, unknown> | null;
+        },
         comment: string | null,
-        createdBy: User
+        createdBy: { id: string }
     ): Promise<FormRevision> {
         await this.findById(formId);
         const latest = await this.revisionRepo.findOne({
@@ -337,10 +343,9 @@ export class FormService {
             order: { version: 'DESC' },
         });
         if (latest && version <= latest.version) {
-            throwConflict(
-                'New version must be higher than current latest',
-                ErrorCode.VERSION_NOT_HIGHER
-            );
+            throw new ORPCError('CONFLICT', {
+                message: 'New version must be higher than current latest',
+            });
         }
         const rev = this.revisionRepo.create({
             form: { id: formId },
@@ -360,10 +365,9 @@ export class FormService {
             order: { version: 'DESC' },
         });
         if (!rev)
-            throwNotFound(
-                'No schema found for this form',
-                ErrorCode.SCHEMA_NOT_FOUND
-            );
+            throw new ORPCError('NOT_FOUND', {
+                message: 'No schema found for this form',
+            });
         return rev;
     }
 
@@ -375,7 +379,7 @@ export class FormService {
             where: { form: { id: formId }, version },
         });
         if (!rev)
-            throwNotFound('Version not found', ErrorCode.VERSION_NOT_FOUND);
+            throw new ORPCError('NOT_FOUND', { message: 'Version not found' });
         return rev;
     }
 
@@ -386,61 +390,44 @@ export class FormService {
         ui: Record<string, unknown> | null;
     } | null> {
         const form = await this.findEntityById(formId);
-        return (
-            (form.schema as {
-                json: Record<string, unknown> | null;
-                ui: Record<string, unknown> | null;
-            } | null) ?? null
-        );
-    }
-
-    async getFormJsonSchema(
-        formId: number
-    ): Promise<Record<string, unknown> | null> {
-        const schema = await this.getFormSchema(formId);
-        return schema?.json ?? null;
-    }
-
-    async getFormUiSchema(
-        formId: number
-    ): Promise<Record<string, unknown> | null> {
-        const schema = await this.getFormSchema(formId);
-        return schema?.ui ?? null;
+        return form.schema ?? null;
     }
 
     async importFormSchema(
         formId: number,
         payload: {
-            schema?: {
-                json?: Record<string, unknown> | null;
-                ui?: Record<string, unknown> | null;
-            } | null;
-            json_schema?: Record<string, unknown> | null;
-            ui_schema?: Record<string, unknown> | null;
-        }
-    ): Promise<{
-        json: Record<string, unknown> | null;
-        ui: Record<string, unknown> | null;
-    }> {
+            json?: Record<string, unknown> | null;
+            ui?: Record<string, unknown> | null;
+        },
+        createdBy: { id: string }
+    ): Promise<FormRevision> {
         const form = await this.findEntityById(formId);
         const current = form.schema ?? { json: null, ui: null };
 
         const merged = {
-            json:
-                payload.json_schema !== undefined
-                    ? payload.json_schema
-                    : payload.schema?.json !== undefined
-                      ? payload.schema.json
-                      : current.json,
-            ui:
-                payload.ui_schema !== undefined
-                    ? payload.ui_schema
-                    : payload.schema?.ui !== undefined
-                      ? payload.schema.ui
-                      : current.ui,
+            json: payload.json !== undefined ? payload.json : current.json,
+            ui: payload.ui !== undefined ? payload.ui : current.ui,
         };
 
-        await this.formRepo.update(formId, { schema: merged as any });
-        return merged;
+        // Update the form's current schema cache
+        form.schema = merged;
+        await this.formRepo.save(form);
+
+        // Auto-increment version and create a revision
+        const latest = await this.revisionRepo.findOne({
+            where: { form: { id: formId } },
+            order: { version: 'DESC' },
+        });
+        const nextVersion = latest ? latest.version + 1 : 1;
+
+        const rev = this.revisionRepo.create({
+            form: { id: formId },
+            version: nextVersion,
+            schema: merged,
+            comment: '',
+            created_by: createdBy,
+            updated_by: createdBy,
+        });
+        return this.revisionRepo.save(rev);
     }
 }

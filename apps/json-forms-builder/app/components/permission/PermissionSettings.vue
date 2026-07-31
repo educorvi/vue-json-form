@@ -10,11 +10,17 @@
 <script setup lang="ts">
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
-import type { PermissionEntry } from '@/composables/usePermission';
-import { usePermission } from '@/composables/usePermission';
+import type {
+    PermissionEntry,
+    ElementRole,
+    PermissionSortBy,
+} from '@/composables/usePermission';
+import {
+    usePermission,
+    getHighestInheritedRole,
+} from '@/composables/usePermission';
 
 const props = defineProps<{
-    orpc: RouterClient<AppRouter>;
     resourceType: 'groups' | 'forms';
     resourceId: string;
 }>();
@@ -22,31 +28,68 @@ const props = defineProps<{
 const { t } = useI18n();
 const { notify } = useNotify();
 
+const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+
 const {
     permissions,
     totalCount,
     totalPages,
     currentPage,
     pageSize,
+    search,
+    sortOrder,
+    orderBy,
     loading,
     error,
     fetchPermissions,
     createPermission,
     patchPermission,
     deletePermission,
-} = usePermission(props.orpc, props.resourceType, () => props.resourceId);
+} = usePermission(orpc, props.resourceType, () => props.resourceId);
+
+// Group list uses `order_by` (firstname/lastname/email), form list uses
+// `sortBy` (name) — so the sort options differ per resource type.
+const sortOptions = computed<{ label: string; value: PermissionSortBy }[]>(
+    () => {
+        if (props.resourceType === 'groups') {
+            return [
+                { label: t('permissions.sortBy.lastname'), value: 'lastname' },
+                { label: t('permissions.sortBy.role'), value: 'role' },
+                { label: t('permissions.sortBy.scope'), value: 'scope' },
+                { label: t('permissions.sortBy.expire'), value: 'expire' },
+                { label: t('permissions.sortBy.created'), value: 'created' },
+            ];
+        }
+        return [
+            { label: t('permissions.sortBy.name'), value: 'name' },
+            { label: t('permissions.sortBy.role'), value: 'role' },
+            { label: t('permissions.sortBy.scope'), value: 'scope' },
+            { label: t('permissions.sortBy.expire'), value: 'expire' },
+            { label: t('permissions.sortBy.created'), value: 'created' },
+        ];
+    }
+);
+
+function onSearchChange(val: string) {
+    search.value = val;
+    currentPage.value = 1;
+}
 
 // ── Add modal ──────────────────────────────────────────────────────────────
 
 const showAddModal = ref(false);
 
 async function handleAdd(data: {
-    role: string;
+    role: ElementRole;
     user_id: string;
     expire: string | null;
 }) {
     try {
-        await createPermission(data);
+        await createPermission({
+            role: data.role,
+            user_id: data.user_id,
+            expire: data.expire,
+        });
         notify(t('permissions.addSuccess'), 'success');
         showAddModal.value = false;
         await fetchPermissions();
@@ -74,16 +117,22 @@ const inheritedRoleForEdit = ref<string | null>(null);
 
 function onEdit(perm: PermissionEntry) {
     editingPermission.value = perm;
-    inheritedRoleForEdit.value = perm.inherited_role ?? null;
+    inheritedRoleForEdit.value = getHighestInheritedRole(
+        permissions.value,
+        perm.user?.id ?? 0
+    );
     showEditModal.value = true;
 }
 
 async function handleEdit(
     permissionId: number,
-    data: { role?: string; expire?: string | null }
+    data: { role?: ElementRole; expire?: string | null }
 ) {
     try {
-        await patchPermission(permissionId, data);
+        await patchPermission(permissionId, {
+            role: data.role,
+            expire: data.expire ?? null,
+        });
         notify(t('permissions.patchSuccess'), 'success');
         showEditModal.value = false;
         editingPermission.value = null;
@@ -146,6 +195,16 @@ async function confirmDelete() {
             {{ error }}
         </BAlert>
 
+        <!-- Search + sort toolbar -->
+        <ListToolbar
+            v-model:search="search"
+            v-model:order-by="orderBy"
+            v-model:sort-order="sortOrder"
+            :sort-options="sortOptions"
+            class="mb-3"
+            @update:search="onSearchChange"
+        />
+
         <!-- Permission table -->
         <PermissionTable
             :permissions="permissions"
@@ -164,7 +223,6 @@ async function confirmDelete() {
     <!-- Add permission modal -->
     <PermissionAddModal
         v-model="showAddModal"
-        :orpc="orpc"
         :existing-permissions="permissions"
         @add="handleAdd"
     />
