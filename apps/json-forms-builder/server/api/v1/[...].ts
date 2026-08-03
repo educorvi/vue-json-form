@@ -55,11 +55,10 @@ const handler = new OpenAPIHandler(appRouter, {
 
 export default defineEventHandler(async (event) => {
     const request = toWebRequest(event);
-    const session = await getUserSession(event).catch(() => null);
 
     const { response } = await handler.handle(request, {
         prefix: '/api/v1',
-        context: { user: session?.user ?? null },
+        context: { user: event.context.user ?? null },
     });
 
     if (response) return response;

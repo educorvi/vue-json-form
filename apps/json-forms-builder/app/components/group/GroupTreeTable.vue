@@ -310,6 +310,7 @@ function itemLink(item: ChildItem): string {
                 <!-- Error -->
                 <BAlert
                     v-else-if="childrenState[item.id]?.error"
+                    show
                     variant="danger"
                     class="m-2"
                     :dismissible="false"

@@ -14,7 +14,7 @@ const navItems = computed(() => [
     { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
 ]);
 
-const userName = computed(() => (user as { name?: string })?.name ?? 'User');
+const userName = computed(() => user.value?.username ?? 'User');
 </script>
 
 <template>

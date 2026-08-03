@@ -10,7 +10,33 @@ export default defineNuxtConfig({
         '@bootstrap-vue-next/nuxt',
         '@nuxtjs/i18n',
         'nuxt-phosphor-icons',
+        // Adds a Vitest panel to Nuxt DevTools.
+        '@nuxt/test-utils/module',
+        // Generates .nuxt/eslint.config.mjs with the auto-import globals
+        // (composables, components, macros like definePageMeta) ESLint
+        // otherwise flags as no-undef. See eslint.config.mjs, which merges
+        // this with the repo's shared root config.
+        '@nuxt/eslint',
     ],
+
+    eslint: {
+        config: {
+            // The repo's root eslint.config.mjs already sets up JS/TS/Vue
+            // recommended rules — only generate the Nuxt-specific parts
+            // (auto-import globals etc.) here, not a second full preset.
+            standalone: false,
+        },
+    },
+
+    // `tests/nuxt/**` is included in the app TS context automatically by
+    // @nuxt/test-utils. These two also need Nuxt path aliases (`~~/`) and
+    // types for editor support even though they run in a plain Node
+    // environment (see vitest.config.ts).
+    typescript: {
+        tsConfig: {
+            include: ['../tests/unit/**/*', '../tests/integration/**/*'],
+        },
+    },
 
     // The form-builder is a complex client-side component using localStorage,
     // custom Pinia stores with persisted state.

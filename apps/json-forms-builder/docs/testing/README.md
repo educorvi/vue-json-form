@@ -1,88 +1,75 @@
-# Testing
+# Tests
+
+All tests live under `tests/`, split by how much of the stack they need. Everything except Playwright runs through one Vitest config (`vitest.config.ts`), which defines four **projects** — `unit`, `component`, `nuxt`, `integration`.
+
+## Overview
+
+| Folder               | Runner     | Environment                            | Needs the backend running? | Needs a DB connection? | What it's for                                                      |
+| --------------------- | ---------- | --------------------------------------- | --------------------------- | ----------------------- | ------------------------------------------------------------------- |
+| `tests/unit/`         | Vitest     | Plain Node                              | No                           | No                       | Pure functions / server utilities, no Vue, no Nuxt                  |
+| `tests/component/`    | Vitest     | happy-dom + plain `@vue/test-utils`     | No                           | No                       | Standalone components with no composables/auto-imports of their own |
+| `tests/nuxt/`         | Vitest     | Virtual Nuxt runtime (`@nuxt/test-utils`)| No                          | No                       | Components/composables that rely on Nuxt auto-imports (`useState`, `useI18n`, `useUserSession`, ...) |
+| `tests/integration/`  | Vitest     | Node, real HTTP + DB                    | **Yes**                      | **Yes**                  | API-level tests against an already-running Nuxt server, via the typed oRPC client — see [tests/integration/README.md](./integration/README.md) |
+| `tests/e2e/`          | Playwright | Real browser                            | **Yes**                      | No (talks to the server, not the DB) | Full user flows (real Keycloak login, real UI) against an already-running Nuxt server |
 
 
-## E2E Tests
+## Running tests
 
-UI tests are performed to test the application as a whole like a user in he browser would.
+`Unit`, `component`, and `nuxt` tests can be run in watch mode or headless via Vitest. They do not require a running backend or database. For the `integration` and `e2e` tests, a backend server must be running and pointed at a database. See the following sections for details.
 
-- Preparation for tests scenarios could also be done on database level.
-- Whole Ui, test data ids to get locators?
+### Prerequisites
 
-### Test Cases:
+1. Postgres + Keycloak running:
+    ```bash
+    docker compose up -d
+    ```
+    (this starts only `postgres`/`keycloak` — the `app` service is behind the `ci` profile, see Option B below)
+1. A Nuxt server running and pointed at a database.
 
-#### Generic
-- Landing Page is displayed
-- User can log in from Landing Page and Sees Dashboard Page afterwards
-- Logged in user is redirected to dashboard and doesn't see landing page
-- Scala and Swagger docs are available without errors
+Vitest's [globalSetup](./setup/global-setup.ts) seeds the DB (reusing `server/db/seed.ts`, same as a fresh dev DB) and provisions a real API key for the seeded `test` user via `ApiKeyService`. This is same Bearer-token auth path any external API client uses (`server/middleware/auth.ts`) ensuring the integration tests are exercising the same auth code as production.
 
-#### Dashboard
-- User sees recent 6 forms on dashboard
-- User can navigate to all forms
-- User can click on a individual form
-- User can click on Path of a form and navigate to the group
-- User can click on quick action to create new form
-- User can click on new group and create a new group
+### Option A — local dev server
 
-#### User profile page
-- User profile page can be opened
-- User cna change language
-- User can switch between light and dark mode
+Point the server at the separate `form_builder_test` database (created automatically alongside the dev DB, see `docker/init-test-db.sh`) instead of the seeded dev DB while development and interactive UI testing. Tests fully own setup/cleanup of their own groups/forms (see `tests/integration/setup/db.ts`), so this is safe to run repeatedly and in CI. Point the test process (`vitest`) at the same database via the same env vars, or launch **"server: nuxt (test DB)"** from `.vscode/launch.json` to debug the server while tests run and set breakpoints in `server/**`.
+```bash
+# Either set the vars in the terminal for the database or adjust the database in .env file
 
-#### Forms
-- User can list all forms
-- User can sort and filter forms
-- Form details are displayed correctly
-- User can click on Form to open it
-- User cna click on Form PAth to go to folder
-- User can open edit view of form
-- User can delete form (click ..., click Delete, type name and delete form)
-- User can Delete form from form details page
-- User can rename form in details
-- User can add form
-- User can
+DB_NAME=form_builder_test yarn dev:internal
+# in another terminal, pointed at the SAME database
+DB_NAME=form_builder_test yarn test:integration
+```
 
-#### Users:
-- List users and do sort and filtering
+### Option B — Dockerized app (CI)
 
-#### API Keys:
-- List, Create, Edit and Delete API Keys
-- Future: Add specific forms and groups etc.
+The `app` service lives in the same `docker-compose.yaml` as postgres/keycloak, gated behind the `ci` [profile](https://docs.docker.com/compose/how-tos/profiles/) so `docker compose up` (local dev) never builds/starts it — only `--profile ci` does:
 
-#### Group
-- User can list folders
-- User can sort and filter folders
-- User can click on folder to open it
-- User can click on folder chevron to display children and children of children
-- Group details are displayed
-Group Edit / Delete /Details
+```bash
+docker compose --profile ci up -d --build
 
-#### Permissions
-- Users can add Permissions, edit and delete them
-- Inherited permissions are displayed correctly
-- User only see forms they have access to (more detailed tests in integration tests)
-- Users only see groups they have access to (more detailed tests in integration tests)
+# wait for the app container to report healthy, then:
+NUXT_TEST_BASE_URL=http://localhost:3100 DB_NAME=form_builder_test yarn test:integration
 
-#### Form Builder Frontend
-- Detailed tests for from builder within the package
-- General test: Simple edit and realtime edit so other user makes changes and user sees the change in the ui
+# to stop the services again:
+docker compose --profile ci down
+```
 
+### Test commands
 
+```bash
+yarn test:unit          # unit + component + nuxt Vitest projects (fast, no server/DB needed)
+yarn test:watch         # any Vitest project, in watch mode
+yarn test:integration   # requires a running server — see tests/integration/README.md
+yarn test:coverage      # unit/component/nuxt/integration with coverage
+yarn test:e2e           # requires a running server — Playwright
+yarn test:e2e:ui        # Playwright UI mode
+yarn test:e2e:debug     # Playwright debug mode (step through, inspector)
+```
 
-## Integration Tests: API
+`yarn test` / `vitest run` with no `--project` flag runs **all four** Vitest projects, including `integration` — so it will fail with connection errors unless a server is already running (see below). Playwright always needs to be run separately (`yarn test:e2e`)and is not part of `yarn test`.
 
-- Given When then Syntax
-- API Level
-- Database is initialized to predefined state before each test
-- Test Component like Pagination Search Page: Pagination Works, Search works, Search is delayed by a few milliseconds so when user types only one search is done when he is finished. Search happens automatically after a few milliseconds after user stops typing.
+## Authentication in tests
 
-
-
-## Unit Tests
-
-Specific / complex logic are tested in unit tests to ensure that the logic works as expected. These tests are run in isolation and do not require a running server or database. [Vitest](https://vitest.dev/) is used as the test runner.
-
-Examples where tests make sense:
-- Json Schema und UI Schema export and parsing logic which represents form data
-- Permission and access control business logic
+- `integration` tests authenticate as a **real** user via a **real** Bearer API key — provisioned once per run by `global-setup.ts` for the
+ `test@educorvi.de` user seeded by `server/db/seed.ts` (the same user that also exists in the dev Keycloak realm).
+- `e2e` tests authenticate via the **real Keycloak OIDC login flow** (`tests/e2e/auth.setup.ts`), logging in once as `test`/`test` and reusing the resulting session cookie (`tests/e2e/.auth/user.json`) across the rest of the suite so the tests don't repeat the login flow. This validates the login flow works and also speeds up the rest of the tests as not every testrun needs a login
 

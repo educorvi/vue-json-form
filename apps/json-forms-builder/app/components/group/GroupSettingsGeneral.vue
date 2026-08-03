@@ -113,6 +113,7 @@ const emit = defineEmits<{
 
         <BAlert
             v-if="savedMsg"
+            show
             variant="success"
             :dismissible="true"
             class="mb-0 mt-2"
@@ -121,6 +122,7 @@ const emit = defineEmits<{
         </BAlert>
         <BAlert
             v-if="saveError"
+            show
             variant="danger"
             :dismissible="false"
             class="mb-0 mt-2"

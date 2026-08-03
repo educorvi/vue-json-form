@@ -52,6 +52,7 @@ const fields = computed(() => [
         <!-- Error -->
         <BAlert
             v-if="hasError"
+            show
             variant="danger"
             :dismissible="false"
             class="mb-3"

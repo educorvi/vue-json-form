@@ -239,6 +239,7 @@ function cancel() {
                     <!-- Error -->
                     <BAlert
                         v-if="errorMessage"
+                        show
                         variant="danger"
                         :dismissible="false"
                     >

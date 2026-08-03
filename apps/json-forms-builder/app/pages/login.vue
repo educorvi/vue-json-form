@@ -26,6 +26,7 @@ const authError = computed(() => route.query.error === 'auth_failed');
                 <BCardBody>
                     <BAlert
                         v-if="authError"
+                        show
                         variant="danger"
                         :dismissible="false"
                         class="mb-3"

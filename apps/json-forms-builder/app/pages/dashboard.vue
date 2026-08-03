@@ -10,7 +10,7 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 const { user } = useUserSession();
-const userName = computed(() => (user as { name?: string })?.name ?? 'User');
+const userName = computed(() => user.value?.username ?? 'User');
 
 // ── Recently added forms ────────────────────────────────────────
 

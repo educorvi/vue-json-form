@@ -32,6 +32,7 @@ const { t } = useI18n();
 
         <BAlert
             v-if="authError"
+            show
             variant="danger"
             :dismissible="false"
             class="mb-4 w-100"

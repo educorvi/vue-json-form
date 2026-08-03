@@ -24,3 +24,9 @@ logs
 !.env.example
 
 data/
+
+# Test artifacts
+test-results/
+playwright-report/
+coverage/
+tests/e2e/.auth/

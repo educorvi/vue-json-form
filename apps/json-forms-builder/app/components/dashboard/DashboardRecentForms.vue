@@ -13,7 +13,7 @@ function navigateToForm(form: any) {
 </script>
 
 <template>
-    <section class="mb-5">
+    <section class="mb-5" data-testid="dashboard-recent-forms">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <h5 class="fw-semibold mb-0">
                 {{ t('dashboard.recentForms') }}
@@ -63,10 +63,10 @@ function navigateToForm(form: any) {
                 <div
                     class="d-flex flex-column flex-grow-1 text-decoration-none"
                     style="cursor: pointer"
-                    @click="navigateToForm(form)"
-                    @keydown.enter="navigateToForm(form)"
                     role="link"
                     tabindex="0"
+                    @click="navigateToForm(form)"
+                    @keydown.enter="navigateToForm(form)"
                 >
                     <BCard class="h-100 dashboard-card">
                         <BCardBody class="d-flex flex-column h-100">

@@ -190,7 +190,13 @@ async function confirmDelete() {
         </template>
 
         <!-- Error alert -->
-        <BAlert v-if="error" variant="danger" :dismissible="true" class="mb-2">
+        <BAlert
+            v-if="error"
+            show
+            variant="danger"
+            :dismissible="true"
+            class="mb-2"
+        >
             {{ t('permissions.loadError') }}
             {{ error }}
         </BAlert>
@@ -252,7 +258,7 @@ async function confirmDelete() {
                 :email="deletingPermission.user?.email ?? ''"
             />
         </div>
-        <BAlert v-if="deleteError" variant="danger" class="mb-0">
+        <BAlert v-if="deleteError" show variant="danger" class="mb-0">
             {{ deleteError }}
         </BAlert>
     </BModal>

@@ -17,11 +17,10 @@ const handler = new RPCHandler(appRouter, {
 
 export default defineEventHandler(async (event) => {
     const request = toWebRequest(event);
-    const session = await getUserSession(event).catch(() => null);
 
     const { response } = await handler.handle(request, {
         prefix: '/rpc',
-        context: { user: session?.user ?? null },
+        context: { user: event.context.user ?? null },
     });
 
     if (response) return response;

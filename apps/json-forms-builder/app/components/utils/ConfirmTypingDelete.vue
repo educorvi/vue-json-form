@@ -65,6 +65,7 @@ function onConfirm() {
 
         <BAlert
             v-if="error"
+            show
             variant="danger"
             :dismissible="false"
             class="mb-0 mt-2"

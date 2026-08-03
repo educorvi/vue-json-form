@@ -12,7 +12,17 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "openapi:export": "curl -s http://localhost:3000/_openapi.json | tee public/openapi.json",
-        "orpg:generate": "openapi-ts"
+        "orpg:generate": "openapi-ts",
+        "lint": "yarn run -T eslint .",
+        "lint:fix": "yarn run -T eslint . --fix",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:unit": "vitest run --project=unit --project=component --project=nuxt",
+        "test:integration": "vitest run --project=integration",
+        "test:coverage": "vitest run --coverage",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "test:e2e:debug": "playwright test --debug"
     },
     "dependencies": {
         "@bootstrap-vue-next/nuxt": "^0.45.7",
@@ -42,7 +52,15 @@
     },
     "devDependencies": {
         "@hey-api/openapi-ts": "0.99.0",
+        "@nuxt/eslint": "^1.16.0",
+        "@nuxt/test-utils": "^4.1.0",
+        "@playwright/test": "^1.61.0",
         "@types/bootstrap": "^5",
-        "@types/pg": "^8"
+        "@types/pg": "^8",
+        "@vitejs/plugin-vue": "^6.0.8",
+        "@vitest/coverage-v8": "^4.1.10",
+        "@vue/test-utils": "^2.4.11",
+        "happy-dom": "^20.11.1",
+        "vitest": "^4.1.10"
     }
 }
