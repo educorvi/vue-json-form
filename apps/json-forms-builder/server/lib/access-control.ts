@@ -578,6 +578,8 @@ export async function grantOwnerPermission(
         role: 'owner',
         group: target.group_id ? { id: target.group_id } : null,
         form: target.form_id ? { id: target.form_id } : null,
+        created_by: { id: userId },
+        updated_by: { id: userId },
     });
     await permRepo.save(perm);
 }

@@ -109,7 +109,7 @@ export const zGroupHierarchyNode = z.object({
 
 export const zGroupShared = z.object({
     id: z.int().readonly(),
-    name: z.string().max(255).optional(),
+    name: z.string().max(255).readonly().optional(),
     title: z.string().max(255).optional(),
     visibility: zVisibility.optional(),
     member_count: z.int().readonly()
@@ -290,7 +290,6 @@ export const zGroupHierarchyNodeWritable = z.object({
 });
 
 export const zGroupSharedWritable = z.object({
-    name: z.string().max(255).optional(),
     title: z.string().max(255).optional(),
     visibility: zVisibility.optional()
 });
@@ -502,7 +501,9 @@ export const zListGroupsResponse = zPaginatedMeta.and(z.object({
     data: z.array(zGroup)
 }));
 
-export const zCreateGroupBody = zGroupWritable;
+export const zCreateGroupBody = zGroupWritable.and(z.object({
+    name: z.string().max(255).optional()
+}));
 
 export const zCreateGroupQuery = z.object({
     parent: z.string().optional()
@@ -662,7 +663,9 @@ export const zListFormsResponse = zPaginatedMeta.and(z.object({
     data: z.array(zForm)
 }));
 
-export const zCreateFormBody = zFormWritable;
+export const zCreateFormBody = zFormWritable.and(z.object({
+    name: z.string().max(255).optional()
+}));
 
 export const zCreateFormQuery = z.object({
     id: z.string()

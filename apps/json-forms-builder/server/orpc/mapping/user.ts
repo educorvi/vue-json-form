@@ -5,11 +5,6 @@ import z from 'zod';
 import { zUserRef } from '../generated/zod.gen';
 type ApiUserRef = z.infer<typeof zUserRef>;
 
-export const SYSTEM_USER = {
-    id: '0',
-    name: 'System',
-    email: 'system@example.com',
-};
 // Mappers
 
 export const mapDbUserToApiUser = (u: DbUser): ApiUser => ({

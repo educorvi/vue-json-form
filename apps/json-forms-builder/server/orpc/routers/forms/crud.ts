@@ -165,7 +165,7 @@ export const formCrudProcedures = {
                 const gid = await resolveParentGroupId(input.query.id);
                 if (gid) data.group = { id: gid };
             }
-            return service.patch(form.id, data);
+            return service.patch(form.id, data, user.id);
         }),
 
     replace: os.forms.replace
@@ -183,16 +183,20 @@ export const formCrudProcedures = {
             );
 
             const parentGroupId = await resolveParentGroupId(input.query?.id);
-            return service.replace(form.id, {
-                title: body.title ?? '',
-                name: body.title
-                    ? String(body.title).toLowerCase().replace(/\s+/g, '-')
-                    : 'untitled',
-                description: body.description ?? null,
-                visibility: mapVisibilityToDb(body.visibility),
-                group: parentGroupId ? { id: parentGroupId } : null,
-                path: parentGroupId ? String(parentGroupId) : '',
-            });
+            return service.replace(
+                form.id,
+                {
+                    title: body.title ?? '',
+                    name: body.title
+                        ? String(body.title).toLowerCase().replace(/\s+/g, '-')
+                        : 'untitled',
+                    description: body.description ?? null,
+                    visibility: mapVisibilityToDb(body.visibility),
+                    group: parentGroupId ? { id: parentGroupId } : null,
+                    path: parentGroupId ? String(parentGroupId) : '',
+                },
+                user.id
+            );
         }),
 
     delete: os.forms.delete

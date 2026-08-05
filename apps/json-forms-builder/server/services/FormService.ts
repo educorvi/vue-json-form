@@ -116,7 +116,11 @@ export class FormService {
     ): Promise<ApiForm> {
         const saved = await this.dataSource.transaction(async (manager) => {
             const formRepo = manager.getRepository(Form);
-            const form = formRepo.create(data);
+            const form = formRepo.create({
+                ...data,
+                created_by: createdById ? { id: createdById } : null,
+                updated_by: createdById ? { id: createdById } : null,
+            });
             const saved = await formRepo.save(form);
 
             if (createdById) {
@@ -126,6 +130,8 @@ export class FormService {
                         user: { id: createdById },
                         role: 'owner',
                         form: { id: saved.id },
+                        created_by: { id: createdById },
+                        updated_by: { id: createdById },
                     })
                 );
             }
@@ -135,15 +141,32 @@ export class FormService {
         return this.findById(saved.id);
     }
 
-    async replace(id: number, data: DeepPartial<Form>): Promise<ApiForm> {
+    async replace(
+        id: number,
+        data: DeepPartial<Form>,
+        updatedById?: string
+    ): Promise<ApiForm> {
         const existing = await this.findEntityById(id);
-        await this.formRepo.save({ ...existing, ...data, id });
+        await this.formRepo.save({
+            ...existing,
+            ...data,
+            id,
+            updated_by: updatedById ? { id: updatedById } : undefined,
+        });
         return this.findById(id);
     }
 
-    async patch(id: number, data: DeepPartial<Form>): Promise<ApiForm> {
+    async patch(
+        id: number,
+        data: DeepPartial<Form>,
+        updatedById?: string
+    ): Promise<ApiForm> {
         const existing = await this.findEntityById(id);
-        await this.formRepo.save({ ...existing, ...data });
+        await this.formRepo.save({
+            ...existing,
+            ...data,
+            updated_by: updatedById ? { id: updatedById } : undefined,
+        });
         return this.findById(id);
     }
 

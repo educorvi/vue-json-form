@@ -5,7 +5,7 @@ import type {
     ApiGroup,
     ApiGroupHierarchyNode,
 } from '~~/server/services/GroupService';
-import { mapVisibilityToApi } from './shared';
+import { mapVisibilityToApi, toAuditRef } from './shared';
 
 export function toApiGroup(
     g: Group,
@@ -23,18 +23,8 @@ export function toApiGroup(
         member_count: stats.member_count,
         group_count: stats.group_count,
         form_count: stats.form_count,
-        created_by: {
-            id: g.created_by?.id ?? '0',
-            name: g.created_by?.name ?? 'System',
-            email: g.created_by?.email ?? 'system@example.com',
-            timestamp: g.created.toISOString(),
-        },
-        updated_by: {
-            id: g.updated_by?.id ?? '0',
-            name: g.updated_by?.name ?? 'System',
-            email: g.updated_by?.email ?? 'system@example.com',
-            timestamp: g.updated.toISOString(),
-        },
+        created_by: toAuditRef(g.created_by, g.created.toISOString()),
+        updated_by: toAuditRef(g.updated_by, g.updated.toISOString()),
     };
 }
 export function toHierarchyNode(g: Group): ApiGroupHierarchyNode {

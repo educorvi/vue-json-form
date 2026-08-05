@@ -34,7 +34,7 @@ const authError = computed(() => route.query.error === 'auth_failed');
                         Authentication failed. Please try again.
                     </BAlert>
 
-                    <a href="/auth/keycloak" class="d-block">
+                    <a :href="Routes.AUTH_KEYCLOAK" class="d-block">
                         <BButton variant="primary" class="w-100">
                             <i class="ph ph-sign-in me-2"></i>
                             Sign in with Keycloak

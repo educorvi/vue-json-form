@@ -63,6 +63,7 @@ onMounted(() => {
         variant="outline-secondary"
         size="sm"
         :title="label"
+        data-testid="theme-switcher"
         @click="cycle"
     >
         <PhosphorIcon :name="currentIcon" />

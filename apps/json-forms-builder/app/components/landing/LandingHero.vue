@@ -41,7 +41,12 @@ const { t } = useI18n();
             {{ t('landing.authError') }}
         </BAlert>
 
-        <BButton href="/auth/keycloak" variant="primary" size="lg">
+        <BButton
+            :href="Routes.AUTH_KEYCLOAK"
+            data-testid="dashboard-login-button"
+            variant="primary"
+            size="lg"
+        >
             <PhosphorIcon name="sign-in" class="me-2" />
             {{ t('landing.signInKeycloak') }}
         </BButton>

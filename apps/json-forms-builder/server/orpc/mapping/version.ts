@@ -3,6 +3,7 @@ import {
     zFormVersionRef,
     zFormSchemaPayloadArtifacts,
 } from '../generated/zod.gen';
+import { toAuditRef } from './shared';
 import z from 'zod';
 
 type ApiFormVersion = z.infer<typeof zFormVersionRef>;
@@ -30,18 +31,8 @@ export function mapDbRevisionToApiVersion(rev: FormRevision): ApiFormVersion {
         comment: rev.comment ?? '',
         json: schema.json ?? {},
         ui: schema.ui ?? {},
-        created_by: {
-            id: rev.created_by?.id ?? '0',
-            name: rev.created_by?.name ?? 'System',
-            email: rev.created_by?.email ?? 'system@example.com',
-            timestamp: rev.created.toISOString(),
-        },
-        updated_by: {
-            id: rev.updated_by?.id ?? '0',
-            name: rev.updated_by?.name ?? 'System',
-            email: rev.updated_by?.email ?? 'system@example.com',
-            timestamp: rev.updated.toISOString(),
-        },
+        created_by: toAuditRef(rev.created_by, rev.created.toISOString()),
+        updated_by: toAuditRef(rev.updated_by, rev.updated.toISOString()),
     };
 }
 

@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { loginAs } from '../setup/login-helper';
 
 /**
- * This file intentionally starts with NO stored session (overriding the
- * `chromium` project's `storageState`), because it tests the login flow
- * itself from a logged-out state.
+ * Given A logged-out visitor
  */
 test.use({ storageState: { cookies: [], origins: [] } });
 
@@ -11,29 +10,24 @@ test.describe('Login', () => {
     test('shows an error banner when Keycloak reports an auth failure', async ({
         page,
     }) => {
+        // When: A logged-out visitor on the login page has done a failed auth attempt (Keycloak redirected back with an error)
         await page.goto('/login?error=auth_failed');
 
+        // Then the error banner is shown
         await expect(page.getByText(/authentication failed/i)).toBeVisible();
     });
 
     test('redirects to Keycloak and back to the dashboard on success', async ({
         page,
     }) => {
+        // And the logged-out visitor is on the login page
         await page.goto('/login');
         await expect(
             page.getByRole('heading', { name: 'Form Builder' })
         ).toBeVisible();
 
-        // Given a logged-out visitor on the login page
-        // When they sign in with Keycloak using the seeded dev-realm user
-        await page
-            .getByRole('link', { name: /sign in with keycloak/i })
-            .click();
-        await expect(page).toHaveURL(/\/realms\/dev\//);
-
-        await page.getByLabel(/username or email/i).fill('test');
-        await page.getByLabel('Password', { exact: true }).fill('test');
-        await page.getByRole('button', { name: /^sign in$/i }).click();
+        // When they sign in with Keycloak using the dev-realm admin user
+        await loginAs(page, 'admin');
 
         // Then they land back on the dashboard, authenticated
         await expect(page).toHaveURL(/\/dashboard/);

@@ -21,7 +21,13 @@ const selected = computed({
 </script>
 
 <template>
-    <BDropdown variant="outline-secondary" size="sm" class="d-grid gap-2 mb-2">
+    <BDropdown
+        variant="outline-secondary"
+        size="sm"
+        class="d-grid gap-2 mb-2"
+        data-testid="locale-switcher"
+        :toggle-attrs="{ 'data-testid': 'locale-switcher-toggle' }"
+    >
         <template #button-content>
             {{ selected.name }}
         </template>
@@ -29,6 +35,7 @@ const selected = computed({
             v-for="loc in locales"
             :key="loc.code"
             :active="loc.code === selected.code"
+            :data-testid="`locale-option-${loc.code}`"
             @click="selected = loc"
         >
             <span class="me-2">{{ loc.flag }}</span>

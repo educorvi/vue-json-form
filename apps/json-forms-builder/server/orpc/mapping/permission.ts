@@ -1,6 +1,6 @@
 import type { Permission } from '~~/server/db/entities/Permission';
 import type { ResolvedPermission } from '~~/server/services/PermissionService';
-import { SYSTEM_USER } from './user';
+import { requireUserRef, toAuditRef } from './shared';
 import { zPermission } from '../generated/zod.gen';
 import z from 'zod';
 
@@ -8,17 +8,15 @@ type ApiUserPermission = z.infer<typeof zPermission>;
 type ApiUserRef = ApiUserPermission['user'];
 type ApiModRef = ApiUserPermission['created_by'];
 
-function toApiUserRef(
-    user: { id: string; name: string; email: string } | null | undefined
-): ApiUserRef {
-    return user ?? SYSTEM_USER;
+function toApiUserRef(user: ApiUserRef | null | undefined): ApiUserRef {
+    return requireUserRef(user);
 }
 
 function toModRef(
-    user: { id: string; name: string; email: string } | null | undefined,
+    user: ApiUserRef | null | undefined,
     timestamp: string
 ): ApiModRef {
-    return { ...(user ?? SYSTEM_USER), timestamp };
+    return toAuditRef(user, timestamp);
 }
 
 function nowISO(): string {
@@ -35,14 +33,8 @@ export function mapPermissionToApi(p: Permission): ApiUserPermission {
         expired: p.expire ? new Date(p.expire) < new Date() : false,
         role: p.role,
         user: toApiUserRef(p.user),
-        created_by: toModRef(
-            p.created_by,
-            p.created?.toISOString() ?? nowISO()
-        ),
-        updated_by: toModRef(
-            p.updated_by,
-            p.updated?.toISOString() ?? nowISO()
-        ),
+        created_by: toModRef(p.created_by, p.created.toISOString()),
+        updated_by: toModRef(p.updated_by, p.updated.toISOString()),
     };
 }
 
@@ -64,7 +56,7 @@ export function mapResolvedPermissionToApi(
             ? { source_group_path: p.source_group_path }
             : {}),
         user: toApiUserRef(p.user),
-        created_by: p.created_by ?? toModRef(null, timestamp),
-        updated_by: p.updated_by ?? toModRef(null, timestamp),
+        created_by: toAuditRef(p.created_by, timestamp),
+        updated_by: toAuditRef(p.updated_by, timestamp),
     };
 }

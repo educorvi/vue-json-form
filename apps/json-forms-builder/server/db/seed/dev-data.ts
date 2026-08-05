@@ -1,40 +1,33 @@
-/**
- * Development seed — populates the database with a realistic group/form
- * hierarchy when the DB is empty.
- *
- * Only runs when NODE_ENV === 'development'. Skipped entirely if the
- * "group" table already has rows (idempotent).
- */
 import type { DataSource } from 'typeorm';
-import { Group } from './entities/Group';
-import { Form } from './entities/Form';
-import { User } from './entities/User';
-import { Permission } from './entities/Permission';
+import { Group } from '../entities/Group';
+import { Form } from '../entities/Form';
+import { User } from '../entities/User';
+import { Permission } from '../entities/Permission';
+import { Visibility } from '../entities/BaseEntities';
+import { E2E_USERS } from './users-constants';
+import { Permission as DbPermission } from '../entities/Permission';
 
-import { Visibility } from './entities/BaseEntities';
-import jsonSchema from './entities/seed-data/json-schema.json';
-import uiSchema from './entities/seed-data/ui-schema.json';
+/**
+ * Emails of the Keycloak dev-realm users
+ */
+const ADMIN_EMAIL = E2E_USERS['admin'].email;
+const USER2_EMAIL = E2E_USERS['user2'].email;
 
-// ── User constants ────────────────────────────────────────────────────────────
-
-const USER_TEST = 'test@educorvi.de';
-const USER_LIMITED = 'user2@educorvi.de';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
+type PermissionRole = DbPermission['role'];
 
 interface PermissionSeed {
     userEmail: string;
-    role: 'owner' | 'editor' | 'guest';
+    role: PermissionRole;
 }
 
 interface GroupSeed {
     title: string;
     name: string;
     description?: string;
-    parentPath?: string; // path of the parent group, used to look up its ID
+    parentPath?: string;
     visibility?: Visibility;
-    forms?: FormSeed[]; // forms belonging to this group
-    permissions?: PermissionSeed[]; // group-level permissions
+    forms?: FormSeed[];
+    permissions?: PermissionSeed[];
 }
 
 interface FormSeed {
@@ -42,7 +35,7 @@ interface FormSeed {
     name: string;
     description?: string;
     visibility?: Visibility;
-    permissions?: PermissionSeed[]; // form-level permissions
+    permissions?: PermissionSeed[];
 }
 
 // ── Helper: batch-insert groups and return a path→entity map ─────────────────
@@ -57,6 +50,17 @@ export async function groupSeedToDb(
     const permissionRepo = dataSource.getRepository(Permission);
     const pathMap = new Map<string, Group>();
 
+    // Every seeded row is attributed to the admin user — the audit mappers
+    // (server/orpc/mapping/shared.ts) throw when created_by/updated_by is
+    // missing, so demo data must carry a real user.
+    const auditUser = userByEmail.get(ADMIN_EMAIL);
+    if (!auditUser) {
+        throw new Error(
+            '[seed] Cannot attribute demo data without the admin user'
+        );
+    }
+    const auditRef = { id: auditUser.id };
+
     for (const s of groups) {
         const parent = s.parentPath
             ? (pathMap.get(s.parentPath) ?? null)
@@ -70,6 +74,8 @@ export async function groupSeedToDb(
             visibility: s.visibility ?? Visibility.Visible,
             parent: parent ?? undefined,
             parent_id: parent?.id ?? null,
+            created_by: auditRef,
+            updated_by: auditRef,
         });
         const saved = await treeRepo.save(group);
         pathMap.set(pathKey, saved);
@@ -83,6 +89,8 @@ export async function groupSeedToDb(
                     group: { id: saved.id },
                     user: { id: user.id },
                     role: p.role,
+                    created_by: auditRef,
+                    updated_by: auditRef,
                 });
                 await permissionRepo.save(perm);
             }
@@ -98,6 +106,8 @@ export async function groupSeedToDb(
                     visibility: f.visibility ?? Visibility.Visible,
                     group: saved,
                     path: `${pathKey}/${f.name}`,
+                    created_by: auditRef,
+                    updated_by: auditRef,
                 });
                 await formRepo.save(form);
 
@@ -110,6 +120,8 @@ export async function groupSeedToDb(
                             form: { id: form.id },
                             user: { id: user.id },
                             role: p.role,
+                            created_by: auditRef,
+                            updated_by: auditRef,
                         });
                         await permissionRepo.save(perm);
                     }
@@ -129,27 +141,27 @@ const ROOT_GROUPS: GroupSeed[] = [
         name: 'dguv',
         description: 'Unfallversicherungen und Berufsgenossenschaften',
         permissions: [
-            { userEmail: USER_TEST, role: 'owner' },
-            { userEmail: USER_LIMITED, role: 'guest' },
+            { userEmail: ADMIN_EMAIL, role: 'owner' },
+            { userEmail: USER2_EMAIL, role: 'guest' },
         ],
     },
     {
         title: 'Educorvi',
         name: 'educorvi',
         description: 'Interne Formulare Educorvi',
-        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
+        permissions: [{ userEmail: ADMIN_EMAIL, role: 'owner' }],
     },
     {
         title: 'BG Phoenics',
         name: 'bg-phoenics',
         description: 'Formulare BG Phoenics',
-        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
+        permissions: [{ userEmail: ADMIN_EMAIL, role: 'owner' }],
     },
     {
         title: 'Develop',
         name: 'develop',
         description: 'Entwicklerbereich für Tests, Bug Reports',
-        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
+        permissions: [{ userEmail: ADMIN_EMAIL, role: 'owner' }],
     },
 ];
 
@@ -181,7 +193,7 @@ const BG_GROUPS: GroupSeed[] = [
         description:
             'Berufsgenossenschaft Energie Textil Elektro Medienerzeugnisse',
         parentPath: 'dguv',
-        permissions: [{ userEmail: USER_LIMITED, role: 'editor' }],
+        permissions: [{ userEmail: USER2_EMAIL, role: 'editor' }],
         forms: [
             {
                 title: 'Unfallanzeige',
@@ -380,7 +392,7 @@ const BGETEM_GROUPS: GroupSeed[] = [
                 name: 'beitragsnachweis',
                 description:
                     'Jährlicher Beitragsnachweis für Mitgliedsunternehmen',
-                permissions: [{ userEmail: USER_LIMITED, role: 'owner' }],
+                permissions: [{ userEmail: USER2_EMAIL, role: 'owner' }],
             },
             {
                 title: 'Rehabilitationsantrag',
@@ -526,7 +538,7 @@ const PRIVATE_TEST_GROUPS: GroupSeed[] = [
             'Private Gruppe — Testnutzer hat Zugriff (via Berechtigung).',
         parentPath: 'develop',
         visibility: Visibility.Private,
-        permissions: [{ userEmail: USER_TEST, role: 'owner' }],
+        permissions: [{ userEmail: ADMIN_EMAIL, role: 'owner' }],
         forms: [
             {
                 title: 'Confidential Report',
@@ -561,90 +573,12 @@ const PRIVATE_TEST_GROUPS: GroupSeed[] = [
     },
 ];
 
-// ── Main seed entry point ─────────────────────────────────────────────────────
-
-export async function seed(dataSource: DataSource): Promise<void> {
-    const treeRepo = dataSource.getTreeRepository(Group);
-    const userRepo = dataSource.getRepository(User);
-
-    const existingCount = await treeRepo.count();
-    if (existingCount > 0) {
-        console.log('[seed] Groups table already has data — skipping seed.');
-        return;
-    }
-
-    console.log('[seed] Seeding development data…');
-
-    // 1. Create test users (must exist before groups so permissions can
-    //    reference them via the inline seed data).
-    let testUser = await userRepo.findOne({
-        where: { email: USER_TEST },
-    });
-    if (!testUser) {
-        testUser = userRepo.create({
-            id: '897f0982-2ae7-445d-aaa1-0da4eb10dec4',
-            email: USER_TEST,
-            name: 'Test User',
-            role: 'user',
-        });
-        testUser = await userRepo.save(testUser);
-    }
-
-    let limitedUser = await userRepo.findOne({
-        where: { email: USER_LIMITED },
-    });
-    if (!limitedUser) {
-        limitedUser = userRepo.create({
-            id: '451a7cd3-2bd1-4458-ae85-691886f14734',
-            email: USER_LIMITED,
-            name: 'John Doe',
-            role: 'user',
-        });
-        limitedUser = await userRepo.save(limitedUser);
-    }
-
-    const userByEmail = new Map<string, User>([
-        [USER_TEST, testUser],
-        [USER_LIMITED, limitedUser],
-    ]);
-
-    // 2. Insert all groups and forms — permissions are created inline by
-    //    groupSeedToDb based on the `permissions` arrays in the seed data.
-    const allGroups = [
-        ...ROOT_GROUPS,
-        ...BG_GROUPS,
-        ...UK_GROUPS,
-        ...EDUCORVI_GROUPS,
-        ...DEV_GROUPS,
-        ...BGETEM_GROUPS,
-        ...PRIVATE_TEST_GROUPS,
-    ];
-    await groupSeedToDb(dataSource, allGroups, userByEmail);
-
-    // 3. Assign seed schemas to a few forms for demo purposes
-    const formRepo = dataSource.getRepository(Form);
-    const schemaForms = [
-        'unfallanzeige',
-        'beitragsnachweis',
-        'rehabilitationsantrag',
-        'onboarding01',
-        'example-bug-report',
-    ];
-    if (jsonSchema && uiSchema) {
-        const schema = { json: jsonSchema, ui: uiSchema };
-        for (const formName of schemaForms) {
-            const form = await formRepo.findOne({ where: { name: formName } });
-            if (form) {
-                await formRepo.update(form.id, { schema });
-            }
-        }
-    }
-
-    const formCount = allGroups.reduce(
-        (sum, g) => sum + (g.forms?.length ?? 0),
-        0
-    );
-    console.log(
-        `[seed] Done — inserted ${allGroups.length} groups and ${formCount} forms.`
-    );
-}
+export const DEV_GROUPS_ALL: GroupSeed[] = [
+    ...ROOT_GROUPS,
+    ...BG_GROUPS,
+    ...UK_GROUPS,
+    ...EDUCORVI_GROUPS,
+    ...DEV_GROUPS,
+    ...BGETEM_GROUPS,
+    ...PRIVATE_TEST_GROUPS,
+];

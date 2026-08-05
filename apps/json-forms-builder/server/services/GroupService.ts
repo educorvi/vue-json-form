@@ -266,6 +266,8 @@ export class GroupService {
                     description: data.description ?? null,
                     visibility: (data.visibility as any) ?? 'visible',
                     parent: parent ?? undefined,
+                    created_by: createdById ? { id: createdById } : null,
+                    updated_by: createdById ? { id: createdById } : null,
                 });
                 const savedGroup = await treeRepo.save(group);
 
@@ -276,6 +278,8 @@ export class GroupService {
                             user: { id: createdById },
                             role: 'owner',
                             group: { id: savedGroup.id },
+                            created_by: { id: createdById },
+                            updated_by: { id: createdById },
                         })
                     );
                 }
@@ -304,7 +308,8 @@ export class GroupService {
             description?: string | null;
             visibility?: string | null;
             parent_id?: number | null;
-        }
+        },
+        updatedById?: string
     ): Promise<ApiGroup> {
         const existing = await this.findById(id);
         const parent =
@@ -322,6 +327,7 @@ export class GroupService {
             description: data.description ?? null,
             visibility: data.visibility ?? existing.visibility,
             parent: parent ?? undefined,
+            updated_by: updatedById ? { id: updatedById } : undefined,
         } as any);
         return this.getByIdOrSlug(id.toString());
     }
@@ -334,7 +340,8 @@ export class GroupService {
             description?: string | null;
             visibility?: string | null;
             parent_id?: number | null;
-        }
+        },
+        updatedById?: string
     ): Promise<ApiGroup> {
         const existing = await this.findById(id);
         const parent =
@@ -350,6 +357,7 @@ export class GroupService {
             id,
             ...cleanData,
             parent: parent ?? undefined,
+            updated_by: updatedById ? { id: updatedById } : undefined,
         } as any);
         return this.getByIdOrSlug(id.toString());
     }

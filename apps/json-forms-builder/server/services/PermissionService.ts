@@ -104,8 +104,17 @@ export class PermissionService {
             expire: dto.expire ? new Date(dto.expire) : null,
             user: { id: dto.user_id },
             group: { id: groupId },
+            created_by: { id: actorId },
+            updated_by: { id: actorId },
         });
-        return this.repo.save(perm);
+        const saved = await this.repo.save(perm);
+        // Reload with relations — `save()` only carries `user: { id }`,
+        // but the API response (mapPermissionToApi) needs the full
+        // user ref (id, name, email) + audit refs.
+        return this.repo.findOneOrFail({
+            where: { id: saved.id },
+            relations: { user: true, created_by: true, updated_by: true },
+        });
     }
 
     async createForForm(
@@ -126,8 +135,17 @@ export class PermissionService {
             expire: dto.expire ? new Date(dto.expire) : null,
             user: { id: dto.user_id },
             form: { id: formId },
+            created_by: { id: actorId },
+            updated_by: { id: actorId },
         });
-        return this.repo.save(perm);
+        const saved = await this.repo.save(perm);
+        // Reload with relations — `save()` only carries `user: { id }`,
+        // but the API response (mapPermissionToApi) needs the full
+        // user ref (id, name, email) + audit refs.
+        return this.repo.findOneOrFail({
+            where: { id: saved.id },
+            relations: { user: true, created_by: true, updated_by: true },
+        });
     }
 
     async patch(
@@ -153,8 +171,12 @@ export class PermissionService {
                         ? new Date(dto.expire)
                         : null
                     : undefined,
+            updated_by: { id: actorId },
         });
-        return this.repo.findOneOrFail({ where: { id } });
+        return this.repo.findOneOrFail({
+            where: { id },
+            relations: { user: true, created_by: true, updated_by: true },
+        });
     }
 
     async delete(
@@ -223,9 +245,13 @@ export class PermissionService {
               SELECT DISTINCT ON (p.user_id)
                 p.id, p.role::text, p.user_id, p.group_id, p.form_id,
                 p.expire, p.created, p.updated, p.created_by, p.updated_by,
-                u.id AS u_id, u.name AS u_name, u.email AS u_email, u.role AS u_role
+                u.id AS u_id, u.name AS u_name, u.email AS u_email, u.role AS u_role,
+                cu.id AS cu_id, cu.name AS cu_name, cu.email AS cu_email,
+                uu.id AS uu_id, uu.name AS uu_name, uu.email AS uu_email
               FROM permissions p
               LEFT JOIN "user" u ON u.id = p.user_id
+              LEFT JOIN "user" cu ON cu.id = p.created_by
+              LEFT JOIN "user" uu ON uu.id = p.updated_by
               WHERE p.group_id = ANY($1::int[])
                 AND (p.group_id = $2 OR NOT EXISTS (
                   SELECT 1 FROM permissions p2
@@ -354,7 +380,9 @@ export class PermissionService {
         const rows = await this.dataSource.query(
             `SELECT p.id, p.role::text, p.user_id, p.group_id, p.form_id, p.expire,
                     p.created, p.updated, p.created_by, p.updated_by,
-                    u.id AS u_id, u.name AS u_name, u.email AS u_email, u.role AS u_role
+                    u.id AS u_id, u.name AS u_name, u.email AS u_email, u.role AS u_role,
+                    cu.id AS cu_id, cu.name AS cu_name, cu.email AS cu_email,
+                    uu.id AS uu_id, uu.name AS uu_name, uu.email AS uu_email
              FROM (
                 SELECT id, created FROM permissions WHERE form_id = $1
                 ${
@@ -378,6 +406,8 @@ export class PermissionService {
              ) combined
              JOIN permissions p ON p.id = combined.id
              LEFT JOIN "user" u ON u.id = p.user_id
+             LEFT JOIN "user" cu ON cu.id = p.created_by
+             LEFT JOIN "user" uu ON uu.id = p.updated_by
              ORDER BY p.created DESC`,
             ancestorIds.length > 0
                 ? [formId, ancestorIds, offset, pageSize]
@@ -518,6 +548,23 @@ export class PermissionService {
               }
             : null;
 
+        const createdBy = row.cu_id
+            ? {
+                  id: row.cu_id,
+                  name: row.cu_name ?? '',
+                  email: row.cu_email ?? '',
+                  timestamp: new Date(row.created).toISOString(),
+              }
+            : null;
+        const updatedBy = row.uu_id
+            ? {
+                  id: row.uu_id,
+                  name: row.uu_name ?? '',
+                  email: row.uu_email ?? '',
+                  timestamp: new Date(row.updated).toISOString(),
+              }
+            : null;
+
         return {
             id: Number(row.id),
             role: row.role as Role,
@@ -528,6 +575,8 @@ export class PermissionService {
             source_group_path: sourceGroupPath,
             user_id: row.user_id ?? null,
             user,
+            created_by: createdBy,
+            updated_by: updatedBy,
             expire: row.expire ?? null,
             expired: row.expire ? new Date(row.expire) < now : false,
             created: row.created,

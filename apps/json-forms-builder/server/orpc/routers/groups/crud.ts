@@ -81,12 +81,16 @@ export const groupCrudProcedures = {
                     message: 'Title cannot be empty.',
                 });
             }
-            return service.patch(group.id, {
-                title: input.body.title ?? undefined,
-                name: input.body.name ?? undefined,
-                description: input.body.description ?? undefined,
-                visibility: input.body.visibility ?? undefined,
-            });
+            return service.patch(
+                group.id,
+                {
+                    title: input.body.title ?? undefined,
+                    name: input.body.name ?? undefined,
+                    description: input.body.description ?? undefined,
+                    visibility: input.body.visibility ?? undefined,
+                },
+                user.id
+            );
         }),
 
     replace: os.groups.replace
@@ -101,12 +105,16 @@ export const groupCrudProcedures = {
                 group.id,
                 ResourceUpdatePermission
             );
-            return service.replace(group.id, {
-                title: input.body.title ?? '',
-                name: input.body.name ?? '',
-                description: input.body.description ?? null,
-                visibility: input.body.visibility ?? 'visible',
-            });
+            return service.replace(
+                group.id,
+                {
+                    title: input.body.title ?? '',
+                    name: input.body.name ?? '',
+                    description: input.body.description ?? null,
+                    visibility: input.body.visibility ?? 'visible',
+                },
+                user.id
+            );
         }),
 
     delete: os.groups.delete
@@ -167,6 +175,7 @@ export const groupCrudProcedures = {
                     title: body.title ?? '',
                     name: groupName,
                     description: body.description ?? null,
+                    visibility: body.visibility ?? 'visible',
                     parent_id: parentIdParam,
                 },
                 user.id
