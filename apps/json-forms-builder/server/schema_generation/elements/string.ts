@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { SimpleElement, DependencyGroup } from "./base";
+import { SimpleElement } from "./form-element";
+import { DependencyGroup } from "./dependency";
+import type { SchemaGenerator } from "./schema-generator";
 
 
 export enum StringFormat {
@@ -34,15 +36,29 @@ export class StringElement extends SimpleElement {
         placeholder: z.string().optional()
     });
 
-    constructor(title: string, description?: string, format: StringFormat = StringFormat.Text, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string, appendValue?: string, prependValue?: string, pattern?: string) {
+    constructor(
+        title: string,
+        description?: string,
+        format: StringFormat = StringFormat.Text,
+        required: boolean = false,
+        dependencyGroup?: DependencyGroup,
+        id?: string,
+        tooltip?: string,
+        hidden: boolean = false,
+        preHtml?: string,
+        postHtml?: string,
+        appendValue?: string,
+        prependValue?: string,
+        pattern?: string
+    ) {
         super(title, description, required, dependencyGroup, id, tooltip, hidden, preHtml, postHtml, appendValue, prependValue, pattern);
         this.format = format;
     }
 
-    toUiSchema(scope: string): Control {
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema: Control = {
             "type": "Control",
-            "scope": scope + this.getID(),
+            "scope": _scope.join("/") + "/" + this.getID(),
         };
         const options = super.getUiSchemaOptions();
         if (this.placeholder) {
@@ -51,10 +67,14 @@ export class StringElement extends SimpleElement {
         if (Object.keys(options).length > 0) {
             uiSchema.options = options;
         }
+
+        if (this.dependencyGroup) {
+            uiSchema.showOn = this.dependencyGroup.toUiSchema(_generator, _scope);
+        }
         return uiSchema;
     }
 
-    toJsonSchema(): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         let schema: any = {
             "type": "string",
             "title": this.title,
@@ -71,6 +91,7 @@ export class StringElement extends SimpleElement {
         if (this.maxLength !== undefined) {
             schema.maxLength = this.maxLength;
         }
+
         return schema;
     }
 

@@ -1,12 +1,9 @@
-import { Entity, FormElement } from "./base";
+import { Entity } from "./base";
+import { FormElement } from "./form-element";
 import { z } from "zod";
-import { childrenToUiSchema, getObjectJsonSchema } from "./childrenSchemaUtils";
 import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import { Layout } from "../utils";
-import { ArrayElement, ObjectElement } from "./container";
-import { StringElement } from "./string";
-import { NumberElement } from "./number";
-import { HTMLElement } from "./html";
+import type { SchemaGenerator } from "./schema-generator";
 
 
 export class Form extends Entity {
@@ -14,23 +11,23 @@ export class Form extends Entity {
     title!: string;
     description?: string;
     layout!: Layout; //TODO oder wizard??
-    children!: FormElement[];
+    children!: string[];
     requiredList!: string[];
 
     static schema = super.schema.extend({
         title: z.string(),
         description: z.string().optional(),
-        children: z.lazy((): z.ZodType<any[]> => z.array(z.union([
-                    ArrayElement.schema,
-                    ObjectElement.schema,
-                    StringElement.schema,
-                    NumberElement.schema,
-                    HTMLElement.schema
-                ]))),
+        layout: z.enum(Layout),
+        children: z.array(z.string()),
         requiredList: z.array(z.string())
     });
 
-	constructor(title: string, description?: string, id?: string, layout: Layout = Layout.Vertical) {
+	constructor(
+        title: string,
+        description?: string,
+        id?: string,
+        layout: Layout = Layout.Vertical
+    ) {
         super(id);
 		this.title = title;
 		this.description = description;
@@ -43,22 +40,37 @@ export class Form extends Entity {
         return "/properties/";
     }
 
-	toUiSchema(): UISchema {
+    ///////////TODO????????
+    // parse from database json
+    static parse(raw: any): Form {
+        const parsed = Form.schema.parse(raw);
+        const form = new Form(parsed.title, parsed.description, parsed.id, parsed.layout);
+        form.children = parsed.children;
+        form.requiredList = parsed.requiredList;
+        return form;
+    }
+
+	toUiSchema(generator: SchemaGenerator): UISchema {
         const uiSchema: UISchema = {
             "$schema": "TODO",
             "version": "2.1",
             "layout": {
                 "type": this.layout,
-                "elements": []
+                "elements": generator.generateUiSchemaForElements(this.children, ["properties"]),
             }
-        }
-        if (this.children && this.children.length > 0) {
-            uiSchema.layout.elements = childrenToUiSchema("/properties/", this.children);
         }
 		return uiSchema
 	}
 
-	toJsonSchema(): JSONSchema {
-        return getObjectJsonSchema(this.title, this.children, this.description);
+	toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        const {childrenJsonSchema, requiredList} = generator.generateJsonSchemaForElements(this.children, ["properties"]);
+        const jsonSchema: JSONSchema = {
+            "$schema": "https://json-schema.org/draft/2019-09/schema#",
+            "type": "object",
+            "properties": childrenJsonSchema,
+            "required": requiredList,
+            "allOf": generator.generatorHelperAttributes.allOf
+        };
+        return jsonSchema;
 	}
 }

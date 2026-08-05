@@ -70,26 +70,6 @@ enum FileType {
     keynote = "keynote",    // "application/vnd.apple.keynote"
 }
 
-enum DependencyType {
-    greaterThan = "greaterThan",
-    lessThan = "lessThan",
-    equalTo = "equalTo",
-    notEqualTo = "notEqualTo",
-    greaterThanOrEqualTo = "greaterThanOrEqualTo",
-    lessThanOrEqualTo = "lessThanOrEqualTo",
-    minLengthOf = "minLengthOf",
-    maxLengthOf = "maxLengthOf",
-    contains = "contains",
-    notContains = "notContains",
-    startsWith = "startsWith",
-    endsWith = "endsWith",
-    isEmpty = "isEmpty",
-    isNotEmpty = "isNotEmpty",
-}
 
-enum DependencyRelation {
-    AND = "AND",
-    OR = "OR"
-}
 
 //export { Layouts, StringFormats, BooleanFormats, EnumFormats, ButtonSubmitActions, HttpsMethods, ButtonVariants, ModalSizes, FileTypes, DependencyTypes, DependencyRelation, NumberFormats };

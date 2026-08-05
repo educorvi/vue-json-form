@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { SimpleElement, DependencyGroup } from "./base";
+import { SimpleElement } from "./form-element";
+import type { DependencyGroup } from "./dependency";
+import type { SchemaGenerator } from "./schema-generator";
 
 
 enum NumberFormat {
@@ -13,11 +15,8 @@ export class NumberElement extends SimpleElement {
     readonly type = "number";
 
     format!: NumberFormat;
-
     minimum?: number;
-
     maximum?: number;
-
     multipleOf?: number;
 
     static schema = SimpleElement.schema.extend({
@@ -28,24 +27,42 @@ export class NumberElement extends SimpleElement {
         multipleOf: z.number().optional()
     });
 
-    constructor(title: string, description?: string, format: NumberFormat = NumberFormat.Number, required: boolean = false, dependencyGroup?: DependencyGroup, id?: string, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string, prependValue?: string, appendValue?: string, pattern?: string) {
+    constructor(
+        title: string,
+        description?: string,
+        format: NumberFormat = NumberFormat.Number,
+        required: boolean = false,
+        dependencyGroup?: DependencyGroup,
+        id?: string,
+        tooltip?: string,
+        hidden: boolean = false,
+        preHtml?: string,
+        postHtml?: string,
+        prependValue?: string,
+        appendValue?: string,
+        pattern?: string
+    ) {
         super(title, description, required, dependencyGroup, id, tooltip, hidden, preHtml, postHtml, prependValue, appendValue, pattern);
         this.format = format;
     }
 
-    toUiSchema(scope: string): Control {
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema: Control = {
             "type": "Control",
-            "scope": scope + this.getID(),
+            "scope": _scope.join("/") + "/" + this.getID(),
         };
         const options = super.getUiSchemaOptions();
         if (Object.keys(options).length > 0) {
             uiSchema.options = options;
         }
+
+        if (this.dependencyGroup) {
+            uiSchema.showOn = this.dependencyGroup.toUiSchema(_generator, _scope);
+        }
         return uiSchema;
     }
 
-    toJsonSchema(): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         const schema: JSONSchema = {
             "type": this.format,
             "title": this.title,

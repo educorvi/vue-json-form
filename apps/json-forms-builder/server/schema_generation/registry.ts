@@ -5,7 +5,7 @@ import { ArrayElement, ObjectElement, ContainerElement } from "./elements/contai
 import { StringElement } from "./elements/string";
 import { NumberElement } from "./elements/number";
 import { HTMLElement } from "./elements/html";
-import { FormElement, BaseDataElement } from "./elements/base";
+import { FormElement } from "./elements/form-element";
 
 // Registry
 type FormElementConstructor = {
