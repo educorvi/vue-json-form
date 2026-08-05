@@ -43,7 +43,7 @@
         "nuxt-phosphor-icons": "2.3.3",
         "pg": "^8.22.0",
         "pinia": "^3.0.4",
-        "turbo": "^2.10.0",
+        "turbo": "^2.10.8",
         "typeorm": "1.0",
         "vue": "^3.5.38",
         "vue-router": "^5.1.0",
