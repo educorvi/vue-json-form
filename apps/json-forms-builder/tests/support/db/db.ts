@@ -1,6 +1,6 @@
-import { AppDataSource } from '../../server/db/data-source';
-import { Form } from '../../server/db/entities/Form';
-import { resetTestData as wipeTestData } from '../../server/db/seed/test-data';
+import { AppDataSource } from '../../../server/db/data-source';
+import { ApiKey } from '../../../server/db/entities/ApiKey';
+import { resetTestData as wipeTestData } from '../../../server/db/seed/test-data';
 
 /**
  * Direct database access for tests — lets a test verify database state
@@ -44,17 +44,11 @@ export async function closeTestDataSource() {
     initPromise = undefined;
 }
 
-export async function findFormRowById(id: number) {
+export async function findApiKeyRowById(id: string) {
     const dataSource = await getTestDataSource();
-    return dataSource.getRepository(Form).findOne({
+    return dataSource.getRepository(ApiKey).findOne({
         where: { id },
-        relations: {
-            group: true,
-            // Needed by the DB-level resource-modification helpers
-            // (tests/support/db-resource-modifications.ts).
-            created_by: true,
-            updated_by: true,
-        },
+        relations: { user: true },
     });
 }
 

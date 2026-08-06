@@ -1,24 +1,10 @@
 import { expect } from 'vitest';
-import type { BaseAuditedEntity } from '../../server/db/entities/BaseEntities';
+import type { BaseAuditedEntity } from '../../../server/db/entities/BaseEntities';
 import {
     expectUserRefMatches,
     type ApiUserRef,
-    type TestUserIdentity,
-} from './resource-modifications';
-
-// ── Types (inferred — no duplication) ─────────────────────────────────────
-
-/**
- * A database row (TypeORM entity) carrying the audited fields — forms,
- * groups, etc. — picked from `BaseAuditedEntity` in
- * server/db/entities/BaseEntities.ts.
- */
-export type DbResourceModifications = Pick<
-    BaseAuditedEntity,
-    'created' | 'updated' | 'created_by' | 'updated_by'
->;
-
-// ── DB-level assertions ───────────────────────────────────────────────────
+} from '../api/resource-modifications';
+import type { ProvisionedUser } from '../provision';
 
 /**
  * Asserts that the row was created by the given user.
@@ -27,8 +13,8 @@ export type DbResourceModifications = Pick<
  * `relations: { created_by: true }`).
  */
 export function expectDbCreatedBy(
-    row: DbResourceModifications,
-    user: TestUserIdentity
+    row: BaseAuditedEntity,
+    user: ProvisionedUser
 ): void {
     expect(row.created_by).toBeDefined();
     expectUserRefMatches(row.created_by! as ApiUserRef, user);
@@ -41,8 +27,8 @@ export function expectDbCreatedBy(
  * `relations: { updated_by: true }`).
  */
 export function expectDbUpdatedBy(
-    row: DbResourceModifications,
-    user: TestUserIdentity
+    row: BaseAuditedEntity,
+    user: ProvisionedUser
 ): void {
     expect(row.updated_by).toBeDefined();
     expectUserRefMatches(row.updated_by! as ApiUserRef, user);
@@ -53,8 +39,8 @@ export function expectDbUpdatedBy(
  * (the expected state right after creation).
  */
 export function expectDbCreatedAndUpdatedBy(
-    row: DbResourceModifications,
-    user: TestUserIdentity
+    row: BaseAuditedEntity,
+    user: ProvisionedUser
 ): void {
     expectDbCreatedBy(row, user);
     expectDbUpdatedBy(row, user);
@@ -64,8 +50,6 @@ export function expectDbCreatedAndUpdatedBy(
  * Asserts that the update timestamp is not older than the creation
  * timestamp.
  */
-export function expectDbUpdatedAfterCreated(
-    row: DbResourceModifications
-): void {
+export function expectDbUpdatedAfterCreated(row: BaseAuditedEntity): void {
     expect(row.updated.getTime()).toBeGreaterThanOrEqual(row.created.getTime());
 }

@@ -1,48 +1,25 @@
 import { expect } from 'vitest';
-import type { ProvisionedUser } from './provision';
+import type { ProvisionedUser } from '../provision';
 import type {
     zResourceModification,
     zUserRef,
-} from '../../server/orpc/generated/zod.gen';
+} from '../../../server/orpc/generated/zod.gen';
 import type z from 'zod';
 
 // ── Types (inferred — no duplication) ─────────────────────────────────────
 
-/**
- * The user-identity fields of a provisioned test user — picked from the
- * real `ProvisionedUser` type (tests/support/provision.ts).
- */
-export type TestUserIdentity = Pick<
-    ProvisionedUser,
-    'userId' | 'name' | 'email'
->;
-
-/**
- * Any API resource carrying `created_by` / `updated_by` — forms, groups,
- * permissions, versions, etc. — inferred from `zResourceModification` in
- * server/orpc/generated/zod.gen.ts.
- */
 export type ApiResourceModifications = z.infer<typeof zResourceModification>;
 
-/**
- * A user reference as returned by the API — inferred from `zUserRef`
- * (id/name/email, no timestamp).
- */
 export type ApiUserRef = z.infer<typeof zUserRef>;
 
 // ── Shared identity assertion ─────────────────────────────────────────────
 
 /**
- * Asserts that a user reference matches the provisioned test user
- * (id + name + email).
- *
- * Shared between the API- and DB-level helpers — the DB `created_by` /
- * `updated_by` entities carry the same id/name/email fields, so both
- * levels can reuse this.
+ * Asserts that a user reference matches the provisioned test user (id + name + email).
  */
 export function expectUserRefMatches(
     ref: ApiUserRef,
-    user: TestUserIdentity
+    user: ProvisionedUser
 ): void {
     expect(ref.id).toBe(user.userId);
     expect(ref.name).toBe(user.name);
@@ -56,7 +33,7 @@ export function expectUserRefMatches(
  */
 export function expectApiCreatedBy(
     resource: ApiResourceModifications,
-    user: TestUserIdentity
+    user: ProvisionedUser
 ): void {
     expectUserRefMatches(resource.created_by, user);
 }
@@ -66,7 +43,7 @@ export function expectApiCreatedBy(
  */
 export function expectApiUpdatedBy(
     resource: ApiResourceModifications,
-    user: TestUserIdentity
+    user: ProvisionedUser
 ): void {
     expectUserRefMatches(resource.updated_by, user);
 }
@@ -77,7 +54,7 @@ export function expectApiUpdatedBy(
  */
 export function expectApiCreatedAndUpdatedBy(
     resource: ApiResourceModifications,
-    user: TestUserIdentity
+    user: ProvisionedUser
 ): void {
     expectApiCreatedBy(resource, user);
     expectApiUpdatedBy(resource, user);

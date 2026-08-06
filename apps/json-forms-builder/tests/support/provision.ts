@@ -3,8 +3,8 @@ import type { RouterClient } from '@orpc/server';
 import { User } from '../../server/db/entities/User';
 import { ApiKeyService } from '../../server/services/ApiKeyService';
 import type { AppRouter } from '../../server/orpc/routers';
-import { getTestDataSource } from './db';
-import { createApiClient } from './api-client';
+import { getTestDataSource } from './db/db';
+import { createApiClient } from './api/api-client';
 import { ensureTestUsers, resetDatabase } from '../../server/db/seed';
 import type { E2EUserTypes } from '../../server/db/seed/users-constants';
 
@@ -158,7 +158,7 @@ export async function apiClientFor(user: E2EUserTypes) {
 // Re-export the shared DataSource helpers so consumers of this module
 // (integration tests, the e2e global-setup via the compiled bundle) get
 // ONE source of truth for DB access.
-export { getTestDataSource, closeTestDataSource } from './db';
+export { getTestDataSource, closeTestDataSource } from './db/db';
 
 export {
     resetDatabase,

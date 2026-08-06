@@ -254,7 +254,7 @@ export class GroupService {
         },
         createdById?: string
     ): Promise<ApiGroup> {
-        const { savedGroup, parent } = await this.dataSource.transaction(
+        const { savedGroup } = await this.dataSource.transaction(
             async (manager) => {
                 const treeRepo = manager.getTreeRepository(Group);
                 const parent = data.parent_id
@@ -288,14 +288,12 @@ export class GroupService {
             }
         );
 
-        // Stats and parent path are read-only queries, done outside the transaction.
-        const parentPath = parent
-            ? await this._getParentPath(savedGroup)
-            : null;
-        const stats = await this._batchStats([savedGroup.id]);
+        const fullGroup = await this.findById(savedGroup.id);
+        const parentPath = await this._getParentPath(fullGroup);
+        const stats = await this._batchStats([fullGroup.id]);
         return toApiGroup(
-            savedGroup,
-            stats[savedGroup.id] ?? ZERO_STATS,
+            fullGroup,
+            stats[fullGroup.id] ?? ZERO_STATS,
             parentPath
         );
     }

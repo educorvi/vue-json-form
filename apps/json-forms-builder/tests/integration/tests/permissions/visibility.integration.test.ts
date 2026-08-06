@@ -1,7 +1,7 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ProvisionedUser } from '../../../support/provision';
 import { provisionUser, resetTestDatabase } from '../../../support/provision';
-import { closeTestDataSource } from '../../../support/db';
+import { closeTestDataSource } from '../../../support/db/db';
 
 describe('Group permissions — private groups are only visible to granted users', () => {
     let admin: ProvisionedUser;

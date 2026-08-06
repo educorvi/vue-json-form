@@ -1,130 +1,31 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ProvisionedUser } from '../../../support/provision';
 import { provisionUser, resetTestDatabase } from '../../../support/provision';
-import { closeTestDataSource, findFormRowById } from '../../../support/db';
-import type { Form as DbForm } from '~~/server/db/entities/Form';
-import type { zCreateFormResponse } from '~~/server/orpc/generated/zod.gen';
-import type z from 'zod';
+import { closeTestDataSource } from '../../../support/db/db';
 import { ORPCError } from '@orpc/client';
 import {
     expectApiCreatedAndUpdatedBy,
     expectApiUpdatedAfterCreated,
     expectApiCreatedBy,
     expectApiUpdatedBy,
-} from '../../../support/resource-modifications';
+} from '../../../support/api/resource-modifications';
 import {
     expectDbCreatedAndUpdatedBy,
     expectDbUpdatedAfterCreated,
     expectDbCreatedBy,
     expectDbUpdatedBy,
-} from '../../../support/db-resource-modifications';
-
-// data
-
-const TEST_GROUP = {
-    title: 'Test Group',
-    name: 'test-group',
-};
-
-const ADDITIONAL_GROUP = {
-    title: 'Group B',
-    name: 'group-b',
-};
-
-const TEST_FORM = {
-    title: 'Test Form',
-    name: 'test-form',
-};
-
-const INVALID_FORM_ID = 999999;
-
-type FormCreationResponse = z.infer<typeof zCreateFormResponse>;
-
-// helpers
-
-function createTestGroup(
-    admin: ProvisionedUser,
-    groupData: Partial<typeof TEST_GROUP> = TEST_GROUP
-) {
-    return admin.client.groups.create({
-        body: {
-            title: groupData.title ?? TEST_GROUP.title,
-            name: groupData.name ?? TEST_GROUP.name,
-        },
-    });
-}
-
-function createTestForm(admin: ProvisionedUser, parentGroupId?: number) {
-    return admin.client.forms.create({
-        body: { title: TEST_FORM.title, name: TEST_FORM.name },
-        query: { id: parentGroupId ? String(parentGroupId) : '' },
-    });
-}
-
-function getFormFromDb(id: number) {
-    return findFormRowById(id);
-}
-
-function checkFormMatchesApi(
-    form: FormCreationResponse,
-    groupId: number | null
-) {
-    expect(form.title).toBe(TEST_FORM.title);
-    expect(form.name).toBe(TEST_FORM.name);
-    expect(form.parent_id).toBe(groupId);
-}
-
-function checkFormMatchesDb(form: DbForm | null, groupId: number | null) {
-    expect(form).toBeDefined();
-    expect(form?.title).toBe(TEST_FORM.title);
-    expect(form?.name).toBe(TEST_FORM.name);
-    expect(form?.group?.id ?? null).toBe(groupId);
-}
-
-function checkFormReturnedByApi(
-    form: FormCreationResponse,
-    parentGroupId: number | null = null,
-    matchData: Partial<FormCreationResponse> = TEST_FORM
-) {
-    // expect(form.id).toBe(expect.any(Number));
-    expect(form.title).toBe(matchData.title);
-    expect(form.name).toBe(matchData.name);
-    expect(form.parent_id ?? null).toBe(
-        parentGroupId != null ? parentGroupId : (matchData.parent_id ?? null)
-    );
-    expect(form.description).toBe(matchData.description ?? null);
-}
-
-function listFormsApi(admin: ProvisionedUser, filter: string) {
-    return admin.client.forms.list({
-        query: {
-            filter_parent_group: filter,
-            page_size: 50,
-        },
-    });
-}
-
-function checkFormIncludedInListApi(
-    forms: FormCreationResponse[],
-    formId: number,
-    parentGroupId: number | null = null,
-    matchData: Partial<FormCreationResponse> = TEST_FORM
-) {
-    const matches = forms.filter((f) => f.id === formId);
-    expect(matches).toHaveLength(1);
-    expect(matches[0]?.title).toBe(matchData.title);
-    expect(matches[0]?.name).toBe(matchData.name);
-    expect(matches[0]?.parent_id ?? null).toBe(
-        parentGroupId != null ? parentGroupId : (matchData.parent_id ?? null)
-    );
-    expect(matches[0]?.description).toBe(matchData.description ?? null);
-}
-
-function listFormApi(admin: ProvisionedUser, parentGroupId?: number) {
-    return admin.client.forms.get({
-        params: { id: String(parentGroupId ?? '') },
-    });
-}
+} from '../../../support/db/resource-modifications';
+import {
+    INVALID_FORM_ID,
+    createTestForm,
+    listFormsApi,
+    getFormApi,
+    checkFormMatchesApi,
+    checkFormReturnedByApi,
+    checkFormIncludedInListApi,
+} from '../../../support/api/forms';
+import { findFormRowById, checkFormMatchesDb } from '../../../support/db/forms';
+import { ADDITIONAL_GROUP, createTestGroup } from '../../../support/api/groups';
 
 // tests
 
@@ -161,7 +62,7 @@ describe('Forms API', () => {
             const form = await createTestForm(admin);
 
             // When looking the form up directly in the database
-            const row = await getFormFromDb(form.id);
+            const row = await findFormRowById(form.id);
 
             // Then the row exists with matching data
             checkFormMatchesDb(row, null);
@@ -193,7 +94,7 @@ describe('Forms API', () => {
             const form = await createTestForm(admin, group.id);
 
             // When looking the form up directly in the database
-            const row = await getFormFromDb(form.id);
+            const row = await findFormRowById(form.id);
 
             // Then the row exists with matching data
             checkFormMatchesDb(row, group.id);
@@ -257,7 +158,7 @@ describe('Forms API', () => {
             const form = await createTestForm(admin);
 
             // When fetching the form by id
-            const fetched = await listFormApi(admin, form.id);
+            const fetched = await getFormApi(admin, form.id);
 
             // Then the API returns the form with matching data
             checkFormReturnedByApi(fetched, null);
@@ -269,7 +170,7 @@ describe('Forms API', () => {
             const form = await createTestForm(admin, group.id);
 
             // When fetching the form by id
-            const fetched = await listFormApi(admin, form.id);
+            const fetched = await getFormApi(admin, form.id);
 
             // Then the API returns the form with matching data and group
             checkFormReturnedByApi(fetched, group.id);
@@ -280,7 +181,7 @@ describe('Forms API', () => {
             // Then the request is rejected with a not-found error
             const { code } = new ORPCError('NOT_FOUND');
             await expect(
-                listFormApi(admin, INVALID_FORM_ID)
+                getFormApi(admin, INVALID_FORM_ID)
             ).rejects.toMatchObject({
                 code,
             });
@@ -322,7 +223,7 @@ describe('Forms API', () => {
             expectApiUpdatedAfterCreated(updatedForm);
 
             // And the updated form is persisted in the database
-            const row = await getFormFromDb(form.id);
+            const row = await findFormRowById(form.id);
             expect(row).toBeDefined();
             expect(row?.title).toBe(updatedTitle);
             expect(row?.description).toBe(updatedDescription);
@@ -374,7 +275,7 @@ describe('Forms API', () => {
             expectApiUpdatedAfterCreated(updatedForm);
 
             // And the modification info in the database matches
-            const row = await getFormFromDb(form.id);
+            const row = await findFormRowById(form.id);
             expect(row).toBeDefined();
             expectDbCreatedBy(row!, admin);
             expectDbUpdatedBy(row!, user2);
@@ -393,7 +294,7 @@ describe('Forms API', () => {
             });
 
             // Then the form is no longer persisted in the database
-            const row = await getFormFromDb(form.id);
+            const row = await findFormRowById(form.id);
             expect(row).toBeNull();
 
             // Then the form is no longer returned when listing forms
@@ -402,7 +303,7 @@ describe('Forms API', () => {
             expect(matches).toHaveLength(0);
 
             // Then the form is no longer returned when fetching the form directly
-            await expect(listFormApi(admin, form.id)).rejects.toThrow();
+            await expect(getFormApi(admin, form.id)).rejects.toThrow();
         });
     });
 });
