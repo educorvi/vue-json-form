@@ -344,6 +344,7 @@ export class FormService {
         const [rows, total] = await this.revisionRepo.findAndCount({
             where: { form: { id: formId } },
             order: { version: 'DESC' },
+            relations: { created_by: true, updated_by: true },
             skip: (page - 1) * pageSize,
             take: pageSize,
         });
@@ -373,12 +374,21 @@ export class FormService {
         const rev = this.revisionRepo.create({
             form: { id: formId },
             version,
+            // Note: The `order` column is NOT NULL but unused by queries
+            order: version,
             schema,
             comment,
             created_by: createdBy,
             updated_by: createdBy,
         });
-        return this.revisionRepo.save(rev);
+        const saved = await this.revisionRepo.save(rev);
+        // Reload with relations — `save()` only carries `created_by: { id }`,
+        // but the API mapping (mapDbRevisionToApiVersion) needs the full
+        // user ref (id, name, email).
+        return this.revisionRepo.findOneOrFail({
+            where: { id: saved.id },
+            relations: { created_by: true, updated_by: true },
+        });
     }
 
     async getLatestSchema(formId: number): Promise<FormRevision> {
@@ -400,6 +410,7 @@ export class FormService {
     ): Promise<FormRevision> {
         const rev = await this.revisionRepo.findOne({
             where: { form: { id: formId }, version },
+            relations: { created_by: true, updated_by: true },
         });
         if (!rev)
             throw new ORPCError('NOT_FOUND', { message: 'Version not found' });
@@ -446,6 +457,8 @@ export class FormService {
         const rev = this.revisionRepo.create({
             form: { id: formId },
             version: nextVersion,
+            // Note: The `order` column is NOT NULL but unused by queries
+            order: nextVersion,
             schema: merged,
             comment: '',
             created_by: createdBy,

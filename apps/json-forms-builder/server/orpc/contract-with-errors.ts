@@ -195,12 +195,12 @@ const importFormSchema = gen.importFormSchema.errors({
     ...unprocessableContent,
 });
 
-const getFormLatestSchemaJsonUi = gen.getFormLatestSchemaJsonUi.errors({
+const getFormLatestArtifacts = gen.getFormLatestArtifacts.errors({
     ...baseErrors,
     ...notFound,
 });
 
-const importFormSchemaJsonUi = gen.importFormSchemaJsonUi.errors({
+const importFormArtifacts = gen.importFormArtifacts.errors({
     ...baseErrors,
     ...badRequest,
     ...notFound,
@@ -315,8 +315,8 @@ export const appContract = {
         schema: {
             getLatest: getFormLatestSchema,
             import: importFormSchema,
-            getLatestJsonUi: getFormLatestSchemaJsonUi,
-            importJsonUi: importFormSchemaJsonUi,
+            getLatestArtifacts: getFormLatestArtifacts,
+            importArtifacts: importFormArtifacts,
         },
         permissions: {
             list: listFormPermissions,

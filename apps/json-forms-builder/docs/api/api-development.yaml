@@ -655,7 +655,7 @@ paths:
       summary: Import/replace the schema for a form from artifacts (JSON + UI)
       description: |
         Imports/replaces both JSON Schema and UI Schema for a form
-      operationId: importFormSchemaJsonUi
+      operationId: importFormArtifacts
       parameters:
         - $ref: '#/components/parameters/FormArtifactsQuery'
       requestBody:
@@ -681,7 +681,9 @@ paths:
       tags: [Forms]
       summary: Get the latest schema for a form as artifacts (JSON + UI)
       description: Returns the JSON Schema and UI Schema for the most recent revision as separate artifacts.
-      operationId: getFormLatestSchemaJsonUi
+      operationId: getFormLatestArtifacts
+      parameters:
+        - $ref: '#/components/parameters/FormArtifactsQuery'
       responses:
         '200':
           description: JSON Schema and UI Schema for the latest revision
@@ -1850,7 +1852,10 @@ components:
             comment:
               type: string
               description: Comment describing the changes in this revision
-        - $ref: '#/components/schemas/FormSchemaPayload'
+            json:
+              $ref: '#/components/schemas/FormSchemaPayloadArtifactsJson'
+            ui:
+              $ref: '#/components/schemas/FormSchemaPayloadArtifactsUi'
         - $ref: '#/components/schemas/ResourceModification'
           readOnly: true
 

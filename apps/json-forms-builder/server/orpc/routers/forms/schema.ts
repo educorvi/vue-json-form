@@ -30,16 +30,19 @@ export const formSchemaProcedures = {
             };
         }),
 
-    getLatestJsonUi: os.forms.schema.getLatestJsonUi
+    getLatestArtifacts: os.forms.schema.getLatestArtifacts
         .use(authMiddleware)
         .handler(async ({ input }) => {
             const service = new FormService(AppDataSource);
             const form = await service.getByIdOrSlug(input.params.id);
             const schema = await service.getFormSchema(form.id);
-            return pickArtifacts(schema ?? { json: null, ui: null });
+            return pickArtifacts(
+                schema ?? { json: null, ui: null },
+                input.query?.artifacts
+            );
         }),
 
-    importJsonUi: os.forms.schema.importJsonUi
+    importArtifacts: os.forms.schema.importArtifacts
         .use(authMiddleware)
         .handler(async ({ input, context }) => {
             const user = getUserFromContext(context);

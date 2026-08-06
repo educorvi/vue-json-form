@@ -3,7 +3,7 @@
 import { oc } from '@orpc/contract';
 import * as z from 'zod';
 
-import { zCreateApiKeyBody, zCreateApiKeyResponse, zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteApiKeyPath, zDeleteApiKeyResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestSchemaJsonUiPath, zGetFormLatestSchemaJsonUiResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetFormSchemaVersionArtifactsPath, zGetFormSchemaVersionArtifactsQuery, zGetFormSchemaVersionArtifactsResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zImportFormSchemaBody, zImportFormSchemaJsonUiBody, zImportFormSchemaJsonUiPath, zImportFormSchemaJsonUiQuery, zImportFormSchemaJsonUiResponse, zImportFormSchemaPath, zImportFormSchemaResponse, zListApiKeysResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchApiKeyBody, zPatchApiKeyPath, zPatchApiKeyResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
+import { zCreateApiKeyBody, zCreateApiKeyResponse, zCreateFormBody, zCreateFormPermissionBody, zCreateFormPermissionPath, zCreateFormPermissionResponse, zCreateFormQuery, zCreateFormResponse, zCreateFormVersionBody, zCreateFormVersionPath, zCreateFormVersionResponse, zCreateGroupBody, zCreateGroupPermissionBody, zCreateGroupPermissionPath, zCreateGroupPermissionResponse, zCreateGroupQuery, zCreateGroupResponse, zCreateUserResponse, zDeleteApiKeyPath, zDeleteApiKeyResponse, zDeleteFormPath, zDeleteFormPermissionPath, zDeleteFormPermissionResponse, zDeleteFormResponse, zDeleteGroupPath, zDeleteGroupPermissionPath, zDeleteGroupPermissionResponse, zDeleteGroupResponse, zGetFormLatestArtifactsPath, zGetFormLatestArtifactsQuery, zGetFormLatestArtifactsResponse, zGetFormLatestSchemaPath, zGetFormLatestSchemaResponse, zGetFormPath, zGetFormResponse, zGetFormSchemaByVersionPath, zGetFormSchemaByVersionResponse, zGetFormSchemaVersionArtifactsPath, zGetFormSchemaVersionArtifactsQuery, zGetFormSchemaVersionArtifactsResponse, zGetGroupPath, zGetGroupResponse, zGetStatusResponse, zImportFormArtifactsBody, zImportFormArtifactsPath, zImportFormArtifactsQuery, zImportFormArtifactsResponse, zImportFormSchemaBody, zImportFormSchemaPath, zImportFormSchemaResponse, zListApiKeysResponse, zListFormPermissionsPath, zListFormPermissionsQuery, zListFormPermissionsResponse, zListFormsQuery, zListFormsResponse, zListFormVersionsPath, zListFormVersionsQuery, zListFormVersionsResponse, zListGroupChildrenPath, zListGroupChildrenQuery, zListGroupChildrenResponse, zListGroupHierarchyResponse, zListGroupPermissionsPath, zListGroupPermissionsQuery, zListGroupPermissionsResponse, zListGroupsQuery, zListGroupsResponse, zListUsersQuery, zListUsersResponse, zPatchApiKeyBody, zPatchApiKeyPath, zPatchApiKeyResponse, zPatchFormPermissionBody, zPatchFormPermissionPath, zPatchFormPermissionResponse, zPatchGroupPermissionBody, zPatchGroupPermissionPath, zPatchGroupPermissionResponse, zReplaceFormBody, zReplaceFormPath, zReplaceFormQuery, zReplaceFormResponse, zReplaceGroupBody, zReplaceGroupPath, zReplaceGroupResponse, zUpdateFormBody, zUpdateFormPath, zUpdateFormQuery, zUpdateFormResponse, zUpdateGroupBody, zUpdateGroupPath, zUpdateGroupResponse } from './zod.gen';
 
 /**
  * Health check
@@ -368,15 +368,15 @@ export const importFormSchema = oc.route({
  *
  * Returns the JSON Schema and UI Schema for the most recent revision as separate artifacts.
  */
-export const getFormLatestSchemaJsonUi = oc.route({
+export const getFormLatestArtifacts = oc.route({
     description: 'Returns the JSON Schema and UI Schema for the most recent revision as separate artifacts.',
     inputStructure: 'detailed',
     method: 'GET',
-    operationId: 'getFormLatestSchemaJsonUi',
+    operationId: 'getFormLatestArtifacts',
     path: '/forms/{id}/schema/artifacts',
     summary: 'Get the latest schema for a form as artifacts (JSON + UI)',
     tags: ['Forms']
-}).input(z.object({ params: zGetFormLatestSchemaJsonUiPath })).output(zGetFormLatestSchemaJsonUiResponse);
+}).input(z.object({ params: zGetFormLatestArtifactsPath, query: zGetFormLatestArtifactsQuery.optional() })).output(zGetFormLatestArtifactsResponse);
 
 /**
  * Import/replace the schema for a form from artifacts (JSON + UI)
@@ -384,19 +384,19 @@ export const getFormLatestSchemaJsonUi = oc.route({
  * Imports/replaces both JSON Schema and UI Schema for a form
  *
  */
-export const importFormSchemaJsonUi = oc.route({
+export const importFormArtifacts = oc.route({
     description: 'Imports/replaces both JSON Schema and UI Schema for a form\n',
     inputStructure: 'detailed',
     method: 'PUT',
-    operationId: 'importFormSchemaJsonUi',
+    operationId: 'importFormArtifacts',
     path: '/forms/{id}/schema/artifacts',
     summary: 'Import/replace the schema for a form from artifacts (JSON + UI)',
     tags: ['Forms']
 }).input(z.object({
-    body: zImportFormSchemaJsonUiBody,
-    params: zImportFormSchemaJsonUiPath,
-    query: zImportFormSchemaJsonUiQuery.optional()
-})).output(zImportFormSchemaJsonUiResponse);
+    body: zImportFormArtifactsBody,
+    params: zImportFormArtifactsPath,
+    query: zImportFormArtifactsQuery.optional()
+})).output(zImportFormArtifactsResponse);
 
 /**
  * List versions of a form
@@ -615,8 +615,8 @@ export const contract = {
     replaceForm,
     getFormLatestSchema,
     importFormSchema,
-    getFormLatestSchemaJsonUi,
-    importFormSchemaJsonUi,
+    getFormLatestArtifacts,
+    importFormArtifacts,
     listFormVersions,
     createFormVersion,
     getFormSchemaByVersion,

@@ -26,8 +26,8 @@ import {
     deleteForm,
     getFormLatestSchema,
     importFormSchema,
-    getFormLatestSchemaJsonUi,
-    importFormSchemaJsonUi,
+    getFormLatestArtifacts,
+    importFormArtifacts,
     listFormPermissions,
     createFormPermission,
     patchFormPermission,
@@ -71,8 +71,8 @@ export const appContract = {
         schema: {
             getLatest: getFormLatestSchema,
             import: importFormSchema,
-            getLatestJsonUi: getFormLatestSchemaJsonUi,
-            importJsonUi: importFormSchemaJsonUi,
+            getLatestArtifacts: getFormLatestArtifacts,
+            importArtifacts: importFormArtifacts,
         },
         permissions: {
             list: listFormPermissions,

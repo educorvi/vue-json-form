@@ -238,8 +238,10 @@ export const zApiKey = zApiKeyShared;
 
 export const zFormVersionRef = z.object({
     version: z.string(),
-    comment: z.string()
-}).and(zFormSchemaPayload).and(zResourceModification).readonly();
+    comment: z.string(),
+    json: zFormSchemaPayloadArtifactsJson.optional(),
+    ui: zFormSchemaPayloadArtifactsUi.optional()
+}).and(zResourceModification).readonly();
 
 export const zFormVersion = zFormVersionRef.and(zFormSchemaPayload);
 
@@ -352,8 +354,10 @@ export const zApiKeyWritable = zApiKeySharedWritable;
 
 export const zFormVersionRefWritable = z.object({
     version: z.string(),
-    comment: z.string()
-}).and(zFormSchemaPayload);
+    comment: z.string(),
+    json: zFormSchemaPayloadArtifactsJson.optional(),
+    ui: zFormSchemaPayloadArtifactsUi.optional()
+});
 
 export const zFormVersionWritable = zFormVersionRefWritable.and(zFormSchemaPayload);
 
@@ -744,29 +748,33 @@ export const zImportFormSchemaPath = z.object({
  */
 export const zImportFormSchemaResponse = zFormSchemaPayload;
 
-export const zGetFormLatestSchemaJsonUiPath = z.object({
+export const zGetFormLatestArtifactsPath = z.object({
     id: z.string()
+});
+
+export const zGetFormLatestArtifactsQuery = z.object({
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**
  * JSON Schema and UI Schema for the latest revision
  */
-export const zGetFormLatestSchemaJsonUiResponse = zFormSchemaPayloadArtifacts;
+export const zGetFormLatestArtifactsResponse = zFormSchemaPayloadArtifacts;
 
-export const zImportFormSchemaJsonUiBody = zFormSchemaPayloadArtifactsCreate;
+export const zImportFormArtifactsBody = zFormSchemaPayloadArtifactsCreate;
 
-export const zImportFormSchemaJsonUiPath = z.object({
+export const zImportFormArtifactsPath = z.object({
     id: z.string()
 });
 
-export const zImportFormSchemaJsonUiQuery = z.object({
+export const zImportFormArtifactsQuery = z.object({
     artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**
  * Schema replaced successfully
  */
-export const zImportFormSchemaJsonUiResponse = zFormSchemaPayloadArtifacts;
+export const zImportFormArtifactsResponse = zFormSchemaPayloadArtifacts;
 
 export const zListFormVersionsPath = z.object({
     id: z.string()

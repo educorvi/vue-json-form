@@ -15,6 +15,11 @@ export const CHILD_GROUP = {
     name: 'child-group',
 };
 
+export const SECOND_CHILD_GROUP = {
+    title: 'Second Child Group',
+    name: 'second-child-group',
+};
+
 export const ADDITIONAL_GROUP = {
     title: 'Group B',
     name: 'group-b',
@@ -42,12 +47,13 @@ export function createTestGroup(
 
 export function createChildGroup(
     admin: ProvisionedUser,
-    parentGroupId: number
+    parentGroupId: number,
+    groupData: Partial<typeof CHILD_GROUP> = CHILD_GROUP
 ) {
     return admin.client.groups.create({
         body: {
-            title: CHILD_GROUP.title,
-            name: CHILD_GROUP.name,
+            title: groupData.title,
+            name: groupData.name,
         },
         query: { parent: String(parentGroupId) },
     });
