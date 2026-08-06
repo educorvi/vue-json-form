@@ -11,7 +11,7 @@ import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
  * and cheap mutation without tree traversal on every operation.
  *
  *  nodesIndex      — elementId → FormElement instance
- *  parentIndex     — elementId → parentId  (root.id for top-level children)
+ *  parentIndex     — elementId → parentId  (root.uid for top-level children)
  *  dependencyGraph — elementId → Dependency (only elements that have one) TODO???????????????????
  */
 export class FormDefinition {
@@ -20,43 +20,59 @@ export class FormDefinition {
   readonly dependencyGraph = new Map<string, DependencyGroup>();
 
   constructor(public readonly root: Form, children: FormElement[] = []) {
-    this.buildIndexes(children, root.id);
+    this.buildIndexes(children, root.uid);
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────
 
   private buildIndexes(children: FormElement[], parentId: string): void {
     for (const child of children) {
-      this.nodesIndex.set(child.id, child);
-      this.parentIndex.set(child.id, parentId);
+      this.nodesIndex.set(child.uid, child);
+      this.parentIndex.set(child.uid, parentId);
       if (child.dependencyGroup) {
-        this.dependencyGraph.set(child.id, child.dependencyGroup); //??????????TODO
+        this.dependencyGraph.set(child.uid, child.dependencyGroup); //??????????TODO
       }
       if (child instanceof ContainerElement) {
-        this.buildIndexes(child.children, child.id);
+        this.buildIndexes(this.childrenOf(child.uid), child.uid);
       }
     }
   }
 
   private removeFromIndexes(element: FormElement): void {
-    this.nodesIndex.delete(element.id);
-    this.parentIndex.delete(element.id);
-    this.dependencyGraph.delete(element.id);    // TODO ??????????????? auch alle die die id dann in dependencygroup haben?
+    this.nodesIndex.delete(element.uid);
+    this.parentIndex.delete(element.uid);
+    this.dependencyGraph.delete(element.uid);    // TODO ??????????????? auch alle die die id dann in dependencygroup haben?
     if (element instanceof ContainerElement) {
-      for (const child of element.children) {
-        this.removeFromIndexes(child);
+      for (const childId of element.children) {
+        const child = this.getElementById(childId);
+        if (child) {
+          this.removeFromIndexes(child);
+        } else {
+          throw new Error(`Child element with uid "${childId}" not found in nodesIndex`);
+        }
       }
     }
   }
 
   /** Returns the children array of the given parent (Form or ContainerElement). */
   private childrenOf(parentId: string): FormElement[] {
-    if (parentId === this.root.id) return this.root.children;
-    const parent = this.nodesIndex.get(parentId);
-    if (!(parent instanceof ContainerElement)) {
-      throw new Error(`Parent "${parentId}" is not a ContainerElement`);
+
+    let children = parentId === this.root.uid ? this.root.children : undefined;
+    if (!children) {
+      const parent = this.getElementById(parentId);
+      if (!(parent instanceof ContainerElement)) {
+        throw new Error(`Parent "${parentId}" is not a ContainerElement`);
+      }
+      children = parent.children;
     }
-    return parent.children;
+
+    return !children ? [] : children.map((childId) => {
+          const childElement = this.getElementById(childId);
+          if (!childElement) {
+            throw new Error(`Child element with uid "${childId}" not found in nodesIndex`);
+          }
+          return childElement;
+        });
   }
 
   // ─── Public commands ─────────────────────────────────────────────────────────
@@ -70,9 +86,9 @@ export class FormDefinition {
   }
 
   getParent(elementId: string): FormElement | undefined {
-    const parentId = this.parentIndex.get(elementId);
+    const parentId = this.getParentId(elementId);
     if (!parentId) return undefined;
-    return this.nodesIndex.get(parentId);
+    return this.getElementById(parentId);
   }
 
 
@@ -86,10 +102,10 @@ export class FormDefinition {
     targetContainer: ContainerElement,
     newIndex: number,
   ): void {
-    const element = this.nodesIndex.get(formElementId);
+    const element = this.getElementById(formElementId);
     if (!element) throw new Error(`Element "${formElementId}" not found`);
 
-    const oldParentId = this.parentIndex.get(formElementId);
+    const oldParentId = this.getParentId(formElementId);
     if (oldParentId === undefined) throw new Error(`No parent recorded for "${formElementId}"`);
 
     // Remove from old parent
@@ -99,20 +115,20 @@ export class FormDefinition {
     oldChildren.splice(oldIdx, 1);
 
     // Insert into target
-    targetContainer.children.splice(newIndex, 0, element);
+    targetContainer.children.splice(newIndex, 0, element.uid);
 
     // Update parentIndex
-    this.parentIndex.set(formElementId, targetContainer.id);
+    this.parentIndex.set(formElementId, targetContainer.uid);
   }
 
   /**
    * Remove an element (and all its descendants) from the tree and indexes.
    */
   deleteElement(formElementId: string): void {
-    const element = this.nodesIndex.get(formElementId);
+    const element = this.getElementById(formElementId);
     if (!element) throw new Error(`Element "${formElementId}" not found`);
 
-    const parentId = this.parentIndex.get(formElementId);
+    const parentId = this.getParentId(formElementId);
     if (parentId === undefined) throw new Error(`No parent recorded for "${formElementId}"`);
 
     const parentChildren = this.childrenOf(parentId);
@@ -135,18 +151,18 @@ export class FormDefinition {
     newIndex: number,
   ): void {
     const children = containerElement.children;
-    children.splice(newIndex, 0, formElement);
+    children.splice(newIndex, 0, formElement.uid);
 
     // Index the inserted element itself
-    this.nodesIndex.set(formElement.id, formElement);
-    this.parentIndex.set(formElement.id, containerElement.id);
+    this.nodesIndex.set(formElement.uid, formElement);
+    this.parentIndex.set(formElement.uid, containerElement.uid);
     if (formElement.dependencyGroup) { // TODO???????????????
-      this.dependencyGraph.set(formElement.id, formElement.dependencyGroup);
+      this.dependencyGraph.set(formElement.uid, formElement.dependencyGroup);
     }
 
     // If it already carries children, index them too
     if (formElement instanceof ContainerElement) {
-      this.buildIndexes(formElement.children, formElement.id);
+      this.buildIndexes([formElement], containerElement.uid);
     }
   }
 
@@ -158,9 +174,9 @@ export class FormDefinition {
   setDependency(formElement: FormElement, dependencyGroup: DependencyGroup | undefined): void {
     formElement.dependencyGroup = dependencyGroup;
     if (dependencyGroup) {
-      this.dependencyGraph.set(formElement.id, dependencyGroup);
+      this.dependencyGraph.set(formElement.uid, dependencyGroup);
     } else {
-      this.dependencyGraph.delete(formElement.id);
+      this.dependencyGraph.delete(formElement.uid);
     }
   }
 
@@ -172,15 +188,15 @@ export class FormDefinition {
     element: T,
     changes: Partial<Omit<T, 'uid'>>,
   ): void {
-    const oldId = element.id;
+    const oldId = element.uid;
     Object.assign(element, changes);
 
-    if ('id' in changes && changes.id !== oldId) {
+    if ('uid' in changes && changes.uid !== oldId) {
       // TODO: re-key nodesIndex (delete old, set new), update parentIndex for
       //       all direct children whose parentIndex value equals oldId, and
       //       update dependencyGraph if the key changes.
       throw new Error(
-        'Changing an element\'s id via updateElement is not yet implemented. ' +
+        'Changing an element\'s uid via updateElement is not yet implemented. ' +
         'Update nodesIndex, parentIndex, and dependencyGraph keys manually.',
       );
     }
@@ -203,7 +219,15 @@ export class FormDefinition {
   /** Rebuild a FormDefinition from a previously serialised JSON string. */
   static fromJSON(json: string): FormDefinition {
     const raw = JSON.parse(json);
-    const form = Form.parse(raw);
+    if (!("root" in raw) || !("elements" in raw)) {
+      throw new Error("Invalid FormDefinition JSON: missing 'root' or 'elements' property");
+    }
+    const formParseResult = Form.schema.safeParse(raw.root);
+    if (!formParseResult.success) {
+      throw new Error(`Invalid Form data: ${formParseResult.error.message}`);
+    }
+    const form = formParseResult.data;
+
     const elements: FormElement[] = [];
     for (const [id, rawElement] of Object.entries(raw.elements)) {
       if (!rawElement || typeof rawElement !== 'object' || !('type' in rawElement)) {
@@ -218,7 +242,7 @@ export class FormDefinition {
       if (!parseResult.success) {
         throw new Error(`Invalid FormElement data for element "${id}": ${parseResult.error.message}`);
       }
-      const instance = new ctor(""); // TODO: pass id or uid if needed
+      const instance = new ctor("");
       Object.assign(instance, rawElement);
       elements.push(instance);
     }

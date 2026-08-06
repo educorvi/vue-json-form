@@ -11,8 +11,8 @@ export abstract class Entity {
     });
 
     constructor(id?: string) {
-        this.uid = globalThis.crypto.randomUUID();
         this.id = id ? createId(id) : createId(this.constructor.name);
+        this.uid = this.id + "_" + globalThis.crypto.randomUUID();
     }
 
     getID(): string {

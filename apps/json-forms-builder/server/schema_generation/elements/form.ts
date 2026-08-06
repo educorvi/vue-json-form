@@ -12,14 +12,14 @@ export class Form extends Entity {
     description?: string;
     layout!: Layout; //TODO oder wizard??
     children!: string[];
-    requiredList!: string[];
+    // requiredList!: string[];
 
     static schema = super.schema.extend({
         title: z.string(),
         description: z.string().optional(),
         layout: z.enum(Layout),
         children: z.array(z.string()),
-        requiredList: z.array(z.string())
+        // requiredList: z.array(z.string())
     });
 
 	constructor(
@@ -33,21 +33,11 @@ export class Form extends Entity {
 		this.description = description;
         this.layout = layout;
 		this.children = [];
-		this.requiredList = [];
+		// this.requiredList = [];
 	}
 
     getScopePart(): string {
         return "/properties/";
-    }
-
-    ///////////TODO????????
-    // parse from database json
-    static parse(raw: any): Form {
-        const parsed = Form.schema.parse(raw);
-        const form = new Form(parsed.title, parsed.description, parsed.id, parsed.layout);
-        form.children = parsed.children;
-        form.requiredList = parsed.requiredList;
-        return form;
     }
 
 	toUiSchema(generator: SchemaGenerator): UISchema {
