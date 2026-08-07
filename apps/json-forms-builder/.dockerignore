@@ -1,0 +1,7 @@
+.nuxt
+.output
+.turbo
+data
+docs
+keycloak
+node_modules

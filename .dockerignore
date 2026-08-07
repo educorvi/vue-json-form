@@ -1,3 +1,31 @@
+# The build context is the monorepo root (see apps/json-forms-builder/Dockerfile).
+# Keep it small: `turbo prune` only needs manifests + sources. Note: nested
+# .dockerignore files are ignored by Docker, only this root one applies.
 node_modules
-*/dist
+**/node_modules
+.git
+**/.turbo
+**/.nuxt
+**/.output
+**/dist
+**/playwright-report
+**/test-results
+tmp
 docs
+extern
+apps/demo
+apps/json-forms-builder/data
+apps/json-forms-builder/keycloak
+apps/json-forms-builder/docker
+# Local env/secret files - change constantly, never needed in the image
+.env*
+apps/json-forms-builder/.docker.env
+# Editor configs
+**/.vscode
+# Regenerated code (ajv-validator writes src/generated/*, turbo regenerates it)
+**/src/generated
+# Docs & tests are not needed to build or run the app, but they change on
+# nearly every commit - excluding them keeps the Docker cache warm.
+# (If you later add `check-types` to the Docker build, un-ignore tests.)
+apps/json-forms-builder/docs
+apps/json-forms-builder/tests

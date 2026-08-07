@@ -5,12 +5,20 @@ services:
             POSTGRES_USER: form_builder
             POSTGRES_PASSWORD: form_builder
             POSTGRES_DB: form_builder
+            POSTGRES_TEST_DB: form_builder_test
             PGDATA: /var/lib/postgresql/data
         ports:
-            - '5433:5432'
+            - "5433:5432"
         # TODO: remove volumes since database data should be initialized via scripts (e.g use typescript orm and a typescript script to set the data) and should not rely on manually created data
         volumes:
             - ./data/pgdata:/var/lib/postgresql/data
+            #  manual: docker compose exec postgres createdb -U form_builder form_builder_test
+            - ./docker/init-test-db.sh:/docker-entrypoint-initdb.d/init-test-db.sh:ro
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U form_builder"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
 
     keycloak:
         image: quay.io/keycloak/keycloak:26.6.1
@@ -18,11 +26,46 @@ services:
             KC_BOOTSTRAP_ADMIN_USERNAME: admin
             KC_BOOTSTRAP_ADMIN_PASSWORD: admin
         ports:
-            - '8080:8080'
+            - "8080:8080"
         # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
         volumes:
             #      - ./data/keycloak:/opt/keycloak/data
             - ./keycloak:/opt/keycloak/data/import:ro
         command:
-            - 'start-dev'
-            - '--import-realm'
+            - "start-dev"
+            - "--import-realm"
+
+    # Containerized instance of the app itself, used in CI (and optionally locally) to run integration/e2e tests against a real, built server
+    # instead of `yarn dev:internal`. Gated behind the `ci` profile so a plain `docker compose up` (local dev: just postgres + keycloak) never
+    # builds/starts it -- use `docker compose --profile ci up -d --build`.
+    #
+    # Connects to the SAME Postgres/Keycloak instances above, but against the separate `form_builder_test` database (created automatically by
+    app:
+        profiles: ["ci"]
+        build:
+            # turbo prune must run against the whole monorepo, so the build
+            # context is the repo root (Dockerfile lives in this folder).
+            context: ../..
+            dockerfile: apps/json-forms-builder/Dockerfile
+        env_file:
+            - .docker.env
+        ports:
+            - "3100:3000"
+        depends_on:
+            postgres:
+                condition: service_healthy
+            keycloak:
+                condition: service_started
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "wget",
+                    "--quiet",
+                    "--tries=1",
+                    "--spider",
+                    "http://localhost:3000/api/v1/status",
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 10

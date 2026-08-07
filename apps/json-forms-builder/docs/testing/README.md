@@ -24,13 +24,14 @@ All tests live under `tests/`, split by how much of the stack they need. Everyth
     docker compose up -d
     ```
     (this starts only `postgres`/`keycloak` — the `app` service is behind the `ci` profile, see Option B below)
-1. A Nuxt server running and pointed at a database.
+2. A Nuxt server running and pointed at the test database.
 
-Vitest's [globalSetup](./setup/global-setup.ts) **wipes the database** and seeds only what tests need: the Keycloak test users (`ensureTestUsers()`, `server/db/seed/users.ts`) plus a real API key for the `test` user via `ApiKeyService`. Tests never see dev seed data — they create the groups/forms they need themselves. This is the same Bearer-token auth path any external API client uses (`server/middleware/auth.ts`), ensuring the integration tests exercise the same auth code as production. The reset/seed helpers live in `server/db/seed/test-data.ts` and are shared with the e2e global setup (`tests/e2e/global-setup.ts`, which wipes the DB the same way before every Playwright run).
+Vitest's [globalSetup](./setup/global-setup.ts) **wipes the database** and seeds only what tests need: the Keycloak test users (`ensureTestUsers()`, `server/db/seed/users.ts`) plus a real API key for the `test` user via `ApiKeyService`. They create the groups/forms they need themselves. This is the same Bearer-token auth path any external API client uses (`server/middleware/auth.ts`), ensuring the integration tests exercise the same auth code as production. The reset/seed helpers live in `server/db/seed/test-data.ts` and are shared with the e2e global setup (`tests/e2e/global-setup.ts`, which wipes the DB the same way before every Playwright run).
 
 ### Option A — local dev server
 
-Point the server at the separate `form_builder_test` database (created automatically alongside the dev DB, see `docker/init-test-db.sh`) instead of the seeded dev DB while development and interactive UI testing. Tests fully own setup/cleanup of their own groups/forms (see `tests/support/db.ts`), so this is safe to run repeatedly and in CI. Point the test process (`vitest`) at the same database via the same env vars, or launch **"server: nuxt (test DB)"** from `.vscode/launch.json` to debug the server while tests run and set breakpoints in `server/**`.
+Point the server at the separate `form_builder_test` database (created automatically alongside the dev DB, see `docker/init-test-db.sh`) instead of the seeded dev DB while development and interactive UI testing. The easiest way to point the server and the vitest runner at the same test database is to set the `DB_NAME` environment variable in the `.env` file to the test database value. Another option is to set the `DB_NAME` environment variable in the terminal before starting the server and running the tests. If Vscode is used to debug the backend, a seconds Debug configuration `server: nuxt (test DB)` is provided which configures the test database automatically.
+
 ```bash
 # Either set the vars in the terminal for the database or adjust the database in .env file
 
@@ -53,6 +54,8 @@ NUXT_TEST_BASE_URL=http://localhost:3100 DB_NAME=form_builder_test yarn test:int
 docker compose --profile ci down
 ```
 
+TODO: could be problematic to run the test code locally and the application within a docker container as the keycloak url will be different, for the backend its keycloak:8080 and localhost:8080 will not work, for the testcode running locally, its exactly the opposite. It would be the easiest to run the tests also within a separate docker container within the same docker compose stack so the keycloak url is the same and ci and local test execution is the exact same.
+
 ### Test commands
 
 ```bash
@@ -71,4 +74,3 @@ yarn test:e2e:debug     # Playwright debug mode (step through, inspector)
 
 - `integration` tests authenticate as a **real** user via a **real** Bearer API key — provisioned once per run by `global-setup.ts`, which wipes the DB and creates the `test@educorvi.de` user (matching the dev Keycloak realm) + one API key. Cleanup (`resetTestData()` in `afterAll`) keeps `user`/`api_key` so the key stays valid across test files.
 - `e2e` tests authenticate via the **real Keycloak OIDC login flow** (`tests/e2e/setup/auth.setup.ts`), logging in once as `test`/`test` and reusing the resulting session cookie (`tests/e2e/.auth/test.json`) across the rest of the suite so the tests don't repeat the login flow. This validates the login flow works and also speeds up the rest of the tests as not every testrun needs a login. Locally, a still-valid stored session (probed via `GET /api/_auth/session` with the stored cookie — no browser involved) is reused as-is, skipping the login entirely.
-

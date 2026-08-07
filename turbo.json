@@ -4,7 +4,7 @@
     "concurrency": "100%",
     "tasks": {
         "build:internal": {
-            "outputs": ["dist/**"],
+            "outputs": ["dist/**", ".output/**"],
             "dependsOn": ["^build:internal"]
         },
         "check-types": {
