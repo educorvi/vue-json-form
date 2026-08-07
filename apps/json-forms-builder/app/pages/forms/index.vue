@@ -24,6 +24,7 @@ const { t } = useI18n();
 const { notify } = useNotify();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const permissions = usePermissionsStore();
 
 useAppBreadcrumb().set('forms');
 
@@ -122,11 +123,17 @@ const pageDescription = computed(() => {
     <BasePage
         :title="t('forms.title')"
         :description="pageDescription"
-        icon="file-text"
+        icon="ph:file-text"
     >
         <template #actions>
-            <BButton variant="primary" size="sm" :to="Routes.FORMS_NEW">
-                <PhosphorIcon name="plus" class="me-1" />
+            <BButton
+                v-if="permissions.canCreateRootForms"
+                variant="primary"
+                size="sm"
+                :to="Routes.FORMS_NEW"
+                data-testid="new-form-button"
+            >
+                <Icon name="ph:plus" class="me-1" />
                 {{ t('forms.new.title') }}
             </BButton>
         </template>
@@ -161,7 +168,7 @@ const pageDescription = computed(() => {
                 class="mb-3"
             >
                 <div class="d-flex align-items-center gap-2">
-                    <PhosphorIcon name="warning-circle" />
+                    <Icon name="ph:warning-circle" />
                     <strong>{{ t('forms.loadError') }}</strong>
                 </div>
                 <p class="mb-0 mt-1">{{ errorMessage }}</p>
@@ -184,7 +191,7 @@ const pageDescription = computed(() => {
 
                     <div v-else-if="isEmpty" class="p-4">
                         <EmptyState
-                            icon="file-text"
+                            icon="ph:file-text"
                             :title="t('forms.noFormsTitle')"
                             :description="
                                 search
@@ -244,17 +251,14 @@ const pageDescription = computed(() => {
                                     toggle-class="text-secondary p-0 border-0"
                                 >
                                     <template #button-content>
-                                        <PhosphorIcon
-                                            name="dots-three"
-                                            :size="18"
-                                        />
+                                        <Icon name="ph:dots-three" :size="18" />
                                     </template>
                                     <BDropdownItem @click="onEdit(form)">
-                                        <PhosphorIcon name="pencil" />
+                                        <Icon name="ph:pencil" />
                                         {{ t('common.edit') }}
                                     </BDropdownItem>
                                     <BDropdownItem @click="onDelete(form)">
-                                        <PhosphorIcon name="trash" />
+                                        <Icon name="ph:trash" />
                                         {{ t('forms.delete.title') }}
                                     </BDropdownItem>
                                 </BDropdown>

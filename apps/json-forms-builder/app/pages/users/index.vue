@@ -53,7 +53,7 @@ function onSearchChange(val: string) {
     <BasePage
         :title="t('users.title')"
         :description="t('users.description')"
-        icon="user"
+        icon="ph:user"
     >
         <ListToolbar
             v-model:search="search"

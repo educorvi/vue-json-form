@@ -30,6 +30,16 @@ const { notify } = useNotify();
 
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
+// Access control: only users with at least `owner` on this resource (or
+// admins) may add/edit/remove permissions.
+const access = useResourceAccess(props.resourceType, () => props.resourceId);
+// Hide the add button until the session/access resolved — showing it then
+// removing it would be confusing, and showing it for non-owners would be
+// a permission leak.
+const canManage = computed(
+    () => !access.sessionPending.value && access.canManagePermissions.value
+);
+
 const {
     permissions,
     totalCount,
@@ -183,8 +193,14 @@ async function confirmDelete() {
         :description="t('settings.permissionsDescription')"
     >
         <template #actions>
-            <BButton variant="primary" size="sm" @click="showAddModal = true">
-                <PhosphorIcon name="plus" :size="14" class="me-1" />
+            <BButton
+                v-if="canManage"
+                variant="primary"
+                size="sm"
+                @click="showAddModal = true"
+                data-testid="add-permission-button"
+            >
+                <Icon name="ph:plus" :size="14" class="me-1" />
                 {{ t('permissions.addButton') }}
             </BButton>
         </template>
@@ -219,6 +235,7 @@ async function confirmDelete() {
             :total-pages="totalPages"
             :current-page="currentPage"
             :page-size="pageSize"
+            :can-manage="canManage"
             @update:current-page="currentPage = $event"
             @update:page-size="pageSize = $event"
             @edit="onEdit"

@@ -178,16 +178,18 @@ function itemLink(item: ChildItem): string {
                     "
                     @click.stop="onToggle(item)"
                 >
-                    <PhosphorIcon
+                    <Icon
                         :name="
-                            isExpanded(item.id) ? 'caret-down' : 'caret-right'
+                            isExpanded(item.id)
+                                ? 'ph:caret-down'
+                                : 'ph:caret-right'
                         "
                     />
                 </BButton>
                 <span v-else class="flex-shrink-0" style="width: 18px" />
 
                 <!-- Folder icon -->
-                <PhosphorIcon name="folder" class="flex-shrink-0" />
+                <Icon name="ph:folder" class="flex-shrink-0" />
 
                 <!-- Title -->
                 <div class="flex-grow-1 min-w-0">
@@ -204,7 +206,7 @@ function itemLink(item: ChildItem): string {
                     <div class="d-flex flex-column align-items-end gap-0">
                         <GroupDetailStats
                             v-if="isGroup(item)"
-                            :childGroup="item as any"
+                            :childGroup="item"
                         />
                         <TimestampStats :created="item.created_by?.timestamp" />
                     </div>
@@ -216,14 +218,14 @@ function itemLink(item: ChildItem): string {
                         toggle-class="text-secondary p-0 border-0"
                     >
                         <template #button-content>
-                            <PhosphorIcon name="dots-three" :size="18" />
+                            <Icon name="ph:dots-three" :size="18" />
                         </template>
                         <BDropdownItem @mousedown.stop="emit('edit', item)">
-                            <PhosphorIcon name="pencil" />
+                            <Icon name="ph:pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
                         <BDropdownItem @mousedown.stop="emit('delete', item)">
-                            <PhosphorIcon name="trash" />
+                            <Icon name="ph:trash" />
                             {{ t('groups.delete.title') }}
                         </BDropdownItem>
                     </BDropdown>
@@ -241,8 +243,8 @@ function itemLink(item: ChildItem): string {
                 @click="emit('navigate', item)"
             >
                 <!-- File icon -->
-                <PhosphorIcon
-                    name="file-text"
+                <Icon
+                    name="ph:file-text"
                     class="flex-shrink-0 text-secondary"
                 />
 
@@ -278,14 +280,14 @@ function itemLink(item: ChildItem): string {
                         toggle-class="text-secondary p-0 border-0"
                     >
                         <template #button-content>
-                            <PhosphorIcon name="dots-three" :size="18" />
+                            <Icon name="ph:dots-three" :size="18" />
                         </template>
                         <BDropdownItem @mousedown.stop="emit('edit', item)">
-                            <PhosphorIcon name="pencil" />
+                            <Icon name="ph:pencil" />
                             {{ t('common.edit') }}
                         </BDropdownItem>
                         <BDropdownItem @mousedown.stop="emit('delete', item)">
-                            <PhosphorIcon name="trash" />
+                            <Icon name="ph:trash" />
                             {{ t('forms.delete.title') }}
                         </BDropdownItem>
                     </BDropdown>

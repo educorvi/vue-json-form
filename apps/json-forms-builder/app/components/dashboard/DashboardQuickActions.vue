@@ -1,15 +1,24 @@
 <script setup lang="ts">
 const { t } = useI18n();
+const permissions = usePermissionsStore();
 </script>
 
 <template>
-    <section class="mb-5">
+    <section
+        v-if="permissions.canCreateRootForms || permissions.canCreateRootGroups"
+        class="mb-5"
+        data-testid="dashboard-quick-actions"
+    >
         <h5 class="fw-semibold mb-3">
             {{ t('dashboard.quickActions') }}
         </h5>
         <div class="row row-cols-1 row-cols-md-2 g-3">
-            <div class="col">
-                <NuxtLink :to="Routes.FORMS_NEW" class="text-decoration-none">
+            <div v-if="permissions.canCreateRootForms" class="col">
+                <NuxtLink
+                    :to="Routes.FORMS_NEW"
+                    class="text-decoration-none"
+                    data-testid="quick-action-new-form"
+                >
                     <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
@@ -24,8 +33,8 @@ const { t } = useI18n();
                                         );
                                     "
                                 >
-                                    <PhosphorIcon
-                                        name="file-plus"
+                                    <Icon
+                                        name="ph:file-plus"
                                         :size="24"
                                         class="text-primary"
                                     />
@@ -43,8 +52,12 @@ const { t } = useI18n();
                     </BCard>
                 </NuxtLink>
             </div>
-            <div class="col">
-                <NuxtLink :to="Routes.GROUPS_NEW" class="text-decoration-none">
+            <div v-if="permissions.canCreateRootGroups" class="col">
+                <NuxtLink
+                    :to="Routes.GROUPS_NEW"
+                    class="text-decoration-none"
+                    data-testid="quick-action-new-group"
+                >
                     <BCard class="h-100 dashboard-card">
                         <BCardBody>
                             <div class="d-flex align-items-start gap-3">
@@ -59,8 +72,8 @@ const { t } = useI18n();
                                         );
                                     "
                                 >
-                                    <PhosphorIcon
-                                        name="folder-plus"
+                                    <Icon
+                                        name="ph:folder-plus"
                                         :size="24"
                                         class="text-success"
                                     />

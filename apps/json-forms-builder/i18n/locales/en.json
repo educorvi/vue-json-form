@@ -328,6 +328,7 @@
             "expireHint": "Optional — leave empty for no expiration.",
             "inheritHint": "This user already has the role {role} from a parent group. You can only assign a higher role."
         },
+        "needRoleHint": "You need at least {role} access to do this.",
         "roles": {
             "owner": "Owner",
             "ownerDescription": "Full control — can manage permissions, edit settings, and delete the item.",

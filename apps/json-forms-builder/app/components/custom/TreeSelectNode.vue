@@ -51,14 +51,12 @@ function highlightLabel(label: string): string {
                 style="width: 16px; cursor: pointer"
                 @click.stop="emit('toggle', node.id)"
             >
-                <PhosphorIcon
-                    :name="isExpanded ? 'caret-down' : 'caret-right'"
-                />
+                <Icon :name="isExpanded ? 'ph:caret-down' : 'ph:caret-right'" />
             </span>
             <span v-else style="width: 16px" class="flex-shrink-0" />
 
             <!-- Folder icon -->
-            <PhosphorIcon name="folder" />
+            <Icon name="ph:folder" />
 
             <!-- Label -->
             <span

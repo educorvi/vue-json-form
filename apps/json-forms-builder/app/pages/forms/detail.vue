@@ -112,25 +112,25 @@ async function onSchemasChange(json: any, ui: any) {
     <BasePage
         :title="form?.title || '...'"
         :description="form?.description ?? undefined"
-        icon="file-text"
+        icon="ph:file-text"
         body-full-width
     >
         <template #actions>
             <BButton
-                variant="outline-secondary"
-                size="sm"
                 v-b-tooltip="
                     builderExpanded ? t('common.collapse') : t('common.expand')
                 "
+                variant="outline-secondary"
+                size="sm"
                 @click="builderExpanded = !builderExpanded"
             >
-                <PhosphorIcon
-                    :name="builderExpanded ? 'arrows-in' : 'arrows-out'"
+                <Icon
+                    :name="builderExpanded ? 'ph:arrows-in' : 'ph:arrows-out'"
                     :size="14"
                 />
             </BButton>
             <BButton variant="outline-secondary" size="sm" @click="goEdit">
-                <PhosphorIcon name="pencil" :size="14" class="me-1" />{{
+                <Icon name="ph:pencil" :size="14" class="me-1" />{{
                     t('common.edit')
                 }}
             </BButton>
@@ -141,7 +141,7 @@ async function onSchemasChange(json: any, ui: any) {
             <div class="px-4 pt-4">
                 <BaseErrorState
                     v-if="isNotFound"
-                    icon="warning-circle"
+                    icon="ph:warning-circle"
                     :title="t('forms.detail.notFound')"
                     :description="errorMessage"
                     :action-route="Routes.FORMS"
@@ -149,7 +149,7 @@ async function onSchemasChange(json: any, ui: any) {
                 />
                 <BaseErrorState
                     v-else
-                    icon="bug"
+                    icon="ph:bug"
                     :title="t('common.errorTitle')"
                     :description="errorMessage"
                     :action-route="Routes.FORMS"
@@ -194,7 +194,7 @@ async function onSchemasChange(json: any, ui: any) {
                     @click="builderExpanded = false"
                     class="me-2"
                 >
-                    <PhosphorIcon name="x" :size="14" class="me-1" />{{
+                    <Icon name="ph:x" :size="14" class="me-1" />{{
                         t('common.close')
                     }}
                 </BButton>

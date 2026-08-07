@@ -61,8 +61,8 @@ const badgeVariant = computed(() => {
                             background-color: var(--bs-warning-bg-subtle);
                         "
                     >
-                        <PhosphorIcon
-                            name="cloud"
+                        <Icon
+                            name="ph:cloud"
                             :size="20"
                             class="text-warning"
                         />
@@ -80,7 +80,7 @@ const badgeVariant = computed(() => {
                             v-else-if="statusError"
                             class="text-danger small d-flex align-items-center gap-2"
                         >
-                            <PhosphorIcon name="warning-circle" :size="16" />
+                            <Icon name="ph:warning-circle" :size="16" />
                             {{ t('dashboard.apiError') }}
                             {{ statusError.message }}
                         </div>
@@ -120,8 +120,8 @@ const badgeVariant = computed(() => {
                                 variant="outline-secondary"
                                 @click="measurePing"
                             >
-                                <PhosphorIcon
-                                    name="arrows-clockwise"
+                                <Icon
+                                    name="ph:arrows-clockwise"
                                     :size="12"
                                 />
                             </BButton>
@@ -153,8 +153,8 @@ const badgeVariant = computed(() => {
                                         );
                                     "
                                 >
-                                    <PhosphorIcon
-                                        name="code"
+                                    <Icon
+                                        name="ph:code"
                                         :size="20"
                                         class="text-info"
                                     />
@@ -190,8 +190,8 @@ const badgeVariant = computed(() => {
                                         );
                                     "
                                 >
-                                    <PhosphorIcon
-                                        name="link"
+                                    <Icon
+                                        name="ph:link"
                                         :size="20"
                                         class="text-secondary"
                                     />

@@ -1,22 +1,11 @@
 <script setup lang="ts">
-const { locale, setLocale } = useI18n();
-
-interface LocaleOption {
-    code: string;
-    flag: string;
-    name: string;
-}
-
-const locales: LocaleOption[] = [
-    { code: 'en', flag: '🇬🇧', name: 'English' },
-    { code: 'de', flag: '🇩🇪', name: 'Deutsch' },
-];
+const preferences = usePreferencesStore();
 
 const selected = computed({
     get: () =>
-        (locales.find((l) => l.code === locale.value) ??
-            locales[0]) as LocaleOption, // TODO: remove cast
-    set: (l: LocaleOption) => setLocale(l.code as 'en' | 'de'),
+        preferences.locales.find((l) => l.code === preferences.locale) ??
+        preferences.locales[0],
+    set: (l) => preferences.changeLocale(l.code),
 });
 </script>
 
@@ -32,7 +21,7 @@ const selected = computed({
             {{ selected.name }}
         </template>
         <BDropdownItem
-            v-for="loc in locales"
+            v-for="loc in preferences.locales"
             :key="loc.code"
             :active="loc.code === selected.code"
             :data-testid="`locale-option-${loc.code}`"

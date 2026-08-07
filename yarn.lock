@@ -999,12 +999,34 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@educorvi/vue-json-form-builder-schemas@workspace:packages/vue.json-form-builder-schemas":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/vue-json-form-builder-schemas@workspace:packages/vue.json-form-builder-schemas"
+  dependencies:
+    "@educorvi/vue-json-form-schemas": "workspace:^"
+    "@semantic-release/exec": "npm:^7.1.0"
+    "@types/node": "npm:^25.9.2"
+    semantic-release: "npm:^25.0.5"
+    semantic-release-monorepo: "npm:^8.0.2"
+    semantic-release-yarn: "npm:^3.0.2"
+    turbo: "npm:^2.10.8"
+    typescript: "npm:~6.0.3"
+    vite: "npm:^8.0.16"
+    vite-plugin-dts: "npm:^5.0.3"
+    vite-plugin-externalize-deps: "npm:^0.10.0"
+    vitest: "npm:^4.1.10"
+    yjs: "npm:^13.6.27"
+    zod: "npm:^4.4.3"
+  languageName: unknown
+  linkType: soft
+
 "@educorvi/vue-json-form-builder@workspace:*, @educorvi/vue-json-form-builder@workspace:^, @educorvi/vue-json-form-builder@workspace:packages/vue-json-form-builder":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-builder@workspace:packages/vue-json-form-builder"
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@phosphor-icons/vue": "npm:^2.2.1"
     "@popperjs/core": "npm:^2.11.8"
     "@semantic-release/exec": "npm:^7.1.0"
     "@vitejs/plugin-vue": "npm:^6.0.8"
@@ -1963,6 +1985,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@iconify-json/ph@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@iconify-json/ph@npm:1.2.2"
+  dependencies:
+    "@iconify/types": "npm:*"
+  checksum: 10/71c72f0195295d62c8b7d837c401d747a3bbb76c61d4118a1bd9417a23dcbda7d6efa378b3773c69986d8940e2c55ec2af6fb0bb7b34885bce74e33643c36f6b
+  languageName: node
+  linkType: hard
+
+"@iconify/collections@npm:^1.0.715":
+  version: 1.0.719
+  resolution: "@iconify/collections@npm:1.0.719"
+  dependencies:
+    "@iconify/types": "npm:*"
+  checksum: 10/394bb9a6ee5eedfef8ef3408d82ff2d0cac06f1c2b91f1e355723ac5487b4ca2d1e3a513217700e5ede2c5edea866ace3dbafe5152bc466b2a4f0416dbbb106e
+  languageName: node
+  linkType: hard
+
 "@iconify/types@npm:*, @iconify/types@npm:^2.0.0":
   version: 2.0.0
   resolution: "@iconify/types@npm:2.0.0"
@@ -1978,6 +2018,28 @@ __metadata:
     "@iconify/types": "npm:^2.0.0"
     import-meta-resolve: "npm:^4.2.0"
   checksum: 10/cdc47384a553e0665fa74b9a44bf7d808fe15b8eb2851bd308602ad3e0b31423490142711cd488f716577e0ff1dbb643f7f905954795501856c929cdef014d4d
+  languageName: node
+  linkType: hard
+
+"@iconify/utils@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "@iconify/utils@npm:3.1.4"
+  dependencies:
+    "@antfu/install-pkg": "npm:^1.1.0"
+    "@iconify/types": "npm:^2.0.0"
+    import-meta-resolve: "npm:^4.2.0"
+  checksum: 10/658234fcf01431086aae84ee2c57d88fda046ee6e7b6bd3e77fb11effdd735f92d843cf060b08adc220158aeec97e854b2340adc51f16e0509ad53035a238ce1
+  languageName: node
+  linkType: hard
+
+"@iconify/vue@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@iconify/vue@npm:5.0.1"
+  dependencies:
+    "@iconify/types": "npm:^2.0.0"
+  peerDependencies:
+    vue: ">=3.0.0"
+  checksum: 10/3e7ecf4e085ccd5f5696e1a40a58b67462b49e1150e8c4cf882c6a6e0dcb5cd9b4120edfecfbb5344482c34bce2a8175c3212dd6d0afe5cecaa0006c3fb09158
   languageName: node
   linkType: hard
 
@@ -2669,6 +2731,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxt/devtools-kit@npm:^3.3.1":
+  version: 3.4.1
+  resolution: "@nuxt/devtools-kit@npm:3.4.1"
+  dependencies:
+    "@nuxt/kit": "npm:^4.5.1"
+    execa: "npm:^8.0.1"
+  peerDependencies:
+    vite: ">=6.0"
+  checksum: 10/1236e262e05a46d01ce0917619db0a763e1fb6123f26065d126579da97f8967df832a06eeecfa01b0ac4b26924af06adb641b142bee8fe2626bf897db23ac9ce
+  languageName: node
+  linkType: hard
+
 "@nuxt/devtools-wizard@npm:3.2.4":
   version: 3.2.4
   resolution: "@nuxt/devtools-wizard@npm:3.2.4"
@@ -2812,6 +2886,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxt/icon@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "@nuxt/icon@npm:2.4.1"
+  dependencies:
+    "@iconify/collections": "npm:^1.0.715"
+    "@iconify/types": "npm:^2.0.0"
+    "@iconify/utils": "npm:^3.1.4"
+    "@iconify/vue": "npm:^5.0.1"
+    "@nuxt/devtools-kit": "npm:^3.3.1"
+    "@nuxt/kit": "npm:^4.5.0"
+    consola: "npm:^3.4.2"
+    local-pkg: "npm:^1.2.1"
+    mlly: "npm:^1.8.2"
+    ohash: "npm:^2.0.11"
+    picomatch: "npm:^4.0.5"
+    std-env: "npm:^4.2.0"
+    tinyglobby: "npm:^0.2.17"
+    ufo: "npm:^1.6.4"
+  checksum: 10/1168253645b850ce229d0947c728da5eea90229ed9899d5d2dbd45a5f9525b8c3b76549b0d1cddd3fb315b4c388de0fd3ee6d532d403afd3293d75ca2e9aa9e2
+  languageName: node
+  linkType: hard
+
 "@nuxt/kit@npm:4.4.8, @nuxt/kit@npm:^4.2.0, @nuxt/kit@npm:^4.3.1, @nuxt/kit@npm:^4.4.2, @nuxt/kit@npm:^4.4.4":
   version: 4.4.8
   resolution: "@nuxt/kit@npm:4.4.8"
@@ -2924,6 +3020,35 @@ __metadata:
     untyped: "npm:^2.0.0"
     verkit: "npm:^0.2.0"
   checksum: 10/94e5d9ce04ab27120633186c018b26750a90c492d5114ed046d0ef96462c0b25247c9f8cf302b4f4afb4ec6a0a4832b94fec95dfb60ae7860e6ba16526b5e4e9
+  languageName: node
+  linkType: hard
+
+"@nuxt/kit@npm:^4.5.0, @nuxt/kit@npm:^4.5.1":
+  version: 4.5.2
+  resolution: "@nuxt/kit@npm:4.5.2"
+  dependencies:
+    c12: "npm:^3.3.4"
+    consola: "npm:^3.4.2"
+    defu: "npm:^6.1.7"
+    destr: "npm:^2.0.5"
+    errx: "npm:^0.1.2"
+    exsolve: "npm:^1.1.1"
+    ignore: "npm:^7.0.6"
+    jiti: "npm:^2.7.0"
+    klona: "npm:^2.0.6"
+    mlly: "npm:^1.8.2"
+    nostics: "npm:^1.2.0"
+    ohash: "npm:^2.0.11"
+    pathe: "npm:^2.0.3"
+    pkg-types: "npm:^2.3.1"
+    rc9: "npm:^3.0.1"
+    scule: "npm:^1.3.0"
+    tinyglobby: "npm:^0.2.17"
+    ufo: "npm:^1.6.4"
+    unctx: "npm:^3.0.0"
+    untyped: "npm:^2.0.0"
+    verkit: "npm:^0.3.1"
+  checksum: 10/d5e33e28c2930a33aac1a611ec021542b9c724e42beb5b56e00216530240f2dd8afe3dee894c486ebcd53d75e432c207007beb0429bc757c0b8a6d2c117bd54c
   languageName: node
   linkType: hard
 
@@ -9690,6 +9815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"errx@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "errx@npm:0.1.2"
+  checksum: 10/4a0c9ff64628d90be6a1db4fb98400040c9dd1d906e71bc7d5adf3a53c9bdcd6b16a9b1df33d999ddcbf8fce4e3c0585faba2ed18eaef200763cd0f527b7d925
+  languageName: node
+  linkType: hard
+
 "es-abstract-get@npm:^1.0.0":
   version: 1.0.0
   resolution: "es-abstract-get@npm:1.0.0"
@@ -10607,7 +10739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"exsolve@npm:^1.1.0":
+"exsolve@npm:^1.1.0, exsolve@npm:^1.1.1":
   version: 1.1.1
   resolution: "exsolve@npm:1.1.1"
   checksum: 10/23d3811f646c29bb3f8639e330bf97ee35bce70dbc1c43e586131eccb928c358c464cb44d88ecb298544506cc8d0f6a66a38afbf076bd7f1d2ec15e5a1ad8dbc
@@ -12479,6 +12611,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic.js@npm:^0.2.4":
+  version: 0.2.5
+  resolution: "isomorphic.js@npm:0.2.5"
+  checksum: 10/d8d1b083f05f3c337a06628b982ac3ce6db953bbef14a9de8ad49131250c3592f864b73c12030fdc9ef138ce97b76ef55c7d96a849561ac215b1b4b9d301c8e9
+  languageName: node
+  linkType: hard
+
 "issue-parser@npm:^7.0.0":
   version: 7.0.2
   resolution: "issue-parser@npm:7.0.2"
@@ -12714,7 +12853,9 @@ __metadata:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
     "@educorvi/vue-json-form-builder": "workspace:*"
     "@hey-api/openapi-ts": "npm:0.99.0"
+    "@iconify-json/ph": "npm:^1.2.2"
     "@nuxt/eslint": "npm:^1.16.0"
+    "@nuxt/icon": "npm:^2.4.1"
     "@nuxt/test-utils": "npm:^4.1.0"
     "@nuxtjs/i18n": "npm:^10.4.0"
     "@orpc/client": "npm:^1.14.6"
@@ -12736,7 +12877,6 @@ __metadata:
     nuxi: "npm:^3.36.1"
     nuxt: "npm:^4.4.8"
     nuxt-auth-utils: "npm:^0.5.29"
-    nuxt-phosphor-icons: "npm:2.3.3"
     pg: "npm:^8.22.0"
     pinia: "npm:^3.0.4"
     turbo: "npm:^2.10.8"
@@ -13003,6 +13143,19 @@ __metadata:
     prelude-ls: "npm:^1.2.1"
     type-check: "npm:~0.4.0"
   checksum: 10/2e4720ff79f21ae08d42374b0a5c2f664c5be8b6c8f565bb4e1315c96ed3a8acaa9de788ffed82d7f2378cf36958573de07ef92336cb5255ed74d08b8318c9ee
+  languageName: node
+  linkType: hard
+
+"lib0@npm:^0.2.99":
+  version: 0.2.117
+  resolution: "lib0@npm:0.2.117"
+  dependencies:
+    isomorphic.js: "npm:^0.2.4"
+  bin:
+    0ecdsa-generate-keypair: bin/0ecdsa-generate-keypair.js
+    0gentesthtml: bin/gentesthtml.js
+    0serve: bin/0serve.js
+  checksum: 10/9bacc91d25f37ba9013d102350971699946ee5ee355c1f644d1afff8d979d6446f56b36eb02765197d416c530e1bd8752c911b6b426bc3207653a5f9d1258b8c
   languageName: node
   linkType: hard
 
@@ -14722,16 +14875,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nuxt-phosphor-icons@npm:2.3.3":
-  version: 2.3.3
-  resolution: "nuxt-phosphor-icons@npm:2.3.3"
-  dependencies:
-    "@phosphor-icons/vue": "npm:^2.2.1"
-    change-case: "npm:^5.4.4"
-  checksum: 10/3e2a097eac3baec569f3b03c8d2172585a19aec73e05ecaaf9bf68b9ae1b769189c425385395fb4ffc9b29e18e422d9334707a98a1e02307dbfe50e03be0dede
-  languageName: node
-  linkType: hard
-
 "nuxt@npm:^4.4.8":
   version: 4.4.8
   resolution: "nuxt@npm:4.4.8"
@@ -15979,7 +16122,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^4.0.2, picomatch@npm:^4.0.3, picomatch@npm:^4.0.4":
+"picomatch@npm:^4.0.2, picomatch@npm:^4.0.3, picomatch@npm:^4.0.4, picomatch@npm:^4.0.5":
   version: 4.0.5
   resolution: "picomatch@npm:4.0.5"
   checksum: 10/8bad770af9dcdb7f94ad1a893adcbe08a97d75a18872f8fed37161d3124217471c402b3929f051532f795f4ff2e53dcebb1644df4c1a5f3a9c476fef3b9f8c51
@@ -20273,6 +20416,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"verkit@npm:^0.3.1":
+  version: 0.3.2
+  resolution: "verkit@npm:0.3.2"
+  checksum: 10/23e57c28094da170e381e27c020cddde0543fbac377b111c325a18440da4502d21c58446ef25794ecc1f2434df1d6297edf760910245ac5b90199a9bb18d8634
+  languageName: node
+  linkType: hard
+
 "vite-bundle-analyzer@npm:^1.3.8":
   version: 1.3.8
   resolution: "vite-bundle-analyzer@npm:1.3.8"
@@ -20775,6 +20925,8 @@ __metadata:
     "@commitlint/cli": "npm:^21.0.2"
     "@commitlint/config-conventional": "npm:^21.0.2"
     "@eslint/js": "npm:^10.0.1"
+    "@iconify-json/ph": "npm:^1.2.2"
+    "@nuxt/icon": "npm:^2.4.1"
     "@size-limit/file": "npm:^12.1.0"
     "@size-limit/preset-big-lib": "npm:^12.1.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.60.1"
@@ -21424,6 +21576,15 @@ __metadata:
     buffer-crc32: "npm:~0.2.3"
     fd-slicer: "npm:~1.1.0"
   checksum: 10/1e4c311050dc0cf2ee3dbe8854fe0a6cde50e420b3e561a8d97042526b4cf7a0718d6c8d89e9e526a152f4a9cec55bcea9c3617264115f48bd6704cf12a04445
+  languageName: node
+  linkType: hard
+
+"yjs@npm:^13.6.27":
+  version: 13.6.32
+  resolution: "yjs@npm:13.6.32"
+  dependencies:
+    lib0: "npm:^0.2.99"
+  checksum: 10/2b34da80105f138cf65e2154ac18155e818bddc8dbca689c190f186068ded7d648aeff69ae84ccc76166f3efb4524c6146d7a4befdda6b0c0ae394f97d421d02
   languageName: node
   linkType: hard
 

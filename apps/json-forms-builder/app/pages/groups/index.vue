@@ -13,6 +13,7 @@ import type { z } from 'zod';
 import type { zListGroupsQuery } from '~~/server/orpc/generated/zod.gen';
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 type GroupsQuery = z.infer<typeof zListGroupsQuery>;
 type OrderBy = GroupsQuery['order_by'];
 
@@ -22,6 +23,7 @@ const { t } = useI18n();
 const { notify } = useNotify();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const permissions = usePermissionsStore();
 
 // ── Breadcrumb ──────────────────────────────────────────────────────────────
 
@@ -138,11 +140,17 @@ const pageDescription = computed(() => {
     <BasePage
         :title="t('groups.title')"
         :description="pageDescription"
-        icon="tree-structure"
+        icon="ph:tree-structure"
     >
         <template #actions>
-            <BButton variant="primary" size="sm" :to="Routes.GROUPS_NEW">
-                <PhosphorIcon name="plus" :size="14" class="me-1" />
+            <BButton
+                v-if="permissions.canCreateRootGroups"
+                variant="primary"
+                size="sm"
+                :to="Routes.GROUPS_NEW"
+                data-testid="new-group-button"
+            >
+                <Icon name="ph:plus" :size="14" class="me-1" />
                 {{ t('groups.new.title') }}
             </BButton>
         </template>
@@ -180,7 +188,7 @@ const pageDescription = computed(() => {
                 class="mb-3"
             >
                 <div class="d-flex align-items-center gap-2">
-                    <PhosphorIcon name="warning-circle" />
+                    <Icon name="ph:warning-circle" />
                     <strong>{{ t('groups.loadError') }}</strong>
                 </div>
                 <p class="mb-0 mt-1">{{ errorMessage }}</p>
@@ -205,7 +213,7 @@ const pageDescription = computed(() => {
                     <!-- Empty -->
                     <div v-else-if="isEmpty" class="p-4">
                         <EmptyState
-                            icon="folder-open"
+                            icon="ph:folder-open"
                             :title="t('groups.noGroupsTitle')"
                             :description="
                                 search

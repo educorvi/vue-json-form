@@ -26,7 +26,7 @@ defineProps<{
         <div class="d-flex align-items-center gap-3">
             <!-- Icon slot (or default icon) -->
             <slot name="icon">
-                <PhosphorIcon v-if="icon" :name="icon" size="32" />
+                <Icon v-if="icon" :name="icon" size="32" />
             </slot>
             <div>
                 <h3 class="fw-bold mb-0">{{ title }}</h3>

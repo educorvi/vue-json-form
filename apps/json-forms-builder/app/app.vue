@@ -1,9 +1,15 @@
+<script setup lang="ts">
+const preferences = usePreferencesStore();
+</script>
+
 <template>
-    <div>
-        <NuxtRouteAnnouncer />
-        <NuxtLayout>
-            <NuxtPage :key="$route.fullPath" />
-        </NuxtLayout>
-        <ToastContainer />
-    </div>
+    <Html :data-bs-theme="preferences.resolvedTheme">
+        <Body>
+            <NuxtRouteAnnouncer />
+            <NuxtLayout>
+                <NuxtPage :key="$route.fullPath" />
+            </NuxtLayout>
+            <ToastContainer />
+        </Body>
+    </Html>
 </template>

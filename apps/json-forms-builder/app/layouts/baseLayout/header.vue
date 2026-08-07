@@ -7,11 +7,11 @@ const { user } = useUserSession();
 const navItems = computed(() => [
     {
         label: t('nav.forms'),
-        icon: 'ph ph-file-text',
+        icon: 'ph:file-text',
         route: '/forms',
     },
-    { label: t('nav.groups'), icon: 'ph ph-tree-structure', route: '/groups' },
-    { label: t('nav.users'), icon: 'ph ph-users', route: '/users' },
+    { label: t('nav.groups'), icon: 'ph:tree-structure', route: '/groups' },
+    { label: t('nav.users'), icon: 'ph:users', route: '/users' },
 ]);
 
 const userName = computed(() => user.value?.username ?? 'User');
@@ -25,7 +25,7 @@ const userName = computed(() => user.value?.username ?? 'User');
     >
         <BNavbarBrand href="/dashboard" class="d-flex align-items-center gap-2">
             <!-- <PhNotePencil :size="20" class="text-primary" /> -->
-            <PhosphorIcon name="note-pencil" class="text-primary" />
+            <Icon name="ph:note-pencil" class="text-primary" />
             <span class="fw-semibold small"> {{ t('nav.formBuilder') }}</span>
         </BNavbarBrand>
         <BNavbarToggle target="nav-collapse" />
@@ -36,11 +36,16 @@ const userName = computed(() => user.value?.username ?? 'User');
                 </BNavItem>
             </BNavbarNav>
             <BNavbarNav class="ms-auto mb-2 mb-lg-0">
-                <BNavItemDropdown right no-caret :auto-close="false">
+                <BNavItemDropdown
+                    right
+                    no-caret
+                    :auto-close="false"
+                    :toggle-attrs="{ 'data-testid': 'user-profile-toggle' }"
+                >
                     <template #button-content>
                         <span class="d-flex align-items-center gap-2">
                             <!-- <PhUser :size="18" /> -->
-                            <PhosphorIcon name="user" />
+                            <Icon name="ph:user" />
                             <span class="fw-medium">{{ userName }}</span>
                         </span>
                     </template>

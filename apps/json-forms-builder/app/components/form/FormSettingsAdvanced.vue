@@ -10,7 +10,7 @@ const emit = defineEmits<{
         :description="$t('settings.advancedDescription')"
     >
         <BButton variant="outline-danger" @click="emit('delete')">
-            <PhosphorIcon name="trash" :size="16" class="me-1" />
+            <Icon name="ph:trash" :size="16" class="me-1" />
             {{ $t('forms.delete.title') }}
         </BButton>
     </SettingsSection>

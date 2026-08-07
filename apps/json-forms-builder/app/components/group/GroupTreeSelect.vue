@@ -137,7 +137,7 @@ function useCurrentFolder() {
                     @click="useCurrentFolder"
                 >
                     <span class="d-inline-flex align-items-center gap-1">
-                        <PhosphorIcon name="map-pin" />
+                        <Icon name="ph:map-pin" />
                     </span>
                 </BButton>
             </BCol>

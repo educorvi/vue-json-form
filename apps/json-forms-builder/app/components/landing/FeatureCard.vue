@@ -24,7 +24,7 @@ defineProps<{
                 class="d-inline-flex align-items-center justify-content-center bg-light mb-3"
                 style="width: 56px; height: 56px"
             >
-                <PhosphorIcon :name="icon" :size="28" class="text-primary" />
+                <Icon :name="icon" :size="28" class="text-primary" />
             </div>
             <BCardTitle class="h5 mb-2">{{ title }}</BCardTitle>
             <p class="card-text text-secondary mb-3 flex-grow-1">
@@ -44,7 +44,7 @@ defineProps<{
                     class="d-inline-flex align-items-center gap-1 py-1 bg-opacity-10 text-primary"
                     pill
                 >
-                    <PhosphorIcon :name="chip.icon" :size="12" />
+                    <Icon :name="chip.icon" :size="12" />
                     <span class="small">{{ chip.label }}</span>
                 </BBadge>
             </div>

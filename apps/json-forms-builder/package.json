@@ -27,6 +27,8 @@
     "dependencies": {
         "@bootstrap-vue-next/nuxt": "^0.45.7",
         "@educorvi/vue-json-form-builder": "workspace:*",
+        "@iconify-json/ph": "^1.2.2",
+        "@nuxt/icon": "^2.4.1",
         "@nuxtjs/i18n": "^10.4.0",
         "@orpc/client": "^1.14.6",
         "@orpc/json-schema": "^1.14.6",
@@ -40,7 +42,6 @@
         "nuxi": "^3.36.1",
         "nuxt": "^4.4.8",
         "nuxt-auth-utils": "^0.5.29",
-        "nuxt-phosphor-icons": "2.3.3",
         "pg": "^8.22.0",
         "pinia": "^3.0.4",
         "turbo": "^2.10.8",

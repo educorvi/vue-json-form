@@ -22,7 +22,7 @@ const { data: apiStatus, error: apiStatusError } = useLazyAsyncData(
                 class="d-inline-flex align-items-center gap-1 text-secondary small text-decoration-none"
                 data-testid="github-link"
             >
-                <PhosphorIcon name="github-logo" :size="16" />
+                <Icon name="ph:github-logo" :size="16" />
                 GitHub
             </a>
         </div>

@@ -15,8 +15,8 @@ const { t } = useI18n();
                 class="d-inline-flex align-items-center justify-content-center bg-light border rounded"
                 style="width: 80px; height: 80px"
             >
-                <PhosphorIcon
-                    name="note-pencil"
+                <Icon
+                    name="ph:note-pencil"
                     :size="40"
                     class="text-primary"
                 />
@@ -47,7 +47,7 @@ const { t } = useI18n();
             variant="primary"
             size="lg"
         >
-            <PhosphorIcon name="sign-in" class="me-2" />
+            <Icon name="ph:sign-in" class="me-2" />
             {{ t('landing.signInKeycloak') }}
         </BButton>
     </section>

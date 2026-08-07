@@ -41,12 +41,29 @@ const pending = computed(() => status.value === 'pending');
 
 const { isNotFound, hasError, errorMessage } = usePageError(groupError, status);
 
+// ── Access control (RBAC) ───────────────────────────────────────────────────
+// Determines which actions are available to the current user on this group:
+// editing requires at least `editor`, creating child items requires `owner`.
+const access = useResourceAccess('groups', groupPath);
+
+const ownerRoleLabel = computed(() => t('permissions.roles.owner'));
+const editorRoleLabel = computed(() => t('permissions.roles.editor'));
+const needOwnerHint = computed(() =>
+    t('permissions.needRoleHint', { role: ownerRoleLabel.value })
+);
+const needEditorHint = computed(() =>
+    t('permissions.needRoleHint', { role: editorRoleLabel.value })
+);
+
+// While the session/access is still resolving (SSR → hydration), keep the
+// buttons enabled-neutral instead of flashing them as disabled.
+const actionsReady = computed(() => !access.sessionPending.value);
+
 const childPage = ref(1);
 const childPageSize = ref(20);
 const childSearch = ref('');
 const childSortOrder = ref<'asc' | 'desc'>('asc');
 const childOrderBy = ref<'title' | 'created' | 'updated'>('title');
-
 const sortOptions = [
     { label: t('groups.sortBy.title'), value: 'title' as const },
     { label: t('groups.sortBy.created'), value: 'created' as const },
@@ -155,7 +172,7 @@ function editCurrent() {
     <BasePage
         :title="group?.title || group?.name || '...'"
         :description="group?.description ?? undefined"
-        icon="folder"
+        icon="ph:folder"
     >
         <template v-if="group" #actions>
             <BButton
@@ -163,8 +180,11 @@ function editCurrent() {
                 size="sm"
                 @click="editCurrent"
                 class="me-2"
+                :disabled="actionsReady && !access.canUpdate.value"
+                v-b-tooltip="needEditorHint"
+                data-testid="group-edit-button"
             >
-                <PhosphorIcon name="pencil" :size="14" class="me-1" />{{
+                <Icon name="ph:pencil" :size="14" class="me-1" />{{
                     t('common.edit')
                 }}
             </BButton>
@@ -173,8 +193,11 @@ function editCurrent() {
                 size="sm"
                 :to="Routes.formsNew(groupPath)"
                 class="me-2"
+                :disabled="actionsReady && !access.canCreateChild.value"
+                v-b-tooltip="needOwnerHint"
+                data-testid="group-create-form-button"
             >
-                <PhosphorIcon name="file-plus" :size="14" class="me-1" />{{
+                <Icon name="ph:file-plus" :size="14" class="me-1" />{{
                     t('forms.new.title')
                 }}
             </BButton>
@@ -182,8 +205,11 @@ function editCurrent() {
                 variant="primary"
                 size="sm"
                 :to="Routes.groupsNew(groupPath)"
+                :disabled="actionsReady && !access.canCreateChild.value"
+                v-b-tooltip="needOwnerHint"
+                data-testid="group-create-group-button"
             >
-                <PhosphorIcon name="plus" :size="14" class="me-1" />{{
+                <Icon name="ph:plus" :size="14" class="me-1" />{{
                     t('groups.new.addSubGroup')
                 }}
             </BButton>
@@ -192,7 +218,7 @@ function editCurrent() {
         <template v-if="hasError">
             <BaseErrorState
                 v-if="isNotFound"
-                icon="warning-circle"
+                icon="ph:warning-circle"
                 :title="t('groups.notFound')"
                 :description="errorMessage"
                 :action-route="Routes.GROUPS"
@@ -200,7 +226,7 @@ function editCurrent() {
             />
             <BaseErrorState
                 v-else
-                icon="bug"
+                icon="ph:bug"
                 :title="t('common.errorTitle')"
                 :description="errorMessage"
                 :action-route="Routes.GROUPS"
@@ -247,7 +273,7 @@ function editCurrent() {
                     class="mb-3"
                 >
                     <div class="d-flex align-items-center gap-2">
-                        <PhosphorIcon name="warning-circle" /><strong>{{
+                        <Icon name="ph:warning-circle" /><strong>{{
                             t('groups.loadError')
                         }}</strong>
                     </div>
@@ -273,7 +299,7 @@ function editCurrent() {
 
                         <div v-else-if="childrenEmpty" class="p-4">
                             <EmptyState
-                                icon="folder-open"
+                                icon="ph:folder-open"
                                 :title="t('groups.noChildrenTitle')"
                                 :description="
                                     childSearch

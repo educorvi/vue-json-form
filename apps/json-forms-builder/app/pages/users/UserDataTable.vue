@@ -58,7 +58,7 @@ const fields = computed(() => [
             class="mb-3"
         >
             <div class="d-flex align-items-center gap-2">
-                <PhosphorIcon name="warning-circle" />
+                <Icon name="ph:warning-circle" />
                 <strong>{{ t('users.loadError') }}</strong>
             </div>
             <p class="mb-0 mt-1">{{ errorMessage }}</p>

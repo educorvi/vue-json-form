@@ -9,7 +9,7 @@ export default defineNuxtConfig({
         'nuxt-auth-utils',
         '@bootstrap-vue-next/nuxt',
         '@nuxtjs/i18n',
-        'nuxt-phosphor-icons',
+        '@nuxt/icon',
         // Adds a Vitest panel to Nuxt DevTools.
         '@nuxt/test-utils/module',
         // Generates .nuxt/eslint.config.mjs with the auto-import globals
@@ -18,6 +18,15 @@ export default defineNuxtConfig({
         // this with the repo's shared root config.
         '@nuxt/eslint',
     ],
+
+    icon: {
+        serverBundle: {
+            collections: ['ph'],
+        },
+        clientBundle: {
+            scan: true,
+        },
+    },
 
     eslint: {
         config: {
@@ -105,7 +114,6 @@ export default defineNuxtConfig({
             include: [
                 '@orpc/client',
                 '@orpc/client/fetch',
-                '@phosphor-icons/vue',
                 '@vue/devtools-core',
                 '@vue/devtools-kit',
                 '@vueuse/core',

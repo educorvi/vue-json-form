@@ -134,7 +134,7 @@ function goDetail() {
 
 <template>
     <BasePage
-        icon="pencil"
+        icon="ph:pencil"
         :title="t('forms.edit.title')"
         :description="t('forms.edit.subtitle')"
     >
@@ -163,7 +163,7 @@ function goDetail() {
         <template v-else-if="hasError">
             <BaseErrorState
                 v-if="isNotFound"
-                icon="warning-circle"
+                icon="ph:warning-circle"
                 :title="t('forms.detail.notFound')"
                 :description="errorMessage"
                 :action-route="Routes.FORMS"
@@ -171,7 +171,7 @@ function goDetail() {
             />
             <BaseErrorState
                 v-else
-                icon="bug"
+                icon="ph:bug"
                 :title="t('common.errorTitle')"
                 :description="errorMessage"
                 :action-route="Routes.FORMS"

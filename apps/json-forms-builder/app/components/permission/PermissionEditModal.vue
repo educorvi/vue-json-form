@@ -103,7 +103,7 @@ watch(
                 v-if="inheritedRole"
                 class="text-warning d-flex align-items-center gap-1"
             >
-                <PhosphorIcon name="info" :size="14" />
+                <Icon name="ph:info" :size="14" />
                 {{
                     t('permissions.form.inheritHint', {
                         role: t(`permissions.roles.${inheritedRole}`),

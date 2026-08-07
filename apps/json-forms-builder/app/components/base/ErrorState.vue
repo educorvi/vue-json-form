@@ -16,7 +16,7 @@ defineProps<{
     <BasePageContainer>
         <BCard>
             <BCardBody class="text-center py-5">
-                <PhosphorIcon
+                <Icon
                     v-if="icon"
                     :name="icon"
                     :size="48"

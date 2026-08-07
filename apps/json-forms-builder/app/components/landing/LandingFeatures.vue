@@ -21,18 +21,18 @@ interface FeatureDef {
 
 const featureDefs: FeatureDef[] = [
     {
-        icon: 'note-pencil',
+        icon: 'ph:note-pencil',
         titleKey: 'features.formBuilder.title',
         descKey: 'features.formBuilder.description',
         chips: [
             {
-                icon: 'play',
+                icon: 'ph:play',
                 label: 'chips.demo',
                 href: APP_LINKS.visualFormBuilder,
                 translate: true,
             },
             {
-                icon: 'github-logo',
+                icon: 'ph:github-logo',
                 label: 'chips.github',
                 href: APP_LINKS.visualFormBuilderRepo,
                 translate: true,
@@ -40,31 +40,31 @@ const featureDefs: FeatureDef[] = [
         ],
     },
     {
-        icon: 'users',
+        icon: 'ph:users',
         titleKey: 'features.userManagement.title',
         descKey: 'features.userManagement.description',
     },
     {
-        icon: 'code',
+        icon: 'ph:code',
         titleKey: 'features.openApi.title',
         descKey: 'features.openApi.description',
         chips: [
-            { icon: 'link', label: 'Swagger', href: APP_LINKS.swagger },
-            { icon: 'link', label: 'Scalar', href: APP_LINKS.scalar },
+            { icon: 'ph:link', label: 'Swagger', href: APP_LINKS.swagger },
+            { icon: 'ph:link', label: 'Scalar', href: APP_LINKS.scalar },
         ],
     },
     {
-        icon: 'file-code',
+        icon: 'ph:file-code',
         titleKey: 'features.jsonUiSchema.title',
         descKey: 'features.jsonUiSchema.description',
         chips: [
             {
-                icon: 'book-open-text',
+                icon: 'ph:book-open-text',
                 label: 'JSON Forms',
                 href: APP_LINKS.jsonForms,
             },
             {
-                icon: 'book-open-text',
+                icon: 'ph:book-open-text',
                 label: 'UI Schema',
                 href: APP_LINKS.uiSchemaDocs,
                 translate: true,
@@ -72,12 +72,12 @@ const featureDefs: FeatureDef[] = [
         ],
     },
     {
-        icon: 'clock-counter-clockwise',
+        icon: 'ph:clock-counter-clockwise',
         titleKey: 'features.versioning.title',
         descKey: 'features.versioning.description',
     },
     {
-        icon: 'lock',
+        icon: 'ph:lock',
         titleKey: 'features.sso.title',
         descKey: 'features.sso.description',
     },

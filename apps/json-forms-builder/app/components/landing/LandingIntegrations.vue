@@ -22,12 +22,12 @@ interface IntegrationDef {
 
 const integrationDefs: IntegrationDef[] = [
     {
-        icon: 'globe',
+        icon: 'ph:globe',
         titleKey: 'landing.integrations.web.title',
         descKey: 'landing.integrations.web.description',
         chips: [
             {
-                icon: 'github-logo',
+                icon: 'ph:github-logo',
                 label: 'chips.github',
                 href: APP_LINKS.webcomponentRepo,
                 translate: true,
@@ -35,18 +35,18 @@ const integrationDefs: IntegrationDef[] = [
         ],
     },
     {
-        icon: 'file-vue',
+        icon: 'ph:file-vue',
         titleKey: 'landing.integrations.vue.title',
         descKey: 'landing.integrations.vue.description',
         chips: [
             {
-                icon: 'play',
+                icon: 'ph:play',
                 label: 'chips.demo',
                 href: APP_LINKS.vueJsonFormDemo,
                 translate: true,
             },
             {
-                icon: 'github-logo',
+                icon: 'ph:github-logo',
                 label: 'chips.github',
                 href: APP_LINKS.vueJsonFormRepo,
                 translate: true,
@@ -54,18 +54,18 @@ const integrationDefs: IntegrationDef[] = [
         ],
     },
     {
-        icon: 'device-mobile',
+        icon: 'ph:device-mobile',
         titleKey: 'landing.integrations.flutter.title',
         descKey: 'landing.integrations.flutter.description',
         chips: [
             {
-                icon: 'play',
+                icon: 'ph:play',
                 label: 'chips.demo',
                 href: APP_LINKS.flutterDemo,
                 translate: true,
             },
             {
-                icon: 'github-logo',
+                icon: 'ph:github-logo',
                 label: 'chips.github',
                 href: APP_LINKS.flutterRepo,
                 translate: true,

@@ -41,8 +41,8 @@ const recentForms = computed(() => recentData.value?.data ?? []);
                 class="d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10"
                 style="width: 64px; height: 64px; flex-shrink: 0"
             >
-                <PhosphorIcon
-                    name="user-circle"
+                <Icon
+                    name="ph:user-circle"
                     :size="36"
                     class="text-primary"
                 />

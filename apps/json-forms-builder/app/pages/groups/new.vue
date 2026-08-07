@@ -155,7 +155,7 @@ function cancel() {
 
 <template>
     <BasePage
-        icon="folder-plus"
+        icon="ph:folder-plus"
         :title="t('groups.new.title')"
         :description="t('groups.new.subtitle')"
     >

@@ -15,7 +15,7 @@ const { t, locale } = useI18n();
     <div class="d-flex flex-column text-secondary small">
         <IconTextDetail
             v-if="created"
-            icon="calendar"
+            icon="ph:calendar"
             :text="formatDate(created, false, locale)"
             :title="
                 t('groups.created') + ': ' + formatDate(created, true, locale)
@@ -23,7 +23,7 @@ const { t, locale } = useI18n();
         />
         <IconTextDetail
             v-if="updated"
-            icon="clock-clockwise"
+            icon="ph:clock-clockwise"
             :text="formatDate(updated, false, locale)"
             :title="
                 t('groups.updated') + ': ' + formatDate(updated, true, locale)

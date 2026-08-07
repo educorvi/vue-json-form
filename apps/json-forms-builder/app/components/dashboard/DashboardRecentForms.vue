@@ -20,7 +20,7 @@ function navigateToForm(form: any) {
             </h5>
             <NuxtLink :to="Routes.FORMS" class="btn btn-sm btn-outline-primary">
                 {{ t('dashboard.allForms') }}
-                <PhosphorIcon name="arrow-right" :size="14" class="ms-1" />
+                <Icon name="ph:arrow-right" :size="14" class="ms-1" />
             </NuxtLink>
         </div>
 
@@ -42,8 +42,8 @@ function navigateToForm(form: any) {
         <div v-else-if="forms.length === 0">
             <BCard class="text-center py-4">
                 <BCardBody>
-                    <PhosphorIcon
-                        name="file-text"
+                    <Icon
+                        name="ph:file-text"
                         :size="32"
                         class="text-secondary mb-2"
                     />
@@ -65,6 +65,7 @@ function navigateToForm(form: any) {
                     style="cursor: pointer"
                     role="link"
                     tabindex="0"
+                    data-testid="recent-form-card"
                     @click="navigateToForm(form)"
                     @keydown.enter="navigateToForm(form)"
                 >
@@ -73,8 +74,8 @@ function navigateToForm(form: any) {
                             <div class="d-flex flex-column gap-2 flex-grow-1">
                                 <!-- Top: title + path -->
                                 <div class="d-flex align-items-start gap-3">
-                                    <PhosphorIcon
-                                        name="file-text"
+                                    <Icon
+                                        name="ph:file-text"
                                         :size="20"
                                         class="text-secondary flex-shrink-0 mt-1"
                                     />
@@ -110,8 +111,8 @@ function navigateToForm(form: any) {
                                 <div
                                     class="d-flex justify-content-end align-items-center gap-2 small text-secondary mt-auto"
                                 >
-                                    <PhosphorIcon
-                                        name="clock"
+                                    <Icon
+                                        name="ph:clock"
                                         :size="12"
                                         class="flex-shrink-0"
                                     />

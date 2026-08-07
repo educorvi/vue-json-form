@@ -133,7 +133,7 @@ function goDetail() {
 
 <template>
     <BasePage
-        icon="pencil"
+        icon="ph:pencil"
         :title="t('groups.edit.title')"
         :description="t('groups.edit.subtitle')"
     >
@@ -163,7 +163,7 @@ function goDetail() {
         <template v-else-if="hasError">
             <BaseErrorState
                 v-if="isNotFound"
-                icon="warning-circle"
+                icon="ph:warning-circle"
                 :title="t('groups.notFound')"
                 :description="errorMessage"
                 :action-route="Routes.GROUPS"
@@ -171,7 +171,7 @@ function goDetail() {
             />
             <BaseErrorState
                 v-else
-                icon="bug"
+                icon="ph:bug"
                 :title="t('common.errorTitle')"
                 :description="errorMessage"
                 :action-route="Routes.GROUPS"

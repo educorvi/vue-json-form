@@ -204,7 +204,7 @@ watch(
             </BootstrapSelect>
 
             <BFormText v-if="suggestedMinRole" class="text-warning">
-                <PhosphorIcon name="info" :size="14" class="me-1" />
+                <Icon name="ph:info" :size="14" class="me-1" />
                 {{
                     t('permissions.form.inheritHint', {
                         role: t(`permissions.roles.${suggestedMinRole}`),
@@ -231,7 +231,7 @@ watch(
                 v-if="suggestedMinRole"
                 class="text-warning d-flex align-items-center gap-1"
             >
-                <PhosphorIcon name="info" :size="14" />
+                <Icon name="ph:info" :size="14" />
                 {{
                     t('permissions.form.inheritHint', {
                         role: t(`permissions.roles.${suggestedMinRole}`),

@@ -12,7 +12,7 @@ defineProps<{
         v-b-tooltip="title"
         :aria-label="title"
     >
-        <PhosphorIcon :name="icon" :size="14" aria-hidden="true" />
+        <Icon :name="icon" :size="14" aria-hidden="true" />
         {{ text }}
     </span>
 </template>

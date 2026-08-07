@@ -30,17 +30,17 @@ const { t } = useI18n();
 <template>
     <div class="d-flex align-items-center gap-1 text-secondary small">
         <IconTextDetail
-            icon="folders"
+            icon="ph:folders"
             :text="childGroup.group_count"
             :title="t('groups.subGroups')"
         />
         <IconTextDetail
-            icon="file-text"
+            icon="ph:file-text"
             :text="childGroup.form_count"
             :title="t('groups.forms')"
         />
         <IconTextDetail
-            icon="users"
+            icon="ph:users"
             :text="childGroup.member_count"
             :title="t('groups.members')"
         />

@@ -1,7 +1,7 @@
 <!--
     BreadcrumbGlobal – Page-level breadcrumb (nav > .breadcrumb).
 
-    A home icon (PhosphorIcon "house") is always prepended.
+    A home icon (Icon "ph:house-fill") is always prepended.
     Items with a route are rendered as NuxtLinks; the last item
     (no route) is rendered as plain text (active / current page).
     Icons from BreadcrumbItem entries are shown where present.
@@ -28,7 +28,7 @@ const { t } = useI18n();
                     :title="t('nav.formBuilder')"
                     :aria-label="t('nav.formBuilder')"
                 >
-                    <PhosphorIcon name="house" weight="fill" :size="14" />
+                    <Icon name="ph:house-fill" :size="14" />
                 </NuxtLink>
             </li>
 
@@ -45,10 +45,9 @@ const { t } = useI18n();
                     :to="item.route"
                     class="text-decoration-none d-inline-flex align-items-center gap-1"
                 >
-                    <PhosphorIcon
+                    <Icon
                         v-if="item.icon"
                         :name="item.icon"
-                        weight="fill"
                         :size="14"
                         :class="{
                             'me-1':
@@ -63,10 +62,9 @@ const { t } = useI18n();
                     </template>
                 </NuxtLink>
                 <span v-else class="d-inline-flex align-items-center gap-1">
-                    <PhosphorIcon
+                    <Icon
                         v-if="item.icon"
                         :name="item.icon"
-                        weight="fill"
                         :size="14"
                         :class="{
                             'me-1':

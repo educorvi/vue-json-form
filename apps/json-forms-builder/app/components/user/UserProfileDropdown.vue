@@ -21,7 +21,7 @@ async function logout() {
         class="dropdown-item d-flex align-items-center gap-2"
         style="cursor: default"
     >
-        <PhosphorIcon name="user" />
+        <Icon name="ph:user" />
         <div class="d-flex flex-column">
             <span class="fw-medium d-flex align-items-center gap-2">
                 {{ userName }}
@@ -35,9 +35,7 @@ async function logout() {
         <label class="form-label small text-secondary mb-1 d-block">
             {{ t('theme.label') }}
         </label>
-        <ClientOnly>
-            <ThemeSwitcher class="w-100" />
-        </ClientOnly>
+        <ThemeSwitcher class="w-100" />
     </li>
     <li class="px-3 py-1" @click.stop>
         <label class="form-label small text-secondary mb-1 d-block">
@@ -47,7 +45,7 @@ async function logout() {
     </li>
     <BDropdownDivider />
     <BDropdownItem class="d-flex align-items-center gap-2" @click="logout">
-        <PhosphorIcon name="sign-out" />
+        <Icon name="ph:sign-out" />
         {{ t('nav.signOut') }}
     </BDropdownItem>
 </template>

@@ -12,7 +12,7 @@ const { t } = useI18n();
     >
         <!-- Brand -->
         <BNavbarBrand href="/" class="d-flex align-items-center gap-2 mb-0">
-            <PhosphorIcon name="note-pencil" class="text-primary" />
+            <Icon name="ph:note-pencil" class="text-primary" />
             <span class="fw-semibold small">Form Builder</span>
         </BNavbarBrand>
 
@@ -26,7 +26,7 @@ const { t } = useI18n();
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <PhosphorIcon name="play" class="me-1" />
+                    <Icon name="ph:play" class="me-1" />
                     {{ t('landing.nav.demo') }}
                 </BNavItem>
                 <BNavItem
@@ -35,11 +35,11 @@ const { t } = useI18n();
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <PhosphorIcon name="book-open-text" class="me-1" />
+                    <Icon name="ph:book-open-text" class="me-1" />
                     {{ t('landing.nav.docs') }}
                 </BNavItem>
                 <BNavItem v-else disabled>
-                    <PhosphorIcon name="book-open-text" class="me-1" />
+                    <Icon name="ph:book-open-text" class="me-1" />
                     {{ t('landing.nav.docs') }}
                 </BNavItem>
             </BNavbarNav>
@@ -52,23 +52,12 @@ const { t } = useI18n();
                     rel="noopener noreferrer"
                     class="d-flex align-items-center"
                 >
-                    <PhosphorIcon name="github-logo" class="me-1" />
+                    <Icon name="ph:github-logo" class="me-1" />
                     GitHub
                 </BNavItem>
                 <div class="d-flex align-items-center gap-2 px-2">
                     <LocaleSwitcher />
-                    <ClientOnly>
-                        <ThemeSwitcher />
-                        <template #fallback>
-                            <BButton
-                                variant="outline-secondary"
-                                size="sm"
-                                disabled
-                            >
-                                <PhosphorIcon name="monitor" />
-                            </BButton>
-                        </template>
-                    </ClientOnly>
+                    <ThemeSwitcher />
                 </div>
             </BNavbarNav>
         </BCollapse>

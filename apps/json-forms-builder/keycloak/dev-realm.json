@@ -80,6 +80,15 @@
                 "clientRole": false,
                 "containerId": "5a1163c2-4a47-4c52-88ba-4a6cffcce165",
                 "attributes": {}
+            },
+            {
+                "id": "0d9c6d7e-1b2f-4a3e-9c8d-7e6f5a4b3c2d",
+                "name": "admin",
+                "description": "Administrator — global admin role for the form builder app",
+                "composite": false,
+                "clientRole": false,
+                "containerId": "5a1163c2-4a47-4c52-88ba-4a6cffcce165",
+                "attributes": {}
             }
         ],
         "client": {
@@ -459,7 +468,7 @@
             ],
             "disableableCredentialTypes": [],
             "requiredActions": [],
-            "realmRoles": ["default-roles-dev"],
+            "realmRoles": ["default-roles-dev", "admin"],
             "notBefore": 0,
             "groups": []
         },

@@ -328,6 +328,7 @@
             "expireHint": "Optional — leer lassen für kein Ablaufdatum.",
             "inheritHint": "Dieser Benutzer hat bereits die Rolle {role} von einer übergeordneten Gruppe. Du kannst nur eine höhere Rolle zuweisen."
         },
+        "needRoleHint": "Für diese Aktion wird mindestens {role}-Zugriff benötigt.",
         "roles": {
             "owner": "Besitzer",
             "ownerDescription": "Vollständige Kontrolle — kann Berechtigungen verwalten, Einstellungen bearbeiten und das Element löschen.",

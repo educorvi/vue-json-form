@@ -36,6 +36,7 @@
     "dependencies": {
         "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
+        "@phosphor-icons/vue": "^2.2.1",
         "@popperjs/core": "^2.11.8",
         "@vueuse/core": "^14.4.0",
         "bootstrap": "^5.3.8",

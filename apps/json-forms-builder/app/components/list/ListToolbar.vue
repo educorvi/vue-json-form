@@ -59,7 +59,7 @@ function toggleSortOrder() {
             <BInputGroup>
                 <BInputGroupText>
                     <!-- <PhMagnifyingGlass :size="16" /> -->
-                    <PhosphorIcon name="magnifying-glass" />
+                    <Icon name="ph:magnifying-glass" />
                 </BInputGroupText>
                 <BFormInput
                     :placeholder="
@@ -93,11 +93,11 @@ function toggleSortOrder() {
                 >
                     <!-- <PhSortAscending v-if="sortOrder === 'asc'" :size="16" /> -->
                     <!-- <PhSortDescending v-else :size="16" /> -->
-                    <PhosphorIcon
+                    <Icon
                         v-if="sortOrder === 'asc'"
-                        name="sort-ascending"
+                        name="ph:sort-ascending"
                     />
-                    <PhosphorIcon v-else name="sort-descending" />
+                    <Icon v-else name="ph:sort-descending" />
                 </BButton>
             </BInputGroup>
         </BCol>

@@ -18,9 +18,9 @@ export interface BreadcrumbItem {
 type EntityType = keyof typeof ENTITY_CONFIG;
 
 const ENTITY_CONFIG = {
-    groups: { labelKey: 'nav.groups', icon: 'folder', route: '/groups' },
-    forms: { labelKey: 'nav.forms', icon: 'file', route: '/forms' },
-    users: { labelKey: 'nav.users', icon: 'users', route: '/users' },
+    groups: { labelKey: 'nav.groups', icon: 'ph:folder', route: '/groups' },
+    forms: { labelKey: 'nav.forms', icon: 'ph:file-text', route: '/forms' },
+    users: { labelKey: 'nav.users', icon: 'ph:users', route: '/users' },
 } as const;
 
 export function useAppBreadcrumb() {

@@ -1,13 +1,14 @@
 import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
+import { clickUntil } from './click-until';
+
 /**
  * the theme switcher values
  */
 export type ThemeMode = 'Light' | 'Dark';
 
 const THEME_SWITCHER_TESTID = 'theme-switcher';
-const THEME_CYCLE_LENGTH = 3;
 
 /**
  * The page background color per theme
@@ -36,15 +37,21 @@ export async function assertThemeAppearance(
 ): Promise<void> {
     const theme = THEME_MODE_BOOTSTRAP_ATTRS[mode];
     await expect(page.locator('html')).toHaveAttribute('data-bs-theme', theme);
-    await expect
-        .poll(() =>
-            page.evaluate(() => getComputedStyle(document.body).backgroundColor)
-        )
-        .toBe(THEME_BODY_COLORS[mode]);
+    // toHaveCSS auto-retries until the style actually matches (CSS
+    // recalc happens asynchronously after the attribute change).
+    await expect(page.locator('body')).toHaveCSS(
+        'background-color',
+        THEME_BODY_COLORS[mode]
+    );
 }
 
 /**
  * Clicks the theme switcher until the desired mode is active.
+ *
+ * The switcher is SSR-rendered, so it is visible BEFORE Vue hydrates —
+ * a click before that is silently dropped. `clickUntil` retries until
+ * the switcher's own label shows the target mode (an outcome check).
+ *
  * @param page The Playwright page.
  * @param target The theme mode to switch to.
  */
@@ -55,18 +62,8 @@ export async function switchTheme(
     const switcher = page.getByTestId(THEME_SWITCHER_TESTID);
     await expect(switcher).toBeVisible();
 
-    for (let click = 0; click < THEME_CYCLE_LENGTH; click++) {
-        const mode = (await switcher.textContent())?.trim();
-        if (mode === target) {
-            break;
-        }
-        await switcher.click();
-    }
-
-    const current = (await switcher.textContent())?.trim();
-    if (current !== target) {
-        throw new Error(
-            `switchTheme(): expected theme "${target}" after at most ${THEME_CYCLE_LENGTH} clicks, but the switcher ended on "${current}" `
-        );
-    }
+    await clickUntil(
+        switcher,
+        async () => (await switcher.textContent())?.trim() === target
+    );
 }

@@ -151,7 +151,7 @@ function cancel() {
     <BasePage
         :title="t('forms.new.title')"
         :description="t('forms.new.subtitle')"
-        icon="file-plus"
+        icon="ph:file-plus"
     >
         <BCard>
             <BCardBody>

@@ -194,7 +194,7 @@ watch(search, (val) => {
                         class="d-inline-flex align-items-center gap-1"
                         style="min-width: 0; overflow: hidden"
                     >
-                        <PhosphorIcon name="folder" />
+                        <Icon name="ph:folder" />
                         <template
                             v-for="(entry, idx) in selectedPath"
                             :key="entry.id"
@@ -202,9 +202,9 @@ watch(search, (val) => {
                             <span class="text-body text-nowrap">{{
                                 entry.label
                             }}</span>
-                            <PhosphorIcon
+                            <Icon
                                 v-if="idx < selectedPath.length - 1"
-                                name="caret-right"
+                                name="ph:caret-right"
                                 :size="10"
                                 class="text-secondary flex-shrink-0"
                             />
@@ -223,10 +223,10 @@ watch(search, (val) => {
                     class="text-secondary p-0 lh-1 border-0"
                     @click.stop="clearSelection"
                 >
-                    <PhosphorIcon name="x" />
+                    <Icon name="ph:x" />
                 </BButton>
-                <PhosphorIcon
-                    :name="open ? 'caret-up' : 'caret-down'"
+                <Icon
+                    :name="open ? 'ph:caret-up' : 'ph:caret-down'"
                     :size="14"
                     class="text-secondary"
                 />
@@ -242,7 +242,7 @@ watch(search, (val) => {
             <div class="px-2 pt-2">
                 <BInputGroup size="sm">
                     <BInputGroupText>
-                        <PhosphorIcon name="magnifying-glass" :size="14" />
+                        <Icon name="ph:magnifying-glass" :size="14" />
                     </BInputGroupText>
                     <BFormInput
                         ref="searchInput"

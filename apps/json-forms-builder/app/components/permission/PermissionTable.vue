@@ -17,6 +17,8 @@ defineProps<{
     totalPages: number;
     currentPage: number;
     pageSize: number;
+    /** Whether the current user may add/edit/remove permissions (owner/admin only). */
+    canManage?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -149,21 +151,21 @@ function formatExpire(
 
                     <!-- Actions column -->
                     <BTd class="text-end">
-                        <template v-if="perm.scope === 'direct'">
+                        <template v-if="perm.scope === 'direct' && canManage">
                             <BButton
                                 variant="outline-secondary"
                                 size="sm"
                                 class="me-1"
                                 @click="emit('edit', perm)"
                             >
-                                <PhosphorIcon name="pencil-simple" :size="14" />
+                                <Icon name="ph:pencil-simple" :size="14" />
                             </BButton>
                             <BButton
                                 variant="outline-danger"
                                 size="sm"
                                 @click="emit('delete', perm)"
                             >
-                                <PhosphorIcon name="trash" :size="14" />
+                                <Icon name="ph:trash" :size="14" />
                             </BButton>
                         </template>
                     </BTd>

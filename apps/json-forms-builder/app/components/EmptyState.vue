@@ -6,7 +6,7 @@ withDefaults(
         description?: string;
     }>(),
     {
-        icon: () => 'tray',
+        icon: () => 'ph:tray',
     }
 );
 </script>
@@ -19,7 +19,7 @@ withDefaults(
             class="d-flex align-items-center justify-content-center rounded-circle bg-light mb-3"
             style="width: 80px; height: 80px"
         >
-            <PhosphorIcon :name="icon" :size="40" class="text-secondary" />
+            <Icon :name="icon" :size="40" class="text-secondary" />
         </div>
         <p class="fs-5 fw-semibold mb-1">{{ title }}</p>
         <p

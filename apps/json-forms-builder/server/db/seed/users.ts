@@ -1,6 +1,6 @@
 import type { DataSource, Repository } from 'typeorm';
 import { User } from '../entities/User';
-import { E2E_USERS, E2EUser } from './users-constants';
+import { E2E_USERS, type E2EUser } from './users-constants';
 
 /**
  * The Keycloak `test` / `user2` / `user3` users (keycloak/dev-realm.json) mirrored in the app's `user` table. The primary key is the Keycloak `sub`, so the IDs here MUST match the realm export
@@ -39,6 +39,9 @@ async function ensureUser(
             name: props.name,
             role: props.role,
         });
+        user = await repo.save(user);
+    } else if (user.role !== props.role) {
+        user.role = props.role;
         user = await repo.save(user);
     }
     return user;
