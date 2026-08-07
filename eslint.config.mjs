@@ -21,6 +21,7 @@ export default [
             '**/*.d.ts',
             '**/node_modules/**',
             '**/generated/**',
+            '**/docs-dist/**',
         ],
     },
     js.configs.recommended,
