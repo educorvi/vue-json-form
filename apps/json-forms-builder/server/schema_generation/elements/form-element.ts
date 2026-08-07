@@ -5,19 +5,19 @@ import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity } from "./base";
 
+type FormElementData = z.infer<typeof FormElement.schema>;
 export abstract class FormElement extends Entity {
-    dependencyGroup?: DependencyGroup;
+    data: FormElementData;
 
-    static schema = Entity.schema.extend({
+    static schema = super.schema.extend({
         dependencyGroup: z.lazy((): z.ZodTypeAny => DependencyGroup.schema).optional()
     });
 
     constructor(
-        id?: string,
-        dependencyGroup?: DependencyGroup
+        data: FormElementData
     ) {
-        super(id);
-        this.dependencyGroup = dependencyGroup;
+        super(data);
+        this.data = data;
     }
 
     abstract toUiSchema(generator: SchemaGenerator, scope: string[]): Control | HTMLRenderer;
@@ -29,13 +29,9 @@ export abstract class FormElement extends Entity {
     }
 }
 
+type BaseDataElementData = z.infer<typeof BaseDataElement.schema>;
 export abstract class BaseDataElement extends FormElement {
-    title!: string;
-    description?: string;
-    tooltip?: string;
-    hidden!: boolean;
-    preHtml?: string;
-    postHtml?: string;
+    data: BaseDataElementData
 
     // more attributes
     static schema = FormElement.schema.extend({
@@ -48,48 +44,34 @@ export abstract class BaseDataElement extends FormElement {
     });
 
     constructor(
-        title: string,
-        description?: string,
-        dependencyGroup?: DependencyGroup,
-        id?: string,
-        tooltip?: string,
-        hidden: boolean = false,
-        preHtml?: string,
-        postHtml?: string
+        data: BaseDataElementData
     ) {
-        super(id ? id : title, dependencyGroup);
-        this.title = title;
-        this.description = description;
-        this.tooltip = tooltip;
-        this.hidden = hidden;
-        this.preHtml = preHtml;
-        this.postHtml = postHtml;
+        super(data);
+        this.data = data;
     }
 
     getUiSchemaOptions(): Options {
         const options: Options = {};
-        if (this.tooltip) {
-            options["tooltip"] = this.tooltip;
+        if (this.data.tooltip) {
+            options["tooltip"] = this.data.tooltip;
         }
-        if (this.hidden) {
-            options["hidden"] = this.hidden;
+        if (this.data.hidden) {
+            options["hidden"] = this.data.hidden;
         }
-        if (this.preHtml) {
-            options["preHtml"] = this.preHtml;
+        if (this.data.preHtml) {
+            options["preHtml"] = this.data.preHtml;
         }
-        if (this.postHtml) {
-            options["postHtml"] = this.postHtml;
+        if (this.data.postHtml) {
+            options["postHtml"] = this.data.postHtml;
         }
         return options;
     }
 
 }
 
+type SimpleElementData = z.infer<typeof SimpleElement.schema>;
 export abstract class SimpleElement extends BaseDataElement {
-    required!: boolean;
-    appendValue?: string;
-    prependValue?: string;
-    pattern?: string;
+    data: SimpleElementData;
 
     // more attributes
     static schema = BaseDataElement.schema.extend({
@@ -100,36 +82,22 @@ export abstract class SimpleElement extends BaseDataElement {
     });
 
     constructor(
-        title: string,
-        description?: string,
-        required: boolean = false,
-        dependencyGroup?: DependencyGroup,
-        id?: string,
-        tooltip?: string,
-        hidden: boolean = false,
-        preHtml?: string,
-        postHtml?: string,
-        appendValue?: string,
-        prependValue?: string,
-        pattern?: string
+        data: SimpleElementData
     ) {
-        super(title, description, dependencyGroup, id, tooltip, hidden, preHtml, postHtml);
-        this.required = required;
-        this.appendValue = appendValue;
-        this.prependValue = prependValue;
-        this.pattern = pattern;
+        super(data);
+        this.data = data;
     }
 
     getUiSchemaOptions(): Options {
         const options = super.getUiSchemaOptions();
-        if (this.appendValue) {
-            options["appendValue"] = this.appendValue;
+        if (this.data.appendValue) {
+            options["appendValue"] = this.data.appendValue;
         }
-        if (this.prependValue) {
-            options["prependValue"] = this.prependValue;
+        if (this.data.prependValue) {
+            options["prependValue"] = this.data.prependValue;
         }
-        if (this.pattern) {
-            options["pattern"] = this.pattern;
+        if (this.data.pattern) {
+            options["pattern"] = this.data.pattern;
         }
         return options;
     }

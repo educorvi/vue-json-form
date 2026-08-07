@@ -1,22 +1,30 @@
 import { z } from "zod";
 import { createId } from "../utils";
 
+type EntityData = z.infer<typeof Entity.schema>;
 export abstract class Entity {
-    readonly uid: string;
-    id!: string;
+    data: EntityData;
 
-    // more attributes
     static schema = z.object({
+        uid: z.string().readonly(),
         id: z.string()
     });
 
-    constructor(id?: string) {
-        this.id = id ? createId(id) : createId(this.constructor.name);
-        this.uid = this.id + "_" + globalThis.crypto.randomUUID();
+    constructor(data: Partial<EntityData>) {
+        const id = data.id ? createId(data.id) : createId(this.constructor.name);
+        this.data = {
+            id: id,
+            uid: data.uid || createId(id) + "_" + globalThis.crypto.randomUUID()
+        };
+    }
+
+    toJSON(): string {
+        return JSON.stringify(this.data);
     }
 
     getID(): string {
-        return this.id;
+        // return this.id;
+        return this.data.id;
     }
 }
 

@@ -20,12 +20,9 @@ export enum StringFormat {
 }
 
 
+type StringElementData = z.infer<typeof StringElement.schema>;
 export class StringElement extends SimpleElement {
-    readonly type = "string";
-    format!: StringFormat;
-    minLength?: number;
-    maxLength?: number;
-    placeholder?: string;
+    data: StringElementData;
 
     // more attributes
     static schema = SimpleElement.schema.extend({
@@ -37,22 +34,13 @@ export class StringElement extends SimpleElement {
     });
 
     constructor(
-        title: string,
-        description?: string,
-        format: StringFormat = StringFormat.Text,
-        required: boolean = false,
-        dependencyGroup?: DependencyGroup,
-        id?: string,
-        tooltip?: string,
-        hidden: boolean = false,
-        preHtml?: string,
-        postHtml?: string,
-        appendValue?: string,
-        prependValue?: string,
-        pattern?: string
+        data: Partial<StringElementData> & Omit<StringElementData, "format">,
     ) {
-        super(title, description, required, dependencyGroup, id, tooltip, hidden, preHtml, postHtml, appendValue, prependValue, pattern);
-        this.format = format;
+        super(data);
+        this.data = {
+            ...data,
+            format: data.format ?? StringFormat.Text
+        }
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
@@ -61,15 +49,15 @@ export class StringElement extends SimpleElement {
             "scope": _scope.join("/") + "/" + this.getID(),
         };
         const options = super.getUiSchemaOptions();
-        if (this.placeholder) {
-            options["placeholder"] = this.placeholder;
+        if (this.data.placeholder) {
+            options["placeholder"] = this.data.placeholder;
         }
         if (Object.keys(options).length > 0) {
             uiSchema.options = options;
         }
 
-        if (this.dependencyGroup) {
-            uiSchema.showOn = this.dependencyGroup.toUiSchema(_generator, _scope);
+        if (this.data.dependencyGroup) {
+            uiSchema.showOn = this.data.dependencyGroup.toUiSchema(_generator, _scope);
         }
         return uiSchema;
     }
@@ -77,19 +65,19 @@ export class StringElement extends SimpleElement {
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         let schema: any = {
             "type": "string",
-            "title": this.title,
+            "title": this.data.title,
         };
-        if (this.description !== undefined) {
-            schema.description = this.description;
+        if (this.data.description !== undefined) {
+            schema.description = this.data.description;
         }
-        if (this.format !== undefined) {
-            schema.format = this.format;
+        if (this.data.format !== undefined) {
+            schema.format = this.data.format;
         }
-        if (this.minLength !== undefined) {
-            schema.minLength = this.minLength;
+        if (this.data.minLength !== undefined) {
+            schema.minLength = this.data.minLength;
         }
-        if (this.maxLength !== undefined) {
-            schema.maxLength = this.maxLength;
+        if (this.data.maxLength !== undefined) {
+            schema.maxLength = this.data.maxLength;
         }
 
         return schema;
@@ -97,15 +85,15 @@ export class StringElement extends SimpleElement {
 
     static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: any): StringElement {
         if (jsonSchema.type === "string") {
-            const stringElement = new StringElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description);
+            const stringElement = new StringElement({"title": jsonSchema.title ? jsonSchema.title : "", "description": jsonSchema.description});
             if (jsonSchema.format && Object.values(StringFormat as unknown as string[]).includes(jsonSchema.format)) {
-                stringElement.format = jsonSchema.format as StringFormat;
+                stringElement.data.format = jsonSchema.format as StringFormat;
             } else {
                 throw new Error("Invalid format for StringElement: " + jsonSchema.format);
             }
-            stringElement.minLength = jsonSchema.minLength;
-            stringElement.maxLength = jsonSchema.maxLength;
-            stringElement.placeholder = uiSchema.options?.placeholder;
+            stringElement.data.minLength = jsonSchema.minLength;
+            stringElement.data.maxLength = jsonSchema.maxLength;
+            stringElement.data.placeholder = uiSchema.options?.placeholder;
             return stringElement;
         } else {
             throw new Error("Invalid type for StringElement: " + jsonSchema.type);

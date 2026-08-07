@@ -189,7 +189,7 @@ export class FormDefinition {
     changes: Partial<Omit<T, 'uid'>>,
   ): void {
     const oldId = element.uid;
-    Object.assign(element, changes);
+    element = { ...element, ...changes};
 
     if ('uid' in changes && changes.uid !== oldId) {
       // TODO: re-key nodesIndex (delete old, set new), update parentIndex for
@@ -226,7 +226,8 @@ export class FormDefinition {
     if (!formParseResult.success) {
       throw new Error(`Invalid Form data: ${formParseResult.error.message}`);
     }
-    const form = formParseResult.data;
+    const form = new Form(formParseResult.data);
+    const formDefinition = new FormDefinition(form);
 
     const elements: FormElement[] = [];
     for (const [id, rawElement] of Object.entries(raw.elements)) {
