@@ -99,7 +99,14 @@ export const formCrudProcedures = {
                 if (!ok) {
                     throw errors.FORBIDDEN({
                         message:
-                            'You need at least editor access on the parent group to create forms.',
+                            'You need at least owner access on the parent group to create forms.',
+                    });
+                }
+            } else {
+                // Root forms may only be created by admins.
+                if (!user.roles.includes('admin')) {
+                    throw errors.FORBIDDEN({
+                        message: 'Only admins can create root forms.',
                     });
                 }
             }

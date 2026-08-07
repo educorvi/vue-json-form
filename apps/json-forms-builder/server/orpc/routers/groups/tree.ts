@@ -3,7 +3,10 @@ import { AppDataSource } from '~~/server/db/data-source';
 import { GroupService } from '~~/server/services/GroupService';
 import { FormService } from '~~/server/services/FormService';
 import { zListGroupChildrenQuery } from '../../generated/zod.gen';
-import { resolveAccessibleGroupIds } from '~~/server/lib/access-control';
+import {
+    requireGroupAccess,
+    resolveAccessibleGroupIds,
+} from '~~/server/lib/access-control';
 import { ResourceViewPermission } from '~~/server/lib/permissions';
 import { mapContextUserRolesToDbRole } from '../../mapping/user';
 import type { Form } from '~~/server/db/entities/Form';
@@ -50,6 +53,14 @@ export const groupTreeProcedures = {
             const q = input.query ?? zListGroupChildrenQuery.parse({});
             const parentGroup = await groupService.getByIdOrSlug(
                 input.params.id
+            );
+            // Reject access to a private parent group outright — listing
+            // children is a read operation on the parent itself.
+            await requireGroupAccess(
+                AppDataSource,
+                { id: user.id, role: mapContextUserRolesToDbRole(user.roles) },
+                parentGroup.id,
+                ResourceViewPermission
             );
             const parentId = parentGroup.id;
             const orderBy = FORM_ORDER_BY[q.order_by] ?? 'title';

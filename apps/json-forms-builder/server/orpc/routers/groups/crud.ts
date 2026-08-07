@@ -142,7 +142,14 @@ export const groupCrudProcedures = {
                 input.query?.parent
             );
 
-            if (parentIdParam != null) {
+            if (parentIdParam == null) {
+                // Root groups may only be created by admins.
+                if (!user.roles.includes('admin')) {
+                    throw errors.FORBIDDEN({
+                        message: 'Only admins can create root groups.',
+                    });
+                }
+            } else {
                 const ok = await canAccessGroup(
                     AppDataSource,
                     toAccessUser(user),
@@ -152,7 +159,7 @@ export const groupCrudProcedures = {
                 if (!ok) {
                     throw errors.FORBIDDEN({
                         message:
-                            'You need at least editor access on the parent group.',
+                            'You need at least owner access on the parent group.',
                     });
                 }
             }

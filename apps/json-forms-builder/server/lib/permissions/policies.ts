@@ -90,10 +90,7 @@ export const ResourceUpdatePermission = new PermissionPolicy(
 export const ResourceDeletePermission = new PermissionPolicy(['owner']);
 
 /** Create sub-groups or forms within a group */
-export const ResourceCreateChildPermission = new PermissionPolicy([
-    'owner',
-    'editor',
-]);
+export const ResourceCreateChildPermission = new PermissionPolicy(['owner']);
 
 /** Manage permissions (add/remove/change other users' permissions) */
 export const ResourceManagePermissionsPermission = new PermissionPolicy([

@@ -19,8 +19,12 @@ export type AppContext = {
  * Contract implementer — fully replaces `os` for contract-first procedures.
  * Using implement() ensures the router is type-checked and the contract is
  * enforced at runtime (input/output validation, correct HTTP method & path).
+ *
+ * `initialInputValidationIndex: pins input validation to the END of the middleware chain. So first the authentication is checked and then the input validation
  */
-export const os = implement(appContract).$context<AppContext>();
+export const os = implement(appContract, {
+    initialInputValidationIndex: 10,
+}).$context<AppContext>();
 
 /**
  * Protected middleware — throws UNAUTHORIZED if no user session.

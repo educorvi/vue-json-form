@@ -385,9 +385,7 @@ export class PermissionService {
                     uu.id AS uu_id, uu.name AS uu_name, uu.email AS uu_email
              FROM (
                 SELECT id, created FROM permissions WHERE form_id = $1
-                ${
-                    ancestorIds.length > 0
-                        ? `UNION ALL
+                UNION ALL
                 SELECT id, created FROM (
                   SELECT DISTINCT ON (p.user_id) p.id, p.created
                   FROM permissions p
@@ -398,9 +396,7 @@ export class PermissionService {
                     )
                   ORDER BY p.user_id,
                     COALESCE(array_position($2::int[], p.group_id), 0) DESC
-                ) inherited_pick`
-                        : ''
-                }
+                ) inherited_pick
                 ORDER BY created DESC
                 OFFSET $3 LIMIT $4
              ) combined
@@ -409,9 +405,7 @@ export class PermissionService {
              LEFT JOIN "user" cu ON cu.id = p.created_by
              LEFT JOIN "user" uu ON uu.id = p.updated_by
              ORDER BY p.created DESC`,
-            ancestorIds.length > 0
-                ? [formId, ancestorIds, offset, pageSize]
-                : [formId, offset, pageSize]
+            [formId, ancestorIds, offset, pageSize]
         );
 
         // Batch-compute inherited_role for direct-permission users

@@ -33,3 +33,49 @@ export function createApiClient(token: string): RouterClient<AppRouter> {
     });
     return createORPCClient(link);
 }
+
+/**
+ * Builds an UNauthenticated oRPC client — no Bearer token. Used by the
+ * auth-required integration tests to verify that every protected
+ * endpoint rejects requests without credentials.
+ */
+export function createUnauthenticatedClient(): RouterClient<AppRouter> {
+    const link = new RPCLink({
+        url: `${TEST_BASE_URL}/rpc`,
+    });
+    return createORPCClient(link);
+}
+
+/**
+ * Resolves a dotted procedure path on an oRPC client, e.g.
+ * `groups.permissions.list` → `client.groups.permissions.list`.
+ */
+export function resolveProcedure(
+    client: RouterClient<AppRouter>,
+    path: string
+): (...args: unknown[]) => Promise<unknown> {
+    let target: unknown = client;
+    for (const segment of path.split('.')) {
+        target = (target as Record<string, unknown>)[segment];
+    }
+    return target as (...args: unknown[]) => Promise<unknown>;
+}
+
+/**
+ * Invokes the procedure on an unauthenticated client with the given
+ * input (an empty object for procedures without required input — the
+ * server's auth middleware rejects the request with UNAUTHORIZED).
+ *
+ * Note: this client is created WITHOUT a contract, so the oRPC client
+ * does NOT validate input locally — the request always reaches the
+ * server. There, the auth middleware runs BEFORE input validation
+ * (`initialInputValidationIndex` in server/orpc/init.ts), so even
+ * invalid input is rejected with UNAUTHORIZED, not BAD_REQUEST.
+ */
+export function callUnauthenticated(
+    path: string,
+    input: Record<string, unknown> = {}
+): Promise<unknown> {
+    const procedure = resolveProcedure(createUnauthenticatedClient(), path);
+    return procedure(input);
+}
