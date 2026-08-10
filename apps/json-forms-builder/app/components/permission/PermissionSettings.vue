@@ -34,7 +34,9 @@ const { notify } = useNotify();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 // Access control: only users with at least `owner` on this resource (or
-// admins) may add/edit/remove permissions.
+// admins) may add/edit/remove permissions. The effective role comes
+// server-side with the resource payload — no extra request, no pending
+// state, so SSR renders the final button state immediately.
 const access = useResourceAccess(() => props.resource);
 const canManage = computed(() => access.canManagePermissions.value);
 
