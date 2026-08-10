@@ -1,4 +1,4 @@
-import type { DependencyGroup } from './dependency';
+import { Dependency, DependencyGroup } from './dependency';
 import { Form } from './form';
 import { FormElement } from './form-element';
 import { ContainerElement } from './container';
@@ -15,33 +15,52 @@ import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
  *  dependencyGraph — elementId → Dependency (only elements that have one) TODO???????????????????
  */
 export class FormDefinition {
-  readonly nodesIndex = new Map<string, FormElement>();
-  readonly parentIndex = new Map<string, string>(); // elementId → parentId
-  readonly dependencyGraph = new Map<string, DependencyGroup>();
+  readonly root: Form;
 
-  constructor(public readonly root: Form, children: FormElement[] = []) {
-    this.buildIndexes(children, root.uid);
+  nodesIndex: Map<string, FormElement>;
+  parentIndex: Map<string, string>;
+
+  dependencyIndex: Map<string, Dependency | DependencyGroup>;
+  dependencyParentIndex: Map<string, string>;
+  elementDependencyGraph: Map<string, string[]>;
+
+  constructor(root: Form, nodesIndex?: Map<string, FormElement>, parentIndex?: Map<string, string>, dependencyIndex?: Map<string, Dependency | DependencyGroup>, dependencyParentIndex?: Map<string, string>, elementDependencyGraph?: Map<string, string[]>) {
+
+    this.root = root;
+    this.nodesIndex = nodesIndex ?? new Map<string, FormElement>();
+    this.parentIndex = parentIndex ?? new Map<string, string>(); // elementId → parentId
+    this.dependencyIndex = dependencyIndex ?? new Map<string, Dependency | DependencyGroup>();
+    this.dependencyParentIndex = dependencyParentIndex ?? new Map<string, string>(); // dependencyId or dependencyGroupId → dependencyGroupId or elementId of parent
+    this.elementDependencyGraph = elementDependencyGraph ?? new Map<string, string[]>(); // elementId → dependencyId
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────
 
-  private buildIndexes(children: FormElement[], parentId: string): void {
-    for (const child of children) {
-      this.nodesIndex.set(child.uid, child);
-      this.parentIndex.set(child.uid, parentId);
-      // if (child.dependencyGroup) {
-      //   this.dependencyGraph.set(child.uid, child.dependencyGroup); //??????????TODO
-      // }
-      if (child instanceof ContainerElement) {
-        this.buildIndexes(this.childrenOf(child.uid), child.uid);
-      }
-    }
-  }
+  // private buildIndexes(children: FormElement[], parentId: string): void {
+  //   for (const child of children) {
+  //     this.nodesIndex.set(child.uid, child);
+  //     this.parentIndex.set(child.uid, parentId);
+  //     if (child instanceof ContainerElement) {
+  //       this.buildIndexes(this.childrenOf(child.uid), child.uid);
+  //     }
+  //   }
+  // }
 
+  /**
+   * deletes element from nodesIndex, parentIndex, dependencyGraph and recursively deletes all children if element is a ContainerElement
+   * also deletes dependencies this element is a source for from dependencyGraph
+   */
   private removeFromIndexes(element: FormElement): void {
     this.nodesIndex.delete(element.uid);
     this.parentIndex.delete(element.uid);
-    this.dependencyGraph.delete(element.uid);    // TODO ??????????????? auch alle die die id dann in dependencygroup haben?
+
+    // delete all dependencies this element is a source for
+    const sources = this.elementDependencyGraph.get(element.uid);
+    for (const sourceId of sources ?? []) {
+      this.dependencyIndex.delete(sourceId);
+    }
+    this.elementDependencyGraph.delete(element.uid);
+
     if (element instanceof ContainerElement) {
       for (const childId of element.children) {
         const child = this.getElementById(childId);
@@ -54,7 +73,14 @@ export class FormDefinition {
     }
   }
 
-  /** Returns the children array of the given parent (Form or ContainerElement). */
+  getDependenciesElementIsSourceFor(elementId: string): string[] {
+    const sourceIds = this.elementDependencyGraph.get(elementId);
+    return sourceIds ?? [];
+  }
+
+  /**
+   * Returns the children array of the given parent (Form or ContainerElement).
+   */
   private childrenOf(parentId: string): FormElement[] {
 
     let children = parentId === this.root.uid ? this.root.children : undefined;
@@ -89,6 +115,22 @@ export class FormDefinition {
     const parentId = this.getParentId(elementId);
     if (!parentId) return undefined;
     return this.getElementById(parentId);
+  }
+
+  getDependency_Group(elementId: string): Dependency | DependencyGroup | undefined {
+    return this.dependencyIndex.get(elementId);
+  }
+
+  getParentOfDependency_Group(dependencyId: string): DependencyGroup | FormElement | undefined {
+    const parentId = this.dependencyParentIndex.get(dependencyId);
+    if (!parentId) return undefined;
+    const parentElement = this.getElementById(parentId);
+    if (parentElement) return parentElement;
+    const parentDependencyGroup = this.getDependency_Group(parentId);
+    if (parentDependencyGroup instanceof DependencyGroup) return parentDependencyGroup;
+    // TODO proper logging
+    console.log(`Warning: dependencyParentIndex for dependency "${dependencyId}" points to "${parentId}", which is neither a FormElement nor a DependencyGroup.`);
+    return undefined;
   }
 
 
@@ -156,28 +198,67 @@ export class FormDefinition {
     // Index the inserted element itself
     this.nodesIndex.set(formElement.uid, formElement);
     this.parentIndex.set(formElement.uid, containerElement.uid);
-    // if (formElement.dependencyGroup) { // TODO???????????????
-    //   this.dependencyGraph.set(formElement.uid, formElement.dependencyGroup);
-    // }
-
-    // If it already carries children, index them too
-    if (formElement instanceof ContainerElement) {
-      this.buildIndexes([formElement], containerElement.uid);
-    }
   }
 
   /**
-   * Attach or replace a dependency on an element.
-   * Pass undefined to remove the dependency group.
+   * Add a dependency to the dependencyIndex and update the elementDependencyGraph for the source element.
+   * Also updates the dependencyParentIndex to point to the parent dependency group or element.
    */
-  // TODO ???????????????????????????
-  setDependency(formElement: FormElement, dependencyGroup: DependencyGroup | undefined): void {
-    formElement.dependencyGroup = dependencyGroup;
-    if (dependencyGroup) {
-      this.dependencyGraph.set(formElement.uid, dependencyGroup);
-    } else {
-      this.dependencyGraph.delete(formElement.uid);
+  addDependencyToGroup(dependency: Dependency, dependencyGroupId: string): void {
+    if (!this.getDependency_Group(dependencyGroupId)) {
+      throw new Error(`Parent DependencyGroup "${dependencyGroupId}" not found`);
     }
+    this.dependencyIndex.set(dependency.uid, dependency);
+    this.dependencyParentIndex.set(dependency.uid, dependencyGroupId);
+
+    // Update the elementDependencyGraph for the source element
+    const sourceId = dependency.data.sourceId;
+    if (!this.elementDependencyGraph.has(sourceId)) {
+      this.elementDependencyGraph.set(sourceId, []);
+    }
+    const sourceDependencies = this.elementDependencyGraph.get(sourceId);
+    if (sourceDependencies && !sourceDependencies.includes(dependency.uid)) {
+      sourceDependencies.push(dependency.uid);
+    }
+  }
+
+  addDependencyGroup(dependencyGroup: DependencyGroup, parentId: string): void {
+    if (!this.getDependency_Group(parentId) && !this.getElementById(parentId)) {
+      throw new Error(`Parent "${parentId}" not found`);
+    }
+    if (!(this.getElementById(parentId) instanceof FormElement)) {
+      throw new Error(`Parent "${parentId}" is not a FormElement`);
+    }
+    this.dependencyIndex.set(dependencyGroup.uid, dependencyGroup);
+    this.dependencyParentIndex.set(dependencyGroup.uid, parentId);
+  }
+
+  deleteDependency_Group(dependencyId: string): void {
+    const dependency = this.getDependency_Group(dependencyId);
+    if (!dependency) throw new Error(`Dependency "${dependencyId}" not found`);
+
+    const parentId = this.dependencyParentIndex.get(dependencyId);
+    if (parentId) {
+      const parent = this.getDependency_Group(parentId)
+      if (parent) {
+        if (!(parent instanceof DependencyGroup)) {
+          throw new Error(`Parent "${parentId}" is not a DependencyGroup`);
+        }
+        // delete from dependency list
+        const idx = parent.dependencies.indexOf(dependencyId);
+        if (idx !== -1) parent.dependencies.splice(idx, 1);
+
+      } else {
+        const parent = this.getElementById(parentId);
+        if (!parent) {
+          throw new Error(`Parent "${parentId}" not found`);
+        }
+        parent.data.dependencyGroup = undefined;
+      }
+    }
+
+    this.dependencyIndex.delete(dependencyId);
+    this.dependencyParentIndex.delete(dependencyId);
   }
 
   /**
@@ -213,7 +294,11 @@ export class FormDefinition {
       // version: this.version or timestamp or whatever TODO
       root: this.root,
       elements: Object.fromEntries(this.nodesIndex),
-    }
+      parents: Object.fromEntries(this.parentIndex),
+      dependencies: Object.fromEntries(this.dependencyIndex),
+      dependencyParents: Object.fromEntries(this.dependencyParentIndex),
+      elementDependencyGraph: Object.fromEntries(this.elementDependencyGraph),
+    };
   }
 
   /** Rebuild a FormDefinition from a previously serialised JSON string. */

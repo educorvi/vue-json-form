@@ -1,6 +1,6 @@
 import type { FormDefinition } from './form-definition';
 import type { JSONSchema, Control, HTMLRenderer, ShowOnProperty } from '@educorvi/vue-json-form-schemas';
-import type { DependencyGroup } from './dependency';
+import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
 import { getBaseJsonSchema } from '../utils';
 
@@ -17,7 +17,7 @@ import { getBaseJsonSchema } from '../utils';
  * ContainerElement subclasses call generator.generate(child) for each child.
  */
 interface GeneratorHelperAttributes {
-  lastDependencyGroups: DependencyGroup[];
+  lastDependencyGroupsIds: string[];
   allOf?: JSONSchema["allOf"];
 }
 
@@ -28,24 +28,28 @@ export class SchemaGenerator {
   constructor(document: FormDefinition) {
     this.document = document;
     this.generatorHelperAttributes = {
-      lastDependencyGroups: [],
+      lastDependencyGroupsIds: [],
       allOf: []
     };
   }
 
   // ─── Helper Methods ───────────────────────
-  addLastDependencyGroup(dependencyGroup: DependencyGroup): void {
-    this.generatorHelperAttributes.lastDependencyGroups.push(dependencyGroup);
+  addLastDependencyGroupId(dependencyGroupId: string): void {
+    this.generatorHelperAttributes.lastDependencyGroupsIds.push(dependencyGroupId);
   }
 
-  removeLastDependencyGroup(): void {
-    this.generatorHelperAttributes.lastDependencyGroups.pop();
+  removeLastDependencyGroupId(): void {
+    this.generatorHelperAttributes.lastDependencyGroupsIds.pop();
   }
 
   getLastDependencyGroup(): DependencyGroup | undefined {
-    const lastIndex = this.generatorHelperAttributes.lastDependencyGroups.length - 1;
+    const lastIndex = this.generatorHelperAttributes.lastDependencyGroupsIds.length - 1;
     if (lastIndex < 0) return undefined;
-    return this.generatorHelperAttributes.lastDependencyGroups[lastIndex];
+    const depGroupId = this.generatorHelperAttributes.lastDependencyGroupsIds[lastIndex];
+    if (!depGroupId) return undefined;
+    const depGroup = this.document.getDependency_Group(depGroupId);
+    if (!(depGroup instanceof DependencyGroup)) return undefined;
+    return depGroup;
   }
 
   addToAllOf(allOf: JSONSchema[]): void {
@@ -104,11 +108,12 @@ export class SchemaGenerator {
         }
 
         if (child.dependencyGroup) {
-          this.addLastDependencyGroup(child.dependencyGroup);
+          this.addLastDependencyGroupId(child.dependencyGroup);
         }
-        if (this.getLastDependencyGroup() !== undefined) {
+        const lastDependencyGroup = this.getLastDependencyGroup();
+        if (lastDependencyGroup !== undefined) {
             const allOfItem: JSONSchema = {
-                [child.id]: this.getLastDependencyGroup()!.toJsonSchema(this, [...scope, child.id]),
+                [child.id]: lastDependencyGroup.toJsonSchema(this, [...scope, child.id]),
             }
             allOf.push(allOfItem);
         }

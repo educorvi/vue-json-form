@@ -6,3 +6,4 @@ export * from './string';
 export * from './number';
 export * from './html';
 export * from './schema-generator';
+export * from './dependency';
