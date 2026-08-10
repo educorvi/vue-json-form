@@ -199,6 +199,7 @@ function goDetail() {
             <PermissionSettings
                 resource-type="groups"
                 :resource-id="groupPath"
+                :resource="group"
             />
 
             <!-- Advanced settings -->

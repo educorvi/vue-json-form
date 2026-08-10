@@ -196,7 +196,11 @@ function goDetail() {
             />
 
             <!-- Permission settings -->
-            <PermissionSettings resource-type="forms" :resource-id="formPath" />
+            <PermissionSettings
+                resource-type="forms"
+                :resource-id="formPath"
+                :resource="form"
+            />
 
             <!-- Advanced settings -->
             <FormSettingsAdvanced @delete="showDeleteModal = true" />

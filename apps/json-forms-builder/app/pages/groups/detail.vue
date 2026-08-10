@@ -44,7 +44,9 @@ const { isNotFound, hasError, errorMessage } = usePageError(groupError, status);
 // ── Access control (RBAC) ───────────────────────────────────────────────────
 // Determines which actions are available to the current user on this group:
 // editing requires at least `editor`, creating child items requires `owner`.
-const access = useResourceAccess('groups', groupPath);
+// The effective role comes server-side with the group payload
+// (`effective_role`) — SSR renders the final button state immediately.
+const access = useResourceAccess(group);
 
 const ownerRoleLabel = computed(() => t('permissions.roles.owner'));
 const editorRoleLabel = computed(() => t('permissions.roles.editor'));
@@ -54,10 +56,6 @@ const needOwnerHint = computed(() =>
 const needEditorHint = computed(() =>
     t('permissions.needRoleHint', { role: editorRoleLabel.value })
 );
-
-// While the session/access is still resolving (SSR → hydration), keep the
-// buttons enabled-neutral instead of flashing them as disabled.
-const actionsReady = computed(() => !access.sessionPending.value);
 
 const childPage = ref(1);
 const childPageSize = ref(20);
@@ -176,13 +174,13 @@ function editCurrent() {
     >
         <template v-if="group" #actions>
             <BButton
+                v-b-tooltip="needEditorHint"
                 variant="outline-secondary"
                 size="sm"
-                @click="editCurrent"
-                class="me-2"
-                :disabled="actionsReady && !access.canUpdate.value"
-                v-b-tooltip="needEditorHint"
+                :disabled="!access.canUpdate.value"
                 data-testid="group-edit-button"
+                class="me-2"
+                @click="editCurrent"
             >
                 <Icon name="ph:pencil" :size="14" class="me-1" />{{
                     t('common.edit')
@@ -190,11 +188,11 @@ function editCurrent() {
             </BButton>
             <BButton
                 variant="outline-primary"
+                v-b-tooltip="needOwnerHint"
                 size="sm"
                 :to="Routes.formsNew(groupPath)"
                 class="me-2"
-                :disabled="actionsReady && !access.canCreateChild.value"
-                v-b-tooltip="needOwnerHint"
+                :disabled="!access.canCreateChild.value"
                 data-testid="group-create-form-button"
             >
                 <Icon name="ph:file-plus" :size="14" class="me-1" />{{
@@ -202,11 +200,11 @@ function editCurrent() {
                 }}
             </BButton>
             <BButton
+                v-b-tooltip="needOwnerHint"
                 variant="primary"
                 size="sm"
                 :to="Routes.groupsNew(groupPath)"
-                :disabled="actionsReady && !access.canCreateChild.value"
-                v-b-tooltip="needOwnerHint"
+                :disabled="!access.canCreateChild.value"
                 data-testid="group-create-group-button"
             >
                 <Icon name="ph:plus" :size="14" class="me-1" />{{
@@ -254,9 +252,6 @@ function editCurrent() {
             />
 
             <ListDataContainer
-                :items="children?.data ?? []"
-                :pending="childrenPending"
-                :error="childrenError ?? null"
                 v-slot="{
                     items: stableChildren,
                     showSkeleton,
@@ -264,6 +259,9 @@ function editCurrent() {
                     hasError,
                     errorMessage,
                 }"
+                :items="children?.data ?? []"
+                :pending="childrenPending"
+                :error="childrenError ?? null"
             >
                 <BAlert
                     v-if="hasError"

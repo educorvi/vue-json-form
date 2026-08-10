@@ -127,6 +127,10 @@ export const zGroupRef = zGroupShared;
 
 export const zGroup = zGroupPatch;
 
+export const zGroupWithAccess = zGroup.and(z.object({
+    effective_role: zElementRole.nullable()
+}));
+
 export const zChildGroup = z.object({
     type: z.enum(['group'])
 }).and(zGroup);
@@ -160,6 +164,10 @@ export const zGroupElement = z.union([
         type: z.literal('form')
     }).and(zChildForm)
 ]);
+
+export const zFormWithAccess = zForm.and(z.object({
+    effective_role: zElementRole.nullable()
+}));
 
 /**
  * JSON Schema (Draft-07 or later) defining the data model
@@ -304,6 +312,10 @@ export const zGroupRefWritable = zGroupSharedWritable;
 
 export const zGroupWritable = zGroupPatchWritable;
 
+export const zGroupWithAccessWritable = zGroupWritable.and(z.object({
+    effective_role: zElementRole.nullable()
+}));
+
 export const zChildGroupWritable = z.object({
     type: z.enum(['group'])
 }).and(zGroupWritable);
@@ -334,6 +346,10 @@ export const zGroupElementWritable = z.union([
         type: z.literal('form')
     }).and(zChildFormWritable)
 ]);
+
+export const zFormWithAccessWritable = zFormWritable.and(z.object({
+    effective_role: zElementRole.nullable()
+}));
 
 export const zApiKeySharedWritable = z.object({
     name: z.string().max(255),
@@ -532,9 +548,9 @@ export const zGetGroupPath = z.object({
 });
 
 /**
- * Group summary
+ * Group summary including the caller's effective role
  */
-export const zGetGroupResponse = zGroup;
+export const zGetGroupResponse = zGroupWithAccess;
 
 export const zUpdateGroupBody = zGroupPatchWritable;
 
@@ -694,9 +710,9 @@ export const zGetFormPath = z.object({
 });
 
 /**
- * Form details (no schema)
+ * Form details (no schema), including the caller's effective role
  */
-export const zGetFormResponse = zForm;
+export const zGetFormResponse = zFormWithAccess;
 
 export const zUpdateFormBody = zFormPatchWritable;
 

@@ -10,6 +10,7 @@ import {
     requireFormAccess,
     canAccessGroup,
     resolveAccessibleFormIds,
+    resolveEffectiveFormRole,
 } from '~~/server/lib/access-control';
 import { validateUrlName } from '~~/server/lib/validation';
 import {
@@ -78,7 +79,16 @@ export const formCrudProcedures = {
                 form.id,
                 ResourceViewPermission
             );
-            return form;
+            // The client renders capability-dependent UI from this —
+            // computed server-side so SSR ships the final button state
+            // without an extra permissions request.
+            const accessUser = toAccessUser(user);
+            const effectiveRole = await resolveEffectiveFormRole(
+                AppDataSource,
+                accessUser,
+                form.id
+            );
+            return { ...form, effective_role: effectiveRole };
         }),
 
     create: os.forms.create

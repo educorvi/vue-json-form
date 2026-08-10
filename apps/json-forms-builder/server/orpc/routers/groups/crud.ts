@@ -6,6 +6,7 @@ import {
     requireGroupAccess,
     canAccessGroup,
     resolveAccessibleGroupIds,
+    resolveEffectiveGroupRole,
 } from '~~/server/lib/access-control';
 import { validateUrlName } from '~~/server/lib/validation';
 import {
@@ -58,7 +59,16 @@ export const groupCrudProcedures = {
                     ResourceViewPermission
                 );
             }
-            return group;
+            // The client renders capability-dependent UI from this —
+            // computed server-side so SSR ships the final button state
+            // without an extra permissions request.
+            const accessUser = toAccessUser(user);
+            const effectiveRole = await resolveEffectiveGroupRole(
+                AppDataSource,
+                accessUser,
+                group.id
+            );
+            return { ...group, effective_role: effectiveRole };
         }),
 
     update: os.groups.update

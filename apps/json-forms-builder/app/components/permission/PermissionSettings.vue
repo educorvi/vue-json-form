@@ -19,10 +19,13 @@ import {
     usePermission,
     getHighestInheritedRole,
 } from '@/composables/usePermission';
+import type { ResourceWithAccess } from '@/composables/useResourceAccess';
 
 const props = defineProps<{
     resourceType: 'groups' | 'forms';
     resourceId: string;
+    /** The fetched group/form (carries `effective_role` from the server). */
+    resource: ResourceWithAccess | null;
 }>();
 
 const { t } = useI18n();
@@ -32,13 +35,8 @@ const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
 
 // Access control: only users with at least `owner` on this resource (or
 // admins) may add/edit/remove permissions.
-const access = useResourceAccess(props.resourceType, () => props.resourceId);
-// Hide the add button until the session/access resolved — showing it then
-// removing it would be confusing, and showing it for non-owners would be
-// a permission leak.
-const canManage = computed(
-    () => !access.sessionPending.value && access.canManagePermissions.value
-);
+const access = useResourceAccess(() => props.resource);
+const canManage = computed(() => access.canManagePermissions.value);
 
 const {
     permissions,

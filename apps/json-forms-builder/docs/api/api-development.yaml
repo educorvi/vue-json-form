@@ -241,11 +241,11 @@ paths:
       operationId: getGroup
       responses:
         '200':
-          description: Group summary
+          description: Group summary including the caller's effective role
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/GroupWithAccess'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -535,11 +535,11 @@ paths:
       operationId: getForm
       responses:
         '200':
-          description: Form details (no schema)
+          description: Form details (no schema), including the caller's effective role
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Form'
+                $ref: '#/components/schemas/FormWithAccess'
         '404':
           $ref: '#/components/responses/NotFound'
     put:
@@ -1581,6 +1581,25 @@ components:
       type: object
       required: [name, title, description, visibility, permissions]
 
+    # Group metadata plus the calling user's effective role on it.
+    # Only returned by GET /groups/{id} — computed server-side so the
+    # client never has to re-derive it from the permission list.
+    GroupWithAccess:
+      allOf:
+        - $ref: '#/components/schemas/Group'
+        - type: object
+          required: [effective_role]
+          properties:
+            effective_role:
+              anyOf:
+                - $ref: '#/components/schemas/ElementRole'
+                - type: "null"
+              description: |
+                Effective role of the calling user on this group (direct +
+                inherited permissions, expiry-aware; `owner` for admins).
+                `null` means the user has no access (only possible for
+                non-visible groups).
+
     # Child elements within a group need to be differentiated with a discriminator
 
     ## A child group item in the children list
@@ -1689,6 +1708,25 @@ components:
         Form metadata. The schema (JSON Schema and UI Schema) is managed separately
         via `/forms/{id}/schema` endpoints and is not included here.
       required: [title, name, description, visibility, permissions]
+
+    # Form metadata plus the calling user's effective role on it.
+    # Only returned by GET /forms/{id} — computed server-side so the
+    # client never has to re-derive it from the permission list.
+    FormWithAccess:
+      allOf:
+        - $ref: '#/components/schemas/Form'
+        - type: object
+          required: [effective_role]
+          properties:
+            effective_role:
+              anyOf:
+                - $ref: '#/components/schemas/ElementRole'
+                - type: "null"
+              description: |
+                Effective role of the calling user on this form (direct +
+                inherited permissions, expiry-aware; `owner` for admins).
+                `null` means the user has no access (only possible for
+                non-visible forms).
 
     # Schema payload
 

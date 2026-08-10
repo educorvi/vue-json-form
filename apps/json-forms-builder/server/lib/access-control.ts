@@ -222,6 +222,56 @@ export async function loadFormAccessData(
     };
 }
 
+// ── Effective-role resolution (for API responses) ───────────────────────────
+
+/**
+ * Resolve the calling user's effective role on a group.
+ * Admins bypass every policy -> `owner`. Non-admins get the effective role
+ * computed from direct + inherited (expiry-aware) permissions, with the
+ * visibility grant as fallback (`visible` -> implicit `guest`).
+ *
+ * Returns `null` only if the user has no access at all (non-visible group
+ * without any non-expired permission).
+ */
+export async function resolveEffectiveGroupRole(
+    dataSource: DataSource,
+    user: { id: string; role: string },
+    groupId: number
+): Promise<Role | null> {
+    if (user.role === 'admin') return 'owner';
+
+    const data = await loadGroupAccessData(dataSource, groupId, user.id);
+    return computeEffectiveRole(
+        data.directPermissions,
+        data.ancestorPermissions,
+        data.group.visibility
+    );
+}
+
+/**
+ * Resolve the calling user's effective role on a form.
+ * Admins bypass every policy -> `owner`. Non-admins get the effective role
+ * computed from direct + inherited (expiry-aware) permissions, with the
+ * visibility grant as fallback (`visible` -> implicit `guest`).
+ *
+ * Returns `null` only if the user has no access at all (non-visible form
+ * without any non-expired permission).
+ */
+export async function resolveEffectiveFormRole(
+    dataSource: DataSource,
+    user: { id: string; role: string },
+    formId: number
+): Promise<Role | null> {
+    if (user.role === 'admin') return 'owner';
+
+    const data = await loadFormAccessData(dataSource, formId, user.id);
+    return computeEffectiveRole(
+        data.directPermissions,
+        data.inheritedPermissions,
+        data.form.visibility
+    );
+}
+
 // ── Access check wrappers for routers ───────────────────────────────────────
 // Thin functions that load data, check the policy, and throw FORBIDDEN.
 
