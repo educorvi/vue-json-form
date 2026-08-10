@@ -1,35 +1,61 @@
 import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
-import { BaseDataElement } from "./form-element";
+import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Layout as Layout, getBaseJsonSchema } from "../utils";
+import { Entity, PartialBy } from "./base";
 
 
+type ContainerElementData = z.infer<typeof ContainerElement.schema>;
+const containerElementDefaults = {children: [], layout: Layout.Vertical, showTitle: true};
+type ContainerElementOptionalKeys = keyof typeof containerElementDefaults | BaseDataElementOptionalKeys;
 export abstract class ContainerElement extends BaseDataElement {
-    readonly type!: "array" | "object";
-    layout!: Layout;
-    showTitle!: boolean;
-    children!: string[];
+    data: ContainerElementData;
 
     static schema = BaseDataElement.schema.extend({
+        // type: z.literal("array").or(z.literal("object")),
         children: z.array(z.string()),
         layout: z.enum(Layout),
         showTitle: z.boolean()
     });
 
-    constructor(title: string, description?: string, layout: Layout = Layout.Vertical, dependencyGroup?: DependencyGroup, id?: string, showTitle: boolean = true, tooltip?: string, hidden: boolean = false, preHtml?: string, postHtml?: string) {
-        super(title, description, dependencyGroup, id, tooltip, hidden, preHtml, postHtml);
-        this.layout = layout;
-        this.showTitle = showTitle;
-        this.children = [];
+    constructor(
+        data: PartialBy<ContainerElementData, ContainerElementOptionalKeys>
+    ) {
+        super(data);
+        this.data = ContainerElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<ContainerElementData, ContainerElementOptionalKeys>): ContainerElementData {
+        return {
+            ...super.setDefaults(data),
+            ...containerElementDefaults,
+            ...data,
+        };
+    }
+
+    get children(): string[] {
+        return this.data.children;
+    }
+
+    get layout(): Layout {
+        return this.data.layout;
+    }
+
+    get showTitle(): boolean {
+        return this.data.showTitle;
+    }
+
+    get type(): "array" | "object" {
+        return "array"; // TODO overriden in subclasses?
     }
 
     // e.g. ["properties"] or ["properties", "items"]
     abstract getScopePart(): string[];
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
-        scope = [...scope, this.getID()];
+        scope = [...scope, this.id];
         const uiSchema: Control = {
             "type": "Control",
             "scope": scope.join("/"),
@@ -88,13 +114,12 @@ export abstract class ContainerElement extends BaseDataElement {
 }
 
 
-export class ArrayElement extends ContainerElement {
-    readonly type = "array";
 
-    buttonLabel?: string;
-    required!: boolean;
-    minItems?: number;
-    maxItems?: number;
+type ArrayElementData = z.infer<typeof ArrayElement.schema>;
+const arrayElementDefaults = {required: false, type: "array" as const};
+type ArrayElementOptionalKeys = keyof typeof arrayElementDefaults | ContainerElementOptionalKeys;
+export class ArrayElement extends ContainerElement {
+    data: ArrayElementData;
 
     // more attributes
     static schema = ContainerElement.schema.extend({
@@ -106,29 +131,34 @@ export class ArrayElement extends ContainerElement {
     });
 
     constructor(
-        title: string,
-        description?: string,
-        required: boolean = false,
-        layout: Layout = Layout.Vertical,
-        buttonLabel?: string,
-        minItems?: number,
-        maxItems?: number,
-        dependencyGroup?: DependencyGroup,
-        id?: string,
-        showTitle: boolean = true,
-        tooltip?: string,
-        hidden: boolean = false,
-        preHtml?: string,
-        postHtml?: string
+        data: Omit<PartialBy<ArrayElementData, ArrayElementOptionalKeys>, "type">
     ) {
-        super(title, description, layout, dependencyGroup, id, showTitle, tooltip, hidden, preHtml, postHtml);
-        this.required = required;
-        this.buttonLabel = buttonLabel;
-        this.minItems = minItems;
-        this.maxItems = maxItems;
-        // if (this.minItems > 0) {
-        //     this.required = true;
-        // } // TODO discuss (to be inserted in the future) if minItems > 0, then required should be true
+        super(data);
+        this.data = ArrayElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<ArrayElementData, ArrayElementOptionalKeys>): ArrayElementData {
+        return {
+            ...super.setDefaults(data),
+            ...arrayElementDefaults,
+            ...data,
+        };
+    }
+
+    get required(): boolean {
+        return this.data.required;
+    }
+
+    get buttonLabel(): string | undefined {
+        return this.data.buttonLabel;
+    }
+
+    get minItems(): number | undefined {
+        return this.data.minItems;
+    }
+
+    get maxItems(): number | undefined {
+        return this.data.maxItems;
     }
 
     getScopePart(): string[] {
@@ -165,43 +195,66 @@ export class ArrayElement extends ContainerElement {
         return uiSchema;
     }
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control, required: boolean=false): ArrayElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control, required: boolean=false): ArrayElement {
         const layout = uiSchema.options?.uiSchema?.type ? uiSchema.options.uiSchema.type as Layout : Layout.Vertical;
-        const arrayElement = new ArrayElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, required, layout, uiSchema.options?.addButtonText, jsonSchema.minItems, jsonSchema.maxItems);
+        const arrayElement = new ArrayElement(
+            {
+                id: id,
+                title: jsonSchema.title ? jsonSchema.title : "",
+                hidden: false, // TODO change
+                description: jsonSchema.description,
+                required: required,
+                layout: layout,
+                buttonLabel: uiSchema.options?.addButtonText,
+                minItems: jsonSchema.minItems,
+                maxItems: jsonSchema.maxItems
+            }
+        );
         return arrayElement;
     }
 }
 
 
+type ObjectElementData = z.infer<typeof ObjectElement.schema>;
+const objectElementDefaults = {type: "object" as const};
+type ObjectElementOptionalKeys = keyof typeof objectElementDefaults | ContainerElementOptionalKeys;
 export class ObjectElement extends ContainerElement {
-    readonly type = "object";
+    data: ObjectElementData;
 
     static schema = ContainerElement.schema.extend({
         type: z.literal("object")
     });
 
     constructor(
-        title: string,
-        description?: string,
-        layout: Layout = Layout.Vertical,
-        dependencyGroup?: DependencyGroup,
-        id?: string,
-        showTitle: boolean = true,
-        tooltip?: string,
-        hidden: boolean = false,
-        preHtml?: string,
-        postHtml?: string
+        data: Omit<PartialBy<ObjectElementData, ObjectElementOptionalKeys>, "type">
     ) {
-        super(title, description, layout, dependencyGroup, id, showTitle, tooltip, hidden, preHtml, postHtml);
+        super(data);
+        this.data = ObjectElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<ObjectElementData, ObjectElementOptionalKeys>): ObjectElementData {
+        return {
+            ...super.setDefaults(data),
+            ...objectElementDefaults,
+            ...data,
+        };
     }
 
     getScopePart(): string[] {
         return ["properties"];
     }
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: Control): ObjectElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control): ObjectElement {
         const layout = uiSchema.options?.uiSchema?.type ? uiSchema.options.uiSchema.type as Layout : Layout.Vertical;
-        const objectElement = new ObjectElement(jsonSchema.title ? jsonSchema.title : "", jsonSchema.description, layout);
+        const objectElement = new ObjectElement(
+            {
+                id: id,
+                title: jsonSchema.title ? jsonSchema.title : "",
+                description: jsonSchema.description,
+                layout: layout,
+                hidden: false, // TODO change
+            }
+        );
         return objectElement;
     }
 }

@@ -29,9 +29,9 @@ export class FormDefinition {
     for (const child of children) {
       this.nodesIndex.set(child.uid, child);
       this.parentIndex.set(child.uid, parentId);
-      if (child.dependencyGroup) {
-        this.dependencyGraph.set(child.uid, child.dependencyGroup); //??????????TODO
-      }
+      // if (child.dependencyGroup) {
+      //   this.dependencyGraph.set(child.uid, child.dependencyGroup); //??????????TODO
+      // }
       if (child instanceof ContainerElement) {
         this.buildIndexes(this.childrenOf(child.uid), child.uid);
       }
@@ -156,9 +156,9 @@ export class FormDefinition {
     // Index the inserted element itself
     this.nodesIndex.set(formElement.uid, formElement);
     this.parentIndex.set(formElement.uid, containerElement.uid);
-    if (formElement.dependencyGroup) { // TODO???????????????
-      this.dependencyGraph.set(formElement.uid, formElement.dependencyGroup);
-    }
+    // if (formElement.dependencyGroup) { // TODO???????????????
+    //   this.dependencyGraph.set(formElement.uid, formElement.dependencyGroup);
+    // }
 
     // If it already carries children, index them too
     if (formElement instanceof ContainerElement) {

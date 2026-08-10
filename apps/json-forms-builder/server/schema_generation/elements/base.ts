@@ -1,7 +1,18 @@
 import { z } from "zod";
 import { createId } from "../utils";
 
+
+
+// Makes keys K of T optional, leaves the rest untouched.
+export type PartialBy<T, K extends keyof T> = Partial<Pick<T, K>> & Omit<T, K>;
+
+// EntityData with "uid" always optional, plus any extra keys K a subclass wants optional.
+// export type OptionalEntityData<T extends EntityData = EntityData, K extends keyof T = never> = PartialBy<T, K | "uid">;
+
+
 type EntityData = z.infer<typeof Entity.schema>;
+const entityDefaults = {uid: ""};
+export type EntityOptionalKeys = keyof typeof entityDefaults;
 export abstract class Entity {
     data: EntityData;
 
@@ -10,21 +21,32 @@ export abstract class Entity {
         id: z.string()
     });
 
-    constructor(data: Partial<EntityData>) {
-        const id = data.id ? createId(data.id) : createId(this.constructor.name);
-        this.data = {
-            id: id,
-            uid: data.uid || createId(id) + "_" + globalThis.crypto.randomUUID()
+    constructor(data: PartialBy<EntityData, EntityOptionalKeys>) {
+        this.data = Entity.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<EntityData, EntityOptionalKeys>): EntityData {
+        return {
+            ...entityDefaults,
+            uid: data.uid || globalThis.crypto.randomUUID(),
+            ...data,
         };
     }
 
-    toJSON(): string {
-        return JSON.stringify(this.data);
+    // static computeUid(): string {
+    //     return globalThis.crypto.randomUUID();
+    // }
+
+    toJSON(): EntityData {
+        return this.data;
     }
 
-    getID(): string {
-        // return this.id;
+    get id(): string {
         return this.data.id;
+    }
+
+    get uid(): string {
+        return this.data.uid;
     }
 }
 

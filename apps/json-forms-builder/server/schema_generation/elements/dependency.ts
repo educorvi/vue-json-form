@@ -25,35 +25,37 @@ enum DependencyRelation {
     OR = "OR"
 }
 
+type DependencyData = z.infer<typeof Dependency.schema>;
 export class Dependency {
-    sourceId!: string; // on which element the target depends
-    dependencyType!: DependencyType;
-    value!: number | string | boolean; // the value to compare to, e.g. for "greaterThan", the value that the source should be greater than; for "contains", the value that should be contained in the source; etc.
-    // dependencyGroup!: DependencyGroup;
+    data: DependencyData;
 
     static schema = z.object({
-        sourceId: z.string(),
+        sourceId: z.string(), // on which element the target depends
         dependencyType: z.enum(DependencyType),
-        value: z.union([z.string(), z.number(), z.boolean()])
+        value: z.union([z.string(), z.number(), z.boolean()])// the value to compare to, e.g. for "greaterThan", the value that the source should be greater than; for "contains", the value that should be contained in the source; etc.
+    // dependencyGroup!: DependencyGroup;
     });
+
+    constructor(data: DependencyData) {
+        this.data = data;
+    }
 }
 
+type DependencyGroupData = z.infer<typeof DependencyGroup.schema>;
 export class DependencyGroup extends Entity {
-    deps!: Dependency[];
-    depGroups!: DependencyGroup[];
-    //parentDepGroup?: DependencyGroup; // the parent dependency group, if this is a nested dependency group
-    relation!: DependencyRelation; // "AND" or "OR"
-    // in the final json/ui schema: generate one list that consists of all dependencies and dependency groups (combined with the specified relation)
+    data: DependencyGroupData;
 
     static schema = Entity.schema.extend({
         deps: z.array(Dependency.schema),
         depGroups: z.lazy((): z.ZodType<any[]> => z.array(DependencyGroup.schema)),
-        relation: z.enum(DependencyRelation)
+        //parentDepGroup?: DependencyGroup; // the parent dependency group, if this is a nested dependency group
+        relation: z.enum(DependencyRelation) // "AND" or "OR"
+        // in the final json/ui schema: generate one list that consists of all dependencies and dependency groups (combined with the specified relation)
     });
 
-
-    constructor(id?: string) {
-        super(id);
+    constructor(data: DependencyGroupData) {
+        super(data);
+        this.data = data;
     }
 
     // TODO vielleicht wird die methode gar nicht merh gebraucht sonsdern durch generateRules ersetzt

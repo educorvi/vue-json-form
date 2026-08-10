@@ -1,13 +1,16 @@
 import { Entity } from "./base";
 import { FormElement } from "./form-element";
-import { z } from "zod";
+import { readonly, z } from "zod";
+import type { PartialBy } from "./base";
 import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import { Layout } from "../utils";
 import type { SchemaGenerator } from "./schema-generator";
-import { da } from "zod/v4/locales";
+import type { EntityOptionalKeys } from "./base";
 
 
 type FormData = z.infer<typeof Form.schema>;
+const formDefaults = {type: "form" as const, children: [], layout: Layout.Vertical};
+type FormOptionalKeys = keyof typeof formDefaults | EntityOptionalKeys;
 export class Form extends Entity {
     data: FormData;
 
@@ -21,17 +24,34 @@ export class Form extends Entity {
 
     constructor(
         // "children" is optional in the constructor
-        data: Partial<FormData> & Omit<FormData, "children, uid, id">
+        data: PartialBy<FormData, FormOptionalKeys>
     ) {
         super(data);
-        this.data = {
+        this.data = Form.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<FormData, FormOptionalKeys>): FormData {
+        return {
+            ...super.setDefaults(data),
+            ...formDefaults,
             ...data,
-            children: data.children ?? [],
-        }
+        };
+    }
+
+    get children(): string[] {
+        return this.data.children;
+    }
+
+    get title(): string {
+        return this.data.title;
     }
 
     getScopePart(): string[] {
         return ["properties"];
+    }
+
+    toJSON(): FormData {
+        return this.data;
     }
 
 	toUiSchema(generator: SchemaGenerator): UISchema {

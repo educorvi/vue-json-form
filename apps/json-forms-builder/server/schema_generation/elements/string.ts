@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { SimpleElement } from "./form-element";
+import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
+import { Entity, PartialBy } from "./base";
 
 
 export enum StringFormat {
@@ -21,10 +22,11 @@ export enum StringFormat {
 
 
 type StringElementData = z.infer<typeof StringElement.schema>;
+const stringElementDefaults = {type: "string" as const, format: StringFormat.Text};
+type StringElementOptionalKeys = keyof typeof stringElementDefaults | SimpleElementOptionalKeys;
 export class StringElement extends SimpleElement {
     data: StringElementData;
 
-    // more attributes
     static schema = SimpleElement.schema.extend({
         type: z.literal("string"),
         format: z.enum(StringFormat),
@@ -34,19 +36,24 @@ export class StringElement extends SimpleElement {
     });
 
     constructor(
-        data: Partial<StringElementData> & Omit<StringElementData, "format">,
+        data: Omit<PartialBy<StringElementData, StringElementOptionalKeys>, "type">
     ) {
         super(data);
-        this.data = {
+        this.data = StringElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<StringElementData, StringElementOptionalKeys>): StringElementData {
+        return {
+            ...super.setDefaults(data),
+            ...stringElementDefaults,
             ...data,
-            format: data.format ?? StringFormat.Text
-        }
+        };
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema: Control = {
             "type": "Control",
-            "scope": _scope.join("/") + "/" + this.getID(),
+            "scope": _scope.join("/") + "/" + this.id,
         };
         const options = super.getUiSchemaOptions();
         if (this.data.placeholder) {
@@ -83,9 +90,9 @@ export class StringElement extends SimpleElement {
         return schema;
     }
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: any): StringElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: any): StringElement {
         if (jsonSchema.type === "string") {
-            const stringElement = new StringElement({"title": jsonSchema.title ? jsonSchema.title : "", "description": jsonSchema.description});
+            const stringElement = new StringElement({"title": jsonSchema.title ? jsonSchema.title : "", "description": jsonSchema.description, "id": id});
             if (jsonSchema.format && Object.values(StringFormat as unknown as string[]).includes(jsonSchema.format)) {
                 stringElement.data.format = jsonSchema.format as StringFormat;
             } else {

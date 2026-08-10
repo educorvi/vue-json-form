@@ -1,35 +1,46 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer, Options } from '@educorvi/vue-json-form-schemas';
 import { createId } from "../utils";
+import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity } from "./base";
 
+const formElementDefaults = {};
+export type FormElementOptionalKeys = keyof typeof formElementDefaults | EntityOptionalKeys;
 type FormElementData = z.infer<typeof FormElement.schema>;
 export abstract class FormElement extends Entity {
     data: FormElementData;
 
     static schema = super.schema.extend({
-        dependencyGroup: z.lazy((): z.ZodTypeAny => DependencyGroup.schema).optional()
+        // dependencyGroup: z.lazy((): typeof DependencyGroup.schema => DependencyGroup.schema).optional()
+        dependencyGroup: z.string().optional()
     });
 
     constructor(
-        data: FormElementData
+        data: PartialBy<FormElementData, FormElementOptionalKeys>
     ) {
         super(data);
-        this.data = data;
+        this.data = FormElement.setDefaults(data);
+    }
+
+    get dependencyGroup(): string | undefined {
+        return this.data.dependencyGroup;
     }
 
     abstract toUiSchema(generator: SchemaGenerator, scope: string[]): Control | HTMLRenderer;
 
     abstract toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema;
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema, uiSchema: UISchema | Control | HTMLRenderer): FormElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: UISchema | Control | HTMLRenderer): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
     }
 }
 
+
 type BaseDataElementData = z.infer<typeof BaseDataElement.schema>;
+const baseDataElementDefaults = {hidden: false};
+export type BaseDataElementOptionalKeys = keyof typeof baseDataElementDefaults | FormElementOptionalKeys;
 export abstract class BaseDataElement extends FormElement {
     data: BaseDataElementData
 
@@ -44,10 +55,43 @@ export abstract class BaseDataElement extends FormElement {
     });
 
     constructor(
-        data: BaseDataElementData
+        data: PartialBy<BaseDataElementData, BaseDataElementOptionalKeys>
     ) {
         super(data);
-        this.data = data;
+        this.data = BaseDataElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<BaseDataElementData, BaseDataElementOptionalKeys>): BaseDataElementData {
+        return {
+            ...super.setDefaults(data),
+            ...baseDataElementDefaults,
+            ...data,
+        };
+    }
+
+
+    get title(): string {
+        return this.data.title;
+    }
+
+    get description(): string | undefined {
+        return this.data.description;
+    }
+
+    get tooltip(): string | undefined {
+        return this.data.tooltip;
+    }
+
+    get hidden(): boolean {
+        return this.data.hidden;
+    }
+
+    get preHtml(): string | undefined {
+        return this.data.preHtml;
+    }
+
+    get postHtml(): string | undefined {
+        return this.data.postHtml;
     }
 
     getUiSchemaOptions(): Options {
@@ -70,10 +114,11 @@ export abstract class BaseDataElement extends FormElement {
 }
 
 type SimpleElementData = z.infer<typeof SimpleElement.schema>;
+const simpleElementDefaults = {required: false};
+export type SimpleElementOptionalKeys = keyof typeof simpleElementDefaults | BaseDataElementOptionalKeys;
 export abstract class SimpleElement extends BaseDataElement {
     data: SimpleElementData;
 
-    // more attributes
     static schema = BaseDataElement.schema.extend({
         required: z.boolean(),
         appendValue: z.string().optional(),
@@ -82,10 +127,34 @@ export abstract class SimpleElement extends BaseDataElement {
     });
 
     constructor(
-        data: SimpleElementData
+        data: PartialBy<SimpleElementData, SimpleElementOptionalKeys>
     ) {
         super(data);
-        this.data = data;
+        this.data = SimpleElement.setDefaults(data);
+    }
+
+    get required(): boolean {
+        return this.data.required;
+    }
+
+    get appendValue(): string | undefined {
+        return this.data.appendValue;
+    }
+
+    get prependValue(): string | undefined {
+        return this.data.prependValue;
+    }
+
+    get pattern(): string | undefined {
+        return this.data.pattern;
+    }
+
+    protected static setDefaults(data: PartialBy<SimpleElementData, SimpleElementOptionalKeys>): SimpleElementData {
+        return {
+            ...super.setDefaults(data),
+            ...simpleElementDefaults,
+            ...data,
+        };
     }
 
     getUiSchemaOptions(): Options {
