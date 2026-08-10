@@ -96,11 +96,11 @@ export class SchemaGenerator {
         if (childSchema === undefined || childSchema === null || Object.keys(childSchema).length === 0) {
             continue;
         }
-        schema[childId] = childSchema;
+        schema[child.id] = childSchema;
 
         // check if child has the attribute required and if it is true
         if ((child as any).required === true) {
-            requiredList.push(childId);
+            requiredList.push(child.id);
         }
 
         if (child.dependencyGroup) {
@@ -108,7 +108,7 @@ export class SchemaGenerator {
         }
         if (this.getLastDependencyGroup() !== undefined) {
             const allOfItem: JSONSchema = {
-                [childId]: this.getLastDependencyGroup()!.toJsonSchema(this, [...scope, childId]),
+                [child.id]: this.getLastDependencyGroup()!.toJsonSchema(this, [...scope, child.id]),
             }
             allOf.push(allOfItem);
         }
