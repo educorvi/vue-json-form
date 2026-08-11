@@ -13,7 +13,7 @@ enum NumberFormat {
 
 
 type NumberElementData = z.infer<typeof NumberElement.schema>;
-const numberElementDefaults = {type: "number" as const, format: NumberFormat.Integer};
+const numberElementDefaults = {type: "number" as const, format: NumberFormat.Integer, range: false};
 type NumberElementOptionalKeys = keyof typeof numberElementDefaults | SimpleElementOptionalKeys;
 
 export class NumberElement extends SimpleElement {
@@ -24,7 +24,8 @@ export class NumberElement extends SimpleElement {
         format: z.enum(NumberFormat),
         minimum: z.number().optional(),
         maximum: z.number().optional(),
-        multipleOf: z.number().optional()
+        multipleOf: z.number().optional(),
+        range: z.boolean()
     });
 
     constructor(
@@ -58,15 +59,16 @@ export class NumberElement extends SimpleElement {
         return this.data.multipleOf;
     }
 
+    get range(): boolean {
+        return this.data.range;
+    }
+
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
-        const uiSchema: Control = {
-            "type": "Control",
-            "scope": _scope.join("/") + "/" + this.id,
+        const uiSchema = super.toUiSchema(_generator, _scope);
+        uiSchema.options = {
+            ...uiSchema.options,
+            ...(this.range && { range: this.range }),
         };
-        const options = super.getUiSchemaOptions();
-        if (Object.keys(options).length > 0) {
-            uiSchema.options = options;
-        }
 
         const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
         if (showOn) {
@@ -77,21 +79,12 @@ export class NumberElement extends SimpleElement {
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         const schema: JSONSchema = {
+            ...super.toJsonSchema(_generator, _scope),
             "type": this.format,
-            "title": this.title,
+            ...(this.minimum !== undefined && { minimum: this.minimum }),
+            ...(this.maximum !== undefined && { maximum: this.maximum }),
+            ...(this.multipleOf !== undefined && { multipleOf: this.multipleOf }),
         };
-        if (this.description !== undefined) {
-            schema.description = this.description;
-        }
-        if (this.minimum !== undefined) {
-            schema.minimum = this.minimum;
-        }
-        if (this.maximum !== undefined) {
-            schema.maximum = this.maximum;
-        }
-        if (this.multipleOf !== undefined) {
-            schema.multipleOf = this.multipleOf;
-        }
         return schema;
     }
 

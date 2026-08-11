@@ -4,35 +4,29 @@ import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
+import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
+import type { InputOptions } from "@educorvi/vue-json-form-schemas";
 
-
-export enum StringFormat {
-    Text = "text",
-    TextArea = "text-area",
-    Email = "email",
-    Password = "password",
-    Date = "date",
-    DateTime = "date-time",
-    Time = "time",
-    Uri = "uri",
-    Phone = "phone",
-    Color = "color",
-    Search = "search",
-}
-
+type FormatValue = NonNullable<InputOptions["format"]>;
+const StringFormatEnum = z.enum(
+  controlSchema.definitions.inputOptions.properties.format.enum as [FormatValue, ...FormatValue[]]
+);
+export type StringFormat = z.infer<typeof StringFormatEnum>;
 
 type StringElementData = z.infer<typeof StringElement.schema>;
-const stringElementDefaults = {type: "string" as const, format: StringFormat.Text};
+const stringElementDefaults = {type: "string" as const, format: "text" as const};
 type StringElementOptionalKeys = keyof typeof stringElementDefaults | SimpleElementOptionalKeys;
 export class StringElement extends SimpleElement {
     data: StringElementData;
 
     static schema = SimpleElement.schema.extend({
         type: z.literal("string"),
-        format: z.enum(StringFormat),
+        format: StringFormatEnum,
+        multi: z.boolean().or(z.number()).optional(),
         minLength: z.number().int().nonnegative().optional(),
         maxLength: z.number().int().nonnegative().optional(),
-        placeholder: z.string().optional()
+        placeholder: z.string().optional(),
+        pattern: z.string().optional()
     });
 
     constructor(
@@ -40,6 +34,30 @@ export class StringElement extends SimpleElement {
     ) {
         super(data);
         this.data = StringElement.setDefaults(data);
+    }
+
+    get format(): StringFormat {
+        return this.data.format;
+    }
+
+    get multi(): boolean | number | undefined {
+        return this.data.multi;
+    }
+
+    get minLength(): number | undefined {
+        return this.data.minLength;
+    }
+
+    get maxLength(): number | undefined {
+        return this.data.maxLength;
+    }
+
+    get placeholder(): string | undefined {
+        return this.data.placeholder;
+    }
+
+    get pattern(): string | undefined {
+        return this.data.pattern;
     }
 
     protected static setDefaults(data: PartialBy<StringElementData, StringElementOptionalKeys>): StringElementData {
@@ -51,42 +69,30 @@ export class StringElement extends SimpleElement {
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
-        const uiSchema: Control = {
-            "type": "Control",
-            "scope": _scope.join("/") + "/" + this.id,
+        const uiSchema = super.toUiSchema(_generator, _scope);
+        uiSchema.options = {
+            ...uiSchema.options,
+            ...(this.placeholder && { placeholder: this.placeholder }),
+            ...(this.format && { format: this.format }),
+            ...(this.multi && { multi: this.multi }),
         };
-        const options = super.getUiSchemaOptions();
-        if (this.data.placeholder) {
-            options["placeholder"] = this.data.placeholder;
-        }
-        if (Object.keys(options).length > 0) {
-            uiSchema.options = options;
-        }
 
         const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
         if (showOn) {
             uiSchema.showOn = showOn;
         }
+
         return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        let schema: any = {
-            "type": "string",
-            "title": this.data.title,
+        const schema: JSONSchema = {
+            ...super.toJsonSchema(_generator, _scope),
+            type: "string",
+            ...(this.minLength && { minLength: this.minLength }),
+            ...(this.maxLength && { maxLength: this.maxLength }),
+            ...(this.pattern && { pattern: this.pattern }),
         };
-        if (this.data.description !== undefined) {
-            schema.description = this.data.description;
-        }
-        if (this.data.format !== undefined) {
-            schema.format = this.data.format;
-        }
-        if (this.data.minLength !== undefined) {
-            schema.minLength = this.data.minLength;
-        }
-        if (this.data.maxLength !== undefined) {
-            schema.maxLength = this.data.maxLength;
-        }
 
         return schema;
     }
@@ -101,7 +107,7 @@ export class StringElement extends SimpleElement {
                 }
             );
             if (jsonSchema.format && Object.values(StringFormat as unknown as string[]).includes(jsonSchema.format)) {
-                stringElement.data.format = jsonSchema.format as StringFormat;
+                stringElement.data.format = jsonSchema.format;
             } else {
                 throw new Error("Invalid format for StringElement: " + jsonSchema.format);
             }

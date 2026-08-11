@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Control, JSONSchema, UISchema, HTMLRenderer, Options } from '@educorvi/vue-json-form-schemas';
+import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
 import { createId } from "../utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
@@ -9,6 +9,7 @@ import { Entity } from "./base";
 const formElementDefaults = {};
 export type FormElementOptionalKeys = keyof typeof formElementDefaults | EntityOptionalKeys;
 type FormElementData = z.infer<typeof FormElement.schema>;
+
 export abstract class FormElement extends Entity {
     data: FormElementData;
 
@@ -28,7 +29,7 @@ export abstract class FormElement extends Entity {
         return this.data.dependencyGroup;
     }
 
-    abstract toUiSchema(generator: SchemaGenerator, scope: string[]): Control | HTMLRenderer;
+    abstract toUiSchema(generator: SchemaGenerator, scope: string[]): Control | HTMLRenderer | Divider | Button | Buttongroup | Modal;
 
     abstract toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema;
 
@@ -41,6 +42,7 @@ export abstract class FormElement extends Entity {
 type BaseDataElementData = z.infer<typeof BaseDataElement.schema>;
 const baseDataElementDefaults = {hidden: false};
 export type BaseDataElementOptionalKeys = keyof typeof baseDataElementDefaults | FormElementOptionalKeys;
+
 export abstract class BaseDataElement extends FormElement {
     data: BaseDataElementData
 
@@ -94,21 +96,39 @@ export abstract class BaseDataElement extends FormElement {
         return this.data.postHtml;
     }
 
-    getUiSchemaOptions(): Options {
-        const options: Options = {};
-        if (this.data.tooltip) {
-            options["tooltip"] = this.data.tooltip;
+    /**
+     * @param scope the path in the json schema without its own id
+     * @returns the full path as a string, path parts are separated by /
+     */
+    getScope(scope: string[]): string {
+        return [...scope, this.id].join("/");
+    }
+
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
+        const schema: JSONSchema = {
+            title: this.title,
+        };
+        if (this.description !== undefined) {
+            schema.description = this.description;
         }
-        if (this.data.hidden) {
-            options["hidden"] = this.data.hidden;
-        }
-        if (this.data.preHtml) {
-            options["preHtml"] = this.data.preHtml;
-        }
-        if (this.data.postHtml) {
-            options["postHtml"] = this.data.postHtml;
-        }
-        return options;
+        return schema;
+    }
+
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
+        const options: Options = {
+            ...(this.tooltip && { help: {text: this.tooltip } }),
+            ...(this.hidden && { hidden: this.hidden }),
+            ...(this.preHtml && { preHtml: this.preHtml }),
+            ...(this.postHtml && { postHtml: this.postHtml }),
+        };
+
+        const uiSchema: Control = {
+            type: "Control",
+            scope: this.getScope(_scope),
+            options: options,
+        };
+        return uiSchema;
+
     }
 
 }
@@ -116,6 +136,7 @@ export abstract class BaseDataElement extends FormElement {
 type SimpleElementData = z.infer<typeof SimpleElement.schema>;
 const simpleElementDefaults = {required: false};
 export type SimpleElementOptionalKeys = keyof typeof simpleElementDefaults | BaseDataElementOptionalKeys;
+
 export abstract class SimpleElement extends BaseDataElement {
     data: SimpleElementData;
 
@@ -123,7 +144,7 @@ export abstract class SimpleElement extends BaseDataElement {
         required: z.boolean(),
         appendValue: z.string().optional(),
         prependValue: z.string().optional(),
-        pattern: z.string().optional()
+        default: z.any().optional(), // TODO move to subclasses and define the type correctly?
     });
 
     constructor(
@@ -145,8 +166,8 @@ export abstract class SimpleElement extends BaseDataElement {
         return this.data.prependValue;
     }
 
-    get pattern(): string | undefined {
-        return this.data.pattern;
+    get default(): any {
+        return this.data.default;
     }
 
     protected static setDefaults(data: PartialBy<SimpleElementData, SimpleElementOptionalKeys>): SimpleElementData {
@@ -157,17 +178,25 @@ export abstract class SimpleElement extends BaseDataElement {
         };
     }
 
-    getUiSchemaOptions(): Options {
-        const options = super.getUiSchemaOptions();
-        if (this.data.appendValue) {
-            options["appendValue"] = this.data.appendValue;
-        }
-        if (this.data.prependValue) {
-            options["prependValue"] = this.data.prependValue;
-        }
-        if (this.data.pattern) {
-            options["pattern"] = this.data.pattern;
-        }
-        return options;
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
+        const uiSchema = super.toUiSchema(_generator, _scope);
+        const options: Options = {
+            ...(this.appendValue && { appendValue: this.appendValue }),
+            ...(this.prependValue && { prependValue: this.prependValue }),
+        };
+        uiSchema.options = {
+            ...uiSchema.options,
+            ...options,
+        };
+        return uiSchema;
     }
+
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
+        const jsonSchema = super.toJsonSchema(_generator, _scope);
+        if (this.default) {
+            jsonSchema.default = this.default;
+        }
+        return jsonSchema;
+    }
+
 }
