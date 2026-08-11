@@ -23,7 +23,6 @@ export class Form extends Entity {
     });
 
     constructor(
-        // "children" is optional in the constructor
         data: PartialBy<FormData, FormOptionalKeys>
     ) {
         super(data);

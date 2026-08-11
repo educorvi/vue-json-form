@@ -1,10 +1,10 @@
 import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
-import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Layout as Layout, getBaseJsonSchema } from "../utils";
 import { Entity, PartialBy } from "./base";
+import { createShowOnProperty } from "./children-schema-utils";
 
 
 type ContainerElementData = z.infer<typeof ContainerElement.schema>;
@@ -69,8 +69,9 @@ export abstract class ContainerElement extends BaseDataElement {
             uiSchema.options = options;
         }
 
-        if (this.dependencyGroup) {
-            uiSchema.showOn = this.dependencyGroup.toUiSchema(generator, scope);
+        const showOn = createShowOnProperty(this.dependencyGroup, generator, scope);
+        if (showOn) {
+            uiSchema.showOn = showOn;
         }
 
         if (this.children && this.children.length > 0) {
@@ -90,7 +91,7 @@ export abstract class ContainerElement extends BaseDataElement {
         const jsonSchema: JSONSchema = getBaseJsonSchema(this.type, this.title, this.description);
 
         if (this.dependencyGroup) {
-            generator.addLastDependencyGroup(this.dependencyGroup);
+            generator.addLastDependencyGroupId(this.dependencyGroup);
         }
         const lastDependencyGroup = generator.getLastDependencyGroup();
         if (lastDependencyGroup) {
@@ -106,7 +107,7 @@ export abstract class ContainerElement extends BaseDataElement {
         }
 
         if (this.dependencyGroup) {
-            generator.removeLastDependencyGroup();
+            generator.removeLastDependencyGroupId();
         }
 
         return jsonSchema;

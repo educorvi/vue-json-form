@@ -4,6 +4,7 @@ import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity, PartialBy } from "./base";
+import { createShowOnProperty } from "./children-schema-utils";
 
 
 export enum StringFormat {
@@ -63,8 +64,9 @@ export class StringElement extends SimpleElement {
             uiSchema.options = options;
         }
 
-        if (this.data.dependencyGroup) {
-            uiSchema.showOn = this.data.dependencyGroup.toUiSchema(_generator, _scope);
+        const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
+        if (showOn) {
+            uiSchema.showOn = showOn;
         }
         return uiSchema;
     }

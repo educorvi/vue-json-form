@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Entity, EntityOptionalKeys, PartialBy } from "./base";
 import type { SchemaGenerator } from "./schema-generator";
-import type { JSONSchema, ShowOnProperty } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, ShowOnProperty, Formula } from '@educorvi/vue-json-form-schemas';
 
 export enum DependencyType {
     greaterThan = "greaterThan",
@@ -59,6 +59,17 @@ export class Dependency extends Entity{
     toJSON(): DependencyData {
         return this.data;
     }
+
+    toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        return {} // TODO
+    }
+
+    toUiSchema(generator: SchemaGenerator, scope: string[]): Formula {
+        return {
+            "type": "atom",
+            "path": scope.join("/") + "/" + this.id,
+        }
+    }
 }
 
 type DependencyGroupData = z.infer<typeof DependencyGroup.schema>;
@@ -109,8 +120,17 @@ export class DependencyGroup extends Entity {
     }
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): ShowOnProperty {
-        return {
-            //TODO: implement dependency group logic
-        }
+        const emptyShowOn: ShowOnProperty = {
+            "showOn": {
+                "allOf": []
+            },
+            "rule": {
+                "type": "atom",
+                "path": scope.join("/") + "/" + this.id,
+            },
+            "id": this.id,
+            "path": scope
+        };
+        return emptyShowOn;
     }
 }

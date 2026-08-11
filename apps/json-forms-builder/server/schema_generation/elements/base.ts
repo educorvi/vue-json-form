@@ -33,10 +33,6 @@ export abstract class Entity {
         };
     }
 
-    // static computeUid(): string {
-    //     return globalThis.crypto.randomUUID();
-    // }
-
     toJSON(): EntityData {
         return this.data;
     }
