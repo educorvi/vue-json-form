@@ -1,9 +1,8 @@
 import { z } from "zod";
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
-import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
-import { Entity, PartialBy } from "./base";
+import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
 
 
@@ -94,7 +93,13 @@ export class StringElement extends SimpleElement {
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: any): StringElement {
         if (jsonSchema.type === "string") {
-            const stringElement = new StringElement({"title": jsonSchema.title ? jsonSchema.title : "", "description": jsonSchema.description, "id": id});
+            const stringElement = new StringElement(
+                {
+                    "title": jsonSchema.title ? jsonSchema.title : "",
+                    "description": jsonSchema.description,
+                    "id": id
+                }
+            );
             if (jsonSchema.format && Object.values(StringFormat as unknown as string[]).includes(jsonSchema.format)) {
                 stringElement.data.format = jsonSchema.format as StringFormat;
             } else {

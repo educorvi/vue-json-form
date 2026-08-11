@@ -10,6 +10,18 @@ export enum Layout {
     Group = "Group" // with line to the right of the elements
 }
 
+export enum ButtonVariant {
+    Primary = "primary",
+    Secondary = "secondary",
+    Success = "success",
+    Danger = "danger",
+    Warning = "warning",
+    Info = "info",
+    Light = "light",
+    Dark = "dark",
+    // TODO
+}
+
 export function getBaseJsonSchema(type: "array" | "object", title: string, description?: string): JSONSchema {
     const schema: JSONSchema = {
         "type": type,
@@ -20,3 +32,5 @@ export function getBaseJsonSchema(type: "array" | "object", title: string, descr
     }
     return schema;
 }
+
+

@@ -1,14 +1,17 @@
 import { z } from "zod";
 import type { JSONSchema, HTMLRenderer } from '@educorvi/vue-json-form-schemas';
-import { FormElement } from "./form-element";
+import { FormElement, FormElementOptionalKeys } from "./form-element";
 import type { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
+import { PartialBy } from "./base";
+import { createShowOnProperty } from "./children-schema-utils";
 
 
+type HTMLElementData = z.infer<typeof HTMLElement.schema>;
+const htmlElementDefaults = {type: "html" as const};
+type HTMLElementOptionalKeys = keyof typeof htmlElementDefaults | FormElementOptionalKeys;
 export class HTMLElement extends FormElement {
-    readonly type = "html";
-
-    htmlData!: string;
+    data: HTMLElementData;
 
     static schema = FormElement.schema.extend({
         type: z.literal("html"),
@@ -16,12 +19,22 @@ export class HTMLElement extends FormElement {
     });
 
     constructor(
-        htmlData: string,
-        dependencyGroup?: DependencyGroup,
-        id?: string
+        data: Omit<PartialBy<HTMLElementData, HTMLElementOptionalKeys>, "type">
     ) {
-        super(id || "html_element", dependencyGroup);
-        this.htmlData = htmlData;
+        super(data);
+        this.data = HTMLElement.setDefaults(data);
+    }
+
+    protected static setDefaults(data: PartialBy<HTMLElementData, HTMLElementOptionalKeys>): HTMLElementData {
+        return {
+            ...super.setDefaults(data),
+            ...htmlElementDefaults,
+            ...data,
+        };
+    }
+
+    get htmlData(): string {
+        return this.data.htmlData;
     }
 
     toUiSchema(_generator: SchemaGenerator, scope: string[]): HTMLRenderer {
@@ -29,9 +42,12 @@ export class HTMLElement extends FormElement {
             "type": "HTML",
             "htmlData": this.htmlData
         };
-        if (this.dependencyGroup) {
-            html.showOn = this.dependencyGroup.toUiSchema(_generator, scope);
+
+        const showOn = createShowOnProperty(this.dependencyGroup, _generator, scope);
+        if (showOn) {
+            html.showOn = showOn;
         }
+
         return html;
     }
 
@@ -39,8 +55,13 @@ export class HTMLElement extends FormElement {
         return {};
     }
 
-    static fromJsonSchemaAndUiSchema(jsonSchema: JSONSchema={}, uiSchema: HTMLRenderer): HTMLElement {
-        let htmlElement = new HTMLElement(uiSchema.htmlData);
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: HTMLRenderer): HTMLElement {
+        let htmlElement = new HTMLElement(
+            {
+                id: id,
+                htmlData: uiSchema.htmlData
+            }
+        );
         // TODO handle dependencyGroup if needed
         return htmlElement;
     }

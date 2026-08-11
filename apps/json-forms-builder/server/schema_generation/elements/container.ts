@@ -14,7 +14,6 @@ export abstract class ContainerElement extends BaseDataElement {
     data: ContainerElementData;
 
     static schema = BaseDataElement.schema.extend({
-        // type: z.literal("array").or(z.literal("object")),
         children: z.array(z.string()),
         layout: z.enum(Layout),
         showTitle: z.boolean()

@@ -16,8 +16,8 @@ export class Form extends Entity {
 
     static schema = super.schema.extend({
         type: z.literal("form"),
-        title: z.string(),
-        description: z.string().optional(),
+        // title: z.string(),
+        // description: z.string().optional(),
         layout: z.enum(Layout),
         children: z.array(z.string()),
     });
@@ -41,9 +41,9 @@ export class Form extends Entity {
         return this.data.children;
     }
 
-    get title(): string {
-        return this.data.title;
-    }
+    // get title(): string {
+    //     return this.data.title;
+    // }
 
     getScopePart(): string[] {
         return ["properties"];
