@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Button, JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { Button, Buttongroup, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { FormElement, FormElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
@@ -21,7 +21,7 @@ export type HttpsMethod = z.infer<typeof HttpsMethodEnum>;
 
 
 type ButtonGroupElementData = z.infer<typeof ButtonGroupElement.schema>;
-const buttonGroupElementDefaults = {type: "button-group" as const, buttons: [] as string[]};
+const buttonGroupElementDefaults = {type: "button-group" as const, buttons: [] as string[], vertical: false};
 type ButtonGroupElementOptionalKeys = keyof typeof buttonGroupElementDefaults | FormElementOptionalKeys;
 
 export class ButtonGroupElement extends FormElement {
@@ -29,7 +29,8 @@ export class ButtonGroupElement extends FormElement {
 
     static schema = FormElement.schema.extend({
         type: z.literal("button-group"),
-        buttons: z.array(z.string())
+        buttons: z.array(z.string()),
+        vertical: z.boolean().default(false),
     });
 
     constructor(
@@ -51,12 +52,41 @@ export class ButtonGroupElement extends FormElement {
         return this.data.buttons;
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): Button {
-        // TODO
+    get vertical(): boolean {
+        return this.data.vertical;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
-        // TODO
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Buttongroup {
+        const buttons = this.buttons.map(buttonId => {
+            const buttonElement = _generator.document.getElementById(buttonId);
+            if (!buttonElement) {
+                throw new Error(`Button with id ${buttonId} not found`);
+            } else if (!(buttonElement instanceof ButtonElement)) {
+                throw new Error(`Element with id ${buttonId} is not a ButtonElement`);
+            }
+            return buttonElement.toUiSchema(_generator);
+        })
+
+        if (buttons.length === 0) {
+            throw new Error(`ButtonGroupElement with id ${this.id} has no buttons`);
+        }
+
+        const uiSchema: Buttongroup = {
+            type: "Buttongroup",
+            options: {vertical: this.vertical},
+            buttons: buttons as [Button, ...Button[]], // TODO better handling?
+        };
+
+        const showOn = createShowOnProperty(this.dependencyGroup, _generator, scope);
+        if (showOn) {
+            uiSchema.showOn = showOn;
+        }
+
+        return uiSchema;
+    }
+
+    toJsonSchema(_generator: SchemaGenerator, scope: string[] = []): JSONSchema {
+        return {};
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: Button): ButtonGroupElement {
@@ -106,7 +136,7 @@ export abstract class ButtonElement extends FormElement {
         return this.data.variant;
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): Button {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
         const uiSchema: Button = {
             type: "Button",
             buttonType: "submit", // is replced in subclass
@@ -161,7 +191,7 @@ export class ResetButton extends ButtonElement {
         };
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): Button {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
         const uiSchema = super.toUiSchema(_generator, scope);
         uiSchema.buttonType = "reset";
         return uiSchema;
@@ -251,7 +281,7 @@ export class SubmitButton extends ButtonElement {
         return this.data.onSuccessRedirectUrl;
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): Button {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
         const uiSchema = super.toUiSchema(_generator, scope);
         uiSchema.buttonType = "submit";
 
