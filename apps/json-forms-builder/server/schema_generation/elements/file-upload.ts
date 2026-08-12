@@ -44,11 +44,36 @@ export class FileuploadElement extends SimpleElement {
 
     static schema = SimpleElement.schema.extend({
         type: z.literal("file-upload"),
+        multiUpload: z.boolean(),
         minItems: z.number().int().nonnegative().optional(),
         maxItems: z.number().int().nonnegative().optional(),
-        possibleFileTypes: z.array(z.enum(FileType)).optional(),
-        maxFileSizeInBytes: z.number().int().nonnegative().optional(),
-        // displayAsArray: z.boolean()
+        acceptedFileType: z.array(z.enum(FileType)).optional(),
+        maxFileSizeInMB: z.number().int().nonnegative().optional(),
+        displayAsSingleUploadField: z.boolean().describe("This option only applies when multiUpload is true"),
+    }).superRefine((data, ctx) => {
+        if (data.minItems !== undefined && data.maxItems !== undefined && data.minItems > data.maxItems) {
+            ctx.addIssue({
+                code: "custom",
+                message: "minItems cannot be greater than maxItems",
+                value: data,
+            });
+        }
+        if (data.multiUpload === false) {
+            if (data.minItems !== undefined && data.minItems > 1) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "minItems cannot be greater than 1 when multiUpload is false",
+                    value: data,
+                });
+            }
+            if (data.maxItems !== undefined && data.maxItems > 1) {
+                ctx.addIssue({
+                    code: "custom",
+                    message: "maxItems cannot be greater than 1 when multiUpload is false",
+                    value: data,
+                });
+            }
+        }
     });
 
     constructor(
@@ -66,6 +91,14 @@ export class FileuploadElement extends SimpleElement {
         };
     }
 
+    get multiUpload(): boolean {
+        return this.data.multiUpload;
+    }
+
+    get displayAsSingleUploadField(): boolean | undefined {
+        return this.data.displayAsSingleUploadField;
+    }
+
     get minItems(): number | undefined {
         return this.data.minItems;
     }
@@ -74,20 +107,49 @@ export class FileuploadElement extends SimpleElement {
         return this.data.maxItems;
     }
 
-    get possibleFileTypes(): FileType[] | undefined {
-        return this.data.possibleFileTypes;
+    get acceptedFileType(): FileType[] | undefined {
+        return this.data.acceptedFileType;
     }
 
-    get maxFileSizeInBytes(): number | undefined {
-        return this.data.maxFileSizeInBytes;
+    get maxFileSizeInMB(): number | undefined {
+        return this.data.maxFileSizeInMB;
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
-        // TODO
+        const uiSchema = super.toUiSchema(_generator, _scope);
+        uiSchema.options = {
+            ...(uiSchema.options && { ...uiSchema.options }),
+            ...(this.displayAsSingleUploadField && { displayAsSingleUploadField: this.displayAsSingleUploadField }),
+            ...(this.acceptedFileType ? { acceptedFileType: this.acceptedFileType } : { acceptedFileType: "*" }),
+            ...(this.maxFileSizeInMB !== undefined && { maxFileSize: this.maxFileSizeInMB * 1024 * 1024 }), // convert MB to bytes
+        };
+
+        return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        // TODO
+        const jsonSchema: JSONSchema = {
+            ...super.toJsonSchema(_generator, _scope),
+            ...(this.minItems !== undefined && { minItems: this.minItems }),
+            ...(this.maxItems !== undefined && { maxItems: this.maxItems }),
+        };
+
+        if (this.required) {
+            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+        }
+
+        if (!this.multiUpload) {
+            jsonSchema.type = "string";
+            jsonSchema.format = "uri";
+        } else {
+            jsonSchema.type = "array";
+            jsonSchema.items = {
+                type: "string",
+                format: "uri",
+            };
+        }
+
+        return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: Control): FileuploadElement {

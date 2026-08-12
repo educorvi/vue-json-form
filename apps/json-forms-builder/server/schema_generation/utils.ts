@@ -1,4 +1,7 @@
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import { z } from "zod";
+import variantsSchema from "@educorvi/vue-json-form-schemas/src/ui/variants.schema.json";
+import type { OutlineVariants, BaseVariants } from "@educorvi/vue-json-form-schemas";
 
 export function createId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '_');
@@ -10,17 +13,13 @@ export enum Layout {
     Group = "Group" // with line to the right of the elements
 }
 
-export enum ButtonVariant {
-    Primary = "primary",
-    Secondary = "secondary",
-    Success = "success",
-    Danger = "danger",
-    Warning = "warning",
-    Info = "info",
-    Light = "light",
-    Dark = "dark",
-    // TODO
-}
+
+type ButtonVariantFormatValue = NonNullable<BaseVariants | OutlineVariants>;
+export const ButtonVariantFormatEnum = z.enum([
+  ...variantsSchema.definitions.baseVariants.enum,
+  ...variantsSchema.definitions.outlineVariants.enum,
+] as [ButtonVariantFormatValue, ...ButtonVariantFormatValue[]]);
+export type ButtonVariantFormat = z.infer<typeof ButtonVariantFormatEnum>;
 
 export function getBaseJsonSchema(type: "array" | "object", title: string, description?: string): JSONSchema {
     const schema: JSONSchema = {

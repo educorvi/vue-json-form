@@ -1,7 +1,6 @@
 import { z } from "zod";
 import type { JSONSchema, HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 import { FormElement, FormElementOptionalKeys } from "./form-element";
-import type { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
@@ -25,6 +24,10 @@ export class HTMLElement extends FormElement {
         this.data = HTMLElement.setDefaults(data);
     }
 
+    get htmlData(): string {
+        return this.data.htmlData;
+    }
+
     protected static setDefaults(data: PartialBy<HTMLElementData, HTMLElementOptionalKeys>): HTMLElementData {
         return {
             ...super.setDefaults(data),
@@ -33,22 +36,18 @@ export class HTMLElement extends FormElement {
         };
     }
 
-    get htmlData(): string {
-        return this.data.htmlData;
-    }
-
     toUiSchema(_generator: SchemaGenerator, scope: string[]): HTMLRenderer {
-        const html: HTMLRenderer = {
+        const uiSchema: HTMLRenderer = {
             "type": "HTML",
             "htmlData": this.htmlData
         };
 
         const showOn = createShowOnProperty(this.dependencyGroup, _generator, scope);
         if (showOn) {
-            html.showOn = showOn;
+            uiSchema.showOn = showOn;
         }
 
-        return html;
+        return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
@@ -56,7 +55,7 @@ export class HTMLElement extends FormElement {
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: HTMLRenderer): HTMLElement {
-        let htmlElement = new HTMLElement(
+        const htmlElement = new HTMLElement(
             {
                 id: id,
                 htmlData: uiSchema.htmlData

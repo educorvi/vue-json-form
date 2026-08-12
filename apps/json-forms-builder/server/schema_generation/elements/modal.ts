@@ -1,22 +1,28 @@
 import { z } from "zod";
-import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { Modal, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { FormElement, FormElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
-import { ButtonVariant } from "./../utils";
+import { ButtonVariantFormatEnum, ButtonVariantFormat } from "../utils";
+import modalSchema from "@educorvi/vue-json-form-schemas/src/ui/modal.schema.json";
 
 
-enum ModalSize {
-    Small = "small",
-    Medium = "medium",
-    Large = "large",
-    XLarge = "x-large"
-}
+
+type ModalSizeValue = NonNullable<Modal["modal"]["size"]>;
+const ModalSizeEnum = z.enum(
+  modalSchema.properties.modal.properties.size.enum as [ModalSizeValue, ...ModalSizeValue[]]
+);
+export type ModalSize = z.infer<typeof ModalSizeEnum>;
 
 
 type ModalElementData = z.infer<typeof ModalElement.schema>;
-const modalElementDefaults = {type: "modal" as const, size: ModalSize.Medium, variant: ButtonVariant.Primary};
+const modalElementDefaults = {
+    type: "modal" as const,
+    size: "large" as const,
+    buttonVariant: "primary" as const,
+    asLink: false as const
+};
 type ModalElementOptionalKeys = keyof typeof modalElementDefaults | FormElementOptionalKeys;
 
 export class ModalElement extends FormElement {
@@ -26,9 +32,10 @@ export class ModalElement extends FormElement {
         type: z.literal("modal"),
         title: z.string(),
         content: z.string(),
-        size: z.enum(ModalSize),
+        size: ModalSizeEnum,
         buttonLabel: z.string(),
-        variant: z.enum(ButtonVariant),
+        buttonVariant: ButtonVariantFormatEnum,
+        asLink: z.boolean(),
     });
 
     constructor(
@@ -62,19 +69,42 @@ export class ModalElement extends FormElement {
         return this.data.buttonLabel;
     }
 
-    get variant(): ButtonVariant {
-        return this.data.variant;
+    get buttonVariant(): ButtonVariantFormat {
+        return this.data.buttonVariant;
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): Control {
-        // TODO
+    get asLink(): boolean {
+        return this.data.asLink;
+    }
+
+    toUiSchema(_generator: SchemaGenerator, scope: string[]): Modal {
+        const uiSchema: Modal = {
+            type: "Modal",
+            modal: {
+                title: this.title,
+                content: this.content,
+                size: this.size,
+            },
+            button: {
+                text: this.buttonLabel,
+                variant: this.buttonVariant,
+                // asLink: this.asLink, TODO doesnt exist in the schema yet?
+            }
+        };
+
+        const showOn = createShowOnProperty(this.dependencyGroup, _generator, scope);
+        if (showOn) {
+            uiSchema.showOn = showOn;
+        }
+
+        return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
-        // TODO
+        return {}
     }
 
-    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: Control): ModalElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: Modal): ModalElement {
         // TODO
     }
 
