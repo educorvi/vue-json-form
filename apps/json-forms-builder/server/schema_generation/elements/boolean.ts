@@ -53,11 +53,10 @@ export class BooleanElement extends SimpleElement {
     }
 
     toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema: JSONSchema = {
+        const jsonSchema = {
+            ...super.toJsonSchema(_generator, scope),
             type: "boolean",
-            title: this.title,
-            description: this.description,
-        };
+        }
         if (this.required) {
             jsonSchema.const = true;
         }

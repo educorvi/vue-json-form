@@ -102,16 +102,15 @@ export abstract class BaseDataElement extends FormElement {
      * @returns the full path as a string, path parts are separated by /
      */
     getScope(scope: string[]): string {
-        return [...scope, this.id].join("/");
+        return "/" + [...scope, this.id].join("/");
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         const schema: JSONSchema = {
             title: this.title,
+            ...(this.description && { description: this.description }),
         };
-        if (this.description !== undefined) {
-            schema.description = this.description;
-        }
+
         return schema;
     }
 

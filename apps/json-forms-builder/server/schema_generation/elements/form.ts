@@ -64,12 +64,14 @@ export class Form extends Entity {
 
 	toJsonSchema(generator: SchemaGenerator): JSONSchema {
         const {childrenJsonSchema, requiredList} = generator.generateJsonSchemaForElements(this.data.children, ["properties"]);
+
+        const allOf = generator.generatorHelperAttributes.allOf;
         const jsonSchema: JSONSchema = {
             "$schema": "https://json-schema.org/draft/2019-09/schema#",
             "type": "object",
             "properties": childrenJsonSchema,
             "required": requiredList,
-            "allOf": generator.generatorHelperAttributes.allOf
+            ...(allOf && { allOf: allOf }),
         };
         return jsonSchema;
 	}
