@@ -3,7 +3,6 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
-import { createShowOnProperty } from "./children-schema-utils";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { InputOptions } from "@educorvi/vue-json-form-schemas";
 
@@ -27,6 +26,14 @@ export class StringElement extends SimpleElement {
         maxLength: z.number().int().nonnegative().optional(),
         placeholder: z.string().optional(),
         pattern: z.string().optional()
+    }).superRefine((data, ctx) => {
+        if (data.minLength !== undefined && data.maxLength !== undefined && data.minLength > data.maxLength) {
+            ctx.addIssue({
+                code: "custom",
+                message: "minLength cannot be greater than maxLength",
+                value: data,
+            });
+        }
     });
 
     constructor(
@@ -71,30 +78,25 @@ export class StringElement extends SimpleElement {
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {
-            ...uiSchema.options,
+            ...(uiSchema.options && { ...uiSchema.options }),
             ...(this.placeholder && { placeholder: this.placeholder }),
             ...(this.format && { format: this.format }),
             ...(this.multi && { multi: this.multi }),
         };
 
-        const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
-        if (showOn) {
-            uiSchema.showOn = showOn;
-        }
-
         return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        const schema: JSONSchema = {
+        const jsonSchema: JSONSchema = {
             ...super.toJsonSchema(_generator, _scope),
             type: "string",
-            ...(this.minLength && { minLength: this.minLength }),
-            ...(this.maxLength && { maxLength: this.maxLength }),
+            ...(this.minLength !== undefined && { minLength: this.minLength }),
+            ...(this.maxLength !== undefined && { maxLength: this.maxLength }),
             ...(this.pattern && { pattern: this.pattern }),
         };
 
-        return schema;
+        return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: any): StringElement {

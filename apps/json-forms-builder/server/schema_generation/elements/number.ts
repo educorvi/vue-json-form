@@ -3,7 +3,6 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
-import { createShowOnProperty } from "./children-schema-utils";
 
 
 enum NumberFormat {
@@ -26,6 +25,14 @@ export class NumberElement extends SimpleElement {
         maximum: z.number().optional(),
         multipleOf: z.number().optional(),
         range: z.boolean()
+    }).superRefine((data, ctx) => {
+        if (data.minimum !== undefined && data.maximum !== undefined && data.minimum > data.maximum) {
+            ctx.addIssue({
+                code: "custom",
+                message: "minimum cannot be greater than maximum",
+                value: data,
+            });
+        }
     });
 
     constructor(
@@ -70,10 +77,6 @@ export class NumberElement extends SimpleElement {
             ...(this.range && { range: this.range }),
         };
 
-        const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
-        if (showOn) {
-            uiSchema.showOn = showOn;
-        }
         return uiSchema;
     }
 

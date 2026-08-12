@@ -49,10 +49,6 @@ export class Form extends Entity {
         return ["properties"];
     }
 
-    toJSON(): FormData {
-        return this.data;
-    }
-
 	toUiSchema(generator: SchemaGenerator): UISchema {
         const uiSchema: UISchema = {
             "$schema": "TODO",

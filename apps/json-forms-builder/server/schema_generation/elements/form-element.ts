@@ -5,6 +5,7 @@ import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity } from "./base";
+import { createShowOnProperty } from "./children-schema-utils";
 
 const formElementDefaults = {};
 export type FormElementOptionalKeys = keyof typeof formElementDefaults | EntityOptionalKeys;
@@ -33,7 +34,7 @@ export abstract class FormElement extends Entity {
 
     abstract toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema;
 
-    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: UISchema | Control | HTMLRenderer): FormElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control | HTMLRenderer | Divider | Button | Buttongroup | Modal): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
     }
 }
@@ -50,7 +51,7 @@ export abstract class BaseDataElement extends FormElement {
     static schema = FormElement.schema.extend({
         title: z.string(),
         description: z.string().optional(),
-        tooltip: z.string().optional(),
+        tooltip: z.string().optional(), // TODO support label and variant?
         hidden: z.boolean(),
         preHtml: z.string().optional(),
         postHtml: z.string().optional(),
@@ -122,10 +123,13 @@ export abstract class BaseDataElement extends FormElement {
             ...(this.postHtml && { postHtml: this.postHtml }),
         };
 
+        const showOn = createShowOnProperty(this.dependencyGroup, _generator, _scope);
+
         const uiSchema: Control = {
             type: "Control",
             scope: this.getScope(_scope),
-            options: options,
+            ...(options && { options: options }),
+            ...(showOn && { showOn: showOn }),
         };
         return uiSchema;
 
@@ -145,6 +149,7 @@ export abstract class SimpleElement extends BaseDataElement {
         appendValue: z.string().optional(),
         prependValue: z.string().optional(),
         default: z.any().optional(), // TODO move to subclasses and define the type correctly?
+        // TODO disabled? forceRequired? label?
     });
 
     constructor(
@@ -180,14 +185,13 @@ export abstract class SimpleElement extends BaseDataElement {
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
-        const options: Options = {
+
+        uiSchema.options = {
+            ...(uiSchema.options && { ...uiSchema.options }),
             ...(this.appendValue && { appendValue: this.appendValue }),
             ...(this.prependValue && { prependValue: this.prependValue }),
         };
-        uiSchema.options = {
-            ...uiSchema.options,
-            ...options,
-        };
+
         return uiSchema;
     }
 

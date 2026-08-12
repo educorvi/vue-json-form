@@ -42,10 +42,6 @@ export class WizardPage extends Entity {
         return this.data.pageTitle;
     }
 
-    toJSON(): WizardPageData {
-        return this.data;
-    }
-
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
         const form = generator.document.getElementById(this.form);
         if (!(form instanceof Form)) {

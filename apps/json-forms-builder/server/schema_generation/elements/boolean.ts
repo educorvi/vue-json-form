@@ -3,7 +3,6 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
-import { createShowOnProperty } from "./children-schema-utils";
 
 
 enum BooleanFormat {
@@ -13,7 +12,7 @@ enum BooleanFormat {
 
 
 type BooleanElementData = z.infer<typeof BooleanElement.schema>;
-const booleanElementDefaults = {type: "boolean" as const, format: BooleanFormat.Checkbox, mustBeTrue: false};
+const booleanElementDefaults = {type: "boolean" as const, format: BooleanFormat.Checkbox};
 type BooleanElementOptionalKeys = keyof typeof booleanElementDefaults | SimpleElementOptionalKeys;
 
 export class BooleanElement extends SimpleElement {
@@ -22,7 +21,6 @@ export class BooleanElement extends SimpleElement {
     static schema = SimpleElement.schema.extend({
         type: z.literal("boolean"),
         format: z.enum(BooleanFormat),
-        mustBeTrue: z.boolean()
     });
 
     constructor(
@@ -44,16 +42,26 @@ export class BooleanElement extends SimpleElement {
         return this.data.format;
     }
 
-    get mustBeTrue(): boolean {
-        return this.data.mustBeTrue;
-    }
-
     toUiSchema(_generator: SchemaGenerator, scope: string[]): Control {
-        // TODO
+        const uiSchema = super.toUiSchema(_generator, scope);
+        uiSchema.options = {
+            ...uiSchema.options,
+            // format: this.format, TODO
+        };
+
+        return uiSchema;
     }
 
     toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
-        // TODO
+        const jsonSchema: JSONSchema = {
+            type: "boolean",
+            title: this.title,
+            description: this.description,
+        };
+        if (this.required) {
+            jsonSchema.const = true;
+        }
+        return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema={}, uiSchema: Control): BooleanElement {

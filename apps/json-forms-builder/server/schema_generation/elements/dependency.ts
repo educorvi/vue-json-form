@@ -56,10 +56,6 @@ export class Dependency extends Entity{
         return this.data.value;
     }
 
-    toJSON(): DependencyData {
-        return this.data;
-    }
-
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {} // TODO
     }
@@ -105,10 +101,6 @@ export class DependencyGroup extends Entity {
 
     get dependencies(): string[] {
         return this.data.dependencies;
-    }
-
-    toJSON(): DependencyGroupData {
-        return this.data;
     }
 
     // TODO vielleicht wird die methode gar nicht merh gebraucht sonsdern durch generateRules ersetzt
