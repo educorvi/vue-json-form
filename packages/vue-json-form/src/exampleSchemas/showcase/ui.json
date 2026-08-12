@@ -199,7 +199,7 @@
             },
             {
                 "type": "HTML",
-                "htmlData": "<p>Ich bin ein <strong class='text-primary'>HTML</strong> Text</p>"
+                "htmlData": "<p>I am a <strong class='text-primary'>HTML</strong> Text with a <a href='https://educorvi.de'>link</a></p>"
             },
             {
                 "type": "Divider"

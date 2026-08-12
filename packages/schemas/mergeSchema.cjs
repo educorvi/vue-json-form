@@ -12,7 +12,7 @@ const nodeModulesResolver = {
         return file.url?.includes('/node_modules');
     },
 
-    read(file, callback, $refs) {
+    read(file, callback, _$refs) {
         const path = file.url.replace(
             /.*\/node_modules/i,
             '../../../../node_modules'
@@ -34,7 +34,7 @@ const vjfResolver = {
         );
     },
 
-    read(file, callback, $refs) {
+    read(file, callback, _$refs) {
         const path = file.url.replace(
             'https://educorvi.github.io/vue-json-form/schemas/',
             ''

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { generateUISchema } from '@educorvi/vue-json-form';
+import {
+    generateUISchema,
+    type ParsedAndUnvalidatedJson,
+} from '@educorvi/vue-json-form';
 import VueJsonPretty from 'vue-json-pretty';
 
 defineEmits<{
-    viewCode: [title: string, object: Record<any, any>];
+    viewCode: [title: string, object: ParsedAndUnvalidatedJson];
 }>();
 
 function download() {
@@ -20,8 +23,8 @@ function download() {
 
 const rawJsonSchema = ref(undefined as File | undefined);
 
-const jsonSchema = ref(undefined as Record<string, any> | undefined);
-const uiSchema = ref(undefined as Record<string, any> | undefined);
+const jsonSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
+const uiSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
 
 async function generate(evt: Event) {
     evt.preventDefault();

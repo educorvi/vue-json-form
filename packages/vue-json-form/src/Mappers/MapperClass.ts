@@ -9,6 +9,7 @@ import type {
     Layout,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
+import type { FormData } from '@/typings/customTypes.ts';
 
 export abstract class Mapper {
     /**
@@ -155,8 +156,8 @@ export abstract class MapperWithData extends Mapper {
     abstract map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>,
-        cleanedData: Readonly<Record<string, any>>
+        data: Readonly<FormData>,
+        cleanedData: Readonly<FormData>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;

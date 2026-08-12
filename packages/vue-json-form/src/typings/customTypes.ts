@@ -7,6 +7,14 @@ import type {
 import { type MapperWithData, type MapperWithoutData } from '@/Mappers';
 
 /**
+ * Type of the stored form data
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FormData = Record<string, any>;
+
+export type ParsedAndUnvalidatedJson = Record<string, unknown>;
+
+/**
  * A layout element with child elements
  */
 export type elementWithElements = Extract<
@@ -80,13 +88,13 @@ export type SupportedIfThenElse = {
     if: IfProperty;
     then: {
         properties?: {
-            [key: string]: Record<string, any>;
+            [key: string]: Record<string, unknown>;
         };
         required?: string[];
     };
     else?: {
         properties?: {
-            [key: string]: Record<string, any>;
+            [key: string]: Record<string, unknown>;
         };
         required?: string[];
     };

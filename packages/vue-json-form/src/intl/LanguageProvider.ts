@@ -1,32 +1,38 @@
 import German from './german.json';
 import English from './english.json';
 
+type TranslationValue = string | TranslationRecord;
+interface TranslationRecord {
+    [key: string]: TranslationValue;
+}
+
+function isTranslationRecord(value: unknown): value is TranslationRecord {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 export abstract class LanguageProvider {
     abstract getString(key: string): string;
-    getStringTemplate(key: string, ...data: any[]): string {
+    getStringTemplate(key: string, ...data: unknown[]): string {
         let value = this.getString(key);
         const placeholders = value.match(/!&data&!/g) || [];
         placeholders.forEach((_, i) => {
-            value = value.replace(/!&data&!/, data[i] || '');
+            value = value.replace(/!&data&!/, data[i]?.toString() || '');
         });
         return value;
     }
 }
 
 export abstract class JSONLanguageProvider extends LanguageProvider {
-    abstract data: typeof English;
+    abstract data: TranslationRecord;
     getString(key: string): string {
-        let obj: any = this.data;
-        for (let subKey of key.split('.')) {
-            obj = obj?.[subKey];
-            if (obj === undefined) {
+        let value: TranslationValue | undefined = this.data;
+        for (const subKey of key.split('.')) {
+            if (!isTranslationRecord(value)) {
                 return key;
             }
+            value = value[subKey];
         }
-        if (typeof obj !== 'string') {
-            return key;
-        }
-        return obj;
+        return typeof value === 'string' ? value : key;
     }
 }
 

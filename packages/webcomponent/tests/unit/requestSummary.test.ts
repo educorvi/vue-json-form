@@ -129,11 +129,7 @@ describe('requestSummary – SSE logging', () => {
         const url = await errServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                validPdf,
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('PDF too large');
 
         await errServer.stop();
@@ -153,11 +149,7 @@ describe('requestSummary – SSE logging', () => {
         const url = await errServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                validPdf,
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('Internal server error');
 
         await errServer.stop();
@@ -175,14 +167,9 @@ describe('requestSummary – SSE logging', () => {
         const url = await noResultServer.start();
 
         await expect(
-            requestSummary(
-                `${url}/ai/summary`,
-                validPdf,
-                'claim-summary'
-            )
+            requestSummary(`${url}/ai/summary`, validPdf, 'claim-summary')
         ).rejects.toThrow('No result event received');
 
         await noResultServer.stop();
     });
 });
-

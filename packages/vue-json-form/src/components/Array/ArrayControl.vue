@@ -261,6 +261,7 @@ onBeforeMount(initArray);
                         :index="index as number"
                         :item-i-d="element"
                         :allow-remove="allowRemoveField"
+                        :ui-schema="getOption(layoutElement, 'uiSchema')"
                         @delete="deleteItemWithID"
                     />
                 </div>
@@ -325,6 +326,7 @@ onBeforeMount(initArray);
 .vjf_label_wrapper {
     display: flex;
     align-items: center;
+    margin-bottom: 0.5rem;
 }
 
 .ghost {

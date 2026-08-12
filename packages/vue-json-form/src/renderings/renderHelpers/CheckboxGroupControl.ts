@@ -37,8 +37,11 @@ export function getOptions(
         } else {
             return (
                 jsonElement.value.items.enum.map((key) => {
-                    const textVals: Record<any, any> =
-                        getOption(layoutElement.value, 'enumTitles') || {};
+                    const textVals = getOption(
+                        layoutElement.value,
+                        'enumTitles',
+                        {}
+                    );
                     const text = textVals[key] || key;
                     return { value: key, text: String(text) };
                 }) || []

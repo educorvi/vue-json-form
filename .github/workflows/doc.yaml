@@ -7,6 +7,10 @@ permissions:
     pages: write
     id-token: write
 
+concurrency:
+  group: docs
+  cancel-in-progress: true
+
 jobs:
     # Build job
     build-doc:
@@ -29,17 +33,11 @@ jobs:
                   cache: yarn
                   node-version: lts/*
             - run: yarn install --immutable
-            - uses: actions/setup-python@v6
-              with:
-                  cache: 'pip' # caching pip dependencies
-                  python-version: '3.12'
-            - run: pip install json-schema-for-humans
             - name: Set old versions
               run: yarn run setOldVersions
             - name: Build static files
               id: build
               run: yarn run doc
-
             - name: Upload static files as artifact
               id: deployment
               uses: actions/upload-pages-artifact@v5

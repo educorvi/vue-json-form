@@ -2,12 +2,11 @@
 import { controlID } from '@/computedProperties/misc';
 import { BFormInput } from 'bootstrap-vue-next';
 import { getOption } from '@/renderings/renderHelpers/utilities.ts';
-import { getStores, injectJsonData } from '@/computedProperties/json.ts';
+import { injectJsonData } from '@/computedProperties/json.ts';
 import {
     getStep,
     setupValueAndValidation,
 } from '@/renderings/renderHelpers/NumberControl.ts';
-const { formDataStore } = getStores();
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const id = controlID(savePath);
 
@@ -34,6 +33,7 @@ const { state, value } = setupValueAndValidation(
         :type="getOption(layoutElement, 'range', false) ? 'range' : 'number'"
         :required="required"
         :state="state"
+        :autocomplete="getOption(layoutElement, 'autocomplete', 'on')"
     />
 </template>
 

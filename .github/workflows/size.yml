@@ -8,7 +8,9 @@ on:
 permissions:
     contents: read
     pull-requests: write
-
+concurrency:
+    group: size-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 jobs:
     size:
         runs-on: ubuntu-latest

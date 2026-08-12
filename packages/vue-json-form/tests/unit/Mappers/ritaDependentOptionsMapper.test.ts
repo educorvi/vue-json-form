@@ -173,7 +173,8 @@ describe('RitaDependentOptionsMapper', () => {
             );
 
             expect(consoleWarnSpy).toHaveBeenCalledWith(
-                expect.stringContaining('Invalid rule')
+                expect.stringContaining('Invalid rule'),
+                expect.anything()
             );
             expect(mapper.getDependencies()).toEqual(['/properties/a']);
 

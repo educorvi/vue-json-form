@@ -2,7 +2,7 @@
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
-import { VueJsonForm } from '@/main.ts';
+import { type FormData, VueJsonForm } from '@/main.ts';
 
 import { ref, computed, onMounted, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
@@ -15,7 +15,7 @@ const jsonSchemaText = ref('');
 const uiSchemaText = ref('');
 const jsonError = ref('');
 const uiError = ref('');
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | FormData> = ref(undefined);
 const showForm = ref(false);
 
 function loadFromSession() {
@@ -36,8 +36,8 @@ onMounted(() => {
     loadFromSession();
 });
 
-const parsedJsonSchema = ref<Record<string, any> | null>(null);
-const parsedUiSchema = ref<Record<string, any> | null>(null);
+const parsedJsonSchema = ref<FormData | null>(null);
+const parsedUiSchema = ref<FormData | null>(null);
 
 function applySchemas() {
     jsonError.value = '';
@@ -127,7 +127,7 @@ const canApply = computed(
     () => jsonSchemaText.value.trim() !== '' && uiSchemaText.value.trim() !== ''
 );
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
     switch (options.action) {
         case 'console':

@@ -22,10 +22,7 @@ function createSchemaUrl(schema: unknown) {
 }
 
 function revokeSchemaUrl(url: string) {
-    if (
-        typeof URL.revokeObjectURL === 'function' &&
-        url.startsWith('blob:')
-    ) {
+    if (typeof URL.revokeObjectURL === 'function' && url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
     }
 }
@@ -73,7 +70,7 @@ const schemas: Record<
 type SchemaKey = keyof typeof schemas;
 type Tab = 'default' | 'ajv' | 'shadow' | 'url';
 
-const selectedSchemaKey = ref<SchemaKey>('summary');
+const selectedSchemaKey = ref<SchemaKey>('showcase');
 const activeTab = ref<Tab>('default');
 const submitData = ref<{ variant: string; data: unknown } | null>(null);
 

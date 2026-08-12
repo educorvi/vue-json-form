@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
-import { bootstrapComponents, VueJsonForm } from '@educorvi/vue-json-form';
+import {
+    bootstrapComponents,
+    type ParsedAndUnvalidatedJson,
+    VueJsonForm,
+    type FormData,
+} from '@educorvi/vue-json-form';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 
 const emit = defineEmits<{
-    viewCode: [title: string, object: Record<any, any>];
+    viewCode: [title: string, object: ParsedAndUnvalidatedJson];
 }>();
 
-async function submitMethod(data: Record<string, any>) {
+async function submitMethod(data: FormData) {
     emit('viewCode', 'Form Results', data);
 }
 
@@ -54,8 +59,8 @@ const rawUiSchema = ref(undefined as File | undefined);
 const rawJsonSchemaInput = ref(undefined as string | undefined);
 const rawUiSchemaInput = ref(undefined as string | undefined);
 
-const jsonSchema = ref(undefined as Record<string, any> | undefined);
-const uiSchema = ref(undefined as Record<string, any> | undefined);
+const jsonSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
+const uiSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
 
 function clear() {
     rawJsonSchema.value = undefined;

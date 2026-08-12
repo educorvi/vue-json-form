@@ -64,6 +64,7 @@
                             "examples": ["request", "save", "print"]
                         },
                         "summary": {
+                            "type": "object",
                             "properties": {
                                 "field": {
                                     "type": "string",

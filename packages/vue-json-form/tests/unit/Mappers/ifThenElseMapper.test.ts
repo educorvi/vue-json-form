@@ -1556,8 +1556,7 @@ describe('IfThenElseMapper', () => {
 
         const fieldScope =
             '/properties/questionnaire-2/properties/list/items/properties/inner-obj/properties/inner-list/items/properties/required-field';
-        const savePath =
-            `/properties/questionnaire-2/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
+        const savePath = `/properties/questionnaire-2/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
 
         const jsonSchema: JSONSchema = {
             type: 'object',
@@ -1682,8 +1681,7 @@ describe('IfThenElseMapper', () => {
 
         const fieldScope =
             '/properties/list/items/properties/inner-obj/properties/inner-list/items/properties/required-field';
-        const savePath =
-            `/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
+        const savePath = `/properties/list.${outerArrayItemId}/properties/inner-obj/properties/inner-list.${innerArrayItemId}/properties/required-field`;
 
         const jsonSchema: JSONSchema = {
             type: 'object',

@@ -338,6 +338,18 @@
                 }
             }
         },
+        "containerOptions": {
+            "type": "object",
+            "title": "Container Options",
+            "description": "Options for container elements (Arrays and Objects)",
+            "properties": {
+                "uiSchema": {
+                    "type": "object",
+                    "description": "Sets the UI Schema. In the case of arrays this describes the UI Schema for the items in the array, for Objects this describes the UI Schema of the object",
+                    "$ref": "layout.schema.json#/definitions/layoutElement"
+                }
+            }
+        },
         "options": {
             "type": "object",
             "title": "Options",
@@ -355,6 +367,9 @@
                 },
                 {
                     "$ref": "#/definitions/arrayOptions"
+                },
+                {
+                    "$ref": "#/definitions/containerOptions"
                 },
                 {
                     "$ref": "#/definitions/inputOptions"

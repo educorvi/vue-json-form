@@ -1,6 +1,7 @@
 import { ref, type Ref } from 'vue';
+import type { FormData } from '@/typings/customTypes.ts';
 
-export const presetData: Ref<Record<string, any> | undefined> = ref({
+export const presetData: Ref<FormData | undefined> = ref({
     'jso-39-multiselect': ['option 2', 'option 3'],
     'jso-39-string': 'Test',
     'jso-39-array': ['Hello', 'World'],

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { cleanData } from '@/stores/helpers/cleanData.ts';
 import { getArrayAliasIndices } from '@/stores/helpers/array.ts';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { FormData } from '@/typings/customTypes.ts';
 
 export type ArrayData = {
     key: string;
@@ -14,8 +15,8 @@ export type FormArrays = Record<string, ArrayData>;
 export function createUseFormDataStore(formId: string) {
     return defineStore('data-' + formId, {
         state: () => ({
-            formData: {} as Record<string, any>,
-            defaultFormData: {} as Record<string, any>,
+            formData: {} as FormData,
+            defaultFormData: {} as FormData,
             /**
              * List of all arrays in the schema that were written to
              */

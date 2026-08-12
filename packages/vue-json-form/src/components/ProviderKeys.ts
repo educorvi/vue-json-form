@@ -18,10 +18,6 @@ export const formStructureProviderKey = Symbol() as InjectionKey<
 >;
 export const requiredProviderKey = Symbol() as InjectionKey<boolean>;
 
-export const savePathOverrideProviderKey = Symbol() as InjectionKey<
-    string | undefined
->;
-
 export const savePathProviderKey = Symbol() as InjectionKey<string>;
 
 export const descendantControlOverridesProviderKey =
