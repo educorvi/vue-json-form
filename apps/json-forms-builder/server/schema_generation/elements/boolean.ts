@@ -5,14 +5,14 @@ import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 
 
-enum BooleanFormat {
-    Checkbox = "checkbox",
-    Switch = "switch"
-}
+// enum BooleanFormat {
+//     Checkbox = "checkbox",
+//     Switch = "switch"
+// }
 
 
 type BooleanElementData = z.infer<typeof BooleanElement.schema>;
-const booleanElementDefaults = {type: "boolean" as const, format: BooleanFormat.Checkbox};
+const booleanElementDefaults = {type: "boolean" as const}; //, format: BooleanFormat.Checkbox};
 type BooleanElementOptionalKeys = keyof typeof booleanElementDefaults | SimpleElementOptionalKeys;
 
 export class BooleanElement extends SimpleElement {
@@ -20,7 +20,7 @@ export class BooleanElement extends SimpleElement {
 
     static schema = SimpleElement.schema.extend({
         type: z.literal("boolean"),
-        format: z.enum(BooleanFormat),
+        // format: z.enum(BooleanFormat),
     });
 
     constructor(
@@ -38,16 +38,16 @@ export class BooleanElement extends SimpleElement {
         };
     }
 
-    get format(): BooleanFormat {
-        return this.data.format;
-    }
+    // get format(): BooleanFormat {
+    //     return this.data.format;
+    // }
 
     toUiSchema(_generator: SchemaGenerator, scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, scope);
-        uiSchema.options = {
-            ...uiSchema.options,
-            // format: this.format, TODO
-        };
+        // uiSchema.options = {
+        //     ...uiSchema.options,
+        //     format: this.format, TODO
+        // };
 
         return uiSchema;
     }
