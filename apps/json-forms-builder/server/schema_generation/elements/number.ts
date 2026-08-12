@@ -24,12 +24,20 @@ export class NumberElement extends SimpleElement {
         minimum: z.number().optional(),
         maximum: z.number().optional(),
         multipleOf: z.number().optional(),
-        range: z.boolean()
+        range: z.boolean(),
+        placeholder: z.string().optional(),
     }).superRefine((data, ctx) => {
         if (data.minimum !== undefined && data.maximum !== undefined && data.minimum > data.maximum) {
             ctx.addIssue({
                 code: "custom",
                 message: "minimum cannot be greater than maximum",
+                value: data,
+            });
+        }
+        if (data.range && (data.minimum === undefined || data.maximum === undefined || data.multipleOf === undefined)) {
+            ctx.addIssue({
+                code: "custom",
+                message: "range requires minimum, maximum, and multipleOf to be defined",
                 value: data,
             });
         }
@@ -70,11 +78,16 @@ export class NumberElement extends SimpleElement {
         return this.data.range;
     }
 
+    get placeholder(): string | undefined {
+        return this.data.placeholder;
+    }
+
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {
             ...uiSchema.options,
             ...(this.range && { range: this.range }),
+            ...(this.placeholder && { placeholder: this.placeholder }),
         };
 
         return uiSchema;
