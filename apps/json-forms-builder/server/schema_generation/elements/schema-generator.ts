@@ -1,8 +1,9 @@
 import type { FormDefinition } from './form-definition';
-import type { JSONSchema, Control, HTMLRenderer, ShowOnProperty } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema,} from '@educorvi/vue-json-form-schemas';
 import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
-import { CombinedUiSchemaType, getBaseJsonSchema } from '../utils';
+import { CombinedUiSchemaType } from '../utils';
+import { ObjectElement } from './container';
 
 /**
  * SchemaGenerator turns a FormDefinition into JSON Schema + UI Schema pairs.
@@ -105,6 +106,11 @@ export class SchemaGenerator {
         // check if child has the attribute required and if it is true
         if ((child as any).required === true) {
             requiredList.push(child.id);
+        } else if (child instanceof ObjectElement) {
+          // set object as required if it has required properties
+          if (childSchema.required && childSchema.required.length > 0) {
+            requiredList.push(child.id);
+          }
         }
 
         if (child.dependencyGroup) {
@@ -116,6 +122,9 @@ export class SchemaGenerator {
                 [child.id]: lastDependencyGroup.toJsonSchema(this, [...scope, child.id]),
             }
             allOf.push(allOfItem);
+        }
+        if (child.dependencyGroup) {
+          this.removeLastDependencyGroupId();
         }
     }
 

@@ -23,15 +23,4 @@ export const ButtonVariantFormatEnum = z.enum([
 ] as [ButtonVariantFormatValue, ...ButtonVariantFormatValue[]]);
 export type ButtonVariantFormat = z.infer<typeof ButtonVariantFormatEnum>;
 
-export function getBaseJsonSchema(type: "array" | "object", title: string, description?: string): JSONSchema {
-    const schema: JSONSchema = {
-        "type": type,
-        "title": title,
-    }
-    if (description !== undefined) {
-        schema.description = description;
-    }
-    return schema;
-}
-
 

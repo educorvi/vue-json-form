@@ -2,9 +2,8 @@ import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
-import { Layout as Layout, getBaseJsonSchema } from "../utils";
-import { Entity, PartialBy } from "./base";
-import { createShowOnProperty } from "./children-schema-utils";
+import { Layout } from "../utils";
+import { PartialBy } from "./base";
 
 
 type ContainerElementData = z.infer<typeof ContainerElement.schema>;
@@ -46,38 +45,25 @@ export abstract class ContainerElement extends BaseDataElement {
         return this.data.showTitle;
     }
 
-    get type(): "array" | "object" {
-        return "array"; // TODO overriden in subclasses?
-    }
+    abstract get type(): "array" | "object";
 
     // e.g. ["properties"] or ["properties", "items"]
     abstract getScopePart(): string[];
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
         scope = [...scope, this.id];
-        const uiSchema: Control = {
-            "type": "Control",
-            "scope": scope.join("/"),
-        }
+        const uiSchema = super.toUiSchema(generator, scope);
 
-        const options = super.getUiSchemaOptions();
-        if (this.showTitle === false) {
-            options["label"] = false;
-        }
-        if (Object.keys(options).length > 0) {
-            uiSchema.options = options;
-        }
-
-        const showOn = createShowOnProperty(this.dependencyGroup, generator, scope);
-        if (showOn) {
-            uiSchema.showOn = showOn;
+        uiSchema.options = {
+            ...(uiSchema.options && { ...uiSchema.options }),
+            ...(this.showTitle === false && { label: false }),
         }
 
         if (this.children && this.children.length > 0) {
             uiSchema.options = {
-                ... uiSchema.options,
+                ...uiSchema.options,
                 "uiSchema": {
-                    "type": this.layout as UiLayout["type"],
+                    "type": this.layout,
                     "elements": generator.generateUiSchemaForElements(this.children, scope.concat(this.getScopePart()))
                 }
             }
@@ -87,14 +73,13 @@ export abstract class ContainerElement extends BaseDataElement {
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema: JSONSchema = getBaseJsonSchema(this.type, this.title, this.description);
+        const jsonSchema = {
+            ...super.toJsonSchema(generator, scope),
+            "type": this.type,
+        };
 
         if (this.dependencyGroup) {
             generator.addLastDependencyGroupId(this.dependencyGroup);
-        }
-        const lastDependencyGroup = generator.getLastDependencyGroup();
-        if (lastDependencyGroup) {
-            lastDependencyGroup.toJsonSchema(generator, [...scope, this.id]);
         }
 
         if (this.children && this.children.length > 0) {
@@ -161,12 +146,30 @@ export class ArrayElement extends ContainerElement {
         return this.data.maxItems;
     }
 
+    get type(): "array" {
+        return this.data.type;
+    }
+
     getScopePart(): string[] {
         return ["items", "properties"];
     }
 
+    toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
+        const uiSchema = super.toUiSchema(generator, scope);
+        uiSchema.options = {
+            ...(uiSchema.options && { ...uiSchema.options }),
+            ...(this.buttonLabel && { addButtonText: this.buttonLabel }),
+        }
+        return uiSchema;
+    }
+
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema: any = super.toJsonSchema(generator, scope);
+        const jsonSchema = {
+            ...super.toJsonSchema(generator, scope),
+            "type": this.type,
+            ...(this.minItems !== undefined && { minItems: this.minItems }),
+            ...(this.maxItems !== undefined && { maxItems: this.maxItems }),
+        };
         jsonSchema.items = {
             "type": "object",
             "properties": jsonSchema.properties
@@ -175,24 +178,10 @@ export class ArrayElement extends ContainerElement {
         jsonSchema.type = "array";
 
         if (this.required) {
-            jsonSchema['minItems'] = 1;
+            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
         }
-        if (this.minItems !== undefined) {
-            jsonSchema['minItems'] = this.minItems;
-        }
-        if (this.maxItems !== undefined) {
-            jsonSchema['maxItems'] = this.maxItems;
-        }
-        return jsonSchema;
-    }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
-        let uiSchema = super.toUiSchema(generator, scope);
-        if (this.buttonLabel) {
-            uiSchema["options"] = uiSchema["options"] || {};
-            uiSchema["options"]["addButtonText"] = this.buttonLabel;
-        }
-        return uiSchema;
+        return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control, required: boolean=false): ArrayElement {
@@ -238,6 +227,10 @@ export class ObjectElement extends ContainerElement {
             ...objectElementDefaults,
             ...data,
         };
+    }
+
+    get type(): "object" {
+        return this.data.type;
     }
 
     getScopePart(): string[] {
