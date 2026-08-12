@@ -1,4 +1,4 @@
-import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, Control, HTMLRenderer, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
 import { z } from "zod";
 import variantsSchema from "@educorvi/vue-json-form-schemas/src/ui/variants.schema.json";
 import type { OutlineVariants, BaseVariants } from "@educorvi/vue-json-form-schemas";
@@ -12,6 +12,8 @@ export enum Layout {
     Vertical = "VerticalLayout",
     Group = "Group" // with line to the right of the elements
 }
+
+export type CombinedUiSchemaType = Control | HTMLRenderer | Divider | Button | Buttongroup | Modal;
 
 
 type ButtonVariantFormatValue = NonNullable<BaseVariants | OutlineVariants>;

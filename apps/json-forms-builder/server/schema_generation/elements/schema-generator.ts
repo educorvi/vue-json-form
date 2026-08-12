@@ -2,7 +2,7 @@ import type { FormDefinition } from './form-definition';
 import type { JSONSchema, Control, HTMLRenderer, ShowOnProperty } from '@educorvi/vue-json-form-schemas';
 import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
-import { getBaseJsonSchema } from '../utils';
+import { CombinedUiSchemaType, getBaseJsonSchema } from '../utils';
 
 /**
  * SchemaGenerator turns a FormDefinition into JSON Schema + UI Schema pairs.
@@ -126,7 +126,7 @@ export class SchemaGenerator {
   /**
    * Convenience method called by ContainerElement.toUiSchema for its children.
    */
-  generateUiSchemaForElements(childrenIds: string[], scope: string[]): (Control | HTMLRenderer)[] {
+  generateUiSchemaForElements(childrenIds: string[], scope: string[]): (CombinedUiSchemaType)[] {
     return childrenIds.map(childId => {
       const child = this.document.getElementById(childId);
       if (!child) throw new Error(`Child element "${childId}" not found in nodesIndex`);

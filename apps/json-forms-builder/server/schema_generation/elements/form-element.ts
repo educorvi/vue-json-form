@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
-import { createId } from "../utils";
+import { CombinedUiSchemaType, createId } from "../utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
@@ -30,11 +30,11 @@ export abstract class FormElement extends Entity {
         return this.data.dependencyGroup;
     }
 
-    abstract toUiSchema(generator: SchemaGenerator, scope: string[]): Control | HTMLRenderer | Divider | Button | Buttongroup | Modal;
+    abstract toUiSchema(generator: SchemaGenerator, scope: string[]): CombinedUiSchemaType;
 
     abstract toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema;
 
-    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control | HTMLRenderer | Divider | Button | Buttongroup | Modal): FormElement {
+    static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: CombinedUiSchemaType): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
     }
 }
