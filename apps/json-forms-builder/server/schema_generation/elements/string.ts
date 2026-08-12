@@ -6,10 +6,14 @@ import { PartialBy } from "./base";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { InputOptions } from "@educorvi/vue-json-form-schemas";
 
+
+const excludedFormats = ["color", "time", "date", "datetime-local"] as const;
+type ExcludedFormat = (typeof excludedFormats)[number];
+type StringFormatValue = Exclude<FormatValue, ExcludedFormat>;
+
 type FormatValue = NonNullable<InputOptions["format"]>;
 const StringFormatEnum = z.enum(
-  controlSchema.definitions.inputOptions.properties.format.enum as [FormatValue, ...FormatValue[]]
-);
+  (controlSchema.definitions.inputOptions.properties.format.enum as FormatValue[]).filter((f): f is StringFormatValue => !excludedFormats.includes(f as ExcludedFormat)) as [StringFormatValue, ...StringFormatValue[]]);
 export type StringFormat = z.infer<typeof StringFormatEnum>;
 
 type StringElementData = z.infer<typeof StringElement.schema>;
@@ -88,12 +92,16 @@ export class StringElement extends SimpleElement {
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
+        const jsonSchemaFormatMap: Record<string, string> = {
+            "email": "email",
+        }
         const jsonSchema: JSONSchema = {
             ...super.toJsonSchema(_generator, _scope),
             type: "string",
             ...(this.minLength !== undefined && { minLength: this.minLength }),
             ...(this.maxLength !== undefined && { maxLength: this.maxLength }),
             ...(this.pattern && { pattern: this.pattern }),
+            ...(this.format && jsonSchemaFormatMap[this.format] ? { format: jsonSchemaFormatMap[this.format] } : undefined),
         };
 
         return jsonSchema;
