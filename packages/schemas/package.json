@@ -8,6 +8,7 @@
     },
     "devDependencies": {
         "@apidevtools/json-schema-ref-parser": "^15.4.0",
+        "@educorvi/json-schema-viewer": "^1.0.0",
         "@semantic-release/exec": "^7.1.0",
         "@types/json-schema": "^7.0.15",
         "json-schema-to-typescript": "^15.0.4",
@@ -55,7 +56,7 @@
         "build": "turbo build:internal check-types",
         "build:internal": "vite build",
         "check-types": "tsc --noEmit",
-        "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && generate-schema-doc ./src/generated/ui-merged.schema.json ./docs-dist/index.html",
+        "doc": "rimraf ./docs-dist && mkdirp ./docs-dist && npx json-schema-viewer ./src/generated/ui-merged.schema.json -o ./docs-dist",
         "generateTypings": "run-p 'generateTypings:*'",
         "generateTypings:uiSchema": "mkdirp src/generated && cd src/ui/ && json2ts -i ui.schema.json -o ../generated/ui-schema.d.ts",
         "lint": "yarn run -T eslint .",
