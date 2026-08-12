@@ -33,6 +33,7 @@ export abstract class SelectionElement extends SimpleElement {
         return {
             ...super.setDefaults(data),
             ...selectionElementDefaults,
+            values: [...selectionElementDefaults.values], // clone so that each instance has its own array
             ...data,
         };
     }

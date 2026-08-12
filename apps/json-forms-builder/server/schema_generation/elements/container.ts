@@ -29,6 +29,7 @@ export abstract class ContainerElement extends BaseDataElement {
         return {
             ...super.setDefaults(data),
             ...containerElementDefaults,
+            children: [...containerElementDefaults.children], // clone so that each instance has its own array
             ...data,
         };
     }

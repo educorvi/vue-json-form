@@ -93,6 +93,7 @@ export class Wizard extends Entity {
         return {
             ...super.setDefaults(data),
             ...wizardDefaults,
+            wizardPages: [...wizardDefaults.wizardPages], // clone so that each instance has its own array
             ...data,
         };
     }

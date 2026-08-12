@@ -44,6 +44,7 @@ export class ButtonGroupElement extends FormElement {
         return {
             ...super.setDefaults(data),
             ...buttonGroupElementDefaults,
+            buttons: [...buttonGroupElementDefaults.buttons], // clone so that each instance has its own array
             ...data,
         };
     }

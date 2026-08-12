@@ -37,7 +37,7 @@ enum FileType {
 
 
 type FileuploadElementData = z.infer<typeof FileuploadElement.schema>;
-const fileuploadElementDefaults = {type: "file-upload" as const};
+const fileuploadElementDefaults = {type: "file-upload" as const, multiUpload: false, displayAsSingleUploadField: false};
 type FileuploadElementOptionalKeys = keyof typeof fileuploadElementDefaults | SimpleElementOptionalKeys;
 export class FileuploadElement extends SimpleElement {
     data: FileuploadElementData;

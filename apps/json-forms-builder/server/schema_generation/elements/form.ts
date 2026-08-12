@@ -33,6 +33,7 @@ export class Form extends Entity {
         return {
             ...super.setDefaults(data),
             ...formDefaults,
+            children: [...formDefaults.children], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -61,7 +62,7 @@ export class Form extends Entity {
 		return uiSchema
 	}
 
-	toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+	toJsonSchema(generator: SchemaGenerator): JSONSchema {
         const {childrenJsonSchema, requiredList} = generator.generateJsonSchemaForElements(this.data.children, ["properties"]);
         const jsonSchema: JSONSchema = {
             "$schema": "https://json-schema.org/draft/2019-09/schema#",

@@ -87,6 +87,7 @@ export class DependencyGroup extends Entity {
         super(data);
         this.data = {
             ...DependencyGroup.setDefaults(data),
+            dependencies: [...dependencyGroupDefaults.dependencies], // clone so that each instance has its own array
             ...data,
         };
     }
