@@ -203,6 +203,14 @@ export class ArrayElement extends ContainerElement {
         );
         return arrayElement;
     }
+
+    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        const jsonSchema = super.toWrappedJsonSchema(generator, scope);
+        if (this.required) {
+            jsonSchema.required = [this.id];
+        }
+        return jsonSchema;
+    }
 }
 
 

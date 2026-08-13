@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
-import { CombinedUiSchemaType, createId } from "./utils";
+import { CombinedUiSchemaType, createId, Layout } from "./utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
@@ -34,6 +34,51 @@ export abstract class FormElement extends Entity {
 
     abstract toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema;
 
+    /**
+     * creates a preview ui schema in which all attributes regarding the visibility are adapted to a single view (e.g. showOn deleted)
+     */
+    protected toPreviewUi(generator: SchemaGenerator, scope: string[]): CombinedUiSchemaType {
+        const uiSchema = this.toUiSchema(generator, scope);
+        if (this.dependencyGroup) {
+            delete uiSchema.showOn;
+        }
+        return uiSchema;
+    }
+
+    /**
+     * creates a wrapped ui schema where the actual FormElement is wrapped in a vertical layout
+     * used in the frontend to render each FormElement separately in the FormBuilder
+     */
+    toWrappedUiSchema(generator: SchemaGenerator, scope: string[]): UISchema {
+        return {
+            version: "2.2",
+            layout: {
+                type: Layout.Vertical,
+                elements: [this.toPreviewUi(generator, scope)]
+            }
+        };
+    }
+
+    /**
+     * creates a preview json schema in which all attributes regarding the visibility are adapted to a single view
+     */
+    protected toPreviewJson(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        return this.toJsonSchema(generator, scope);
+    }
+
+    /**
+     * creates a wrapped json schema where the actual FormElement is wrapped in an object
+     * used in the frontend to render each FormElement separately in the FormBuilder
+     */
+    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        return {
+            type: "object",
+            properties: {
+                [this.id]: this.toPreviewJson(generator, scope)
+            },
+        };
+    }
+
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: CombinedUiSchemaType): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
     }
@@ -47,7 +92,6 @@ export type BaseDataElementOptionalKeys = keyof typeof baseDataElementDefaults |
 export abstract class BaseDataElement extends FormElement {
     data: BaseDataElementData
 
-    // more attributes
     static schema = FormElement.schema.extend({
         title: z.string(),
         description: z.string().optional(),
@@ -71,7 +115,6 @@ export abstract class BaseDataElement extends FormElement {
             ...data,
         };
     }
-
 
     get title(): string {
         return this.data.title;
@@ -131,7 +174,14 @@ export abstract class BaseDataElement extends FormElement {
             ...(showOn && { showOn: showOn }),
         };
         return uiSchema;
+    }
 
+    protected toPreviewUi(generator: SchemaGenerator, scope: string[]): Control {
+        const uiSchema = super.toPreviewUi(generator, scope) as Control;
+        if (this.hidden) {
+            delete uiSchema.options?.hidden;
+        }
+        return uiSchema;
     }
 
 }
@@ -198,6 +248,14 @@ export abstract class SimpleElement extends BaseDataElement {
         const jsonSchema = super.toJsonSchema(_generator, _scope);
         if (this.default) {
             jsonSchema.default = this.default;
+        }
+        return jsonSchema;
+    }
+
+    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        const jsonSchema = super.toWrappedJsonSchema(generator, scope);
+        if (this.required) {
+            jsonSchema.required = [this.id];
         }
         return jsonSchema;
     }
