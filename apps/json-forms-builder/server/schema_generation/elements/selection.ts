@@ -5,7 +5,7 @@ import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { EnumOptions } from "@educorvi/vue-json-form-schemas";
-import { ButtonVariantFormatEnum, ButtonVariantFormat, cleanUiSchema } from "../utils";
+import { ButtonVariantFormatEnum, ButtonVariantFormat, cleanUiSchema } from "./utils";
 
 
 type SelectionElementData = z.infer<typeof SelectionElement.schema>;

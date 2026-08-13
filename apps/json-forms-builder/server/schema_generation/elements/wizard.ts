@@ -1,11 +1,9 @@
 import { z } from "zod";
-import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
+import type { Control, JSONSchema, Wizard as WizardUiSchema } from '@educorvi/vue-json-form-schemas';
+import { Layout as LayoutUiSchema } from '@educorvi/vue-json-form-schemas';
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity, EntityOptionalKeys, PartialBy } from "./base";
-import { createShowOnProperty } from "./children-schema-utils";
 import { Form } from "./form";
-import { cleanUiSchema } from "../utils";
 
 
 type WizardPageData = z.infer<typeof WizardPage.schema>;
@@ -16,7 +14,7 @@ export class WizardPage extends Entity {
 
     static schema = super.schema.extend({
         type: z.literal("wizard-page"),
-        form: z.string(),
+        wizardPageForm: z.string(), // id to a Form
         pageTitle: z.string(),
     });
 
@@ -35,32 +33,35 @@ export class WizardPage extends Entity {
         };
     }
 
-    get form(): string {
-        return this.data.form;
+    get wizardPageForm(): string {
+        return this.data.wizardPageForm;
     }
 
     get pageTitle(): string {
         return this.data.pageTitle;
     }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
-        const form = generator.document.getElementById(this.form);
-        if (!(form instanceof Form)) {
-            throw new Error(`Form with id ${this.form} not found or is not a Form element`);
+    toUiSchema(generator: SchemaGenerator, scope: string[]): LayoutUiSchema {
+        const wizardPageForm = generator.document.getElementById(this.wizardPageForm);
+        if (!(wizardPageForm instanceof Form)) {
+            throw new Error(`Wizard page with id ${this.wizardPageForm} not found or is not a Form`);
         }
+        const formLayoutUiSchema: LayoutUiSchema = wizardPageForm.toLayoutUiSchema(generator, ["properties"]);
 
-        const uiSchema = form.toUiSchema(generator);
-        cleanUiSchema(uiSchema);
+        const uiSchema: LayoutUiSchema = {
+            type: formLayoutUiSchema.type,
+            elements: formLayoutUiSchema.elements,
+        };
         return uiSchema;
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const form = generator.document.getElementById(this.form);
-        if (!(form instanceof Form)) {
-            throw new Error(`Form with id ${this.form} not found or is not a Form element`);
+        const wizardPageForm = generator.document.getElementById(this.wizardPageForm);
+        if (!(wizardPageForm instanceof Form)) {
+            throw new Error(`Wizard page with id ${this.wizardPageForm} not found or is not a Form`);
         }
 
-        const jsonSchema = form.toJsonSchema(generator, scope);
+        const jsonSchema = wizardPageForm.toJsonSchema(generator, scope);
         return jsonSchema;
     }
 
@@ -98,5 +99,46 @@ export class Wizard extends Entity {
             wizardPages: [...wizardDefaults.wizardPages], // clone so that each instance has its own array
             ...data,
         };
+    }
+
+    get wizardPages(): string[] {
+        return this.data.wizardPages;
+    }
+
+    toUiSchema(generator: SchemaGenerator, scope: string[]): WizardUiSchema {
+        const uiSchema: WizardUiSchema = {
+            type: "Wizard",
+            pages: this.wizardPages.map(pageId => {
+                const page = generator.document.getElementById(pageId);
+                if (!(page instanceof WizardPage)) {
+                    throw new Error(`Wizard page with id ${pageId} not found or is not a WizardPage`);
+                }
+                return (page as WizardPage).toUiSchema(generator, scope);
+            }),
+        };
+        return uiSchema;
+    }
+
+    toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        const jsonSchema: JSONSchema = {
+            type: "object",
+            properties: {},
+        };
+
+        const requiredList: string[] = [];
+        for (const pageId of this.wizardPages) {
+            const page = generator.document.getElementById(pageId);
+            if (!(page instanceof WizardPage)) {
+                throw new Error(`Wizard page with id ${pageId} not found or is not a WizardPage`);
+            }
+            const pageJsonSchema = page.toJsonSchema(generator, scope);
+            jsonSchema.properties![pageId] = pageJsonSchema;
+            if (pageJsonSchema.required && pageJsonSchema.required.length > 0) {
+                requiredList.push(pageId);
+            }
+        }
+
+        jsonSchema.required = requiredList;
+        return jsonSchema;
     }
 }

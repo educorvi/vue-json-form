@@ -2,8 +2,8 @@ import { Entity } from "./base";
 import { FormElement } from "./form-element";
 import { readonly, z } from "zod";
 import type { PartialBy } from "./base";
-import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
-import { Layout } from "../utils";
+import type { JSONSchema, UISchema, Layout as LayoutUiSchema } from '@educorvi/vue-json-form-schemas';
+import { Layout } from "./utils";
 import type { SchemaGenerator } from "./schema-generator";
 import type { EntityOptionalKeys } from "./base";
 
@@ -50,17 +50,21 @@ export class Form extends Entity {
         return ["properties"];
     }
 
-	toUiSchema(generator: SchemaGenerator): UISchema {
+	toUiSchema(generator: SchemaGenerator, scope: string[]=[]): UISchema {
         const uiSchema: UISchema = {
             // "$schema": "TODO",
             "version": "2.2",
-            "layout": {
-                "type": this.data.layout,
-                "elements": generator.generateUiSchemaForElements(this.data.children, ["properties"]),
-            }
+            "layout": this.toLayoutUiSchema(generator, scope)
         }
 		return uiSchema
 	}
+
+    toLayoutUiSchema(generator: SchemaGenerator, scope: string[]=[]): LayoutUiSchema {
+        return {
+            "type": this.data.layout,
+            "elements": generator.generateUiSchemaForElements(this.data.children, [...scope, "properties"]),
+        }
+    }
 
 	toJsonSchema(generator: SchemaGenerator): JSONSchema {
         const {childrenJsonSchema, requiredList} = generator.generateJsonSchemaForElements(this.data.children, ["properties"]);

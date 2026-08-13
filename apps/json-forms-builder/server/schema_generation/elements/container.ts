@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
-import { cleanUiSchema, Layout } from "../utils";
+import { cleanUiSchema, Layout } from "./utils";
 import { PartialBy } from "./base";
 
 

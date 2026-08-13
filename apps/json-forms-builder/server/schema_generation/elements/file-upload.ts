@@ -4,7 +4,7 @@ import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
-import { cleanUiSchema } from "../utils";
+import { cleanUiSchema } from "./utils";
 
 
 enum FileType {

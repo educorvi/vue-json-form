@@ -3,7 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
-import { cleanUiSchema } from "../utils";
+import { cleanUiSchema } from "./utils";
 
 
 enum NumberFormat {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
-import { CombinedUiSchemaType, createId } from "../utils";
+import { CombinedUiSchemaType, createId } from "./utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";

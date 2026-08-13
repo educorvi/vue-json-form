@@ -4,7 +4,7 @@ import { FormElement, FormElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
-import { ButtonVariantFormatEnum, ButtonVariantFormat } from "../utils";
+import { ButtonVariantFormatEnum, ButtonVariantFormat } from "./utils";
 import modalSchema from "@educorvi/vue-json-form-schemas/src/ui/modal.schema.json";
 
 

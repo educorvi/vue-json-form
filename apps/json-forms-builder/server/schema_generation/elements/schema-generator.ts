@@ -2,7 +2,7 @@ import type { FormDefinition } from './form-definition';
 import type { JSONSchema,} from '@educorvi/vue-json-form-schemas';
 import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
-import { CombinedUiSchemaType } from '../utils';
+import { CombinedUiSchemaType } from './utils';
 import { ObjectElement } from './container';
 
 /**
@@ -61,28 +61,6 @@ export class SchemaGenerator {
   }
 
   // ─── Public API ──────────────────────────────────────────────────────────────
-
-  /**
-   * Generate the JSON Schema fragment for the element with the given id.
-   * If path is omitted, it is derived from the parentIndex.
-   */
-  generateJsonSchema(elementId: string, path?: string[]): object {
-    const element = this.document.nodesIndex.get(elementId);
-    if (!element) throw new Error(`Element "${elementId}" not found in nodesIndex`);
-    const resolvedPath = path ?? this.getPath(elementId);
-    return element.toJsonSchema(this, resolvedPath);
-  }
-
-  /**
-   * Generate the UI Schema fragment for the element with the given id.
-   * If path is omitted, it is derived from the parentIndex.
-   */
-  generateUiSchema(elementId: string, path?: string[]): object {
-    const element = this.document.nodesIndex.get(elementId);
-    if (!element) throw new Error(`Element "${elementId}" not found in nodesIndex`);
-    const resolvedPath = path ?? this.getPath(elementId);
-    return element.toUiSchema(this, resolvedPath);
-  }
 
   /**
    * Convenience method called by ContainerElement.toJsonSchema for its children.

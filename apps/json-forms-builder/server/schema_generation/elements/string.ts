@@ -5,7 +5,7 @@ import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { InputOptions } from "@educorvi/vue-json-form-schemas";
-import { cleanUiSchema } from "../utils";
+import { cleanUiSchema } from "./utils";
 
 
 const excludedFormats = ["color", "time", "date", "datetime-local"] as const;
