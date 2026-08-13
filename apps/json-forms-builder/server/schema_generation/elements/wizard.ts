@@ -5,6 +5,7 @@ import type { SchemaGenerator } from "./schema-generator";
 import { Entity, EntityOptionalKeys, PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
 import { Form } from "./form";
+import { cleanUiSchema } from "../utils";
 
 
 type WizardPageData = z.infer<typeof WizardPage.schema>;
@@ -49,6 +50,7 @@ export class WizardPage extends Entity {
         }
 
         const uiSchema = form.toUiSchema(generator);
+        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 

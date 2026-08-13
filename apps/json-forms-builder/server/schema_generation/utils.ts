@@ -23,4 +23,8 @@ export const ButtonVariantFormatEnum = z.enum([
 ] as [ButtonVariantFormatValue, ...ButtonVariantFormatValue[]]);
 export type ButtonVariantFormat = z.infer<typeof ButtonVariantFormatEnum>;
 
-
+export function cleanUiSchema(uiSchema: Control): void {
+    if (uiSchema.options && Object.keys(uiSchema.options).length === 0) {
+        delete uiSchema.options;
+    }
+}

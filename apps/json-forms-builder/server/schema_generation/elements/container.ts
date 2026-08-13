@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
-import { Layout } from "../utils";
+import { cleanUiSchema, Layout } from "../utils";
 import { PartialBy } from "./base";
 
 
@@ -161,6 +161,7 @@ export class ArrayElement extends ContainerElement {
             ...(uiSchema.options && { ...uiSchema.options }),
             ...(this.buttonLabel && { addButtonText: this.buttonLabel }),
         }
+        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 
@@ -236,6 +237,12 @@ export class ObjectElement extends ContainerElement {
 
     getScopePart(): string[] {
         return ["properties"];
+    }
+
+    toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
+        const uiSchema = super.toUiSchema(generator, scope);
+        cleanUiSchema(uiSchema);
+        return uiSchema;
     }
 
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: Control): ObjectElement {

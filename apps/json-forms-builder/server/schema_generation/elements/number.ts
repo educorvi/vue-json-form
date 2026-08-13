@@ -3,6 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
+import { cleanUiSchema } from "../utils";
 
 
 enum NumberFormat {
@@ -89,6 +90,8 @@ export class NumberElement extends SimpleElement {
             ...(this.range && { range: this.range }),
             ...(this.placeholder && { placeholder: this.placeholder }),
         };
+
+        cleanUiSchema(uiSchema);
 
         return uiSchema;
     }

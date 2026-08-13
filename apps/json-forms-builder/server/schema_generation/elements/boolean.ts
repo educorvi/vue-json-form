@@ -3,6 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
+import { cleanUiSchema } from "../utils";
 
 
 // enum BooleanFormat {
@@ -48,6 +49,8 @@ export class BooleanElement extends SimpleElement {
         //     ...uiSchema.options,
         //     format: this.format, TODO
         // };
+
+        cleanUiSchema(uiSchema);
 
         return uiSchema;
     }

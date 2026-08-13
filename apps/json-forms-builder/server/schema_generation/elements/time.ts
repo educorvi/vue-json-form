@@ -5,6 +5,7 @@ import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { InputOptions } from "@educorvi/vue-json-form-schemas";
+import { cleanUiSchema } from "../utils";
 
 
 export enum TimeFormat {
@@ -50,7 +51,7 @@ export class TimeElement extends SimpleElement {
             ...(uiSchema.options && { ...uiSchema.options }),
             ...(this.format && { format: this.format }),
         };
-
+        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 

@@ -3,6 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
+import { cleanUiSchema } from "../utils";
 
 
 type ColorElementData = z.infer<typeof ColorElement.schema>;
@@ -41,6 +42,8 @@ export class ColorElement extends SimpleElement {
             ...(uiSchema.options && { ...uiSchema.options }),
             ...(this.format && { format: this.format }),
         };
+
+        cleanUiSchema(uiSchema);
 
         return uiSchema;
     }
