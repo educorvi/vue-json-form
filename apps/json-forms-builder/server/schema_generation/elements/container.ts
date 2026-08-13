@@ -52,7 +52,6 @@ export abstract class ContainerElement extends BaseDataElement {
     abstract getScopePart(): string[];
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
-        scope = [...scope, this.id];
         const uiSchema = super.toUiSchema(generator, scope);
 
         uiSchema.options = {
@@ -61,11 +60,12 @@ export abstract class ContainerElement extends BaseDataElement {
         }
 
         if (this.children && this.children.length > 0) {
+            const newScope = [...scope, this.id, ...this.getScopePart()];
             uiSchema.options = {
                 ...uiSchema.options,
                 "uiSchema": {
                     "type": this.layout,
-                    "elements": generator.generateUiSchemaForElements(this.children, scope.concat(this.getScopePart()))
+                    "elements": generator.generateUiSchemaForElements(this.children, newScope)
                 }
             }
         }

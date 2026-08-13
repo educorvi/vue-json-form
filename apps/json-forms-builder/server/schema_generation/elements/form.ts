@@ -52,8 +52,8 @@ export class Form extends Entity {
 
 	toUiSchema(generator: SchemaGenerator): UISchema {
         const uiSchema: UISchema = {
-            "$schema": "TODO",
-            "version": "2.1",
+            // "$schema": "TODO",
+            "version": "2.2",
             "layout": {
                 "type": this.data.layout,
                 "elements": generator.generateUiSchemaForElements(this.data.children, ["properties"]),
@@ -67,11 +67,11 @@ export class Form extends Entity {
 
         const allOf = generator.generatorHelperAttributes.allOf;
         const jsonSchema: JSONSchema = {
-            "$schema": "https://json-schema.org/draft/2019-09/schema#",
+            // "$schema": "https://json-schema.org/draft/2019-09/schema#",
             "type": "object",
             "properties": childrenJsonSchema,
             "required": requiredList,
-            ...(allOf && { allOf: allOf }),
+            ...(allOf && allOf.length > 0 && { allOf: allOf }),
         };
         return jsonSchema;
 	}

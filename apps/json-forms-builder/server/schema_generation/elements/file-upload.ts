@@ -4,6 +4,7 @@ import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
+import { cleanUiSchema } from "../utils";
 
 
 enum FileType {
@@ -123,7 +124,7 @@ export class FileuploadElement extends SimpleElement {
             ...(this.acceptedFileType ? { acceptedFileType: this.acceptedFileType } : { acceptedFileType: "*" }),
             ...(this.maxFileSizeInMB !== undefined && { maxFileSize: this.maxFileSizeInMB * 1024 * 1024 }), // convert MB to bytes
         };
-
+        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 
