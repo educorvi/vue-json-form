@@ -204,8 +204,8 @@ export class ArrayElement extends ContainerElement {
         return arrayElement;
     }
 
-    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema = super.toWrappedJsonSchema(generator, scope);
+    toWrappedJsonSchema(generator: SchemaGenerator): JSONSchema {
+        const jsonSchema = super.toWrappedJsonSchema(generator);
         if (this.required) {
             jsonSchema.required = [this.id];
         }

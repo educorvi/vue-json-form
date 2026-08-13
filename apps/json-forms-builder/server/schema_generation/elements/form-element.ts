@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
-import { CombinedUiSchemaType, createId, Layout } from "./utils";
+import { cleanUiSchema, CombinedUiSchemaType, createId, Layout } from "./utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
 import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
@@ -70,11 +70,11 @@ export abstract class FormElement extends Entity {
      * creates a wrapped json schema where the actual FormElement is wrapped in an object
      * used in the frontend to render each FormElement separately in the FormBuilder
      */
-    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+    toWrappedJsonSchema(generator: SchemaGenerator): JSONSchema {
         return {
             type: "object",
             properties: {
-                [this.id]: this.toPreviewJson(generator, scope)
+                [this.id]: this.toPreviewJson(generator, ["properties"])
             },
         };
     }
@@ -181,6 +181,7 @@ export abstract class BaseDataElement extends FormElement {
         if (this.hidden) {
             delete uiSchema.options?.hidden;
         }
+        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 
@@ -252,8 +253,8 @@ export abstract class SimpleElement extends BaseDataElement {
         return jsonSchema;
     }
 
-    toWrappedJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema = super.toWrappedJsonSchema(generator, scope);
+    toWrappedJsonSchema(generator: SchemaGenerator): JSONSchema {
+        const jsonSchema = super.toWrappedJsonSchema(generator);
         if (this.required) {
             jsonSchema.required = [this.id];
         }
