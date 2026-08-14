@@ -22,6 +22,17 @@
         "bootstrap-icons": "^1.13.1",
         "vue": "^3.5.38"
     },
+    "exports": {
+        ".": {
+            "types": "./types.d.ts",
+            "import": "./dist/vue-json-form-builder.js",
+            "default": "./dist/vue-json-form-builder.js"
+        },
+        "./dist/*": {
+            "types": "./types.d.ts",
+            "default": "./dist/*"
+        }
+    },
     "devDependencies": {
         "@playwright/test": "^1.61.0",
         "@semantic-release/exec": "^7.1.0",

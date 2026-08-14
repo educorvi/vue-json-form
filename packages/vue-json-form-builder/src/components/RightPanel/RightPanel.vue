@@ -2,50 +2,29 @@
 import { computed } from 'vue';
 import { BButton } from 'bootstrap-vue-next';
 import { PhSliders, PhX, PhMinus } from '@phosphor-icons/vue';
-import { useFormStore } from '@/stores/formStore';
-import ControlSettings from './old/ControlSettings.vue';
-import LayoutSettings from './old/LayoutSettings.vue';
-import ButtonSettings from './old/ButtonSettings.vue';
-import HTMLSettings from './old/HTMLSettings.vue';
-import ObjectSettings from './old/ObjectSettings.vue';
-import ArraySettings from './old/ArraySettings.vue';
-import WizardSettings from './old/WizardSettings.vue';
-import type {
-    ControlElement,
-    LayoutElement,
-    ButtonElement,
-    HTMLElement_,
-    ObjectElement,
-    ArrayElement,
-    WizardElement,
-} from '@/types/formTypes';
+import { useFormBuilder } from '../../useFormBuilder';
+import { useElementSettings } from './settings/useElementSettings';
+import { uiFor } from '@/elements';
+import ElementSettings from './settings/ElementSettings.vue';
 
-const emit = defineEmits<{ close: [] }>();
-
-const store = useFormStore();
-
-function closePanel() {
-    store.selectElement(null);
-    emit('close');
-}
+const builder = useFormBuilder();
+const { element: selected } = useElementSettings();
 
 const typeLabel = computed(() => {
-    const el = store.selectedElement;
-    if (!el) return '';
-    const labels: Record<string, string> = {
-        Control: 'Field Settings',
-        VerticalLayout: 'Vertical Layout',
-        HorizontalLayout: 'Horizontal Layout',
-        Group: 'Group Settings',
-        Button: 'Button Settings',
-        HTML: 'HTML Block',
-        Divider: 'Divider',
-        Object: 'Object Settings',
-        Array: 'Array Settings',
-        Wizard: 'Wizard Settings',
-    };
-    return labels[el.type] ?? 'Settings';
+    const el = selected.value;
+    if (!el) return 'Settings';
+    return uiFor(el).settingsLabel;
 });
+
+/** The data-type tag — from the element's ElementUi (only data elements have one). */
+const dataType = computed(() => {
+    const el = selected.value;
+    return el ? uiFor(el).dataType(el) : undefined;
+});
+
+function closePanel() {
+    builder.selectElement(null);
+}
 </script>
 
 <template>
@@ -70,48 +49,24 @@ const typeLabel = computed(() => {
         </div>
 
         <!-- Settings content -->
-        <div class="flex-grow-1 overflow-y-auto p-3">
-            <ControlSettings
-                v-if="store.selectedElement?.type === 'Control'"
-                :element="store.selectedElement as ControlElement"
-            />
-            <LayoutSettings
-                v-else-if="
-                    store.selectedElement &&
-                    ['VerticalLayout', 'HorizontalLayout', 'Group'].includes(
-                        store.selectedElement.type
-                    )
-                "
-                :element="store.selectedElement as LayoutElement"
-            />
-            <ButtonSettings
-                v-else-if="store.selectedElement?.type === 'Button'"
-                :element="store.selectedElement as ButtonElement"
-            />
-            <HTMLSettings
-                v-else-if="store.selectedElement?.type === 'HTML'"
-                :element="store.selectedElement as HTMLElement_"
-            />
-            <ObjectSettings
-                v-else-if="store.selectedElement?.type === 'Object'"
-                :element="store.selectedElement as ObjectElement"
-            />
-            <ArraySettings
-                v-else-if="store.selectedElement?.type === 'Array'"
-                :element="store.selectedElement as ArrayElement"
-            />
-            <WizardSettings
-                v-else-if="store.selectedElement?.type === 'Wizard'"
-                :element="store.selectedElement as WizardElement"
-            />
-            <div v-else class="text-center text-body py-4">
-                <PhMinus
-                    :size="24"
-                    weight="bold"
-                    class="d-block mb-2 mx-auto"
-                />
-                <p class="small">No settings for this element</p>
+        <div v-if="!selected" class="text-center text-body py-4">
+            <PhMinus :size="24" weight="bold" class="d-block mb-2 mx-auto" />
+            <p class="small">
+                Select an element on the canvas to edit its settings.
+            </p>
+        </div>
+
+        <div v-else class="flex-grow-1 overflow-y-auto p-3">
+            <div class="small text-body-secondary mb-3">
+                <span v-if="dataType" class="badge text-bg-light border me-2">
+                    {{ dataType }}
+                </span>
+                <code>{{ selected.id }}</code>
             </div>
+
+            <!-- Per-class settings — composed along the class hierarchy from
+                 the form schema definitions package -->
+            <ElementSettings />
         </div>
     </div>
 </template>

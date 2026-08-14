@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { BModal, BButton, BFormInput } from 'bootstrap-vue-next';
+import { computed, ref } from 'vue';
+import { BButton, BFormInput, BModal } from 'bootstrap-vue-next';
 import {
     PhPencilSimple,
     PhMoon,
@@ -11,19 +11,42 @@ import {
     PhUpload,
     PhArrowsClockwise,
 } from '@phosphor-icons/vue';
-import { useFormStore } from '@/stores/formStore';
+import { Form, FormDefinition } from '@educorvi/vue-json-form-builder-schemas';
+import { useFormBuilder } from '../../useFormBuilder';
+import {
+    useUiState,
+    setThemeMode,
+    togglePreviewInline,
+} from '../../useUiState';
+import OnlineState from './OnlineState.vue';
 import ExportDialog from './ExportDialog.vue';
 import ImportDialog from './ImportDialog.vue';
 
-const store = useFormStore();
+const builder = useFormBuilder();
+const { themeMode, isPreviewInline } = useUiState();
+
+const isExportOpen = ref(false);
+const isImportOpen = ref(false);
 const showResetModal = ref(false);
 
+const title = computed<string>({
+    get: () => builder.formDefinition.value?.root.title ?? '',
+    set: (v: string) => {
+        const fd = builder.formDefinition.value;
+        if (!fd) return;
+        builder.updateElementField(fd.root.uid, 'title', v);
+    },
+});
+
 function toggleTheme() {
-    store.setThemeMode(store.themeMode === 'light' ? 'dark' : 'light');
+    setThemeMode(themeMode.value === 'light' ? 'dark' : 'light');
 }
 
 function doReset() {
-    store.clearForm();
+    // Local mode only: reset to a fresh empty form
+    builder.loadDefinition(
+        new FormDefinition(new Form({ id: 'form', title: 'My Form' }))
+    );
 }
 </script>
 
@@ -35,7 +58,7 @@ function doReset() {
         <div class="d-flex align-items-center gap-2 me-auto">
             <PhPencilSimple :size="16" class="text-primary" weight="bold" />
             <b-form-input
-                v-model="store.jsonSchema.title"
+                v-model="title"
                 size="sm"
                 class="form-control-transparent"
                 placeholder="Form Title"
@@ -47,17 +70,13 @@ function doReset() {
             size="sm"
             variant="outline-secondary"
             :title="
-                store.themeMode === 'light'
+                themeMode === 'light'
                     ? 'Switch to dark mode'
                     : 'Switch to light mode'
             "
             @click="toggleTheme"
         >
-            <PhMoon
-                v-if="store.themeMode === 'light'"
-                :size="14"
-                weight="bold"
-            />
+            <PhMoon v-if="themeMode === 'light'" :size="14" weight="bold" />
             <PhSun v-else :size="14" weight="bold" />
         </b-button>
 
@@ -66,25 +85,30 @@ function doReset() {
         <!-- Preview toggle -->
         <b-button
             size="sm"
-            :variant="store.isPreviewInline ? 'secondary' : 'outline-secondary'"
-            @click="store.togglePreviewInline()"
+            :variant="isPreviewInline ? 'secondary' : 'outline-secondary'"
+            @click="togglePreviewInline()"
         >
             <PhPencil
-                v-if="store.isPreviewInline"
+                v-if="isPreviewInline"
                 :size="14"
                 weight="bold"
                 class="me-1"
             />
             <PhEye v-else :size="14" weight="bold" class="me-1" />
-            {{ store.isPreviewInline ? 'Edit' : 'Preview' }}
+            {{ isPreviewInline ? 'Edit' : 'Preview' }}
         </b-button>
+
+        <!-- Realtime status -->
+        <OnlineState />
+
+        <div class="vr" />
 
         <!-- Export -->
         <b-button
             size="sm"
             variant="primary"
             title="Export JSON &amp; UI Schema"
-            @click="store.openExport()"
+            @click="isExportOpen = true"
         >
             <PhDownload :size="14" weight="bold" class="me-1" />Export
         </b-button>
@@ -94,13 +118,14 @@ function doReset() {
             size="sm"
             variant="outline-primary"
             title="Import JSON &amp; UI Schema"
-            @click="store.openImport()"
+            @click="isImportOpen = true"
         >
             <PhUpload :size="14" weight="bold" class="me-1" />Import
         </b-button>
 
-        <!-- Reset -->
+        <!-- Reset (local mode only) -->
         <b-button
+            v-if="!builder.isCollab"
             size="sm"
             variant="outline-danger"
             title="Reset form to empty state"
@@ -110,10 +135,10 @@ function doReset() {
         </b-button>
 
         <!-- Export dialog -->
-        <ExportDialog v-model:visible="store.isExportOpen" />
+        <ExportDialog v-model:visible="isExportOpen" />
 
         <!-- Import dialog -->
-        <ImportDialog v-model:visible="store.isImportOpen" />
+        <ImportDialog v-model:visible="isImportOpen" />
     </div>
 
     <!-- Reset confirm modal -->

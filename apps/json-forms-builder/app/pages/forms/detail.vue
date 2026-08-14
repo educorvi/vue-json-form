@@ -5,7 +5,9 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
-import VueJsonFormBuilder from '@educorvi/vue-json-form-builder';
+import VueJsonFormBuilder, {
+    type CollabConfig,
+} from '@educorvi/vue-json-form-builder';
 
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
@@ -13,6 +15,8 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const { user } = useUserSession();
+const runtimeConfig = useRuntimeConfig();
 
 // The form builder handles its own internal scrolling, so prevent the
 // surrounding layout from scrolling while this page is active. Restore
@@ -84,6 +88,27 @@ function goEdit() {
 // Builder expand/collapse toggle (fullscreen overlay)
 const builderExpanded = ref(false);
 
+// Realtime collaboration via Hocuspocus (collab-server). The synced document
+// is the source of truth once enabled — jsonSchema/uiSchema props are ignored
+// by the builder in collab mode, so existing legacy schemas stay untouched.
+//
+// The WebSocket only accepts authenticated connections: the browser sends
+// its `nuxt-session` cookie with the handshake and the collab server asks
+// the Nuxt backend (GET /api/ws-auth) to validate it — no token minting
+// needed on the frontend.
+const collab = computed<CollabConfig | null>(() => {
+    const url = runtimeConfig.public.collabUrl as string | undefined;
+    if (!url || !form.value?.id || !user.value) return null;
+    return {
+        url,
+        documentName: String(form.value.id),
+        user: {
+            id: String(user.value.id),
+            name: user.value.username ?? 'User',
+        },
+    };
+});
+
 // Debounced save of schema changes
 const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 const { notify } = useNotify();
@@ -91,6 +116,11 @@ const { notify } = useNotify();
 async function onSchemasChange(json: any, ui: any) {
     const formId = form.value?.id;
     if (!formId) return;
+    // In collab mode the Hocuspocus server persists the synced document to
+    // the DB in the background — a manual import here would fight it and
+    // trigger a misleading "Schema erfolgreich gespeichert" toast on every
+    // keystroke. Only the local (non-collab) path saves explicitly.
+    if (collab.value) return;
     if (saveTimer.value) clearTimeout(saveTimer.value);
     saveTimer.value = setTimeout(async () => {
         try {
@@ -170,6 +200,7 @@ async function onSchemasChange(json: any, ui: any) {
                 <VueJsonFormBuilder
                     :jsonSchema="jsonSchemaString"
                     :uiSchema="uiSchemaString"
+                    :collab="collab"
                     hideHeader
                     @vjfb-change="onSchemasChange"
                 />
@@ -206,6 +237,7 @@ async function onSchemasChange(json: any, ui: any) {
                 <VueJsonFormBuilder
                     :jsonSchema="jsonSchemaString"
                     :uiSchema="uiSchemaString"
+                    :collab="collab"
                     hideHeader
                     @vjfb-change="onSchemasChange"
                 />

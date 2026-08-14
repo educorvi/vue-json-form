@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'node:path';
+
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     ssr: true,
@@ -54,6 +56,37 @@ export default defineNuxtConfig({
         '/forms/detail': { ssr: false },
     },
 
+    // Realtime collaboration (Hocuspocus) — the builder connects to this
+    // WebSocket URL when the `collab` prop is set (see app/pages/forms/detail.vue).
+    // Off by default; set NUXT_PUBLIC_COLLAB_URL to enable.
+    runtimeConfig: {
+        public: {
+            collabUrl: process.env.NUXT_PUBLIC_COLLAB_URL ?? '',
+        },
+        // Comma-separated origins allowed as `?redirect=` target on
+        // /auth/keycloak (see server/routes/auth/keycloak.get.ts). Used by
+        // external apps embedding the form-builder webcomponent.
+        auth: {
+            allowedRedirectOrigins:
+                process.env.NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS ?? '',
+        },
+        // The session cookie: SameSite=None + Secure lets browsers WITHOUT
+        // third-party-cookie blocking (e.g. the VS Code embedded browser)
+        // attach the cookie to the cross-site session check and the collab
+        // websocket handshake, so the login popup can be skipped entirely.
+        // This is an OPTIMIZATION only — browsers WITH third-party-cookie
+        // blocking ignore the cookie regardless; there the webcomponent
+        // falls back to its login popup, which relays the Keycloak access
+        // token through /auth/popup-close (see server/routes/auth/keycloak.get.ts),
+        // and the collab websocket authenticates with that token instead.
+        // session: {
+        //     cookie: {
+        //         sameSite: 'none',
+        //         secure: true,
+        //     },
+        // },
+    },
+
     // TypeORM uses legacy (experimental) decorators.
     hooks: {
         'prepare:types'(opts: any) {
@@ -105,12 +138,28 @@ export default defineNuxtConfig({
                 // which fails in ESM resolution (Node.js requires explicit .js).
                 'dayjs/plugin/duration': 'dayjs/plugin/duration.js',
                 'dayjs/plugin/relativeTime': 'dayjs/plugin/relativeTime.js',
+                // '@educorvi/vue-json-form-builder': resolve(
+                //     __dirname,
+                //     '../../packages/vue-json-form-builder/src/main.ts'
+                // ),
+                // '@educorvi/vue-json-form-builder-schemas': resolve(
+                //     __dirname,
+                //     '../../packages/vue-json-form-builder-schemas/schemas/index.ts'
+                // ),
+                // '@educorvi/vue-json-form-builder-schemas/collab': resolve(
+                //     __dirname,
+                //     '../../packages/vue-json-form-builder-schemas/schemas/collab/index.ts'
+                // ),
             },
         },
         // Pre-bundle these dependencies at dev-server startup so the heavy
         // Vite dependency optimization happens once, not incrementally across
         // multiple page reloads (each blocking 20–60 seconds).
         optimizeDeps: {
+            // exclude: [
+            //     '@educorvi/vue-json-form-builder',
+            //     '@educorvi/vue-json-form-builder-schemas',
+            // ],
             include: [
                 '@orpc/client',
                 '@orpc/client/fetch',
@@ -147,6 +196,11 @@ export default defineNuxtConfig({
     css: [
         'bootstrap/dist/css/bootstrap.min.css',
         'bootstrap-icons/font/bootstrap-icons.css',
+        // Extracted component styles of the builder library (scoped SFC
+        // styles are NOT imported by its dist JS — consumers must load the
+        // CSS file themselves). Without this, e.g. the avatar stack's
+        // overlap margin reset is missing.
+        '@educorvi/vue-json-form-builder/dist/vue-json-form-builder.css',
     ],
 
     i18n: {

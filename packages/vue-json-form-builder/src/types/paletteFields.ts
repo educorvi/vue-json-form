@@ -1,336 +1,220 @@
-import { v4 as uuidv4 } from 'uuid';
-import type {
-    PaletteField,
-    PaletteSection,
-    FormElement,
-} from '@/types/formTypes';
-import { ButtonGroupNode } from '@/types/elements/nodes/ButtonGroupNode.ts';
+import {
+    StringElement,
+    ColorElement,
+    TimeElement,
+    NumberElement,
+    BooleanElement,
+    EnumElement,
+    CheckboxGroupElement,
+    FileuploadElement,
+    HTMLElement,
+    ModalElement,
+    ResetButton,
+    SubmitButton,
+    ButtonGroupElement,
+    ArrayElement,
+    ObjectElement,
+    ReferenceElement,
+    StringFormat,
+    TimeFormat,
+    NumberFormat,
+    EnumFormat,
+    ModalSize,
+    createId,
+    type FormElement,
+} from '@educorvi/vue-json-form-builder-schemas';
 
-function id() {
-    return uuidv4();
+/**
+ * Palette model — the left sidebar entries. Every entry references the
+ * element classes from the form schema definitions package (no duplicated
+ * data model), carries an icon and is grouped into collapsible categories.
+ *
+ * Drag & drop flow:
+ *   PaletteFieldGrid clones a field as a `palette:<fieldId>` marker string
+ *   (see PALETTE_MARKER_PREFIX) into the DropZone's uid list; DropZone
+ *   resolves the field via getPaletteField() and calls builder.addElement()
+ *   with the field id. Type filtering during the drag uses
+ *   `field.elementType` (the registry type, e.g. 'string' for every string
+ *   format variant), which is written to `dragEl.dataset.elementType`.
+ */
+
+export type PaletteElementType =
+    | 'text'
+    | 'textarea'
+    | 'email'
+    | 'password'
+    | 'date'
+    | 'datetime'
+    | 'time'
+    | 'uri'
+    | 'phone'
+    | 'color'
+    | 'search'
+    | 'number'
+    | 'integer'
+    | 'boolean'
+    | 'select'
+    | 'radio'
+    | 'checkbox-group'
+    | 'file-upload'
+    | 'html'
+    | 'modal'
+    | 'submit-button'
+    | 'reset-button'
+    | 'button-group'
+    | 'reference'
+    | 'array'
+    | 'object';
+
+/**
+ * Marker prefix for palette clones inserted into a DropZone's uid list while
+ * dragging; DropZone.onChildAdd replaces it with a real element via
+ * builder.addElement(parent, fieldId, idx).
+ */
+export const PALETTE_MARKER_PREFIX = 'palette:';
+
+export interface PaletteField {
+    /** unique palette id — also used as the drag marker (`palette:<id>`) */
+    id: PaletteElementType;
+    label: string;
+    icon: string;
+    description: string;
+    /**
+     * Registry type used for drop-zone type filtering (e.g. every string
+     * format variant filters as 'string').
+     */
+    elementType: string;
+    /**
+     * Builds a fresh element (or a small subtree, e.g. button-group with its
+     * buttons) for this field. `takenIds` keeps generated ids collision-free.
+     */
+    createElement: (takenIds: Set<string>) => FormElement | FormElement[];
 }
 
-function uniqueKey(prefix: string): string {
-    return `${prefix}_${Math.random().toString(36).slice(2, 6)}`;
+export interface PaletteSection {
+    id: string;
+    label: string;
+    icon: string;
+    fields?: PaletteField[];
+    sections?: PaletteSection[];
 }
 
-// ── Layouts ────────────────────────────────────────────────────────────────────
-// TODO use icons from Node Classes
-const layoutFields: PaletteField[] = [
-    {
-        id: 'vertical',
-        label: 'Vertical',
-        icon: 'bi bi-list',
-        description: 'Stack elements vertically',
-        createElement: (): FormElement => ({
-            type: 'VerticalLayout',
-            elements: [],
-            _id: id(),
-        }),
-    },
-    {
-        id: 'horizontal',
-        label: 'Horizontal',
-        icon: 'bi bi-table',
-        description: 'Place elements side by side',
-        createElement: (): FormElement => ({
-            type: 'HorizontalLayout',
-            elements: [],
-            _id: id(),
-        }),
-    },
-    {
-        id: 'group',
-        label: 'Group',
-        icon: 'bi bi-folder',
-        description: 'Group elements in a labeled section',
-        createElement: (): FormElement => ({
-            type: 'Group',
-            elements: [],
-            options: { label: 'Group' },
-            _id: id(),
-        }),
-    },
-];
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
-// ── Misc ───────────────────────────────────────────────────────────────────────
+function uniqueId(base: string, takenIds: Set<string>): string {
+    let id = createId(base);
+    if (takenIds && takenIds.has(id)) {
+        let i = 2;
+        while (takenIds.has(`${id}_${i}`)) i++;
+        id = `${id}_${i}`;
+    }
+    return id;
+}
 
-const miscFields: PaletteField[] = [
-    {
-        id: 'html',
-        label: 'HTML',
-        icon: 'bi bi-code',
-        description: 'Render custom HTML content',
-        createElement: (): FormElement => ({
-            type: 'HTML',
-            htmlData: '<p>Enter your HTML here</p>',
-            _id: id(),
-        }),
-    },
-    {
-        id: 'divider',
-        label: 'Divider',
-        icon: 'bi bi-dash-lg',
-        description: 'Visual separator line',
-        createElement: (): FormElement => ({ type: 'Divider', _id: id() }),
-    },
-    {
-        id: 'button',
-        label: 'Button',
-        icon: 'bi bi-send',
-        description: 'Submit, Reset or navigation button',
-        createElement: (): FormElement => ({
-            type: 'Button',
-            buttonType: 'submit',
-            text: 'Submit',
-            _id: id(),
-        }),
-    },
-    {
-        id: 'buttongroup',
-        label: 'Button Group',
-        icon: ButtonGroupNode.icon,
-        description: 'Group of action buttons',
-        createElement: (): FormElement => ({
-            type: 'ButtonGroup',
-            buttons: [
-                {
-                    type: 'Button',
-                    buttonType: 'reset',
-                    text: 'Cancel',
-                    _id: id(),
-                },
-                {
-                    type: 'Button',
-                    buttonType: 'submit',
-                    text: 'Submit',
-                    _id: id(),
-                },
-            ],
-            _id: id(),
-        }),
-    },
-];
+// ── Data: Input ──────────────────────────────────────────────────────────────
 
-// ── Data: Input ────────────────────────────────────────────────────────────────
+function stringField(
+    id: PaletteElementType,
+    label: string,
+    icon: string,
+    format: StringFormat
+): PaletteField {
+    return {
+        id,
+        label,
+        icon,
+        description: `${label} input`,
+        elementType: 'string',
+        createElement: (takenIds) =>
+            new StringElement({
+                id: uniqueId(label, takenIds),
+                title: label,
+                required: false,
+                format,
+            }),
+    };
+}
 
 const inputFields: PaletteField[] = [
-    {
-        id: 'text',
-        label: 'Text',
-        icon: 'bi bi-pencil',
-        description: 'Single-line text input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('text')}`,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('text');
-            return { key, schema: { type: 'string', title: 'Text Field' } };
-        },
-    },
+    stringField('text', 'Text', 'bi bi-pencil', StringFormat.Text),
     {
         id: 'textarea',
         label: 'Textarea',
         icon: 'bi bi-textarea-t',
-        description: 'Multi-line text input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('text')}`,
-            options: { multi: true },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('text');
-            return { key, schema: { type: 'string', title: 'Text Area' } };
-        },
+        description: 'Multiline text input',
+        elementType: 'string',
+        createElement: (takenIds) =>
+            new StringElement({
+                id: uniqueId('textarea', takenIds),
+                title: 'Textarea',
+                required: false,
+                format: StringFormat.Text,
+                multi: true,
+            }),
     },
-    {
-        id: 'email',
-        label: 'Email',
-        icon: 'bi bi-envelope',
-        description: 'Email address input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('email')}`,
-            options: { format: 'email' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('email');
-            return {
-                key,
-                schema: { type: 'string', format: 'email', title: 'Email' },
-            };
-        },
-    },
-    {
-        id: 'password',
-        label: 'Password',
-        icon: 'bi bi-lock',
-        description: 'Password (masked) input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('pass')}`,
-            options: { format: 'password' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('pass');
-            return { key, schema: { type: 'string', title: 'Password' } };
-        },
-    },
-    {
-        id: 'url',
-        label: 'URL',
-        icon: 'bi bi-link',
-        description: 'Web address input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('url')}`,
-            options: { format: 'url' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('url');
-            return {
-                key,
-                schema: { type: 'string', format: 'uri', title: 'URL' },
-            };
-        },
-    },
-    {
-        id: 'tel',
-        label: 'Phone',
-        icon: 'bi bi-phone',
-        description: 'Telephone number input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('tel')}`,
-            options: { format: 'tel' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('tel');
-            return { key, schema: { type: 'string', title: 'Phone' } };
-        },
-    },
+    stringField('email', 'Email', 'bi bi-envelope', StringFormat.Email),
+    stringField('password', 'Password', 'bi bi-lock', StringFormat.Password),
     {
         id: 'date',
         label: 'Date',
         icon: 'bi bi-calendar',
-        description: 'Date picker',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('date')}`,
-            options: { format: 'date' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('date');
-            return {
-                key,
-                schema: { type: 'string', format: 'date', title: 'Date' },
-            };
-        },
-    },
-    {
-        id: 'time',
-        label: 'Time',
-        icon: 'bi bi-clock',
-        description: 'Time picker',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('time')}`,
-            options: { format: 'time' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('time');
-            return {
-                key,
-                schema: { type: 'string', format: 'time', title: 'Time' },
-            };
-        },
+        description: 'Date input',
+        elementType: 'time',
+        createElement: (takenIds) =>
+            new TimeElement({
+                id: uniqueId('date', takenIds),
+                title: 'Date',
+                required: false,
+                format: TimeFormat.Date,
+            }),
     },
     {
         id: 'datetime',
         label: 'Date & Time',
         icon: 'bi bi-calendar-range',
-        description: 'Date and time picker',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('dt')}`,
-            options: { format: 'datetime-local' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('dt');
-            return {
-                key,
-                schema: {
-                    type: 'string',
-                    format: 'date-time',
-                    title: 'Date & Time',
-                },
-            };
-        },
+        description: 'Date and time input',
+        elementType: 'time',
+        createElement: (takenIds) =>
+            new TimeElement({
+                id: uniqueId('datetime', takenIds),
+                title: 'Date & Time',
+                required: false,
+                format: TimeFormat.DateTimeLocal,
+            }),
     },
+    {
+        id: 'time',
+        label: 'Time',
+        icon: 'bi bi-clock',
+        description: 'Time input',
+        elementType: 'time',
+        createElement: (takenIds) =>
+            new TimeElement({
+                id: uniqueId('time', takenIds),
+                title: 'Time',
+                required: false,
+                format: TimeFormat.Time,
+            }),
+    },
+    stringField('uri', 'URL', 'bi bi-link', StringFormat.Uri),
+    stringField('phone', 'Phone', 'bi bi-phone', StringFormat.Tel),
     {
         id: 'color',
         label: 'Color',
         icon: 'bi bi-palette',
         description: 'Color picker input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('color')}`,
-            options: { format: 'color' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('color');
-            return {
-                key,
-                schema: { type: 'string', format: 'color', title: 'Color' },
-            };
-        },
+        elementType: 'color',
+        createElement: (takenIds) =>
+            new ColorElement({
+                id: uniqueId('color', takenIds),
+                title: 'Color',
+                required: false,
+            }),
     },
-    {
-        id: 'search',
-        label: 'Search',
-        icon: 'bi bi-search',
-        description: 'Search input field',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('search')}`,
-            options: { format: 'search' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('search');
-            return { key, schema: { type: 'string', title: 'Search' } };
-        },
-    },
-    {
-        id: 'hidden',
-        label: 'Hidden',
-        icon: 'bi bi-eye-slash',
-        description: 'Hidden form field',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('hidden')}`,
-            options: { format: 'hidden' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('hidden');
-            return { key, schema: { type: 'string', title: 'Hidden Field' } };
-        },
-    },
+    stringField('search', 'Search', 'bi bi-search', StringFormat.Search),
 ];
 
-// ── Data: Numeric ──────────────────────────────────────────────────────────────
+// ── Data: Numeric ────────────────────────────────────────────────────────────
 
 const numericFields: PaletteField[] = [
     {
@@ -338,54 +222,50 @@ const numericFields: PaletteField[] = [
         label: 'Number',
         icon: 'bi bi-123',
         description: 'Decimal number input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('num')}`,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('num');
-            return { key, schema: { type: 'number', title: 'Number' } };
-        },
+        elementType: 'number',
+        createElement: (takenIds) =>
+            new NumberElement({
+                id: uniqueId('number', takenIds),
+                title: 'Number',
+                required: false,
+                format: NumberFormat.Number,
+            }),
     },
     {
         id: 'integer',
         label: 'Integer',
         icon: 'bi bi-calculator',
         description: 'Whole number input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('int')}`,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('int');
-            return { key, schema: { type: 'integer', title: 'Integer' } };
-        },
+        elementType: 'integer',
+        createElement: (takenIds) =>
+            new NumberElement({
+                id: uniqueId('integer', takenIds),
+                title: 'Integer',
+                required: false,
+                format: NumberFormat.Integer,
+            }),
     },
 ];
 
-// ── Data: Boolean ──────────────────────────────────────────────────────────────
+// ── Data: Boolean ────────────────────────────────────────────────────────────
 
 const booleanFields: PaletteField[] = [
     {
-        id: 'checkbox',
+        id: 'boolean',
         label: 'Checkbox',
         icon: 'bi bi-check-square',
         description: 'True/false checkbox',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('bool')}`,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('bool');
-            return { key, schema: { type: 'boolean', title: 'Checkbox' } };
-        },
+        elementType: 'boolean',
+        createElement: (takenIds) =>
+            new BooleanElement({
+                id: uniqueId('checkbox', takenIds),
+                title: 'Checkbox',
+                required: false,
+            }),
     },
 ];
 
-// ── Data: Enum ─────────────────────────────────────────────────────────────────
+// ── Data: Enum ───────────────────────────────────────────────────────────────
 
 const enumFields: PaletteField[] = [
     {
@@ -393,205 +273,189 @@ const enumFields: PaletteField[] = [
         label: 'Select',
         icon: 'bi bi-list',
         description: 'Dropdown select from enum values',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('sel')}`,
-            options: { displayAs: 'select' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('sel');
-            return {
-                key,
-                schema: {
-                    type: 'string',
-                    title: 'Select',
-                    enum: ['option1', 'option2', 'option3'],
-                },
-            };
-        },
+        elementType: 'enum',
+        createElement: (takenIds) =>
+            new EnumElement({
+                id: uniqueId('select', takenIds),
+                title: 'Select',
+                required: false,
+                format: EnumFormat.Select,
+                values: ['option1', 'option2', 'option3'],
+            }),
     },
     {
         id: 'radio',
         label: 'Radio',
         icon: 'bi bi-ui-radios',
         description: 'Radio button group',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('radio')}`,
-            options: { displayAs: 'radiobuttons' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('radio');
-            return {
-                key,
-                schema: {
-                    type: 'string',
-                    title: 'Radio Group',
-                    enum: ['option1', 'option2'],
-                },
-            };
-        },
+        elementType: 'enum',
+        createElement: (takenIds) =>
+            new EnumElement({
+                id: uniqueId('radio', takenIds),
+                title: 'Radio Group',
+                required: false,
+                format: EnumFormat.Radiobuttons,
+                values: ['option1', 'option2'],
+            }),
     },
     {
-        id: 'switches',
-        label: 'Switches',
-        icon: 'bi bi-toggle-on',
-        description: 'Toggle switch group for enum',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('sw')}`,
-            options: { displayAs: 'switches' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('sw');
-            return {
-                key,
-                schema: {
-                    type: 'string',
-                    title: 'Switches',
-                    enum: ['option1', 'option2'],
-                },
-            };
-        },
-    },
-    {
-        id: 'enumbuttons',
-        label: 'Buttons',
-        icon: 'bi bi-square',
-        description: 'Button group for enum selection',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('ebtn')}`,
-            options: { displayAs: 'buttons' },
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('ebtn');
-            return {
-                key,
-                schema: {
-                    type: 'string',
-                    title: 'Button Select',
-                    enum: ['option1', 'option2'],
-                },
-            };
-        },
+        id: 'checkbox-group',
+        label: 'Checkbox Group',
+        icon: 'bi bi-check2-square',
+        description: 'Multi-select checkbox group',
+        elementType: 'checkbox-group',
+        createElement: (takenIds) =>
+            new CheckboxGroupElement({
+                id: uniqueId('checkbox_group', takenIds),
+                title: 'Checkbox Group',
+                required: false,
+                values: ['option1', 'option2'],
+            }),
     },
 ];
 
-// ── Data: Tags ─────────────────────────────────────────────────────────────────
-
-const tagsFields: PaletteField[] = [
-    {
-        id: 'tags',
-        label: 'Tags',
-        icon: 'bi bi-tags',
-        description: 'Free-form tag input (array of strings)',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('tags')}`,
-            options: { tags: { enabled: true } } as any,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('tags');
-            return {
-                key,
-                schema: {
-                    type: 'array',
-                    title: 'Tags',
-                    items: { type: 'string' },
-                },
-            };
-        },
-    },
-];
-
-// ── Data: File ─────────────────────────────────────────────────────────────────
+// ── Data: File ───────────────────────────────────────────────────────────────
 
 const fileFields: PaletteField[] = [
     {
-        id: 'file',
+        id: 'file-upload',
         label: 'File Upload',
         icon: 'bi bi-file-earmark-arrow-up',
         description: 'File upload input',
-        createElement: (): FormElement => ({
-            type: 'Control',
-            scope: `/properties/${uniqueKey('file')}`,
-            _id: id(),
-        }),
-        createSchemaProperty: () => {
-            const key = uniqueKey('file');
-            return {
-                key,
-                schema: { type: 'string', format: 'uri', title: 'File Upload' },
-            };
-        },
+        elementType: 'file-upload',
+        createElement: (takenIds) =>
+            new FileuploadElement({
+                id: uniqueId('file_upload', takenIds),
+                title: 'File Upload',
+                required: false,
+            }),
     },
 ];
 
-// ── Complex ────────────────────────────────────────────────────────────────────
+// ── Miscellaneous ────────────────────────────────────────────────────────────
+
+const miscFields: PaletteField[] = [
+    {
+        id: 'html',
+        label: 'HTML',
+        icon: 'bi bi-code',
+        description: 'Render custom HTML content',
+        elementType: 'html',
+        createElement: (takenIds) =>
+            new HTMLElement({
+                id: uniqueId('html', takenIds),
+                htmlData: '<p>Enter your HTML here</p>',
+            }),
+    },
+    {
+        id: 'modal',
+        label: 'Modal',
+        icon: 'bi bi-window',
+        description: 'Button that opens an info modal',
+        elementType: 'modal',
+        createElement: (takenIds) =>
+            new ModalElement({
+                id: uniqueId('modal', takenIds),
+                title: 'Modal Title',
+                content: '<p>Modal content</p>',
+                buttonLabel: 'Open',
+                size: ModalSize.Medium,
+                buttonVariant: 'primary',
+            }),
+    },
+    {
+        id: 'submit-button',
+        label: 'Submit Button',
+        icon: 'bi bi-send',
+        description: 'Button that submits the form',
+        elementType: 'submit-button',
+        createElement: (takenIds) =>
+            new SubmitButton({
+                id: uniqueId('submit', takenIds),
+                label: 'Submit',
+            }),
+    },
+    {
+        id: 'reset-button',
+        label: 'Reset Button',
+        icon: 'bi bi-arrow-counterclockwise',
+        description: 'Button that resets the form',
+        elementType: 'reset-button',
+        createElement: (takenIds) =>
+            new ResetButton({
+                id: uniqueId('reset', takenIds),
+                label: 'Reset',
+            }),
+    },
+    {
+        id: 'button-group',
+        label: 'Button Group',
+        icon: 'bi bi-justify',
+        description: 'Group of action buttons',
+        elementType: 'button-group',
+        createElement: (takenIds) => {
+            const group = new ButtonGroupElement({
+                id: uniqueId('button_group', takenIds),
+            });
+            const reset = new ResetButton({
+                id: uniqueId('cancel', takenIds),
+                label: 'Cancel',
+            });
+            const submit = new SubmitButton({
+                id: uniqueId('submit', takenIds),
+                label: 'Submit',
+            });
+            group.data.buttons = [reset.uid, submit.uid];
+            return [group, reset, submit];
+        },
+    },
+    {
+        id: 'reference',
+        label: 'Reference',
+        icon: 'bi bi-link-45deg',
+        description: 'Reference another element of the form',
+        elementType: 'reference',
+        createElement: (takenIds) =>
+            new ReferenceElement({
+                id: uniqueId('reference', takenIds),
+                referenceId: '',
+            }),
+    },
+];
+
+// ── Complex ──────────────────────────────────────────────────────────────────
 
 const complexFields: PaletteField[] = [
     {
         id: 'object',
         label: 'Object',
-        icon: 'bi bi-braces',
+        icon: 'bi bi-box',
         description: 'Nested object with sub-properties',
-        createElement: (): FormElement => {
-            const key = uniqueKey('obj');
-            return {
-                type: 'Object',
-                key,
-                elements: [],
-                properties: {},
-                required: [],
+        elementType: 'object',
+        createElement: (takenIds) =>
+            new ObjectElement({
+                id: uniqueId('object', takenIds),
                 title: 'Object',
-                _id: id(),
-            } as any;
-        },
+            }),
     },
     {
         id: 'array',
         label: 'Array',
-        icon: 'bi bi-list',
+        icon: 'bi bi-list-ul',
         description: 'Repeatable array of items',
-        createElement: (): FormElement => {
-            const key = uniqueKey('arr');
-            return {
-                type: 'Array',
-                key,
-                elements: [],
-                items: {
-                    type: 'object' as const,
-                    properties: {},
-                    required: [] as string[],
-                },
+        elementType: 'array',
+        createElement: (takenIds) =>
+            new ArrayElement({
+                id: uniqueId('array', takenIds),
                 title: 'Array',
-                _id: id(),
-            } as any;
-        },
+                required: false,
+            }),
     },
 ];
 
-// ── Hierarchical palette sections ──────────────────────────────────────────────
+// ── Hierarchical palette sections (collapsible in the left panel) ───────────
 
 export const paletteSections: PaletteSection[] = [
-    {
-        id: 'layouts',
-        label: 'Layouts',
-        icon: 'bi bi-layout',
-        fields: layoutFields,
-    },
-    {
-        id: 'misc',
-        label: 'Miscellaneous',
-        icon: 'bi bi-wrench',
-        fields: miscFields,
-    },
     {
         id: 'data',
         label: 'Data',
@@ -622,18 +486,18 @@ export const paletteSections: PaletteSection[] = [
                 fields: enumFields,
             },
             {
-                id: 'tags',
-                label: 'Tags',
-                icon: 'bi bi-tags',
-                fields: tagsFields,
-            },
-            {
                 id: 'file',
                 label: 'File',
                 icon: 'bi bi-file-earmark-arrow-up',
                 fields: fileFields,
             },
         ],
+    },
+    {
+        id: 'misc',
+        label: 'Miscellaneous',
+        icon: 'bi bi-wrench',
+        fields: miscFields,
     },
     {
         id: 'complex',
@@ -643,8 +507,9 @@ export const paletteSections: PaletteSection[] = [
     },
 ];
 
-// ── Flat list for search ─────────────────────────────────────
+// ── Lookups ──────────────────────────────────────────────────────────────────
 
+/** Flattened list of all fields — used for search. */
 export function getAllPaletteFields(): PaletteField[] {
     function flatten(sections: PaletteSection[]): PaletteField[] {
         return sections.flatMap((s) => [
@@ -653,4 +518,92 @@ export function getAllPaletteFields(): PaletteField[] {
         ]);
     }
     return flatten(paletteSections);
+}
+
+/**
+ * Recursively filter the section tree by a search query. Keeps the section
+ * structure (so the left panel renders the same collapsible cards while
+ * searching) but drops every field that does not match and every section
+ * that ends up empty.
+ */
+export function filterPaletteSections(
+    sections: PaletteSection[],
+    query: string
+): PaletteSection[] {
+    const q = query.toLowerCase().trim();
+    if (!q) return sections;
+    const result: PaletteSection[] = [];
+    for (const section of sections) {
+        const fields = (section.fields ?? []).filter(
+            (f) =>
+                f.label.toLowerCase().includes(q) ||
+                f.description.toLowerCase().includes(q)
+        );
+        const subsections = section.sections
+            ? filterPaletteSections(section.sections, q)
+            : undefined;
+        if (fields.length > 0 || (subsections && subsections.length > 0)) {
+            result.push({
+                ...section,
+                fields: fields.length > 0 ? fields : undefined,
+                sections:
+                    subsections && subsections.length > 0
+                        ? subsections
+                        : undefined,
+            });
+        }
+    }
+    return result;
+}
+
+const fieldById = new Map<PaletteElementType, PaletteField>(
+    getAllPaletteFields().map((f) => [f.id, f])
+);
+
+export function getPaletteField(id: string): PaletteField | undefined {
+    return fieldById.get(id as PaletteElementType);
+}
+
+/**
+ * Build a fresh element subtree for a palette field (first element = root).
+ * `takenIds` keeps generated ids collision-free.
+ */
+export function createPaletteElements(
+    fieldId: PaletteElementType,
+    takenIds?: Set<string>
+): FormElement[] {
+    const field = fieldById.get(fieldId);
+    if (!field) throw new Error(`Unknown palette field "${fieldId}"`);
+    const created = field.createElement(takenIds ?? new Set());
+    return Array.isArray(created) ? created : [created];
+}
+
+/**
+ * Registry types that are allowed inside an array container. Palette fields
+ * filter with their `elementType` (registry type), canvas elements with
+ * their `data.type` — so both spellings are listed here.
+ */
+export const ARRAY_ALLOWED_TYPES: string[] = [
+    // registry types (canvas drags + palette elementType)
+    'string',
+    'number',
+    'integer',
+    'boolean',
+    'enum',
+    'checkbox-group',
+    'file-upload',
+    // containers
+    'array',
+    'object',
+];
+
+/** All ids currently present in a FormDefinition (for collision-free naming). */
+export function collectTakenIds(
+    formDefinition: import('@educorvi/vue-json-form-builder-schemas').FormDefinition
+): Set<string> {
+    const ids = new Set<string>();
+    for (const element of formDefinition.nodesIndex.values()) {
+        ids.add(element.id);
+    }
+    return ids;
 }

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { PaletteField } from '@/types/formTypes';
+import type { PaletteField } from '@/types/paletteFields';
 
 defineProps<{ field: PaletteField; compact?: boolean }>();
-const emit = defineEmits<{ click: [id: string] }>();
+const emit = defineEmits<{ click: [field: PaletteField] }>();
 </script>
 
 <template>
@@ -10,7 +10,8 @@ const emit = defineEmits<{ click: [id: string] }>();
         class="palette-item d-flex flex-column align-items-center justify-content-center gap-1 p-2 rounded border border-dark-subtle text-center h-100"
         :class="compact ? 'py-1 px-1' : ''"
         :title="field.description"
-        @click="emit('click', field.id)"
+        :data-palette-type="field.id"
+        @click="emit('click', field)"
     >
         <i
             :class="field.icon"

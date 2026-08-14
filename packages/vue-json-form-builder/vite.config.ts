@@ -23,6 +23,11 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
+        // Library output: keep identifiers intact (see
+        // packages/vue-json-form-builder-schemas/vite.config.ts — minified
+        // single-letter names collide with chunk export aliases when
+        // consumers like the Nuxt app merge the dist chunks).
+        minify: false,
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: resolve(__dirname, 'src/main.ts'),

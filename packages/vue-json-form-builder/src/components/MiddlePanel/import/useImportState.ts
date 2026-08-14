@@ -72,8 +72,10 @@ export function parseJsonOrThrow(text: string, label: string): unknown {
     if (!text.trim()) throw new Error(`${label} is required`);
     try {
         return JSON.parse(text);
-    } catch (e: any) {
-        throw new Error(`${label}: ${e.message}`);
+    } catch (e) {
+        throw new Error(`${label}: ${(e as Error).message}`, {
+            cause: e,
+        });
     }
 }
 

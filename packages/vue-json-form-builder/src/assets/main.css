@@ -9,6 +9,53 @@ body {
     height: 100%;
 }
 
+/* Drop-zone min-heights (used by DropZone's draggable list and empty hint).
+   Defined here because the min-h-* utility classes were never shipped. */
+.min-h-10 {
+    min-height: 2.5rem;
+}
+.min-h-12 {
+    min-height: 3rem;
+}
+.min-h-14 {
+    min-height: 3.5rem;
+}
+.min-h-16 {
+    min-height: 4rem;
+}
+.min-h-20 {
+    min-height: 5rem;
+}
+
+/* --- Presence avatars --------------------------------------------------
+   Per-user avatar colors: BAvatar's default variant applies `text-bg-*`
+   utilities whose background-color uses `!important`, so the custom color
+   (passed as `--user-avatar-bg`) needs `!important` and higher
+   specificity to win. White text stays guaranteed via text-bg-*. */
+.b-avatar.user-avatar-custom-color {
+    background-color: var(--user-avatar-bg, #6c757d) !important;
+}
+/* keep the white ring (matching UserAvatar) inside BAvatarGroup, which
+   otherwise draws a grey 1px border around group avatars */
+.b-avatar-group .b-avatar.user-avatar-custom-color {
+    border: 1.5px solid var(--bs-body-bg, #fff);
+    /* .b-avatar has max-width: 100%; inside the group's padded flex
+       container that resolves to a fraction of the avatar size and would
+       squish it into an oval — allow the full size */
+    max-width: none;
+}
+
+/* Dropdown caret: bootstrap-vue-next hides the caret of a `no-caret`
+   dropdown via a rule in its own global stylesheet (bootstrap-vue-next.css).
+   Inside the webcomponent's shadow DOM that global sheet never applies, so
+   a no-caret dropdown (e.g. the presence avatar dropdown) would render the
+   bootstrap caret as a stray blue chevron next to its toggle. Mirror the
+   rule here — harmless duplication where bootstrap-vue-next.css is loaded. */
+.dropdown-toggle.dropdown-toggle-no-caret::before,
+.dropdown-toggle.dropdown-toggle-no-caret::after {
+    display: none !important;
+}
+
 /* Canvas element inner - light border */
 .canvas-element-inner {
     border: 1px solid var(--bs-border-color);
@@ -28,24 +75,12 @@ body {
     background-color: var(--bs-secondary-bg) !important;
 }
 
-/* SortableJS ghost - prominent placeholder showing exact drop position */
+/* SortableJS ghost - the dragged element stays in place at the drop
+   position; its solid outline comes from CanvasNode's outlineStyle, so the
+   ghost only fades it slightly (no extra dashed lines). */
 .sortable-ghost {
-    opacity: 0.3;
-    outline: 2px dashed var(--bs-primary) !important;
-    outline-offset: -1px;
-    border-radius: 6px;
-    background-color: var(--bs-primary-bg-subtle) !important;
-    min-height: 48px !important;
+    opacity: 0.4;
     position: relative;
-}
-
-.sortable-ghost::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px dashed var(--bs-primary);
-    border-radius: 6px;
-    pointer-events: none;
 }
 
 .sortable-chosen {
@@ -53,18 +88,23 @@ body {
     box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb), 0.2);
 }
 
-/* When dragging, highlight valid drop parent containers */
-body.is-dragging-palette .drop-zone-empty,
-.sortable-drag-active .drop-zone-empty {
-    border-color: var(--bs-primary);
-    background-color: var(--bs-primary-bg-subtle);
-}
-
-/* Drop zone - highlighted when SortableJS drag hovers over it */
+/* Empty-zone placeholder: rendered as an overlay OUTSIDE the SortableJS
+   list, so it stays visible while a drag hovers the zone and is only
+   removed once the element is actually dropped. Inset matches the wrapper's
+   p-2 padding so the dashed box covers the same area as before. */
 .drop-zone-empty {
+    position: absolute;
+    inset: 0.5rem;
     border: 2px dashed var(--bs-border-color);
     border-radius: 6px;
     transition: border-color 0.15s, background-color 0.15s;
+}
+
+/* Hovered empty zone (canvas element drags): the placeholder itself lights
+   up. When dragging from the palette, all empty zones light up instead. */
+body.is-dragging-palette .drop-zone-empty {
+    border-color: var(--bs-primary);
+    background-color: var(--bs-primary-bg-subtle);
 }
 
 .drop-zone-active {
