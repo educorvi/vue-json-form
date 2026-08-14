@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useFormStore } from '@/stores/formStore';
-import type { TreeNode } from '@/components/LeftPanel/TreeViewPanel.vue';
+
+interface TreeNode {
+    id: string;
+    label: string;
+    icon: string;
+    type: string;
+    depth: number;
+    children?: TreeNode[];
+}
 
 const props = defineProps<{
     node: TreeNode;

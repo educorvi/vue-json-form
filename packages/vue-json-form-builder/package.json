@@ -36,6 +36,8 @@
     "dependencies": {
         "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
+        "@educorvi/vue-json-form-builder-schemas": "workspace:^",
+        "@hocuspocus/provider": "^4.6.0",
         "@phosphor-icons/vue": "^2.2.1",
         "@popperjs/core": "^2.11.8",
         "@vueuse/core": "^14.4.0",
@@ -47,7 +49,8 @@
         "uuid": "^14.0.0",
         "vue": "^3.5.38",
         "vue-draggable-plus": "^0.6.1",
-        "vue-router": "^5.1.0"
+        "vue-router": "^5.1.0",
+        "yjs": "^13.6.27"
     },
     "devDependencies": {
         "@semantic-release/exec": "^7.1.0",

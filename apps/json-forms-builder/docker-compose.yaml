@@ -25,15 +25,40 @@ services:
         environment:
             KC_BOOTSTRAP_ADMIN_USERNAME: admin
             KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+            KC_HOSTNAME: http://kc1.localhost:8080
+            KC_HTTP_ENABLED: true
         ports:
             - "8080:8080"
         # TODO: remove volumes since all configuration should be done reproducibly via configuration (Realm Export)
         volumes:
             #      - ./data/keycloak:/opt/keycloak/data
-            - ./keycloak:/opt/keycloak/data/import:ro
+            - ./keycloak/dev:/opt/keycloak/data/import:ro
         command:
             - "start-dev"
             - "--import-realm"
+
+    external-keycloak:
+        image: quay.io/keycloak/keycloak:26.6.1
+        environment:
+            KC_BOOTSTRAP_ADMIN_USERNAME: admin
+            KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+            KC_HOSTNAME: http://external-keycloak.localhost:8081
+            KC_HTTP_ENABLED: true
+            # Listen on 8081 inside the container too, so kc1 can reach the
+            # broker endpoints at external-keycloak.localhost:8081 (the IdP config in keycloak/dev/dev-realm.json uses :8081 for token/userinfo/introspection URLs).
+            # A "8081:8080" publish would only work from the host, not container-to-container.
+            KC_HTTP_PORT: 8081
+        ports:
+            - "8081:8081"
+        volumes:
+            - ./keycloak/external:/opt/keycloak/data/import:ro
+        command:
+            - "start-dev"
+            - "--import-realm"
+        networks:
+            default:
+                aliases:
+                    - external-keycloak.localhost
 
     # Containerized instance of the app itself, used in CI (and optionally locally) to run integration/e2e tests against a real, built server
     # instead of `yarn dev:internal`. Gated behind the `ci` profile so a plain `docker compose up` (local dev: just postgres + keycloak) never

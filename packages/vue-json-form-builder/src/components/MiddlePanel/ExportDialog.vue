@@ -2,13 +2,13 @@
 import { computed, ref } from 'vue';
 import { BModal, BTabs, BTab } from 'bootstrap-vue-next';
 import { PhFileCode, PhFileText } from '@phosphor-icons/vue';
-import { useFormStore } from '@/stores/formStore';
+import { useFormBuilder } from '@/useFormBuilder';
 import SchemaCodeBlock from './SchemaCodeBlock.vue';
 
 const props = defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ 'update:visible': [value: boolean] }>();
 
-const store = useFormStore();
+const builder = useFormBuilder();
 
 const visible = computed({
     get: () => props.visible,
@@ -17,11 +17,15 @@ const visible = computed({
 
 const activeTab = ref(0);
 
+const schemas = computed(() => builder.generateSchemas());
+
 const jsonSchemaString = computed(() =>
-    JSON.stringify(store.exportedJsonSchema, null, 2)
+    JSON.stringify(schemas.value?.jsonSchema ?? {}, null, 2)
 );
 
-const uiSchemaString = computed(() => JSON.stringify(store.uiSchema, null, 2));
+const uiSchemaString = computed(() =>
+    JSON.stringify(schemas.value?.uiSchema ?? {}, null, 2)
+);
 </script>
 
 <template>

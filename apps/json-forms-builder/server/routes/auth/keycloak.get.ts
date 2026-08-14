@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { ACCESS_TOKEN_COOKIE } from '../../lib/auth';
+
 /**
  * Decodes the payload of a JWT (access token) without dependencies.
  *
@@ -17,8 +20,154 @@ function decodeTokenPayload(token: string): {
     }
 }
 
-export default defineOAuthKeycloakEventHandler({
-    async onSuccess(event, { user, tokens }) {
+/**
+ * Validates the `redirect` query param of the login request against a
+ * allowlist so external apps (e.g. the webcomponent demo embedding the form
+ * builder) can send the user back after login — without allowing open
+ * redirects. Same-origin relative paths are always allowed.
+ *
+ * Allowed origins come from `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS`
+ * (comma-separated), e.g. `http://external-example-app.localhost:3001`.
+ */
+function safeRedirect(event: any, candidate: unknown): string {
+    if (typeof candidate !== 'string' || candidate.length === 0) {
+        return '/dashboard';
+    }
+    if (candidate.startsWith('/') && !candidate.startsWith('//')) {
+        return candidate;
+    }
+    const allowed = (
+        (useRuntimeConfig(event).auth?.allowedRedirectOrigins as
+            string | undefined) ?? ''
+    )
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+    if (
+        allowed.some(
+            (origin) =>
+                candidate === origin || candidate.startsWith(`${origin}/`)
+        )
+    ) {
+        return candidate;
+    }
+    return '/dashboard';
+}
+
+const REDIRECT_COOKIE = 'auth_redirect';
+
+/**
+ * Keycloak OIDC login, implemented manually instead of
+ * `defineOAuthKeycloakEventHandler` so we can persist the `redirect` target
+ * across the OAuth round-trip:
+ *
+ * - nuxt-auth-utils forwards unknown query params (kc_idp_hint, redirect)
+ *   to Keycloak's authorization URL, but Keycloak only echoes back
+ *   `code`/`state` — the `redirect` param would be lost on the callback.
+ * - Therefore the (allowlist-checked) redirect target is stored in an
+ *   httpOnly cookie together with the OAuth `state` (CSRF protection) and
+ *   restored on the callback.
+ *
+ * `kc_idp_hint` is still forwarded to Keycloak, so the user can be sent
+ * straight to a federated identity provider (identity brokering).
+ *
+ * The form-builder webcomponent (packages/vue-json-form-builder) opens this
+ * endpoint in a popup with `?redirect=/auth/popup-close`. On success the
+ * access token is parked in a short-lived httpOnly cookie (ACCESS_TOKEN_COOKIE)
+ * and the popup is redirected to popup-close, which relays token + user to
+ * the embedding page via postMessage — the webcomponent uses the token as
+ * bearer credential for the collab websocket (the session cookie alone
+ * cannot cross browsers with third-party-cookie blocking).
+ */
+export default eventHandler(async (event) => {
+    const config = useRuntimeConfig(event).oauth?.keycloak;
+    const query = getQuery(event);
+
+    if (
+        !config?.clientId ||
+        !config.clientSecret ||
+        !config.serverUrl ||
+        !config.realm
+    ) {
+        console.error('[Keycloak OIDC] Missing configuration');
+        return sendRedirect(event, '/login?error=auth_failed');
+    }
+
+    const realmURL = `${config.serverUrl}/realms/${config.realm}`;
+    const redirectURI = `${getRequestURL(event).origin}/auth/keycloak`;
+
+    if (!query.code) {
+        // --- Initiation: save the redirect target, then go to Keycloak ---
+        const target = safeRedirect(event, query.redirect);
+        const state = randomUUID();
+        setCookie(event, REDIRECT_COOKIE, JSON.stringify({ target, state }), {
+            httpOnly: true,
+            sameSite: 'lax',
+            maxAge: 10 * 60,
+            path: '/',
+        });
+
+        const params = new URLSearchParams({
+            client_id: config.clientId,
+            redirect_uri: redirectURI,
+            scope: 'openid',
+            response_type: 'code',
+            state,
+        });
+        if (typeof query.kc_idp_hint === 'string' && query.kc_idp_hint) {
+            params.set('kc_idp_hint', query.kc_idp_hint);
+        }
+
+        return sendRedirect(
+            event,
+            `${realmURL}/protocol/openid-connect/auth?${params.toString()}`
+        );
+    }
+
+    // --- Callback: exchange the code, create the session, redirect back ---
+    const saved = parseJSONCookie(event, REDIRECT_COOKIE) as {
+        target?: string;
+        state?: string;
+    } | null;
+    deleteCookie(event, REDIRECT_COOKIE, { path: '/' });
+
+    if (
+        !saved ||
+        typeof query.state !== 'string' ||
+        saved.state !== query.state
+    ) {
+        console.error('[Keycloak OIDC] Invalid or missing OAuth state');
+        return sendRedirect(event, '/login?error=auth_failed');
+    }
+
+    try {
+        const tokens = await $fetch<{ access_token: string }>(
+            `${realmURL}/protocol/openid-connect/token`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    client_id: config.clientId,
+                    client_secret: config.clientSecret,
+                    redirect_uri: redirectURI,
+                    code: query.code as string,
+                }),
+            }
+        );
+
+        const user = await $fetch<Record<string, unknown>>(
+            `${realmURL}/protocol/openid-connect/userinfo`,
+            {
+                headers: {
+                    Authorization: `Bearer ${tokens.access_token}`,
+                    Accept: 'application/json',
+                },
+            }
+        );
+
         const roles =
             decodeTokenPayload(tokens.access_token)?.realm_access?.roles ?? [];
 
@@ -32,10 +181,34 @@ export default defineOAuthKeycloakEventHandler({
                 roles,
             },
         });
-        return sendRedirect(event, '/dashboard');
-    },
-    onError(event, error) {
+
+        // Park the access token for /auth/popup-close (see ACCESS_TOKEN_COOKIE
+        // in server/lib/auth.ts). httpOnly + 2 minutes: the popup-close page
+        // consumes it immediately after the callback redirect.
+        setCookie(event, ACCESS_TOKEN_COOKIE, tokens.access_token, {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 120,
+            path: '/',
+        });
+
+        return sendRedirect(event, saved.target ?? '/dashboard');
+    } catch (error) {
         console.error('[Keycloak OIDC] Error:', error);
         return sendRedirect(event, '/login?error=auth_failed');
-    },
+    }
 });
+
+/**
+ * Reads and JSON-parses a cookie, returning null when missing/invalid.
+ */
+function parseJSONCookie(event: any, name: string): unknown {
+    const raw = getCookie(event, name);
+    if (!raw) return null;
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return null;
+    }
+}

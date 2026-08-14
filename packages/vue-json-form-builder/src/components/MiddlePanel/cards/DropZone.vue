@@ -1,50 +1,70 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { PhPlusCircle, PhXCircle } from '@phosphor-icons/vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { useFormStore } from '@/stores/formStore';
-import type { FormElement } from '@/types/formTypes';
-
-const CanvasElement = defineAsyncComponent(
-    () => import('../CanvasElement.vue')
-);
+import { useFormBuilder } from '../../../useFormBuilder';
+import {
+    useDragState,
+    setDragSource,
+    setDragOverAncestorIds,
+    setDragging,
+    setDraggedElementId,
+} from '../../../useDragState';
+import {
+    PALETTE_MARKER_PREFIX,
+    type PaletteElementType,
+} from '../../../types/paletteFields';
+import CanvasNode from '../CanvasNode.vue';
 
 const props = withDefaults(
     defineProps<{
-        children: FormElement[];
-        allowedTypes: string[] | '*';
+        /** uid of the container (or root form) this zone belongs to. */
+        parentUid: string;
+        /** ordered uids of the container's children. */
+        children: string[];
+        /** how to lay out the children: 'vertical' | 'horizontal' | 'flex-row' */
         layout: 'vertical' | 'horizontal' | 'flex-row';
+        /** element types accepted by this container ('*' accepts everything). */
+        allowedTypes: string[] | '*';
+        /** placeholder shown when the container is empty. */
         emptyLabel?: string;
-        parentId: string;
+        /** max number of children (arrays, e.g. wizard pages). */
         maxChildren?: number;
+        /** root of the form — gets the big empty-state hint. */
+        isRoot?: boolean;
     }>(),
     {
         emptyLabel: 'Drop elements here',
+        isRoot: false,
+        maxChildren: undefined,
     }
 );
 
-const emit = defineEmits<{
-    'update:children': [children: FormElement[]];
-    'child-add': [element: FormElement, index: number];
-    'child-remove': [element: FormElement];
-}>();
+const builder = useFormBuilder();
+const { dragging, dragSourceType, dragOverAncestorIds, draggedElementId } =
+    useDragState();
 
-const store = useFormStore();
+// ── Local uid list (mutated by VueDraggable, re-synced from the definition) ──
 
-const model = computed({
-    get: () => props.children,
-    set: (val) => emit('update:children', val),
+const localChildren = ref<string[]>([...props.children]);
+
+watch([() => props.children, () => builder.formDefinition.value], () => {
+    localChildren.value = [...props.children];
 });
 
-const isDragging = computed(() => store.dragSourceType !== null);
-const isDragOverThisZone = computed(() =>
-    store.dragOverAncestorIds.includes(props.parentId)
+const isDragging = computed(() => dragging.value);
+/** Only the innermost zone the cursor is over is the drop target — the
+ *  ancestor chain (outer containers) must NOT light up as well. */
+const isDragOverThisZone = computed(
+    () => dragOverAncestorIds.value[0] === props.parentUid
 );
 
 const canAccept = computed(() => {
     if (!isDragging.value) return false;
     if (props.allowedTypes === '*') return true;
-    return (props.allowedTypes as string[]).includes(store.dragSourceType!);
+    const src = dragSourceType.value;
+    if (!src) return true;
+    return (props.allowedTypes as string[]).includes(src);
 });
 
 // Highlight only the currently hovered container while dragging.
@@ -55,7 +75,7 @@ const dropZoneActive = computed(
 const showBadDrop = computed(() => {
     if (!isDragOverThisZone.value) return false;
     if (props.allowedTypes === '*') return false;
-    const src = store.dragSourceType;
+    const src = dragSourceType.value;
     return src !== null && !(props.allowedTypes as string[]).includes(src);
 });
 
@@ -64,27 +84,20 @@ const group = computed(() => ({
     put: (_to: any, _from: any, dragEl: HTMLElement) => {
         if (
             props.maxChildren !== undefined &&
-            model.value.length >= props.maxChildren
+            localChildren.value.length >= props.maxChildren
         ) {
             return false;
         }
         if (props.allowedTypes === '*') return true;
-        const domType = dragEl.dataset?.elementType ?? store.dragSourceType;
+        const domType = dragEl.dataset?.elementType ?? dragSourceType.value;
         if (!domType) return true;
         return (props.allowedTypes as string[]).includes(domType);
     },
 }));
 
-let _draggedEl: FormElement | null = null;
+// ── Drag lifecycle ────────────────────────────────────────────────────────────
 
-function onChildAdd(event: any) {
-    const idx = event.newIndex ?? model.value.length - 1;
-    const el = model.value[idx];
-    if (!el) return;
-    emit('child-add', el, idx);
-    store.selectElement(el._id);
-}
-
+/** Collects the drop-zone ids the dragged element currently hovers over. */
 function collectAncestorDropZoneIds(el: HTMLElement | null): string[] {
     const ids: string[] = [];
     let current: HTMLElement | null = el;
@@ -97,21 +110,20 @@ function collectAncestorDropZoneIds(el: HTMLElement | null): string[] {
 }
 
 function onDragStart(e: any) {
-    const draggedId = e?.item?.dataset?.elementId as string | undefined;
-    const draggedType = e?.item?.dataset?.elementType as string | undefined;
-    const child = model.value[e.oldIndex];
-    _draggedEl = child ?? null;
-    store.setDragOverAncestorIds(collectAncestorDropZoneIds(e?.item ?? null));
+    const item = e?.item as HTMLElement | undefined;
+    const draggedId = item?.dataset?.elementId as string | undefined;
+    const draggedType = item?.dataset?.elementType as string | undefined;
 
-    const sourceType = draggedType ?? child?.type ?? null;
-    if (sourceType) {
-        store.setDragSource(sourceType);
-    }
-    // Always select dragged element at drag start, even if it wasn't selected.
+    setDragSource(draggedType ?? (draggedId ? 'element' : null));
+    // Nothing is a drop target yet — the highlight appears only once the
+    // drag actually hovers a container (see onDragMove).
+    setDragOverAncestorIds([]);
+    setDraggedElementId(draggedId ?? null);
+    setDragging(true);
+
+    // select the dragged element at drag start
     if (draggedId) {
-        store.selectElement(draggedId);
-    } else if (child) {
-        store.selectElement(child._id);
+        builder.selectElement(draggedId);
     }
     document.body.classList.add('sortable-drag-active');
 }
@@ -119,28 +131,79 @@ function onDragStart(e: any) {
 function onDragMove(event: any) {
     try {
         const toEl = event?.to as HTMLElement | undefined;
-        const targetEl = toEl?.dataset?.dropZoneId
-            ? toEl
-            : (toEl?.closest('[data-drop-zone-id]') ?? null);
-        store.setDragOverAncestorIds(
-            collectAncestorDropZoneIds(targetEl as HTMLElement | null)
-        );
+        const ids = collectAncestorDropZoneIds(toEl ?? null);
+        // Only skip the dragged element's own children zone (dropping into
+        // yourself is blocked by SortableJS anyway).
+        if (ids[0] === draggedElementId.value) {
+            setDragOverAncestorIds([]);
+        } else {
+            setDragOverAncestorIds(ids);
+        }
     } catch {
         // ignore move event errors
     }
     return true;
 }
 
-function onChildRemove() {
-    if (_draggedEl) emit('child-remove', _draggedEl);
-}
-
 function onDragEnd() {
-    _draggedEl = null;
-    store.setDragSource(null);
-    store.setDragOverAncestorIds([]);
+    setDragSource(null);
+    setDragOverAncestorIds([]);
+    setDraggedElementId(null);
+    setDragging(false);
     document.body.classList.remove('sortable-drag-active');
 }
+
+// ── Applying mutations through the builder ───────────────────────────────────
+
+/**
+ * A new item landed in this zone (from the palette or from another zone).
+ * VueDraggable has already spliced it into `localChildren` (palette clones
+ * arrive as a `palette:<type>` marker string, see PaletteFieldGrid; moved
+ * elements arrive as their uid). The reported `newIndex`/`newDraggableIndex`
+ * can be off by one on empty lists (the empty-state placeholder occupies
+ * child node 0), so we locate the item by content instead of trusting the
+ * reported index.
+ */
+function onChildAdd(event: any) {
+    // Palette drop → create a new element of the marked type
+    const markerIdx = localChildren.value.findIndex(
+        (c) => typeof c === 'string' && c.startsWith(PALETTE_MARKER_PREFIX)
+    );
+    if (markerIdx >= 0) {
+        const paletteType = localChildren.value[markerIdx].slice(
+            PALETTE_MARKER_PREFIX.length
+        ) as PaletteElementType;
+        const el = builder.addElement(props.parentUid, paletteType, markerIdx);
+        if (el) builder.selectElement(el.uid);
+        return;
+    }
+
+    // Element move (from another container) → move op
+    const item = event.item as HTMLElement | undefined;
+    const elementUid = item?.dataset?.elementId as string | undefined;
+    if (elementUid) {
+        const targetIdx = localChildren.value.indexOf(elementUid);
+        builder.moveElement(
+            elementUid,
+            props.parentUid,
+            targetIdx >= 0 ? targetIdx : 0
+        );
+    }
+}
+
+/** Reorder within this zone (same parent) → moveElement keeps the order. */
+function onUpdate(event: any) {
+    let idx = event.newDraggableIndex;
+    if (typeof idx !== 'number') {
+        idx = event.newIndex ?? event.oldIndex;
+    }
+    const elementUid = localChildren.value[idx];
+    if (elementUid) {
+        builder.moveElement(elementUid, props.parentUid, idx);
+    }
+}
+
+// ── Layout classes (same as legacy) ──────────────────────────────────────────
 
 const wrapperClass = computed(() => {
     if (props.layout === 'horizontal') return 'd-flex gap-2';
@@ -148,8 +211,6 @@ const wrapperClass = computed(() => {
     return 'vstack gap-2';
 });
 
-// Increase gap and padding for better drop targets — makes it easier to
-// drop elements between other elements or into containers.
 const paddedDraggableClass = computed(() => {
     if (props.layout === 'horizontal')
         return 'min-h-20 flex-grow-1 d-flex flex-row gap-3 flex-wrap py-2';
@@ -170,8 +231,8 @@ const emptyClass = computed(() => {
 <template>
     <div
         class="p-2 position-relative"
-        :data-drop-zone-id="parentId"
-        :class="[wrapperClass, { 'drop-zone-active': dropZoneActive }]"
+        :data-drop-zone-id="parentUid"
+        :class="wrapperClass"
     >
         <!-- Blocked-type overlay -->
         <Transition name="fade">
@@ -194,7 +255,7 @@ const emptyClass = computed(() => {
         </Transition>
 
         <VueDraggable
-            v-model="model"
+            v-model="localChildren"
             :group="group"
             handle=".drag-handle"
             draggable=".canvas-element-wrapper"
@@ -202,32 +263,51 @@ const emptyClass = computed(() => {
             chosen-class="sortable-chosen"
             :animation="200"
             :class="paddedDraggableClass"
-            :data-drop-zone-id="parentId"
             @add="onChildAdd"
-            @remove="onChildRemove"
+            @update="onUpdate"
             @start="onDragStart"
             @move="onDragMove"
             @end="onDragEnd"
             @click.stop
         >
-            <CanvasElement
-                v-for="child in model"
-                :key="child._id"
-                :element="child"
+            <CanvasNode
+                v-for="childUid in localChildren"
+                :key="childUid"
+                :uid="childUid"
             />
-            <div
-                v-if="model.length === 0"
-                :class="[emptyClass, 'drop-zone-empty']"
-            >
-                <slot name="empty">
-                    <PhPlusCircle
-                        :size="12"
-                        weight="bold"
-                        class="me-1 opacity-50"
-                    />
-                    {{ emptyLabel }}
-                </slot>
-            </div>
         </VueDraggable>
+
+        <!-- Empty-state hint: rendered OUTSIDE the SortableJS list (as an
+             overlay) so it stays visible while hovering with a dragged
+             element and is only removed once the element is actually
+             dropped. -->
+        <div
+            v-if="localChildren.length === 0"
+            :class="[
+                emptyClass,
+                'drop-zone-empty',
+                { 'drop-zone-active': dropZoneActive },
+            ]"
+        >
+            <slot name="empty">
+                <PhPlusCircle
+                    :size="12"
+                    weight="bold"
+                    class="me-1 opacity-50"
+                />
+                {{ emptyLabel }}
+            </slot>
+        </div>
     </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.15s;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

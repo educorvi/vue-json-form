@@ -1,101 +1,80 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useFormStore } from '@/stores/formStore';
+import { useFormBuilder } from '../../useFormBuilder';
 import BootstrapTree from '@/components/shared/BootstrapTree.vue';
 import type { BootstrapTreeItem } from '@/components/shared/BootstrapTreeNode.vue';
-import type { FormElement, WizardElement } from '@/types/formTypes';
-import { wrapElement } from '@/types/elements';
+import type { CollabUser } from '@educorvi/vue-json-form-builder-schemas/collab';
+import {
+    ContainerElement,
+    type Form,
+    type FormDefinition,
+    type FormElement,
+} from '@educorvi/vue-json-form-builder-schemas';
+import { uiFor } from '@/elements';
 
-const store = useFormStore();
+const builder = useFormBuilder();
 
-function buildTreeItems(elements: FormElement[]): BootstrapTreeItem[] {
-    return elements.map((el) => {
-        const node$ = wrapElement(el);
+/** Users that currently have the given element selected. */
+function selectorsFor(uid: string): CollabUser[] {
+    return builder.remotePresences.value
+        .filter((p) => p.selection.elementId === uid)
+        .map((p) => p.user);
+}
+
+/** The schema `type` literal of the element — part of the data, not UI metadata. */
+function elementType(el: FormElement | Form): string {
+    return (el.data as { type?: string }).type ?? 'unknown';
+}
+
+function buildTreeItems(
+    childUids: string[],
+    fd: FormDefinition
+): BootstrapTreeItem[] {
+    return childUids.map((uid) => {
+        const el = fd.getElementById(uid);
+        if (!el)
+            return {
+                id: uid,
+                label: uid,
+                icon: 'bi bi-question-circle',
+                type: 'unknown',
+            };
         const item: BootstrapTreeItem = {
-            id: el._id,
-            label: node$.getLabel(store.jsonSchema as any),
-            icon: node$.icon,
-            type: el.type,
+            id: el.uid,
+            // presentation (icon, label) comes from the element's ElementUi
+            label: uiFor(el).label(el),
+            icon: uiFor(el).icon(el),
+            type: elementType(el),
+            // remote users that have this element selected (tree/canvas)
+            presence: selectorsFor(el.uid),
         };
-        if (node$.isContainer && node$.children) {
-            item.children = buildTreeItems(node$.children);
+        if (el instanceof ContainerElement && el.children.length > 0) {
+            item.children = buildTreeItems(el.children, fd);
         }
         return item;
     });
 }
 
 const treeData = computed((): BootstrapTreeItem[] => {
-    const root = store.rootLayout;
-    if (root.type === 'Wizard') {
-        const wizard$ = wrapElement(root);
-        return [
-            {
-                id: root._id,
-                label: wizard$.getLabel(store.jsonSchema as any),
-                icon: wizard$.icon,
-                type: root.type,
-                children: root.pages.map((page, i) => ({
-                    id: page._id,
-                    label: (page.options as any)?.label ?? `Page ${i + 1}`,
-                    icon: 'bi bi-file-earmark',
-                    type: 'WizardPage',
-                    children: buildTreeItems(page.elements),
-                })),
-            },
-        ];
-    }
-    const root$ = wrapElement(root);
+    const fd = builder.formDefinition.value;
+    if (!fd) return [];
+    const root = fd.root;
     return [
         {
-            id: root._id,
-            label: root$.getLabel(store.jsonSchema as any),
-            icon: root$.icon,
-            type: root.type,
-            children: buildTreeItems((root as any).elements ?? []),
+            id: root.uid,
+            label: uiFor(root).label(root),
+            icon: uiFor(root).icon(root),
+            type: elementType(root),
+            presence: selectorsFor(root.uid),
+            children: buildTreeItems(root.children, fd),
         },
     ];
 });
 
-const selectedId = computed(() => store.selectedElementId);
-
-/** Find which wizard page index contains the element (or its parent recursively). */
-function findWizardPageIndex(elementId: string): number | null {
-    const root = store.rootLayout;
-    if (root.type !== 'Wizard') return null;
-    const wiz = root as unknown as WizardElement;
-    for (let i = 0; i < wiz.pages.length; i++) {
-        const page = wiz.pages[i];
-        // Check if this page ID matches
-        if (page._id === elementId) return i;
-        // Check if element is directly in this page's elements
-        if (page.elements.some((el) => el._id === elementId)) return i;
-        // Recursively check nested elements
-        if (findInElements(page.elements, elementId)) return i;
-    }
-    return null;
-}
-
-/** Recursively search for an element id in a tree of FormElements. */
-function findInElements(elements: FormElement[], id: string): boolean {
-    for (const el of elements) {
-        if (el._id === id) return true;
-        const node$ = wrapElement(el);
-        if (node$.isContainer && node$.children) {
-            if (findInElements(node$.children, id)) return true;
-        }
-    }
-    return false;
-}
+const selectedId = computed(() => builder.selectedElementId.value);
 
 function onSelect(id: string) {
-    // Switch to the correct wizard page if needed
-    const pageIdx = findWizardPageIndex(id);
-    if (pageIdx !== null && store.rootLayout.type === 'Wizard') {
-        store.activeWizardPageIndex = pageIdx;
-    }
-
-    // Select the element
-    store.selectElement(id);
+    builder.selectElement(id);
 
     // Scroll to the element in the canvas
     setTimeout(() => {

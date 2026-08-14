@@ -8,8 +8,8 @@ import {
     PhCheck,
     PhX,
 } from '@phosphor-icons/vue';
-import { useToast } from 'bootstrap-vue-next';
-import { useFormStore } from '@/stores/formStore';
+import { useOptionalToastShow } from '@/utils/optionalToast';
+import { useFormBuilder } from '@/useFormBuilder';
 import { useImportState, IMPORT_STATE_KEY } from './import/useImportState';
 import ImportPasteTab from './import/ImportPasteTab.vue';
 import ImportUploadTab from './import/ImportUploadTab.vue';
@@ -17,8 +17,8 @@ import ImportUploadTab from './import/ImportUploadTab.vue';
 const props = defineProps<{ visible: boolean }>();
 const emit = defineEmits<{ 'update:visible': [value: boolean] }>();
 
-const store = useFormStore();
-const { show: showToast } = useToast();
+const builder = useFormBuilder();
+const showToast = useOptionalToastShow();
 
 const visible = computed({
     get: () => props.visible,
@@ -26,7 +26,7 @@ const visible = computed({
 });
 
 const state = useImportState({
-    loadSchemas: (json, ui) => store.loadSchemas(json, ui),
+    loadSchemas: (json, ui) => builder.loadFromJsonUi(json, ui),
     onSuccess: () => {
         visible.value = false;
         showToast?.({

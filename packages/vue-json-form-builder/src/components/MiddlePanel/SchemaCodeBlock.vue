@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { BButton } from 'bootstrap-vue-next';
 import { PhClipboard, PhDownload } from '@phosphor-icons/vue';
-import { useToast } from 'bootstrap-vue-next';
+import { useOptionalToastShow } from '@/utils/optionalToast';
 
 const props = defineProps<{
     code: string;
@@ -10,7 +9,7 @@ const props = defineProps<{
     filename: string;
 }>();
 
-const { show: showToast } = useToast();
+const showToast = useOptionalToastShow();
 
 function copyToClipboard() {
     navigator.clipboard.writeText(props.code).then(() => {

@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "useDefineForClassFields": false,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "types": [
+            "node"
+        ],
+        "ignoreDeprecations": "6.0",
+        "baseUrl": "..",
+        "paths": {
+            "~~/*": [
+                "*"
+            ],
+            "~/*": [
+                "*"
+            ],
+            "#auth-utils": [
+                "../../node_modules/nuxt-auth-utils/dist/runtime/types/index"
+            ]
+        }
+    },
+    "include": [
+        "./**/*.ts",
+        "../server/db/**/*.ts",
+        "../server/utils/**/*.ts",
+        "../server/types/**/*.ts"
+    ],
+    "exclude": [
+        "../server/db/entities/UserGroup.ts"
+    ]
+}

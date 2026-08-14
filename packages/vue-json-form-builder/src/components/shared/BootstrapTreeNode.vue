@@ -3,9 +3,13 @@
  * BootstrapTreeNode.vue
  *
  * Recursive tree node component used by BootstrapTree.
- * Renders a single node with expand/collapse caret, icon, label, and a type badge.
+ * Renders a single node with expand/collapse caret, icon, label, a type
+ * badge and — optionally — an avatar stack of remote users that currently
+ * have this element selected (`node.presence`).
  */
 import { ref } from 'vue';
+import type { CollabUser } from '@educorvi/vue-json-form-builder-schemas/collab';
+import UserAvatarStack from './presence/UserAvatarStack.vue';
 
 export interface BootstrapTreeItem {
     id: string;
@@ -13,6 +17,8 @@ export interface BootstrapTreeItem {
     icon: string;
     type: string;
     children?: BootstrapTreeItem[];
+    /** remote users that have this element selected */
+    presence?: CollabUser[];
     [key: string]: unknown;
 }
 
@@ -42,7 +48,7 @@ function select() {
         <!-- Node row -->
         <div
             class="d-flex align-items-center gap-1 py-1 pe-2 rounded"
-            :style="{ paddingLeft: `${depth * 12 + 6}px`, cursor: 'pointer' }"
+            :style="{ paddingLeft: `${depth * 8 + 4}px`, cursor: 'pointer' }"
             :class="
                 selectedId === node.id
                     ? 'bg-primary-subtle text-primary fw-medium border border-primary'
@@ -80,6 +86,14 @@ function select() {
             <span class="text-truncate text-xs flex-grow-1">{{
                 node.label
             }}</span>
+
+            <!-- Remote presence: users that have this element selected -->
+            <UserAvatarStack
+                v-if="node.presence?.length"
+                :users="node.presence"
+                size="xs"
+                :max="4"
+            />
 
             <!-- Type badge -->
             <span

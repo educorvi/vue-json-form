@@ -30,6 +30,15 @@ export class Form extends BaseAuditedEntity {
         ui: Record<string, unknown> | null;
     } | null;
 
+    /**
+     * FormDefinition.toJSON() output (root/elements/dependencies) written by
+     * the realtime collaboration server (collab-server). This is the new
+     * source of truth for the builder; `schema` is kept for legacy consumers
+     * until the migration is complete.
+     */
+    @Column({ type: 'jsonb', nullable: true })
+    definition!: Record<string, unknown> | null;
+
     @Column({
         type: 'enum',
         enum: Visibility,

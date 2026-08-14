@@ -999,9 +999,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-builder-schemas@workspace:packages/vue.json-form-builder-schemas":
+"@educorvi/vue-json-form-builder-schemas@workspace:^, @educorvi/vue-json-form-builder-schemas@workspace:packages/vue-json-form-builder-schemas":
   version: 0.0.0-use.local
-  resolution: "@educorvi/vue-json-form-builder-schemas@workspace:packages/vue.json-form-builder-schemas"
+  resolution: "@educorvi/vue-json-form-builder-schemas@workspace:packages/vue-json-form-builder-schemas"
   dependencies:
     "@educorvi/vue-json-form-schemas": "workspace:^"
     "@semantic-release/exec": "npm:^7.1.0"
@@ -1026,6 +1026,8 @@ __metadata:
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@educorvi/vue-json-form-builder-schemas": "workspace:^"
+    "@hocuspocus/provider": "npm:^4.6.0"
     "@phosphor-icons/vue": "npm:^2.2.1"
     "@popperjs/core": "npm:^2.11.8"
     "@semantic-release/exec": "npm:^7.1.0"
@@ -1052,6 +1054,7 @@ __metadata:
     vue-draggable-plus: "npm:^0.6.1"
     vue-router: "npm:^5.1.0"
     vue-tsc: "npm:^3.3.5"
+    yjs: "npm:^13.6.27"
   languageName: unknown
   linkType: soft
 
@@ -1192,7 +1195,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent":
+"@educorvi/vue-json-forms-builder-webcomponent@workspace:^, @educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent"
   dependencies:
@@ -1935,6 +1938,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hocuspocus/common@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@hocuspocus/common@npm:4.6.0"
+  dependencies:
+    lib0: "npm:^0.2.117"
+  checksum: 10/26325fbac82f6d8f92346b260eef69a20c66cb06a32f812d18adf447b3350bcf50ac6eed8bb442f762609145020e819cea0eb3802a01bb43a62e5608ec43ddce
+  languageName: node
+  linkType: hard
+
+"@hocuspocus/provider@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@hocuspocus/provider@npm:4.6.0"
+  dependencies:
+    "@hocuspocus/common": "npm:^4.6.0"
+    "@lifeomic/attempt": "npm:^3.1.0"
+    lib0: "npm:^0.2.117"
+  peerDependencies:
+    y-protocols: ^1.0.6
+    yjs: ^13.6.8
+  checksum: 10/0b1cc5b4019fe02a8edc09a9e963b8e647d4fbeef9fdf1f3fb3fbefc330c72d5e33d93c4e2a9f96834e0d7076ac98116ea86f94d4368b0b9a77d262783a9f6da
+  languageName: node
+  linkType: hard
+
+"@hocuspocus/server@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@hocuspocus/server@npm:4.6.0"
+  dependencies:
+    "@hocuspocus/common": "npm:^4.6.0"
+    async-mutex: "npm:^0.5.0"
+    crossws: "npm:^0.4.4"
+    kleur: "npm:^4.1.5"
+    lib0: "npm:^0.2.117"
+  peerDependencies:
+    y-protocols: ^1.0.6
+    yjs: ^13.6.8
+  checksum: 10/da8a6c23e25f1cea43644e9c083419b6a067fd48c268294ba9530e289f6fefdbe723f539cda4d966e56a73db04d34827145b638cf1382cc37476cccdfb7b6d97
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.2":
   version: 0.19.2
   resolution: "@humanfs/core@npm:0.19.2"
@@ -2362,6 +2404,13 @@ __metadata:
   version: 1.1.1
   resolution: "@kwsites/promise-deferred@npm:1.1.1"
   checksum: 10/07455477a0123d9a38afb503739eeff2c5424afa8d3dbdcc7f9502f13604488a4b1d9742fc7288832a52a6422cf1e1c0a1d51f69a39052f14d27c9a0420b6629
+  languageName: node
+  linkType: hard
+
+"@lifeomic/attempt@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@lifeomic/attempt@npm:3.1.0"
+  checksum: 10/051502a81c8aa1914d01f87989280fcf7213872851b5e0c673717d6c85ac78e9509bf916056425fafba3937079c1130823a4d95aec7c9f6ae3a22ad1e59b475e
   languageName: node
   linkType: hard
 
@@ -7784,6 +7833,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-mutex@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "async-mutex@npm:0.5.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/4c6bfce1cc9cd43f723c4d96403ac5f4757f885c953b839cde6956ec8817ff39623b82d67614de10c7933e21626925882fb9bac367db7d15d7cb4f84228722c9
+  languageName: node
+  linkType: hard
+
 "async-sema@npm:^3.1.1":
   version: 3.1.1
   resolution: "async-sema@npm:3.1.1"
@@ -9061,7 +9119,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crossws@npm:^0.4.10":
+"crossws@npm:^0.4.10, crossws@npm:^0.4.4":
   version: 0.4.10
   resolution: "crossws@npm:0.4.10"
   peerDependencies:
@@ -12715,6 +12773,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^6.2.3":
+  version: 6.2.8
+  resolution: "jose@npm:6.2.8"
+  checksum: 10/d1534f56cf693dfbb4b433b72df469c3c858748fe627621e27d9c1e7894716fc1d0225923be3ae98153345b9823a25c0ac376bfccce3ed363a4c032cfd4e2f5b
+  languageName: node
+  linkType: hard
+
 "js-beautify@npm:^1.14.9":
   version: 1.15.4
   resolution: "js-beautify@npm:1.15.4"
@@ -12852,7 +12917,9 @@ __metadata:
   dependencies:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
     "@educorvi/vue-json-form-builder": "workspace:*"
+    "@educorvi/vue-json-form-builder-schemas": "workspace:^"
     "@hey-api/openapi-ts": "npm:0.99.0"
+    "@hocuspocus/server": "npm:^4.6.0"
     "@iconify-json/ph": "npm:^1.2.2"
     "@nuxt/eslint": "npm:^1.16.0"
     "@nuxt/icon": "npm:^2.4.1"
@@ -12873,19 +12940,44 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-vue-next: "npm:^0.45.7"
     happy-dom: "npm:^20.11.1"
+    jose: "npm:^6.2.3"
     module: "npm:^2.0.0"
     nuxi: "npm:^3.36.1"
     nuxt: "npm:^4.4.8"
     nuxt-auth-utils: "npm:^0.5.29"
     pg: "npm:^8.22.0"
     pinia: "npm:^3.0.4"
+    tsx: "npm:^4.22.4"
     turbo: "npm:^2.10.8"
     typeorm: "npm:1.0"
     vitest: "npm:^4.1.10"
     vue: "npm:^3.5.38"
     vue-router: "npm:^5.1.0"
+    y-protocols: "npm:^1.0.7"
+    yjs: "npm:^13.6.27"
     zod: "npm:^4.4.3"
     zod-openapi: "npm:^6.0.0"
+  languageName: unknown
+  linkType: soft
+
+"json-forms-webcomponent-example-external@workspace:apps/json-forms-webcomponent-example-external":
+  version: 0.0.0-use.local
+  resolution: "json-forms-webcomponent-example-external@workspace:apps/json-forms-webcomponent-example-external"
+  dependencies:
+    "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
+    "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^"
+    "@nuxt/eslint": "npm:^1.16.0"
+    "@types/bootstrap": "npm:^5"
+    bootstrap: "npm:^5.3.8"
+    bootstrap-icons: "npm:^1.13.1"
+    bootstrap-vue-next: "npm:^0.45.7"
+    nuxt: "npm:^4.4.8"
+    nuxt-auth-utils: "npm:^0.5.29"
+    turbo: "npm:^2.10.8"
+    typescript: "npm:~6.0.3"
+    vue: "npm:^3.5.38"
+    vue-router: "npm:^5.1.0"
+    vue-tsc: "npm:^3.3.5"
   languageName: unknown
   linkType: soft
 
@@ -13146,7 +13238,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lib0@npm:^0.2.99":
+"lib0@npm:^0.2.117, lib0@npm:^0.2.85, lib0@npm:^0.2.99":
   version: 0.2.117
   resolution: "lib0@npm:0.2.117"
   dependencies:
@@ -21454,6 +21546,17 @@ __metadata:
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
   checksum: 10/ac5dfa738b21f6e7f0dd6e65e1b3155036d68104e67e5d5d1bde74892e327d7e5636a076f625599dc394330a731861e87343ff184b0047fef1360a7ec0a5a36a
+  languageName: node
+  linkType: hard
+
+"y-protocols@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "y-protocols@npm:1.0.7"
+  dependencies:
+    lib0: "npm:^0.2.85"
+  peerDependencies:
+    yjs: ^13.0.0
+  checksum: 10/2c30352544e7af1026051f12158c19a077cd2d4a0c598a7f69b3a0b6841225ef8d0119b4c5edb10fc7ea0e8e9ee5642b8a2082109295d3f881a300fd9080060b
   languageName: node
   linkType: hard
 
