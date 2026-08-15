@@ -37,6 +37,7 @@ export class Routes {
     static readonly GROUPS = '/groups';
     static readonly GROUPS_NEW = '/groups/new';
     static readonly USERS = '/users';
+    static readonly API_KEYS = '/api-keys';
     static readonly FORM_BUILDER = '/form-builder';
     static readonly SWAGGER = '/_swagger';
     static readonly AUTH_KEYCLOAK = '/auth/keycloak';

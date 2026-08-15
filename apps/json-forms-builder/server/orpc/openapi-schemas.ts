@@ -301,6 +301,8 @@ JSON_SCHEMA_REGISTRY.add(zApiKey, {
             description: 'Used for automated CI/CD deployments',
             identifier: 'fb_a4…f7',
             expires_at: '2025-12-31',
+            created: '2025-01-15T09:30:00.000Z',
+            updated: '2025-02-01T14:00:00.000Z',
         },
     ],
 });
@@ -313,6 +315,8 @@ JSON_SCHEMA_REGISTRY.add(zApiKeyCreated, {
             description: 'Used for automated CI/CD deployments',
             identifier: 'fb_a4…f7',
             expires_at: '2025-12-31',
+            created: '2025-01-15T09:30:00.000Z',
+            updated: '2025-02-01T14:00:00.000Z',
             token: 'fb_a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3',
         },
     ],

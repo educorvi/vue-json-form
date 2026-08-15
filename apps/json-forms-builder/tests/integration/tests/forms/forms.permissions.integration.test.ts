@@ -124,6 +124,74 @@ describe('Form permissions', () => {
         });
     });
 
+    describe('expiration dates', () => {
+        it('round-trips the expiry date as YYYY-MM-DD on create and list', async () => {
+            // Given a form and a permission with an expiry date exist
+            const form = await createTestForm(admin);
+            const perm = await createPermission(
+                permissions,
+                form.id,
+                targetUser.userId,
+                'editor',
+                '2030-01-15'
+            );
+
+            // Then the create response contains the date-only string
+            expect(perm.expire).toBe('2030-01-15');
+            expect(perm.expired).toBe(false);
+
+            // And the list response also contains the date-only string
+            // (regression: Date → .toISOString() failed output validation
+            // with a 500 on every permission list once a date was set)
+            const { data } = await permissions.list({
+                params: { id: String(form.id) },
+                query: { page_size: 50 },
+            });
+            const listed = permissionsOfTargetUser(data, targetUser.userId);
+            expect(listed).toHaveLength(1);
+            expect(listed[0]?.expire).toBe('2030-01-15');
+            expect(listed[0]?.expired).toBe(false);
+        });
+
+        it('round-trips an expiry date updated via patch', async () => {
+            // Given a form with a permission exists (without expiry)
+            const form = await createTestForm(admin);
+            const perm = await createFormPermission(form.id);
+
+            // When setting an expiry date on the permission
+            const patched = await permissions.patch({
+                params: { id: String(form.id), permissionId: perm.id },
+                body: { expire: '2030-01-15' },
+            });
+
+            // Then the patch response contains the date-only string
+            expect(patched.expire).toBe('2030-01-15');
+
+            // And the list response contains it too
+            const { data } = await permissions.list({
+                params: { id: String(form.id) },
+                query: { page_size: 50 },
+            });
+            const listed = permissionsOfTargetUser(data, targetUser.userId);
+            expect(listed[0]?.expire).toBe('2030-01-15');
+
+            // And clearing the date removes it from the list response
+            await permissions.patch({
+                params: { id: String(form.id), permissionId: perm.id },
+                body: { expire: null },
+            });
+            const { data: afterClear } = await permissions.list({
+                params: { id: String(form.id) },
+                query: { page_size: 50 },
+            });
+            const listedAfterClear = permissionsOfTargetUser(
+                afterClear,
+                targetUser.userId
+            );
+            expect(listedAfterClear[0]?.expire).toBeUndefined();
+        });
+    });
+
     describe('inherited permissions', () => {
         it('shows permissions inherited from the parent', async () => {
             // Given a parent group with a form inside it and a permission

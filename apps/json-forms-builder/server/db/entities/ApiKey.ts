@@ -1,5 +1,11 @@
 import 'reflect-metadata';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+    Entity,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 import { BaseUuidCreatedEntity } from './BaseEntities';
 import { User } from './User';
 
@@ -23,4 +29,7 @@ export class ApiKey extends BaseUuidCreatedEntity {
 
     @Column({ type: 'date', nullable: true })
     expires_at!: Date | null;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    updated!: Date;
 }

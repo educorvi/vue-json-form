@@ -3,6 +3,7 @@
         "forms": "Formulare",
         "users": "Benutzer",
         "groups": "Gruppen",
+        "apiKeys": "API-Schlüssel",
         "formBuilder": "Formular-Builder",
         "signIn": "Anmelden",
         "signOut": "Abmelden"
@@ -345,6 +346,63 @@
             "expire": "Läuft ab",
             "created": "Hinzugefügt",
             "lastname": "Name"
+        },
+        "expired": "Abgelaufen",
+        "never": "Nie"
+    },
+    "apiKeys": {
+        "title": "API-Schlüssel",
+        "description": "API-Schlüssel für den programmatischen Zugriff auf die API verwalten.",
+        "searchPlaceholder": "API-Schlüssel suchen…",
+        "loadError": "API-Schlüssel konnten nicht geladen werden:",
+        "noKeysTitle": "Keine API-Schlüssel gefunden",
+        "noKeysDescription": "Es gibt noch keine API-Schlüssel.",
+        "noSearchResults": "Keine Ergebnisse für '{query}'.",
+        "total": "Keine API-Schlüssel | {n} API-Schlüssel | {n} API-Schlüssel",
+        "new": {
+            "title": "Neuer API-Schlüssel",
+            "subtitle": "Einen neuen API-Schlüssel für den programmatischen Zugriff erstellen.",
+            "create": "API-Schlüssel erstellen",
+            "createSuccess": "API-Schlüssel erfolgreich erstellt.",
+            "createError": "API-Schlüssel konnte nicht erstellt werden.",
+            "fields": {
+                "name": "Name",
+                "namePlaceholder": "z. B. CI-Pipeline",
+                "description": "Beschreibung",
+                "descriptionPlaceholder": "Optional — Zweck dieses Schlüssels beschreiben.",
+                "expires": "Ablaufdatum",
+                "expiresHint": "Optional — leer lassen für kein Ablaufdatum."
+            },
+            "tokenTitle": "Dein API-Schlüssel",
+            "tokenWarning": "Dieses Token wird nur einmal angezeigt. Kopiere es jetzt und speichere es an einem sicheren Ort — es kann später nicht erneut abgerufen werden.",
+            "tokenCopied": "Token in die Zwischenablage kopiert.",
+            "tokenCopy": "In die Zwischenablage kopieren"
+        },
+        "edit": {
+            "title": "API-Schlüssel bearbeiten",
+            "editSuccess": "API-Schlüssel erfolgreich aktualisiert.",
+            "editError": "API-Schlüssel konnte nicht aktualisiert werden."
+        },
+        "delete": {
+            "title": "Löschen",
+            "warning": "Dieser API-Schlüssel wird dauerhaft gelöscht. Jede Anwendung, die ihn verwendet, kann sich danach nicht mehr authentifizieren.",
+            "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
+            "confirm": "API-Schlüssel löschen",
+            "deleteSuccess": "API-Schlüssel erfolgreich gelöscht.",
+            "deleteError": "API-Schlüssel konnte nicht gelöscht werden."
+        },
+        "columns": {
+            "name": "Name",
+            "identifier": "Kennung",
+            "expires": "Läuft ab",
+            "activity": "Aktivität",
+            "actions": "Aktionen"
+        },
+        "sortBy": {
+            "name": "Name",
+            "created": "Erstellt",
+            "updated": "Aktualisiert",
+            "expires": "Ablauf"
         },
         "expired": "Abgelaufen",
         "never": "Nie"

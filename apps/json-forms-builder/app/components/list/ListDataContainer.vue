@@ -55,6 +55,20 @@ watch(
     { immediate: true }
 );
 
+// Sync items even when `pending` never toggles — needed for client-side
+// filtering/sorting/pagination where the parent recomputes `items`
+// without any server refetch. Stale-while-revalidate is preserved:
+// during a refetch (pending === true) the old data stays visible and
+// the pending-watch above takes over once the fetch finishes.
+watch(
+    () => props.items,
+    (items) => {
+        if (!props.pending) {
+            displayItems.value = items;
+        }
+    }
+);
+
 onUnmounted(() => {
     if (skeletonTimer) clearTimeout(skeletonTimer);
 });

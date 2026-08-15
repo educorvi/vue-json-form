@@ -1,6 +1,6 @@
 import type { Permission } from '~~/server/db/entities/Permission';
 import type { ResolvedPermission } from '~~/server/services/PermissionService';
-import { requireUserRef, toAuditRef } from './shared';
+import { requireUserRef, toAuditRef, toApiDate } from './shared';
 import { zPermission } from '../generated/zod.gen';
 import z from 'zod';
 
@@ -32,6 +32,9 @@ export function mapPermissionToApi(p: Permission): ApiUserPermission {
         scope: 'direct',
         expired: p.expire ? new Date(p.expire) < new Date() : false,
         role: p.role,
+        // `expire` is a `date` column — the API shape is 'YYYY-MM-DD'
+        // (z.iso.date), never an ISO datetime.
+        ...(p.expire ? { expire: toApiDate(p.expire) } : {}),
         user: toApiUserRef(p.user),
         created_by: toModRef(p.created_by, p.created.toISOString()),
         updated_by: toModRef(p.updated_by, p.updated.toISOString()),
@@ -51,7 +54,10 @@ export function mapResolvedPermissionToApi(
         expired: p.expired,
         role: p.role ?? undefined,
         inherited_role: p.inherited_role ?? undefined,
-        ...(p.expire ? { expire: p.expire.toISOString() } : {}),
+        // `expire` is a `date` column — the API shape is 'YYYY-MM-DD'
+        // (z.iso.date), never an ISO datetime: `.toISOString()` would
+        // fail output validation (500) on every list after a date is set.
+        ...(p.expire ? { expire: toApiDate(p.expire) } : {}),
         ...(p.source_group_path
             ? { source_group_path: p.source_group_path }
             : {}),

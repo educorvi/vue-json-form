@@ -101,7 +101,10 @@ export class PermissionService {
 
         const perm = this.repo.create({
             role: dto.role,
-            expire: dto.expire ? new Date(dto.expire) : null,
+            // Keep the 'YYYY-MM-DD' string: `date` columns round-trip as
+            // strings and wrapping in `new Date(...)` shifts the day in
+            // non-UTC server timezones.
+            expire: dto.expire ?? null,
             user: { id: dto.user_id },
             group: { id: groupId },
             created_by: { id: actorId },
@@ -132,7 +135,10 @@ export class PermissionService {
 
         const perm = this.repo.create({
             role: dto.role,
-            expire: dto.expire ? new Date(dto.expire) : null,
+            // Keep the 'YYYY-MM-DD' string: `date` columns round-trip as
+            // strings and wrapping in `new Date(...)` shifts the day in
+            // non-UTC server timezones.
+            expire: dto.expire ?? null,
             user: { id: dto.user_id },
             form: { id: formId },
             created_by: { id: actorId },
@@ -165,12 +171,8 @@ export class PermissionService {
         // Use update to avoid DeepPartial issues
         await this.repo.update(id, {
             ...(dto.role ? { role: dto.role } : {}),
-            expire:
-                dto.expire !== undefined
-                    ? dto.expire
-                        ? new Date(dto.expire)
-                        : null
-                    : undefined,
+            // Keep the 'YYYY-MM-DD' string (see createForGroup).
+            expire: dto.expire !== undefined ? dto.expire || null : undefined,
             updated_by: { id: actorId },
         });
         return this.repo.findOneOrFail({

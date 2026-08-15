@@ -70,16 +70,22 @@ export async function provisionRbacUsers(): Promise<{
 
 /**
  * Creates a direct permission for the given user on a resource.
+ * Pass `expire` ('YYYY-MM-DD') to set an expiry date.
  */
 export function createPermission(
     ns: PermissionNamespace,
     resourceId: number,
     userId: string,
-    role: PermissionRole = 'editor'
+    role: PermissionRole = 'editor',
+    expire?: string
 ) {
     return ns.create({
         params: { id: String(resourceId) },
-        body: { user_id: userId, role },
+        body: {
+            user_id: userId,
+            role,
+            ...(expire ? { expire } : {}),
+        },
     });
 }
 

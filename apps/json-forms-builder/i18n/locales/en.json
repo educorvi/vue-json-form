@@ -3,6 +3,7 @@
         "forms": "Forms",
         "users": "Users",
         "groups": "Groups",
+        "apiKeys": "API Keys",
         "formBuilder": "Form Builder",
         "signIn": "Sign in",
         "signOut": "Sign out"
@@ -345,6 +346,63 @@
             "expire": "Expires",
             "created": "Added",
             "lastname": "Name"
+        },
+        "expired": "Expired",
+        "never": "Never"
+    },
+    "apiKeys": {
+        "title": "API Keys",
+        "description": "Manage API keys for programmatic access to the API.",
+        "searchPlaceholder": "Search API keys…",
+        "loadError": "Failed to load API keys:",
+        "noKeysTitle": "No API keys found",
+        "noKeysDescription": "There are no API keys yet.",
+        "noSearchResults": "No results for '{query}'.",
+        "total": "No API keys | {n} API key | {n} API keys",
+        "new": {
+            "title": "New API Key",
+            "subtitle": "Create a new API key for programmatic access.",
+            "create": "Create API Key",
+            "createSuccess": "API key created successfully.",
+            "createError": "Failed to create API key.",
+            "fields": {
+                "name": "Name",
+                "namePlaceholder": "e.g. CI Pipeline",
+                "description": "Description",
+                "descriptionPlaceholder": "Optional — describe the purpose of this key.",
+                "expires": "Expiration Date",
+                "expiresHint": "Optional — leave empty for no expiration."
+            },
+            "tokenTitle": "Your API Key",
+            "tokenWarning": "This token is only shown once. Copy it now and store it somewhere safe — it cannot be retrieved later.",
+            "tokenCopied": "Token copied to clipboard.",
+            "tokenCopy": "Copy to clipboard"
+        },
+        "edit": {
+            "title": "Edit API Key",
+            "editSuccess": "API key updated successfully.",
+            "editError": "Failed to update API key."
+        },
+        "delete": {
+            "title": "Delete",
+            "warning": "This will permanently delete this API key. Any application using it will no longer be able to authenticate.",
+            "confirmPrompt": "Type \"{name}\" to confirm deletion:",
+            "confirm": "Delete API Key",
+            "deleteSuccess": "API key deleted successfully.",
+            "deleteError": "Failed to delete API key."
+        },
+        "columns": {
+            "name": "Name",
+            "identifier": "Identifier",
+            "expires": "Expires",
+            "activity": "Activity",
+            "actions": "Actions"
+        },
+        "sortBy": {
+            "name": "Name",
+            "created": "Created",
+            "updated": "Updated",
+            "expires": "Expiration"
         },
         "expired": "Expired",
         "never": "Never"

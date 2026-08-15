@@ -12,6 +12,7 @@ const navItems = computed(() => [
     },
     { label: t('nav.groups'), icon: 'ph:tree-structure', route: '/groups' },
     { label: t('nav.users'), icon: 'ph:users', route: '/users' },
+    { label: t('nav.apiKeys'), icon: 'ph:key', route: '/api-keys' },
 ]);
 
 const userName = computed(() => user.value?.username ?? 'User');
