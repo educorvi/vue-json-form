@@ -1794,34 +1794,37 @@ components:
     # ── API Key ──────────────────────────────────────────────────────────────
 
     ApiKeyShared:
-      type: object
-      required: [id, name]
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-          description: Unique identifier of the API key
-        name:
-          type: string
-          maxLength: 255
-          description: Human-readable name to identify the API key
-        description:
-          type:
-            - string
-            - "null"
-          description: Optional description of the API key's purpose
-        identifier:
-          type: string
-          readOnly: true
-          description: >
-            Partial token showing only the first and last few characters
-            (e.g. "sk_a4…f7").
-        expires_at:
-          type: string
-          format: date
-          nullable: true
-          description: Optional expiry date after which the key becomes invalid
+      description: API key metadata visible to the owner
+      allOf:
+        - type: object
+          required: [id, name]
+          properties:
+            id:
+              type: string
+              format: uuid
+              readOnly: true
+              description: Unique identifier of the API key
+            name:
+              type: string
+              maxLength: 255
+              description: Human-readable name to identify the API key
+            description:
+              type:
+                - string
+                - "null"
+              description: Optional description of the API key's purpose
+            identifier:
+              type: string
+              readOnly: true
+              description: >
+                Partial token showing only the first and last few characters
+                (e.g. "sk_a4…f7").
+            expires_at:
+              type: string
+              format: date
+              nullable: true
+              description: Optional expiry date after which the key becomes invalid
+        - $ref: '#/components/schemas/Timestamps'
 
     ApiKeyCreate:
       type: object

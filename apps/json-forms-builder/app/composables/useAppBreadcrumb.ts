@@ -21,6 +21,7 @@ const ENTITY_CONFIG = {
     groups: { labelKey: 'nav.groups', icon: 'ph:folder', route: '/groups' },
     forms: { labelKey: 'nav.forms', icon: 'ph:file-text', route: '/forms' },
     users: { labelKey: 'nav.users', icon: 'ph:users', route: '/users' },
+    apiKeys: { labelKey: 'nav.apiKeys', icon: 'ph:key', route: '/api-keys' },
 } as const;
 
 export function useAppBreadcrumb() {

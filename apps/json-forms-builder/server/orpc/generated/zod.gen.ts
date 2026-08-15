@@ -210,13 +210,16 @@ export const zSchemaImportPayload = z.object({
     ui_schema: z.record(z.string(), z.unknown()).optional()
 });
 
+/**
+ * API key metadata visible to the owner
+ */
 export const zApiKeyShared = z.object({
     id: z.uuid().readonly(),
     name: z.string().max(255),
     description: z.string().nullish(),
     identifier: z.string().readonly().optional(),
     expires_at: z.iso.date().optional()
-});
+}).and(zTimestamps);
 
 export const zApiKeyCreate = z.object({
     name: z.string().max(255),
@@ -351,6 +354,9 @@ export const zFormWithAccessWritable = zFormWritable.and(z.object({
     effective_role: zElementRole.nullable()
 }));
 
+/**
+ * API key metadata visible to the owner
+ */
 export const zApiKeySharedWritable = z.object({
     name: z.string().max(255),
     description: z.string().nullish(),

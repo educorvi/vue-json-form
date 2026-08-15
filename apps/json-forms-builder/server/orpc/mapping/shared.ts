@@ -36,6 +36,30 @@ export function mapVisibilityToDb(visibility: ApiVisibility): Visibility {
     return MAP_API_VISIBILITY_TO_DB[visibility];
 }
 
+// ── Date-only columns ─────────────────────────────────────────────────────
+
+/**
+ * Normalize a DB `date` column value into the API's ISO date-only shape
+ * ('YYYY-MM-DD'), or `undefined` when the value is empty.
+ *
+ * TypeORM repository reads hydrate `date` columns as **strings**, while
+ * raw SQL queries (pg) return **Date** objects (local midnight) — both
+ * must be handled. The local date components are used for `Date` inputs,
+ * matching TypeORM's own `mixedDateToDateString` formatting and avoiding
+ * off-by-one-day timezone drift.
+ */
+export function toApiDate(
+    value: Date | string | null | undefined
+): string | undefined {
+    if (value == null) return undefined;
+    if (typeof value === 'string') return value;
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return undefined;
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${month}-${day}`;
+}
+
 // ── Audit user mapping ────────────────────────────────────────────────────
 
 type ApiUserRef = z.infer<typeof zUserRef>;

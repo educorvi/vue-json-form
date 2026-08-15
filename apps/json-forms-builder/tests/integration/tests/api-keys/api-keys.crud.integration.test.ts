@@ -88,6 +88,44 @@ describe('API Keys API', () => {
         });
     });
 
+    describe('expiration dates', () => {
+        it('round-trips the expiry date as YYYY-MM-DD on create and list', async () => {
+            // Given a key is created with an expiry date
+            const key = await admin.client.apiKeys.create({
+                body: { name: 'Expiring Key', expires_at: '2030-01-15' },
+            });
+
+            // Then the create response contains the date-only string
+            expect(key.expires_at).toBe('2030-01-15');
+
+            // And the list response also contains the date-only string
+            // (regression: a Date → .toISOString() conversion crashed the list
+            // with a 500 and produced an invalid shape)
+            const keys = await admin.client.apiKeys.list();
+            const listed = keys.find((k) => k.id === key.id);
+            expect(listed?.expires_at).toBe('2030-01-15');
+
+            // And keys without an expiry omit the field entirely
+            const plain = await admin.client.apiKeys.create({
+                body: { name: 'No Expiry' },
+            });
+            const listedPlain = await admin.client.apiKeys.list();
+            const listedPlainKey = listedPlain.find((k) => k.id === plain.id);
+            expect(listedPlainKey?.expires_at).toBeUndefined();
+        });
+
+        it('persists the expiry date in the database as YYYY-MM-DD', async () => {
+            // Given a key is created with an expiry date
+            const key = await admin.client.apiKeys.create({
+                body: { name: 'Expiring Key', expires_at: '2030-01-15' },
+            });
+
+            // Then the database row stores the same date-only string
+            const row = await findApiKeyRowById(key.id);
+            expect(row?.expires_at).toBe('2030-01-15');
+        });
+    });
+
     describe('listing API keys', () => {
         it('lists all API keys of the user', async () => {
             // Given the user created two API keys

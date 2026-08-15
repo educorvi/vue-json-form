@@ -105,7 +105,10 @@ export class ApiKeyService {
             description: dto.description ?? null,
             hash,
             identifier,
-            expires_at: dto.expires_at ? new Date(dto.expires_at) : null,
+            // Keep the 'YYYY-MM-DD' string: `date` columns round-trip as
+            // strings and wrapping in `new Date(...)` shifts the day in
+            // non-UTC server timezones.
+            expires_at: dto.expires_at ?? null,
             user: { id: userId },
         });
 
