@@ -111,16 +111,13 @@ const {
             // The auth flow's token (Keycloak access token) wins over a
             // statically configured collab-token prop.
             token: token ?? props.collab?.token,
-            // If the host did not provide a collab user (presence), fall
-            // back to the authenticated user.
             user:
-                props.collab?.user ??
-                (user?.id && user.username
+                user?.id && user.username
                     ? {
                           id: user.id,
                           name: user.username,
                       }
-                    : undefined),
+                    : undefined,
         }),
 });
 

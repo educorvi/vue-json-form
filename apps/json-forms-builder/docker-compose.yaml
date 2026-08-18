@@ -64,14 +64,13 @@ services:
     # instead of `yarn dev:internal`. Gated behind the `ci` profile so a plain `docker compose up` (local dev: just postgres + keycloak) never
     # builds/starts it -- use `docker compose --profile ci up -d --build`.
     #
-    # Connects to the SAME Postgres/Keycloak instances above, but against the separate `form_builder_test` database (created automatically by
+    # Connects to the SAME Postgres/Keycloak instances above, but against the separate `form_builder_test` database
     app:
         profiles: ["ci"]
         build:
-            # turbo prune must run against the whole monorepo, so the build
-            # context is the repo root (Dockerfile lives in this folder).
             context: ../..
-            dockerfile: apps/json-forms-builder/Dockerfile
+            dockerfile: Dockerfile
+            target: run-form-builder
         env_file:
             - .docker.env
         ports:
@@ -81,15 +80,40 @@ services:
                 condition: service_healthy
             keycloak:
                 condition: service_started
+
+    # Standalone Hocuspocus WebSocket collaboration backend (collab-server/).
+    #
+    # To make the browser actually connect, the app image must be BUILT with
+    # NUXT_PUBLIC_COLLAB_URL=ws://localhost:1234 (it is inlined into the
+    # client bundle at build time, a runtime env var is not enough).
+    collab:
+        profiles: ["ci"]
+        build:
+            # turbo prune must run against the whole monorepo, so the build
+            # context is the repo root (Dockerfile lives in this folder).
+            context: ../..
+            dockerfile: apps/json-forms-builder/collab-server/Dockerfile
+        env_file:
+            - .docker.env
+        environment:
+            # Backend that validates WS handshakes. `app` listens on :3000
+            # inside the compose network (host mapping is 3100:3000 above).
+            COLLAB_NUXT_URL: http://app:3000
+            COLLAB_PORT: "1234"
+        ports:
+            - "1234:1234"
+        depends_on:
+            postgres:
+                condition: service_healthy
+            app:
+                condition: service_healthy
         healthcheck:
             test:
                 [
                     "CMD",
-                    "wget",
-                    "--quiet",
-                    "--tries=1",
-                    "--spider",
-                    "http://localhost:3000/api/v1/status",
+                    "node",
+                    "-e",
+                    "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)",
                 ]
             interval: 5s
             timeout: 5s

@@ -379,9 +379,10 @@ export function assertContainer(doc: Y.Doc, containerUid: string): void {
  * written through this helper passes the class zod schema, so a reload via
  * FormDefinition.fromJSON can never fail on data the adapter wrote itself.
  */
-export function createElementMap(
-    element: FormElement
-): { uid: string; map: Y.Map<unknown> } {
+export function createElementMap(element: FormElement): {
+    uid: string;
+    map: Y.Map<unknown>;
+} {
     const data = validateElementData(element);
     const map = new Y.Map<unknown>();
     for (const [key, value] of Object.entries(data)) {
@@ -402,10 +403,7 @@ export function ensureUid(element: FormElement): void {
 }
 
 /** Removes an element uid from the first parent children array that contains it. */
-export function removeFromParent(
-    doc: Y.Doc,
-    elementUid: string
-): boolean {
+export function removeFromParent(doc: Y.Doc, elementUid: string): boolean {
     const root = doc.getMap(ROOT_MAP);
     const rootChildren = root.get(CHILDREN_KEY);
     if (rootChildren instanceof Y.Array) {
@@ -632,9 +630,7 @@ export function validateDependencyData(
     dependency: Dependency | DependencyGroup
 ): Record<string, unknown> {
     const ctor =
-        dependency instanceof DependencyGroup
-            ? DependencyGroup
-            : Dependency;
+        dependency instanceof DependencyGroup ? DependencyGroup : Dependency;
     const result = ctor.schema.safeParse(dependency.data);
     if (!result.success) {
         throw new Error(

@@ -5659,10 +5659,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/darwin-64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/darwin-64@npm:2.10.10"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/darwin-64@npm:2.10.8":
   version: 2.10.8
   resolution: "@turbo/darwin-64@npm:2.10.8"
   conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/darwin-arm64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/darwin-arm64@npm:2.10.10"
+  conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
@@ -5673,10 +5687,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/linux-64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/linux-64@npm:2.10.10"
+  conditions: (os=android | os=linux) & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/linux-64@npm:2.10.8":
   version: 2.10.8
   resolution: "@turbo/linux-64@npm:2.10.8"
   conditions: (os=android | os=linux) & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/linux-arm64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/linux-arm64@npm:2.10.10"
+  conditions: (os=android | os=linux) & cpu=arm64
   languageName: node
   linkType: hard
 
@@ -5687,10 +5715,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turbo/windows-64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/windows-64@npm:2.10.10"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@turbo/windows-64@npm:2.10.8":
   version: 2.10.8
   resolution: "@turbo/windows-64@npm:2.10.8"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@turbo/windows-arm64@npm:2.10.10":
+  version: 2.10.10
+  resolution: "@turbo/windows-arm64@npm:2.10.10"
+  conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
@@ -5865,6 +5907,15 @@ __metadata:
   dependencies:
     undici-types: "npm:>=7.24.0 <7.24.7"
   checksum: 10/a58934de2e04a8e7fd8f95f7cae39cdd16bb28092f04024b929711b710139f31cb18b1126ab3ddbff570920bc97ea55bcde41f050a87df3073153a450eb37a7b
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^26.2.0":
+  version: 26.2.0
+  resolution: "@types/node@npm:26.2.0"
+  dependencies:
+    undici-types: "npm:~8.3.0"
+  checksum: 10/3829dd8c82e7d4858f3cc946ec9e5133c9fa39a0a9173874a6392230665121b42dac1b134e5e10ee132a5487293708c77df253cf41a125e9fd838cc3af72d700
   languageName: node
   linkType: hard
 
@@ -8652,6 +8703,22 @@ __metadata:
   checksum: 10/79b533fccf8265a47596fd0804b9a8596e43e0ac8d3f7b9cc3a1492a90d5e230091dc14797588c36c370328b5ce0acd706d8c3d0dd6a2a6c9ce77220df1b4aa1
   languageName: node
   linkType: hard
+
+"collab-server@workspace:apps/collab-server":
+  version: 0.0.0-use.local
+  resolution: "collab-server@workspace:apps/collab-server"
+  dependencies:
+    "@educorvi/vue-json-form-builder-schemas": "workspace:^"
+    "@hocuspocus/provider": "npm:^4.6.0"
+    "@types/node": "npm:^26.2.0"
+    json-forms-builder: "workspace:^"
+    reflect-metadata: "npm:^0.2.2"
+    tsx: "npm:^4.22.4"
+    turbo: "npm:^2.10.10"
+    typescript: "npm:6"
+    yjs: "npm:^13.6.32"
+  languageName: unknown
+  linkType: soft
 
 "color-convert@npm:^1.9.0":
   version: 1.9.3
@@ -12912,7 +12979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-forms-builder@workspace:apps/json-forms-builder":
+"json-forms-builder@workspace:^, json-forms-builder@workspace:apps/json-forms-builder":
   version: 0.0.0-use.local
   resolution: "json-forms-builder@workspace:apps/json-forms-builder"
   dependencies:
@@ -19541,6 +19608,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"turbo@npm:^2.10.10":
+  version: 2.10.10
+  resolution: "turbo@npm:2.10.10"
+  dependencies:
+    "@turbo/darwin-64": "npm:2.10.10"
+    "@turbo/darwin-arm64": "npm:2.10.10"
+    "@turbo/linux-64": "npm:2.10.10"
+    "@turbo/linux-arm64": "npm:2.10.10"
+    "@turbo/windows-64": "npm:2.10.10"
+    "@turbo/windows-arm64": "npm:2.10.10"
+  dependenciesMeta:
+    "@turbo/darwin-64":
+      optional: true
+    "@turbo/darwin-arm64":
+      optional: true
+    "@turbo/linux-64":
+      optional: true
+    "@turbo/linux-arm64":
+      optional: true
+    "@turbo/windows-64":
+      optional: true
+    "@turbo/windows-arm64":
+      optional: true
+  bin:
+    turbo: bin/turbo
+  checksum: 10/0064f916c4ca4d19a264ab7c91b9fb58c9292ede42c38caec9d19445db647e87281ee684bfa7ce3eabf7be647af88f9e00aa51bb7fa6fac373666f38eef5c51a
+  languageName: node
+  linkType: hard
+
 "turbo@npm:^2.10.8":
   version: 2.10.8
   resolution: "turbo@npm:2.10.8"
@@ -19798,7 +19894,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~6.0.3":
+"typescript@npm:6, typescript@npm:~6.0.3":
   version: 6.0.3
   resolution: "typescript@npm:6.0.3"
   bin:
@@ -19808,7 +19904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~6.0.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A6#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~6.0.3#optional!builtin<compat/typescript>":
   version: 6.0.3
   resolution: "typescript@patch:typescript@npm%3A6.0.3#optional!builtin<compat/typescript>::version=6.0.3&hash=5786d5"
   bin:
@@ -21692,7 +21788,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yjs@npm:^13.6.27":
+"yjs@npm:^13.6.27, yjs@npm:^13.6.32":
   version: 13.6.32
   resolution: "yjs@npm:13.6.32"
   dependencies:

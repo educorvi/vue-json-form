@@ -1,10 +1,4 @@
-/**
- * Minimal .env loader for the standalone collab server.
- *
- * Nuxt loads .env automatically, but this process runs plain tsx, so we read
- * the app's .env file here (without overriding already-set env vars).
- * Import this module FIRST, before anything that reads process.env.
- */
+// TODO: hacky
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

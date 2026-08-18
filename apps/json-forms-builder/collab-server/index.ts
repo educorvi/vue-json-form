@@ -1,28 +1,14 @@
-/**
- * Hocuspocus realtime collaboration server.
- *
- * Standalone process — run with `yarn dev:collab` in apps/json-forms-builder.
- *
- * Responsibilities:
- *   - one Yjs document per form (documentName = form id)
- *   - onLoadDocument: hydrate the Y.Doc from the form's `yjs_state` bytea
- *     column (an encoded Yjs CRDT state — the single source of truth).
- *   - onStoreDocument: persist the document back into `yjs_state`
- *     (debounced by Hocuspocus while clients are connected, immediately on
- *     disconnect).
- *   - onAuthenticate: only authenticated connections are allowed — the
- *     handshake's session cookie or API key is forwarded to the Nuxt
- *     backend (GET /api/ws-auth) for validation. See collab-server/auth.ts.
- *   - presence (awareness) is passed through between clients by Hocuspocus
- *     itself — no extra server state needed, it is purely temporary.
- */
 import './load-env';
 import 'reflect-metadata';
 import * as Y from 'yjs';
 import { Server } from '@hocuspocus/server';
 import { AppDataSource } from '../server/db/data-source';
 import { Form } from '../server/db/entities/Form';
-import { initializeEmptyDocument } from '@educorvi/vue-json-form-builder-schemas/collab';
+import {
+    colorForUser,
+    initializeEmptyDocument,
+    type CollabUser,
+} from '@educorvi/vue-json-form-builder-schemas/collab';
 import { authenticateConnection, type WsAuthUser } from './auth';
 
 const PORT = Number(process.env.COLLAB_PORT ?? 1234);
@@ -60,8 +46,6 @@ async function loadFormDocument(documentName: string): Promise<Y.Doc> {
         );
     }
 
-    // No (valid) yjs state yet — still return an initialized document so
-    // the root Form data exists for every client from the first sync on.
     const doc = new Y.Doc();
     initializeEmptyDocument(doc, {
         uid: `root-${documentName}`,
@@ -105,14 +89,9 @@ async function main(): Promise<void> {
     const server = new Server<{ user: WsAuthUser }>({
         name: 'json-forms-builder-collab',
         port: PORT,
-        // persist ~5s after the last change while clients are connected,
-        // and once more immediately when the last client disconnects.
         debounce: 5000,
         maxDebounce: 20000,
         onAuthenticate: async ({ token, requestHeaders, documentName }) => {
-            // Throwing here rejects the WebSocket connection. The thrown
-            // error's `reason` is sent to the client (provider event
-            // `authenticationFailed`) so the builder can show why.
             try {
                 return {
                     user: await authenticateConnection(
@@ -139,6 +118,22 @@ async function main(): Promise<void> {
             console.log(
                 `[collab] disconnect: "${context.user.username}" (${context.user.id}) left "${documentName}"`
             );
+        },
+        beforeHandleAwareness: async ({ states, context }) => {
+            if (!context?.user) return;
+            const trustedUser: CollabUser = {
+                id: context.user.id,
+                name:
+                    [context.user.firstName, context.user.lastName]
+                        .filter(Boolean)
+                        .join(' ') || context.user.username,
+                color: colorForUser(context.user.id),
+            };
+            for (const state of states.values()) {
+                if (state && typeof state === 'object') {
+                    state.user = trustedUser;
+                }
+            }
         },
         onLoadDocument: async ({ documentName }) =>
             loadFormDocument(documentName),

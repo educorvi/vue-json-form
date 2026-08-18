@@ -15,7 +15,6 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
-const { user } = useUserSession();
 const runtimeConfig = useRuntimeConfig();
 
 // The form builder handles its own internal scrolling, so prevent the
@@ -107,14 +106,10 @@ const builderExpanded = ref(false);
 // needed on the frontend.
 const collab = computed<CollabConfig | null>(() => {
     const url = runtimeConfig.public.collabUrl as string | undefined;
-    if (!url || !form.value?.id || !user.value) return null;
+    if (!url || !form.value?.id) return null;
     return {
         url,
         documentName: String(form.value.id),
-        user: {
-            id: String(user.value.id),
-            name: user.value.username ?? 'User',
-        },
     };
 });
 

@@ -6,14 +6,17 @@ import { PartialBy } from './base';
 import { cleanUiSchema } from './utils';
 
 type ColorElementData = z.infer<typeof ColorElement.schema>;
-const colorElementDefaults = { type: 'string' as const, format: 'color' as const };
+const colorElementDefaults = {
+    type: 'color' as const,
+    format: 'color' as const,
+};
 type ColorElementOptionalKeys =
     keyof typeof colorElementDefaults | SimpleElementOptionalKeys;
 export class ColorElement extends SimpleElement {
     data: ColorElementData;
 
     static schema = SimpleElement.schema.extend({
-        type: z.literal('string'),
+        type: z.literal('color'),
         format: z.literal('color'),
     });
 
@@ -41,10 +44,7 @@ export class ColorElement extends SimpleElement {
         };
     }
 
-    toUiSchema(
-        _generator: SchemaGenerator,
-        _scope: string[]
-    ): Control {
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {
             ...(uiSchema.options && { ...uiSchema.options }),
@@ -56,10 +56,7 @@ export class ColorElement extends SimpleElement {
         return uiSchema;
     }
 
-    toJsonSchema(
-        _generator: SchemaGenerator,
-        _scope: string[]
-    ): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         const jsonSchema: JSONSchema = {
             ...super.toJsonSchema(_generator, _scope),
             type: 'string',

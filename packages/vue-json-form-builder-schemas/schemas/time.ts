@@ -19,7 +19,7 @@ const TimeFormatEnum = z.enum(TimeFormat);
 
 type TimeElementData = z.infer<typeof TimeElement.schema>;
 const timeElementDefaults = {
-    type: 'string' as const,
+    type: 'time' as const,
     format: TimeFormat.Time,
 };
 type TimeElementOptionalKeys =
@@ -29,7 +29,7 @@ export class TimeElement extends SimpleElement {
     data: TimeElementData;
 
     static schema = SimpleElement.schema.extend({
-        type: z.literal('string'),
+        type: z.literal('time'),
         format: TimeFormatEnum,
     });
 

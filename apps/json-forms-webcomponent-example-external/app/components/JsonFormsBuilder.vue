@@ -28,9 +28,6 @@ const props = defineProps<{
     collabUrl?: string;
     /** Document name = the form's numeric id in the backend. */
     collabDocumentName?: string;
-    /** Current user (awareness/presence display only). */
-    collabUserId?: string;
-    collabUserName?: string;
 }>();
 
 const loaded = ref(false);
@@ -99,8 +96,6 @@ onMounted(async () => {
             :kc-idp-hint="props.kcIdpHint"
             :collab-url="props.collabUrl"
             :collab-document-name="props.collabDocumentName"
-            :collab-user-id="props.collabUserId"
-            :collab-user-name="props.collabUserName"
         ></vue-json-form-builder>
     </div>
 </template>

@@ -138,8 +138,6 @@ async function loadForm() {
                 :kc-idp-hint="kcIdpHint"
                 :collab-url="collabUrl"
                 :collab-document-name="confirmedFormId"
-                :collab-user-id="user?.id ?? undefined"
-                :collab-user-name="greeting"
             />
             <p
                 v-else

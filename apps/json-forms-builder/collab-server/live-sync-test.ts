@@ -1,13 +1,3 @@
-/**
- * Two-client live-sync test for the collab server.
- *
- * Connects TWO providers to the SAME document, applies a change on client A
- * and asserts that client B sees it WITHOUT any reload — proving realtime
- * collaboration works end-to-end through Hocuspocus.
- *
- * Run: tsx collab-server/live-sync-test.ts 888888
- * Requires the collab server to be running (yarn dev:collab).
- */
 import * as Y from 'yjs';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 

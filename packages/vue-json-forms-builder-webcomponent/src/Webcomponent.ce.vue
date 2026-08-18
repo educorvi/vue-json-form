@@ -22,10 +22,6 @@ const props = defineProps<{
     collabUrl?: string;
     /** Document name (= form id in the backend). Defaults to "default-form". */
     collabDocumentName: string;
-    /** Current user id (e.g. Keycloak sub). Required for awareness. */
-    collabUserId?: string;
-    collabUserName?: string;
-    collabUserColor?: string;
     /**
      * Auth token for the websocket: a Keycloak access token or an API key
      * ("fb_..."). When keycloak auth is configured (kc-*), the builder
@@ -73,14 +69,6 @@ const collab = computed<CollabConfig | null>(() => {
         url: props.collabUrl,
         documentName: props.collabDocumentName,
         token: props.collabToken,
-        user:
-            props.collabUserId && props.collabUserName
-                ? {
-                      id: props.collabUserId,
-                      name: props.collabUserName,
-                      color: props.collabUserColor,
-                  }
-                : undefined,
     };
 });
 

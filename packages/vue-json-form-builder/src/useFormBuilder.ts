@@ -49,8 +49,6 @@ export interface CollabConfig {
      * the Nuxt backend for validation.
      */
     token?: string;
-    /** Current user, broadcast to other clients via awareness. */
-    user?: { id: string; name: string; color?: string };
 }
 
 // Re-export the schemas' collab user type as the public builder API.
@@ -107,10 +105,12 @@ export interface FormBuilder {
      * `options` lets the caller supply the credentials that the login flow
      * produced (see useBuilderAuth): a bearer token for the websocket
      * (Keycloak access token or API key) and/or the authenticated user for
-     * presence/awareness. They take precedence over the values from the
-     * static CollabConfig.
+     * presence/awareness.
      */
-    connect(options?: { token?: string; user?: CollabConfig['user'] }): void;
+    connect(options?: {
+        token?: string;
+        user?: { id: string; name: string; color?: string };
+    }): void;
     /** Replace the whole form (plain definition object or instance). */
     loadDefinition(definition: object | FormDefinition): void;
     /** Import from a legacy {json, ui} schema pair (local mode only). */
@@ -362,7 +362,7 @@ function createCollabBuilder(
 
     async function init(connectOptions?: {
         token?: string;
-        user?: CollabConfig['user'];
+        user?: { id: string; name: string; color?: string };
     }): Promise<void> {
         if (disposed || started) return;
         started = true;
@@ -432,7 +432,7 @@ function createCollabBuilder(
             }
         });
 
-        const user = connectOptions?.user ?? collabConfig.user;
+        const user = connectOptions?.user;
         if (user) {
             // Remote clients see the user in their assigned palette color
             // (never the reserved primary — see OWN_USER_COLOR in the
@@ -476,7 +476,10 @@ function createCollabBuilder(
             collab.setEditingField?.(provider?.awareness, elementUid, field);
         },
 
-        connect(options?: { token?: string; user?: CollabConfig['user'] }) {
+        connect(options?: {
+            token?: string;
+            user?: { id: string; name: string; color?: string };
+        }) {
             void init(options);
         },
 

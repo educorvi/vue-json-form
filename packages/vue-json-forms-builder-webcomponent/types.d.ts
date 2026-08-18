@@ -25,10 +25,6 @@ export interface VueJsonFormBuilderElement extends HTMLElement {
     collabUrl?: string;
     /** Document name (= form id in the backend). */
     collabDocumentName?: string;
-    /** Current user id (e.g. Keycloak sub). */
-    collabUserId?: string;
-    collabUserName?: string;
-    collabUserColor?: string;
     /** Auth token for the collab websocket. */
     collabToken?: string;
     /**
