@@ -99,6 +99,7 @@ export class SchemaGenerator {
             const allOfItem: JSONSchema = {
                 [child.id]: lastDependencyGroup.toJsonSchema(this, [...scope, child.id]),
             }
+            // TODO for all dependencyGroups in the
             allOf.push(allOfItem);
         }
         if (child.dependencyGroup) {
@@ -132,13 +133,16 @@ export class SchemaGenerator {
    * themselves, taking into account whether each ancestor is an ObjectElement
    * or ArrayElement (items.properties vs. properties).
    */
-  getPath(elementId: string): string[] {
+  getPath(elementUid: string): string[] {
     const path: string[] = [];
-    let currentId: string | undefined = elementId;
+    let currentId: string | undefined = this.document.getElementById(elementUid)?.id;
+    let currentUid: string | undefined = elementUid;
 
-    while (currentId !== undefined && currentId !== this.document.root.id) {
+    while (currentId !== undefined && currentId !== this.document.root.id && currentUid !== undefined) {
       path.unshift(currentId);
-      currentId = this.document.parentIndex.get(currentId);
+      const parent = this.document.getParent(currentUid);
+      currentId = parent?.id;
+      currentUid = parent?.uid;
     }
 
     return path;
