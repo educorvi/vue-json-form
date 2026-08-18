@@ -1,7 +1,9 @@
-import type { JSONSchema, Control, HTMLRenderer, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, Control, HTMLRenderer, Divider, Button, Buttongroup, Modal, Formula, Operator, Comparison } from '@educorvi/vue-json-form-schemas';
 import { z } from "zod";
 import variantsSchema from "@educorvi/vue-json-form-schemas/src/ui/variants.schema.json";
 import type { OutlineVariants, BaseVariants } from "@educorvi/vue-json-form-schemas";
+import comparisonSchema from "@educorvi/rita/src/schema/comparison.json";
+import operatorSchema from "@educorvi/rita/src/schema/operator.json";
 
 export function createId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '_');
@@ -31,4 +33,57 @@ export function cleanUiSchema(uiSchema: Control): void {
 
 export function minTwoItems<T>(array: T[]): array is [T, T, ...T[]] {
     return array.length >= 2;
+}
+
+export function transform_scope_to_object_writing_form(scope: string[]): string {
+    const filtered_scope = scope.filter((item) => item !== "properties" && item !== "items");
+    return filtered_scope.join(".");
+}
+
+//---------------------------Dependency Types and Relations---------------------------------
+export type DependencyTypeValue = NonNullable<Comparison["operation"]>;
+
+const ritaOperations = comparisonSchema.properties.operation.enum as DependencyTypeValue[];
+
+export const DependencyType = {
+    ...(Object.fromEntries(ritaOperations.map(v => [v, v])) as { [K in DependencyTypeValue]: K }),
+    minLength: "minLength",
+    maxLength: "maxLength",
+} as const;
+
+export type DependencyType = (typeof DependencyType)[keyof typeof DependencyType];
+
+export const DependencyTypeEnumExtended = z.enum(
+    Object.values(DependencyType) as [DependencyType, ...DependencyType[]]
+);
+
+type DependencyRelationValue = NonNullable<Operator["type"]>;
+const ritaOperators = operatorSchema.oneOf.flatMap(o => o.properties.type.enum) as DependencyRelationValue[];
+
+export const DependencyRelation = {
+    ...(Object.fromEntries(ritaOperators.map(v => [v, v])) as { [K in DependencyRelationValue]: K }),
+} as const;
+
+export type DependencyRelation = (typeof DependencyRelation)[keyof typeof DependencyRelation];
+
+export const DependencyRelationEnum = z.enum(
+    ritaOperators as [DependencyRelationValue, ...DependencyRelationValue[]]
+);
+
+//--------------------------- End of Dependency Types and Relations---------------------------------
+
+
+export function splitScopeAt(scope: string[], splitAt: string): string[][] {
+    const paths: string[][] = [];
+    let current: string[] = [];
+    for (const segment of scope) {
+        if (segment === splitAt) {
+            paths.push(current);
+            current = [];
+        } else {
+            current.push(segment);
+        }
+    }
+    paths.push(current); // remainder after the last "items"
+    return paths;
 }

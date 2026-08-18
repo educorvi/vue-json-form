@@ -3,7 +3,7 @@ import type { JSONSchema,} from '@educorvi/vue-json-form-schemas';
 import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
 import { CombinedUiSchemaType } from './utils';
-import { ObjectElement } from './container';
+import { ArrayElement, ContainerElement, ObjectElement } from './container';
 
 /**
  * SchemaGenerator turns a FormDefinition into JSON Schema + UI Schema pairs.
@@ -141,6 +141,12 @@ export class SchemaGenerator {
     while (currentId !== undefined && currentId !== this.document.root.id && currentUid !== undefined) {
       path.unshift(currentId);
       const parent = this.document.getParent(currentUid);
+      if (parent instanceof ContainerElement) {
+        path.unshift("properties");
+      }
+      if (parent instanceof ArrayElement) {
+        path.unshift("items");
+      }
       currentId = parent?.id;
       currentUid = parent?.uid;
     }

@@ -1,28 +1,101 @@
 import { z } from "zod";
 import { Entity, EntityOptionalKeys, PartialBy } from "./base";
 import type { SchemaGenerator } from "./schema-generator";
-import type { JSONSchema, Formula, Macro, Atom, Comparison, Operator, UnaryOperator, NonUnaryOperator, Rule } from '@educorvi/vue-json-form-schemas';
-import comparisonSchema from "@educorvi/rita/src/schema/comparison.json";
-import operatorSchema from "@educorvi/rita/src/schema/operator.json";
+import type { JSONSchema, Formula, Macro, Atom, Operator, UnaryOperator, NonUnaryOperator, Rule, Quantifier } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement } from "./form-element";
-import { minTwoItems } from "./utils";
+import { DependencyRelation, DependencyRelationEnum, DependencyType, DependencyTypeEnumExtended, DependencyTypeValue, minTwoItems, splitScopeAt, transform_scope_to_object_writing_form } from "./utils";
 
 
-type DependencyTypeValue = NonNullable<Comparison["operation"]>;
 
-const ritaOperations = comparisonSchema.properties.operation.enum as DependencyTypeValue[];
 
-export const DependencyType = {
-    ...(Object.fromEntries(ritaOperations.map(v => [v, v])) as { [K in DependencyTypeValue]: K }),
-    minLength: "minLength",
-    maxLength: "maxLength",
-} as const;
+function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifier {
+    let array_rule: Quantifier = {} as Quantifier;
+    // split by items
+    const paths: string[][] = splitScopeAt(scope.filter((item) => item !== "properties"), "items");
 
-export type DependencyType = (typeof DependencyType)[keyof typeof DependencyType];
+    let current_path: string[] = [];
+    let current_object_path = "";
 
-const DependencyTypeEnumExtended = z.enum(
-    Object.values(DependencyType) as [DependencyType, ...DependencyType[]]
-);
+    let current_rule: Quantifier = {} as Quantifier;
+    let current_subrule: Operator = {} as Operator;
+    let counter = 1;
+    // iterate through all paths except the last one, which is the actual element
+    for (let i = 0; i < paths.length - 1; i++) {
+        const path = paths[i];
+        if (path === undefined) {
+            throw new Error(`Path is undefined for scope: ${scope}`);
+        }
+        current_path = current_path.concat(path);
+
+        // get path of object beginning at the previous array (or form if parent array)
+        if (current_object_path !== "") {
+            const index = path.lastIndexOf("properties");
+            current_object_path = `$array_item${counter - 1}.${path.join(".")}`;
+        } else {
+            current_object_path = current_path.join(".");
+        }
+
+        const subRule: Operator = {
+            type: DependencyRelation.and,
+            arguments: [
+                {
+                    type: "comparison",
+                    operation: DependencyType.equal,
+                    arguments: [
+                        {
+                            type: "atom",
+                            path: "$index" + counter,
+                            default: -1,
+                        },
+                        {
+                            type: "atom",
+                            path: "$selfIndices." + current_path,
+                            default: -1,
+                        },
+                    ],
+                },
+                { // gets replaced by the actual rule for the element at the end of the loop
+                    type: "not",
+                    arguments: [
+                        {
+                            type: "atom",
+                            path: "placeholder argument",
+                        }
+                    ],
+                }
+            ],
+        }
+
+        // create rule for current array
+        const rule: Quantifier = {
+            type: "exists",
+            array: { type: "atom", path: current_object_path, default: [] },
+            placeholder: "$array_item" + counter,
+            indexPlaceholder: "$index" + counter,
+            rule: subRule,
+        };
+
+        if (Object.keys(array_rule).length === 0) {
+            array_rule = rule;
+            current_rule = rule;
+            current_subrule = subRule;
+        } else {
+            // replace the placeholder argument in the current rule with the new rule
+            current_subrule.arguments[1] = rule;
+            current_rule = rule;
+            current_subrule = subRule;
+        }
+
+        counter += 1
+        current_path.push("items");
+    }
+
+    // add actual rule to array rule structure
+    current_subrule.arguments[1] = formula;
+
+    return array_rule
+}
+
 
 type DependencyData = z.infer<typeof Dependency.schema>;
 export class Dependency extends Entity{
@@ -80,7 +153,14 @@ export class Dependency extends Entity{
             throw new Error(`Source element with id ${this.sourceId} is not a SimpleElement`);
         }
 
-        const sourcePath = generator.getPath(this.sourceId).join("/");
+        const sourcePathList = generator.getPath(this.sourceId);
+        let sourcePath: string;
+        if (sourcePathList.includes("items")) {
+            const numberOfItems = sourcePathList.filter(item => item === "items").length;
+            sourcePath = `$array_item${numberOfItems}.${sourcePathList[sourcePathList.length - 1]}`;
+        } else {
+            sourcePath = transform_scope_to_object_writing_form(sourcePathList);
+        }
 
         let firstArgument: Macro | Atom;
         if (this.dependencyType === DependencyType.minLength || this.dependencyType === DependencyType.maxLength) {
@@ -102,16 +182,11 @@ export class Dependency extends Entity{
             };
         }
 
-        const comparison: Formula = {
+        let formula: Formula = {
             type: "comparison",
             operation: this.ritaOperation(),
             allowDifferentTypes: true,
             arguments: [firstArgument, this.value]
-        }
-
-        const showOn: Rule = {
-            id: `rita-rule-${this.id}-${this.uid}`,
-            rule: comparison
         }
 
         if (sourceElement.isCheckboxGroup) {
@@ -120,9 +195,18 @@ export class Dependency extends Entity{
                 type: "exists",
                 array: {type: "atom", path: sourcePath, default: []},
                 placeholder: placeholder,
-                rule: comparison
+                rule: formula
             };
-            showOn.rule = checkboxGroupDependency;
+            formula = checkboxGroupDependency;
+        }
+
+        if (sourcePathList.includes("items")) {
+            formula = putFormulaWithinArrayRule(sourcePathList, formula);
+        }
+
+        const showOn: Rule = {
+            id: `rita-rule-${this.id}-${this.uid}`,
+            rule: formula
         }
         return showOn;
     }
@@ -130,18 +214,7 @@ export class Dependency extends Entity{
 
 
 
-type DependencyRelationValue = NonNullable<Operator["type"]>;
-const ritaOperators = operatorSchema.oneOf.flatMap(o => o.properties.type.enum) as DependencyRelationValue[];
 
-export const DependencyRelation = {
-    ...(Object.fromEntries(ritaOperators.map(v => [v, v])) as { [K in DependencyRelationValue]: K }),
-} as const;
-
-export type DependencyRelation = (typeof DependencyRelation)[keyof typeof DependencyRelation];
-
-const DependencyRelationEnum = z.enum(
-    ritaOperators as [DependencyRelationValue, ...DependencyRelationValue[]]
-);
 
 type DependencyGroupData = z.infer<typeof DependencyGroup.schema>;
 const dependencyGroupDefaults = {dependencies: []};
