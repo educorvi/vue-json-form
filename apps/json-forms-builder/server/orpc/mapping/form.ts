@@ -1,4 +1,4 @@
-import { Form } from '~~/server/db/entities/Form';
+import { Form } from '@educorvi/vue-json-forms-builder-db-layer';
 import type { ApiForm } from '~~/server/services/FormService';
 import type { ApiParentPath } from '~~/server/services/GroupService';
 import { mapVisibilityToApi, toAuditRef } from './shared';

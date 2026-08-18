@@ -1,5 +1,5 @@
 import { os, authMiddleware, getUserFromContext } from '../../init';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { GroupService } from '~~/server/services/GroupService';
 import { PermissionService } from '~~/server/services/PermissionService';
 import { requireGroupAccess } from '~~/server/lib/access-control';

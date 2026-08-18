@@ -1,5 +1,5 @@
 import type { User } from '#auth-utils';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { loadFormAccessData } from '~~/server/lib/access-control';
 import { computeEffectiveRole } from '~~/server/lib/permissions/roles';
 import { ResourceUpdatePermission } from '~~/server/lib/permissions';

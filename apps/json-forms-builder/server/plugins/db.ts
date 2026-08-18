@@ -1,4 +1,4 @@
-import { AppDataSource } from '../db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 
 let _initPromise: Promise<void> | null = null;
 

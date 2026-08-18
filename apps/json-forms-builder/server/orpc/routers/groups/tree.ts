@@ -1,5 +1,8 @@
 import { os, authMiddleware, getUserFromContext } from '../../init';
-import { AppDataSource } from '~~/server/db/data-source';
+import {
+    AppDataSource,
+    type Form,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { GroupService } from '~~/server/services/GroupService';
 import { FormService } from '~~/server/services/FormService';
 import { zListGroupChildrenQuery } from '../../generated/zod.gen';
@@ -9,7 +12,6 @@ import {
 } from '~~/server/lib/access-control';
 import { ResourceViewPermission } from '~~/server/lib/permissions';
 import { mapContextUserRolesToDbRole } from '../../mapping/user';
-import type { Form } from '~~/server/db/entities/Form';
 
 const FORM_ORDER_BY: Record<string, keyof Form> = {
     title: 'title',

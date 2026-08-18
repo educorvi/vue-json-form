@@ -1,5 +1,5 @@
 import type { FindOptionsOrderValue } from 'typeorm';
-import { Visibility } from '~~/server/db/entities/BaseEntities';
+import { Visibility } from '@educorvi/vue-json-forms-builder-db-layer';
 import { z } from 'zod';
 import { zUserRef, zVisibility } from '../generated/zod.gen';
 

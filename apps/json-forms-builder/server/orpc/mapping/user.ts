@@ -1,4 +1,4 @@
-import { User as DbUser } from '~~/server/db/entities/User';
+import { User as DbUser } from '@educorvi/vue-json-forms-builder-db-layer';
 import type { ApiUser, ApiUserOrderBy } from '~~/server/services/UserService';
 import type { User } from '#auth-utils';
 import z from 'zod';

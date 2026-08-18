@@ -1,13 +1,15 @@
-import { AppDataSource } from '../../../server/db/data-source';
-import { ApiKey } from '../../../server/db/entities/ApiKey';
-import { resetTestData as wipeTestData } from '../../../server/db/seed/test-data';
+import {
+    ApiKey,
+    AppDataSource,
+} from '@educorvi/vue-json-forms-builder-db-layer';
+import { resetTestData as wipeTestData } from '../../../server/seed/test-data';
 
 /**
  * Direct database access for tests — lets a test verify database state
  * that isn't (fully) exposed via the API, and guarantees cleanup even if
  * an assertion fails midway through a test.
  *
- * Reuses the app's own `AppDataSource` (server/db/data-source.ts) and
+ * Reuses the database-layer package's `AppDataSource` and
  * entity definitions instead of hand-writing SQL against the schema.
  * `AppDataSource` has no Nitro-specific coupling — it just reads
  * DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME from the environment — so

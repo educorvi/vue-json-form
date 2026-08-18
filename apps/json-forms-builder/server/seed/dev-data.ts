@@ -1,11 +1,11 @@
 import type { DataSource } from 'typeorm';
-import { Group } from '../entities/Group';
-import { Form } from '../entities/Form';
-import { User } from '../entities/User';
-import { Permission } from '../entities/Permission';
-import { Visibility } from '../entities/BaseEntities';
+import { Group } from '@educorvi/vue-json-forms-builder-db-layer';
+import { Form } from '@educorvi/vue-json-forms-builder-db-layer';
+import { User } from '@educorvi/vue-json-forms-builder-db-layer';
+import { Permission } from '@educorvi/vue-json-forms-builder-db-layer';
+import { Visibility } from '@educorvi/vue-json-forms-builder-db-layer';
 import { E2E_USERS } from './users-constants';
-import { Permission as DbPermission } from '../entities/Permission';
+import { Permission as DbPermission } from '@educorvi/vue-json-forms-builder-db-layer';
 
 /**
  * Emails of the Keycloak dev-realm users

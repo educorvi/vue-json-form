@@ -1,5 +1,5 @@
-import { AppDataSource } from '../../../server/db/data-source';
-import { resetDatabase } from '../../../server/db/seed';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
+import { resetDatabase } from '../../../server/seed';
 
 /**
  * Vitest `globalSetup` for the `integration` project — runs exactly once

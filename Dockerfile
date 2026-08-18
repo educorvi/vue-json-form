@@ -90,4 +90,4 @@ ENV COLLAB_PORT=1234
 ENV HOST=0.0.0.0
 EXPOSE 1234
 COPY --from=build-collab-server /app/apps/collab-server/dist ./
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]

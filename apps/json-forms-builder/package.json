@@ -33,6 +33,7 @@
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@educorvi/vue-json-form-builder": "workspace:*",
         "@educorvi/vue-json-form-builder-schemas": "workspace:^",
+        "@educorvi/vue-json-forms-builder-db-layer": "workspace:^",
         "@hocuspocus/server": "^4.6.0",
         "@iconify-json/ph": "^1.2.2",
         "@nuxt/icon": "^2.4.1",

@@ -3,7 +3,7 @@ import { apiClientFor } from '../../setup/login-helper';
 import { randomSuffix } from '../../../support/unique';
 import { clickUntil } from '../../helpers/click-until';
 import en from '../../../../i18n/locales/en.json' with { type: 'json' };
-import { E2E_USERS } from '../../../../server/db/seed/users-constants';
+import { E2E_USERS } from '../../../../server/seed/users-constants';
 
 /**
  * Permission management safety + visibility rules — e2e.
@@ -45,13 +45,11 @@ test.describe('Permission owner safety', () => {
             .getByRole('row')
             .filter({ hasText: en.permissions.roles.owner })
             .filter({ hasText: 'Test User' });
-        await clickUntil(
-            row.getByRole('button').last(),
-            () =>
-                page
-                    .getByText(en.permissions.onlyOwner.deleteTitle)
-                    .isVisible()
-                    .catch(() => false)
+        await clickUntil(row.getByRole('button').last(), () =>
+            page
+                .getByText(en.permissions.onlyOwner.deleteTitle)
+                .isVisible()
+                .catch(() => false)
         );
 
         // Then a typed-confirmation modal appears warning about the last owner
@@ -105,13 +103,11 @@ test.describe('Permission owner safety', () => {
             .getByRole('row')
             .filter({ hasText: en.permissions.roles.owner })
             .filter({ hasText: 'Test User' });
-        await clickUntil(
-            row.getByRole('button').first(),
-            () =>
-                page
-                    .getByText(en.permissions.editTitle)
-                    .isVisible()
-                    .catch(() => false)
+        await clickUntil(row.getByRole('button').first(), () =>
+            page
+                .getByText(en.permissions.editTitle)
+                .isVisible()
+                .catch(() => false)
         );
 
         // Then the modal explains that the role is locked
@@ -145,13 +141,11 @@ test.describe('Permission owner safety', () => {
             .getByRole('row')
             .filter({ hasText: en.permissions.roles.owner })
             .filter({ hasText: 'Test User' });
-        await clickUntil(
-            row.getByRole('button').last(),
-            () =>
-                page
-                    .getByText(en.permissions.deleteConfirm)
-                    .isVisible()
-                    .catch(() => false)
+        await clickUntil(row.getByRole('button').last(), () =>
+            page
+                .getByText(en.permissions.deleteConfirm)
+                .isVisible()
+                .catch(() => false)
         );
 
         // Then the normal (non-typed) delete modal appears
@@ -160,9 +154,7 @@ test.describe('Permission owner safety', () => {
         ).toHaveCount(0);
 
         // When they confirm the deletion
-        await page
-            .getByRole('button', { name: en.common.delete })
-            .click();
+        await page.getByRole('button', { name: en.common.delete }).click();
 
         // Then their owner row is gone
         await expect(
@@ -198,51 +190,45 @@ test.describe('Permission owner safety', () => {
             .getByRole('row')
             .filter({ hasText: en.permissions.roles.owner })
             .filter({ hasText: 'Test User' });
-        await clickUntil(
-            row.getByRole('button').first(),
-            () =>
-                page
-                    .getByText(en.permissions.editTitle)
-                    .isVisible()
-                    .catch(() => false)
+        await clickUntil(row.getByRole('button').first(), () =>
+            page
+                .getByText(en.permissions.editTitle)
+                .isVisible()
+                .catch(() => false)
         );
 
         // And choose the lower editor role (the role select inside the modal;
         // the toolbar also has a combobox, so scope to the dialog)
         const dialog = page.getByRole('dialog');
         const combobox = dialog.getByRole('combobox');
-        await clickUntil(
-            combobox,
-            () =>
-                dialog
-                    .getByRole('option', {
-                        name: en.permissions.roles.editor,
-                    })
-                    .isVisible()
-                    .catch(() => false)
+        await clickUntil(combobox, () =>
+            dialog
+                .getByRole('option', {
+                    name: en.permissions.roles.editor,
+                })
+                .isVisible()
+                .catch(() => false)
         );
         await dialog
             .getByRole('option', { name: en.permissions.roles.editor })
             .click();
 
         // When they save the change
-        await dialog
-            .getByRole('button', { name: en.settings.save })
-            .click();
+        await dialog.getByRole('button', { name: en.settings.save }).click();
 
         // Then the typed-confirmation modal appears
         await expect(
             page.getByText(en.permissions.onlyOwner.demoteTitle)
         ).toBeVisible();
         await expect(
-            page.getByText(new RegExp(`own role to ${en.permissions.roles.editor}`, 'i'))
+            page.getByText(
+                new RegExp(`own role to ${en.permissions.roles.editor}`, 'i')
+            )
         ).toBeVisible();
 
         // When the own name is typed and confirmed
         await page.getByPlaceholder('Test User').fill('Test User');
-        await page
-            .getByRole('button', { name: en.common.confirm })
-            .click();
+        await page.getByRole('button', { name: en.common.confirm }).click();
 
         // Then the role was changed to editor
         await expect(
@@ -273,9 +259,7 @@ test.describe('Visibility rules', () => {
         await page.goto(
             `/groups/new?parent=${encodeURIComponent(parent.name ?? '')}`
         );
-        const select = page
-            .getByLabel(en.visibility.label)
-            .last();
+        const select = page.getByLabel(en.visibility.label).last();
         await expect(select).toBeDisabled();
         await expect(select).toHaveValue('private');
         await expect(page.getByText(en.visibility.parentPrivate)).toBeVisible();
@@ -335,8 +319,8 @@ test.describe('Visibility rules', () => {
             page.getByText(/cannot make the group private/i)
         ).toBeVisible();
         await page.reload();
-        await expect(
-            page.getByLabel(en.visibility.label).last()
-        ).toHaveValue('visible');
+        await expect(page.getByLabel(en.visibility.label).last()).toHaveValue(
+            'visible'
+        );
     });
 });

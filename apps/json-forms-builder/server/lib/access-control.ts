@@ -28,10 +28,12 @@
 import { ORPCError } from '@orpc/server';
 import type { DataSource } from 'typeorm';
 import { In, ILike } from 'typeorm';
-import { Group } from '~~/server/db/entities/Group';
-import { Form } from '~~/server/db/entities/Form';
-import { Permission } from '~~/server/db/entities/Permission';
-import { Visibility } from '~~/server/db/entities/BaseEntities';
+import {
+    Form,
+    Group,
+    Permission,
+    Visibility,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import {
     type Role,
     ROLE_HIERARCHY,

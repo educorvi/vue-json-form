@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { Form } from '../../../server/db/entities/Form';
+import { Form } from '@educorvi/vue-json-forms-builder-db-layer';
 import { getTestDataSource } from './db';
 import { TEST_FORM } from '../api/forms';
 

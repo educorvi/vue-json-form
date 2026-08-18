@@ -1,60 +1,52 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
-  "compilerOptions": {
-    // File Layout
-    // rootDir is the "apps" dir (common ancestor of src/ and the sibling
-    // json-forms-builder entities pulled in via "include" below). This
-    // tsconfig is only used for type checking — production runs via tsx
-    // directly from src/, not from dist/.
-    "rootDir": "..",
-    "outDir": "./dist",
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "target": "es2022",
-    "types": [
-      "node"
-    ],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-    // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-  },
-  // tsx resolves the nearest tsconfig per-file; the TypeORM entities live
-  // in the sibling json-forms-builder app, so they must be included here
-  // too or tsx falls back to that app's (decorator-incompatible) tsconfig.
-  "include": [
-    "./src/**/*.ts",
-    "../json-forms-builder/server/db/entities/**/*.ts",
-    "../json-forms-builder/server/db/data-source.ts"
-  ],
-  "exclude": [
-    "../json-forms-builder/server/db/entities/UserGroup.ts"
-  ]
+    // Visit https://aka.ms/tsconfig to read more about this file
+    "compilerOptions": {
+        // File Layout
+        // rootDir is the "apps" dir (common ancestor of src/ and the sibling
+        // json-forms-builder entities pulled in via "include" below). This
+        // tsconfig is only used for type checking — production runs via tsx
+        // directly from src/, not from dist/.
+        "rootDir": ".",
+        "sourceRoot": "./src",
+        "outDir": "./dist",
+        // Environment Settings
+        // See also https://aka.ms/tsconfig/module
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "target": "es2022",
+        "types": ["node"],
+        // For nodejs:
+        // "lib": ["esnext"],
+        // "types": ["node"],
+        // and npm install -D @types/node
+        // Other Outputs
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        // Stricter Typechecking Options
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true,
+        // Style Options
+        // "noImplicitReturns": true,
+        // "noImplicitOverride": true,
+        // "noUnusedLocals": true,
+        // "noUnusedParameters": true,
+        // "noFallthroughCasesInSwitch": true,
+        // "noPropertyAccessFromIndexSignature": true,
+        // Recommended Options
+        "strict": true,
+        "jsx": "react-jsx",
+        "verbatimModuleSyntax": true,
+        "isolatedModules": true,
+        "noUncheckedSideEffectImports": true,
+        "moduleDetection": "force",
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false
+    },
+    // tsx resolves the nearest tsconfig per-file; the TypeORM entities live
+    // in the sibling json-forms-builder app, so they must be included here
+    // too or tsx falls back to that app's (decorator-incompatible) tsconfig.
+    "include": ["./src/**/*.ts"]
 }

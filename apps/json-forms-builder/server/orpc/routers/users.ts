@@ -1,5 +1,5 @@
 import { os, authMiddleware } from '../init';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { UserService } from '~~/server/services/UserService';
 import { zListUsersQuery } from '../generated/zod.gen';
 // import z from 'zod';

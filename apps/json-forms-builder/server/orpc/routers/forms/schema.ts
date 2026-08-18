@@ -1,6 +1,6 @@
 import { ORPCError } from '@orpc/server';
 import { os, authMiddleware, getUserFromContext } from '../../init';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { FormService } from '~~/server/services/FormService';
 import { pickArtifacts } from '../../mapping/version';
 import { yjsStateToArtifacts } from '~~/server/lib/form-content';

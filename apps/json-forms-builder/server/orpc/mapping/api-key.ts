@@ -1,4 +1,4 @@
-import { ApiKey } from '~~/server/db/entities/ApiKey';
+import { ApiKey } from '@educorvi/vue-json-forms-builder-db-layer';
 import type { ResponseApiKey } from '~~/server/services/ApiKeyService';
 import { toApiDate } from './shared';
 

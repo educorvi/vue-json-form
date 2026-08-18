@@ -1,6 +1,5 @@
 // map db user to api user:
 
-// import { User } from '~~/server/db/entities/User';
 // import z from 'zod';
 // import { zUser } from '~~/server/orpc/generated/zod.gen';
 

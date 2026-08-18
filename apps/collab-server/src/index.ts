@@ -2,8 +2,7 @@ import './load-env.js';
 import 'reflect-metadata';
 import * as Y from 'yjs';
 import { Server } from '@hocuspocus/server';
-import { AppDataSource } from 'json-forms-builder/server/db/data-source';
-import { Form } from 'json-forms-builder/server/db/entities/Form';
+import { AppDataSource, Form } from '@educorvi/vue-json-forms-builder-db-layer';
 import {
     colorForUser,
     initializeEmptyDocument,

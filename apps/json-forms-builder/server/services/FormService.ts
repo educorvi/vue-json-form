@@ -9,10 +9,12 @@ import {
     type DeepPartial,
 } from 'typeorm';
 import { FormDefinition } from '@educorvi/vue-json-form-builder-schemas';
-import { Form } from '~~/server/db/entities/Form';
-import { FormRevision } from '~~/server/db/entities/FormRevision';
-import { Permission } from '~~/server/db/entities/Permission';
-import { Group } from '~~/server/db/entities/Group';
+import {
+    Form,
+    FormRevision,
+    Group,
+    Permission,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { buildVisibilityWhere } from '~~/server/lib/access-control';
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import type { PaginationParams } from '~~/server/orpc/api-helpers';

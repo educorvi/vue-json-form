@@ -8,7 +8,7 @@
         "check-types": "npx nuxt typecheck",
         "dev": "turbo watch dev:internal",
         "dev:internal": "nuxt dev",
-        "postinstall": "yarn sync:webcomponent && nuxt prepare",
+        "postinstall": "nuxt prepare",
         "preview": "nuxt preview",
         "generate": "nuxt generate",
         "lint": "yarn run -T eslint .",

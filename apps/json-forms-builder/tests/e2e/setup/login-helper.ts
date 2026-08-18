@@ -4,7 +4,7 @@ import { expect, request } from '@playwright/test';
 import {
     E2EUserTypes,
     E2E_USERS,
-} from '../../../server/db/seed/users-constants';
+} from '../../../server/seed/users-constants';
 import type { Page } from '@playwright/test';
 // ── Session cookies (storage states) ─────────────────────────────────────────
 

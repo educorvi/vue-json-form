@@ -1,4 +1,4 @@
-import { Group } from '~~/server/db/entities/Group';
+import { Group } from '@educorvi/vue-json-forms-builder-db-layer';
 import type {
     GroupStats,
     ApiParentPath,

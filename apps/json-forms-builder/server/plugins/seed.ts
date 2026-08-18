@@ -5,9 +5,9 @@
  * from a wiped DB and create their own data (see tests/integration and
  * tests/e2e global setups).
  */
-import { AppDataSource } from '../db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { getDbInitPromise } from './db';
-import { seed } from '../db/seed';
+import { seed } from '../seed';
 
 export default defineNitroPlugin(async () => {
     if (process.env.NODE_ENV !== 'development') return;

@@ -1,5 +1,8 @@
-import { FormRevision } from '~~/server/db/entities/FormRevision';
-import { yjsStateToArtifacts, type FormArtifacts } from '~~/server/lib/form-content';
+import { FormRevision } from '@educorvi/vue-json-forms-builder-db-layer';
+import {
+    yjsStateToArtifacts,
+    type FormArtifacts,
+} from '~~/server/lib/form-content';
 import {
     zFormVersionRef,
     zFormSchemaPayloadArtifacts,

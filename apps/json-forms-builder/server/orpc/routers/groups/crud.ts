@@ -1,7 +1,7 @@
 import { os, authMiddleware, getUserFromContext } from '../../init';
 import { ORPCError } from '@orpc/server';
 import type { DataSource } from 'typeorm';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { GroupService } from '~~/server/services/GroupService';
 import { zListGroupsQuery } from '../../generated/zod.gen';
 import {

@@ -1,5 +1,5 @@
 import type { User } from '#auth-utils';
-import type { User as DbUser } from '../db/entities/User';
+import type { User as DbUser } from '@educorvi/vue-json-forms-builder-db-layer';
 
 export function mapDbRoleToAuthRoles(dbRole: DbUser['role']): User['roles'] {
     switch (dbRole) {

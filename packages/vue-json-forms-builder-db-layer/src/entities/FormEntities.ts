@@ -15,7 +15,6 @@ import {
     EnumFormats,
     HttpsMethods,
     ButtonSubmitActions,
-    ButtonVariants,
     ModalSizes,
     FileTypes,
     DependencyTypes,

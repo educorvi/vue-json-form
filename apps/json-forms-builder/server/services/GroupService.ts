@@ -7,9 +7,11 @@ import {
     type FindOptionsWhere,
     type FindOptionsOrder,
 } from 'typeorm';
-import { Group } from '~~/server/db/entities/Group';
-import { Permission } from '~~/server/db/entities/Permission';
-import { Visibility } from '~~/server/db/entities/BaseEntities';
+import {
+    Group,
+    Permission,
+    Visibility,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { buildVisibilityWhere } from '~~/server/lib/access-control';
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import {

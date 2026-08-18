@@ -2,7 +2,7 @@
  * Constants for the Keycloak dev-realm users (keycloak/dev-realm.json).
  */
 
-import type { User as DbUser } from '../entities/User';
+import type { User as DbUser } from '@educorvi/vue-json-forms-builder-db-layer';
 
 type PermissionRole = DbUser['role'];
 

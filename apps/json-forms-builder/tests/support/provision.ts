@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import type { RouterClient } from '@orpc/server';
-import { User } from '../../server/db/entities/User';
+import { User } from '@educorvi/vue-json-forms-builder-db-layer';
 import { ApiKeyService } from '../../server/services/ApiKeyService';
 import type { AppRouter } from '../../server/orpc/routers';
 import { getTestDataSource } from './db/db';
 import { createApiClient } from './api/api-client';
-import { ensureTestUsers, resetDatabase } from '../../server/db/seed';
-import type { E2EUserTypes } from '../../server/db/seed/users-constants';
+import { ensureTestUsers, resetDatabase } from '../../server/seed';
+import type { E2EUserTypes } from '../../server/seed/users-constants';
 
 /**
  * Shared, dynamic user provisioning for integration tests.
@@ -164,4 +164,4 @@ export {
     resetDatabase,
     resetTestData,
     ensureTestUsers,
-} from '../../server/db/seed';
+} from '../../server/seed';

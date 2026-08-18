@@ -1,5 +1,5 @@
 import { os, authMiddleware, getUserFromContext } from '../../init';
-import { AppDataSource } from '~~/server/db/data-source';
+import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { FormService } from '~~/server/services/FormService';
 import { PermissionService } from '~~/server/services/PermissionService';
 import { zListFormPermissionsQuery } from '../../generated/zod.gen';
@@ -14,10 +14,7 @@ import {
 } from '../../mapping/permission';
 
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
-import {
-    toAccessUser,
-    mapContextUserRolesToDbRole,
-} from '../../mapping/user';
+import { toAccessUser, mapContextUserRolesToDbRole } from '../../mapping/user';
 
 export const formPermissionProcedures = {
     list: os.forms.permissions.list

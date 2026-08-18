@@ -1,5 +1,5 @@
 import type { DataSource, Repository } from 'typeorm';
-import { User } from '../entities/User';
+import { User } from '@educorvi/vue-json-forms-builder-db-layer';
 import { E2E_USERS, type E2EUser } from './users-constants';
 
 /**

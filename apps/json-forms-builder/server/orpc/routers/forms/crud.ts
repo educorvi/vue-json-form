@@ -3,10 +3,13 @@ import {
     mapContextUserRolesToDbRole,
     toAccessUser,
 } from '~~/server/orpc/mapping/user';
-import { AppDataSource } from '~~/server/db/data-source';
+import {
+    AppDataSource,
+    Visibility,
+    type Form,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { FormService } from '~~/server/services/FormService';
 import { PermissionService } from '~~/server/services/PermissionService';
-import { Visibility } from '~~/server/db/entities/BaseEntities';
 import { zListFormsQuery } from '../../generated/zod.gen';
 import {
     requireFormAccess,
@@ -23,7 +26,6 @@ import {
     ResourceCreateChildPermission,
 } from '~~/server/lib/permissions';
 import { resolveParentGroupId } from '../_shared';
-import type { Form } from '~~/server/db/entities/Form';
 import type { DeepPartial } from 'typeorm';
 import {
     mapApiSortOrderToDbSortOrder,

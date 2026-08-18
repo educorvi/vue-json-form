@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import type { BaseAuditedEntity } from '../../../server/db/entities/BaseEntities';
+import type { BaseAuditedEntity } from '@educorvi/vue-json-forms-builder-db-layer';
 import {
     expectUserRefMatches,
     type ApiUserRef,

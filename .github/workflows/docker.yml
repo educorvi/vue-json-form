@@ -1,0 +1,12 @@
+name: docker.yml
+on:
+  push:
+    branches:
+      - feat/vue-json-forms-builder
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+

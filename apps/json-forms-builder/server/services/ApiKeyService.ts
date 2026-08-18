@@ -2,7 +2,10 @@ import { ORPCError } from '@orpc/server';
 import { createHash, randomBytes } from 'node:crypto';
 import { type DataSource, type Repository } from 'typeorm';
 import z from 'zod';
-import { ApiKey } from '~~/server/db/entities/ApiKey';
+import {
+    ApiKey,
+    User,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import {
     zApiKey,
     zCreateApiKeyBody,
@@ -10,7 +13,6 @@ import {
     zListApiKeysResponse,
     zPatchApiKeyBody,
 } from '../orpc/generated/zod.gen';
-import { User } from '../db/entities/User';
 import { mapDbApiKeyToResponse } from '../orpc/mapping/api-key';
 
 // API types from Zod schemas

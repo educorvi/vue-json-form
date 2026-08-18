@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { Group } from '../../../server/db/entities/Group';
+import { Group } from '@educorvi/vue-json-forms-builder-db-layer';
 import { getTestDataSource } from './db';
 import { TEST_GROUP } from '../api/groups';
 

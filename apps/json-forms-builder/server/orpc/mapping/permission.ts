@@ -1,4 +1,4 @@
-import type { Permission } from '~~/server/db/entities/Permission';
+import type { Permission } from '@educorvi/vue-json-forms-builder-db-layer';
 import type { ResolvedPermission } from '~~/server/services/PermissionService';
 import { requireUserRef, toAuditRef, toApiDate } from './shared';
 import { zPermission } from '../generated/zod.gen';

@@ -1,6 +1,8 @@
-import { AppDataSource } from '~~/server/db/data-source';
+import {
+    AppDataSource,
+    User as DbUser,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { ApiKeyService } from '~~/server/services/ApiKeyService';
-import { User as DbUser } from '~~/server/db/entities/User';
 import { ORPCError } from '@orpc/server';
 import type { User } from '#auth-utils';
 import { mapDbUserToAuthUser } from '../lib/auth';

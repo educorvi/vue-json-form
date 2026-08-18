@@ -1,8 +1,10 @@
 import { ORPCError } from '@orpc/server';
-import { type DataSource, type Repository, In } from 'typeorm';
-import { Permission } from '~~/server/db/entities/Permission';
-import { Group } from '~~/server/db/entities/Group';
-import { Form } from '~~/server/db/entities/Form';
+import { type DataSource, type Repository } from 'typeorm';
+import {
+    Form,
+    Group,
+    Permission,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { type Role, ROLE_HIERARCHY } from '~~/server/lib/permissions/roles';
 import {
     resolveGroupPath,
@@ -79,13 +81,9 @@ export class PermissionService {
             });
         const userId = dto.user_id;
         // Editors may grant non-owner roles; owners/admins may grant any role.
-        await this._assertActorCanManage(
-            actorId,
-            actorRole,
-            'group',
-            groupId,
-            { newRole: dto.role ?? null }
-        );
+        await this._assertActorCanManage(actorId, actorRole, 'group', groupId, {
+            newRole: dto.role ?? null,
+        });
         // A user can never be assigned a role lower than the one they
         // already inherit from a parent group.
         await this._assertRoleNotBelowInherited(
@@ -137,13 +135,9 @@ export class PermissionService {
             });
         const userId = dto.user_id;
         // Editors may grant non-owner roles; owners/admins may grant any role.
-        await this._assertActorCanManage(
-            actorId,
-            actorRole,
-            'form',
-            formId,
-            { newRole: dto.role ?? null }
-        );
+        await this._assertActorCanManage(actorId, actorRole, 'form', formId, {
+            newRole: dto.role ?? null,
+        });
         // A user can never be assigned a role lower than the one they
         // already inherit from a parent group.
         await this._assertRoleNotBelowInherited(
@@ -220,10 +214,7 @@ export class PermissionService {
         if (newRole && newRole !== targetRole) {
             // At least one owner must remain on every resource.
             if (targetRole === 'owner') {
-                await this._assertAtLeastOneOwnerRemains(
-                    scopeKey,
-                    scopeValue
-                );
+                await this._assertAtLeastOneOwnerRemains(scopeKey, scopeValue);
             }
             // A user can never be assigned a role lower than the one they
             // already inherit from a parent group.
@@ -267,9 +258,15 @@ export class PermissionService {
         const targetRole = (perm.role as Role) ?? null;
 
         // Editors may only delete editor/guest permissions.
-        await this._assertActorCanManage(actorId, actorRole, scopeKey, scopeValue, {
-            role: targetRole,
-        });
+        await this._assertActorCanManage(
+            actorId,
+            actorRole,
+            scopeKey,
+            scopeValue,
+            {
+                role: targetRole,
+            }
+        );
 
         // At least one owner must remain on every resource.
         if (targetRole === 'owner') {
@@ -509,7 +506,9 @@ export class PermissionService {
         const directUserIds: string[] = [
             ...new Set(
                 rows
-                    .filter((r: { form_id: number | null }) => r.form_id !== null)
+                    .filter(
+                        (r: { form_id: number | null }) => r.form_id !== null
+                    )
                     .map((r: { user_id: string }) => r.user_id)
                     .filter((id): id is string => !!id)
             ),
@@ -829,8 +828,7 @@ export class PermissionService {
         if (effective === 'editor') {
             if (target.role === 'owner' || target.newRole === 'owner') {
                 throw new ORPCError('FORBIDDEN', {
-                    message:
-                        'Editors cannot manage owner permissions.',
+                    message: 'Editors cannot manage owner permissions.',
                 });
             }
         }
@@ -898,10 +896,6 @@ export class PermissionService {
         scopeKey: 'group' | 'form',
         scopeValue: number
     ): Promise<Map<string, Role | null>> {
-        return this._fetchHighestInheritedRoles(
-            userIds,
-            scopeKey,
-            scopeValue
-        );
+        return this._fetchHighestInheritedRoles(userIds, scopeKey, scopeValue);
     }
 }

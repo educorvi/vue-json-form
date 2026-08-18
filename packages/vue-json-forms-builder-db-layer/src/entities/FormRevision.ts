@@ -1,5 +1,5 @@
 // import 'reflect-metadata';
-import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 import { Form } from './Form';
 

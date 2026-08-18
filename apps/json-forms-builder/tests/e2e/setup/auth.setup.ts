@@ -1,6 +1,6 @@
 import { test as setup } from '@playwright/test';
 import { isStoredSessionValid, loginAs, storageStateFor } from './login-helper';
-import { USER_TYPE_LIST } from '../../../server/db/seed/users-constants';
+import { USER_TYPE_LIST } from '../../../server/seed/users-constants';
 
 /**
  * Authenticates every Keycloak realm user once and persists each session cookie, so the rest of the suite can switch

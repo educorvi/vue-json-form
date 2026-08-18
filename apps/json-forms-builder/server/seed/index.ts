@@ -1,10 +1,8 @@
 import type { DataSource } from 'typeorm';
-import { Group } from '../entities/Group';
-import { Form } from '../entities/Form';
-import { User } from '../entities/User';
-import { artifactsToYjsState } from '~~/server/lib/form-content';
-import jsonSchema from '../entities/seed-data/json-schema.json';
-import uiSchema from '../entities/seed-data/ui-schema.json';
+import { Group, Form, User } from '@educorvi/vue-json-forms-builder-db-layer';
+import { artifactsToYjsState } from '../lib/form-content';
+import jsonSchema from '../seed-data/json-schema.json';
+import uiSchema from '../seed-data/ui-schema.json';
 import { groupSeedToDb, DEV_GROUPS_ALL } from './dev-data';
 import { E2E_USERS } from './users-constants';
 import { ensureTestUsers } from './users';

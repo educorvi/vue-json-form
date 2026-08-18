@@ -7,7 +7,7 @@ import {
     type DataSource,
     type Repository,
 } from 'typeorm';
-import { User as DbUser } from '~~/server/db/entities/User';
+import { User as DbUser } from '@educorvi/vue-json-forms-builder-db-layer';
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
 import type { User } from '#auth-utils';
 import {
@@ -102,16 +102,13 @@ export class UserService {
         // Users that already have a direct permission on the resource.
         let existingUserIds: string[] = [];
         if (scope) {
-            existingUserIds =
-                await new PermissionService(
-                    this.dataSource
-                ).getDirectPermissionUserIds(scope.type, scope.id);
+            existingUserIds = await new PermissionService(
+                this.dataSource
+            ).getDirectPermissionUserIds(scope.type, scope.id);
         }
 
         const excludeClause: FindOptionsWhere<DbUser> =
-            existingUserIds.length > 0
-                ? { id: Not(In(existingUserIds)) }
-                : {};
+            existingUserIds.length > 0 ? { id: Not(In(existingUserIds)) } : {};
 
         // OR of the search fields, each ANDed with the exclusion.
         const where: FindOptionsWhere<DbUser>[] = [];
@@ -170,9 +167,9 @@ export class UserService {
             return { type, id: parseInt(idOrPath, 10) };
         }
         if (type === 'group') {
-            const group = await new GroupService(
-                this.dataSource
-            ).getByIdOrSlug(idOrPath);
+            const group = await new GroupService(this.dataSource).getByIdOrSlug(
+                idOrPath
+            );
             return { type, id: group.id };
         }
         const form = await new FormService(this.dataSource).getByIdOrSlug(

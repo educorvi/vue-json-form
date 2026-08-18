@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 import { apiClientFor, storageStateFor } from '../../setup/login-helper';
 import { hashSuffix } from '../../../support/unique';
-import { E2E_USERS } from '../../../../server/db/seed/users-constants';
+import { E2E_USERS } from '../../../../server/seed/users-constants';
 
 /**
  * Basic RBAC checks on the group detail page actions.

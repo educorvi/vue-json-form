@@ -1,5 +1,7 @@
-import { AppDataSource } from '~~/server/db/data-source';
-import { User } from '~~/server/db/entities/User';
+import {
+    AppDataSource,
+    User,
+} from '@educorvi/vue-json-forms-builder-db-layer';
 import { mapAuthRolesToDbRole } from '~~/server/lib/auth';
 
 /**
