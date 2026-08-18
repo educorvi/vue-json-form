@@ -1,0 +1,26 @@
+{
+    "name": "collab-server",
+    "type": "module",
+    "packageManager": "yarn@4.18.0",
+    "devDependencies": {
+        "@types/node": "^26.2.0",
+        "tsx": "^4.22.4",
+        "turbo": "^2.10.10",
+        "typescript": "6"
+    },
+    "scripts": {
+        "dev": "turbo watch dev:internal",
+        "dev:internal": "tsx watch --tsconfig tsconfig.json src/index.ts",
+        "start": "tsx --tsconfig tsconfig.json src/index.ts",
+        "build": "turbo build:internal",
+        "build:internal": "tsc",
+        "check-types": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@educorvi/vue-json-form-builder-schemas": "workspace:^",
+        "@hocuspocus/provider": "^4.6.0",
+        "json-forms-builder": "workspace:^",
+        "reflect-metadata": "^0.2.2",
+        "yjs": "^13.6.32"
+    }
+}

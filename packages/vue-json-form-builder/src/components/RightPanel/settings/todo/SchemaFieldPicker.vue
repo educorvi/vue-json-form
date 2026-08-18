@@ -42,14 +42,23 @@ const hasOptions = computed(() => flatOptions.value.length > 0);
             class="form-select form-select-sm"
             :value="modelValue"
             :disabled="!hasOptions"
-            @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
+            @change="
+                emit(
+                    'update:modelValue',
+                    ($event.target as HTMLSelectElement).value
+                )
+            "
         >
-            <option value="">{{ hasOptions ? 'Pick from schema…' : 'No schema properties' }}</option>
+            <option value="">
+                {{ hasOptions ? 'Pick from schema…' : 'No schema properties' }}
+            </option>
             <option
                 v-for="opt in flatOptions"
                 :key="opt.value"
                 :value="opt.value"
-            >{{ opt.text }}</option>
+            >
+                {{ opt.text }}
+            </option>
         </select>
     </div>
 </template>
