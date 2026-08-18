@@ -88,6 +88,13 @@ FROM base AS run-collab-server
 ENV NODE_ENV=production
 ENV COLLAB_PORT=1234
 ENV HOST=0.0.0.0
+COPY --from=prepare-collab-server /app/out/json/ ./
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn workspaces focus collab-server --production
+COPY --from=build-collab-server /app/apps/collab-server/dist ./apps/collab-server/dist
+COPY --from=build-collab-server /app/packages/vue-json-form-builder-schemas/dist ./packages/vue-json-form-builder-schemas/dist
+COPY --from=build-collab-server /app/packages/vue-json-forms-builder-db-layer/dist ./packages/vue-json-forms-builder-db-layer/dist
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD node -e "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)"
 EXPOSE 1234
-COPY --from=build-collab-server /app/apps/collab-server/dist ./
-CMD ["node", "src/index.js"]
+CMD ["node", "apps/collab-server/dist/src/index.js"]
