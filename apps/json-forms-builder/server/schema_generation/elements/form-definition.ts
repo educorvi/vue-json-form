@@ -291,20 +291,18 @@ export class FormDefinition {
   }
 
   addDependencyGroup(dependencyGroup: DependencyGroup, parentId: string): void {
-    if (!this.getDependency_Group(parentId) && !this.getElementById(parentId)) {
+    const parent = this.getElementById(parentId) || this.getDependency_Group(parentId);
+    if (!parent) {
       throw new Error(`Parent "${parentId}" not found`);
     }
-    if (!(this.getElementById(parentId) instanceof FormElement)) {
-      throw new Error(`Parent "${parentId}" is not a FormElement`);
+    if (!(parent instanceof FormElement || parent instanceof DependencyGroup)) {
+      throw new Error(`Parent "${parentId}" is not a FormElement or DependencyGroup`);
     }
-    const parentElement = this.getElementById(parentId);
-    if (!parentElement) {
-      throw new Error(`Parent "${parentId}" not found`);
-    }
-    if (parentElement instanceof DependencyGroup) {
-      parentElement.dependencies.push(dependencyGroup.uid);
-    } else if (parentElement instanceof FormElement) {
-      parentElement.data.dependencyGroup = dependencyGroup.uid;
+
+    if (parent instanceof DependencyGroup) {
+      parent.dependencies.push(dependencyGroup.uid);
+    } else if (parent instanceof FormElement) {
+      parent.data.dependencyGroup = dependencyGroup.uid;
     } else {
       throw new Error(`Parent "${parentId}" is neither a FormElement nor a DependencyGroup`);
     }

@@ -98,7 +98,7 @@ export class Dependency extends Entity{
             firstArgument = {
                 type: "atom",
                 path: sourcePath,
-                default: !(sourceElement.usesEmptyStringDefaultWhenSourceOfDependency) ? "" : undefined,
+                default: sourceElement.usesEmptyStringDefaultWhenSourceOfDependency ? "" : undefined,
             };
         }
 
@@ -131,10 +131,17 @@ export class Dependency extends Entity{
 
 
 type DependencyRelationValue = NonNullable<Operator["type"]>;
+const ritaOperators = operatorSchema.oneOf.flatMap(o => o.properties.type.enum) as DependencyRelationValue[];
+
+export const DependencyRelation = {
+    ...(Object.fromEntries(ritaOperators.map(v => [v, v])) as { [K in DependencyRelationValue]: K }),
+} as const;
+
+export type DependencyRelation = (typeof DependencyRelation)[keyof typeof DependencyRelation];
+
 const DependencyRelationEnum = z.enum(
-    operatorSchema.oneOf.flatMap(o => o.properties.type.enum) as [DependencyRelationValue, ...DependencyRelationValue[]]
+    ritaOperators as [DependencyRelationValue, ...DependencyRelationValue[]]
 );
-export type DependencyRelation = z.infer<typeof DependencyRelationEnum>;
 
 type DependencyGroupData = z.infer<typeof DependencyGroup.schema>;
 const dependencyGroupDefaults = {dependencies: []};
@@ -180,8 +187,8 @@ export class DependencyGroup extends Entity {
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {
             "allOf": this.data.dependencies.map(depId => {
-                const dep = generator.document.getElementById(depId);
-                if (!(dep instanceof Dependency)) {
+                const dep = generator.document.getDependency_Group(depId);
+                if (!(dep instanceof Dependency || dep instanceof DependencyGroup)) {
                     throw new Error(`Dependency with id ${depId} not found or is not a Dependency element`);
                 }
                 return dep.toJsonSchema(generator, scope);
@@ -223,7 +230,7 @@ export class DependencyGroup extends Entity {
         }
 
         const showOn: Rule = {
-            id: this.id,
+            id: `rita-rule-${this.id}-${this.uid}`,
             rule: rule,
         };
         return showOn;
