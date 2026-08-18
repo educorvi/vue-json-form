@@ -33,6 +33,7 @@ import FileuploadElementSettings from '@/components/RightPanel/settings/Fileuplo
 import ArrayElementSettings from '@/components/RightPanel/settings/ArrayElementSettings.vue';
 import ObjectElementSettings from '@/components/RightPanel/settings/ObjectElementSettings.vue';
 import HtmlElementSettings from '@/components/RightPanel/settings/HtmlElementSettings.vue';
+import DividerElementSettings from '@/components/RightPanel/settings/DividerElementSettings.vue';
 import ModalElementSettings from '@/components/RightPanel/settings/ModalElementSettings.vue';
 import SubmitButtonSettings from '@/components/RightPanel/settings/SubmitButtonSettings.vue';
 import ResetButtonSettings from '@/components/RightPanel/settings/ResetButtonSettings.vue';
@@ -98,7 +99,7 @@ class TimeElementUi extends SimpleElementUi<TimeElement> {
 
 class DividerElementUi extends ElementUi<DividerElement> {
     settingsLabel = 'Divider Settings';
-    settingsComponent = null;
+    settingsComponent = DividerElementSettings;
     icon(): string {
         return 'bi bi-hr';
     }

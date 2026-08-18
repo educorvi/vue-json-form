@@ -8,6 +8,7 @@ import {
     type ButtonVariantFormat,
 } from '@educorvi/vue-json-form-builder-schemas';
 import { useElementSettings } from './useElementSettings';
+import ElementNameField from './ElementNameField.vue';
 
 const { stringField, booleanField, enumField } = useElementSettings();
 
@@ -19,6 +20,9 @@ const variantOptions = ButtonVariantFormatEnum.options;
 
 <template>
     <!-- Button: inherited by SubmitButton + ResetButton -->
+    <SettingsSection title="Basic" icon="bi bi-send">
+        <ElementNameField />
+    </SettingsSection>
     <SettingsSection title="Button" icon="bi bi-send" :collapsible="true">
         <FieldText v-model="label" label="Label" field-name="label" />
         <FieldCheck v-model="disabled" label="Disabled" field-name="disabled" />

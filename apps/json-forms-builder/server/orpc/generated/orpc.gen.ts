@@ -333,33 +333,39 @@ export const replaceForm = oc.route({
 })).output(zReplaceFormResponse);
 
 /**
- * Get the latest schema for a form
+ * Get the form definition (FormDefinition)
  *
- * Returns the JSON Schema and UI Schema for the most recent revision.
+ * Returns the canonical FormDefinition representation of the current
+ * form content. The json/ui schema artifacts are derived from this
+ * representation on demand via `/forms/{id}/schema/artifacts`.
+ *
  */
 export const getFormLatestSchema = oc.route({
-    description: 'Returns the JSON Schema and UI Schema for the most recent revision.',
+    description: 'Returns the canonical FormDefinition representation of the current\nform content. The json/ui schema artifacts are derived from this\nrepresentation on demand via `/forms/{id}/schema/artifacts`.\n',
     inputStructure: 'detailed',
     method: 'GET',
     operationId: 'getFormLatestSchema',
     path: '/forms/{id}/schema',
-    summary: 'Get the latest schema for a form',
+    summary: 'Get the form definition (FormDefinition)',
     tags: ['Forms']
 }).input(z.object({ params: zGetFormLatestSchemaPath })).output(zGetFormLatestSchemaResponse);
 
 /**
- * Import/replace the schema for a form
+ * Import/replace the form definition (FormDefinition)
  *
- * Imports/replaces the schema for a form.
+ * Imports/replaces the form content in its canonical FormDefinition
+ * representation (root/elements/dependencies). This is the lossless
+ * import path used by the builder itself. The json/ui schema artifacts
+ * are derived from this representation on demand.
  *
  */
 export const importFormSchema = oc.route({
-    description: 'Imports/replaces the schema for a form.\n',
+    description: 'Imports/replaces the form content in its canonical FormDefinition\nrepresentation (root/elements/dependencies). This is the lossless\nimport path used by the builder itself. The json/ui schema artifacts\nare derived from this representation on demand.\n',
     inputStructure: 'detailed',
     method: 'PUT',
     operationId: 'importFormSchema',
     path: '/forms/{id}/schema',
-    summary: 'Import/replace the schema for a form',
+    summary: 'Import/replace the form definition (FormDefinition)',
     tags: ['Forms']
 }).input(z.object({ body: zImportFormSchemaBody, params: zImportFormSchemaPath })).output(zImportFormSchemaResponse);
 
@@ -434,14 +440,21 @@ export const createFormVersion = oc.route({
 }).input(z.object({ body: zCreateFormVersionBody, params: zCreateFormVersionPath })).output(zCreateFormVersionResponse);
 
 /**
- * Get the schema for a specific form version
+ * Get the form definition of a specific form version
+ *
+ * Returns the canonical FormDefinition representation of the form
+ * content as it was at the specified version. The json/ui schema
+ * artifacts for that version are derived from this representation on
+ * demand via `/forms/{id}/versions/{version}/schema/artifacts`.
+ *
  */
 export const getFormSchemaByVersion = oc.route({
+    description: 'Returns the canonical FormDefinition representation of the form\ncontent as it was at the specified version. The json/ui schema\nartifacts for that version are derived from this representation on\ndemand via `/forms/{id}/versions/{version}/schema/artifacts`.\n',
     inputStructure: 'detailed',
     method: 'GET',
     operationId: 'getFormSchemaByVersion',
     path: '/forms/{id}/versions/{version}/schema',
-    summary: 'Get the schema for a specific form version',
+    summary: 'Get the form definition of a specific form version',
     tags: ['Forms']
 }).input(z.object({ params: zGetFormSchemaByVersionPath })).output(zGetFormSchemaByVersionResponse);
 

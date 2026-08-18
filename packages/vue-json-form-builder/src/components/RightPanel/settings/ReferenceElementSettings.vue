@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import SettingsSection from '@/components/shared/SettingsSection.vue';
 import { BaseDataElement } from '@educorvi/vue-json-form-builder-schemas';
 import { useElementSettings } from './useElementSettings';
+import ElementNameField from './ElementNameField.vue';
 
 const { builder, element, stringField } = useElementSettings();
 
@@ -26,6 +27,9 @@ const referenceOptions = computed(() => {
 </script>
 
 <template>
+    <SettingsSection title="Basic" icon="bi bi-link-45deg">
+        <ElementNameField />
+    </SettingsSection>
     <SettingsSection title="Reference" icon="bi bi-link-45deg">
         <div>
             <label class="form-label small fw-medium">Referenced element</label>

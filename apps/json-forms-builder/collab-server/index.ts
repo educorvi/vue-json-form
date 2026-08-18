@@ -5,11 +5,9 @@
  *
  * Responsibilities:
  *   - one Yjs document per form (documentName = form id)
- *   - onLoadDocument: hydrate the Y.Doc from the form's `definition` jsonb
- *     column (FormDefinition.toJSON()). Legacy `schema` ({json, ui}) is
- *     intentionally NOT loaded — those forms open as empty docs until they
- *     are saved in the new builder.
- *   - onStoreDocument: persist the document back into `definition`
+ *   - onLoadDocument: hydrate the Y.Doc from the form's `yjs_state` bytea
+ *     column (an encoded Yjs CRDT state — the single source of truth).
+ *   - onStoreDocument: persist the document back into `yjs_state`
  *     (debounced by Hocuspocus while clients are connected, immediately on
  *     disconnect).
  *   - onAuthenticate: only authenticated connections are allowed — the
@@ -24,15 +22,7 @@ import * as Y from 'yjs';
 import { Server } from '@hocuspocus/server';
 import { AppDataSource } from '../server/db/data-source';
 import { Form } from '../server/db/entities/Form';
-import {
-    FormDefinition,
-    fromJSON,
-} from '@educorvi/vue-json-form-builder-schemas';
-import {
-    formDefinitionToYDoc,
-    initializeEmptyDocument,
-    yDocToFormDefinition,
-} from '@educorvi/vue-json-form-builder-schemas/collab';
+import { initializeEmptyDocument } from '@educorvi/vue-json-form-builder-schemas/collab';
 import { authenticateConnection, type WsAuthUser } from './auth';
 
 const PORT = Number(process.env.COLLAB_PORT ?? 1234);
@@ -50,28 +40,27 @@ async function loadFormDocument(documentName: string): Promise<Y.Doc> {
         where: { id: Number(documentName) },
     });
 
-    if (form?.definition) {
+    if (form?.yjs_state && form.yjs_state.length > 0) {
         try {
-            const formDefinition: FormDefinition = fromJSON(
-                JSON.stringify(form.definition)
-            );
+            const doc = new Y.Doc();
+            Y.applyUpdate(doc, form.yjs_state);
             console.log(
-                `[collab] load "${documentName}": hydrated ${formDefinition.nodesIndex.size} elements from definition`
+                `[collab] load "${documentName}": hydrated ${form.yjs_state.length} bytes of yjs state`
             );
-            return formDefinitionToYDoc(formDefinition);
+            return doc;
         } catch (err) {
             console.error(
-                `[collab] load "${documentName}": invalid definition, starting empty:`,
+                `[collab] load "${documentName}": invalid yjs state, starting empty:`,
                 err instanceof Error ? err.message : err
             );
         }
     } else {
         console.log(
-            `[collab] load "${documentName}": no definition yet, starting empty`
+            `[collab] load "${documentName}": no yjs state yet, starting empty`
         );
     }
 
-    // No (valid) definition yet — still return an initialized document so
+    // No (valid) yjs state yet — still return an initialized document so
     // the root Form data exists for every client from the first sync on.
     const doc = new Y.Doc();
     initializeEmptyDocument(doc, {
@@ -88,32 +77,25 @@ async function storeFormDocument(
     const repo = AppDataSource.getRepository(Form);
     let form = await repo.findOne({ where: { id: Number(documentName) } });
 
-    // yDocToFormDefinition throws on corrupted documents — let it crash the
-    // store hook so the error surfaces in the logs.
-    const definition = yDocToFormDefinition(document).toJSON();
+    const state = Buffer.from(Y.encodeStateAsUpdate(document));
 
     if (!form) {
-        // Create a minimal form row so the definition is persisted even
+        // Create a minimal form row so the yjs state is persisted even
         // when the form was never created through the oRPC API. Use a raw
         // INSERT so the documentName (= form id) is preserved — repo.create()
         // would assign a new auto-increment id and break future loads.
         await repo.query(
-            `INSERT INTO "form" ("id", "title", "name", "path", "schema", "definition")
-             VALUES ($1::int, $1::text, $1::text, $1::text, NULL, $2::jsonb)
-             ON CONFLICT ("id") DO UPDATE SET "definition" = $2::jsonb`,
-            [Number(documentName), JSON.stringify(definition)]
+            `INSERT INTO "form" ("id", "title", "name", "path", "yjs_state")
+             VALUES ($1::int, $1::text, $1::text, $1::text, $2::bytea)
+             ON CONFLICT ("id") DO UPDATE SET "yjs_state" = $2::bytea`,
+            [Number(documentName), state]
         );
     } else {
-        form.definition = definition as Record<string, unknown>;
+        form.yjs_state = state;
         await repo.save(form);
     }
     console.log(
-        `[collab] store "${documentName}": saved ${
-            Object.keys(
-                (definition as { elements?: Record<string, unknown> })
-                    .elements ?? {}
-            ).length
-        } elements`
+        `[collab] store "${documentName}": saved ${state.length} bytes of yjs state`
     );
 }
 
@@ -127,15 +109,21 @@ async function main(): Promise<void> {
         // and once more immediately when the last client disconnects.
         debounce: 5000,
         maxDebounce: 20000,
-        onAuthenticate: async ({ token, requestHeaders }) => {
-            // Throwing here rejects the WebSocket connection.
+        onAuthenticate: async ({ token, requestHeaders, documentName }) => {
+            // Throwing here rejects the WebSocket connection. The thrown
+            // error's `reason` is sent to the client (provider event
+            // `authenticationFailed`) so the builder can show why.
             try {
                 return {
-                    user: await authenticateConnection(token, requestHeaders),
+                    user: await authenticateConnection(
+                        token,
+                        requestHeaders,
+                        documentName
+                    ),
                 };
             } catch (err) {
                 console.warn(
-                    `[collab] auth rejected (token "${token?.slice(0, 16)}…"): ${
+                    `[collab] auth rejected for "${documentName}" (token "${token?.slice(0, 16)}…"): ${
                         err instanceof Error ? err.message : err
                     }`
                 );

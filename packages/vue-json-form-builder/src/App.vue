@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { ref, watch, onBeforeUnmount, computed, type Ref } from 'vue';
 import { PhPencilSimple, PhCaretRight } from '@phosphor-icons/vue';
+import { BAlert } from 'bootstrap-vue-next';
 import { supportedUiSchemaVersion, version } from '@educorvi/vue-json-form';
 import {
     createFormBuilder,
     provideFormBuilder,
     type CollabConfig,
+    type CollabErrorReason,
 } from './useFormBuilder';
 import { useUiState } from './useUiState';
-import { useBackendAuth } from '@/composables/useBackendAuth';
+import {
+    useBuilderAuth,
+    type KeycloakAuthConfig,
+} from '@/composables/useBuilderAuth';
 import AuthGate from './components/AuthGate.vue';
 import LeftPanel from './components/LeftPanel/LeftPanel.vue';
 import MiddlePanel from './components/MiddlePanel/MiddlePanel.vue';
 import RightPanel from './components/RightPanel/RightPanel.vue';
 
 /**
- * VueJsonFormBuilder — POC entry.
  *
  * Props:
  *   jsonSchema / uiSchema — optional initial {json, ui} schema pair (imported
@@ -26,15 +30,22 @@ import RightPanel from './components/RightPanel/RightPanel.vue';
  *                           { url, documentName?, user? }. When absent the
  *                           builder runs fully local without yjs.
  *   hideHeader           — hide the top toolbar.
- *   backendUrl           — base URL of a hosting backend (a Nuxt app using
- *                           nuxt-auth-utils). When set, the builder checks the
- *                           session on that backend (`GET <backendUrl>/api/_auth/session`)
- *                           before rendering and logs the user in if needed —
- *                           see useBackendAuth (src/composables/useBackendAuth.ts).
- *   keycloakIdpHint      — Keycloak `kc_idp_hint` appended to the login URL to
- *                           skip the login page and redirect straight to a
- *                           federated identity provider. Only used together
- *                           with `backendUrl`.
+ *   keycloak             — Keycloak login via keycloak-js (PUBLIC client,
+ *                           PKCE): { url, realm, clientId, idpHint?, … } — see
+ *                           KeycloakAuthConfig in composables/useBuilderAuth.ts.
+ *                           Used when the builder/webcomponent runs embedded in
+ *                           a third-party host. Silent `check-sso` on mount;
+ *                           the access token authenticates the collab
+ *                           websocket.
+ *   backendUrl           — fallback: base URL of a hosting backend (a Nuxt app
+ *                           using nuxt-auth-utils). The builder checks the
+ *                           session (`GET <backendUrl>/api/_auth/session`); the
+ *                           session cookie authenticates the collab websocket.
+ *   keycloakIdpHint      — Keycloak `kc_idp_hint` appended to the backend's
+ *                           login URL (session mode only).
+ *
+ * Without `keycloak` and `backendUrl` the builder runs fully LOCAL: no
+ * authentication, no backend communication (see useBuilderAuth).
  *
  * Emits:
  *   vjfb-change            — {jsonSchema, uiSchema} derived via SchemaGenerator
@@ -46,12 +57,16 @@ const props = withDefaults(
         uiSchema?: string;
         hideHeader?: boolean;
         collab?: CollabConfig | null;
+        keycloak?: KeycloakAuthConfig | null;
         backendUrl?: string;
         keycloakIdpHint?: string;
     }>(),
     {
         hideHeader: false,
         collab: null,
+        keycloak: null,
+        jsonSchema: undefined,
+        uiSchema: undefined,
         backendUrl: undefined,
         keycloakIdpHint: undefined,
     }
@@ -62,42 +77,42 @@ const emit = defineEmits<{
     'vjfb-definition-change': [definition: object];
 }>();
 
-// When a backendUrl is set, the collab websocket must NOT connect before
-// the backend session exists (the handshake would be unauthenticated and
-// the server would reject it — the form would stay empty). The provider
-// is therefore created lazily and connected by checkAuth()/onAuthSuccess()
-// once the session is there.
+// When auth is configured (backendUrl / keycloak), the collab websocket
+// must NOT connect before the credentials exist (the handshake would be
+// unauthenticated and the server would reject it — the form would stay
+// empty). The provider is therefore created lazily and connected by
+// onAuthenticated() once auth completed. Without auth props the builder
+// runs local and connects immediately.
 const builder = createFormBuilder(props.collab, {
-    autoConnect: !props.backendUrl,
+    autoConnect: !props.backendUrl && !props.keycloak,
 });
 provideFormBuilder(builder);
 const { themeMode } = useUiState();
 
-// ── Authentication against a hosting backend ──────────────────────────────
-// Delegated to the useBackendAuth composable (src/composables/useBackendAuth.ts):
-// checks the backend session and, when missing, runs the login in a popup
-// (or shows an inline "Sign in" button when popups are blocked). The popup
-// relays the Keycloak access token back; onAuthenticated() receives it and
-// connects the collab websocket with it — it must not connect before that:
-// the handshake would be unauthenticated and the server would reject it
-// (the form would stay empty).
+// ── Authentication (keycloak-js / backend session / local) ────────────────
+// Delegated to useBuilderAuth (src/composables/useBuilderAuth.ts): keycloak
+// mode does a silent `check-sso` and provides a Keycloak access token for
+// the collab websocket; session mode checks the backend session cookie;
+// local mode does nothing. onAuthenticated() connects the collab websocket
+// with the produced credentials — it must not connect before that.
 const {
+    mode: authMode,
     checkingAuth,
-    authPopupOpen,
     loginRequired,
     authError,
     checkAuth,
-    startLoginFlow,
-} = useBackendAuth({
+    login,
+} = useBuilderAuth({
     backendUrl: computed(() => props.backendUrl),
     keycloakIdpHint: computed(() => props.keycloakIdpHint),
+    keycloak: computed(() => props.keycloak ?? undefined),
     onAuthenticated: ({ token, user }) =>
         builder.connect({
             // The auth flow's token (Keycloak access token) wins over a
             // statically configured collab-token prop.
             token: token ?? props.collab?.token,
             // If the host did not provide a collab user (presence), fall
-            // back to the authenticated backend user.
+            // back to the authenticated user.
             user:
                 props.collab?.user ??
                 (user?.id && user.username
@@ -215,19 +230,52 @@ onBeforeUnmount(() => {
     if (emitTimer) clearTimeout(emitTimer);
     builder.dispose();
 });
+
+/** User-facing message for a rejected collab connection. */
+const collabErrorMessages: Record<CollabErrorReason, string> = {
+    unauthorized:
+        'The collaboration connection was rejected — please sign in again and retry.',
+    'form-not-found': 'The form does not exist (or has not been saved yet).',
+    forbidden:
+        'You do not have edit access to this form. Ask an owner to grant you editor or owner access.',
+    'permission-denied':
+        'The collaboration connection was rejected by the server.',
+    unknown: 'The collaboration connection was rejected by the server.',
+};
+const collabErrorMessage = computed(() =>
+    builder.collabError.value
+        ? collabErrorMessages[builder.collabError.value]
+        : null
+);
 </script>
 
 <template>
-    <!-- Authentication gate (only when a backendUrl is configured) -->
+    <!-- Authentication gate (only when auth is configured: keycloak or backendUrl) -->
     <AuthGate
-        v-if="props.backendUrl && (checkingAuth || authError || loginRequired)"
+        v-if="
+            authMode !== 'local' && (checkingAuth || authError || loginRequired)
+        "
         :checking-auth="checkingAuth"
-        :auth-popup-open="authPopupOpen"
         :login-required="loginRequired"
         :auth-error="authError"
-        @sign-in="startLoginFlow"
+        :mode="authMode"
+        @sign-in="login"
         @retry="checkAuth"
     />
+
+    <!-- The collab server rejected the connection (form missing / no edit
+         access / unauthorized) — show why instead of the builder. -->
+    <div
+        v-else-if="builder.collabError.value"
+        class="vjfb-auth d-flex align-items-center justify-content-center"
+        style="min-height: 300px"
+    >
+        <div class="text-center" style="max-width: 32rem">
+            <BAlert show variant="danger">
+                {{ collabErrorMessage }}
+            </BAlert>
+        </div>
+    </div>
 
     <div
         v-else

@@ -5,8 +5,8 @@ import { ContainerElement } from './container';
 import { FormElementRegistry } from './registry';
 
 /**
- * FormDefinition wraps a Form tree and maintains five indexes for O(1) access
- * and cheap mutation without tree traversal on every operation.
+ * FormDefinition wraps a Form tree and maintains five indexes for O(1)
+ * access:
  *
  *  nodesIndex              — elementUid → FormElement instance
  *  parentIndex             — elementUid → parentUid (root.uid for top-level children)
@@ -14,11 +14,16 @@ import { FormElementRegistry } from './registry';
  *  dependencyParentIndex   — dependencyUid → parentUid (dependencyGroupUid or elementUid)
  *  elementDependencyGraph  — elementUid → dependencyUid[] (dependencies this element is a source for)
  *
- * The tree structure itself lives in the ordered `children` uid arrays of
+ * The tree structure lives in the ordered `children` uid arrays of
  * Form / ContainerElement — the indexes are derived from it and can always
- * be rebuilt (FormDefinition.fromJSON). In realtime collaboration mode the
- * same structure lives in a Y.Doc (Y.Array children) and the indexes are
- * rebuilt from the doc on every change — see schemas/collab/yjs-adapter.ts.
+ * be rebuilt (FormDefinition.fromJSON / constructor).
+ *
+ * FormDefinition is a READ-ONLY projection. All mutations go through the
+ * collab adapter (schemas/collab/yjs-adapter.ts) — the single mutation
+ * interface for the local builder engine (local Y.Doc) and realtime
+ * collaboration (synced Y.Doc). The same structure lives in a Y.Doc
+ * (Y.Array children) and the indexes are rebuilt from the doc on every
+ * change.
  */
 export class FormDefinition {
     readonly nodesIndex = new Map<string, FormElement>();
@@ -119,6 +124,8 @@ export class FormDefinition {
         }
     }
 
+    // ------------------------ START: ONLY NECESSARY FOR WRITE OPERATIONS ------------------------
+
     /** Removes a dependency entity and its whole nested subtree from the indexes. */
     private removeDependencySubtree(dependencyUid: string): void {
         const dep = this.dependencyIndex.get(dependencyUid);
@@ -179,11 +186,6 @@ export class FormDefinition {
         }
     }
 
-    getDependenciesElementIsSourceFor(elementId: string): string[] {
-        const sourceIds = this.elementDependencyGraph.get(elementId);
-        return sourceIds ?? [];
-    }
-
     /** Returns the LIVE children uid array of a parent (Form or ContainerElement). */
     private liveChildrenOf(parentId: string): string[] {
         if (parentId === this.root.uid) return this.root.children;
@@ -192,6 +194,13 @@ export class FormDefinition {
             throw new Error(`Parent "${parentId}" is not a ContainerElement`);
         }
         return parent.children;
+    }
+
+    // ------------------------ END: ONLY NECESSARY FOR WRITE OPERATIONS ------------------------
+
+    getDependenciesElementIsSourceFor(elementId: string): string[] {
+        const sourceIds = this.elementDependencyGraph.get(elementId);
+        return sourceIds ?? [];
     }
 
     // ─── Public commands ─────────────────────────────────────────────────────────
@@ -248,6 +257,8 @@ export class FormDefinition {
         if (!parentId) return undefined;
         return this.getDependencyGroupById(parentId);
     }
+
+    // ------------------------ START: ONLY NECESSARY FOR WRITE OPERATIONS ------------------------
 
     /**
      * Move an existing element to a new position inside targetContainer.
@@ -466,6 +477,8 @@ export class FormDefinition {
         }
         Object.assign(element.data, changes);
     }
+
+    // ------------------------ END: ONLY NECESSARY FOR WRITE OPERATIONS ------------------------
 
     // ─── Serialisation ────────────────────────────────────────────────────────────
 

@@ -5,6 +5,7 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import type { Visibility } from '@/utils/api-types';
 
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 
@@ -44,6 +45,7 @@ const { isNotFound, hasError, errorMessage } = usePageError(groupError, status);
 // ── General section state ─────────────────────────────────────────────────
 const editTitle = ref('');
 const editDescription = ref('');
+const editVisibility = ref<Visibility>('visible');
 const saving = ref(false);
 const savedMsg = ref(false);
 const saveErrorMsg = ref<string | null>(null);
@@ -62,6 +64,7 @@ watch(
         if (g) {
             editTitle.value = g.title ?? '';
             editDescription.value = g.description ?? '';
+            editVisibility.value = (g.visibility as Visibility) ?? 'visible';
         }
     },
     { immediate: true }
@@ -72,7 +75,8 @@ const hasChanges = computed(() => {
     return (
         editTitle.value.trim() !== (group.value.title ?? '') ||
         (editDescription.value.trim() || null) !==
-            (group.value.description ?? null)
+            (group.value.description ?? null) ||
+        editVisibility.value !== (group.value.visibility ?? 'visible')
     );
 });
 
@@ -89,6 +93,7 @@ async function onSaveGeneral() {
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
+                visibility: editVisibility.value,
             },
         });
         savedMsg.value = true;
@@ -191,7 +196,10 @@ function goDetail() {
                 :save-error="saveErrorMsg"
                 :has-changes="hasChanges"
                 :title-state="titleState()"
+                :visibility="editVisibility"
+                :parent-visibility="group.parent_visibility ?? null"
                 @update:description="editDescription = $event"
+                @update:visibility="editVisibility = $event"
                 @save="onSaveGeneral"
             />
 

@@ -1,34 +1,36 @@
 <script setup lang="ts">
 import { BAlert, BButton, BSpinner } from 'bootstrap-vue-next';
+import type { BuilderAuthMode } from '@/composables/useBuilderAuth';
 
 /**
- * Authentication gate shown while the builder checks the backend session
- * (or while the user logs in via the popup / inline "Sign in" button).
+ * Authentication gate shown while the builder checks the auth state
+ * (session check / silent check-sso) or when the user must log in.
  *
- * Rendered INSTEAD of the builder when a backend is configured and the
- * session is not yet confirmed. Three states:
+ * Rendered INSTEAD of the builder when auth is configured (keycloak or
+ * backendUrl) and not yet confirmed. Three states:
  *
- *   1. checkingAuth          — spinner while checking the session or while
- *                              the login popup is open
- *   2. loginRequired         — the popup was blocked; show a "Sign in"
- *                              button (its click runs startLoginFlow within
- *                              the user gesture, which is never blocked)
- *   3. authError             — the backend was unreachable or the login
- *                              timed out; show the error + "Try again"
+ *   1. checkingAuth          — spinner while checking the session /
+ *                              silent check-sso
+ *   2. loginRequired         — no session; show a "Sign in" button (its
+ *                              click starts the login: in keycloak mode a
+ *                              top-level redirect to Keycloak, in session
+ *                              mode a redirect to the backend's login)
+ *   3. authError             — auth service unreachable or init failed;
+ *                              show the error + "Try again"
  */
-const props = defineProps<{
-    /** true while the session check runs or the login popup is open */
+defineProps<{
+    /** true while the session check / silent check-sso runs */
     checkingAuth: boolean;
-    /** true while the login popup window is open (spinner copy) */
-    authPopupOpen?: boolean;
-    /** true when the popup was blocked — show a "Sign in" button */
+    /** true when no session exists — show a "Sign in" button */
     loginRequired?: boolean;
-    /** error message (backend unreachable, timeout, closed popup, …) */
+    /** error message (service unreachable, init failed, …) */
     authError?: string | null;
+    /** 'keycloak' (Keycloak login) or 'session' (backend login) — copy only */
+    mode?: BuilderAuthMode;
 }>();
 
 const emit = defineEmits<{
-    /** User clicked "Sign in" (popup was blocked before). */
+    /** User clicked "Sign in". */
     signIn: [];
     /** User clicked "Try again" after an error. */
     retry: [];
@@ -42,13 +44,7 @@ const emit = defineEmits<{
     >
         <div v-if="checkingAuth" class="text-center text-secondary">
             <BSpinner class="mb-2" />
-            <div class="small">
-                {{
-                    authPopupOpen
-                        ? 'Complete the login in the popup window…'
-                        : 'Checking authentication…'
-                }}
-            </div>
+            <div class="small">Checking authentication…</div>
         </div>
         <div
             v-else-if="loginRequired"
@@ -56,7 +52,8 @@ const emit = defineEmits<{
             style="max-width: 30rem"
         >
             <BAlert show variant="info">
-                To load this form, sign in to the form-builder backend.
+                To load this form, sign in to the form-builder
+                {{ mode === 'session' ? 'backend' : 'Keycloak' }}.
             </BAlert>
             <BButton size="sm" variant="primary" @click="emit('signIn')">
                 Sign in

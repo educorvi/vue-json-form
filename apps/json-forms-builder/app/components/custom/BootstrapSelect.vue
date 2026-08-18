@@ -67,7 +67,13 @@ function isSelected(opt: any): boolean {
     );
 }
 
+/** Options carrying `{ disabled: true }` are rendered but not selectable. */
+function isDisabled(opt: any): boolean {
+    return !!opt && typeof opt === 'object' && opt.disabled === true;
+}
+
 function select(opt: any) {
+    if (isDisabled(opt)) return;
     emit('update:modelValue', valueOf(opt));
     open.value = false;
 }
@@ -215,9 +221,13 @@ watch(open, (v) => {
                 v-for="(opt, i) in visibleOptions"
                 :key="i"
                 class="dropdown-item d-flex align-items-center gap-2 px-3 py-2"
-                :class="{ 'bg-primary bg-opacity-10': isSelected(opt) }"
+                :class="{
+                    'bg-primary bg-opacity-10': isSelected(opt),
+                    'text-muted opacity-75': isDisabled(opt),
+                }"
                 role="option"
                 :aria-selected="isSelected(opt)"
+                :aria-disabled="isDisabled(opt) || undefined"
                 @click="select(opt)"
                 style="cursor: pointer"
             >

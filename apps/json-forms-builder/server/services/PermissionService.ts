@@ -1,12 +1,15 @@
 import { ORPCError } from '@orpc/server';
-import { type DataSource, type Repository } from 'typeorm';
+import { type DataSource, type Repository, In } from 'typeorm';
 import { Permission } from '~~/server/db/entities/Permission';
 import { Group } from '~~/server/db/entities/Group';
 import { Form } from '~~/server/db/entities/Form';
-import { paginatedResponse } from '~~/server/orpc/api-helpers';
-import type { PaginationParams } from '~~/server/orpc/api-helpers';
-import { type Role } from '~~/server/lib/permissions/roles';
-import { resolveGroupPath } from '~~/server/lib/access-control';
+import { type Role, ROLE_HIERARCHY } from '~~/server/lib/permissions/roles';
+import {
+    resolveGroupPath,
+    loadGroupAccessData,
+    loadFormAccessData,
+} from '~~/server/lib/access-control';
+import { computeEffectiveRole } from '~~/server/lib/permissions/roles';
 
 import {
     zPermissionMetaWritable,
@@ -64,35 +67,36 @@ export class PermissionService {
         this.dataSource = dataSource;
     }
 
-    async listForGroup(groupId: number, params: PaginationParams) {
-        const { page, pageSize } = params;
-        const [rows, total] = await this.repo.findAndCount({
-            where: { group: { id: groupId } },
-            relations: { user: true },
-            skip: (page - 1) * pageSize,
-            take: pageSize,
-        });
-        return paginatedResponse(rows, total, page, pageSize);
-    }
-
-    async listForForm(formId: number, params: PaginationParams) {
-        const { page, pageSize } = params;
-        const [rows, total] = await this.repo.findAndCount({
-            where: { form: { id: formId } },
-            relations: { user: true },
-            skip: (page - 1) * pageSize,
-            take: pageSize,
-        });
-        return paginatedResponse(rows, total, page, pageSize);
-    }
-
     async createForGroup(
         groupId: number,
         dto: CreatePermissionDto,
-        actorId: string
+        actorId: string,
+        actorRole: string
     ): Promise<Permission> {
+        if (!dto.user_id)
+            throw new ORPCError('BAD_REQUEST', {
+                message: 'A user_id is required.',
+            });
+        const userId = dto.user_id;
+        // Editors may grant non-owner roles; owners/admins may grant any role.
+        await this._assertActorCanManage(
+            actorId,
+            actorRole,
+            'group',
+            groupId,
+            { newRole: dto.role ?? null }
+        );
+        // A user can never be assigned a role lower than the one they
+        // already inherit from a parent group.
+        await this._assertRoleNotBelowInherited(
+            userId,
+            dto.role ?? 'guest',
+            'group',
+            groupId
+        );
+
         const existing = await this.repo.findOne({
-            where: { group: { id: groupId }, user: { id: dto.user_id } },
+            where: { group: { id: groupId }, user: { id: userId } },
         });
         if (existing)
             throw new ORPCError('CONFLICT', {
@@ -103,9 +107,10 @@ export class PermissionService {
             role: dto.role,
             // Keep the 'YYYY-MM-DD' string: `date` columns round-trip as
             // strings and wrapping in `new Date(...)` shifts the day in
-            // non-UTC server timezones.
-            expire: dto.expire ?? null,
-            user: { id: dto.user_id },
+            // non-UTC server timezones. (The API type is a string; the
+            // entity column is typed Date — same convention as `patch`.)
+            expire: (dto.expire as unknown as Date | null) ?? null,
+            user: { id: userId },
             group: { id: groupId },
             created_by: { id: actorId },
             updated_by: { id: actorId },
@@ -123,10 +128,33 @@ export class PermissionService {
     async createForForm(
         formId: number,
         dto: CreatePermissionDto,
-        actorId: string
+        actorId: string,
+        actorRole: string
     ): Promise<Permission> {
+        if (!dto.user_id)
+            throw new ORPCError('BAD_REQUEST', {
+                message: 'A user_id is required.',
+            });
+        const userId = dto.user_id;
+        // Editors may grant non-owner roles; owners/admins may grant any role.
+        await this._assertActorCanManage(
+            actorId,
+            actorRole,
+            'form',
+            formId,
+            { newRole: dto.role ?? null }
+        );
+        // A user can never be assigned a role lower than the one they
+        // already inherit from a parent group.
+        await this._assertRoleNotBelowInherited(
+            userId,
+            dto.role ?? 'guest',
+            'form',
+            formId
+        );
+
         const existing = await this.repo.findOne({
-            where: { form: { id: formId }, user: { id: dto.user_id } },
+            where: { form: { id: formId }, user: { id: userId } },
         });
         if (existing)
             throw new ORPCError('CONFLICT', {
@@ -137,9 +165,10 @@ export class PermissionService {
             role: dto.role,
             // Keep the 'YYYY-MM-DD' string: `date` columns round-trip as
             // strings and wrapping in `new Date(...)` shifts the day in
-            // non-UTC server timezones.
-            expire: dto.expire ?? null,
-            user: { id: dto.user_id },
+            // non-UTC server timezones. (The API type is a string; the
+            // entity column is typed Date — same convention as `patch`.)
+            expire: (dto.expire as unknown as Date | null) ?? null,
+            user: { id: userId },
             form: { id: formId },
             created_by: { id: actorId },
             updated_by: { id: actorId },
@@ -159,15 +188,53 @@ export class PermissionService {
         scopeKey: 'group' | 'form',
         scopeValue: number,
         dto: PatchPermissionDto,
-        actorId: string
+        actorId: string,
+        actorRole: string
     ): Promise<Permission> {
         const perm = await this.repo.findOne({
             where: { id, [scopeKey]: { id: scopeValue } },
+            relations: { user: true },
         });
         if (!perm)
             throw new ORPCError('NOT_FOUND', {
                 message: 'Permission not found',
             });
+        if (!perm.user)
+            throw new ORPCError('BAD_REQUEST', {
+                message: 'Permission has no user',
+            });
+
+        const targetRole = (perm.role as Role) ?? null;
+        const newRole = dto.role ?? null;
+
+        // Editors may only adjust editor/guest permissions and may never
+        // touch owner permissions (neither demote an owner nor grant one).
+        await this._assertActorCanManage(
+            actorId,
+            actorRole,
+            scopeKey,
+            scopeValue,
+            { role: targetRole, newRole }
+        );
+
+        if (newRole && newRole !== targetRole) {
+            // At least one owner must remain on every resource.
+            if (targetRole === 'owner') {
+                await this._assertAtLeastOneOwnerRemains(
+                    scopeKey,
+                    scopeValue
+                );
+            }
+            // A user can never be assigned a role lower than the one they
+            // already inherit from a parent group.
+            await this._assertRoleNotBelowInherited(
+                perm.user.id,
+                newRole,
+                scopeKey,
+                scopeValue
+            );
+        }
+
         // Use update to avoid DeepPartial issues
         await this.repo.update(id, {
             ...(dto.role ? { role: dto.role } : {}),
@@ -184,15 +251,31 @@ export class PermissionService {
     async delete(
         id: number,
         scopeKey: 'group' | 'form',
-        scopeValue: number
+        scopeValue: number,
+        actorId: string,
+        actorRole: string
     ): Promise<void> {
         const perm = await this.repo.findOne({
             where: { id, [scopeKey]: { id: scopeValue } },
+            relations: { user: true },
         });
         if (!perm)
             throw new ORPCError('NOT_FOUND', {
                 message: 'Permission not found',
             });
+
+        const targetRole = (perm.role as Role) ?? null;
+
+        // Editors may only delete editor/guest permissions.
+        await this._assertActorCanManage(actorId, actorRole, scopeKey, scopeValue, {
+            role: targetRole,
+        });
+
+        // At least one owner must remain on every resource.
+        if (targetRole === 'owner') {
+            await this._assertAtLeastOneOwnerRemains(scopeKey, scopeValue);
+        }
+
         await this.repo.delete(id);
     }
 
@@ -270,10 +353,22 @@ export class PermissionService {
         );
 
         // Batch-compute inherited_role for all direct-permission users
-        const inheritedRoles = await this._computeInheritedRoles(
-            rows,
+        const directUserIds: string[] = [
+            ...new Set(
+                rows
+                    .filter(
+                        (r: { group_id: number }) =>
+                            Number(r.group_id) === groupId
+                    )
+                    .map((r: { user_id: string }) => r.user_id)
+                    .filter((id): id is string => !!id)
+            ),
+        ];
+        const inheritedRoles = await this._fetchHighestInheritedRoles(
+            directUserIds,
+            'group',
             groupId,
-            ancestorIds
+            ancestors.map((a) => a.id)
         );
 
         // Build ancestor map for source group resolution
@@ -411,9 +506,18 @@ export class PermissionService {
         );
 
         // Batch-compute inherited_role for direct-permission users
-        const inheritedRoles = await this._computeInheritedRoles(
-            rows,
-            null, // no target group ID for forms — use group chain instead
+        const directUserIds: string[] = [
+            ...new Set(
+                rows
+                    .filter((r: { form_id: number | null }) => r.form_id !== null)
+                    .map((r: { user_id: string }) => r.user_id)
+                    .filter((id): id is string => !!id)
+            ),
+        ];
+        const inheritedRoles = await this._fetchHighestInheritedRoles(
+            directUserIds,
+            'form',
+            formId,
             ancestorIds
         );
 
@@ -463,46 +567,64 @@ export class PermissionService {
     // ── Internal helpers ────────────────────────────────────────────────────
 
     /**
-     * For users with direct permissions on a page, fetch their highest inherited
-     * role from the ancestor chain. Used to set `inherited_role` on each entry.
+     * Resolve the ancestor group chain of a resource.
      *
-     * @param rows  Raw SQL result rows from the data query
-     * @param targetGroupId  The target group ID (for groups), or null for forms
-     * @param ancestorIds  All ancestor group IDs (including target for groups)
+     * For a group this is the chain ABOVE it (excludes the group itself);
+     * for a form it is its parent group plus that group's ancestors.
+     * Returns an empty array for root resources.
      */
-    private async _computeInheritedRoles(
-        rows: any[],
-        targetGroupId: number | null,
-        ancestorIds: number[]
-    ): Promise<Map<string, Role | null>> {
-        const directUserIds = new Set<string>();
-        for (const row of rows) {
-            const isDirect =
-                targetGroupId !== null
-                    ? Number(row.group_id) === targetGroupId
-                    : row.form_id !== null;
-            if (isDirect && row.user_id) {
-                directUserIds.add(row.user_id);
-            }
+    private async _resolveAncestorIds(
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<number[]> {
+        if (scopeKey === 'group') {
+            const treeRepo = this.repo.manager.getTreeRepository(Group);
+            const target = await treeRepo.findOne({
+                where: { id: scopeValue },
+            });
+            if (!target) return [];
+            const ancestors = await treeRepo.findAncestors(target);
+            return ancestors.map((a) => a.id);
         }
+        const formRepo = this.repo.manager.getRepository(Form);
+        const form = await formRepo.findOne({
+            where: { id: scopeValue },
+            relations: { group: true },
+        });
+        if (!form?.group) return [];
+        const treeRepo = this.repo.manager.getTreeRepository(Group);
+        const ancestors = await treeRepo.findAncestors(form.group);
+        return [form.group.id, ...ancestors.map((a) => a.id)];
+    }
 
+    /**
+     * Highest inherited (non-expired) role per user from the resource's
+     * parent chain. Users without any inherited role get null.
+     *
+     * `precomputedAncestorIds` may be passed by callers that already
+     * resolved the ancestor chain (e.g. the resolved-permission queries)
+     * to avoid a second tree traversal.
+     */
+    private async _fetchHighestInheritedRoles(
+        userIds: string[],
+        scopeKey: 'group' | 'form',
+        scopeValue: number,
+        precomputedAncestorIds?: number[]
+    ): Promise<Map<string, Role | null>> {
         const roles = new Map<string, Role | null>();
-        if (directUserIds.size === 0) return roles;
+        if (userIds.length === 0) return roles;
+        for (const uid of userIds) roles.set(uid, null);
 
-        // Add null default for all direct users
-        for (const uid of directUserIds) roles.set(uid, null);
-
+        const ancestorIds =
+            precomputedAncestorIds ??
+            (await this._resolveAncestorIds(scopeKey, scopeValue));
         if (ancestorIds.length === 0) return roles;
 
-        // Fetch highest inherited role per user from ancestor chain.
-        // Use $2::int IS NULL pattern to handle both groups (groupId known)
-        // and forms (groupId = null → no filtering needed).
-        const inheritedRows = await this.dataSource.query(
+        const rows = await this.dataSource.query(
             `SELECT p.user_id, p.role::text
              FROM permissions p
              WHERE p.group_id = ANY($1::int[])
-               AND ($2::int IS NULL OR p.group_id != $2)
-               AND p.user_id = ANY($3::text[])
+               AND p.user_id = ANY($2::text[])
                AND (p.expire IS NULL OR p.expire > CURRENT_TIMESTAMP)
              ORDER BY p.user_id,
                CASE p.role::text
@@ -510,16 +632,15 @@ export class PermissionService {
                  WHEN 'editor' THEN 1
                  WHEN 'guest' THEN 0
                END DESC`,
-            [ancestorIds, targetGroupId ?? null, [...directUserIds]]
+            [ancestorIds, [...userIds]]
         );
 
-        // First row per user has the highest role (due to ORDER BY DESC)
-        for (const r of inheritedRows) {
+        // First row per user has the highest role (ORDER BY DESC).
+        for (const r of rows) {
             if (roles.get(r.user_id) === null) {
                 roles.set(r.user_id, r.role as Role);
             }
         }
-
         return roles;
     }
 
@@ -578,5 +699,209 @@ export class PermissionService {
             created: row.created,
             updated: row.updated,
         };
+    }
+
+    // ── Permission-management guards (owner invariant + RBAC) ────────────────
+
+    /**
+     * Count the non-expired `owner` permissions that exist directly on the
+     * resource. Used to enforce "at least one owner must remain".
+     */
+    private async _countActiveOwners(
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<number> {
+        const rows = await this.dataSource.query(
+            `SELECT COUNT(*)::int AS n FROM permissions
+             WHERE ${scopeKey === 'group' ? 'group_id' : 'form_id'} = $1
+               AND role = 'owner'
+               AND (expire IS NULL OR expire > CURRENT_TIMESTAMP)`,
+            [scopeValue]
+        );
+        return Number(rows[0]?.n ?? 0);
+    }
+
+    /**
+     * True when no OTHER user holds a non-expired owner permission on the
+     * resource. Combined with the caller's effective role this yields the
+     * `is_only_owner` flag returned by `GET /groups/{id}` / `GET /forms/{id}`.
+     */
+    async isOnlyOwner(
+        actorId: string,
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<boolean> {
+        const rows = await this.dataSource.query(
+            `SELECT COUNT(*)::int AS n FROM permissions
+             WHERE ${scopeKey === 'group' ? 'group_id' : 'form_id'} = $1
+               AND role = 'owner'
+               AND user_id != $2
+               AND (expire IS NULL OR expire > CURRENT_TIMESTAMP)`,
+            [scopeValue, actorId]
+        );
+        return Number(rows[0]?.n ?? 0) === 0;
+    }
+
+    /**
+     * Highest non-expired role this user inherits from the resource's parent
+     * chain (direct permission on the resource itself is excluded). Returns
+     * null when the user inherits nothing.
+     */
+    async getHighestInheritedRole(
+        userId: string,
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<Role | null> {
+        const roles = await this._fetchHighestInheritedRoles(
+            [userId],
+            scopeKey,
+            scopeValue
+        );
+        return roles.get(userId) ?? null;
+    }
+
+    /**
+     * Effective (permission-only, expiry-aware) role of an actor on a
+     * resource — without any visibility fallback. This is what decides how
+     * much permission management the actor may perform.
+     */
+    private async _effectivePermissionRole(
+        actorId: string,
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<Role | null> {
+        if (scopeKey === 'group') {
+            const data = await loadGroupAccessData(
+                this.dataSource,
+                scopeValue,
+                actorId
+            );
+            return computeEffectiveRole(
+                data.directPermissions,
+                data.ancestorPermissions,
+                'private' // no visibility fallback — permission required
+            );
+        }
+        const data = await loadFormAccessData(
+            this.dataSource,
+            scopeValue,
+            actorId
+        );
+        return computeEffectiveRole(
+            data.directPermissions,
+            data.inheritedPermissions,
+            'private' // no visibility fallback — permission required
+        );
+    }
+
+    /**
+     * Permission-management RBAC guard.
+     *
+     * - Admins bypass every check (consistent with all other policies).
+     * - The actor needs at least `editor` (effective, permission-based).
+     * - Editors may only create/patch/delete `editor`/`guest` permissions
+     *   and may never grant `owner` or touch existing `owner` permissions.
+     *
+     * @param target `role` = role of the permission being modified (if any),
+     *               `newRole` = role being assigned (if any).
+     */
+    private async _assertActorCanManage(
+        actorId: string,
+        actorRole: string,
+        scopeKey: 'group' | 'form',
+        scopeValue: number,
+        target: { role?: Role | null; newRole?: Role | null }
+    ): Promise<void> {
+        if (actorRole === 'admin') return;
+
+        const effective = await this._effectivePermissionRole(
+            actorId,
+            scopeKey,
+            scopeValue
+        );
+        if (!effective || ROLE_HIERARCHY[effective] < ROLE_HIERARCHY.editor) {
+            throw new ORPCError('FORBIDDEN', {
+                message:
+                    'You need at least editor access on this resource to manage permissions.',
+            });
+        }
+
+        if (effective === 'editor') {
+            if (target.role === 'owner' || target.newRole === 'owner') {
+                throw new ORPCError('FORBIDDEN', {
+                    message:
+                        'Editors cannot manage owner permissions.',
+                });
+            }
+        }
+    }
+
+    /** At least one non-expired owner must remain on the resource. */
+    private async _assertAtLeastOneOwnerRemains(
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<void> {
+        const owners = await this._countActiveOwners(scopeKey, scopeValue);
+        if (owners <= 1) {
+            throw new ORPCError('CONFLICT', {
+                message:
+                    'At least one owner must remain on this resource. Grant another owner before changing this permission.',
+            });
+        }
+    }
+
+    /**
+     * A user can never be assigned a role lower than the highest role they
+     * already inherit from the parent group chain.
+     */
+    private async _assertRoleNotBelowInherited(
+        userId: string,
+        newRole: Role,
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<void> {
+        const inherited = await this.getHighestInheritedRole(
+            userId,
+            scopeKey,
+            scopeValue
+        );
+        if (inherited && ROLE_HIERARCHY[newRole] < ROLE_HIERARCHY[inherited]) {
+            throw new ORPCError('CONFLICT', {
+                message: `Cannot assign the role "${newRole}": the user already has the role "${inherited}" inherited from a parent group.`,
+            });
+        }
+    }
+
+    /**
+     * IDs of all users that already hold a direct permission on the resource.
+     * Used by the user search to exclude users already present.
+     */
+    async getDirectPermissionUserIds(
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<string[]> {
+        const rows = await this.dataSource.query(
+            `SELECT DISTINCT user_id FROM permissions
+             WHERE ${scopeKey === 'group' ? 'group_id' : 'form_id'} = $1
+               AND user_id IS NOT NULL`,
+            [scopeValue]
+        );
+        return rows.map((r: { user_id: string }) => r.user_id);
+    }
+
+    /**
+     * Highest inherited role per user from the ancestor chain — public
+     * version used by the user search endpoint (pages of users at once).
+     */
+    async fetchInheritedRolesForUsers(
+        userIds: string[],
+        scopeKey: 'group' | 'form',
+        scopeValue: number
+    ): Promise<Map<string, Role | null>> {
+        return this._fetchHighestInheritedRoles(
+            userIds,
+            scopeKey,
+            scopeValue
+        );
     }
 }

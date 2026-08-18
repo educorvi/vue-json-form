@@ -9,14 +9,14 @@ import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
 import {
     zPermission,
-    zElementRole,
     zListGroupPermissionsQuery,
     zListFormPermissionsQuery,
 } from '~~/server/orpc/generated/zod.gen';
+import type { ElementRole } from '@/utils/api-types';
 import type z from 'zod';
 
 export type PermissionEntry = z.infer<typeof zPermission>;
-export type ElementRole = z.infer<typeof zElementRole>;
+export type { ElementRole };
 
 /**
  * Allowed sort values derived from the generated query schemas.

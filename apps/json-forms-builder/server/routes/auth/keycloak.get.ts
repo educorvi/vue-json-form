@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { ACCESS_TOKEN_COOKIE } from '../../lib/auth';
 
 /**
  * Decodes the payload of a JWT (access token) without dependencies.
@@ -70,14 +69,6 @@ const REDIRECT_COOKIE = 'auth_redirect';
  *
  * `kc_idp_hint` is still forwarded to Keycloak, so the user can be sent
  * straight to a federated identity provider (identity brokering).
- *
- * The form-builder webcomponent (packages/vue-json-form-builder) opens this
- * endpoint in a popup with `?redirect=/auth/popup-close`. On success the
- * access token is parked in a short-lived httpOnly cookie (ACCESS_TOKEN_COOKIE)
- * and the popup is redirected to popup-close, which relays token + user to
- * the embedding page via postMessage — the webcomponent uses the token as
- * bearer credential for the collab websocket (the session cookie alone
- * cannot cross browsers with third-party-cookie blocking).
  */
 export default eventHandler(async (event) => {
     const config = useRuntimeConfig(event).oauth?.keycloak;
@@ -180,17 +171,6 @@ export default eventHandler(async (event) => {
                 lastName: (user.family_name as string) ?? undefined,
                 roles,
             },
-        });
-
-        // Park the access token for /auth/popup-close (see ACCESS_TOKEN_COOKIE
-        // in server/lib/auth.ts). httpOnly + 2 minutes: the popup-close page
-        // consumes it immediately after the callback redirect.
-        setCookie(event, ACCESS_TOKEN_COOKIE, tokens.access_token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 120,
-            path: '/',
         });
 
         return sendRedirect(event, saved.target ?? '/dashboard');

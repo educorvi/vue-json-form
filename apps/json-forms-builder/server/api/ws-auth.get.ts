@@ -1,20 +1,32 @@
 import type { User } from '#auth-utils';
+import { AppDataSource } from '~~/server/db/data-source';
+import { loadFormAccessData } from '~~/server/lib/access-control';
+import { computeEffectiveRole } from '~~/server/lib/permissions/roles';
+import { ResourceUpdatePermission } from '~~/server/lib/permissions';
 
 /**
- * GET /api/ws-auth — validate the auth of an incoming WebSocket handshake.
+ * GET /api/ws-auth?documentName=<formId> — validate an incoming WebSocket
+ * handshake for the collab server.
  *
  * The collab server (separate process, ws://localhost:1234) forwards either
  * the `nuxt-session` cookie or an `Authorization: Bearer <api-key>` header
- * from the WebSocket handshake here and only accepts the connection if this
- * endpoint returns a user.
+ * from the WebSocket handshake here — together with the document name (=
+ * form id) the client wants to join — and only accepts the connection if
+ * this endpoint returns a user.
  *
- * Auth is the SAME as every other API route: the global auth middleware
- * (server/middleware/auth.ts) already resolved the session cookie OR the
- * API key into `event.context.user` before this handler runs. We only
- * enforce that one of them was present — no custom checking here.
+ * Besides authentication (the global auth middleware already resolved the
+ * session cookie or API key into `event.context.user`), this endpoint
+ * enforces the same access rules as the oRPC update procedures:
+ *
+ *   - the form must EXIST (404 otherwise), and
+ *   - the user needs at least EDITOR access on it (403 otherwise; admins
+ *     bypass, same as everywhere else).
+ *
+ * That makes the collab websocket the single write path with the same
+ * permission guarantees as the REST/oRPC API — no way to open a form for
+ * editing without edit access.
  */
-// TODO: not enough as this allows every user to edit every form. Adjsut endpoint so form id is provided and it is validated if user has write access or role is returned or simply the form js requested by the collab server which includes the role.
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
     const user = event.context.user as User | undefined;
     if (!user) {
         throw createError({
@@ -22,5 +34,49 @@ export default defineEventHandler((event) => {
             statusMessage: 'Unauthorized',
         });
     }
-    return { user };
+
+    const rawId = getQuery(event).documentName;
+    const formId = Number(rawId);
+    if (typeof rawId !== 'string' || !Number.isInteger(formId) || formId <= 0) {
+        throw createError({
+            statusCode: 400,
+            statusMessage:
+                'Invalid or missing documentName (must be a numeric form id)',
+        });
+    }
+
+    let data;
+    try {
+        data = await loadFormAccessData(AppDataSource, formId, user.id);
+    } catch {
+        // loadFormAccessData throws NOT_FOUND for unknown forms
+        throw createError({
+            statusCode: 404,
+            statusMessage: `Form ${formId} does not exist`,
+        });
+    }
+
+    const accessUser = {
+        id: user.id,
+        role: user.roles.includes('admin') ? 'admin' : 'user',
+    };
+
+    // Admins bypass every policy (same as requireFormAccess in
+    // server/lib/access-control.ts); everyone else needs owner/editor.
+    const effectiveRole = computeEffectiveRole(
+        data.directPermissions,
+        data.inheritedPermissions,
+        data.form.visibility
+    );
+    if (
+        !ResourceUpdatePermission.isSkippedForRole(accessUser.role) &&
+        !ResourceUpdatePermission.isSatisfiedByRole(effectiveRole)
+    ) {
+        throw createError({
+            statusCode: 403,
+            statusMessage: `You need at least editor access to edit form ${formId}`,
+        });
+    }
+
+    return { user, effective_role: effectiveRole };
 });

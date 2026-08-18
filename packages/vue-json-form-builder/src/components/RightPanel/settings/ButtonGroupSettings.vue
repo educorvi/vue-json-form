@@ -6,6 +6,7 @@ import {
     ButtonGroupElement,
 } from '@educorvi/vue-json-form-builder-schemas';
 import { useElementSettings } from './useElementSettings';
+import ElementNameField from './ElementNameField.vue';
 
 const { builder, element } = useElementSettings();
 
@@ -21,6 +22,9 @@ const buttons = computed(() => {
 </script>
 
 <template>
+    <SettingsSection title="Basic" icon="bi bi-justify">
+        <ElementNameField />
+    </SettingsSection>
     <SettingsSection title="Button Group" icon="bi bi-justify">
         <p class="small text-body-secondary">
             The group contains the following buttons:

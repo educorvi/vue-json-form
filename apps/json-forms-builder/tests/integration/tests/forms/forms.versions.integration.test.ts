@@ -8,7 +8,29 @@ import {
     expectApiUpdatedAfterCreated,
 } from '../../../support/api/resource-modifications';
 import { createTestForm } from '../../../support/api/forms';
-import { VERSION_1, VERSION_2 } from './form-schemas';
+import { artifactsFromDefinition, VERSION_1, VERSION_2 } from './form-schemas';
+
+// ── Structural assertions ─────────────────────────────────────────────────
+//
+// Versions snapshot the form's yjs representation; json/ui artifacts are
+// DERIVED from it on demand (not a byte-identical passthrough of the
+// submitted artifacts — see forms.schema.integration.test.ts).
+
+function expectJsonHasProperties(json: any, props: Record<string, string>) {
+    expect(json.type).toBe('object');
+    const properties = json.properties ?? {};
+    for (const [name, type] of Object.entries(props)) {
+        expect(properties[name]?.type).toBe(type);
+    }
+}
+
+function expectUiHasControls(ui: any, scopes: string[]) {
+    expect(ui.layout?.type).toBe('VerticalLayout');
+    const controls = (ui.layout?.elements ?? []).filter(
+        (e: any) => e.type === 'Control'
+    );
+    expect(controls.map((c: any) => c.scope)).toEqual(scopes);
+}
 
 // tests
 
@@ -39,8 +61,8 @@ describe('Form Versions API', () => {
             // Then the API returns the version with the submitted fields
             expect(version.version).toBe(VERSION_1.version);
             expect(version.comment).toBe(VERSION_1.comment);
-            expect(version.json).toEqual(VERSION_1.json);
-            expect(version.ui).toEqual(VERSION_1.ui);
+            expectJsonHasProperties(version.json, { name: 'string' });
+            expectUiHasControls(version.ui, ['/properties/name']);
 
             // And the modification info points at the creating admin
             expectApiCreatedAndUpdatedBy(version, admin);
@@ -83,9 +105,18 @@ describe('Form Versions API', () => {
                 },
             });
 
-            // Then the schema is inherited from the latest version
-            expect(version.json).toEqual(VERSION_1.json);
-            expect(version.ui).toEqual(VERSION_1.ui);
+            // Then the schema is inherited from the latest version — both
+            // versions derive their artifacts from the same yjs snapshot
+            expectJsonHasProperties(version.json, { name: 'string' });
+            expectUiHasControls(version.ui, ['/properties/name']);
+
+            const v1 = await admin.client.forms.versions.getByVersion({
+                params: { id: String(form.id), version: VERSION_1.version },
+            });
+            // And the fetched definition round-trips to the same artifacts
+            const derived = artifactsFromDefinition(v1.definition);
+            expect(version.json).toEqual(derived.json);
+            expect(version.ui).toEqual(derived.ui);
         });
     });
 
@@ -149,13 +180,12 @@ describe('Form Versions API', () => {
                 params: { id: String(form.id), version: VERSION_1.version },
             });
 
-            // Then the API returns the schema of that version
-            expect(fetched.version).toBe(VERSION_1.version);
-            expect(fetched.json).toEqual(VERSION_1.json);
-            expect(fetched.ui).toEqual(VERSION_1.ui);
-
-            // And the audit info is present
-            expectApiCreatedAndUpdatedBy(fetched, admin);
+            // Then the API returns the canonical FormDefinition of that
+            // version, which derives the same json/ui artifacts
+            expect(fetched.definition).toBeDefined();
+            const derived = artifactsFromDefinition(fetched.definition);
+            expectJsonHasProperties(derived.json, { name: 'string' });
+            expectUiHasControls(derived.ui, ['/properties/name']);
         });
 
         it('rejects fetching a non-existent version', async () => {
@@ -189,8 +219,8 @@ describe('Form Versions API', () => {
                 });
 
             // Then both artifacts are returned
-            expect(artifacts.json).toEqual(VERSION_1.json);
-            expect(artifacts.ui).toEqual(VERSION_1.ui);
+            expectJsonHasProperties(artifacts.json, { name: 'string' });
+            expectUiHasControls(artifacts.ui, ['/properties/name']);
         });
 
         it('returns only the requested artifact when filtered', async () => {
@@ -209,7 +239,7 @@ describe('Form Versions API', () => {
                 });
 
             // Then only the ui artifact is returned
-            expect(artifacts.ui).toEqual(VERSION_1.ui);
+            expectUiHasControls(artifacts.ui, ['/properties/name']);
             expect(artifacts.json).toBeUndefined();
         });
     });

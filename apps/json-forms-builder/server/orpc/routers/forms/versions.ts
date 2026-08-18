@@ -11,6 +11,7 @@ import {
     mapDbRevisionToApiVersion,
     pickArtifacts,
 } from '../../mapping/version';
+import { yjsStateToArtifacts } from '~~/server/lib/form-content';
 import { mapApiSortOrderToDbSortOrder } from '../../mapping/shared';
 import { toAccessUser } from '../../mapping/user';
 
@@ -62,31 +63,16 @@ export const formVersionProcedures = {
                 });
             }
 
-            // Inherit schema fields from latest version if omitted
-            let jsonSchema: Record<string, unknown> | null | undefined =
-                body.json;
-            let uiSchema: Record<string, unknown> | null | undefined = body.ui;
-
-            if (jsonSchema === undefined || uiSchema === undefined) {
-                try {
-                    const latest = await service.getLatestSchema(form.id);
-                    if (jsonSchema === undefined) {
-                        jsonSchema = latest.schema?.json ?? null;
-                    }
-                    if (uiSchema === undefined) {
-                        uiSchema = latest.schema?.ui ?? null;
-                    }
-                } catch {
-                    // No previous version exists — use null defaults
-                }
-            }
-
+            // The version snapshot is derived from the form's yjs state
+            // (single source of truth). Explicitly provided artifacts are
+            // converted; omitted sides are inherited from the current
+            // content by the service.
             const created = await service.createVersion(
                 form.id,
                 versionNumber,
                 {
-                    json: jsonSchema ?? null,
-                    ui: uiSchema ?? null,
+                    json: body.json,
+                    ui: body.ui,
                 },
                 body.comment ?? '',
                 { id: user.id }
@@ -108,8 +94,11 @@ export const formVersionProcedures = {
                 ResourceViewPermission
             );
             const version = parseInt(input.params.version, 10);
-            const rev = await service.getSchemaByVersion(form.id, version);
-            return mapDbRevisionToApiVersion(rev);
+            const content = await service.getFormDefinitionByVersion(
+                form.id,
+                version
+            );
+            return { definition: content?.definition ?? null };
         }),
 
     getVersionArtifacts: os.forms.versions.getVersionArtifacts
@@ -127,7 +116,7 @@ export const formVersionProcedures = {
             const version = parseInt(input.params.version, 10);
             const rev = await service.getSchemaByVersion(form.id, version);
             return pickArtifacts(
-                rev.schema ?? { json: null, ui: null },
+                yjsStateToArtifacts(rev.yjs_state),
                 input.query?.artifacts
             );
         }),

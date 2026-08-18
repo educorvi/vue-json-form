@@ -29,6 +29,8 @@
     },
     "dependencies": {
         "@bootstrap-vue-next/nuxt": "^0.45.7",
+        "@educorvi/vue-json-form": "workspace:^",
+        "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@educorvi/vue-json-form-builder": "workspace:*",
         "@educorvi/vue-json-form-builder-schemas": "workspace:^",
         "@hocuspocus/server": "^4.6.0",

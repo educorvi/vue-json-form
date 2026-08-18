@@ -1,49 +1,76 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose';
+import type { H3Event } from 'h3';
 import type { User } from '#auth-utils';
 
 /**
- * Validation of Keycloak access tokens (JWTs) against the realm's JWKS.
+ * Keycloak access-token validation.
  *
- * This is the third authentication path besides the session cookie and
- * `fb_...` API keys (see server/middleware/auth.ts). It exists for
- * clients that cannot rely on the session cookie — the form-builder
- * webcomponent embedded on OTHER domains gets a Keycloak access token
- * through its login popup (see /auth/popup-close) and presents it as
- * `Authorization: Bearer <token>` (the collab server relays it for the
- * websocket handshake exactly like an API key).
+ * Config source: the SAME runtime config that drives the login route
+ * (nuxt-auth-utils OIDC client, env `NUXT_OAUTH_KEYCLOAK_*`) — the
+ * validation keyset is the realm's JWKS. No separate config block needed.
  *
- * The token is verified by signature against the Keycloak realm's JWKS
- * (cached after the first fetch) and by `iss` / `aud` / `exp` claims.
+ * Access tokens are verified against the realm — but they can be issued
+ * for OTHER clients of the realm than the confidential login client. The
+ * form-builder webcomponent logs in with a PUBLIC client (keycloak-js,
+ * PKCE; `azp = vueformbuilder-embed`), see
+ * packages/vue-json-form-builder/src/composables/useBuilderAuth.ts. Which
+ * clients' tokens are accepted is configured via
+ * `NUXT_AUTH_ALLOWED_CLIENT_IDS` (comma-separated `azp`/`aud` values,
+ * runtime config `auth.allowedClientIds`). Default: only the OIDC client
+ * (existing deployments keep working without the new env var).
  */
-interface KeycloakRuntimeConfig {
+
+/** nuxt-auth-utils OIDC client config (env NUXT_OAUTH_KEYCLOAK_*). */
+interface KeycloakOidcConfig {
     serverUrl?: string;
     realm?: string;
     clientId?: string;
+    clientSecret?: string;
+}
+
+function getOidcConfig(event: H3Event): KeycloakOidcConfig {
+    return (useRuntimeConfig(event).oauth?.keycloak ??
+        {}) as KeycloakOidcConfig;
+}
+
+/**
+ * Client ids whose access tokens are accepted (`azp`/`aud`), from
+ * `NUXT_AUTH_ALLOWED_CLIENT_IDS` (comma-separated).
+ */
+function getAcceptedClientIds(event: H3Event): string[] {
+    const raw =
+        (useRuntimeConfig(event).auth?.allowedClientIds as
+            string | undefined) ?? '';
+    return raw
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean);
 }
 
 let keySet: ReturnType<typeof createRemoteJWKSet> | null = null;
 
-function getKeycloakConfig(event: any): KeycloakRuntimeConfig | null {
-    const config = useRuntimeConfig(event).oauth?.keycloak as
-        KeycloakRuntimeConfig | undefined;
-    if (!config?.serverUrl || !config?.realm || !config?.clientId) {
-        return null;
-    }
-    return config;
-}
-
 /**
  * Validates a Keycloak access token and maps its claims to the
  * #auth-utils User shape (same fields as the session user set in
- * /auth/keycloak). Returns null when the token is invalid/expired or the
- * realm config is missing — the caller decides how to handle that.
+ * /auth/keycloak). Returns null when the token is invalid/expired, issued
+ * by an unaccepted client, or the realm config is missing — the caller
+ * decides how to handle that.
  */
 export async function validateKeycloakAccessToken(
-    event: any,
+    event: H3Event,
     token: string
 ): Promise<User | null> {
-    const config = getKeycloakConfig(event);
-    if (!config) return null;
+    const config = getOidcConfig(event);
+    if (!config.serverUrl || !config.realm || !config.clientId) {
+        return null;
+    }
+
+    // Accepted client ids: NUXT_AUTH_ALLOWED_CLIENT_IDS, always including
+    // the confidential OIDC client of the login route.
+    const accepted = getAcceptedClientIds(event);
+    if (!accepted.includes(config.clientId)) {
+        accepted.push(config.clientId);
+    }
 
     if (!keySet) {
         keySet = createRemoteJWKSet(
@@ -57,8 +84,8 @@ export async function validateKeycloakAccessToken(
         // Keycloak sets `aud` to the realm's `account` client (the token is
         // issued for the user's account client, not for the OIDC client that
         // requested it). The requesting client is identified by `azp`
-        // (authorized party) — require it to match, but also accept the
-        // client id in `aud` for providers that do set it.
+        // (authorized party) — require it to be accepted, but also accept
+        // the client id in `aud` for providers that do set it.
         const { payload } = await jwtVerify(token, keySet, {
             issuer: `${config.serverUrl}/realms/${config.realm}`,
         });
@@ -67,10 +94,10 @@ export async function validateKeycloakAccessToken(
             : payload.aud
               ? [payload.aud]
               : [];
-        if (
-            payload.azp !== config.clientId &&
-            !audiences.includes(config.clientId)
-        ) {
+        const azp = payload.azp as string | undefined;
+        const azpAccepted = azp ? accepted.includes(azp) : false;
+        const audAccepted = audiences.some((aud) => accepted.includes(aud));
+        if (!azpAccepted && !audAccepted) {
             return null;
         }
 

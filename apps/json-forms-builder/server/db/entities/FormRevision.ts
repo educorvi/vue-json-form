@@ -11,11 +11,12 @@ export class FormRevision extends BaseAuditedEntity {
     @Column({ type: 'text', nullable: true })
     comment!: string | null;
 
-    @Column({ type: 'jsonb' })
-    schema!: {
-        json: Record<string, unknown> | null;
-        ui: Record<string, unknown> | null;
-    };
+    /**
+     * Snapshot of the form content at version creation time, stored as an
+     * encoded Yjs document (CRDT state). Artifacts are derived on demand.
+     */
+    @Column({ type: 'bytea' })
+    yjs_state!: Buffer;
 
     @ManyToOne(() => Form, (form) => form.revisions)
     @JoinColumn({ name: 'form_id' })

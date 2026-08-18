@@ -5,6 +5,8 @@ import {
 } from '~~/server/orpc/mapping/user';
 import { AppDataSource } from '~~/server/db/data-source';
 import { FormService } from '~~/server/services/FormService';
+import { PermissionService } from '~~/server/services/PermissionService';
+import { Visibility } from '~~/server/db/entities/BaseEntities';
 import { zListFormsQuery } from '../../generated/zod.gen';
 import {
     requireFormAccess,
@@ -12,6 +14,7 @@ import {
     resolveAccessibleFormIds,
     resolveEffectiveFormRole,
 } from '~~/server/lib/access-control';
+import { getParentVisibility } from '~~/server/lib/visibility-rules';
 import { validateUrlName } from '~~/server/lib/validation';
 import {
     ResourceViewPermission,
@@ -88,7 +91,20 @@ export const formCrudProcedures = {
                 accessUser,
                 form.id
             );
-            return { ...form, effective_role: effectiveRole };
+            const permService = new PermissionService(AppDataSource);
+            const isOnlyOwner =
+                effectiveRole === 'owner' &&
+                (await permService.isOnlyOwner(user.id, 'form', form.id));
+            const parentVisibility = await getParentVisibility(
+                AppDataSource,
+                form.parent_id
+            );
+            return {
+                ...form,
+                effective_role: effectiveRole,
+                is_only_owner: isOnlyOwner,
+                parent_visibility: parentVisibility,
+            };
         }),
 
     create: os.forms.create
@@ -138,12 +154,23 @@ export const formCrudProcedures = {
                 });
             }
 
+            // Children of a private parent are always private — a child can
+            // never be more visible than its parent group.
+            const parentVisibility = await getParentVisibility(
+                AppDataSource,
+                parentGroupId
+            );
+            const visibility =
+                parentVisibility === 'private'
+                    ? Visibility.Private
+                    : mapVisibilityToDb(body.visibility);
+
             return service.create(
                 {
                     title: body.title ?? '',
                     name: finalName,
                     description: body.description ?? null,
-                    visibility: mapVisibilityToDb(body.visibility),
+                    visibility,
                     group: parentGroupId ? { id: parentGroupId } : null,
                     path: parentGroupId ? String(parentGroupId) : '',
                 },
@@ -176,8 +203,22 @@ export const formCrudProcedures = {
             }
             if (body.description !== undefined)
                 data.description = body.description;
-            if (body.visibility !== undefined)
+            if (body.visibility !== undefined) {
+                // A form can never be more visible than its parent group.
+                if (body.visibility === 'visible') {
+                    const parentVisibility = await getParentVisibility(
+                        AppDataSource,
+                        form.parent_id
+                    );
+                    if (parentVisibility === 'private') {
+                        throw errors.BAD_REQUEST({
+                            message:
+                                'Cannot make the form visible: its parent group is private.',
+                        });
+                    }
+                }
                 data.visibility = mapVisibilityToDb(body.visibility);
+            }
             if (input.query?.id) {
                 const gid = await resolveParentGroupId(input.query.id);
                 if (gid) data.group = { id: gid };
@@ -187,7 +228,7 @@ export const formCrudProcedures = {
 
     replace: os.forms.replace
         .use(authMiddleware)
-        .handler(async ({ input, context }) => {
+        .handler(async ({ input, context, errors }) => {
             const user = getUserFromContext(context);
             const service = new FormService(AppDataSource);
             const body = input.body;
@@ -200,6 +241,19 @@ export const formCrudProcedures = {
             );
 
             const parentGroupId = await resolveParentGroupId(input.query?.id);
+            // A form can never be more visible than its parent group.
+            if (body.visibility === 'visible') {
+                const parentVisibility = await getParentVisibility(
+                    AppDataSource,
+                    form.parent_id
+                );
+                if (parentVisibility === 'private') {
+                    throw errors.BAD_REQUEST({
+                        message:
+                            'Cannot make the form visible: its parent group is private.',
+                    });
+                }
+            }
             return service.replace(
                 form.id,
                 {

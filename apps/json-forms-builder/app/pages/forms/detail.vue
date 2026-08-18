@@ -63,10 +63,15 @@ const pending = computed(() => status.value === 'pending');
 
 const { isNotFound, hasError, errorMessage } = usePageError(formError, status);
 
-// Fetch schema
+// Fetch schema artifacts (json/ui are derived from the stored definition on
+// demand — the definition itself is the source of truth and exchanged via
+// @vjfb-definition-change)
 const { data: schema } = useAsyncData(
     `form-schema-${formPath.value}`,
-    () => orpc.forms.schema.getLatest({ params: { id: formPath.value } }),
+    () =>
+        orpc.forms.schema.getLatestArtifacts({
+            params: { id: formPath.value },
+        }),
     { watch: [formPath] }
 );
 
@@ -83,6 +88,10 @@ const uiSchemaString = computed(() => {
 
 function goEdit() {
     router.push(Routes.formsEdit(formPath.value));
+}
+
+function goVersions() {
+    router.push(Routes.formsVersions(formPath.value));
 }
 
 // Builder expand/collapse toggle (fullscreen overlay)
@@ -109,11 +118,14 @@ const collab = computed<CollabConfig | null>(() => {
     };
 });
 
-// Debounced save of schema changes
+// Debounced save of builder changes. The canonical FormDefinition
+// representation (root/elements/dependencies) is the persisted format — the
+// backend stores it as a yjs document and derives the json/ui schema
+// artifacts from it on demand.
 const saveTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 const { notify } = useNotify();
 
-async function onSchemasChange(json: any, ui: any) {
+async function onDefinitionChange(definition: object) {
     const formId = form.value?.id;
     if (!formId) return;
     // In collab mode the Hocuspocus server persists the synced document to
@@ -126,11 +138,11 @@ async function onSchemasChange(json: any, ui: any) {
         try {
             await orpc.forms.schema.import({
                 params: { id: String(formId) },
-                body: { json, ui },
+                body: { definition: definition as Record<string, unknown> },
             });
             notify(t('forms.detail.schemaSaveSuccess'), 'success');
         } catch (err: any) {
-            console.error('Failed to save schema', err);
+            console.error('Failed to save form content', err);
             const msg = err?.message ?? String(err);
             notify(`${t('forms.detail.schemaSaveError')}: ${msg}`, 'danger');
         }
@@ -158,6 +170,13 @@ async function onSchemasChange(json: any, ui: any) {
                     :name="builderExpanded ? 'ph:arrows-in' : 'ph:arrows-out'"
                     :size="14"
                 />
+            </BButton>
+            <BButton variant="outline-secondary" size="sm" @click="goVersions">
+                <Icon
+                    name="ph:clock-counter-clockwise"
+                    :size="14"
+                    class="me-1"
+                />{{ t('forms.versions.title') }}
             </BButton>
             <BButton variant="outline-secondary" size="sm" @click="goEdit">
                 <Icon name="ph:pencil" :size="14" class="me-1" />{{
@@ -198,11 +217,11 @@ async function onSchemasChange(json: any, ui: any) {
             </template>
             <template v-else>
                 <VueJsonFormBuilder
-                    :jsonSchema="jsonSchemaString"
-                    :uiSchema="uiSchemaString"
+                    :jsonSchema="collab ? undefined : jsonSchemaString"
+                    :uiSchema="collab ? undefined : uiSchemaString"
                     :collab="collab"
                     hideHeader
-                    @vjfb-change="onSchemasChange"
+                    @vjfb-definition-change="onDefinitionChange"
                 />
             </template>
         </template>
@@ -235,11 +254,11 @@ async function onSchemasChange(json: any, ui: any) {
                 style="min-height: 0"
             >
                 <VueJsonFormBuilder
-                    :jsonSchema="jsonSchemaString"
-                    :uiSchema="uiSchemaString"
+                    :jsonSchema="collab ? undefined : jsonSchemaString"
+                    :uiSchema="collab ? undefined : uiSchemaString"
                     :collab="collab"
                     hideHeader
-                    @vjfb-change="onSchemasChange"
+                    @vjfb-definition-change="onDefinitionChange"
                 />
             </div>
         </div>

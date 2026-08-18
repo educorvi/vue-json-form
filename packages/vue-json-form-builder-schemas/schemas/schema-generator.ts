@@ -2,6 +2,7 @@ import type { FormDefinition } from './form-definition';
 import type {
     JSONSchema,
     LayoutElement,
+    UISchema,
 } from '@educorvi/vue-json-form-schemas';
 import { DependencyGroup } from './dependency';
 import { FormElement } from './form-element';
@@ -257,30 +258,19 @@ export class SchemaGenerator {
 
     /**
      * Generate a combined { jsonSchema, uiSchema } pair for the entire form.
+     *
+     * Canonical export entry point: both artifacts are derived from the root
+     * Form element, so the exported schemas always match what the builder
+     * renders and what the backend derives for persisted form versions.
      */
-    generateFullSchema(): { jsonSchema: object; uiSchema: object } {
-        const properties: Record<string, object> = {};
-        const uiElements: object[] = [];
-
-        for (const childUid of this.document.root.children) {
-            const child = this.document.getElementById(childUid);
-            if (!child) continue;
-            properties[child.id] = this.generateJsonSchema(child.uid);
-            uiElements.push(this.generateUiSchema(child.uid));
-        }
-
-        const jsonSchema = {
-            type: 'object',
-            title: this.document.root.title,
-            properties,
+    generateFullSchema(): { jsonSchema: JSONSchema; uiSchema: UISchema } {
+        const root = this.document.root;
+        return {
+            jsonSchema: {
+                ...root.toJsonSchema(this),
+                title: root.title,
+            },
+            uiSchema: root.toUiSchema(this),
         };
-
-        // TODO: specify top-level UI schema container type
-        const uiSchema = {
-            type: 'VerticalLayout',
-            elements: uiElements,
-        };
-
-        return { jsonSchema, uiSchema };
     }
 }

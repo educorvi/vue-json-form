@@ -44,13 +44,15 @@ export default defineNuxtConfig({
             name: process.env.NUXT_SESSION_NAME ?? 'external-app-session',
         },
         public: {
-            // Base URL of the backend the form-builder webcomponent
-            // authenticates against (the main json-forms-builder app,
-            // whose Keycloak brokers the external Keycloak).
-            backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL,
-            // IdP alias in the backend's Keycloak realm (kc1) that redirects
-            // to the external Keycloak via kc_idp_hint.
-            keycloakIdpHint: process.env.NUXT_PUBLIC_KEYCLOAK_IDP_HINT,
+            // Keycloak (kc1) config for the form-builder webcomponent: it
+            // logs in directly against kc1 with keycloak-js (PUBLIC client
+            // "vueformbuilder-embed", PKCE, silent check-sso). kc_idp_hint
+            // points to the external Keycloak (identity brokering), so the
+            // login skips the kc1 login page entirely.
+            kcUrl: process.env.NUXT_PUBLIC_KC_URL,
+            kcRealm: process.env.NUXT_PUBLIC_KC_REALM,
+            kcClientId: process.env.NUXT_PUBLIC_KC_CLIENT_ID,
+            kcIdpHint: process.env.NUXT_PUBLIC_KC_IDP_HINT,
             // Hocuspocus collab server of the backend (apps/json-forms-builder,
             // `yarn dev:collab`). The builder loads the form over this
             // websocket — document name = the form's numeric id.

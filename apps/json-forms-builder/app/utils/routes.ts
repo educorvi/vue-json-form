@@ -54,6 +54,11 @@ export class Routes {
         return `/forms/edit?path=${encodeURIComponent(path)}`;
     }
 
+    /** /forms/versions?path=<encoded> */
+    static formsVersions(path: string): string {
+        return `/forms/versions?path=${encodeURIComponent(path)}`;
+    }
+
     /** /forms/new or /forms/new?parent=<encoded> */
     static formsNew(parentPath?: string): string {
         return parentPath

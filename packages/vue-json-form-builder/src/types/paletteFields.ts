@@ -8,6 +8,7 @@ import {
     CheckboxGroupElement,
     FileuploadElement,
     HTMLElement,
+    DividerElement,
     ModalElement,
     ResetButton,
     SubmitButton,
@@ -43,6 +44,7 @@ export type PaletteElementType =
     | 'textarea'
     | 'email'
     | 'password'
+    | 'hidden'
     | 'date'
     | 'datetime'
     | 'time'
@@ -55,9 +57,12 @@ export type PaletteElementType =
     | 'boolean'
     | 'select'
     | 'radio'
+    | 'switches'
+    | 'buttons'
     | 'checkbox-group'
     | 'file-upload'
     | 'html'
+    | 'divider'
     | 'modal'
     | 'submit-button'
     | 'reset-button'
@@ -212,6 +217,7 @@ const inputFields: PaletteField[] = [
             }),
     },
     stringField('search', 'Search', 'bi bi-search', StringFormat.Search),
+    stringField('hidden', 'Hidden', 'bi bi-eye-slash', StringFormat.Hidden),
 ];
 
 // ── Data: Numeric ────────────────────────────────────────────────────────────
@@ -299,6 +305,36 @@ const enumFields: PaletteField[] = [
             }),
     },
     {
+        id: 'switches',
+        label: 'Switches',
+        icon: 'bi bi-toggle-on',
+        description: 'Switch list (true/false toggles)',
+        elementType: 'enum',
+        createElement: (takenIds) =>
+            new EnumElement({
+                id: uniqueId('switches', takenIds),
+                title: 'Switches',
+                required: false,
+                format: EnumFormat.Switches,
+                values: ['option1', 'option2'],
+            }),
+    },
+    {
+        id: 'buttons',
+        label: 'Button Select',
+        icon: 'bi bi-ui-buttons',
+        description: 'Button list selection',
+        elementType: 'enum',
+        createElement: (takenIds) =>
+            new EnumElement({
+                id: uniqueId('buttons', takenIds),
+                title: 'Button Select',
+                required: false,
+                format: EnumFormat.Buttons,
+                values: ['option1', 'option2'],
+            }),
+    },
+    {
         id: 'checkbox-group',
         label: 'Checkbox Group',
         icon: 'bi bi-check2-square',
@@ -361,6 +397,17 @@ const miscFields: PaletteField[] = [
                 buttonLabel: 'Open',
                 size: ModalSize.Medium,
                 buttonVariant: 'primary',
+            }),
+    },
+    {
+        id: 'divider',
+        label: 'Divider',
+        icon: 'bi bi-hr',
+        description: 'Horizontal divider line',
+        elementType: 'divider',
+        createElement: (takenIds) =>
+            new DividerElement({
+                id: uniqueId('divider', takenIds),
             }),
     },
     {

@@ -111,6 +111,23 @@ paths:
             type: string
             enum: [id, name, email, created, last_activity, role]
             default: last_activity
+        - name: resource_type
+          in: query
+          description: |
+            When set together with `resource_id`, the search is scoped to a
+            resource: users that already hold a direct permission on the
+            resource are excluded, and each result carries its highest
+            `inherited_role` from the parent group chain.
+          schema:
+            type: string
+            enum: [group, form]
+        - name: resource_id
+          in: query
+          description: |
+            Numeric ID or URL path of the resource to scope the user search
+            to (see `resource_type`).
+          schema:
+            type: string
         # - name: filter_role
         #   in: query
         #   description: Filter by global role
@@ -609,23 +626,26 @@ paths:
       - $ref: '#/components/parameters/FormIdOrPath'
     put:
       tags: [Forms]
-      summary: Import/replace the schema for a form
+      summary: Import/replace the form definition (FormDefinition)
       description: |
-        Imports/replaces the schema for a form.
+        Imports/replaces the form content in its canonical FormDefinition
+        representation (root/elements/dependencies). This is the lossless
+        import path used by the builder itself. The json/ui schema artifacts
+        are derived from this representation on demand.
       operationId: importFormSchema
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FormSchemaPayload'
+              $ref: '#/components/schemas/FormDefinitionPayload'
       responses:
         '200':
-          description: Schema replaced
+          description: Definition replaced
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormSchemaPayload'
+                $ref: '#/components/schemas/FormDefinitionPayload'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -634,16 +654,19 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
     get:
       tags: [Forms]
-      summary: Get the latest schema for a form
-      description: Returns the JSON Schema and UI Schema for the most recent revision.
+      summary: Get the form definition (FormDefinition)
+      description: |
+        Returns the canonical FormDefinition representation of the current
+        form content. The json/ui schema artifacts are derived from this
+        representation on demand via `/forms/{id}/schema/artifacts`.
       operationId: getFormLatestSchema
       responses:
         '200':
-          description: JSON Schema and UI Schema for the latest revision
+          description: FormDefinition representation of the current form content
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormSchemaPayload'
+                $ref: '#/components/schemas/FormDefinitionPayload'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -796,15 +819,20 @@ paths:
       - $ref: '#/components/parameters/SemanticVersion'
     get:
       tags: [Forms]
-      summary: Get the schema for a specific form version
+      summary: Get the form definition of a specific form version
+      description: |
+        Returns the canonical FormDefinition representation of the form
+        content as it was at the specified version. The json/ui schema
+        artifacts for that version are derived from this representation on
+        demand via `/forms/{id}/versions/{version}/schema/artifacts`.
       operationId: getFormSchemaByVersion
       responses:
         '200':
-          description: JSON Schema and UI Schema for the specified version
+          description: FormDefinition representation of the specified version
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormVersion'
+                $ref: '#/components/schemas/FormDefinitionPayload'
         '404':
           $ref: '#/components/responses/NotFound'
         '422':
@@ -1464,6 +1492,16 @@ components:
             #   format: date-time
             #   readOnly: true
             #   description: Timestamp of the user's most recent API activity
+            inherited_role:
+              anyOf:
+                - $ref: '#/components/schemas/ElementRole'
+                - type: "null"
+              readOnly: true
+              description: |
+                Only present when the user list is scoped to a resource
+                (`resource_type` + `resource_id`): the highest non-expired
+                role the user inherits from the resource's parent group
+                chain, or null. Used to gate which roles may be assigned.
         - $ref: '#/components/schemas/Timestamps'
 
     UserRef:
@@ -1512,7 +1550,6 @@ components:
           type: string
           maxLength: 255
           description: Unique name of the group within its parent, used for path generation.
-          readOnly: true
         title:
           type: string
           maxLength: 255
@@ -1588,7 +1625,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/Group'
         - type: object
-          required: [effective_role]
+          required: [effective_role, is_only_owner]
           properties:
             effective_role:
               anyOf:
@@ -1599,6 +1636,21 @@ components:
                 inherited permissions, expiry-aware; `owner` for admins).
                 `null` means the user has no access (only possible for
                 non-visible groups).
+            is_only_owner:
+              type: boolean
+              description: |
+                True when the calling user has owner access and no other
+                user holds a non-expired owner permission on this group.
+                The frontend uses this to forbid removing/demoting the last
+                owner (and to warn about it).
+            parent_visibility:
+              anyOf:
+                - $ref: '#/components/schemas/Visibility'
+                - type: "null"
+              readOnly: true
+              description: |
+                Visibility of the parent group, or null for root groups.
+                Children can never be more visible than their parent.
 
     # Child elements within a group need to be differentiated with a discriminator
 
@@ -1716,7 +1768,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/Form'
         - type: object
-          required: [effective_role]
+          required: [effective_role, is_only_owner]
           properties:
             effective_role:
               anyOf:
@@ -1727,6 +1779,21 @@ components:
                 inherited permissions, expiry-aware; `owner` for admins).
                 `null` means the user has no access (only possible for
                 non-visible forms).
+            is_only_owner:
+              type: boolean
+              description: |
+                True when the calling user has owner access and no other
+                user holds a non-expired owner permission on this form.
+                The frontend uses this to forbid removing/demoting the last
+                owner (and to warn about it).
+            parent_visibility:
+              anyOf:
+                - $ref: '#/components/schemas/Visibility'
+                - type: "null"
+              readOnly: true
+              description: |
+                Visibility of the parent group, or null for root-level forms.
+                Forms can never be more visible than their parent group.
 
     # Schema payload
 
@@ -1771,6 +1838,20 @@ components:
         ui:
           $ref: '#/components/schemas/FormSchemaPayloadArtifactsUi'
       required: [json, ui]
+
+    FormDefinitionPayload:
+      description: |
+        The form content in its canonical FormDefinition representation
+        (root/elements/dependencies). This is the lossless representation
+        the builder operates on; json/ui schema artifacts are derived from
+        it on demand.
+      type: object
+      required: [definition]
+      properties:
+        definition:
+          type: [object, "null"]
+          description: FormDefinition.toJSON() output
+          additionalProperties: true
 
     SchemaImportPayload:
       type: object

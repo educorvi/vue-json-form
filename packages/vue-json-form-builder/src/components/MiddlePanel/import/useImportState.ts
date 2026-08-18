@@ -21,7 +21,7 @@ import {
     type Ref,
     type ComputedRef,
 } from 'vue';
-import type { JSONSchema, UISchema } from '@/types/formTypes';
+import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 
 // ─── Public types ─────────────────────────────────────────────────────────────
 

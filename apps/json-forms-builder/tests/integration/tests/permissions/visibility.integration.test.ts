@@ -429,7 +429,7 @@ describe('Visibility — visible resources grant read but never write', () => {
         await expectForbidden(
             user1.client.forms.schema.import({
                 params: { id: String(formId) },
-                body: { json: {}, ui: {} },
+                body: { definition: null },
             })
         );
     });

@@ -5,6 +5,7 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import type { Visibility } from '@/utils/api-types';
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
@@ -43,6 +44,7 @@ const { isNotFound, hasError, errorMessage } = usePageError(formError, status);
 const editTitle = ref('');
 const editDescription = ref('');
 const editSlug = ref('');
+const editVisibility = ref<Visibility>('visible');
 const saving = ref(false);
 const savedMsg = ref(false);
 const saveErrorMsg = ref<string | null>(null);
@@ -62,6 +64,7 @@ watch(
             editTitle.value = f.title ?? '';
             editDescription.value = f.description ?? '';
             editSlug.value = f.name ?? '';
+            editVisibility.value = (f.visibility as Visibility) ?? 'visible';
         }
     },
     { immediate: true }
@@ -72,7 +75,8 @@ const hasChanges = computed(() => {
     return (
         editTitle.value.trim() !== (form.value.title ?? '') ||
         (editDescription.value.trim() || null) !==
-            (form.value.description ?? null)
+            (form.value.description ?? null) ||
+        editVisibility.value !== (form.value.visibility ?? 'visible')
     );
 });
 
@@ -90,6 +94,7 @@ async function onSaveGeneral() {
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,
+                visibility: editVisibility.value,
             },
         });
         savedMsg.value = true;
@@ -191,7 +196,10 @@ function goDetail() {
                 :save-error="saveErrorMsg"
                 :has-changes="hasChanges"
                 :title-state="titleState()"
+                :visibility="editVisibility"
+                :parent-visibility="form.parent_visibility ?? null"
                 @update:description="editDescription = $event"
+                @update:visibility="editVisibility = $event"
                 @save="onSaveGeneral"
             />
 

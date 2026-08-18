@@ -4,19 +4,18 @@
         "users": "Benutzer",
         "groups": "Gruppen",
         "apiKeys": "API-Schlüssel",
-        "formBuilder": "Formular-Builder",
+        "formBuilder": "Form Builder",
         "signIn": "Anmelden",
         "signOut": "Abmelden"
     },
     "landing": {
         "title": "Vue Json Form Builder",
-        "subtitle": "Formulare auf Basis von JSON Schema einfach erstellen und verwalten",
+        "subtitle": "Formulare auf Basis von JSON Schema einfach Erstellen und Verwalten",
         "signInKeycloak": "Anmelden",
         "authError": "Authentifizierung fehlgeschlagen. Bitte erneut versuchen.",
         "featuresHeading": "Funktionen",
         "featuresSubheading": "Eine Plattform zum Erstellen, Verwalten und Bereitstellen von Formularen",
         "screenshotHeading": "Interaktive Formularerstellung",
-        "screenshotPlaceholder": "Screenshot des Formular-Builders folgt in Kürze",
         "footer": "Form Builder",
         "nav": {
             "demo": "Demo",
@@ -27,15 +26,15 @@
             "subheading": "Formulare überall rendern — Web, Vue oder mobile Apps",
             "web": {
                 "title": "Web Component",
-                "description": "Mit der generischen Web Component können die Formulare in jede Webanwendung eingebettet werden — framework-unabhängig."
+                "description": "Mit der generischen Web Component können Formulare unabhängig vom verwendetetn Framework in jede Webanwendung eingebettet werden."
             },
             "vue": {
                 "title": "Vue Component",
-                "description": "Die native Vue-Komponente lässt sich direkt in jede Vue 3 App einbinden — für nahtloses Formular-Rendering mit voller Reaktivität."
+                "description": "Die native Vue-Komponente lässt sich direkt in jede Vue 3 App einbinden - für nahtloses Formular-Rendering mit voller Reaktivität."
             },
             "flutter": {
                 "title": "Flutter Widget",
-                "description": "Formulare mit dem dedizierten Flutter Widget in Mobile- und Desktop-Apps rendern."
+                "description": "Formulare mit dem Flutter Widget in mobilen Apps und Desktop-Anwendungen darstellen."
             }
         }
     },
@@ -55,32 +54,29 @@
         },
         "openApi": {
             "title": "OpenAPI REST-Schnittstelle",
-            "description": "Jede Ressource ist über eine vollständig dokumentierte, standardkonforme REST-API zugänglich, um die Plattform mit anderen Systemen zu integrieren."
+            "description": "Der Formular Builder ist über eine REST-API zugänglich, um eine einfache Integration der Plattform mit anderen Systemen zu ermöglichen."
         },
         "jsonUiSchema": {
             "title": "JSON & UI Schema",
-            "description": "Standardkonforme JSON Schema-Artefakte generieren, mit einem zusätzlichen UI-Schema zur Anpassung von Felddarstellung, Layout und Abhängigkeiten."
+            "description": "Designte Formulare können in standardisiertem JSON Schema Artefakten exportiert werden, um sie einfach in anderen Systemen zu verwenden. Ein zusätzliches UI-Schema ermöglicht mehr Flexibilität bei der Darstellung und dynamischen Inhalten."
         },
         "versioning": {
             "title": "Schema-Versionierung",
-            "description": "Änderungen an JSON-Schemas im Laufe der Zeit verfolgen und auf frühere Versionen zurücksetzen."
+            "description": "Versionierung aller Änderungen am Formular unterstützt den Entwicklungsprozess und ermöglicht die Wiederherstellung früherer Versionen."
         },
         "sso": {
             "title": "Single Sign-On",
-            "description": "Authentifizierung über OIDC — ein Login für alle Dienste innerhalb der eigenen Infrastruktur."
+            "description": "Authentifizierung mittels OIDC ermöglicht die Integration in bestehende Systeme und die Nutzung von Single Sign-On."
         }
     },
     "users": {
         "title": "Benutzer",
         "description": "Systembenutzer, Rollen und Zugriffsberechtigungen verwalten.",
-        "searchPlaceholder": "Nach Name oder E-Mail suchen…",
-        "loadError": "Benutzer konnten nicht geladen werden:",
+        "searchPlaceholder": "Nach Name oder E-Mail suchen",
+        "loadError": "Benutzer konnten nicht geladen werden",
         "noUsersTitle": "Keine Benutzer gefunden",
         "noUsersDescription": "Es gibt noch keine Benutzer.",
         "noSearchResults": "Keine Ergebnisse für '{query}'. Bitte einen anderen Suchbegriff versuchen.",
-        "total": "Keine Benutzer | {n} Benutzer | {n} Benutzer",
-        "created": "Erstellt",
-        "lastActivity": "Aktiv",
         "sortBy": {
             "name": "Name",
             "email": "E-Mail",
@@ -99,9 +95,9 @@
     },
     "groups": {
         "title": "Gruppen",
-        "searchPlaceholder": "Gruppen suchen…",
-        "searchChildrenPlaceholder": "Unterelemente suchen…",
-        "loadError": "Gruppen konnten nicht geladen werden:",
+        "searchPlaceholder": "Gruppen suchen",
+        "searchChildrenPlaceholder": "Unterelemente suchen",
+        "loadError": "Gruppen konnten nicht geladen werden",
         "noGroupsTitle": "Keine Gruppen gefunden",
         "noGroupsDescription": "Es gibt noch keine Gruppen.",
         "noChildrenTitle": "Keine Untergruppen oder Formulare",
@@ -129,8 +125,8 @@
         },
         "delete": {
             "title": "Löschen",
-            "warning": "Dies löscht die Gruppe und ALLE ihre Untergruppen und Formulare dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
-            "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
+            "warning": "Dies löscht die Gruppe und sowie ihre Untergruppen und Formulare dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+            "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen",
             "confirm": "Gruppe löschen",
             "cancel": "Abbrechen",
             "deleteSuccess": "Gruppe erfolgreich gelöscht.",
@@ -139,18 +135,18 @@
         "new": {
             "title": "Neue Gruppe",
             "addSubGroup": "Neue Untergruppe",
-            "subtitle": "Erstelle eine neue Gruppe in der Hierarchie.",
+            "subtitle": "Neue Untergruppe in diesem Pfad erstellen",
             "create": "Gruppe erstellen",
             "createSuccess": "Gruppe erfolgreich erstellt.",
             "createError": "Gruppe konnte nicht erstellt werden.",
             "fields": {
                 "title": "Titel",
-                "titlePlaceholder": "z.B. Frontend-Entwicklung",
-                "name": "URL-Slug (Name)",
+                "titlePlaceholder": "z.B. Anträge",
+                "name": "Name",
                 "namePlaceholder": "z.B. frontend-entwicklung",
-                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+                "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt.",
                 "description": "Beschreibung",
-                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "descriptionPlaceholder": "Optional — beschreibt den Zweck dieser Gruppe",
                 "parent": "Übergeordnete Gruppe",
                 "parentHint": "Leer lassen, um eine Gruppe auf oberster Ebene zu erstellen.",
                 "slugInvalid": "Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt. Darf nicht mit Bindestrich beginnen oder enden."
@@ -163,17 +159,17 @@
             "updateError": "Gruppe konnte nicht aktualisiert werden.",
             "fields": {
                 "title": "Titel",
-                "titlePlaceholder": "z.B. Frontend-Entwicklung",
-                "name": "URL-Slug (Name)",
-                "namePlaceholder": "z.B. frontend-entwicklung",
+                "titlePlaceholder": "z.B. Anträge",
+                "name": "Name",
+                "namePlaceholder": "z.B. antraege",
                 "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
                 "description": "Beschreibung",
-                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieser Gruppe.",
+                "descriptionPlaceholder": "Optional — beschreibt den Zweck dieser Gruppe.",
                 "path": "Pfad"
             }
         },
         "treeSelect": {
-            "placeholder": "Übergeordnete Gruppe wählen…",
+            "placeholder": "Übergeordnete Gruppe wählen",
             "useCurrentFolder": "Aktuellen Ordner verwenden"
         }
     },
@@ -181,15 +177,15 @@
         "title": "Formulare",
         "new": {
             "title": "Neues Formular",
-            "subtitle": "Erstelle ein neues Formular in einer Gruppe.",
+            "subtitle": "Neues Formular in einer Gruppe erstellen",
             "create": "Formular erstellen",
             "createSuccess": "Formular erfolgreich erstellt.",
             "createError": "Formular konnte nicht erstellt werden.",
             "fields": {
                 "title": "Titel",
-                "titlePlaceholder": "z.B. Urlaubsantrag",
-                "name": "URL-Slug (Name)",
-                "namePlaceholder": "z.B. urlaubsantrag",
+                "titlePlaceholder": "z.B. Reisekostenantrag",
+                "name": "Name",
+                "namePlaceholder": "z.B. Reisekostenantrag",
                 "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
                 "description": "Beschreibung",
                 "descriptionPlaceholder": "Optional — beschreibe den Zweck dieses Formulars.",
@@ -205,12 +201,12 @@
             "updateError": "Formular konnte nicht aktualisiert werden.",
             "fields": {
                 "title": "Titel",
-                "titlePlaceholder": "z.B. Urlaubsantrag",
-                "name": "URL-Slug (Name)",
-                "namePlaceholder": "z.B. urlaubsantrag",
+                "titlePlaceholder": "z.B. Reisekostenantrag",
+                "name": "Name",
+                "namePlaceholder": "z.B. Reisekostenantrag",
                 "nameHint": "Wird in URLs und Pfaden verwendet. Nur Kleinbuchstaben, Zahlen und Bindestriche.",
                 "description": "Beschreibung",
-                "descriptionPlaceholder": "Optional — beschreibe den Zweck dieses Formulars."
+                "descriptionPlaceholder": "Optional - beschreibt den Zweck des Formulars."
             }
         },
         "detail": {
@@ -218,6 +214,45 @@
             "backToForms": "Zurück zu Formularen",
             "schemaSaveSuccess": "Schema erfolgreich gespeichert.",
             "schemaSaveError": "Schema konnte nicht gespeichert werden."
+        },
+        "versions": {
+            "title": "Versionen",
+            "backToDetail": "Zurück zum Formular",
+            "create": "Version erstellen",
+            "createTitle": "Version erstellen",
+            "createSuccess": "Version erfolgreich erstellt.",
+            "createError": "Version konnte nicht erstellt werden.",
+            "loadError": "Versionen konnten nicht geladen werden:",
+            "latest": "Aktuellste",
+            "previewLatest": "Aktuellsten Stand anzeigen",
+            "previewLatestError": "Aktuellstes Schema konnte nicht geladen werden.",
+            "preview": "Vorschau",
+            "previewTitle": "Vorschau — {version}",
+            "viewArtifacts": "Artefakte",
+            "artifactsTitle": "Artefakte — {version}",
+            "artifactCopied": "Artefakt in die Zwischenablage kopiert.",
+            "artifactsMissing": "Für diese Version ist kein Schema gespeichert.",
+            "noVersionsTitle": "Noch keine Versionen",
+            "noVersionsDescription": "Speichern Sie das Schema oder erstellen Sie die erste Version.",
+            "jsonInvalid": "Ungültiges JSON in {field}.",
+            "columns": {
+                "version": "Version",
+                "comment": "Kommentar",
+                "created": "Erstellt",
+                "actions": "Aktionen"
+            },
+            "fields": {
+                "version": "Version",
+                "versionPlaceholder": "z. B. 3",
+                "versionRequired": "Eine Versionsnummer ist erforderlich.",
+                "versionHint": "Die Versionsnummer muss höher sein als die aktuellste Version. Gespeichert wird sie als {version}.0.0.",
+                "comment": "Kommentar",
+                "commentPlaceholder": "Was hat sich in dieser Version geändert?",
+                "jsonSchema": "JSON-Schema",
+                "uiSchema": "UI-Schema",
+                "schemaPlaceholder": "Leer lassen, um vom aktuellsten Stand zu übernehmen.",
+                "schemaHint": "Die Schema-Editoren sind mit dem aktuellsten Stand vorbefüllt. Leere Felder werden serverseitig vom aktuellsten Stand übernommen."
+            }
         },
         "sortBy": {
             "title": "Titel",
@@ -234,7 +269,7 @@
         "delete": {
             "title": "Löschen",
             "confirm": "Formular löschen",
-            "warning": "Dies löscht das Formular und alle seine Versionen dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+            "warning": "Dies löscht das Formular und alle seine Versionen dauerhaft. Die Aktion kann nicht rückgängig gemacht werden.",
             "confirmPrompt": "\"{name}\" eingeben, um das Löschen zu bestätigen:",
             "deleteSuccess": "Formular erfolgreich gelöscht.",
             "deleteError": "Formular konnte nicht gelöscht werden."
@@ -242,12 +277,12 @@
     },
     "dashboard": {
         "welcomeTitle": "Willkommen, {name}",
-        "welcomeDescription": "Formulare erstellen, verwalten und bereitstellen — alles an einem Ort.",
+        "welcomeDescription": "Formulare erstellen, verwalten und veröffentlichen — alles an einem Ort.",
         "recentForms": "Kürzlich hinzugefügte Formulare",
-        "recentFormsEmpty": "Noch keine Formulare — erstellen Sie jetzt eines!",
+        "recentFormsEmpty": "Noch keine Formulare",
         "allForms": "Alle Formulare",
         "createForm": "Neues Formular",
-        "createFormDesc": "Ein neues Formular von Grund auf erstellen",
+        "createFormDesc": "Ein neues, leeres Formular erstellen",
         "createGroup": "Neue Gruppe",
         "createGroupDesc": "Eine neue Gruppe zur Organisation von Formularen erstellen",
         "developer": "Entwickler",
@@ -260,32 +295,35 @@
         "ping": "Latenz"
     },
     "common": {
-        "searchPlaceholder": "Suchen…",
+        "searchPlaceholder": "Suchen",
         "sortAscending": "Aufsteigend sortieren",
         "sortDescending": "Absteigend sortieren",
-        "loading": "Laden…",
+        "loading": "Laden",
         "cancel": "Abbrechen",
         "clear": "Löschen",
         "edit": "Bearbeiten",
         "delete": "Entfernen",
+        "confirm": "Bestätigen",
         "required": "Dieses Feld ist erforderlich",
         "errorTitle": "Etwas ist schiefgelaufen",
-        "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+        "errorDescription": "Ein unerwarteter Fehler ist aufgetreten.",
         "expand": "Ausklappen",
         "collapse": "Einklappen",
         "perPage": "Pro Seite",
         "pageSizeLabel": "Pro Seite",
         "showingEntries": "{start}-{end} von {total}",
         "totalCount": "Keine Elemente | {n} Element | {n} Elemente",
+        "copy": "Kopieren",
+        "download": "Herunterladen",
         "close": "Schließen"
     },
     "settings": {
         "general": "Allgemein",
-        "generalDescription": "Verwalte grundlegende Metadaten für dieses Element.",
+        "generalDescription": "Grundlegende Metadaten verwalten",
         "advanced": "Erweitert",
         "advancedDescription": "Gefahrenzone — irreversible Aktionen wie das Löschen.",
         "permissions": "Berechtigungen",
-        "permissionsDescription": "Verwalte, wer Zugriff auf dieses Element hat und was sie tun können.",
+        "permissionsDescription": "Verwalte, wer Zugriff auf dieses Element hat und welche Berechtigungen sie besitzen.",
         "save": "Änderungen speichern",
         "saved": "Änderungen erfolgreich gespeichert.",
         "saveError": "Änderungen konnten nicht gespeichert werden."
@@ -297,7 +335,7 @@
         "addTitle": "Berechtigung hinzufügen",
         "editTitle": "Berechtigung bearbeiten",
         "deleteTitle": "Berechtigung entfernen",
-        "deleteConfirm": "Bist du sicher, dass du diese Berechtigung entfernen möchtest?",
+        "deleteConfirm": "Diese Berechtigung wird dauerhaft entfernt.",
         "columns": {
             "user": "Benutzer",
             "role": "Rolle",
@@ -321,13 +359,13 @@
         "deleteSuccess": "Berechtigung erfolgreich entfernt.",
         "form": {
             "user": "Benutzer",
-            "userPlaceholder": "Suche nach einem Benutzer…",
+            "userPlaceholder": "Suche nach einem Benutzer",
             "userNotFound": "Kein Benutzer mit dieser E-Mail oder diesem Namen gefunden.",
             "role": "Rolle",
-            "rolePlaceholder": "Wähle eine Rolle…",
+            "rolePlaceholder": "Wähle eine Rolle",
             "expire": "Ablaufdatum",
-            "expireHint": "Optional — leer lassen für kein Ablaufdatum.",
-            "inheritHint": "Dieser Benutzer hat bereits die Rolle {role} von einer übergeordneten Gruppe. Du kannst nur eine höhere Rolle zuweisen."
+            "expireHint": "Leer lassen für kein Ablaufdatum.",
+            "inheritHint": "Dieser Benutzer hat bereits die Rolle {role} von einer übergeordneten Gruppe. Nur eine höhere Rolle kann direkt zugewiesen werden."
         },
         "needRoleHint": "Für diese Aktion wird mindestens {role}-Zugriff benötigt.",
         "roles": {
@@ -348,12 +386,27 @@
             "lastname": "Name"
         },
         "expired": "Abgelaufen",
-        "never": "Nie"
+        "never": "Nie",
+        "onlyOwner": {
+            "deleteTitle": "Besitzer Rolle von sich selbst entfernen?",
+            "deleteWarning": "Einziger Besitzer dieser Ressource. Es muss immer mindestens ein Besitzer vorhanden sein, daher ist das Entfernen der eigenen Besitzer-Berechtigung nicht erlaubt.",
+            "demoteTitle": "Eigene Rolle ändern?",
+            "demoteWarning": "Eigene Rolle zu {role} ändern? Besitzer-Rechte an dieser Ressource gehen damit verloren. Zur Bestätigung muss der Nutzername eingegeben werden.",
+            "roleLockedHint": "Einziger Besitzer dieser Ressource. Die eigene Rolle kann nicht geändert werden, da es immer mindestens einen Besitzer geben muss."
+        }
+    },
+    "visibility": {
+        "label": "Sichtbarkeit",
+        "visible": "Sichtbar",
+        "private": "Privat",
+        "visibleDescription": "Jeder kann dieses Element sehen.",
+        "privateDescription": "Nur Benutzer mit explizitem Zugriff können dieses Element sehen.",
+        "parentPrivate": "Die übergeordnete Gruppe ist privat, daher ist dieses Element ebenfalls privat und kann nicht direkt sichtbar gemacht werden. Vorher muss die übergeordnete Gruppe auf sichtbar gesetzt werden."
     },
     "apiKeys": {
         "title": "API-Schlüssel",
-        "description": "API-Schlüssel für den programmatischen Zugriff auf die API verwalten.",
-        "searchPlaceholder": "API-Schlüssel suchen…",
+        "description": "API-Schlüssel für den Zugriff anderer Programme auf die API verwalten.",
+        "searchPlaceholder": "API-Schlüssel suchen",
         "loadError": "API-Schlüssel konnten nicht geladen werden:",
         "noKeysTitle": "Keine API-Schlüssel gefunden",
         "noKeysDescription": "Es gibt noch keine API-Schlüssel.",
@@ -361,7 +414,7 @@
         "total": "Keine API-Schlüssel | {n} API-Schlüssel | {n} API-Schlüssel",
         "new": {
             "title": "Neuer API-Schlüssel",
-            "subtitle": "Einen neuen API-Schlüssel für den programmatischen Zugriff erstellen.",
+            "subtitle": "Einen neuen API-Schlüssel für den Zugriff anderer Programme auf die Plattform erstellen.",
             "create": "API-Schlüssel erstellen",
             "createSuccess": "API-Schlüssel erfolgreich erstellt.",
             "createError": "API-Schlüssel konnte nicht erstellt werden.",
@@ -371,11 +424,11 @@
                 "description": "Beschreibung",
                 "descriptionPlaceholder": "Optional — Zweck dieses Schlüssels beschreiben.",
                 "expires": "Ablaufdatum",
-                "expiresHint": "Optional — leer lassen für kein Ablaufdatum."
+                "expiresHint": "Leer lassen für kein Ablaufdatum."
             },
-            "tokenTitle": "Dein API-Schlüssel",
-            "tokenWarning": "Dieses Token wird nur einmal angezeigt. Kopiere es jetzt und speichere es an einem sicheren Ort — es kann später nicht erneut abgerufen werden.",
-            "tokenCopied": "Token in die Zwischenablage kopiert.",
+            "tokenTitle": "Mein API-Schlüssel",
+            "tokenWarning": "Dieses Token wird nur einmal angezeigt. Kopieren und an einem sicheren Ort speichern, da der API-Schlüssel nicht erneut abgerufen werden kann.",
+            "tokenCopied": "Token in die Zwischenablage kopiert",
             "tokenCopy": "In die Zwischenablage kopieren"
         },
         "edit": {
@@ -415,18 +468,5 @@
     },
     "locale": {
         "label": "Sprache"
-    },
-    "designSystem": {
-        "label": "Designsystem",
-        "active": "Aktiv",
-        "hint": "Das Wechseln des Designsystems aktualisiert alle PrimeVue-Komponenten und Tailwind-Utilities sofort - kein Neuladen erforderlich.",
-        "uv": {
-            "label": "UV Corporate",
-            "description": "Flaches Unternehmens-Design mit UV-Markenfarben und 0px Rahmenradius."
-        },
-        "aura": {
-            "label": "PrimeVue Aura",
-            "description": "Standard PrimeVue Aura-Preset mit abgerundeten Ecken und Standardpalette."
-        }
     }
 }

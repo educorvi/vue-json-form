@@ -19,8 +19,10 @@ const authError = computed(() => route.query.error === 'auth_failed');
             <p class="text-secondary mb-4">
                 This minimal app logs in against the external Keycloak
                 (external-keycloak.localhost) and then embeds the form-builder
-                webcomponent, which authenticates against the main app's
-                Keycloak (kc1) via <code>kc_idp_hint</code> — no second login
+                webcomponent, which logs in directly against the main app's
+                Keycloak (kc1) via keycloak-js — silent <code>check-sso</code>,
+                with <code>kc_idp_hint</code> routing the login through this
+                app's external Keycloak (identity brokering): no second login
                 needed.
             </p>
 
