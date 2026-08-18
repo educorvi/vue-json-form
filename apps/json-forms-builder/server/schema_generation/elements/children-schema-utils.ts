@@ -1,15 +1,13 @@
-import type { ShowOnProperty } from '@educorvi/vue-json-form-schemas';
+import type { Rule } from '@educorvi/vue-json-form-schemas';
 import { SchemaGenerator } from './schema-generator';
 import { DependencyGroup, Dependency } from './dependency';
 
-export function createShowOnProperty(dependencyGroupId: string | undefined, generator: SchemaGenerator, scope: string[]): ShowOnProperty | undefined {
+export function createShowOnProperty(dependencyGroupId: string | undefined, generator: SchemaGenerator, scope: string[]): Rule | undefined {
     if (dependencyGroupId) {
         const depGroup = generator.document.getDependency_Group(dependencyGroupId);
-        if (depGroup instanceof DependencyGroup) {
+        if (depGroup instanceof DependencyGroup || depGroup instanceof Dependency) {
             const showOn = depGroup.toUiSchema(generator, scope);
-                return showOn;
-        } else if (depGroup instanceof Dependency) {
-            throw new Error(`Dependency "${depGroup.id}" is not a DependencyGroup`);
+            return showOn;
         } else {
             throw new Error(`DependencyGroup "${dependencyGroupId}" not found`);
         }

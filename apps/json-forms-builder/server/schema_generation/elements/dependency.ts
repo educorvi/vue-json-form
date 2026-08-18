@@ -5,8 +5,6 @@ import type { JSONSchema, Formula, Macro, Atom, Comparison, Operator, UnaryOpera
 import comparisonSchema from "@educorvi/rita/src/schema/comparison.json";
 import operatorSchema from "@educorvi/rita/src/schema/operator.json";
 import { SimpleElement } from "./form-element";
-import { NumberElement } from "./number";
-import { CheckboxGroupElement } from "./selection";
 import { minTwoItems } from "./utils";
 
 
@@ -74,7 +72,7 @@ export class Dependency extends Entity{
         } // TODO
     }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): Formula {
+    toUiSchema(generator: SchemaGenerator, scope: string[]): Rule {
         const sourceElement = generator.document.getElementById(this.sourceId);
         if (!sourceElement) {
             throw new Error(`Source element with id ${this.sourceId} not found`);
@@ -93,14 +91,14 @@ export class Dependency extends Entity{
                         array: {type: "atom", path: sourcePath, default: ""}
                     }
                 };
-        } else if (sourceElement instanceof CheckboxGroupElement){
+        } else if (sourceElement.isCheckboxGroup){
             const placeholder = `current_option${sourcePath.replace(".", "_")}`
             firstArgument = {type: "atom", path: placeholder, default: ""};
         } else {
             firstArgument = {
                 type: "atom",
                 path: sourcePath,
-                default: !(sourceElement instanceof NumberElement) ? "" : undefined,
+                default: !(sourceElement.usesEmptyStringDefaultWhenSourceOfDependency) ? "" : undefined,
             };
         }
 
@@ -111,17 +109,22 @@ export class Dependency extends Entity{
             arguments: [firstArgument, this.value]
         }
 
-        if (!(sourceElement instanceof CheckboxGroupElement)) {
-            return comparison;
-        } else {
+        const showOn: Rule = {
+            id: `rita-rule-${this.id}-${this.uid}`,
+            rule: comparison
+        }
+
+        if (sourceElement.isCheckboxGroup) {
             const placeholder = `current_option${sourcePath.replace(".", "_")}`
-            return {
+            const checkboxGroupDependency: Formula = {
                 type: "exists",
                 array: {type: "atom", path: sourcePath, default: []},
                 placeholder: placeholder,
                 rule: comparison
-            }
+            };
+            showOn.rule = checkboxGroupDependency;
         }
+        return showOn;
     }
 }
 
@@ -191,10 +194,8 @@ export class DependencyGroup extends Entity {
     toUiSchema(generator: SchemaGenerator, scope: string[]): Rule {
         let rule: UnaryOperator | NonUnaryOperator;
         const ruleArguments: Formula[] = this.data.dependencies.map(depId => {
-            const dep = generator.document.getElementById(depId);
-            if (dep instanceof Dependency) {
-                return dep.toUiSchema(generator, scope);
-            } else if (dep instanceof DependencyGroup) {
+            const dep = generator.document.getDependency_Group(depId);
+            if (dep instanceof Dependency || dep instanceof DependencyGroup) {
                 const rule = dep.toUiSchema(generator, scope);
                 return rule.rule;
             } else {
@@ -221,10 +222,10 @@ export class DependencyGroup extends Entity {
             };
         }
 
-        const emptyShowOn: Rule = {
+        const showOn: Rule = {
             id: this.id,
             rule: rule,
         };
-        return emptyShowOn;
+        return showOn;
     }
 }

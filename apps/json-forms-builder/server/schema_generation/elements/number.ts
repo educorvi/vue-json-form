@@ -83,6 +83,10 @@ export class NumberElement extends SimpleElement {
         return this.data.placeholder;
     }
 
+    get usesEmptyStringDefaultWhenSourceOfDependency(): boolean {
+        return false;
+    }
+
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {

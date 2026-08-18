@@ -186,6 +186,10 @@ export class CheckboxGroupElement extends SelectionElement {
         return this.data.maxItems;
     }
 
+    get isCheckboxGroup(): boolean {
+        return true;
+    }
+
     protected static setDefaults(data: PartialBy<CheckboxGroupElementData, CheckboxGroupElementOptionalKeys>): CheckboxGroupElementData {
         return {
             ...super.setDefaults(data),

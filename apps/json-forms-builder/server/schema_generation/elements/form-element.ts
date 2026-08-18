@@ -1,8 +1,8 @@
 import { z } from "zod";
-import type { Control, JSONSchema, UISchema, HTMLRenderer, Options, Divider, Button, Buttongroup, Modal } from '@educorvi/vue-json-form-schemas';
-import { cleanUiSchema, CombinedUiSchemaType, createId, Layout } from "./utils";
+import type { Control, JSONSchema, UISchema, Options } from '@educorvi/vue-json-form-schemas';
+import { cleanUiSchema, Layout } from "./utils";
+import type { CombinedUiSchemaType } from "./utils";
 import type { EntityOptionalKeys, PartialBy } from "./base";
-import { DependencyGroup } from "./dependency";
 import type { SchemaGenerator } from "./schema-generator";
 import { Entity } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
@@ -223,6 +223,16 @@ export abstract class SimpleElement extends BaseDataElement {
 
     get default(): any {
         return this.data.default;
+    }
+
+    get usesEmptyStringDefaultWhenSourceOfDependency(): boolean {
+        // to avoid circular imports
+        return true;
+    }
+
+    get isCheckboxGroup(): boolean {
+        // to avoid circular imports
+        return false;
     }
 
     protected static setDefaults(data: PartialBy<SimpleElementData, SimpleElementOptionalKeys>): SimpleElementData {
