@@ -233,6 +233,33 @@ export class FormDefinition {
     this.parentIndex.set(formElement.uid, containerElement.uid);
   }
 
+  // TODO temp for testing
+  addDependency(
+    parentId: string,
+    dependency: Dependency | DependencyGroup,
+  ): void {
+    if (!dependency) throw new Error(`Dependency is undefined`);
+
+    const parent = this.getElementById(parentId);
+    if (parent) {
+      parent.data.dependencyGroup = dependency.uid;
+    } else {
+      const parentDependency = this.getDependency_Group(parentId);
+      if (!parentDependency) {
+        throw new Error(`Parent "${parentId}" not found`);
+      } else if (parentDependency instanceof Dependency) {
+        throw new Error(`Parent "${parentId}" is a Dependency, which cannot have children`);
+      } else if (parentDependency instanceof DependencyGroup) {
+        parentDependency.dependencies.push(dependency.uid);
+      } else {
+        throw new Error(`Parent "${parentId}" is neither a FormElement nor a DependencyGroup`);
+      }
+    }
+
+    this.dependencyIndex.set(dependency.uid, dependency);
+    this.dependencyParentIndex.set(dependency.uid, parentId);
+  }
+
   /**
    * Add a dependency to the dependencyIndex and update the elementDependencyGraph for the source element.
    * Also updates the dependencyParentIndex to point to the parent dependency group or element.
