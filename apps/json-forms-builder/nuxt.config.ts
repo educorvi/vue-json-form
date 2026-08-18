@@ -69,16 +69,21 @@ export default defineNuxtConfig({
         auth: {
             allowedRedirectOrigins:
                 process.env.NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS ?? '',
+            // Comma-separated Keycloak client ids whose ACCESS TOKENS are
+            // accepted for bearer auth (azp/aud check in
+            // server/lib/jwt-auth.ts). Needed for the PUBLIC embed client
+            // ("vueformbuilder-embed") that the form-builder webcomponent
+            // logs in with (keycloak-js). Empty = only the OIDC client
+            // (NUXT_OAUTH_KEYCLOAK_CLIENT_ID) is accepted.
+            allowedClientIds: process.env.NUXT_AUTH_ALLOWED_CLIENT_IDS ?? '',
         },
         // The session cookie: SameSite=None + Secure lets browsers WITHOUT
         // third-party-cookie blocking (e.g. the VS Code embedded browser)
         // attach the cookie to the cross-site session check and the collab
-        // websocket handshake, so the login popup can be skipped entirely.
-        // This is an OPTIMIZATION only — browsers WITH third-party-cookie
-        // blocking ignore the cookie regardless; there the webcomponent
-        // falls back to its login popup, which relays the Keycloak access
-        // token through /auth/popup-close (see server/routes/auth/keycloak.get.ts),
-        // and the collab websocket authenticates with that token instead.
+        // websocket handshake. This is an OPTIMIZATION only — browsers WITH
+        // third-party-cookie blocking ignore the cookie regardless; there
+        // the webcomponent uses keycloak-js (silent check-sso + bearer
+        // token, see useBuilderAuth) instead of relying on the cookie.
         // session: {
         //     cookie: {
         //         sameSite: 'none',

@@ -2,9 +2,11 @@ import * as Y from 'yjs';
 import { FormDefinition } from '../form-definition';
 import { ContainerElement } from '../container';
 import { FormElement } from '../form-element';
-import { DependencyGroup } from '../dependency';
+import { Dependency, DependencyGroup } from '../dependency';
 import { Form } from '../form';
+import { FormElementRegistry } from '../registry';
 import { Layout } from '../utils';
+import type { z } from 'zod';
 
 /**
  * Yjs document layout for a FormDefinition:
@@ -102,6 +104,60 @@ export function formDefinitionToYDoc(formDefinition: FormDefinition): Y.Doc {
     }
 
     return doc;
+}
+
+/**
+ * Clear every map of a Y.Doc (root, elements, dependencies) in one
+ * transaction. Used before hydrating a different definition into an
+ * existing document (e.g. loading a definition in the local engine or a
+ * server-side import).
+ */
+export function clearDocument(doc: Y.Doc): void {
+    doc.transact(() => {
+        doc.getMap(ROOT_MAP).clear();
+        doc.getMap(ELEMENTS_MAP).clear();
+        doc.getMap(DEPENDENCIES_MAP).clear();
+    });
+}
+
+/**
+ * Write a FormDefinition INTO an existing Y.Doc (the maps are cleared
+ * first). This is the in-place counterpart of formDefinitionToYDoc, which
+ * creates a brand-new document — callers that need to replace the content
+ * of a live document (local engine load, server-side imports) use this so
+ * observers on the document fire exactly once.
+ */
+export function hydrateDocument(
+    doc: Y.Doc,
+    formDefinition: FormDefinition
+): void {
+    doc.transact(() => {
+        const root = doc.getMap(ROOT_MAP);
+        const elements = doc.getMap(ELEMENTS_MAP);
+        const dependencies = doc.getMap(DEPENDENCIES_MAP);
+
+        root.clear();
+        elements.clear();
+        dependencies.clear();
+
+        for (const [key, value] of Object.entries(formDefinition.root.data)) {
+            root.set(key, plainToYType(value));
+        }
+        for (const [uid, element] of formDefinition.nodesIndex) {
+            const elementMap = new Y.Map<unknown>();
+            for (const [key, value] of Object.entries(element.data)) {
+                elementMap.set(key, plainToYType(value));
+            }
+            elements.set(uid, elementMap);
+        }
+        for (const [uid, dep] of formDefinition.dependencyIndex) {
+            const depMap = new Y.Map<unknown>();
+            for (const [key, value] of Object.entries(dep.data)) {
+                depMap.set(key, plainToYType(value));
+            }
+            dependencies.set(uid, depMap);
+        }
+    });
 }
 
 /**
@@ -214,6 +270,165 @@ export function getChildrenArray(
     throw new Error(`Container "${containerUid}" has no children array`);
 }
 
+// ─── Validation (zod reuse) ──────────────────────────────────────────────────
+
+/** Constructor type of a registered element class (schema + name). */
+type FormElementConstructor = {
+    new (...args: never[]): FormElement;
+    schema: z.ZodTypeAny;
+    name: string;
+};
+
+/**
+ * Resolve the element class for a `type` string — the same registry that
+ * powers FormDefinition.fromJSON. Throws for unknown types so corrupted
+ * documents surface early instead of being written to the shared doc.
+ */
+export function getElementCtorByType(type: string): FormElementConstructor {
+    const ctor = FormElementRegistry.get(type);
+    if (!ctor) {
+        throw new Error(`Unknown FormElement type "${type}"`);
+    }
+    return ctor as unknown as FormElementConstructor;
+}
+
+/** The class whose zod schema validates an element's data. */
+function ctorOfElement(element: FormElement): FormElementConstructor {
+    const byType = FormElementRegistry.get(
+        (element.data as { type?: string }).type ?? ''
+    );
+    return (byType ?? element.constructor) as unknown as FormElementConstructor;
+}
+
+/** The zod schema (class) for an element map already stored in the doc. */
+function ctorOfElementMap(elementMap: Y.Map<unknown>) {
+    const type = elementMap.get('type');
+    if (typeof type !== 'string') {
+        throw new Error('Element map is missing a "type" field');
+    }
+    return getElementCtorByType(type);
+}
+
+/**
+ * Validate an element's data against its class zod schema — the same
+ * validation FormDefinition.fromJSON applies when loading a document, so
+ * nothing that would fail a reload can ever be written to the shared doc.
+ * Returns the (possibly defaulted) validated data.
+ */
+export function validateElementData(
+    element: FormElement
+): Record<string, unknown> {
+    const ctor = ctorOfElement(element);
+    const result = ctor.schema.safeParse(element.data);
+    if (!result.success) {
+        const type = (element.data as { type?: string }).type ?? 'unknown';
+        throw new Error(
+            `Invalid data for ${type} element "${element.uid}": ${result.error.message}`
+        );
+    }
+    return result.data as Record<string, unknown>;
+}
+
+/** Validates a plain data object against the class of a stored element map. */
+export function validateElementMapData(
+    elementMap: Y.Map<unknown>,
+    data: Record<string, unknown>
+): void {
+    const ctor = ctorOfElementMap(elementMap);
+    const result = ctor.schema.safeParse(data);
+    if (!result.success) {
+        const type = elementMap.get('type');
+        throw new Error(
+            `Invalid data for ${type} element "${elementMap.get('uid')}": ${result.error.message}`
+        );
+    }
+}
+
+/** Validates a plain data object against the Form (root) schema. */
+export function validateRootData(data: Record<string, unknown>): void {
+    const result = Form.schema.safeParse(data);
+    if (!result.success) {
+        throw new Error(`Invalid Form data: ${result.error.message}`);
+    }
+}
+
+/**
+ * Validate the target of an insert/move: either the root Form or a
+ * ContainerElement (a map with a children Y.Array). Mirrors
+ * FormDefinition.liveChildrenOf — non-containers (e.g. leaf controls)
+ * cannot receive children.
+ */
+export function assertContainer(doc: Y.Doc, containerUid: string): void {
+    const root = doc.getMap(ROOT_MAP);
+    if (containerUid === root.get('uid')) {
+        const children = root.get(CHILDREN_KEY);
+        if (children instanceof Y.Array) return;
+        throw new Error('Root Form has no children array');
+    }
+    const element = getElementMap(doc, containerUid);
+    if (!element) {
+        throw new Error(`Container "${containerUid}" not found`);
+    }
+    if (!(element.get(CHILDREN_KEY) instanceof Y.Array)) {
+        throw new Error(`Container "${containerUid}" is not a container`);
+    }
+}
+
+/**
+ * Build a Y.Map for an element, validating its data first. Every element map
+ * written through this helper passes the class zod schema, so a reload via
+ * FormDefinition.fromJSON can never fail on data the adapter wrote itself.
+ */
+export function createElementMap(
+    element: FormElement
+): { uid: string; map: Y.Map<unknown> } {
+    const data = validateElementData(element);
+    const map = new Y.Map<unknown>();
+    for (const [key, value] of Object.entries(data)) {
+        map.set(key, plainToYType(value));
+    }
+    return { uid: element.uid, map };
+}
+
+/**
+ * Ensure the element carries a uid — the palette constructs elements with a
+ * fresh uid (Entity defaults), this is only a safety net for callers that
+ * build plain data. Mirrors Entity.setDefaults.
+ */
+export function ensureUid(element: FormElement): void {
+    if (!element.uid) {
+        element.data.uid = globalThis.crypto.randomUUID();
+    }
+}
+
+/** Removes an element uid from the first parent children array that contains it. */
+export function removeFromParent(
+    doc: Y.Doc,
+    elementUid: string
+): boolean {
+    const root = doc.getMap(ROOT_MAP);
+    const rootChildren = root.get(CHILDREN_KEY);
+    if (rootChildren instanceof Y.Array) {
+        const idx = rootChildren.toArray().indexOf(elementUid);
+        if (idx !== -1) {
+            rootChildren.delete(idx, 1);
+            return true;
+        }
+    }
+    for (const [, elementMap] of doc.getMap(ELEMENTS_MAP)) {
+        if (!(elementMap instanceof Y.Map)) continue;
+        const children = elementMap.get(CHILDREN_KEY);
+        if (children instanceof Y.Array) {
+            const idx = children.toArray().indexOf(elementUid);
+            if (idx !== -1) {
+                children.delete(idx, 1);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /**
  * Initialize a brand-new Y.Doc with the root Form data.
  *
@@ -240,8 +455,9 @@ export function initializeEmptyDocument(
  * form's uid). The whole operation runs inside one Yjs transaction, so peers
  * see it atomically and it merges conflict-free with concurrent edits.
  *
- * The element must carry a fresh `uid` (generated by Entity), otherwise two
- * clients adding "the same" element would silently overwrite each other.
+ * The element's data is validated against its class zod schema before it is
+ * written (createElementMap) and the target must be a container — the same
+ * checks FormDefinition.fromJSON / liveChildrenOf enforce on load and move.
  * `index` is the position inside the container's children array — the order
  * of elements is part of the synced state.
  */
@@ -253,28 +469,24 @@ export function addElement(
 ): void {
     doc.transact(() => {
         initializeEmptyDocument(doc);
-        const elements = doc.getMap(ELEMENTS_MAP);
-        const elementMap = new Y.Map<unknown>();
-        for (const [key, value] of Object.entries(element.data)) {
-            elementMap.set(key, plainToYType(value));
-        }
-        elements.set(element.uid, elementMap);
-
+        ensureUid(element);
+        const { uid, map } = createElementMap(element);
+        doc.getMap(ELEMENTS_MAP).set(uid, map);
         const children = getChildrenArray(doc, containerUid);
         if (index === undefined) {
-            children.push([element.uid]);
+            children.push([uid]);
         } else {
-            children.insert(index, [element.uid]);
+            children.insert(Math.min(index, children.length), [uid]);
         }
     });
 }
 
 /**
  * Add a whole element subtree (e.g. a button-group with its buttons) to a
- * container. All element maps are written in one transaction; only the first
- * element is inserted into the container's children array — the others are
- * referenced by uid from the root element's data (exactly like any other
- * flat element set).
+ * container. All element maps are validated and written in one transaction;
+ * only the first element is inserted into the container's children array —
+ * the others are referenced by uid from the root element's data (exactly
+ * like any other flat element set).
  */
 export function addElements(
     doc: Y.Doc,
@@ -285,13 +497,12 @@ export function addElements(
     if (elements.length === 0) return;
     doc.transact(() => {
         initializeEmptyDocument(doc);
+        assertContainer(doc, containerUid);
         const elementsMap = doc.getMap(ELEMENTS_MAP);
         for (const element of elements) {
-            const elementMap = new Y.Map<unknown>();
-            for (const [key, value] of Object.entries(element.data)) {
-                elementMap.set(key, plainToYType(value));
-            }
-            elementsMap.set(element.uid, elementMap);
+            ensureUid(element);
+            const { uid, map } = createElementMap(element);
+            elementsMap.set(uid, map);
         }
 
         const children = getChildrenArray(doc, containerUid);
@@ -305,22 +516,39 @@ export function addElements(
     });
 }
 
-/** Update a single field of an element (title, required, placeholder, ...). */
-export function updateElementField<T extends FormElement | Form>(
+/**
+ * Update a single field of an element (title, required, placeholder, ...).
+ *
+ * The merged data (current map + the change) is validated against the
+ * element's class zod schema before writing — a change that would leave the
+ * element in a state FormDefinition.fromJSON rejects is refused with a
+ * descriptive error instead of being synced to every client.
+ */
+export function updateElementField(
     doc: Y.Doc,
     uid: string,
     field: string,
-    value: Partial<T['data']>
+    value: unknown
 ): void {
     doc.transact(() => {
         // The root Form lives in the root map, not the elements map.
         const root = doc.getMap(ROOT_MAP);
         if (root.get('uid') === uid) {
+            const merged: Record<string, unknown> = {
+                ...root.toJSON(),
+                [field]: value,
+            };
+            validateRootData(merged);
             root.set(field, plainToYType(value));
             return;
         }
         const element = getElementMap(doc, uid);
         if (!element) throw new Error(`Element "${uid}" not found`);
+        const merged: Record<string, unknown> = {
+            ...element.toJSON(),
+            [field]: value,
+        };
+        validateElementMapData(element, merged);
         element.set(field, plainToYType(value));
     });
 }
@@ -330,7 +558,7 @@ export function updateElementField<T extends FormElement | Form>(
  * The element itself stays put; only the parents' children arrays change
  * (delete from the old parent's Y.Array, insert into the target's Y.Array).
  * Delete happens first, so moving within the same parent keeps the final
- * order correct.
+ * order correct. The target must be a container (root or ContainerElement).
  */
 export function moveElement(
     doc: Y.Doc,
@@ -339,33 +567,16 @@ export function moveElement(
     newIndex: number
 ): void {
     doc.transact(() => {
-        // remove from old parent — scan the root children array and every
-        // container's children array (the element can be anywhere in the tree)
-        const root = doc.getMap(ROOT_MAP);
-        const allParents: Y.Array<string>[] = [];
-        const rootChildren = root.get(CHILDREN_KEY);
-        if (rootChildren instanceof Y.Array) allParents.push(rootChildren);
-        for (const [, elementMap] of doc.getMap(ELEMENTS_MAP)) {
-            if (!(elementMap instanceof Y.Map)) continue;
-            const children = elementMap.get(CHILDREN_KEY);
-            if (children instanceof Y.Array) allParents.push(children);
-        }
-        let removed = false;
-        for (const parent of allParents) {
-            const idx = parent.toArray().indexOf(elementUid);
-            if (idx !== -1) {
-                parent.delete(idx, 1);
-                removed = true;
-                break;
-            }
-        }
+        const removed = removeFromParent(doc, elementUid);
         if (!removed) {
             throw new Error(
                 `Element "${elementUid}" not found in any parent's children`
             );
         }
 
-        // insert into target
+        // insert into target (delete first keeps the order correct when the
+        // target is the old parent itself)
+        assertContainer(doc, targetContainerUid);
         const targetChildren = getChildrenArray(doc, targetContainerUid);
         const insertIndex = Math.min(newIndex, targetChildren.length);
         targetChildren.insert(insertIndex, [elementUid]);
@@ -395,22 +606,7 @@ export function deleteElement(doc: Y.Doc, elementUid: string): void {
         removeRecursively(elementUid);
 
         // detach from parent (root children + every container's children)
-        const root = doc.getMap(ROOT_MAP);
-        const candidates: Y.Array<string>[] = [];
-        const rootChildren = root.get(CHILDREN_KEY);
-        if (rootChildren instanceof Y.Array) candidates.push(rootChildren);
-        for (const [, elementMap2] of elements) {
-            if (!(elementMap2 instanceof Y.Map)) continue;
-            const children = elementMap2.get(CHILDREN_KEY);
-            if (children instanceof Y.Array) candidates.push(children);
-        }
-        for (const parent of candidates) {
-            const idx = parent.toArray().indexOf(elementUid);
-            if (idx !== -1) {
-                parent.delete(idx, 1);
-                break;
-            }
-        }
+        removeFromParent(doc, elementUid);
 
         // cascade-delete the element's dependency group (and its nested groups)
         if (typeof groupUid === 'string') {
@@ -431,6 +627,64 @@ export function getDependencyGroupMap(
     return map instanceof Y.Map ? map : undefined;
 }
 
+/** Validates a dependency entity's data against its class zod schema. */
+export function validateDependencyData(
+    dependency: Dependency | DependencyGroup
+): Record<string, unknown> {
+    const ctor =
+        dependency instanceof DependencyGroup
+            ? DependencyGroup
+            : Dependency;
+    const result = ctor.schema.safeParse(dependency.data);
+    if (!result.success) {
+        throw new Error(
+            `Invalid data for ${dependency instanceof DependencyGroup ? 'DependencyGroup' : 'Dependency'} "${dependency.uid}": ${result.error.message}`
+        );
+    }
+    return result.data as Record<string, unknown>;
+}
+
+/** Writes a dependency entity map, validated against its class schema. */
+function setDependencyMap(
+    doc: Y.Doc,
+    dependency: Dependency | DependencyGroup
+): void {
+    const data = validateDependencyData(dependency);
+    const map = new Y.Map<unknown>();
+    for (const [key, value] of Object.entries(data)) {
+        map.set(key, plainToYType(value));
+    }
+    doc.getMap(DEPENDENCIES_MAP).set(dependency.uid, map);
+}
+
+/**
+ * Add a plain Dependency to a DependencyGroup (mirrors
+ * FormDefinition.addDependencyToGroup): the dependency is written as a
+ * first-class entity and its uid is appended to the group's `dependencies`
+ * Y.Array. The group must exist and the dependency data must pass the
+ * Dependency zod schema.
+ */
+export function addDependencyToGroup(
+    doc: Y.Doc,
+    dependency: Dependency,
+    groupUid: string
+): void {
+    doc.transact(() => {
+        const group = getDependencyGroupMap(doc, groupUid);
+        if (!group) {
+            throw new Error(`Parent DependencyGroup "${groupUid}" not found`);
+        }
+        const dependencies = group.get(DEPENDENCIES_KEY);
+        if (!(dependencies instanceof Y.Array)) {
+            throw new Error(
+                `Dependency group "${groupUid}" has no ${DEPENDENCIES_KEY} array`
+            );
+        }
+        setDependencyMap(doc, dependency);
+        dependencies.push([dependency.uid]);
+    });
+}
+
 /**
  * Add a dependency group to the document. Groups are entities with their own
  * uid (like elements) and are referenced by elements via the `dependencyGroup`
@@ -444,12 +698,7 @@ export function addDependencyGroup(
     parentGroupUid?: string
 ): void {
     doc.transact(() => {
-        const dependencies = doc.getMap(DEPENDENCIES_MAP);
-        const groupMap = new Y.Map<unknown>();
-        for (const [key, value] of Object.entries(group.data)) {
-            groupMap.set(key, plainToYType(value));
-        }
-        dependencies.set(group.uid, groupMap);
+        setDependencyMap(doc, group);
 
         if (parentGroupUid) {
             const parentMap = getDependencyGroupMap(doc, parentGroupUid);
@@ -478,6 +727,16 @@ export function updateDependencyGroupField(
 ): void {
     const group = getDependencyGroupMap(doc, uid);
     if (!group) throw new Error(`Dependency group "${uid}" not found`);
+    const merged: Record<string, unknown> = {
+        ...group.toJSON(),
+        [field]: value,
+    };
+    const result = DependencyGroup.schema.safeParse(merged);
+    if (!result.success) {
+        throw new Error(
+            `Invalid data for DependencyGroup "${uid}": ${result.error.message}`
+        );
+    }
     group.set(field, plainToYType(value));
 }
 
@@ -495,6 +754,11 @@ export function setElementDependency(
     if (groupUid === undefined) {
         element.delete('dependencyGroup');
     } else {
+        if (!getDependencyGroupMap(doc, groupUid)) {
+            throw new Error(
+                `Dependency group "${groupUid}" not found in the document`
+            );
+        }
         element.set('dependencyGroup', groupUid);
     }
 }

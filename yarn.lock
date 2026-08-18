@@ -1036,6 +1036,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:^0.45.7"
+    keycloak-js: "npm:^26"
     pinia: "npm:^3.0.4"
     pinia-plugin-persistedstate: "npm:^4.7.1"
     prettier: "npm:^3.8.3"
@@ -12916,6 +12917,8 @@ __metadata:
   resolution: "json-forms-builder@workspace:apps/json-forms-builder"
   dependencies:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
+    "@educorvi/vue-json-form": "workspace:^"
+    "@educorvi/vue-json-form-ajv-validator": "workspace:^"
     "@educorvi/vue-json-form-builder": "workspace:*"
     "@educorvi/vue-json-form-builder-schemas": "workspace:^"
     "@hey-api/openapi-ts": "npm:0.99.0"
@@ -13160,6 +13163,13 @@ __metadata:
   version: 6.0.2
   resolution: "just-diff@npm:6.0.2"
   checksum: 10/4c6b14d6be2a3391b020ea2b3d1a0acf2f4c60fcb16681c7f6f76d4c0f1841fae5b00c1a2e719980992e46320e4b6c55a4713683cb1873dd41a2621f08c9f8e8
+  languageName: node
+  linkType: hard
+
+"keycloak-js@npm:^26":
+  version: 26.2.4
+  resolution: "keycloak-js@npm:26.2.4"
+  checksum: 10/d12e595486160267b18d845e6587303298d38488161a9aaa4679a530315404078bdedf74d3e01f7472585f80983ce65b4b49fc323ceade2329e36c1507dc606c
   languageName: node
   linkType: hard
 

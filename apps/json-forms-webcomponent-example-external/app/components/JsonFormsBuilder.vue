@@ -14,10 +14,16 @@
  * component waits for `customElements.whenDefined()` before rendering.
  */
 const props = defineProps<{
-    /** Base URL of the backend the webcomponent authenticates against. */
-    backendUrl?: string;
-    /** kc_idp_hint forwarded to the backend's Keycloak login. */
-    keycloakIdpHint?: string;
+    /**
+     * Keycloak (kc1) config for the webcomponent's keycloak-js login:
+     * PUBLIC client ("vueformbuilder-embed"), silent check-sso on mount,
+     * access token authenticates the collab websocket.
+     */
+    kcUrl?: string;
+    kcRealm?: string;
+    kcClientId?: string;
+    /** `kc_idp_hint` → external Keycloak (identity brokering). */
+    kcIdpHint?: string;
     /** WebSocket URL of the Hocuspocus collab server (form loading). */
     collabUrl?: string;
     /** Document name = the form's numeric id in the backend. */
@@ -87,8 +93,10 @@ onMounted(async () => {
             v-else
             class="flex-grow-1"
             style="min-height: 0"
-            :backend-url="props.backendUrl"
-            :keycloak-idp-hint="props.keycloakIdpHint"
+            :kc-url="props.kcUrl"
+            :kc-realm="props.kcRealm"
+            :kc-client-id="props.kcClientId"
+            :kc-idp-hint="props.kcIdpHint"
             :collab-url="props.collabUrl"
             :collab-document-name="props.collabDocumentName"
             :collab-user-id="props.collabUserId"

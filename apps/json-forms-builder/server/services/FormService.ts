@@ -8,6 +8,7 @@ import {
     type Repository,
     type DeepPartial,
 } from 'typeorm';
+import { FormDefinition } from '@educorvi/vue-json-form-builder-schemas';
 import { Form } from '~~/server/db/entities/Form';
 import { FormRevision } from '~~/server/db/entities/FormRevision';
 import { Permission } from '~~/server/db/entities/Permission';
@@ -18,6 +19,14 @@ import type { PaginationParams } from '~~/server/orpc/api-helpers';
 import { zForm, zParentPath } from '../orpc/generated/zod.gen';
 import z from 'zod';
 import { mapDbFormToApiForm } from '../orpc/mapping/form';
+import {
+    artifactsToYjsState,
+    yjsStateToArtifacts,
+    yjsStateToFormDefinition,
+    definitionToYjsState,
+    type FormArtifacts,
+    type FormContent,
+} from '~~/server/lib/form-content';
 
 export type ApiForm = z.infer<typeof zForm>;
 export type ApiParentPath = z.infer<typeof zParentPath>;
@@ -354,10 +363,7 @@ export class FormService {
     async createVersion(
         formId: number,
         version: number,
-        schema: {
-            json: Record<string, unknown> | null;
-            ui: Record<string, unknown> | null;
-        },
+        artifacts: Partial<FormArtifacts> | null,
         comment: string | null,
         createdBy: { id: string }
     ): Promise<FormRevision> {
@@ -371,12 +377,38 @@ export class FormService {
                 message: 'New version must be higher than current latest',
             });
         }
+
+        // The version snapshot is always derived from the form's yjs state.
+        // Artifacts (json/ui) may be provided explicitly — they are converted
+        // into yjs state, merging missing sides from the current content.
+        const form = await this.findEntityById(formId);
+        let state: Buffer | null = null;
+        if (
+            artifacts &&
+            (artifacts.json !== undefined || artifacts.ui !== undefined)
+        ) {
+            state = artifactsToYjsState(artifacts, form.yjs_state);
+        } else {
+            state = form.yjs_state;
+        }
+        // Fallback: if the form itself has no content yet, snapshot the
+        // latest revision's state (covers versions created right after a
+        // fresh import that predates the yjs migration).
+        if (!state && latest) {
+            state = latest.yjs_state;
+        }
+        if (!state) {
+            throw new ORPCError('CONFLICT', {
+                message: 'No content available to version',
+            });
+        }
+
         const rev = this.revisionRepo.create({
             form: { id: formId },
             version,
             // Note: The `order` column is NOT NULL but unused by queries
             order: version,
-            schema,
+            yjs_state: state,
             comment,
             created_by: createdBy,
             updated_by: createdBy,
@@ -417,34 +449,132 @@ export class FormService {
         return rev;
     }
 
-    // ── Schema (direct on Form entity) ─────────────────────────────────────
-
-    async getFormSchema(formId: number): Promise<{
-        json: Record<string, unknown> | null;
-        ui: Record<string, unknown> | null;
-    } | null> {
-        const form = await this.findEntityById(formId);
-        return form.schema ?? null;
+    /**
+     * FormDefinition of a specific version, derived from that revision's
+     * yjs snapshot. Null when the version has no content.
+     */
+    async getFormDefinitionByVersion(
+        formId: number,
+        version: number
+    ): Promise<FormContent | null> {
+        const rev = await this.getSchemaByVersion(formId, version);
+        const definition = yjsStateToFormDefinition(rev.yjs_state);
+        return definition
+            ? { definition: definition.toJSON() as Record<string, unknown> }
+            : null;
     }
 
-    async importFormSchema(
+    // ── Schema (derived from the yjs definition on Form entity) ────────────
+
+    /**
+     * Current FormDefinition (plain JSON) derived from the form's yjs state.
+     * Falls back to the latest revision's snapshot when the form itself has
+     * no content yet.
+     */
+    async getFormDefinition(formId: number): Promise<FormContent | null> {
+        const form = await this.findEntityById(formId);
+        let definition = yjsStateToFormDefinition(form.yjs_state);
+        if (!definition) {
+            const latest = await this.revisionRepo.findOne({
+                where: { form: { id: formId } },
+                order: { version: 'DESC' },
+            });
+            definition = latest
+                ? yjsStateToFormDefinition(latest.yjs_state)
+                : null;
+        }
+        return definition
+            ? { definition: definition.toJSON() as Record<string, unknown> }
+            : null;
+    }
+
+    /**
+     * Replace the form's content from a FormDefinition (plain JSON). This is
+     * the lossless import path used by the builder itself.
+     */
+    async importFormDefinition(
         formId: number,
-        payload: {
-            json?: Record<string, unknown> | null;
-            ui?: Record<string, unknown> | null;
-        },
+        definition: Record<string, unknown>,
         createdBy: { id: string }
     ): Promise<FormRevision> {
         const form = await this.findEntityById(formId);
-        const current = form.schema ?? { json: null, ui: null };
 
-        const merged = {
-            json: payload.json !== undefined ? payload.json : current.json,
-            ui: payload.ui !== undefined ? payload.ui : current.ui,
-        };
+        // Validate the definition against the element registry before
+        // storing it.
+        let parsed: FormDefinition;
+        try {
+            parsed = FormDefinition.fromJSON(JSON.stringify(definition));
+        } catch (err) {
+            throw new ORPCError('BAD_REQUEST', {
+                message: `Invalid FormDefinition: ${
+                    err instanceof Error ? err.message : 'validation failed'
+                }`,
+            });
+        }
+        const state = definitionToYjsState(parsed);
 
-        // Update the form's current schema cache
-        form.schema = merged;
+        form.yjs_state = state;
+        await this.formRepo.save(form);
+
+        // Auto-increment version and create a revision snapshot
+        const latest = await this.revisionRepo.findOne({
+            where: { form: { id: formId } },
+            order: { version: 'DESC' },
+        });
+        const nextVersion = latest ? latest.version + 1 : 1;
+
+        const rev = this.revisionRepo.create({
+            form: { id: formId },
+            version: nextVersion,
+            // Note: The `order` column is NOT NULL but unused by queries
+            order: nextVersion,
+            yjs_state: state,
+            comment: '',
+            created_by: createdBy,
+            updated_by: createdBy,
+        });
+        return this.revisionRepo.save(rev);
+    }
+
+    /**
+     * Current artifacts ({json, ui}) derived from the form's yjs state.
+     * Falls back to the latest revision's snapshot when the form itself has
+     * no content yet.
+     */
+    async getFormArtifacts(formId: number): Promise<FormArtifacts | null> {
+        const form = await this.findEntityById(formId);
+        let artifacts = yjsStateToArtifacts(form.yjs_state);
+        if (!artifacts) {
+            const latest = await this.revisionRepo.findOne({
+                where: { form: { id: formId } },
+                order: { version: 'DESC' },
+            });
+            artifacts = latest ? yjsStateToArtifacts(latest.yjs_state) : null;
+        }
+        return artifacts;
+    }
+
+    /**
+     * Import artifacts ({json, ui}) by converting them into yjs state.
+     * Legacy import path for API consumers; the builder itself uses
+     * importFormDefinition (lossless). Missing sides are merged from the
+     * current content.
+     */
+    async importFormArtifacts(
+        formId: number,
+        payload: Partial<FormArtifacts>,
+        createdBy: { id: string }
+    ): Promise<FormRevision> {
+        const form = await this.findEntityById(formId);
+
+        const state = artifactsToYjsState(payload, form.yjs_state);
+        if (!state) {
+            throw new ORPCError('BAD_REQUEST', {
+                message: 'No schema content provided',
+            });
+        }
+
+        form.yjs_state = state;
         await this.formRepo.save(form);
 
         // Auto-increment version and create a revision
@@ -459,7 +589,7 @@ export class FormService {
             version: nextVersion,
             // Note: The `order` column is NOT NULL but unused by queries
             order: nextVersion,
-            schema: merged,
+            yjs_state: state,
             comment: '',
             created_by: createdBy,
             updated_by: createdBy,

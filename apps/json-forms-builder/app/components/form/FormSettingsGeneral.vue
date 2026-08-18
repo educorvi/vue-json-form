@@ -2,6 +2,8 @@
     FormSettingsGeneral – General section for the form edit page.
 -->
 <script setup lang="ts">
+import type { Visibility } from '@/utils/api-types';
+
 defineProps<{
     modelValue: string;
     description: string;
@@ -13,11 +15,15 @@ defineProps<{
     saveError?: string | null;
     hasChanges?: boolean;
     titleState?: boolean | undefined;
+    visibility?: Visibility;
+    /** Visibility of the parent group (null for root forms). */
+    parentVisibility?: Visibility | null;
 }>();
 
 const emit = defineEmits<{
     'update:modelValue': [value: string];
     'update:description': [value: string];
+    'update:visibility': [value: Visibility];
     save: [];
 }>();
 </script>
@@ -99,7 +105,6 @@ const emit = defineEmits<{
         <BFormGroup
             :label="$t('forms.edit.fields.description')"
             label-class="fw-medium"
-            class="mb-0"
         >
             <BFormTextarea
                 :model-value="description"
@@ -109,6 +114,40 @@ const emit = defineEmits<{
                     emit('update:description', $event as string)
                 "
             />
+        </BFormGroup>
+
+        <!-- Visibility -->
+        <BFormGroup
+            :label="$t('visibility.label')"
+            label-class="fw-medium"
+            class="mb-0"
+        >
+            <BFormSelect
+                :model-value="visibility ?? 'visible'"
+                :disabled="parentVisibility === 'private'"
+                @update:model-value="
+                    emit(
+                        'update:visibility',
+                        String($event ?? 'visible') as Visibility
+                    )
+                "
+            >
+                <option value="visible">{{ $t('visibility.visible') }}</option>
+                <option value="private">{{ $t('visibility.private') }}</option>
+            </BFormSelect>
+            <BFormText
+                v-if="parentVisibility === 'private'"
+                class="text-warning"
+            >
+                <Icon name="ph:lock" :size="14" class="me-1" />
+                {{ $t('visibility.parentPrivate') }}
+            </BFormText>
+            <BFormText v-else-if="visibility === 'visible'">
+                {{ $t('visibility.visibleDescription') }}
+            </BFormText>
+            <BFormText v-else>
+                {{ $t('visibility.privateDescription') }}
+            </BFormText>
         </BFormGroup>
 
         <BAlert

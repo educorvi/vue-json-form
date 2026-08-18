@@ -7,6 +7,7 @@
  */
 import type { RouterClient } from '@orpc/server';
 import type { AppRouter } from '~~/server/orpc/routers';
+import type { Visibility } from '@/utils/api-types';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
@@ -42,6 +43,17 @@ const title = ref('');
 const slug = ref('');
 const description = ref('');
 const parentId = ref<number | null>(null);
+
+// ── Visibility ─────────────────────────────────────────────────────────────
+const visibility = ref<Visibility>('visible');
+
+/** Children of a private parent are always private. */
+const parentIsPrivate = computed(
+    () => parentGroup.value?.visibility === 'private'
+);
+const effectiveVisibility = computed<Visibility>(
+    () => (parentIsPrivate.value ? 'private' : visibility.value)
+);
 
 // ── Sync parent ID from fetched parent group ────────────────────────────
 watch(
@@ -123,6 +135,7 @@ async function submit() {
                 title: title.value.trim(),
                 name: slug.value.trim(),
                 description: description.value.trim() || null,
+                visibility: effectiveVisibility.value,
             },
         });
         notify(t('forms.new.createSuccess'), 'success');
@@ -234,6 +247,41 @@ function cancel() {
                             "
                             rows="3"
                         />
+                    </BFormGroup>
+
+                    <!-- Visibility -->
+                    <BFormGroup
+                        :label="t('visibility.label')"
+                        label-class="fw-medium"
+                    >
+                        <BFormSelect
+                            :model-value="effectiveVisibility"
+                            :disabled="parentIsPrivate"
+                            @update:model-value="
+                                visibility = String($event ?? 'visible') as
+                                    Visibility
+                            "
+                        >
+                            <option value="visible">
+                                {{ t('visibility.visible') }}
+                            </option>
+                            <option value="private">
+                                {{ t('visibility.private') }}
+                            </option>
+                        </BFormSelect>
+                        <BFormText
+                            v-if="parentIsPrivate"
+                            class="text-warning"
+                        >
+                            <Icon name="ph:lock" :size="14" class="me-1" />
+                            {{ t('visibility.parentPrivate') }}
+                        </BFormText>
+                        <BFormText v-else-if="visibility === 'visible'">
+                            {{ t('visibility.visibleDescription') }}
+                        </BFormText>
+                        <BFormText v-else>
+                            {{ t('visibility.privateDescription') }}
+                        </BFormText>
                     </BFormGroup>
 
                     <!-- Error -->

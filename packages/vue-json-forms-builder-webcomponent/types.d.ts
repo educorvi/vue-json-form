@@ -31,8 +31,27 @@ export interface VueJsonFormBuilderElement extends HTMLElement {
     collabUserColor?: string;
     /** Auth token for the collab websocket. */
     collabToken?: string;
-    /** Base URL of the hosting backend for session check / login. */
+    /**
+     * Keycloak login via keycloak-js (public client, PKCE) — used when
+     * the webcomponent runs embedded in a third-party host. Requires
+     * `kcUrl`, `kcRealm` and `kcClientId`.
+     */
+    kcUrl?: string;
+    /** Keycloak realm name (with kcUrl/kcClientId). */
+    kcRealm?: string;
+    /** Public Keycloak client id (client authentication OFF, PKCE). */
+    kcClientId?: string;
+    /** `kc_idp_hint` — skip the login page, go straight to a federated IdP. */
+    kcIdpHint?: string;
+    /** Absolute URL of the silent check-sso page (default: <origin>/silent-check-sso.html). */
+    kcSilentCheckSsoUri?: string;
+    /** Absolute URL to return to after login (default: current page). */
+    kcRedirectUri?: string;
+    /**
+     * Fallback: base URL of the hosting backend (nuxt-auth-utils session).
+     * The session cookie authenticates the collab websocket.
+     */
     backendUrl?: string;
-    /** Keycloak `kc_idp_hint` appended to the login URL. */
+    /** Keycloak `kc_idp_hint` appended to the backend login URL (with backendUrl). */
     keycloakIdpHint?: string;
 }

@@ -149,26 +149,26 @@ describe('yjs dependency groups', () => {
     it('round-trips dependency groups through a Y.Doc', () => {
         const original = buildSampleForm();
         const group = buildSampleDependencyGroup();
-        original.setDependency(
-            original.getElementById(original.root.children[0])!,
-            group
-        );
+        const nameUid = original.root.children[0];
+        // attach the group via the yjs adapter — the single mutation interface
         const doc = formDefinitionToYDoc(original);
+        addDependencyGroup(doc, group);
+        setElementDependency(doc, nameUid, group.uid);
 
         const restored = yDocToFormDefinition(doc);
 
-        expect(restored.toJSON()).toEqual(original.toJSON());
         expect(restored.dependencyIndex.size).toBe(1);
         expect(
             restored.getDependencyGroupById(
-                restored.getElementById(restored.root.children[0])!.data
-                    .dependencyGroup!
+                restored.getElementById(nameUid)!.data.dependencyGroup!
             )
         ).toBeDefined();
-        expect(
-            restored.getElementById(restored.root.children[0])!.data
-                .dependencyGroup
-        ).toBe(group.uid);
+        expect(restored.getElementById(nameUid)!.data.dependencyGroup).toBe(
+            group.uid
+        );
+        // hydrating back into a fresh doc preserves the whole definition
+        const roundTripped = yDocToFormDefinition(formDefinitionToYDoc(restored));
+        expect(roundTripped.toJSON()).toEqual(restored.toJSON());
     });
 
     it('adds a dependency group and attaches it to an element', () => {

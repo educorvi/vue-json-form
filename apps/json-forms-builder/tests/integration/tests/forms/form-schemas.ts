@@ -1,4 +1,8 @@
 import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
+import {
+    FormDefinition,
+    SchemaGenerator,
+} from '@educorvi/vue-json-form-builder-schemas';
 
 /**
  * Shared typed JSON/UI schemas for form version & schema tests.
@@ -7,6 +11,24 @@ import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
  * (`@educorvi/vue-json-form-schemas`) so the test data is validated at
  * compile time against the real schema shapes.
  */
+
+/**
+ * Derive the exported artifacts ({json, ui}) from a canonical
+ * FormDefinition representation — mirrors the server's derivation
+ * (`yjsStateToArtifacts`) so tests can assert on the definition payloads
+ * exchanged via the schema endpoints.
+ */
+export function artifactsFromDefinition(definition: unknown): {
+    json: Record<string, unknown>;
+    ui: Record<string, unknown>;
+} {
+    const fd = FormDefinition.fromJSON(JSON.stringify(definition));
+    const generator = new SchemaGenerator(fd);
+    return {
+        json: fd.root.toJsonSchema(generator, ['properties']),
+        ui: fd.root.toUiSchema(generator),
+    };
+}
 
 export const JSON_SCHEMA_V1: JSONSchema = {
     type: 'object',

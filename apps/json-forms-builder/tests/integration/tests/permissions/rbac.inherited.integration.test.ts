@@ -89,7 +89,7 @@ describe('RBAC — inherited permissions on groups', () => {
         expect(updated.title).toBe('Edited via inheritance');
     });
 
-    it('forbids a user with only an inherited editor role from granting permissions on the child', async () => {
+    it('lets a user with an inherited editor role grant non-owner permissions but not owner', async () => {
         // Given the editor has only an inherited editor role on the child
         await createPermission(
             admin.client.groups.permissions,
@@ -98,13 +98,20 @@ describe('RBAC — inherited permissions on groups', () => {
             'editor'
         );
 
-        // When the editor tries to grant a permission on the child
-        // Then the request is rejected — the inherited editor role is not
-        // enough to set higher direct permissions (requires owner)
+        // When the editor grants a guest permission on the child
+        // Then the permission is created (editors may manage non-owner roles)
+        const perm = await editor.client.groups.permissions.create({
+            params: { id: String(childId) },
+            body: { user_id: outsider.userId, role: 'guest' },
+        });
+        expect(perm.role).toBe('guest');
+
+        // When the editor tries to grant the owner role on the child
+        // Then the request is rejected — editors cannot grant owner
         await expectForbidden(
             editor.client.groups.permissions.create({
                 params: { id: String(childId) },
-                body: { user_id: outsider.userId, role: 'guest' },
+                body: { user_id: outsider.userId, role: 'owner' },
             })
         );
     });
@@ -291,7 +298,7 @@ describe('RBAC — inherited permissions on forms', () => {
         expect(updated.title).toBe('Edited via inheritance');
     });
 
-    it('forbids a user with only an inherited editor role from granting permissions on the form', async () => {
+    it('lets a user with an inherited editor role grant non-owner permissions but not owner', async () => {
         // Given the editor has only an inherited editor role on the form
         await createPermission(
             admin.client.groups.permissions,
@@ -300,13 +307,20 @@ describe('RBAC — inherited permissions on forms', () => {
             'editor'
         );
 
-        // When the editor tries to grant a permission on the form
-        // Then the request is rejected — the inherited editor role is not
-        // enough to set higher direct permissions (requires owner)
+        // When the editor grants a guest permission on the form
+        // Then the permission is created (editors may manage non-owner roles)
+        const perm = await editor.client.forms.permissions.create({
+            params: { id: String(formId) },
+            body: { user_id: outsider.userId, role: 'guest' },
+        });
+        expect(perm.role).toBe('guest');
+
+        // When the editor tries to grant the owner role on the form
+        // Then the request is rejected — editors cannot grant owner
         await expectForbidden(
             editor.client.forms.permissions.create({
                 params: { id: String(formId) },
-                body: { user_id: outsider.userId, role: 'guest' },
+                body: { user_id: outsider.userId, role: 'owner' },
             })
         );
     });

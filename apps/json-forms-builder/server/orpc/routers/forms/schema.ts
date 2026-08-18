@@ -1,7 +1,9 @@
+import { ORPCError } from '@orpc/server';
 import { os, authMiddleware, getUserFromContext } from '../../init';
 import { AppDataSource } from '~~/server/db/data-source';
 import { FormService } from '~~/server/services/FormService';
 import { pickArtifacts } from '../../mapping/version';
+import { yjsStateToArtifacts } from '~~/server/lib/form-content';
 import { requireFormAccess } from '~~/server/lib/access-control';
 import {
     FormSchemaManagePermission,
@@ -9,6 +11,15 @@ import {
 } from '~~/server/lib/permissions';
 import { toAccessUser } from '../../mapping/user';
 
+/**
+ * Schema procedures.
+ *
+ * `getLatest` / `import` operate on the canonical FormDefinition
+ * representation (root/elements/dependencies) — the lossless import/export
+ * path used by the builder itself. The json/ui schema artifacts are derived
+ * from the stored yjs document on demand via `getLatestArtifacts` /
+ * `importArtifacts` (legacy API consumer path).
+ */
 export const formSchemaProcedures = {
     getLatest: os.forms.schema.getLatest
         .use(authMiddleware)
@@ -22,8 +33,8 @@ export const formSchemaProcedures = {
                 form.id,
                 ResourceViewPermission
             );
-            const schema = await service.getFormSchema(form.id);
-            return { json: schema?.json ?? {}, ui: schema?.ui ?? {} };
+            const content = await service.getFormDefinition(form.id);
+            return { definition: content?.definition ?? null };
         }),
 
     import: os.forms.schema.import
@@ -38,15 +49,17 @@ export const formSchemaProcedures = {
                 form.id,
                 FormSchemaManagePermission
             );
-            const revision = await service.importFormSchema(
-                form.id,
-                { json: input.body.json, ui: input.body.ui },
-                { id: user.id }
-            );
-            return {
-                json: revision.schema?.json ?? {},
-                ui: revision.schema?.ui ?? {},
-            };
+            const definition = input.body.definition;
+            if (!definition) {
+                throw new ORPCError('BAD_REQUEST', {
+                    message: 'definition is required',
+                });
+            }
+            await service.importFormDefinition(form.id, definition, {
+                id: user.id,
+            });
+            const content = await service.getFormDefinition(form.id);
+            return { definition: content?.definition ?? null };
         }),
 
     getLatestArtifacts: os.forms.schema.getLatestArtifacts
@@ -61,11 +74,8 @@ export const formSchemaProcedures = {
                 form.id,
                 ResourceViewPermission
             );
-            const schema = await service.getFormSchema(form.id);
-            return pickArtifacts(
-                schema ?? { json: null, ui: null },
-                input.query?.artifacts
-            );
+            const schema = await service.getFormArtifacts(form.id);
+            return pickArtifacts(schema, input.query?.artifacts);
         }),
 
     importArtifacts: os.forms.schema.importArtifacts
@@ -80,13 +90,13 @@ export const formSchemaProcedures = {
                 form.id,
                 FormSchemaManagePermission
             );
-            const revision = await service.importFormSchema(
+            const revision = await service.importFormArtifacts(
                 form.id,
                 { json: input.body.json, ui: input.body.ui },
                 { id: user.id }
             );
             return pickArtifacts(
-                revision.schema ?? { json: null, ui: null },
+                yjsStateToArtifacts(revision.yjs_state),
                 input.query?.artifacts
             );
         }),

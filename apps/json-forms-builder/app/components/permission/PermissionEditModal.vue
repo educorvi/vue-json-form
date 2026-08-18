@@ -13,6 +13,11 @@ const props = defineProps<{
     permission: PermissionEntry | null;
     /** The inherited role for this user (if any) – used to restrict role downgrades */
     inheritedRole: string | null;
+    /**
+     * True when this is the user's OWN owner permission and they are the
+     * only owner of the resource — the role may not be lowered at all.
+     */
+    lockOwnerRole?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -31,7 +36,11 @@ const editExpire = ref('');
 
 const roleOptions = computed(() => {
     return ROLES.map((role) => {
-        const assignable = isRoleAssignable(role, props.inheritedRole);
+        const lockedByOnlyOwner =
+            props.lockOwnerRole && role !== 'owner';
+        const assignable = lockedByOnlyOwner
+            ? false
+            : isRoleAssignable(role, props.inheritedRole);
         return {
             value: role,
             label: t(`permissions.roles.${role}`),
@@ -100,7 +109,14 @@ watch(
                 class="w-100"
             />
             <BFormText
-                v-if="inheritedRole"
+                v-if="lockOwnerRole"
+                class="text-danger d-flex align-items-center gap-1"
+            >
+                <Icon name="ph:warning" :size="14" />
+                {{ t('permissions.onlyOwner.roleLockedHint') }}
+            </BFormText>
+            <BFormText
+                v-else-if="inheritedRole"
                 class="text-warning d-flex align-items-center gap-1"
             >
                 <Icon name="ph:info" :size="14" />

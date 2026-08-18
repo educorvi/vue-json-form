@@ -96,14 +96,17 @@ function buildFormWithDependencies(): FormDefinition {
     });
 
     // dependency entities are indexed like elements — the constructor takes
-    // the whole flat set, then derives the dependency tree from the uid lists
-    const full = new FormDefinition(
-        form.root,
-        Array.from(form.nodesIndex.values()),
-        [group, nested, depAge, depName]
-    );
-    full.setDependency(full.getElementById(streetChildUid)!, group);
-    return full;
+    // the whole flat set, then derives the dependency tree from the uid lists.
+    // The element→group attachment is part of the element data (dependencyGroup
+    // uid reference) and must be set before the indexes are built.
+    const streetChild = form.getElementById(streetChildUid)!;
+    streetChild.data.dependencyGroup = group.uid;
+    return new FormDefinition(form.root, Array.from(form.nodesIndex.values()), [
+        group,
+        nested,
+        depAge,
+        depName,
+    ]);
 }
 
 describe('FormDefinition', () => {

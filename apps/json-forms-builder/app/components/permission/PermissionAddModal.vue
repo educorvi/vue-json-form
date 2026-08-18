@@ -20,6 +20,10 @@ const props = defineProps<{
     modelValue: boolean;
     /** The inherited/existing permissions – used to suggest minimum role */
     existingPermissions: PermissionEntry[];
+    /** Resource the permission is added to ('groups' | 'forms') */
+    resourceType: 'groups' | 'forms';
+    /** Numeric id or URL path of the resource (passed to the user search) */
+    resourceId: string;
 }>();
 
 const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
@@ -33,7 +37,19 @@ const { t } = useI18n();
 
 // ── User search (async via BootstrapSelect filter) ────────────────────────
 
-const userOptions = ref<Array<{ id: string; name: string; email: string }>>([]);
+/**
+ * A search result user. When the search is resource-scoped the server
+ * excludes users that already hold a direct permission on the resource
+ * and annotates each user with its highest inherited role.
+ */
+interface SearchUser {
+    id: string;
+    name: string;
+    email: string;
+    inherited_role: ElementRole | null;
+}
+
+const userOptions = ref<SearchUser[]>([]);
 const searching = ref(false);
 const selectedUser = ref<string | null>(null);
 const userFilterText = ref('');
@@ -52,12 +68,18 @@ async function loadUsers(searchTerm?: string) {
                 search: searchTerm || undefined,
                 sort_order: 'desc',
                 order_by: 'last_activity',
+                // Scope the search to the resource: users already present
+                // are excluded and each user carries its inherited role.
+                resource_type:
+                    props.resourceType === 'groups' ? 'group' : 'form',
+                resource_id: props.resourceId,
             },
         });
         userOptions.value = (result?.data ?? []).map((u) => ({
             id: u.id,
             name: u.name,
             email: u.email,
+            inherited_role: u.inherited_role ?? null,
         }));
     } catch {
         userOptions.value = [];
@@ -89,10 +111,11 @@ watch(selectedUser, (userId) => {
     if (user) {
         selectedUserInfo.value = { name: user.name, email: user.email };
     }
-    const inheritedRole = getHighestInheritedRole(
-        props.existingPermissions,
-        userId
-    );
+    // Prefer the inherited role the server computed for the resource;
+    // fall back to the client-side derivation from existing permissions.
+    const inheritedRole =
+        user?.inherited_role ??
+        getHighestInheritedRole(props.existingPermissions, userId);
     suggestedMinRole.value = inheritedRole;
 });
 
@@ -196,10 +219,21 @@ watch(
                     }}</span>
                 </template>
                 <template #option="{ option }">
-                    <UserPreviewCell
-                        :name="option.name"
-                        :email="option.email"
-                    />
+                    <div class="d-flex align-items-center justify-content-between gap-2 w-100">
+                        <UserPreviewCell
+                            :name="option.name"
+                            :email="option.email"
+                        />
+                        <BBadge
+                            v-if="option.inherited_role"
+                            variant="warning"
+                            pill
+                            class="text-nowrap"
+                        >
+                            <Icon name="ph:arrow-bend-up-left" :size="12" class="me-1" />
+                            {{ t(`permissions.roles.${option.inherited_role}`) }}
+                        </BBadge>
+                    </div>
                 </template>
             </BootstrapSelect>
 

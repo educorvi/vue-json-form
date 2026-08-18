@@ -95,6 +95,7 @@ export const ResourceCreateChildPermission = new PermissionPolicy(['owner']);
 /** Manage permissions (add/remove/change other users' permissions) */
 export const ResourceManagePermissionsPermission = new PermissionPolicy([
     'owner',
+    'editor',
 ]);
 
 /** Manage the schema of a form (import, create versions) */

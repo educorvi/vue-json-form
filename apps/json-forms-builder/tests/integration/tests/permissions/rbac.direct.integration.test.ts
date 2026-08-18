@@ -2,6 +2,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ProvisionedUser } from '../../../support/provision';
 import { resetTestDatabase } from '../../../support/provision';
 import { closeTestDataSource } from '../../../support/db/db';
+import { fromJsonSchemaAndUiSchema } from '@educorvi/vue-json-form-builder-schemas';
 import {
     createPermission,
     expectForbidden,
@@ -99,13 +100,20 @@ describe('RBAC — direct permissions on groups', () => {
         expect(updated.title).toBe('Edited by Editor');
     });
 
-    it('forbids an editor from managing permissions', async () => {
-        // When the editor tries to grant a permission
+    it('lets an editor manage guest permissions but not owner permissions', async () => {
+        // When the editor grants a guest permission
+        const perm = await editor.client.groups.permissions.create({
+            params: { id: String(groupId) },
+            body: { user_id: outsider.userId, role: 'guest' },
+        });
+        expect(perm.role).toBe('guest');
+
+        // When the editor tries to grant the owner role
         // Then the request is rejected
         await expectForbidden(
             editor.client.groups.permissions.create({
                 params: { id: String(groupId) },
-                body: { user_id: outsider.userId, role: 'guest' },
+                body: { user_id: outsider.userId, role: 'owner' },
             })
         );
     });
@@ -206,7 +214,7 @@ describe('RBAC — direct permissions on forms', () => {
         await expectForbidden(
             guest.client.forms.schema.import({
                 params: { id: String(formId) },
-                body: { json: {}, ui: {} },
+                body: { definition: null },
             })
         );
     });
@@ -243,23 +251,43 @@ describe('RBAC — direct permissions on forms', () => {
     });
 
     it('lets an editor import a schema', async () => {
-        // When the editor imports a schema
+        // Given a canonical FormDefinition of an empty form
+        const definition = fromJsonSchemaAndUiSchema(
+            { type: 'object' },
+            {
+                version: '2.2',
+                layout: { type: 'VerticalLayout', elements: [] },
+            }
+        ).toJSON();
+
+        // When the editor imports it
         const schema = await editor.client.forms.schema.import({
             params: { id: String(formId) },
-            body: { json: { type: 'object' }, ui: {} },
+            body: { definition: definition as Record<string, unknown> },
         });
 
-        // Then the schema is imported
-        expect(schema.json).toEqual({ type: 'object' });
+        // Then the schema is imported (the canonical FormDefinition is
+        // returned round-trip — the json/ui artifacts are derived from it
+        // on demand)
+        const importedDef = schema.definition as any;
+        expect(importedDef.root?.id).toBe((definition as any).root?.id);
+        expect(importedDef.elements).toEqual({});
     });
 
-    it('forbids an editor from managing permissions', async () => {
-        // When the editor tries to grant a permission
+    it('lets an editor manage guest permissions but not owner permissions', async () => {
+        // When the editor grants a guest permission
+        const perm = await editor.client.forms.permissions.create({
+            params: { id: String(formId) },
+            body: { user_id: outsider.userId, role: 'guest' },
+        });
+        expect(perm.role).toBe('guest');
+
+        // When the editor tries to grant the owner role
         // Then the request is rejected
         await expectForbidden(
             editor.client.forms.permissions.create({
                 params: { id: String(formId) },
-                body: { user_id: outsider.userId, role: 'guest' },
+                body: { user_id: outsider.userId, role: 'owner' },
             })
         );
     });

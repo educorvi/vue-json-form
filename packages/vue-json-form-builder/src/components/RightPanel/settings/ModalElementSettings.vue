@@ -9,6 +9,7 @@ import {
     type ButtonVariantFormat,
 } from '@educorvi/vue-json-form-builder-schemas';
 import { useElementSettings } from './useElementSettings';
+import ElementNameField from './ElementNameField.vue';
 
 const { stringField, enumField } = useElementSettings();
 
@@ -25,6 +26,9 @@ const buttonVariantOptions = ButtonVariantFormatEnum.options;
 </script>
 
 <template>
+    <SettingsSection title="Basic" icon="bi bi-window">
+        <ElementNameField />
+    </SettingsSection>
     <SettingsSection title="Modal" icon="bi bi-window">
         <FieldText
             v-model="buttonLabel"

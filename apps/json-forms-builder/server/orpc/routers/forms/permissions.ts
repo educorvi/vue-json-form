@@ -14,7 +14,10 @@ import {
 } from '../../mapping/permission';
 
 import { paginatedResponse } from '~~/server/orpc/api-helpers';
-import { toAccessUser } from '../../mapping/user';
+import {
+    toAccessUser,
+    mapContextUserRolesToDbRole,
+} from '../../mapping/user';
 
 export const formPermissionProcedures = {
     list: os.forms.permissions.list
@@ -73,7 +76,8 @@ export const formPermissionProcedures = {
                     user_id: body.user_id,
                     expire: body.expire,
                 },
-                user.id
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
             return mapPermissionToApi(created);
         }),
@@ -99,7 +103,8 @@ export const formPermissionProcedures = {
                     role: input.body.role,
                     expire: input.body.expire,
                 },
-                user.id
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
             return mapPermissionToApi(updated);
         }),
@@ -120,7 +125,9 @@ export const formPermissionProcedures = {
             await permService.delete(
                 input.params.permissionId,
                 'form',
-                form.id
+                form.id,
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
         }),
 };

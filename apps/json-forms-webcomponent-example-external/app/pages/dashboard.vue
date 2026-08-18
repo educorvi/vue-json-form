@@ -4,8 +4,10 @@ definePageMeta({ middleware: 'authenticated' });
 const { user } = useUserSession();
 const config = useRuntimeConfig();
 
-const backendUrl = computed(() => config.public.backendUrl as string);
-const keycloakIdpHint = computed(() => config.public.keycloakIdpHint as string);
+const kcUrl = computed(() => config.public.kcUrl as string);
+const kcRealm = computed(() => config.public.kcRealm as string);
+const kcClientId = computed(() => config.public.kcClientId as string);
+const kcIdpHint = computed(() => config.public.kcIdpHint as string);
 const collabUrl = computed(() => config.public.collabUrl as string);
 
 const greeting = computed(
@@ -20,10 +22,47 @@ const greeting = computed(
 // the collab websocket (like in the main builder app): Hocuspocus hydrates
 // the Y.Doc from the form's stored definition, keyed by document name = the
 // form's NUMERIC id. The websocket authenticates with the kc1 access token
-// that the webcomponent's login popup relayed back (falling back to the
-// session cookie in browsers that allow third-party cookies).
+// that keycloak-js obtained (silent check-sso; `kc_idp_hint` sends the login
+// through the external Keycloak, so the user is already signed in here).
+//
+// The builder is only mounted after the user CONFIRMS the id (Load form
+// button / Enter) — typing alone never loads anything. The confirmed id is
+// mirrored into the URL query (?formId=…), so after the Keycloak login
+// redirects back to this page the form loads directly without a second
+// confirmation. The collab server additionally rejects the connection when
+// the form does not exist or the user lacks edit access; the builder then
+// shows the error inline.
 
-const formId = ref('');
+const route = useRoute();
+const router = useRouter();
+
+const formId = ref(
+    typeof route.query.formId === 'string' ? route.query.formId : ''
+);
+/** The form id the user confirmed — only then is the builder mounted. */
+const confirmedFormId = ref(
+    typeof route.query.formId === 'string' ? route.query.formId : ''
+);
+
+async function loadForm() {
+    const id = formId.value.trim();
+    if (!id) return;
+    // Commit the URL BEFORE mounting the builder: the webcomponent captures
+    // location.href as its Keycloak redirectUri when it mounts, so the
+    // post-login return would otherwise land on the previously confirmed
+    // form id (race — reliably reproduced in Firefox). The stale OAuth
+    // hash is dropped too, so a new login round-trip starts from a clean
+    // redirect_uri.
+    try {
+        await router.replace({
+            query: { ...route.query, formId: id },
+            hash: '',
+        });
+    } catch {
+        // Navigation failed/aborted — still mount the requested form.
+    }
+    confirmedFormId.value = id;
+}
 </script>
 
 <template>
@@ -64,12 +103,23 @@ const formId = ref('');
                 placeholder="Form id (number), e.g. 5"
                 class="w-auto"
                 style="max-width: 16rem"
-                @keyup.enter="formId = formId.trim()"
+                @keyup.enter="loadForm"
             />
+            <BButton
+                size="sm"
+                variant="primary"
+                :disabled="!formId.trim()"
+                @click="loadForm"
+            >
+                Load form
+            </BButton>
             <span class="text-secondary small">
-                The form is loaded over the collab websocket — the builder
-                authenticates against the main app (kc1) with
+                The form is loaded over the collab websocket only after you
+                confirm — the builder authenticates against kc1 with keycloak-js
+                (silent check-sso) and
                 <code>kc_idp_hint</code> pointing back to the external Keycloak.
+                The connection is rejected (with an inline error) when the form
+                does not exist or you have no edit access.
             </span>
         </div>
 
@@ -78,14 +128,16 @@ const formId = ref('');
             style="min-height: 0"
         >
             <JsonFormsBuilder
-                v-if="formId.trim()"
-                :key="formId.trim()"
+                v-if="confirmedFormId"
+                :key="confirmedFormId"
                 class="flex-grow-1 d-flex flex-column"
                 style="min-height: 0"
-                :backend-url="backendUrl"
-                :keycloak-idp-hint="keycloakIdpHint"
+                :kc-url="kcUrl"
+                :kc-realm="kcRealm"
+                :kc-client-id="kcClientId"
+                :kc-idp-hint="kcIdpHint"
                 :collab-url="collabUrl"
-                :collab-document-name="formId.trim()"
+                :collab-document-name="confirmedFormId"
                 :collab-user-id="user?.id ?? undefined"
                 :collab-user-name="greeting"
             />
@@ -93,7 +145,8 @@ const formId = ref('');
                 v-else
                 class="text-secondary border rounded bg-white p-4 text-center m-3"
             >
-                Enter a form id to load it into the form builder.
+                Enter a form id and press <strong>Load form</strong> to open it
+                in the form builder.
             </p>
         </main>
     </div>

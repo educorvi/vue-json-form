@@ -2,6 +2,7 @@
 import SettingsSection from '@/components/shared/SettingsSection.vue';
 import FieldTextarea from '@/components/shared/fields/FieldTextarea.vue';
 import { useElementSettings } from './useElementSettings';
+import ElementNameField from './ElementNameField.vue';
 
 const { stringField } = useElementSettings();
 
@@ -9,6 +10,9 @@ const htmlData = stringField('htmlData');
 </script>
 
 <template>
+    <SettingsSection title="Basic" icon="bi bi-code">
+        <ElementNameField />
+    </SettingsSection>
     <SettingsSection title="HTML" icon="bi bi-code">
         <FieldTextarea
             v-model="htmlData"

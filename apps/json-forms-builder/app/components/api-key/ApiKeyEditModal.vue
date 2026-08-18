@@ -35,7 +35,9 @@ const canSubmit = computed(
     () => name.value.trim().length > 0 && !submitting.value
 );
 
-// Reset form when the modal opens for a key
+// Reset form when the modal opens for a key. The parent renders this
+// component with v-if, so it can mount with modelValue already true —
+// immediate ensures the prefill also runs in that case.
 watch(
     () => props.modelValue,
     (open) => {
@@ -45,7 +47,8 @@ watch(
             submitting.value = false;
             errorMessage.value = null;
         }
-    }
+    },
+    { immediate: true }
 );
 
 async function submit() {

@@ -2,6 +2,7 @@ import type { DataSource } from 'typeorm';
 import { Group } from '../entities/Group';
 import { Form } from '../entities/Form';
 import { User } from '../entities/User';
+import { artifactsToYjsState } from '~~/server/lib/form-content';
 import jsonSchema from '../entities/seed-data/json-schema.json';
 import uiSchema from '../entities/seed-data/ui-schema.json';
 import { groupSeedToDb, DEV_GROUPS_ALL } from './dev-data';
@@ -49,6 +50,9 @@ export async function seed(dataSource: DataSource): Promise<void> {
 /**
  * Assigns the demo JSON/UI schemas (entities/seed-data/*.json) to a few
  * well-known forms so the dev app has working form renderers out of the box.
+ *
+ * The schemas are converted into the canonical FormDefinition representation
+ * and stored as yjs state — the single source of truth in the database.
  */
 export async function assignDemoSchemas(dataSource: DataSource): Promise<void> {
     const formRepo = dataSource.getRepository(Form);
@@ -60,11 +64,15 @@ export async function assignDemoSchemas(dataSource: DataSource): Promise<void> {
         'example-bug-report',
     ];
     if (jsonSchema && uiSchema) {
-        const schema = { json: jsonSchema, ui: uiSchema };
+        const state = artifactsToYjsState(
+            { json: jsonSchema, ui: uiSchema },
+            null
+        );
+        if (!state) return;
         for (const formName of schemaForms) {
             const form = await formRepo.findOne({ where: { name: formName } });
             if (form) {
-                await formRepo.update(form.id, { schema });
+                await formRepo.update(form.id, { yjs_state: state });
             }
         }
     }

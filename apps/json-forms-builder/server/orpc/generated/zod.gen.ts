@@ -82,7 +82,8 @@ export const zUserShared = z.object({
  * Full user object with role and timestamps
  */
 export const zUser = zUserShared.and(z.object({
-    role: zGlobalRole
+    role: zGlobalRole,
+    inherited_role: zElementRole.nullish()
 })).and(zTimestamps);
 
 /**
@@ -109,7 +110,7 @@ export const zGroupHierarchyNode = z.object({
 
 export const zGroupShared = z.object({
     id: z.int().readonly(),
-    name: z.string().max(255).readonly().optional(),
+    name: z.string().max(255).optional(),
     title: z.string().max(255).optional(),
     visibility: zVisibility.optional(),
     member_count: z.int().readonly()
@@ -128,7 +129,9 @@ export const zGroupRef = zGroupShared;
 export const zGroup = zGroupPatch;
 
 export const zGroupWithAccess = zGroup.and(z.object({
-    effective_role: zElementRole.nullable()
+    effective_role: zElementRole.nullable(),
+    is_only_owner: z.boolean(),
+    parent_visibility: zVisibility.nullish()
 }));
 
 export const zChildGroup = z.object({
@@ -166,7 +169,9 @@ export const zGroupElement = z.union([
 ]);
 
 export const zFormWithAccess = zForm.and(z.object({
-    effective_role: zElementRole.nullable()
+    effective_role: zElementRole.nullable(),
+    is_only_owner: z.boolean(),
+    parent_visibility: zVisibility.nullish()
 }));
 
 /**
@@ -195,6 +200,17 @@ export const zFormSchemaPayloadArtifactsCreate = zFormSchemaPayloadArtifacts.and
 export const zFormSchemaPayload = z.object({
     json: zFormSchemaPayloadArtifactsJson,
     ui: zFormSchemaPayloadArtifactsUi
+});
+
+/**
+ * The form content in its canonical FormDefinition representation
+ * (root/elements/dependencies). This is the lossless representation
+ * the builder operates on; json/ui schema artifacts are derived from
+ * it on demand.
+ *
+ */
+export const zFormDefinitionPayload = z.object({
+    definition: z.record(z.string(), z.unknown()).nullable()
 });
 
 /**
@@ -303,6 +319,7 @@ export const zGroupHierarchyNodeWritable = z.object({
 });
 
 export const zGroupSharedWritable = z.object({
+    name: z.string().max(255).optional(),
     title: z.string().max(255).optional(),
     visibility: zVisibility.optional()
 });
@@ -316,7 +333,8 @@ export const zGroupRefWritable = zGroupSharedWritable;
 export const zGroupWritable = zGroupPatchWritable;
 
 export const zGroupWithAccessWritable = zGroupWritable.and(z.object({
-    effective_role: zElementRole.nullable()
+    effective_role: zElementRole.nullable(),
+    is_only_owner: z.boolean()
 }));
 
 export const zChildGroupWritable = z.object({
@@ -351,7 +369,8 @@ export const zGroupElementWritable = z.union([
 ]);
 
 export const zFormWithAccessWritable = zFormWritable.and(z.object({
-    effective_role: zElementRole.nullable()
+    effective_role: zElementRole.nullable(),
+    is_only_owner: z.boolean()
 }));
 
 /**
@@ -482,7 +501,9 @@ export const zListUsersQuery = z.object({
         'created',
         'last_activity',
         'role'
-    ]).optional().default('last_activity')
+    ]).optional().default('last_activity'),
+    resource_type: z.enum(['group', 'form']).optional(),
+    resource_id: z.string().optional()
 });
 
 /**
@@ -755,20 +776,20 @@ export const zGetFormLatestSchemaPath = z.object({
 });
 
 /**
- * JSON Schema and UI Schema for the latest revision
+ * FormDefinition representation of the current form content
  */
-export const zGetFormLatestSchemaResponse = zFormSchemaPayload;
+export const zGetFormLatestSchemaResponse = zFormDefinitionPayload;
 
-export const zImportFormSchemaBody = zFormSchemaPayload;
+export const zImportFormSchemaBody = zFormDefinitionPayload;
 
 export const zImportFormSchemaPath = z.object({
     id: z.string()
 });
 
 /**
- * Schema replaced
+ * Definition replaced
  */
-export const zImportFormSchemaResponse = zFormSchemaPayload;
+export const zImportFormSchemaResponse = zFormDefinitionPayload;
 
 export const zGetFormLatestArtifactsPath = z.object({
     id: z.string()
@@ -832,9 +853,9 @@ export const zGetFormSchemaByVersionPath = z.object({
 });
 
 /**
- * JSON Schema and UI Schema for the specified version
+ * FormDefinition representation of the specified version
  */
-export const zGetFormSchemaByVersionResponse = zFormVersion;
+export const zGetFormSchemaByVersionResponse = zFormDefinitionPayload;
 
 export const zGetFormSchemaVersionArtifactsPath = z.object({
     id: z.string(),

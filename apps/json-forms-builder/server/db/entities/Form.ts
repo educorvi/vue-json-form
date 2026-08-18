@@ -24,20 +24,15 @@ export class Form extends BaseAuditedEntity {
     @Column({ type: 'text' })
     path!: string;
 
-    @Column({ type: 'jsonb', nullable: true })
-    schema!: {
-        json: Record<string, unknown> | null;
-        ui: Record<string, unknown> | null;
-    } | null;
-
     /**
-     * FormDefinition.toJSON() output (root/elements/dependencies) written by
-     * the realtime collaboration server (collab-server). This is the new
-     * source of truth for the builder; `schema` is kept for legacy consumers
-     * until the migration is complete.
+     * The form content as an encoded Yjs document (CRDT state). This is the
+     * single source of truth. All artifacts (json schema, ui schema,
+     * FormDefinition) are derived from it on demand.
      */
-    @Column({ type: 'jsonb', nullable: true })
-    definition!: Record<string, unknown> | null;
+    @Column({ type: 'bytea', nullable: true })
+    yjs_state!: Buffer | null;
+
+    // TODO: ideally artefact should be stored here as well. If internal things change and an old state becomes incompatible, artifacts cant be calculated anymore.
 
     @Column({
         type: 'enum',

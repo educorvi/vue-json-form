@@ -30,7 +30,14 @@ export default VueJsonFormBuilder;
 // Public types for consumers (e.g. the webcomponent wrapper)
 export type {
     CollabConfig,
-    CollabUser,
+    CollabErrorReason,
     CollabStatus,
+    CollabUser,
     FormBuilder,
 } from './useFormBuilder';
+export type {
+    AuthResult,
+    BackendAuthUser,
+    BuilderAuthMode,
+    KeycloakAuthConfig,
+} from './composables/useBuilderAuth';

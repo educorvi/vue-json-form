@@ -71,7 +71,8 @@ export const groupPermissionProcedures = {
                     user_id: body.user_id,
                     expire: body.expire,
                 },
-                user.id
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
             return mapPermissionToApi(created);
         }),
@@ -97,7 +98,8 @@ export const groupPermissionProcedures = {
                     role: input.body.role,
                     expire: input.body.expire,
                 },
-                user.id
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
             return mapPermissionToApi(updated);
         }),
@@ -118,7 +120,9 @@ export const groupPermissionProcedures = {
             await permService.delete(
                 input.params.permissionId,
                 'group',
-                group.id
+                group.id,
+                user.id,
+                mapContextUserRolesToDbRole(user.roles)
             );
         }),
 };

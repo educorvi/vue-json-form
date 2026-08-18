@@ -16,7 +16,6 @@
         "featuresHeading": "Features",
         "featuresSubheading": "One platform for creating, managing, and deploying forms",
         "screenshotHeading": "See it in action",
-        "screenshotPlaceholder": "Screenshot of the form builder coming soon",
         "footer": "Form Builder",
         "nav": {
             "demo": "Demo",
@@ -78,9 +77,6 @@
         "noUsersTitle": "No users found",
         "noUsersDescription": "There are no users yet.",
         "noSearchResults": "No results for '{query}'. Try a different search term.",
-        "total": "No users | {n} user | {n} users",
-        "created": "Created",
-        "lastActivity": "Active",
         "sortBy": {
             "name": "Name",
             "email": "Email",
@@ -146,7 +142,7 @@
             "fields": {
                 "title": "Title",
                 "titlePlaceholder": "e.g. Frontend Development",
-                "name": "URL slug (name)",
+                "name": "Name",
                 "namePlaceholder": "e.g. frontend-development",
                 "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
                 "description": "Description",
@@ -164,7 +160,7 @@
             "fields": {
                 "title": "Title",
                 "titlePlaceholder": "e.g. Frontend Development",
-                "name": "URL slug (name)",
+                "name": "Name",
                 "namePlaceholder": "e.g. frontend-development",
                 "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
                 "description": "Description",
@@ -188,7 +184,7 @@
             "fields": {
                 "title": "Title",
                 "titlePlaceholder": "e.g. Leave Request",
-                "name": "URL slug (name)",
+                "name": "Name",
                 "namePlaceholder": "e.g. leave-request",
                 "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
                 "description": "Description",
@@ -206,7 +202,7 @@
             "fields": {
                 "title": "Title",
                 "titlePlaceholder": "e.g. Leave Request",
-                "name": "URL slug (name)",
+                "name": "Name",
                 "namePlaceholder": "e.g. leave-request",
                 "nameHint": "Used in URLs and paths. Only lowercase letters, numbers, and hyphens.",
                 "description": "Description",
@@ -218,6 +214,45 @@
             "backToForms": "Back to Forms",
             "schemaSaveSuccess": "Schema saved successfully.",
             "schemaSaveError": "Failed to save schema."
+        },
+        "versions": {
+            "title": "Versions",
+            "backToDetail": "Back to form",
+            "create": "Create Version",
+            "createTitle": "Create Version",
+            "createSuccess": "Version created successfully.",
+            "createError": "Failed to create version.",
+            "loadError": "Failed to load versions:",
+            "latest": "Latest",
+            "previewLatest": "Preview latest",
+            "previewLatestError": "Failed to load the latest schema.",
+            "preview": "Preview",
+            "previewTitle": "Preview — {version}",
+            "viewArtifacts": "Artifacts",
+            "artifactsTitle": "Artifacts — {version}",
+            "artifactCopied": "Artifact copied to clipboard.",
+            "artifactsMissing": "No schema stored for this version.",
+            "noVersionsTitle": "No versions yet",
+            "noVersionsDescription": "Save the schema or create the first version.",
+            "jsonInvalid": "Invalid JSON in {field}.",
+            "columns": {
+                "version": "Version",
+                "comment": "Comment",
+                "created": "Created",
+                "actions": "Actions"
+            },
+            "fields": {
+                "version": "Version",
+                "versionPlaceholder": "e.g. 3",
+                "versionRequired": "A version number is required.",
+                "versionHint": "The version number must be higher than the latest version. It is stored as {version}.0.0.",
+                "comment": "Comment",
+                "commentPlaceholder": "What changed in this version?",
+                "jsonSchema": "JSON Schema",
+                "uiSchema": "UI Schema",
+                "schemaPlaceholder": "Leave empty to inherit from the latest version.",
+                "schemaHint": "The schema editors are prefilled with the current latest state. Empty fields are inherited from the latest version on the backend."
+            }
         },
         "sortBy": {
             "title": "Title",
@@ -268,6 +303,7 @@
         "clear": "Clear",
         "edit": "Edit",
         "delete": "Delete",
+        "confirm": "Confirm",
         "required": "This field is required",
         "errorTitle": "Something went wrong",
         "errorDescription": "An unexpected error occurred. Please try again.",
@@ -277,6 +313,8 @@
         "pageSizeLabel": "Per page",
         "showingEntries": "Showing {start}–{end} of {total}",
         "totalCount": "No items | {n} item | {n} items",
+        "copy": "Copy",
+        "download": "Download",
         "close": "Close"
     },
     "settings": {
@@ -348,7 +386,22 @@
             "lastname": "Name"
         },
         "expired": "Expired",
-        "never": "Never"
+        "never": "Never",
+        "onlyOwner": {
+            "deleteTitle": "Remove yourself as owner?",
+            "deleteWarning": "You are the only owner of this resource. At least one owner must always remain, so removing your own owner permission is not allowed. Type your name to confirm.",
+            "demoteTitle": "Change your own role?",
+            "demoteWarning": "You are changing your own role to {role}. You will lose owner rights on this resource. Type your name to confirm.",
+            "roleLockedHint": "You are the only owner of this resource — you cannot change your own role to a lower one."
+        }
+    },
+    "visibility": {
+        "label": "Visibility",
+        "visible": "Public",
+        "private": "Private",
+        "visibleDescription": "Anyone can see this item.",
+        "privateDescription": "Only users with explicit access can see this item.",
+        "parentPrivate": "The parent group is private, so this item is private too and cannot be made public."
     },
     "apiKeys": {
         "title": "API Keys",
@@ -415,18 +468,5 @@
     },
     "locale": {
         "label": "Language"
-    },
-    "designSystem": {
-        "label": "Design System",
-        "active": "Active",
-        "hint": "Switching the design system updates all PrimeVue components and Tailwind primary / surface utilities instantly — no reload needed.",
-        "uv": {
-            "label": "UV Corporate",
-            "description": "Flat enterprise look with UV brand colors and 0px border radius."
-        },
-        "aura": {
-            "label": "PrimeVue Aura",
-            "description": "Default PrimeVue Aura preset with rounded corners and standard palette."
-        }
     }
 }

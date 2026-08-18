@@ -15,6 +15,10 @@ import type { Role } from '~~/server/lib/permissions';
 export interface ResourceWithAccess {
     effective_role: Role | null;
     visibility?: string | null;
+    /** True when the caller is an owner and no other user has owner access. */
+    is_only_owner?: boolean;
+    /** Visibility of the parent group (null for root resources). */
+    parent_visibility?: string | null;
 }
 
 export function useResourceAccess(
@@ -28,10 +32,20 @@ export function useResourceAccess(
     const visibility = computed(
         () => toValue(resource)?.visibility ?? 'visible'
     );
+    const isOnlyOwner = computed(
+        () => toValue(resource)?.is_only_owner ?? false
+    );
+    const parentVisibility = computed(
+        () => toValue(resource)?.parent_visibility ?? null
+    );
 
     return {
         /** Effective role of the current user on this resource (null = none). */
         effectiveRole,
+        /** True when the caller is the only owner of this resource. */
+        isOnlyOwner,
+        /** Visibility of the parent group (null = root resource). */
+        parentVisibility,
         canView: computed(() =>
             permissionsStore.canView(effectiveRole.value, visibility.value)
         ),

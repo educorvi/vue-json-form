@@ -1,38 +1,37 @@
 import { inject, provide, ref, shallowRef, type Ref } from 'vue';
+import * as Y from 'yjs';
 import {
-    Form,
     FormDefinition,
     SchemaGenerator,
     fromJsonSchemaAndUiSchema,
-    type ContainerElement,
     type FormElement,
 } from '@educorvi/vue-json-form-builder-schemas';
+import * as collab from '@educorvi/vue-json-form-builder-schemas/collab';
+import type {
+    CollabUser,
+    RemotePresence,
+} from '@educorvi/vue-json-form-builder-schemas/collab';
 import {
     createPaletteElements,
     collectTakenIds,
     type PaletteElementType,
 } from './types/paletteFields';
-// Type-only imports from the collab entry — erased at compile time, so yjs
-// never ends up in the local-mode bundle.
-import type {
-    CollabUser,
-    RemotePresence,
-} from '@educorvi/vue-json-form-builder-schemas/collab';
 
 /**
- * Form builder engine — the single source of truth for the builder UI.
+ * Form builder engine — ONE mutation interface backed by a Y.Doc.
  *
- * Two interchangeable engines:
+ *   LOCAL  (collab: undefined) — a plain local Y.Doc. Every mutation goes
+ *           through the collab adapter (schemas/collab/yjs-adapter.ts) and
+ *           the reactive FormDefinition is rebuilt from the doc on every
+ *           change — the exact same code path a synced document uses.
  *
- *   LOCAL  (default, collab: undefined)  — a plain FormDefinition instance,
- *           mutated directly. yjs is never loaded at runtime.
+ *   COLLAB (collab: { url, ... }) — a Y.Doc synced through Hocuspocus.
  *
- *   COLLAB (collab: { url, ... })        — a Y.Doc synced through Hocuspocus.
- *           All mutations go through the yjs adapter (schemas/collab), the
- *           reactive FormDefinition is rebuilt from the doc on every change.
- *
- * Both engines expose the same mutation API, so components never know which
- * engine is active.
+ * Both modes share one engine: same mutations, same rebuild-on-update, same
+ * generated artifacts. The only differences are the provider/awareness
+ * wiring (presence, connection status) and the persistence owner (in collab
+ * mode the Hocuspocus server persists the doc; in local mode the host app
+ * saves via toJSON()/generateSchemas()).
  *
  * Usage: <VueJsonFormBuilder> creates the engine and `provide`s it;
  * child components call useFormBuilder().
@@ -41,8 +40,8 @@ import type {
 export interface CollabConfig {
     /** Hocuspocus server URL, e.g. "ws://localhost:1234" */
     url: string;
-    /** Document name (= form id in the backend). Defaults to "default-form". */
-    documentName?: string;
+    /** Document name (= form id in the backend). */
+    documentName: string;
     /**
      * Optional auth token for the collab server: an API key ("fb_...").
      * When omitted, the server authenticates the browser session by
@@ -67,9 +66,23 @@ export interface KnownUser extends CollabUser {
 export type CollabStatus =
     'local' | 'connecting' | 'connected' | 'disconnected';
 
+/** Collab connection error reason (set when the server rejects the connection). */
+export type CollabErrorReason =
+    | 'unauthorized'
+    | 'form-not-found'
+    | 'forbidden'
+    | 'permission-denied'
+    | 'unknown';
+
 export interface FormBuilder {
     readonly isCollab: boolean;
     readonly collabStatus: Ref<CollabStatus>;
+    /**
+     * Set when the collab server REJECTED the connection (form does not
+     * exist / no edit access / unauthorized) — the form can not be loaded.
+     * Null while connecting, connected or when no rejection happened.
+     */
+    readonly collabError: Ref<CollabErrorReason | null>;
     readonly formDefinition: Ref<FormDefinition | null>;
     readonly selectedElementId: Ref<string | null>;
     readonly connectedUsers: Ref<CollabUser[]>;
@@ -86,13 +99,13 @@ export interface FormBuilder {
     /**
      * (Re)connect the collab provider. No-op for the local engine and when
      * the provider already started. Used by auth-gated mounts: when the
-     * builder waits for a backend login (backendUrl prop), connecting the
-     * websocket before the session exists would fail authentication and
-     * the form would never load — so the component defers the connection
-     * until the login completed and calls connect() then.
+     * builder waits for authentication (backendUrl / keycloak props),
+     * connecting the websocket before the credentials exist would fail
+     * authentication and the form would never load — so the component
+     * defers the connection until auth completed and calls connect() then.
      *
      * `options` lets the caller supply the credentials that the login flow
-     * produced (see useBackendAuth): a bearer token for the websocket
+     * produced (see useBuilderAuth): a bearer token for the websocket
      * (Keycloak access token or API key) and/or the authenticated user for
      * presence/awareness. They take precedence over the values from the
      * static CollabConfig.
@@ -156,43 +169,131 @@ export function createFormBuilder(
         : createLocalBuilder();
 }
 
-// ─── LOCAL engine (no yjs) ────────────────────────────────────────────────────
+// ─── Shared engine core (local Y.Doc ↔ collab Y.Doc) ─────────────────────────
+
+function createEngine(
+    doc: Y.Doc,
+    refs: {
+        formDefinition: Ref<FormDefinition | null>;
+        selectedElementId: Ref<string | null>;
+    }
+): Pick<
+    FormBuilder,
+    | 'formDefinition'
+    | 'selectedElementId'
+    | 'addElement'
+    | 'moveElement'
+    | 'deleteElement'
+    | 'updateElementField'
+    | 'generateSchemas'
+    | 'toJSON'
+    | 'loadDefinition'
+    | 'loadFromJsonUi'
+> {
+    const { formDefinition, selectedElementId } = refs;
+
+    /** Rebuild the reactive FormDefinition projection from the Y.Doc. */
+    function rebuild(): void {
+        try {
+            formDefinition.value = collab.yDocToFormDefinition(doc);
+        } catch (err) {
+            console.error(
+                '[builder] failed to rebuild FormDefinition from doc:',
+                err
+            );
+        }
+    }
+
+    // The Y.Doc is the single source of truth — every change (local or
+    // remote) re-projects it into a reactive FormDefinition.
+    doc.on('update', rebuild);
+
+    return {
+        formDefinition,
+        selectedElementId,
+
+        loadDefinition(definition) {
+            const fd =
+                definition instanceof FormDefinition
+                    ? definition
+                    : FormDefinition.fromJSON(JSON.stringify(definition));
+            collab.hydrateDocument(doc, fd); // fires 'update' → rebuild
+        },
+
+        loadFromJsonUi(jsonSchema, uiSchema) {
+            const imported = fromJsonSchemaAndUiSchema(
+                jsonSchema as Parameters<typeof fromJsonSchemaAndUiSchema>[0],
+                uiSchema as Parameters<typeof fromJsonSchemaAndUiSchema>[1]
+            );
+            collab.hydrateDocument(doc, imported);
+        },
+
+        addElement(containerUid, type, index) {
+            const fd = formDefinition.value;
+            const elements = createPaletteElements(
+                type,
+                fd ? collectTakenIds(fd) : undefined
+            );
+            collab.addElements(doc, containerUid, elements, index);
+            return elements[0];
+        },
+
+        moveElement(elementUid, targetContainerUid, index) {
+            collab.moveElement(doc, elementUid, targetContainerUid, index ?? 0);
+        },
+
+        deleteElement(elementUid) {
+            collab.deleteElement(doc, elementUid);
+            if (selectedElementId.value === elementUid) {
+                selectedElementId.value = null;
+            }
+        },
+
+        updateElementField(elementUid, field, value) {
+            collab.updateElementField(doc, elementUid, field, value);
+        },
+
+        generateSchemas() {
+            const current = formDefinition.value;
+            if (!current) return null;
+            return new SchemaGenerator(current).generateFullSchema();
+        },
+
+        toJSON() {
+            return formDefinition.value?.toJSON() ?? null;
+        },
+    };
+}
+
+// ─── LOCAL engine (plain Y.Doc, no provider) ─────────────────────────────────
 
 function createLocalBuilder(): FormBuilder {
-    const formDefinition = shallowRef<FormDefinition | null>(null);
-    const selectedElementId = ref<string | null>(null);
+    const doc = new Y.Doc();
     const collabStatus = ref<CollabStatus>('local');
+    // Local mode never talks to a collab server — no rejection possible.
+    const collabError = ref<CollabErrorReason | null>(null);
     const connectedUsers = ref<CollabUser[]>([]);
     const remotePresences = ref<RemotePresence[]>([]);
     const currentUser = ref<CollabUser | null>(null);
     const knownUsers = ref<KnownUser[]>([]);
-
-    let fd: FormDefinition = new FormDefinition(
-        new Form({ id: 'form', title: 'My Form' })
-    );
-
-    /** Replace the ref with a re-indexed instance so shallowRef consumers re-render. */
-    function commit(): void {
-        fd = new FormDefinition(
-            fd.root,
-            [...fd.nodesIndex.values()],
-            [...fd.dependencyIndex.values()]
-        );
-        formDefinition.value = fd;
-    }
+    const formDefinition = shallowRef<FormDefinition | null>(null);
+    const selectedElementId = ref<string | null>(null);
 
     // publish the initial (empty) form so the canvas renders without props
-    commit();
+    collab.initializeEmptyDocument(doc, { id: 'form', title: 'My Form' });
+
+    const engine = createEngine(doc, { formDefinition, selectedElementId });
+    formDefinition.value = collab.yDocToFormDefinition(doc);
 
     return {
         isCollab: false,
         collabStatus,
-        formDefinition,
-        selectedElementId,
+        collabError,
         connectedUsers,
         knownUsers,
         remotePresences,
         currentUser,
+        ...engine,
 
         selectElement(id) {
             selectedElementId.value = id;
@@ -202,105 +303,12 @@ function createLocalBuilder(): FormBuilder {
             // no presence in local mode
         },
 
-        loadDefinition(definition) {
-            fd =
-                definition instanceof FormDefinition
-                    ? definition
-                    : FormDefinition.fromJSON(JSON.stringify(definition));
-            commit();
-        },
-
-        loadFromJsonUi(jsonSchema, uiSchema) {
-            const imported = fromJsonSchemaAndUiSchema(
-                jsonSchema as Parameters<typeof fromJsonSchemaAndUiSchema>[0],
-                uiSchema as Parameters<typeof fromJsonSchemaAndUiSchema>[1]
-            );
-            fd = imported;
-            commit();
-        },
-
-        addElement(containerUid, type, index) {
-            const container =
-                containerUid === fd.root.uid
-                    ? fd.root
-                    : fd.getElementById(containerUid);
-            if (!container)
-                throw new Error(`Container "${containerUid}" not found`);
-            const containerEl = container as ContainerElement | Form;
-            const elements = createPaletteElements(type, collectTakenIds(fd));
-            const element = elements[0];
-            // index any companion elements (e.g. the buttons of a
-            // button-group) BEFORE inserting, so the parent-index walk in
-            // insertElement finds them
-            for (const extra of elements.slice(1)) {
-                fd.nodesIndex.set(extra.uid, extra);
-                fd.parentIndex.set(extra.uid, element.uid);
-            }
-            fd.insertElement(
-                element,
-                containerEl,
-                index ?? containerEl.children.length
-            );
-            commit();
-            return element;
-        },
-
-        moveElement(elementUid, targetContainerUid, index) {
-            const target =
-                targetContainerUid === fd.root.uid
-                    ? fd.root
-                    : fd.getElementById(targetContainerUid);
-            if (!target)
-                throw new Error(`Container "${targetContainerUid}" not found`);
-            fd.moveElement(
-                elementUid,
-                target as ContainerElement | Form,
-                index ?? 0
-            );
-            commit();
-        },
-
-        deleteElement(elementUid) {
-            fd.deleteElement(elementUid);
-            if (selectedElementId.value === elementUid)
-                selectedElementId.value = null;
-            commit();
-        },
-
-        updateElementField(elementUid, field, value) {
-            const element =
-                elementUid === fd.root.uid
-                    ? fd.root
-                    : fd.getElementById(elementUid);
-            if (!element) throw new Error(`Element "${elementUid}" not found`);
-            fd.updateElement(element, { [field]: value } as Partial<
-                FormElement['data']
-            >);
-            commit();
-        },
-
-        generateSchemas() {
-            // read the reactive ref so computed() consumers re-evaluate
-            const current = formDefinition.value ?? fd;
-            const generator = new SchemaGenerator(current);
-            return {
-                jsonSchema: current.root.toJsonSchema(generator, [
-                    'properties',
-                ]),
-                uiSchema: current.root.toUiSchema(generator),
-            };
-        },
-
-        toJSON() {
-            return (formDefinition.value ?? fd).toJSON();
-        },
-
-        connect(_options?: { token?: string; user?: CollabConfig['user'] }) {
+        connect() {
             // no provider in local mode
         },
 
         dispose() {
-            // nothing to tear down in local mode
+            doc.destroy();
         },
     };
 }
@@ -308,36 +316,37 @@ function createLocalBuilder(): FormBuilder {
 // ─── COLLAB engine (Yjs + Hocuspocus) ─────────────────────────────────────────
 
 function createCollabBuilder(
-    collab: CollabConfig,
+    collabConfig: CollabConfig,
     autoConnect: boolean
 ): FormBuilder {
-    const formDefinition = shallowRef<FormDefinition | null>(null);
-    const selectedElementId = ref<string | null>(null);
     const collabStatus = ref<CollabStatus>('connecting');
+    const collabError = ref<CollabErrorReason | null>(null);
     const connectedUsers = ref<CollabUser[]>([]);
     const remotePresences = ref<RemotePresence[]>([]);
     const currentUser = ref<CollabUser | null>(null);
     const knownUsers = ref<KnownUser[]>([]);
+    const formDefinition = shallowRef<FormDefinition | null>(null);
+    const selectedElementId = ref<string | null>(null);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let adapter: any = null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let provider: any = null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let doc: any = null;
-    let fdRef: FormDefinition | null = null;
-    let updateTimer: ReturnType<typeof setTimeout> | undefined;
+    let doc: Y.Doc | null = null;
     let disposed = false;
     /** true once init() has run — connect() must be idempotent */
     let started = false;
+
+    /** The engine core is created lazily once the provider document exists
+     *  (HocuspocusProvider creates it synchronously in the constructor). */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let activeEngine: any = null;
 
     /** Merge awareness users into the known list, flagging online/offline.
      *  Users that leave the awareness (disconnect) stay listed as offline.
      *  In the future, the backend should track which users were viewing the document when so we can easily show a history of every user when the document was edited.
      * */
     function refreshKnownUsers() {
-        if (!adapter || !provider?.awareness) return;
-        const current = adapter.getConnectedUsers(provider.awareness);
+        if (!provider?.awareness) return;
+        const current = collab.getConnectedUsers(provider.awareness);
         const currentIds = new Set(current.map((u: CollabUser) => u.id));
         const merged = knownUsers.value.map((k) => ({
             ...k,
@@ -357,22 +366,36 @@ function createCollabBuilder(
     }): Promise<void> {
         if (disposed || started) return;
         started = true;
-        const mod =
-            await import('@educorvi/vue-json-form-builder-schemas/collab');
         const { HocuspocusProvider } = await import('@hocuspocus/provider');
         if (disposed) return;
-        adapter = mod;
+
+        // A new connection attempt clears any previous rejection.
+        collabError.value = null;
 
         provider = new HocuspocusProvider({
-            url: collab.url,
-            name: collab.documentName ?? 'default-form',
-            token: connectOptions?.token ?? collab.token,
+            url: collabConfig.url,
+            name: collabConfig.documentName,
+            token: connectOptions?.token ?? collabConfig.token,
+            onAuthenticationFailed: ({ reason }: { reason: string }) => {
+                // The server rejected the handshake (see collab-server/auth.ts
+                // — ConnectionAuthError reasons). The form can not be loaded.
+                collabError.value =
+                    reason in
+                    {
+                        unauthorized: 1,
+                        'form-not-found': 1,
+                        forbidden: 1,
+                        'permission-denied': 1,
+                    }
+                        ? (reason as CollabErrorReason)
+                        : 'unknown';
+            },
             onAwarenessChange: () => {
                 if (provider?.awareness) {
-                    connectedUsers.value = mod.getConnectedUsers(
+                    connectedUsers.value = collab.getConnectedUsers(
                         provider.awareness
                     );
-                    remotePresences.value = mod.getRemotePresences(
+                    remotePresences.value = collab.getRemotePresences(
                         provider.awareness
                     );
                     refreshKnownUsers();
@@ -385,33 +408,22 @@ function createCollabBuilder(
                 refreshKnownUsers();
             },
         });
-        doc = provider.document;
+        const providerDoc: Y.Doc = provider.document;
+        doc = providerDoc;
 
-        // The Y.Doc is the source of truth — every change (local or remote)
-        // rebuilds the reactive FormDefinition (debounced).
-        doc.on('update', () => {
-            if (updateTimer) clearTimeout(updateTimer);
-            updateTimer = setTimeout(() => {
-                if (disposed || !doc) return;
-                try {
-                    fdRef = mod.yDocToFormDefinition(doc);
-                    formDefinition.value = fdRef;
-                } catch (err) {
-                    console.error(
-                        '[collab] failed to rebuild FormDefinition from doc:',
-                        err
-                    );
-                }
-            }, 100);
+        activeEngine = createEngine(providerDoc, {
+            formDefinition,
+            selectedElementId,
         });
 
         // An empty document produces no `update` events — build the (empty)
         // FormDefinition right after the initial sync so the canvas renders.
         provider.on('synced', ({ state }: { state: boolean }) => {
-            if (!state || disposed || !doc || formDefinition.value) return;
+            if (!state || disposed || !doc || !activeEngine) return;
+            if (activeEngine.formDefinition.value) return;
             try {
-                fdRef = mod.yDocToFormDefinition(doc);
-                formDefinition.value = fdRef;
+                activeEngine.formDefinition.value =
+                    collab.yDocToFormDefinition(doc);
             } catch (err) {
                 console.error(
                     '[collab] failed to build FormDefinition on sync:',
@@ -420,7 +432,7 @@ function createCollabBuilder(
             }
         });
 
-        const user = connectOptions?.user ?? collab.user;
+        const user = connectOptions?.user ?? collabConfig.user;
         if (user) {
             // Remote clients see the user in their assigned palette color
             // (never the reserved primary — see OWN_USER_COLOR in the
@@ -429,15 +441,15 @@ function createCollabBuilder(
             const collabUser = {
                 id: user.id,
                 name: user.name,
-                color: user.color ?? mod.colorForUser(user.id),
+                color: user.color ?? collab.colorForUser(user.id),
             };
             currentUser.value = collabUser;
             provider.on('connect', () => {
-                mod.setPresenceUser(provider.awareness, collabUser);
+                collab.setPresenceUser(provider.awareness, collabUser);
                 // re-broadcast selection/editing once (re)connected
-                mod.setSelectedElement(
+                collab.setSelectedElement(
                     provider.awareness,
-                    selectedElementId.value
+                    activeEngine?.selectedElementId.value ?? null
                 );
             });
         }
@@ -447,6 +459,7 @@ function createCollabBuilder(
     return {
         isCollab: true,
         collabStatus,
+        collabError,
         formDefinition,
         selectedElementId,
         connectedUsers,
@@ -455,12 +468,12 @@ function createCollabBuilder(
         currentUser,
 
         selectElement(id) {
-            selectedElementId.value = id;
-            adapter?.setSelectedElement?.(provider?.awareness, id);
+            if (activeEngine) activeEngine.selectedElementId.value = id;
+            collab.setSelectedElement?.(provider?.awareness, id);
         },
 
         setEditingField(elementUid, field) {
-            adapter?.setEditingField?.(provider?.awareness, elementUid, field);
+            collab.setEditingField?.(provider?.awareness, elementUid, field);
         },
 
         connect(options?: { token?: string; user?: CollabConfig['user'] }) {
@@ -483,48 +496,49 @@ function createCollabBuilder(
         },
 
         addElement(containerUid, type, index) {
+            if (!doc) return undefined;
+            const fd = activeEngine?.formDefinition.value;
             const elements = createPaletteElements(
                 type,
-                fdRef ? collectTakenIds(fdRef) : undefined
+                fd ? collectTakenIds(fd) : undefined
             );
-            adapter?.addElements(doc, containerUid, elements, index);
+            collab.addElements(doc, containerUid, elements, index);
             return elements[0];
         },
 
         moveElement(elementUid, targetContainerUid, index) {
-            adapter?.moveElement(doc, elementUid, targetContainerUid, index);
+            if (doc)
+                collab.moveElement(
+                    doc,
+                    elementUid,
+                    targetContainerUid,
+                    index ?? 0
+                );
         },
 
         deleteElement(elementUid) {
-            adapter?.deleteElement(doc, elementUid);
-            if (selectedElementId.value === elementUid) {
-                this.selectElement(null);
+            if (doc) collab.deleteElement(doc, elementUid);
+            if (activeEngine?.selectedElementId.value === elementUid) {
+                activeEngine.selectedElementId.value = null;
             }
         },
 
         updateElementField(elementUid, field, value) {
-            adapter?.updateElementField(doc, elementUid, field, value);
+            if (doc) collab.updateElementField(doc, elementUid, field, value);
         },
 
         generateSchemas() {
-            const current = fdRef ?? formDefinition.value;
+            const current = activeEngine?.formDefinition.value ?? null;
             if (!current) return null;
-            const generator = new SchemaGenerator(current);
-            return {
-                jsonSchema: current.root.toJsonSchema(generator, [
-                    'properties',
-                ]),
-                uiSchema: current.root.toUiSchema(generator),
-            };
+            return new SchemaGenerator(current).generateFullSchema();
         },
 
         toJSON() {
-            return (fdRef ?? formDefinition.value)?.toJSON() ?? null;
+            return activeEngine?.formDefinition.value?.toJSON() ?? null;
         },
 
         dispose() {
             disposed = true;
-            if (updateTimer) clearTimeout(updateTimer);
             provider?.destroy();
             doc?.destroy();
         },

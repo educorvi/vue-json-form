@@ -3,15 +3,17 @@ import { computed } from 'vue';
 import {
     VueJsonFormBuilder,
     type CollabConfig,
+    type KeycloakAuthConfig,
 } from '@educorvi/vue-json-form-builder';
 
 /**
  * Thin webcomponent wrapper around VueJsonFormBuilder.
  *
  * All logic lives in the Vue component (@educorvi/vue-json-form-builder,
- * src/App.vue) — including the authentication flow against a hosting
- * backend (`backendUrl` / `keycloakIdpHint`). This wrapper only translates
- * webcomponent attributes into props and forwards events.
+ * src/App.vue) — including the authentication (keycloak-js silent
+ * `check-sso` via the `kc-*` attributes, or the backend session via
+ * `backend-url`). This wrapper only translates webcomponent attributes
+ * into props and forwards events.
  */
 const props = defineProps<{
     jsonSchema?: string;
@@ -19,29 +21,43 @@ const props = defineProps<{
     /** Enable realtime collaboration: ws(s)://host:port of the Hocuspocus server */
     collabUrl?: string;
     /** Document name (= form id in the backend). Defaults to "default-form". */
-    collabDocumentName?: string;
+    collabDocumentName: string;
     /** Current user id (e.g. Keycloak sub). Required for awareness. */
     collabUserId?: string;
     collabUserName?: string;
     collabUserColor?: string;
     /**
      * Auth token for the websocket: a Keycloak access token or an API key
-     * ("fb_..."). When `backend-url` is set, the auth flow obtains its own
-     * token through the login popup and this value is only a fallback.
+     * ("fb_..."). When keycloak auth is configured (kc-*), the builder
+     * obtains its own token via keycloak-js and this value is only a
+     * fallback.
      */
     collabToken?: string;
     /**
-     * Base URL of a hosting backend (a Nuxt app using nuxt-auth-utils),
-     * e.g. "http://localhost:3000" — forwarded to the Vue component, which
-     * checks the session on that backend before rendering and redirects to
-     * its login if needed.
+     * Keycloak login via keycloak-js (PUBLIC client, PKCE) — used when the
+     * webcomponent is embedded in a third-party host. `kcUrl`, `kcRealm`
+     * and `kcClientId` are required; login runs as a *silent* `check-sso`
+     * (hidden iframe, the embedding page is never navigated) with an
+     * optional `kcIdpHint` for a seamless federated login. The access
+     * token authenticates the collab websocket.
+     */
+    kcUrl?: string;
+    kcRealm?: string;
+    kcClientId?: string;
+    kcIdpHint?: string;
+    kcSilentCheckSsoUri?: string;
+    kcRedirectUri?: string;
+    /**
+     * Fallback: base URL of a hosting backend (a Nuxt app using
+     * nuxt-auth-utils), e.g. "http://localhost:3000". The builder checks
+     * the session on that backend before rendering; the session cookie
+     * authenticates the collab websocket.
      */
     backendUrl?: string;
     /**
-     * Keycloak IdP hint (`kc_idp_hint`) appended to the login URL, e.g.
-     * "customer-oidc-example" to skip the login page and redirect straight
-     * to the federated identity provider. Only used when `backendUrl` is
-     * set and the user is not logged in.
+     * Keycloak IdP hint (`kc_idp_hint`) appended to the backend's login
+     * URL (session mode only), e.g. "external-oidc-example" to skip the
+     * login page and redirect straight to the federated identity provider.
      */
     keycloakIdpHint?: string;
 }>();
@@ -68,6 +84,18 @@ const collab = computed<CollabConfig | null>(() => {
     };
 });
 
+const keycloak = computed<KeycloakAuthConfig | null>(() => {
+    if (!props.kcUrl || !props.kcRealm || !props.kcClientId) return null;
+    return {
+        url: props.kcUrl,
+        realm: props.kcRealm,
+        clientId: props.kcClientId,
+        idpHint: props.kcIdpHint,
+        silentCheckSsoRedirectUri: props.kcSilentCheckSsoUri,
+        redirectUri: props.kcRedirectUri,
+    };
+});
+
 function handleVJFBChange(jsonSchema: object, uiSchema: object) {
     emit('vjfb-change', jsonSchema, uiSchema);
 }
@@ -82,6 +110,7 @@ function handleVJFBDefinitionChange(definition: object) {
         :json-schema="jsonSchema"
         :ui-schema="uiSchema"
         :collab="collab"
+        :keycloak="keycloak"
         :backend-url="backendUrl"
         :keycloak-idp-hint="keycloakIdpHint"
         @vjfb-change="handleVJFBChange"
