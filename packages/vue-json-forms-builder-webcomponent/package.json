@@ -10,7 +10,7 @@
         "preview": "vite preview",
         "test:e2e": "playwright test",
         "build:internal": "vite build",
-        "check-types": "vue-tsc --build",
+        "check-types": "vue-tsc --noEmit",
         "prepack": "yarn run build",
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix"

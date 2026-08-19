@@ -93,7 +93,14 @@
             </section>
 
             <section class="card">
-                <vue-json-form-builder id="vjfb"></vue-json-form-builder>
+                <vue-json-form-builder
+                    id="vjfb"
+                    collab-url="wss://collab.forms-test.educorvi.de"
+                    collab-document-name="test"
+                    kc-url="https://dev-sso.educorvi.de/"
+                    kc-realm="json-forms-builder"
+                    kc-client-id="webcomponent"
+                ></vue-json-form-builder>
             </section>
         </main>
         <script type="module" src="./dist/vue-json-form-builder.js"></script>
