@@ -36,7 +36,7 @@ export function minTwoItems<T>(array: T[]): array is [T, T, ...T[]] {
 }
 
 export function transform_scope_to_object_writing_form(scope: string[]): string {
-    const filtered_scope = scope.filter((item) => item !== "properties" && item !== "items");
+    const filtered_scope = scope.filter((item) => item !== "properties");
     return filtered_scope.join(".");
 }
 

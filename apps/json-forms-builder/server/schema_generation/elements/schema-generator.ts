@@ -150,6 +150,7 @@ export class SchemaGenerator {
       currentId = parent?.id;
       currentUid = parent?.uid;
     }
+    path.unshift("properties");
 
     return path;
   }
