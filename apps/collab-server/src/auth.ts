@@ -80,14 +80,17 @@ function isWsAuthUser(value: unknown): value is WsAuthUser {
  *
  * @param token         the Hocuspocus `token` option (an `fb_...` API key), if any
  * @param requestHeaders the WebSocket handshake headers — carry the `Cookie`
- * @param documentName  the document the client wants to join (= form id)
+ * @param documentName  the document the client wants to join (form id OR path)
+ * @returns the authenticated user plus the RESOLVED numeric form id (the
+ *          backend accepts paths like "educorvi/formular1" and returns the
+ *          canonical id, which the collab server then uses for load/store)
  */
 // TODO: use orpc endpoint instead of raw fetch. Also adjust in backend
 export async function authenticateConnection(
     token: string | null,
     requestHeaders: Headers,
     documentName: string
-): Promise<WsAuthUser> {
+): Promise<{ user: WsAuthUser; formId: number }> {
     const headers: Record<string, string> = {};
 
     if (token) {
@@ -155,5 +158,17 @@ export async function authenticateConnection(
             'permission-denied'
         );
     }
-    return user;
+    // The backend always resolves paths → numeric id and returns it.
+    const formId = (body as { form_id?: unknown })?.form_id;
+    if (
+        typeof formId !== 'number' ||
+        !Number.isInteger(formId) ||
+        formId <= 0
+    ) {
+        throw new ConnectionAuthError(
+            'Unauthorized: no valid form id in Nuxt auth response',
+            'permission-denied'
+        );
+    }
+    return { user, formId };
 }

@@ -64,12 +64,14 @@ export interface KnownUser extends CollabUser {
 export type CollabStatus =
     'local' | 'connecting' | 'connected' | 'disconnected';
 
-/** Collab connection error reason (set when the server rejects the connection). */
+/** Collab connection error reason (set when the server rejects the connection
+ *  or is unreachable). */
 export type CollabErrorReason =
     | 'unauthorized'
     | 'form-not-found'
     | 'forbidden'
     | 'permission-denied'
+    | 'unreachable'
     | 'unknown';
 
 export interface FormBuilder {
@@ -334,6 +336,8 @@ function createCollabBuilder(
     let disposed = false;
     /** true once init() has run — connect() must be idempotent */
     let started = false;
+    /** true once the websocket has connected at least once */
+    let everConnected = false;
 
     /** The engine core is created lazily once the provider document exists
      *  (HocuspocusProvider creates it synchronously in the constructor). */
@@ -403,6 +407,22 @@ function createCollabBuilder(
             },
             onStatus: ({ status }: { status: CollabStatus }) => {
                 collabStatus.value = status;
+                if (status === 'connected') {
+                    everConnected = true;
+                    // A retry succeeded — the error (if any) is stale.
+                    collabError.value = null;
+                } else if (
+                    status === 'disconnected' &&
+                    !everConnected &&
+                    !disposed
+                ) {
+                    // The first connection never succeeded — the collab
+                    // server is not reachable (down, wrong URL, network
+                    // blocked). The provider keeps retrying in the
+                    // background; show the error so the user isn't left
+                    // staring at an empty form.
+                    collabError.value = 'unreachable';
+                }
                 // connection loss can change who is online without an
                 // awareness event — recompute on every status change too
                 refreshKnownUsers();

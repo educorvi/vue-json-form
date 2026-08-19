@@ -18,8 +18,9 @@ apps/json-forms-builder/data
 apps/json-forms-builder/keycloak
 apps/json-forms-builder/docker
 # Local env/secret files - change constantly, never needed in the image
+# (the compose env_file values are injected at runtime, not baked in)
 .env*
-apps/json-forms-builder/.docker.env
+apps/json-forms-builder/.env.docker.*
 # Editor configs
 **/.vscode
 # Regenerated code (ajv-validator writes src/generated/*, turbo regenerates it)

@@ -474,15 +474,29 @@ export const zApiKeyId = z.uuid();
 export const zGroupIdOrPathQuery = z.string();
 
 /**
+ * Optional. Integer ID **or** URL-encoded full path of the parent
+ * group to move the form into. Omit to keep the current parent.
+ * Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+ *
+ */
+export const zGroupIdOrPathQueryOptional = z.string();
+
+/**
  * Semantic version string (e.g., "1.0.0")
  */
 export const zSemanticVersion = z.string().regex(/^\d+\.\d+\.\d+$/);
 
 /**
- * Which artifacts to include in the response. By default all are included. Provide the enum of artifacts as an array
+ * Which artifacts to include in the response. By default all are
+ * included. Provide one value (`artifacts=json`) or repeat the
+ * parameter (`artifacts=json&artifacts=ui`).
  *
  */
-export const zFormArtifactsQuery = z.array(z.enum(['json', 'ui']));
+export const zFormArtifactsQuery = z.union([
+    z.literal('json'),
+    z.literal('ui'),
+    z.array(z.enum(['json', 'ui']))
+]);
 
 /**
  * Service is healthy
@@ -748,7 +762,7 @@ export const zUpdateFormPath = z.object({
 });
 
 export const zUpdateFormQuery = z.object({
-    id: z.string()
+    id: z.string().optional()
 });
 
 /**
@@ -763,7 +777,7 @@ export const zReplaceFormPath = z.object({
 });
 
 export const zReplaceFormQuery = z.object({
-    id: z.string()
+    id: z.string().optional()
 });
 
 /**
@@ -796,7 +810,11 @@ export const zGetFormLatestArtifactsPath = z.object({
 });
 
 export const zGetFormLatestArtifactsQuery = z.object({
-    artifacts: z.array(z.enum(['json', 'ui'])).optional()
+    artifacts: z.union([
+        z.literal('json'),
+        z.literal('ui'),
+        z.array(z.enum(['json', 'ui']))
+    ]).optional()
 });
 
 /**
@@ -811,7 +829,11 @@ export const zImportFormArtifactsPath = z.object({
 });
 
 export const zImportFormArtifactsQuery = z.object({
-    artifacts: z.array(z.enum(['json', 'ui'])).optional()
+    artifacts: z.union([
+        z.literal('json'),
+        z.literal('ui'),
+        z.array(z.enum(['json', 'ui']))
+    ]).optional()
 });
 
 /**
@@ -863,7 +885,11 @@ export const zGetFormSchemaVersionArtifactsPath = z.object({
 });
 
 export const zGetFormSchemaVersionArtifactsQuery = z.object({
-    artifacts: z.array(z.enum(['json', 'ui'])).optional()
+    artifacts: z.union([
+        z.literal('json'),
+        z.literal('ui'),
+        z.array(z.enum(['json', 'ui']))
+    ]).optional()
 });
 
 /**

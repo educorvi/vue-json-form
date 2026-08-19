@@ -295,10 +295,12 @@ export const getForm = oc.route({
  *
  * Updates only the provided fields. The `schema` field is excluded —
  * use `PUT /forms/{id}/schema` to manage the form's schema.
+ * The optional `id` query parameter moves the form into a different
+ * parent group (group id or path).
  *
  */
 export const updateForm = oc.route({
-    description: 'Updates only the provided fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\n',
+    description: 'Updates only the provided fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\nThe optional `id` query parameter moves the form into a different\nparent group (group id or path).\n',
     inputStructure: 'detailed',
     method: 'PATCH',
     operationId: 'updateForm',
@@ -308,7 +310,7 @@ export const updateForm = oc.route({
 }).input(z.object({
     body: zUpdateFormBody,
     params: zUpdateFormPath,
-    query: zUpdateFormQuery
+    query: zUpdateFormQuery.optional()
 })).output(zUpdateFormResponse);
 
 /**
@@ -316,10 +318,12 @@ export const updateForm = oc.route({
  *
  * Full replacement of all writable fields. The `schema` field is excluded —
  * use `PUT /forms/{id}/schema` to manage the form's schema.
+ * The optional `id` query parameter moves the form into a different
+ * parent group (group id or path).
  *
  */
 export const replaceForm = oc.route({
-    description: 'Full replacement of all writable fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\n',
+    description: 'Full replacement of all writable fields. The `schema` field is excluded —\nuse `PUT /forms/{id}/schema` to manage the form\'s schema.\nThe optional `id` query parameter moves the form into a different\nparent group (group id or path).\n',
     inputStructure: 'detailed',
     method: 'PUT',
     operationId: 'replaceForm',
@@ -329,7 +333,7 @@ export const replaceForm = oc.route({
 }).input(z.object({
     body: zReplaceFormBody,
     params: zReplaceFormPath,
-    query: zReplaceFormQuery
+    query: zReplaceFormQuery.optional()
 })).output(zReplaceFormResponse);
 
 /**

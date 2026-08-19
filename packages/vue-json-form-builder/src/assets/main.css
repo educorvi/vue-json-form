@@ -1,6 +1,6 @@
-/* Prevent document-level scrolling */
-html,
-body {
+
+html:has(.vjfb),
+html:has(.vjfb) body {
     height: 100%;
     overflow: hidden;
 }

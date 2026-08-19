@@ -54,9 +54,15 @@
                 "description": "${role_default-roles}",
                 "composite": true,
                 "composites": {
-                    "realm": ["offline_access", "uma_authorization"],
+                    "realm": [
+                        "offline_access",
+                        "uma_authorization"
+                    ],
                     "client": {
-                        "account": ["manage-account", "view-profile"]
+                        "account": [
+                            "manage-account",
+                            "view-profile"
+                        ]
                     }
                 },
                 "clientRole": false,
@@ -75,7 +81,7 @@
             {
                 "id": "3a639ea2-5235-4938-baa6-ef3382e21b73",
                 "name": "admin",
-                "description": "Administrator — global admin role for the form builder app",
+                "description": "Administrator \u2014 global admin role for the form builder app",
                 "composite": false,
                 "clientRole": false,
                 "containerId": "5a1163c2-4a47-4c52-88ba-4a6cffcce165",
@@ -118,7 +124,9 @@
                     "composite": true,
                     "composites": {
                         "client": {
-                            "realm-management": ["query-clients"]
+                            "realm-management": [
+                                "query-clients"
+                            ]
                         }
                     },
                     "clientRole": true,
@@ -204,7 +212,10 @@
                     "composite": true,
                     "composites": {
                         "client": {
-                            "realm-management": ["query-users", "query-groups"]
+                            "realm-management": [
+                                "query-users",
+                                "query-groups"
+                            ]
                         }
                     },
                     "clientRole": true,
@@ -332,7 +343,9 @@
                     "composite": true,
                     "composites": {
                         "client": {
-                            "account": ["manage-account-links"]
+                            "account": [
+                                "manage-account-links"
+                            ]
                         }
                     },
                     "clientRole": true,
@@ -391,7 +404,9 @@
                     "composite": true,
                     "composites": {
                         "client": {
-                            "account": ["view-consent"]
+                            "account": [
+                                "view-consent"
+                            ]
                         }
                     },
                     "clientRole": true,
@@ -410,7 +425,9 @@
         "clientRole": false,
         "containerId": "5a1163c2-4a47-4c52-88ba-4a6cffcce165"
     },
-    "requiredCredentials": ["password"],
+    "requiredCredentials": [
+        "password"
+    ],
     "otpPolicyType": "totp",
     "otpPolicyAlgorithm": "HmacSHA1",
     "otpPolicyInitialCounter": 0,
@@ -425,7 +442,10 @@
     ],
     "localizationTexts": {},
     "webAuthnPolicyRpEntityName": "keycloak",
-    "webAuthnPolicySignatureAlgorithms": ["ES256", "RS256"],
+    "webAuthnPolicySignatureAlgorithms": [
+        "ES256",
+        "RS256"
+    ],
     "webAuthnPolicyRpId": "",
     "webAuthnPolicyAttestationConveyancePreference": "not specified",
     "webAuthnPolicyAuthenticatorAttachment": "not specified",
@@ -436,7 +456,10 @@
     "webAuthnPolicyAcceptableAaguids": [],
     "webAuthnPolicyExtraOrigins": [],
     "webAuthnPolicyPasswordlessRpEntityName": "keycloak",
-    "webAuthnPolicyPasswordlessSignatureAlgorithms": ["ES256", "RS256"],
+    "webAuthnPolicyPasswordlessSignatureAlgorithms": [
+        "ES256",
+        "RS256"
+    ],
     "webAuthnPolicyPasswordlessRpId": "",
     "webAuthnPolicyPasswordlessAttestationConveyancePreference": "not specified",
     "webAuthnPolicyPasswordlessAuthenticatorAttachment": "not specified",
@@ -469,7 +492,10 @@
             ],
             "disableableCredentialTypes": [],
             "requiredActions": [],
-            "realmRoles": ["default-roles-dev", "admin"],
+            "realmRoles": [
+                "default-roles-dev",
+                "admin"
+            ],
             "notBefore": 0,
             "groups": []
         },
@@ -493,7 +519,9 @@
                     "userName": "test"
                 }
             ],
-            "realmRoles": ["default-roles-dev"],
+            "realmRoles": [
+                "default-roles-dev"
+            ],
             "notBefore": 0,
             "groups": []
         },
@@ -519,7 +547,9 @@
             ],
             "disableableCredentialTypes": [],
             "requiredActions": [],
-            "realmRoles": ["default-roles-dev"],
+            "realmRoles": [
+                "default-roles-dev"
+            ],
             "notBefore": 0,
             "groups": []
         },
@@ -545,7 +575,9 @@
             ],
             "disableableCredentialTypes": [],
             "requiredActions": [],
-            "realmRoles": ["default-roles-dev"],
+            "realmRoles": [
+                "default-roles-dev"
+            ],
             "notBefore": 0,
             "groups": []
         }
@@ -553,14 +585,19 @@
     "scopeMappings": [
         {
             "clientScope": "offline_access",
-            "roles": ["offline_access"]
+            "roles": [
+                "offline_access"
+            ]
         }
     ],
     "clientScopeMappings": {
         "account": [
             {
                 "client": "account-console",
-                "roles": ["manage-account", "view-groups"]
+                "roles": [
+                    "manage-account",
+                    "view-groups"
+                ]
             }
         ]
     },
@@ -575,7 +612,9 @@
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
-            "redirectUris": ["/realms/dev/account/*"],
+            "redirectUris": [
+                "/realms/dev/account/*"
+            ],
             "webOrigins": [],
             "notBefore": 0,
             "bearerOnly": false,
@@ -620,7 +659,9 @@
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
-            "redirectUris": ["/realms/dev/account/*"],
+            "redirectUris": [
+                "/realms/dev/account/*"
+            ],
             "webOrigins": [],
             "notBefore": 0,
             "bearerOnly": false,
@@ -806,8 +847,12 @@
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
-            "redirectUris": ["/admin/dev/console/*"],
-            "webOrigins": ["+"],
+            "redirectUris": [
+                "/admin/dev/console/*"
+            ],
+            "webOrigins": [
+                "+"
+            ],
             "notBefore": 0,
             "bearerOnly": false,
             "consentRequired": false,
@@ -874,8 +919,12 @@
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "Y2tJJ2Ik2CnJjpfY8FUxLiusbn4tEO9F",
-            "redirectUris": ["*"],
-            "webOrigins": [""],
+            "redirectUris": [
+                "*"
+            ],
+            "webOrigins": [
+                ""
+            ],
             "notBefore": 0,
             "bearerOnly": false,
             "consentRequired": false,
@@ -945,12 +994,11 @@
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "redirectUris": [
-                "http://localhost:5173/*",
-                "http://external-example-app.localhost:3001/*"
+                "http://fb-external.gpu-test.educorvi.com:3001/*"
             ],
             "webOrigins": [
-                "http://localhost:5173/*",
-                "http://external-example-app.localhost:3001"
+                "http://fb-external.gpu-test.educorvi.com:3001/*",
+                "http://fb-external.gpu-test.educorvi.com:3001"
             ],
             "notBefore": 0,
             "bearerOnly": false,
@@ -1702,12 +1750,14 @@
         "referrerPolicy": "no-referrer",
         "xRobotsTag": "none",
         "xFrameOptions": "SAMEORIGIN",
-        "contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self' http://external-example-app.localhost:3001 http://localhost:5173; object-src 'none';",
+        "contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self' http://fb-external.gpu-test.educorvi.com:3001; object-src 'none';",
         "strictTransportSecurity": "max-age=31536000; includeSubDomains"
     },
     "smtpServer": {},
     "eventsEnabled": false,
-    "eventsListeners": ["jboss-logging"],
+    "eventsListeners": [
+        "jboss-logging"
+    ],
     "enabledEventTypes": [],
     "adminEventsEnabled": false,
     "adminEventsDetailsEnabled": false,
@@ -1724,16 +1774,16 @@
             "linkOnly": false,
             "hideOnLogin": false,
             "config": {
-                "tokenUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/token",
+                "tokenUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/token",
                 "acceptsPromptNoneForwardFromClient": "false",
-                "jwksUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/certs",
+                "jwksUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/certs",
                 "isAccessTokenJWT": "false",
                 "showInAccountConsole": "ALWAYS",
                 "filteredByClaim": "false",
                 "jwtAuthorizationGrantEnabled": "false",
                 "backchannelSupported": "false",
                 "caseSensitiveOriginalUsername": "false",
-                "issuer": "http://external-keycloak.localhost:8081/realms/dev",
+                "issuer": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev",
                 "loginHint": "false",
                 "clientAuthMethod": "client_secret_post",
                 "syncMode": "IMPORT",
@@ -1741,19 +1791,19 @@
                 "clientSecret": "BD4ax3IQFlqOTvUKgvaUMvJcGVkFEghK",
                 "requiresShortStateParameter": "false",
                 "allowedClockSkew": "0",
-                "userInfoUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/userinfo",
+                "userInfoUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/userinfo",
                 "validateSignature": "true",
                 "clientId": "educorvi-oidc-broker",
                 "uiLocales": "false",
                 "disableNonce": "false",
                 "useJwksUrl": "true",
-                "tokenIntrospectionUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/token/introspect",
+                "tokenIntrospectionUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/token/introspect",
                 "sendClientIdOnLogout": "false",
                 "pkceEnabled": "false",
-                "metadataDescriptorUrl": "http://external-keycloak.localhost:8081/realms/dev/.well-known/openid-configuration",
-                "authorizationUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/auth",
+                "metadataDescriptorUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/.well-known/openid-configuration",
+                "authorizationUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/auth",
                 "disableUserInfo": "false",
-                "logoutUrl": "http://external-keycloak.localhost:8081/realms/dev/protocol/openid-connect/logout",
+                "logoutUrl": "http://fb-auth-external.gpu-test.educorvi.com:8081/realms/dev/protocol/openid-connect/logout",
                 "sendIdTokenOnLogout": "true",
                 "passMaxAge": "false",
                 "disableTypeClaimCheck": "false"
@@ -1776,7 +1826,9 @@
                 "subType": "authenticated",
                 "subComponents": {},
                 "config": {
-                    "allow-default-scopes": ["true"]
+                    "allow-default-scopes": [
+                        "true"
+                    ]
                 }
             },
             {
@@ -1786,7 +1838,9 @@
                 "subType": "anonymous",
                 "subComponents": {},
                 "config": {
-                    "allow-default-scopes": ["true"]
+                    "allow-default-scopes": [
+                        "true"
+                    ]
                 }
             },
             {
@@ -1850,7 +1904,9 @@
                 "subType": "anonymous",
                 "subComponents": {},
                 "config": {
-                    "max-clients": ["200"]
+                    "max-clients": [
+                        "200"
+                    ]
                 }
             },
             {
@@ -1868,8 +1924,12 @@
                 "subType": "anonymous",
                 "subComponents": {},
                 "config": {
-                    "host-sending-registration-request-must-match": ["true"],
-                    "client-uris-must-match": ["true"]
+                    "host-sending-registration-request-must-match": [
+                        "true"
+                    ],
+                    "client-uris-must-match": [
+                        "true"
+                    ]
                 }
             },
             {
@@ -1888,12 +1948,18 @@
                 "providerId": "hmac-generated",
                 "subComponents": {},
                 "config": {
-                    "kid": ["251fa703-8a9f-4eff-82fd-69270802446b"],
+                    "kid": [
+                        "251fa703-8a9f-4eff-82fd-69270802446b"
+                    ],
                     "secret": [
                         "i7IE0L2cftEJ-khESpuM1CMAQCL7cj7UH9Oe-wTfYtJQIk9YmWQ06gv2MSNgXKku_eGxkqX8DbTAQSDcM89PpC0UhxIHFa_wgZFQCXzeRVOjxOyALagBfEIcbahmn4fE_8P2eyTPC3yLze9Ji8xzzNmOZ2yiGwAN1As7_toFFJU"
                     ],
-                    "priority": ["100"],
-                    "algorithm": ["HS512"]
+                    "priority": [
+                        "100"
+                    ],
+                    "algorithm": [
+                        "HS512"
+                    ]
                 }
             },
             {
@@ -1905,12 +1971,18 @@
                     "privateKey": [
                         "MIIEpAIBAAKCAQEAqSLb9KuemuEjTVDH2M5TcxKsm7PdYMXZ6Q9UmP3OsuArOjmBBQpP/LtlLwO7rQ3vn3zIxwL/83X0QS99Unxu2mkral+9vf02ls5rAZsWzfK+tLOtxAnjs29fDWs9aT1Jy+/kGAqT54juQqY7ZoYf7XunJOS6rn8P/P8nmEL3HDX35aUQ7OO4Ud4txBMbdQrukPwGFuvxwNGjjdKgnrBQrigardRJQyBoEJF8GUrbp32EObz+7naynUOOxClwmRBv00YSWZlIwTfBGDwhTkBTFfr9wBhlm414kKsSCn2FGIOvWIylP+A6+5hO12LZZFhHkLVaa0O2W6QiXX1fV9BxxwIDAQABAoIBAA7Cav1b6JhNYz5A+V+TCbc1/vgLZxslyNFMtC4xn9L+Oud20yp0bux4EelbYwpD+BAr3H15ZoqBVZJGqaIEF8xZdx9uQWmN6jCYzL+0H/ZS449zSoub7VHgOyQ5on9HiOQSCA6NBcEjst8AEJjuxWR88OYIS74kemmyfmsMFPJSIwAaS1NS5qmmc3YnBnFWDbDCE8N5TEE34AK6mgoevuzlKnJxbceMZ708QZjUjR2tYFk8S8w8q64VOeZCEU6fELHPQ109i0KuRGofIyZVEMKID/HrU3l7h/oXxLSVWWueaP34UsmM676Jhgl3VVUg3JIwlBqf3ojFCD6ZGxG4LyECgYEA1AJdHkoQj3GcRUTBgEiE/POoeiIIb59AZuQ65AkgSd+FO+MTEcunh08pcspZIoLggTcsvcMppJDNk0BdYpkvU7WD5HNes2iQ+OnUEIYpfp1T5cX4+U6Vcs6u78gLYJGfHKXesH9Zl6h1fFK3BFHfGhib4uoYRKitub7HXjB/rtECgYEAzDsjRIZYa4DoMq//zCDoSX4ugRlpoXEx7Rdp9FOi3qu3iRaWxXTHM1CPE8dwlYvQn1cMHMw0CTms/0DVQCXpSY5t1n/Qpss4qRkqAwSwUYM5iX88aXHDiiOUbURHWVlJcRBawJvVUXozwwfa7px4HeOoj6rj3GK4xPAeiooNLRcCgYEAvAj0qf6qvW7YWR9oN+0Z9nftP5WbwdSO/DMEgGgPuTWEJ994dFoaVgpCCsupTtChajmTdyL3djvv+OAnc2HF9gqR1jb1EU529i39pkI331KOrMZv0j5+knr58TWN0bKWWoRLBGOPBNGmkgOSy0QKCk01RYa2y36HxqyMit+c/2ECgYBrLL2dQEM2ZzdzIhlCriI4LxeIeCWOqzBgE2Fu7lUSNVrjfg8xH89JhoUPBCJ42B5q/+tDUYYdMT8v1H4UY9DA4RWS8xAz94GMe8AoRVWh8RNIrJSvYRwUageCL8qhgNGhm8uEOEMBtvdi6cRiY4pFZSsX+b4J8WS1NK1SVpADkQKBgQCezDU6HrUNuYoiQKBxikTufK4MyGZWW77vJ5hFQjsEd+NCNLMtnEHZ5p/PxcSGjb5NMdOAeOzgY1YtQLYvb9S9TSehK1pxKTuAD5b+4UK+SjwFNYcgUJLwG5spYojo0Oh3Hi17YVIez8VW59LnKawKD5RKgIIi7BJiFrAZkSX0nQ=="
                     ],
-                    "keyUse": ["ENC"],
+                    "keyUse": [
+                        "ENC"
+                    ],
                     "certificate": [
                         "MIIClTCCAX0CBgGeurE+VzANBgkqhkiG9w0BAQsFADAOMQwwCgYDVQQDDANkZXYwHhcNMjYwNjEyMDcxNTM4WhcNMzYwNjEyMDcxNzE4WjAOMQwwCgYDVQQDDANkZXYwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCpItv0q56a4SNNUMfYzlNzEqybs91gxdnpD1SY/c6y4Cs6OYEFCk/8u2UvA7utDe+ffMjHAv/zdfRBL31SfG7aaStqX729/TaWzmsBmxbN8r60s63ECeOzb18Naz1pPUnL7+QYCpPniO5Cpjtmhh/te6ck5Lqufw/8/yeYQvccNfflpRDs47hR3i3EExt1Cu6Q/AYW6/HA0aON0qCesFCuKBqt1ElDIGgQkXwZStunfYQ5vP7udrKdQ47EKXCZEG/TRhJZmUjBN8EYPCFOQFMV+v3AGGWbjXiQqxIKfYUYg69YjKU/4Dr7mE7XYtlkWEeQtVprQ7ZbpCJdfV9X0HHHAgMBAAEwDQYJKoZIhvcNAQELBQADggEBADulQqA01RJfFg15rsSuXKUmaL8IJ6yXVUGu5YSecfm6KKU8w/yXuqOQWHBxmugDxW4U4ZlQ+1uQCdKPyiAovdrJ8rRfdEAW6Ap5d3RFe9MdVtJSEA24tYF2eBzbmyNqjV588L+0R6uPRGmHM7dBaUTxjjqg4mTtoxteMwv/3pPUskbhjjmbVesNQHKkXBBBaEypSObWCeeSHYLW96pbeoHXaEIIPdrn04NFIY49uGk2J4BgJMh29vTBuabAKVePNgn7PrbCGW+R4QS9cYwl320kNXhJkVPr+jE9LThKmu5tBvh4xSzYcEjmlKx9goS8CryazGiJZoR/+e2nMzu5ZVM="
                     ],
-                    "priority": ["100"],
-                    "algorithm": ["RSA-OAEP"]
+                    "priority": [
+                        "100"
+                    ],
+                    "algorithm": [
+                        "RSA-OAEP"
+                    ]
                 }
             },
             {
@@ -1922,11 +1994,15 @@
                     "privateKey": [
                         "MIIEowIBAAKCAQEAqvOVDDSzChSZIjjwcUORMRwMdtjbwzeHdq1DyjzCjRNtGvj3KlVpnHHbxgdl9iYHq5CHIP+EQulYaqqePVx5klAk0Zvy2Q6GjGLrAky+jwP6iJ5viLEzPvtU4Enzrx8Ua7SOgu9sLoS2Trk3uEv6ZEcTEbLQyYm4vgIa0AN2b/ch4JpU3qP/iBOLMfPwl5t0PKBWlAuAjk2/5fC9PaIJsaTJl4HJhCIT9YRqOLWjm7xyHa0S77WKJ3U/gDFr2fPrQQAwkzv5arCESSxP9gT4ovG2ADg4Zz4xpKhD3xiZkCtAhuXHaOIdhErCxTgjiZ0rt8Q1b1Ms9birijCGv941FwIDAQABAoIBADK6xegxW1AKfMbjDrcNzfA82pYKFG0B9XkKQauqDDHBKgdvCinN3uFGCGnjmCZLcss+wFrSeHVCubItn3emEY2Rqtto48/1t4fBcuvjyki2bYpNOdveec6e1rkYOPAm0PCFTCUe14OWbmM+I4LVSSCo1sfRwJOOAvyfs0U3QdZHi170R8UldlMtwddh3luD6kIrl+W8kMwy0qIFFPTaxK2khvFFbbJiTMk+0smTHiEPnho7zZoTybkSyukU0CL/AElr3y2mqiLDtU8iQCtXNbFfoIELzXZ++ig6qx27rihNdDrl+9l1VT562QgM8SRF3vbTtSIoElEF2gGRYyrBpQECgYEA5VK9fegE52VIZaNowB+FlzvCwl+ue3WPSyPixCEShBD7TCaGHGJGEqBsfy7ntZlJiFmd8Hz1cJn6BKKZL4kwBMZBpg+6yO30bWAgKmLhHehtMXT7Qg8V+qLy+BA6JGI1MUjR3oaM6NCraoLw6h16C7MilCpVQuBmSp8YHw7yeCcCgYEAvtaHWP+A7lIgsdzXxuGSk1Bmcznix0WOjpmD7gdlzOombayiY9doY79M1YzwQ3ahriNWHQANqSBuA6JPjuDV+EVMl3JDRaKRcH0dNzFRizbre5WAYMdoVoD1zhEfYW9PFtHmHi0wrn20TqNKyf3/6Px802xpy2y5VBQexDNwAZECgYASWl3Z/sCtuDhkEgDnJ16srNa4canoLY9rRxL1+WOe+DD0djzTdrX+9aHZR+q5aOwuomV2grmt6lTNHCpAWK1kJG3KmYWsYQbn3gKVAdbcauaaR694KPbsWTAy1DGjCc0SBa7uLTyHwXOGkbYwNm23E/4Xd4/dS1JEdJkcmziijwKBgGN3EQhT83FDoQLTJivkei8J4rv/2bEfEdRFMzwm4upQyEK1jdYX+bKzjGppkPi4pkBK7qEi2/vgiTafrHO9wAgspmTxCxsKRl+o9kdED0pOD6JUI5tNk5YylOsYhZCVIVW1hQkJaKwpnIa4GUz6dB2NK8pOYT3DpzypV/fPD3vhAoGBANI2Nqh5GHp9xyS7da98CvCV3Toas22i9YKS6hWp97XmvZz0ziVu54gKIh4MyGdZYWUd466Pp4TAZ/+PQYTqjiNMF5BsiTPAQtne2oA78URHc8+hkQQZb9d804smTn8I667qqCo0VxIth2vptep4wccgbx4bLhiVGjHzWwv9vhXw"
                     ],
-                    "keyUse": ["SIG"],
+                    "keyUse": [
+                        "SIG"
+                    ],
                     "certificate": [
                         "MIIClTCCAX0CBgGeurE+ADANBgkqhkiG9w0BAQsFADAOMQwwCgYDVQQDDANkZXYwHhcNMjYwNjEyMDcxNTM4WhcNMzYwNjEyMDcxNzE4WjAOMQwwCgYDVQQDDANkZXYwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCq85UMNLMKFJkiOPBxQ5ExHAx22NvDN4d2rUPKPMKNE20a+PcqVWmccdvGB2X2JgerkIcg/4RC6Vhqqp49XHmSUCTRm/LZDoaMYusCTL6PA/qInm+IsTM++1TgSfOvHxRrtI6C72wuhLZOuTe4S/pkRxMRstDJibi+AhrQA3Zv9yHgmlTeo/+IE4sx8/CXm3Q8oFaUC4COTb/l8L09ogmxpMmXgcmEIhP1hGo4taObvHIdrRLvtYondT+AMWvZ8+tBADCTO/lqsIRJLE/2BPii8bYAODhnPjGkqEPfGJmQK0CG5cdo4h2ESsLFOCOJnSu3xDVvUyz1uKuKMIa/3jUXAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAGwiq11NHA//EE83wV0A98fLA4+4pJJ/Y9mIwkd9zu23NEhEl80XEi5GDhM+GTvVWJ90z1Fdi78QxSi8JIBkekaDzxaBieu+OfsapJthYdK4LNEHLj0uNrenL64liVxKONUSg4ljn8YD9BJCfRRJh1rmjUwXeoh39eiapcl0o+vMuJ6IFBj6QePzFkEp1W3/S7yS1fYTQFd2qUqogIqT9+LDKNLp2pHOsIHyzWMBvjIvhvXJKMlwLdWbsE/DZEV1ZRr4RsnpnpCOQLzzeIZP47cvUKCMtUuxkK6Qp4cBzC/RzTcgZiBv5Ti1jESBnK38iOv0pr0Ldbs4k3RB8fCfa28="
                     ],
-                    "priority": ["100"]
+                    "priority": [
+                        "100"
+                    ]
                 }
             },
             {
@@ -1935,9 +2011,15 @@
                 "providerId": "aes-generated",
                 "subComponents": {},
                 "config": {
-                    "kid": ["b3ff371b-ebd9-4bf2-94a2-6d8ccfdec2ec"],
-                    "secret": ["jF2EYzf89mIMfBH07TMxpQ"],
-                    "priority": ["100"]
+                    "kid": [
+                        "b3ff371b-ebd9-4bf2-94a2-6d8ccfdec2ec"
+                    ],
+                    "secret": [
+                        "jF2EYzf89mIMfBH07TMxpQ"
+                    ],
+                    "priority": [
+                        "100"
+                    ]
                 }
             }
         ]

@@ -50,7 +50,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:3000/api/v1/status || exit 1
+    CMD wget --quiet --tries=1 --spider http://127.0.0.1:3000/api/v1/status || exit 1
 EXPOSE 3000
 COPY --from=build-form-builder /app/apps/json-forms-builder/.output ./
 CMD ["node", "server/index.mjs"]
@@ -98,3 +98,42 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD node -e "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)"
 EXPOSE 1234
 CMD ["node", "apps/collab-server/dist/src/index.js"]
+
+
+# ----------------------------------------------------------------------------
+# External Example App (demo): Prune the monorepo to what the demo needs
+# ----------------------------------------------------------------------------
+
+FROM prepare AS prepare-external-demo
+
+RUN turbo prune json-forms-webcomponent-example-external --docker
+
+# ----------------------------------------------------------------------------
+# External Example App: Build image
+# ----------------------------------------------------------------------------
+FROM base AS build-external-demo
+
+COPY --from=prepare-external-demo /app/out/json/ ./
+
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn install --immutable
+
+COPY --from=prepare-external-demo /app/out/full/ ./
+
+RUN --mount=type=cache,target=/app/.turbo \
+    yarn turbo run build:internal --filter=@educorvi/vue-json-forms-builder-webcomponent && \
+    cd apps/json-forms-webcomponent-example-external && yarn sync:webcomponent && \
+    yarn turbo run build:internal --filter=json-forms-webcomponent-example-external
+
+# ----------------------------------------------------------------------------
+# External Example App: Runtime image
+# ----------------------------------------------------------------------------
+FROM base AS run-external-demo
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=0.0.0.0
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://127.0.0.1:3000/ || exit 1
+EXPOSE 3000
+COPY --from=build-external-demo /app/apps/json-forms-webcomponent-example-external/.output ./
+CMD ["node", "server/index.mjs"]

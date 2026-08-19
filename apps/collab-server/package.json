@@ -21,7 +21,9 @@
         "@educorvi/vue-json-forms-builder-db-layer": "workspace:^",
         "@hocuspocus/provider": "^4.6.0",
         "@hocuspocus/server": "^4.6.0",
+        "pg": "^8.22.0",
         "reflect-metadata": "^0.2.2",
+        "y-protocols": "^1.0.7",
         "yjs": "^13.6.32"
     }
 }

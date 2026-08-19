@@ -19,10 +19,10 @@ async function initDb(): Promise<void> {
     }
 }
 
-async function loadFormDocument(documentName: string): Promise<Y.Doc> {
+async function loadFormDocument(formId: number): Promise<Y.Doc> {
     const repo = AppDataSource.getRepository(Form);
     const form = await repo.findOne({
-        where: { id: Number(documentName) },
+        where: { id: formId },
     });
 
     if (form?.yjs_state && form.yjs_state.length > 0) {
@@ -30,18 +30,18 @@ async function loadFormDocument(documentName: string): Promise<Y.Doc> {
             const doc = new Y.Doc();
             Y.applyUpdate(doc, form.yjs_state);
             console.log(
-                `[collab] load "${documentName}": hydrated ${form.yjs_state.length} bytes of yjs state`
+                `[collab] load "${formId}": hydrated ${form.yjs_state.length} bytes of yjs state`
             );
             return doc;
         } catch (err) {
             console.error(
-                `[collab] load "${documentName}": invalid yjs state, starting empty:`,
+                `[collab] load "${formId}": invalid yjs state, starting empty:`,
                 err instanceof Error ? err.message : err
             );
         }
     } else {
         console.log(
-            `[collab] load "${documentName}": no yjs state yet, starting empty`
+            `[collab] load "${formId}": no yjs state yet, starting empty`
         );
     }
 
@@ -49,18 +49,18 @@ async function loadFormDocument(documentName: string): Promise<Y.Doc> {
     // the root Form data exists for every client from the first sync on.
     const doc = new Y.Doc();
     initializeEmptyDocument(doc, {
-        uid: `root-${documentName}`,
+        uid: `root-${formId}`,
         title: form?.title ?? 'My Form',
     });
     return doc;
 }
 
 async function storeFormDocument(
-    documentName: string,
+    formId: number,
     document: Y.Doc
 ): Promise<void> {
     const repo = AppDataSource.getRepository(Form);
-    let form = await repo.findOne({ where: { id: Number(documentName) } });
+    let form = await repo.findOne({ where: { id: formId } });
 
     const state = Buffer.from(Y.encodeStateAsUpdate(document));
 
@@ -69,34 +69,39 @@ async function storeFormDocument(
             `INSERT INTO "form" ("id", "title", "name", "path", "yjs_state")
              VALUES ($1::int, $1::text, $1::text, $1::text, $2::bytea)
              ON CONFLICT ("id") DO UPDATE SET "yjs_state" = $2::bytea`,
-            [Number(documentName), state]
+            [formId, state]
         );
     } else {
         form.yjs_state = state;
         await repo.save(form);
     }
     console.log(
-        `[collab] store "${documentName}": saved ${state.length} bytes of yjs state`
+        `[collab] store "${formId}": saved ${state.length} bytes of yjs state`
     );
 }
 
 async function main(): Promise<void> {
     await initDb();
 
-    const server = new Server<{ user: WsAuthUser }>({
+    const server = new Server<{
+        user: WsAuthUser;
+        formId: number;
+    }>({
         name: 'json-forms-builder-collab',
         port: PORT,
         debounce: 5000,
         maxDebounce: 20000,
         onAuthenticate: async ({ token, requestHeaders, documentName }) => {
             try {
-                return {
-                    user: await authenticateConnection(
-                        token,
-                        requestHeaders,
-                        documentName
-                    ),
-                };
+                // authenticateConnection returns the RESOLVED numeric form
+                // id (the backend accepts id OR path as documentName); it
+                // becomes the Hocuspocus context for load/store below, so
+                // yjs state is always read/written by canonical form id.
+                return await authenticateConnection(
+                    token,
+                    requestHeaders,
+                    documentName
+                );
             } catch (err) {
                 console.warn(
                     `[collab] auth rejected for "${documentName}" (token "${token?.slice(0, 16)}…"): ${
@@ -132,10 +137,9 @@ async function main(): Promise<void> {
                 }
             }
         },
-        onLoadDocument: async ({ documentName }) =>
-            loadFormDocument(documentName),
-        onStoreDocument: async ({ documentName, document }) =>
-            storeFormDocument(documentName, document),
+        onLoadDocument: async ({ context }) => loadFormDocument(context.formId),
+        onStoreDocument: async ({ document, lastContext }) =>
+            storeFormDocument(lastContext.formId, document),
     });
 
     server.listen().then(() => {

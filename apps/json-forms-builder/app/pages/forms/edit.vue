@@ -88,9 +88,12 @@ async function onSaveGeneral() {
     savedMsg.value = false;
     saveErrorMsg.value = null;
     try {
+        // NOTE: the `query.id` param on update means "parent group to move
+        // the form into" — this page only edits metadata, so it is NOT sent
+        // here (sending the form's own path made the server try to resolve
+        // it as a group: "Group not found at path …").
         await orpc.forms.update({
             params: { id: formPath.value },
-            query: { id: formPath.value },
             body: {
                 title: editTitle.value.trim(),
                 description: editDescription.value.trim() || null,

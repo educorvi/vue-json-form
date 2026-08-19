@@ -49,14 +49,14 @@ export default defineNuxtConfig({
             // "vueformbuilder-embed", PKCE, silent check-sso). kc_idp_hint
             // points to the external Keycloak (identity brokering), so the
             // login skips the kc1 login page entirely.
-            kcUrl: process.env.NUXT_PUBLIC_KC_URL,
-            kcRealm: process.env.NUXT_PUBLIC_KC_REALM,
-            kcClientId: process.env.NUXT_PUBLIC_KC_CLIENT_ID,
-            kcIdpHint: process.env.NUXT_PUBLIC_KC_IDP_HINT,
+            kcUrl: process.env.NUXT_PUBLIC_KC_URL ?? '',
+            kcRealm: process.env.NUXT_PUBLIC_KC_REALM ?? 'dev',
+            kcClientId: process.env.NUXT_PUBLIC_KC_CLIENT_ID ?? '',
+            kcIdpHint: process.env.NUXT_PUBLIC_KC_IDP_HINT ?? '',
             // Hocuspocus collab server of the backend (apps/json-forms-builder,
             // `yarn dev:collab`). The builder loads the form over this
             // websocket — document name = the form's numeric id.
-            collabUrl: process.env.NUXT_PUBLIC_COLLAB_URL,
+            collabUrl: process.env.NUXT_PUBLIC_COLLAB_URL ?? '',
         },
     },
 

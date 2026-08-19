@@ -3,6 +3,7 @@ import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { loadFormAccessData } from '~~/server/lib/access-control';
 import { computeEffectiveRole } from '~~/server/lib/permissions/roles';
 import { ResourceUpdatePermission } from '~~/server/lib/permissions';
+import { FormService } from '~~/server/services/FormService';
 
 /**
  * GET /api/ws-auth?documentName=<formId> — validate an incoming WebSocket
@@ -36,12 +37,37 @@ export default defineEventHandler(async (event) => {
     }
 
     const rawId = getQuery(event).documentName;
-    const formId = Number(rawId);
-    if (typeof rawId !== 'string' || !Number.isInteger(formId) || formId <= 0) {
+    if (typeof rawId !== 'string' || rawId.trim().length === 0) {
         throw createError({
             statusCode: 400,
-            statusMessage:
-                'Invalid or missing documentName (must be a numeric form id)',
+            statusMessage: 'Invalid or missing documentName (form id or path)',
+        });
+    }
+
+    // TODO if possible use oprc as well and common functions here as well
+    // Accept either the numeric form id ("5") or a form path
+    // ("educorvi/formular1") — resolve the path to its numeric id exactly
+    // like the oRPC routes do (getByIdOrSlug). Numeric names are blocked at
+    // creation, so the check is unambiguous.
+    let formId: number;
+    if (/^\d+$/.test(rawId)) {
+        formId = Number(rawId);
+    } else {
+        try {
+            const service = new FormService(AppDataSource);
+            const form = await service.getByIdOrSlug(rawId);
+            formId = form.id;
+        } catch {
+            throw createError({
+                statusCode: 404,
+                statusMessage: `Form "${rawId}" does not exist`,
+            });
+        }
+    }
+    if (!Number.isInteger(formId) || formId <= 0) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Invalid or missing documentName (form id or path)',
         });
     }
 
@@ -52,7 +78,7 @@ export default defineEventHandler(async (event) => {
         // loadFormAccessData throws NOT_FOUND for unknown forms
         throw createError({
             statusCode: 404,
-            statusMessage: `Form ${formId} does not exist`,
+            statusMessage: `Form ${rawId} does not exist`,
         });
     }
 
@@ -78,5 +104,9 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    return { user, effective_role: effectiveRole };
+    return {
+        user,
+        effective_role: effectiveRole,
+        form_id: formId,
+    };
 });

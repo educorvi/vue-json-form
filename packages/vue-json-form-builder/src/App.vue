@@ -237,6 +237,8 @@ const collabErrorMessages: Record<CollabErrorReason, string> = {
         'You do not have edit access to this form. Ask an owner to grant you editor or owner access.',
     'permission-denied':
         'The collaboration connection was rejected by the server.',
+    unreachable:
+        'The collaboration server is not reachable. Check that it is running and that the WebSocket URL is correct, then reload the page.',
     unknown: 'The collaboration connection was rejected by the server.',
 };
 const collabErrorMessage = computed(() =>

@@ -1,3 +1,4 @@
+<!-- start with e.g. python3 -m http.server 4177 -->
 <!doctype html>
 <html lang="en">
     <head>
@@ -7,12 +8,13 @@
         <style>
             :root {
                 color-scheme: light;
-                font-family:
-                    "IBM Plex Sans",
-                    "Segoe UI",
-                    sans-serif;
-                background:
-                    radial-gradient(circle at top left, #f5f8ff 0, #eef3ea 38%, #f4efe4 100%);
+                font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+                background: radial-gradient(
+                    circle at top left,
+                    #f5f8ff 0,
+                    #eef3ea 38%,
+                    #f4efe4 100%
+                );
                 color: #172033;
             }
 
@@ -80,12 +82,13 @@
                 <p class="eyebrow">Standalone Host Page</p>
                 <h1>Vue JSON Form Builder</h1>
                 <p>
-                    This page embeds the built webcomponent bundle directly. Build the package
-                    first, then open this file from the package directory or serve it with any
-                    static file server.
+                    This page embeds the built webcomponent bundle directly.
+                    Build the package first, then open this file from the
+                    package directory or serve it with any static file server.
                 </p>
                 <p>
-                    Expected bundle: <code>./dist/vue-json-form-builder.js</code>
+                    Expected bundle:
+                    <code>./dist/vue-json-form-builder.js</code>
                 </p>
             </section>
 
@@ -95,8 +98,24 @@
         </main>
         <script type="module" src="./dist/vue-json-form-builder.js"></script>
         <script>
-            document.getElementById('vjfb').addEventListener('vjfbChange', (event) => {
-                console.log(event);
+            const vjfb = document.getElementById('vjfb');
+
+            vjfb.addEventListener('vjfb-change', (event) => {
+                const [jsonSchema, uiSchema] = event.detail;
+                console.log(
+                    '[vjfb-change] jsonSchema =',
+                    JSON.stringify(jsonSchema, null, 2),
+                    'uiSchema =',
+                    JSON.stringify(uiSchema, null, 2)
+                );
+            });
+
+            vjfb.addEventListener('vjfb-definition-change', (event) => {
+                const [definition] = event.detail;
+                console.log(
+                    '[vjfb-definition-change] definition =',
+                    JSON.stringify(definition, null, 2)
+                );
             });
         </script>
     </body>

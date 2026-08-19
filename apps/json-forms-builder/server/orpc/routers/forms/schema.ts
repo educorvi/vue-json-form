@@ -99,5 +99,10 @@ export const formSchemaProcedures = {
                 yjsStateToArtifacts(revision.yjs_state),
                 input.query?.artifacts
             );
+            // throw new ORPCError('NOT_IMPLEMENTED', {
+            //     message:
+            //         'Importing json/ui schema artifacts is not implemented. ' +
+            //         'Use the FormDefinition import endpoint or the builder UI instead.',
+            // });
         }),
 };

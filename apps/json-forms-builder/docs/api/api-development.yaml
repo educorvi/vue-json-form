@@ -565,9 +565,11 @@ paths:
       description: |
         Full replacement of all writable fields. The `schema` field is excluded —
         use `PUT /forms/{id}/schema` to manage the form's schema.
+        The optional `id` query parameter moves the form into a different
+        parent group (group id or path).
       operationId: replaceForm
       parameters:
-        - $ref: '#/components/parameters/GroupIdOrPathQuery'
+        - $ref: '#/components/parameters/GroupIdOrPathQueryOptional'
       requestBody:
         required: true
         content:
@@ -591,9 +593,11 @@ paths:
       description: |
         Updates only the provided fields. The `schema` field is excluded —
         use `PUT /forms/{id}/schema` to manage the form's schema.
+        The optional `id` query parameter moves the form into a different
+        parent group (group id or path).
       operationId: updateForm
       parameters:
-        - $ref: '#/components/parameters/GroupIdOrPathQuery'
+        - $ref: '#/components/parameters/GroupIdOrPathQueryOptional'
       requestBody:
         required: true
         content:
@@ -1237,6 +1241,19 @@ components:
       schema:
         type: string
 
+    # Same as GroupIdOrPathQuery, but optional — used by form update/replace
+    # where the query only makes sense when moving the form into a group.
+    GroupIdOrPathQueryOptional:
+      name: id
+      in: query
+      required: false
+      description: |
+        Optional. Integer ID **or** URL-encoded full path of the parent
+        group to move the form into. Omit to keep the current parent.
+        Examples: `42` or `projects%2Fmarketing%2Fsub-group`
+      schema:
+        type: string
+
     SemanticVersion:
       in: path
       name: version
@@ -1246,19 +1263,25 @@ components:
         pattern: '^\d+\.\d+\.\d+$'
         description: Semantic version string (e.g., "1.0.0")
 
-    # Form artifacts query parameters (for future use)
+    # Form artifacts query parameters. Accepts a single value
+    # (?artifacts=json) or repeated values (?artifacts=json&artifacts=ui).
     FormArtifactsQuery:
       name: artifacts
       in: query
       description: |
-        Which artifacts to include in the response. By default all are included. Provide the enum of artifacts as an array
+        Which artifacts to include in the response. By default all are
+        included. Provide one value (`artifacts=json`) or repeat the
+        parameter (`artifacts=json&artifacts=ui`).
       style: form
       explode: true
       schema:
-        type: array
-        items:
-          type: string
-          enum: [json, ui]
+        oneOf:
+          - type: string
+            enum: [json, ui]
+          - type: array
+            items:
+              type: string
+              enum: [json, ui]
 
   # ── RESPONSES ─────────────────────────────────────────────────────────────
   responses:

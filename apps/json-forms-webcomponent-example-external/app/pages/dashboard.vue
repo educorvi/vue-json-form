@@ -20,8 +20,10 @@ const greeting = computed(
 
 // The form is NOT fetched over REST — the builder webcomponent loads it over
 // the collab websocket (like in the main builder app): Hocuspocus hydrates
-// the Y.Doc from the form's stored definition, keyed by document name = the
-// form's NUMERIC id. The websocket authenticates with the kc1 access token
+// the Y.Doc from the form's stored definition, keyed by document name. The
+// document name is either the form's NUMERIC id ("5") or its path
+// ("educorvi/formular1") — the backend's ws-auth endpoint resolves paths
+// to the numeric id. The websocket authenticates with the kc1 access token
 // that keycloak-js obtained (silent check-sso; `kc_idp_hint` sends the login
 // through the external Keycloak, so the user is already signed in here).
 //
@@ -36,17 +38,40 @@ const greeting = computed(
 const route = useRoute();
 const router = useRouter();
 
+/**
+ * True when the input is a numeric form id ("5") or a form path
+ * ("educorvi/formular1"): path segments are alphanumeric (plus - _ ~ .),
+ * at least one segment, no empty/double segments, no whitespace.
+ */
+function isValidFormId(id: string): boolean {
+    return /^[A-Za-z0-9._~-]+(\/[A-Za-z0-9._~-]+)*$/.test(id);
+}
+
+const formIdError = ref<string | null>(null);
+
 const formId = ref(
     typeof route.query.formId === 'string' ? route.query.formId : ''
 );
-/** The form id the user confirmed — only then is the builder mounted. */
+/**
+ * The form reference the user confirmed — only then is the builder mounted.
+ * Values that are neither a numeric id nor a path never mount the builder
+ * (the backend would reject the websocket handshake).
+ */
 const confirmedFormId = ref(
-    typeof route.query.formId === 'string' ? route.query.formId : ''
+    typeof route.query.formId === 'string' && isValidFormId(route.query.formId)
+        ? route.query.formId
+        : ''
 );
 
 async function loadForm() {
     const id = formId.value.trim();
     if (!id) return;
+    if (!isValidFormId(id)) {
+        formIdError.value =
+            'Enter the numeric form id (e.g. 5) or a form path (e.g. educorvi/formular1).';
+        return;
+    }
+    formIdError.value = null;
     // Commit the URL BEFORE mounting the builder: the webcomponent captures
     // location.href as its Keycloak redirectUri when it mounts, so the
     // post-login return would otherwise land on the previously confirmed
@@ -100,9 +125,9 @@ async function loadForm() {
             <h1 class="h6 mb-0">Hello, {{ greeting }}!</h1>
             <BFormInput
                 v-model="formId"
-                placeholder="Form id (number), e.g. 5"
+                placeholder="Form id or path, e.g. 5 or educorvi/formular1"
                 class="w-auto"
-                style="max-width: 16rem"
+                style="max-width: 20rem"
                 @keyup.enter="loadForm"
             />
             <BButton
@@ -113,6 +138,9 @@ async function loadForm() {
             >
                 Load form
             </BButton>
+            <span v-if="formIdError" class="text-danger small">
+                {{ formIdError }}
+            </span>
             <span class="text-secondary small">
                 The form is loaded over the collab websocket only after you
                 confirm — the builder authenticates against kc1 with keycloak-js

@@ -36,6 +36,13 @@ services:
         command:
             - "start-dev"
             - "--import-realm"
+        # Alias so OTHER containers (app, collab) can reach kc1 at its
+        # canonical KC_HOSTNAME (kc1.localhost:8080) — containers cannot
+        # resolve *.localhost on their own.
+        networks:
+            default:
+                aliases:
+                    - kc1.localhost
 
     external-keycloak:
         image: quay.io/keycloak/keycloak:26.6.1
@@ -72,32 +79,24 @@ services:
             dockerfile: Dockerfile
             target: run-form-builder
         env_file:
-            - .docker.env
+            - .env.docker.backend
         ports:
-            - "3100:3000"
+            - "3000:3000"
         depends_on:
             postgres:
                 condition: service_healthy
             keycloak:
                 condition: service_started
 
-    # Standalone Hocuspocus WebSocket collaboration backend (collab-server/).
-    #
-    # To make the browser actually connect, the app image must be BUILT with
-    # NUXT_PUBLIC_COLLAB_URL=ws://localhost:1234 (it is inlined into the
-    # client bundle at build time, a runtime env var is not enough).
     collab:
         profiles: ["ci"]
         build:
-            # turbo prune must run against the whole monorepo, so the build
-            # context is the repo root (Dockerfile lives in this folder).
             context: ../..
-            dockerfile: apps/json-forms-builder/collab-server/Dockerfile
+            dockerfile: Dockerfile
+            target: run-collab-server
         env_file:
-            - .docker.env
+            - .env.docker.collab
         environment:
-            # Backend that validates WS handshakes. `app` listens on :3000
-            # inside the compose network (host mapping is 3100:3000 above).
             COLLAB_NUXT_URL: http://app:3000
             COLLAB_PORT: "1234"
         ports:
@@ -107,14 +106,17 @@ services:
                 condition: service_healthy
             app:
                 condition: service_healthy
-        healthcheck:
-            test:
-                [
-                    "CMD",
-                    "node",
-                    "-e",
-                    "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)",
-                ]
-            interval: 5s
-            timeout: 5s
-            retries: 10
+
+    external-example-app:
+        profiles: ["ci"]
+        build:
+            context: ../..
+            dockerfile: Dockerfile
+            target: run-external-demo
+        env_file:
+            - .env.docker.external
+        ports:
+            - "3001:3000"
+        depends_on:
+            external-keycloak:
+                condition: service_started
