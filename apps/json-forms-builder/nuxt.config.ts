@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
@@ -60,6 +59,16 @@ export default defineNuxtConfig({
     // WebSocket URL when the `collab` prop is set (see app/pages/forms/detail.vue).
     // Off by default; set NUXT_PUBLIC_COLLAB_URL to enable.
     runtimeConfig: {
+        session: {
+            cookie: {
+                domain:
+                    process.env.NUXT_COOKIE_DOMAIN ?? '.forms-test.educorvi.de',
+                path: '/',
+                secure: true,
+                httpOnly: true,
+                sameSite: 'lax',
+            },
+        },
         public: {
             collabUrl: process.env.NUXT_PUBLIC_COLLAB_URL ?? '',
         },
