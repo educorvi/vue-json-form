@@ -11,10 +11,10 @@ import { DependencyRelation, DependencyRelationEnum, DependencyType, DependencyT
 function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifier {
     let array_rule: Quantifier = {} as Quantifier;
     // split by items
-    const paths: string[][] = splitScopeAt(scope.filter((item) => item !== "properties"), "items");
+    const paths: string[][] = splitScopeAt(scope, "items");
 
-    let current_path: string[] = [];
-    let current_object_path = "";
+    let currentPathList: string[] = [];
+    let currentDotJoinedArrayPath = "";
 
     let current_rule: Quantifier = {} as Quantifier;
     let current_subrule: Operator = {} as Operator;
@@ -25,15 +25,7 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
         if (path === undefined) {
             throw new Error(`Path is undefined for scope: ${scope}`);
         }
-        current_path = current_path.concat(path);
-
-        // get path of object beginning at the previous array (or form if parent array)
-        if (current_object_path !== "") {
-            const index = path.lastIndexOf("properties");
-            current_object_path = `$array_item${counter - 1}.${path.join(".")}`;
-        } else {
-            current_object_path = current_path.join(".");
-        }
+        currentPathList = currentPathList.concat(path);
 
         const subRule: Operator = {
             type: DependencyRelation.and,
@@ -49,7 +41,7 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
                         },
                         {
                             type: "atom",
-                            path: "$selfIndices." + current_path,
+                              path: "$selfIndices./" + currentPathList.join("/"),
                             default: -1,
                         },
                     ],
@@ -66,10 +58,20 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
             ],
         }
 
+        // compute path of current array (dot-joined path since last outer array, or if outermost array, dot-joined path from root)
+        if (currentDotJoinedArrayPath !== "") {
+            // all inner arrays: path is $array_itemX + dot-joined path since last outer (not outermost!) array
+            const index = path.lastIndexOf("properties");
+            currentDotJoinedArrayPath = `$array_item${counter - 1}.${transform_scope_to_object_writing_form(path)}`;
+        } else {
+            // outermost array
+            currentDotJoinedArrayPath = transform_scope_to_object_writing_form(currentPathList);
+        }
+
         // create rule for current array
         const rule: Quantifier = {
             type: "exists",
-            array: { type: "atom", path: current_object_path, default: [] },
+            array: { type: "atom", path: currentDotJoinedArrayPath, default: [] },
             placeholder: "$array_item" + counter,
             indexPlaceholder: "$index" + counter,
             rule: subRule,
@@ -87,7 +89,7 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
         }
 
         counter += 1
-        current_path.push("items");
+        currentPathList.push("items");
     }
 
     // add actual rule to array rule structure
@@ -157,7 +159,7 @@ export class Dependency extends Entity{
         let sourcePath: string;
         if (sourcePathList.includes("items")) {
             const numberOfItems = sourcePathList.filter(item => item === "items").length;
-            sourcePath = `$array_item${numberOfItems}.${sourcePathList[sourcePathList.length - 1]}`;
+            sourcePath = `$array_item${numberOfItems}.${transform_scope_to_object_writing_form(sourcePathList.slice(sourcePathList.lastIndexOf("items") + 1))}`;
         } else {
             sourcePath = transform_scope_to_object_writing_form(sourcePathList);
         }
