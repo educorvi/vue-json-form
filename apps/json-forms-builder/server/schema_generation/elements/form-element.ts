@@ -79,6 +79,10 @@ export abstract class FormElement extends Entity {
         };
     }
 
+    getAllOfLeafStatement(): JSONSchema | undefined {
+        return undefined;
+    }
+
     static fromJsonSchemaAndUiSchema(id: string, jsonSchema: JSONSchema, uiSchema: CombinedUiSchemaType): FormElement {
         throw new Error("fromJsonSchemaAndUiSchema must be implemented in subclasses");
     }
@@ -241,6 +245,10 @@ export abstract class SimpleElement extends BaseDataElement {
             ...simpleElementDefaults,
             ...data,
         };
+    }
+
+    getAllOfLeafStatement(): JSONSchema {
+        return {};
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {

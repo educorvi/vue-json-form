@@ -4,7 +4,7 @@ import { SimpleElement, SimpleElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import { createShowOnProperty } from "./children-schema-utils";
-import { cleanUiSchema } from "./utils";
+import { cleanUiSchema, getRequiredMinItems } from "./utils";
 
 
 enum FileType {
@@ -116,6 +116,13 @@ export class FileuploadElement extends SimpleElement {
         return this.data.maxFileSizeInMB;
     }
 
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems)
+        };
+    }
+
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {
@@ -136,7 +143,7 @@ export class FileuploadElement extends SimpleElement {
         };
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         if (!this.multiUpload) {

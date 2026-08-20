@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { Control, JSONSchema, Layout as UiLayout } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from "./form-element";
 import type { SchemaGenerator } from "./schema-generator";
-import { cleanUiSchema, Layout } from "./utils";
+import { cleanUiSchema, getRequiredMinItems, Layout } from "./utils";
 import { PartialBy } from "./base";
 
 
@@ -155,6 +155,13 @@ export class ArrayElement extends ContainerElement {
         return ["items", "properties"];
     }
 
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems)
+        }
+    }
+
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
         const uiSchema = super.toUiSchema(generator, scope);
         uiSchema.options = {
@@ -180,7 +187,7 @@ export class ArrayElement extends ContainerElement {
         jsonSchema.type = "array";
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         return jsonSchema;

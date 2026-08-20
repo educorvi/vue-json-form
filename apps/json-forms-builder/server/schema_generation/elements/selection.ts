@@ -5,7 +5,7 @@ import type { SchemaGenerator } from "./schema-generator";
 import { PartialBy } from "./base";
 import controlSchema from "@educorvi/vue-json-form-schemas/src/ui/control.schema.json";
 import type { EnumOptions } from "@educorvi/vue-json-form-schemas";
-import { ButtonVariantFormatEnum, ButtonVariantFormat, cleanUiSchema } from "./utils";
+import { ButtonVariantFormatEnum, ButtonVariantFormat, cleanUiSchema, getRequiredMinItems } from "./utils";
 
 
 type SelectionElementData = z.infer<typeof SelectionElement.schema>;
@@ -198,6 +198,13 @@ export class CheckboxGroupElement extends SelectionElement {
         };
     }
 
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems)
+        };
+    }
+
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
         const uiSchema = super.toUiSchema(generator, scope);
         cleanUiSchema(uiSchema);
@@ -217,7 +224,7 @@ export class CheckboxGroupElement extends SelectionElement {
         };
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         return jsonSchema;

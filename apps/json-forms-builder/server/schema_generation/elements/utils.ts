@@ -31,6 +31,10 @@ export function cleanUiSchema(uiSchema: Control): void {
     }
 }
 
+export function getRequiredMinItems(minItems: number | undefined): number {
+    return Math.max(1, minItems ?? 0);
+}
+
 export function minTwoItems<T>(array: T[]): array is [T, T, ...T[]] {
     return array.length >= 2;
 }
@@ -38,6 +42,13 @@ export function minTwoItems<T>(array: T[]): array is [T, T, ...T[]] {
 export function transform_scope_to_object_writing_form(scope: string[]): string {
     const filtered_scope = scope.filter((item) => item !== "properties");
     return filtered_scope.join(".");
+}
+
+export function assertDefined<T>(value: T | undefined, message = "Value is undefined"): T {
+    if (value === undefined) {
+        throw new Error(message);
+    }
+    return value;
 }
 
 //---------------------------Dependency Types and Relations---------------------------------
