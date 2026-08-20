@@ -1,10 +1,6 @@
 # vue-json-forms-builder-webcomponent
 
-The `@educorvi/vue-json-forms-builder-webcomponent` package wraps the
-[Vue JSON Form Builder](../vue-json-form-builder) in a framework-agnostic
-[web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
-(`<vue-json-form-builder>`), styles and all, so it can be embedded in any
-website — plain HTML, React, Angular, Nuxt, ...
+The `@educorvi/vue-json-forms-builder-webcomponent` package wraps the [Vue JSON Form Builder](../vue-json-form-builder) in a framework-agnostic [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (`<vue-json-form-builder>`), which includes all necessary styles, scripts etc., so it can be embedded in any website — it doesn't matter if plain HTMLor a web framework like React, Angular, Nuxt, or others are used.
 
 ## Usage
 
@@ -13,13 +9,10 @@ Load the bundle as a module script, then use the custom element:
 ```html
 <script type="module" src="./dist/vue-json-form-builder.js"></script>
 
-<vue-json-form-builder
-  collab-url="ws://localhost:1234"
-  collab-document-name="42"
-></vue-json-form-builder>
+<vue-json-form-builder></vue-json-form-builder>
 ```
 
-### Attributes (all strings)
+### Attributes
 
 | Attribute               | Description                                                                                                                                   |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -87,11 +80,3 @@ The user is already logged in at the hosting Nuxt app (`nuxt-auth-utils`). The b
   ui-schema='{ "version": "2.2", "layout": { "type": "VerticalLayout", "elements": [] } }'
 ></vue-json-form-builder>
 ```
-
-> **Security note:** the presence identity (avatars, names, colors) is
-> derived exclusively from the authenticated session — the Keycloak token
-> (`kc-*`) or the backend session (`backend-url`). There is no attribute
-> to set it, and the collab server additionally overwrites it in every
-> broadcast with the user it authenticated for the websocket, so a client
-> can never impersonate another user. Without `kc-*`/`backend-url` the
-> builder runs fully local and never shows any users.

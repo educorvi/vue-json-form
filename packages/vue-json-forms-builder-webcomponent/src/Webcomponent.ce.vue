@@ -8,19 +8,14 @@ import {
 
 /**
  * Thin webcomponent wrapper around VueJsonFormBuilder.
- *
- * All logic lives in the Vue component (@educorvi/vue-json-form-builder,
- * src/App.vue) — including the authentication (keycloak-js silent
- * `check-sso` via the `kc-*` attributes, or the backend session via
- * `backend-url`). This wrapper only translates webcomponent attributes
- * into props and forwards events.
  */
 const props = defineProps<{
+    hideHeader?: boolean;
     jsonSchema?: string;
     uiSchema?: string;
     /** Enable realtime collaboration: ws(s)://host:port of the Hocuspocus server */
     collabUrl?: string;
-    /** Document name (= form id in the backend). Defaults to "default-form". */
+    /** Document name (= form id or name in the backend). Defaults to "default-form". */
     collabDocumentName: string;
     /**
      * Auth token for the websocket: a Keycloak access token or an API key
@@ -95,6 +90,7 @@ function handleVJFBDefinitionChange(definition: object) {
 
 <template>
     <VueJsonFormBuilder
+        :hide-header="hideHeader"
         :json-schema="jsonSchema"
         :ui-schema="uiSchema"
         :collab="collab"

@@ -8,14 +8,8 @@ $bootstrap-icons-font-dir: 'bootstrap-icons/font/fonts';
     @extend :root;
 }
 
-/* The custom element host must behave like a block that fills its parent:
-   custom elements default to `display: inline`, which collapses the
-   component's h-100 / width chain (squished layout, misaligned toolbar
-   avatars and text). Consumers control the height via their container;
-   inside the host the builder's own `h-100 overflow-hidden` layout then
-   scrolls internally. */
-:host {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
+// :host {
+//     display: block;
+//     width: 100%;
+//     height: 100%;
+// }
