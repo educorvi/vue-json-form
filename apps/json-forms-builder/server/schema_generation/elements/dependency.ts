@@ -3,7 +3,7 @@ import { Entity, EntityOptionalKeys, PartialBy } from "./base";
 import type { SchemaGenerator } from "./schema-generator";
 import type { JSONSchema, Formula, Macro, Atom, Operator, UnaryOperator, NonUnaryOperator, Rule, Quantifier } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement } from "./form-element";
-import { DependencyRelation, DependencyRelationEnum, DependencyType, DependencyTypeEnumExtended, DependencyTypeValue, minTwoItems, splitScopeAt, transform_scope_to_object_writing_form } from "./utils";
+import { assertDefined, DependencyRelation, DependencyRelationEnum, DependencyType, DependencyTypeEnumExtended, DependencyTypeValue, minTwoItems, splitScopeAt, transform_scope_to_object_writing_form } from "./utils";
 
 
 
@@ -141,10 +141,65 @@ export class Dependency extends Entity{
         return this.data.value;
     }
 
-    toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        return {
+    /**
+     * 
+     * @param generator 
+     * @param path a list of ids of the parents
+     * @param elementUid uid of the leaf element
+     * @returns a schema that can be used as an if or then statement
+     */
+    private createSubJsonSchema(generator: SchemaGenerator, path: string[], elementUid: string): JSONSchema {
+        const element = assertDefined(generator.document.getElementById(elementUid), `Element with uid ${elementUid} not found`);
+        const leafStatement = assertDefined(element.getAllOfLeafStatement(), `Element with uid ${elementUid} and id ${element.id} does not have an allOf leaf statement`);
 
-        } // TODO
+        // adapt leafStatement to dependencyType
+        // TODO minlength only if type string etc. minimum maximum? minitems maxitems?
+        // TODO only use this.value if subjsonschema is for source element
+        if (this.dependencyType === DependencyType.minLength || this.dependencyType === DependencyType.maxLength) {
+            if (typeof this.value !== "number") throw new Error(`Dependency value must be a number for dependencyType ${this.dependencyType}`);
+            leafStatement.minLength = this.value;
+        } else if (this.dependencyType === DependencyType.equal) {
+            leafStatement.const = this.value;
+        } // TODO all other dependencytypes. put this logic in a separate function (also useful for unit tests)
+
+        let currentSubSchema: Record<string, any> = {};
+        const finalSubSchema = currentSubSchema;
+
+        for (let i = 0; i < path.length - 1; i++) {
+            const currentPathSegment = path[i];
+            const nextPathSegment = path[i + 1];
+            if (currentPathSegment === undefined || nextPathSegment === undefined) {
+                throw new Error(`Path segment is undefined for path: ${path}`);
+            }
+            currentSubSchema[currentPathSegment] = {};
+            if (currentPathSegment === "properties") {
+                currentSubSchema.required = [nextPathSegment];
+            }
+            currentSubSchema = currentSubSchema[currentPathSegment];
+        }
+
+        const lastPathSegment = assertDefined(path[path.length - 1], `Last path segment is undefined for path: ${path}`);
+        currentSubSchema[lastPathSegment] = leafStatement;
+
+        return finalSubSchema;
+    }
+
+    /**
+     * ATTENTION: this schema is generated no matter the required attribute of the target, because some element don't have a required attribute and can still be required due to other factors (e.g. ObjectElement with required children)
+     *
+     * ONLY call if target element (defined by scope) has an AllOfLeafStatement, otherwise this will throw an error (e.g. for DividerElement or HtmlElement)
+     * @param generator 
+     * @param scope 
+     * @returns 
+     */
+    toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+        const targetElementUid = assertDefined(scope[scope.length - 1], `Last path segment is undefined for scope: ${scope}`);
+        const allOfSchema: JSONSchema = {
+            if: this.createSubJsonSchema(generator, generator.getPath(this.sourceId), this.sourceId),
+            then: this.createSubJsonSchema(generator, generator.getPath(targetElementUid), targetElementUid)
+        }
+
+        return allOfSchema;
     }
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): Rule {
@@ -258,19 +313,46 @@ export class DependencyGroup extends Entity {
         return this.data.relation;
     }
 
-    // TODO vielleicht wird die methode gar nicht merh gebraucht sonsdern durch generateRules ersetzt
+    /**
+     * ATTENTION: this schema is generated no matter the required attribute of the target, because some element don't have a required attribute and can still be required due to other factors (e.g. ObjectElement with required children)
+     *
+     * ONLY call if target element (defined by scope) has an AllOfLeafStatement, otherwise this will throw an error (e.g. for DividerElement or HtmlElement)
+     * @param generator
+     * @param scope path to the target FormElement
+     * @returns a JSONSchema for the DependencyGroup that can be added to the allOf of the overall JsonSchema
+     */
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        return {
-            "allOf": this.data.dependencies.map(depId => {
-                const dep = generator.document.getDependency_Group(depId);
-                if (!(dep instanceof Dependency || dep instanceof DependencyGroup)) {
-                    throw new Error(`Dependency with id ${depId} not found or is not a Dependency element`);
-                }
-                return dep.toJsonSchema(generator, scope);
-            })
-            // TODO: implement dependency group logic
-            // generate allOf and save to allof in generator. scope is the path to the element that should be shown/not shown
-        };
+        const subschemas: JSONSchema[] = this.data.dependencies.map(depId => {
+            const dep = generator.document.getDependency_Group(depId);
+            if (!(dep instanceof Dependency || dep instanceof DependencyGroup)) {
+                throw new Error(`Dependency with id ${depId} not found or is not a Dependency element`);
+            }
+            return dep.toJsonSchema(generator, scope);
+        });
+
+        if (this.relation === DependencyRelationEnum.enum.not) {
+            if (subschemas.length !== 1) {
+                throw new Error(`DependencyGroup with relation "NOT" must have exactly one dependency, but has ${subschemas.length}`);
+            }
+            return {
+                "not": subschemas[0]
+            };
+        } else {
+            if (!minTwoItems(subschemas)) {
+                throw new Error(`DependencyGroup with relation "and/or" must have at least two dependencies, but has ${subschemas.length}`);
+            }
+            if (this.relation === DependencyRelationEnum.enum.and) {
+                return {
+                    "allOf": subschemas
+                };
+            } else if (this.relation === DependencyRelationEnum.enum.or) {
+                return {
+                    "anyOf": subschemas
+                };
+            } else {
+                throw new Error(`Unknown relation type: ${this.relation}`);
+            }
+        }
     }
 
     toUiSchema(generator: SchemaGenerator, scope: string[]): Rule {
