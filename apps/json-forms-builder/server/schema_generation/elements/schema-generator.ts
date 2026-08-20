@@ -1,8 +1,8 @@
 import type { FormDefinition } from './form-definition';
 import type { JSONSchema,} from '@educorvi/vue-json-form-schemas';
-import { DependencyGroup } from './dependency';
-import { FormElement } from './form-element';
-import { CombinedUiSchemaType } from './utils';
+import { Dependency, DependencyGroup } from './dependency';
+import { BaseDataElement, FormElement, SimpleElement } from './form-element';
+import { assertDefined, CombinedUiSchemaType } from './utils';
 import { ArrayElement, ContainerElement, ObjectElement } from './container';
 
 /**
@@ -73,15 +73,20 @@ export class SchemaGenerator {
     const allOf = [];
 
     for (const childId of childrenIds) {
-        const child = this.document.getElementById(childId);
-        if (!child) throw new Error(`Child element "${childId}" not found in nodesIndex`);
-        const childSchema = child.toJsonSchema(this, scope);
-        if (childSchema === undefined || childSchema === null || Object.keys(childSchema).length === 0) {
-            continue;
-        }
-        schema[child.id] = childSchema;
+      const child = assertDefined(this.document.getElementById(childId), `Child element "${childId}" not found in nodesIndex`);
+      const childSchema = child.toJsonSchema(this, scope);
+      if (childSchema === undefined || childSchema === null || Object.keys(childSchema).length === 0) {
+          continue;
+      }
+      schema[child.id] = childSchema;
 
-        // check if child has the attribute required and if it is true
+      if (child.dependencyGroup) {
+        this.addLastDependencyGroupId(child.dependencyGroup);
+      }
+
+      const lastDependencyGroup = this.getLastDependencyGroup();
+      if (lastDependencyGroup === undefined) {
+        // check if child has the attribute required and if it is true and has no dependencyGroup, then add it to the required list
         if ((child as any).required === true) {
             requiredList.push(child.id);
         } else if (child instanceof ObjectElement) {
@@ -90,21 +95,37 @@ export class SchemaGenerator {
             requiredList.push(child.id);
           }
         }
-
-        if (child.dependencyGroup) {
-          this.addLastDependencyGroupId(child.dependencyGroup);
-        }
-        const lastDependencyGroup = this.getLastDependencyGroup();
-        if (lastDependencyGroup !== undefined) {
-            const allOfItem: JSONSchema = {
-                [child.id]: lastDependencyGroup.toJsonSchema(this, [...scope, child.id]),
+      } else {
+        // only generate allOf if child can be required and IS required
+        if (child instanceof BaseDataElement) {
+          if (child instanceof SimpleElement || child instanceof ArrayElement) {
+            if (!child.required) {
+              continue;
             }
-            // TODO for all dependencyGroups in the
+          } else if (child instanceof ObjectElement) {
+            if (!childSchema.required || childSchema.required.length === 0) {
+              continue;
+            }
+          } else {
+            // TODO log? this case should not happen
+            continue;
+          }
+
+          // generate an allOf statement for all dependencyGroups in the list
+          for (const dependencyGroupId of this.generatorHelperAttributes.lastDependencyGroupsIds) {
+            const dependencyGroup = this.document.getDependency_Group(dependencyGroupId);
+            if (!(dependencyGroup instanceof DependencyGroup || dependencyGroup instanceof Dependency)) {
+              throw new Error(`Dependency/Group "${dependencyGroupId}" not found in dependencyIndex`);
+            }
+            const allOfItem = dependencyGroup.toJsonSchema(this, [...scope, child.uid])
             allOf.push(allOfItem);
+          }
         }
-        if (child.dependencyGroup) {
-          this.removeLastDependencyGroupId();
-        }
+      }
+
+      if (child.dependencyGroup) {
+        this.removeLastDependencyGroupId();
+      }
     }
 
     this.addToAllOf(allOf);
@@ -126,12 +147,24 @@ export class SchemaGenerator {
 
   /**
    * Build the path from the form root (exclusive) down to elementId (inclusive).
-   * Returns an ordered array of element ids, e.g. ['containerA', 'containerB', 'leafId'].
+   * Returns an ordered array of element ids, e.g. ['uid1', 'uid2', 'elementUid'].
+   */
+  getUidPath(elementUid: string): string[] {
+    const path: string[] = [];
+    let currentUid: string | undefined = elementUid;
+
+    while (currentUid !== undefined && currentUid !== this.document.root.uid) {
+      path.unshift(currentUid);
+      const parentUid = this.document.getParentId(currentUid);
+      currentUid = parentUid;
+    }
+    return path;
+  }
+
+  /**
    *
-   * NOTE: These are raw element ids.  Callers that need a JSON Schema pointer
-   * (e.g. "#/properties/containerA/properties/leafId") must convert the path
-   * themselves, taking into account whether each ancestor is an ObjectElement
-   * or ArrayElement (items.properties vs. properties).
+   * @param elementUid of the element the path of is returned
+   * @returns a path like ["properties", "containerA", "properties", "containerB", "items", "properties", "leafId"] for an element with id leafId (and uid elementUid) that is a child of containerB which is a child of containerA which is a child of the form root
    */
   getPath(elementUid: string): string[] {
     const path: string[] = [];
