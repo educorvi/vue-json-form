@@ -1,10 +1,8 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-    // Use './' prefix so hey-api treats this as a local file path,
-    // not as an 'organization/project' shorthand (which breaks for paths with slashes).
-    input: './docs/api/api-development.yaml',
-    output: 'server/orpc/generated',
+    input: './docs/api-development.yaml',
+    output: 'src/generated',
     plugins: [
         {
             name: 'orpc',

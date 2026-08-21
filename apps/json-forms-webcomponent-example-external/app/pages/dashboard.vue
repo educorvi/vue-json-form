@@ -9,6 +9,7 @@ const kcRealm = computed(() => config.public.kcRealm as string);
 const kcClientId = computed(() => config.public.kcClientId as string);
 const kcIdpHint = computed(() => config.public.kcIdpHint as string);
 const collabUrl = computed(() => config.public.collabUrl as string);
+const backendUrl = computed(() => config.public.backendUrl as string);
 
 const greeting = computed(
     () =>
@@ -17,23 +18,6 @@ const greeting = computed(
         user.value?.email ||
         'User'
 );
-
-// The form is NOT fetched over REST — the builder webcomponent loads it over
-// the collab websocket (like in the main builder app): Hocuspocus hydrates
-// the Y.Doc from the form's stored definition, keyed by document name. The
-// document name is either the form's NUMERIC id ("5") or its path
-// ("educorvi/formular1") — the backend's ws-auth endpoint resolves paths
-// to the numeric id. The websocket authenticates with the kc1 access token
-// that keycloak-js obtained (silent check-sso; `kc_idp_hint` sends the login
-// through the external Keycloak, so the user is already signed in here).
-//
-// The builder is only mounted after the user CONFIRMS the id (Load form
-// button / Enter) — typing alone never loads anything. The confirmed id is
-// mirrored into the URL query (?formId=…), so after the Keycloak login
-// redirects back to this page the form loads directly without a second
-// confirmation. The collab server additionally rejects the connection when
-// the form does not exist or the user lacks edit access; the builder then
-// shows the error inline.
 
 const route = useRoute();
 const router = useRouter();
@@ -166,6 +150,7 @@ async function loadForm() {
                 :kc-idp-hint="kcIdpHint"
                 :collab-url="collabUrl"
                 :collab-document-name="confirmedFormId"
+                :backend-url="backendUrl"
             />
             <p
                 v-else

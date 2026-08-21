@@ -40,7 +40,14 @@ import {
 export interface CollabConfig {
     /** Hocuspocus server URL, e.g. "ws://localhost:1234" */
     url: string;
-    /** Document name (= form id in the backend). */
+    /**
+     * Document name — the NUMERIC form id. The collab server only accepts
+     * ids as document names (the session key is the form id, which cannot
+     * change). When the host app only knows the form PATH, resolve it to
+     * the id via the backend API before connecting — e.g. with
+     * `resolveCollabDocumentId` from `./api/client` — and pass the
+     * resolved id via `connect({ documentName })`.
+     */
     documentName: string;
     /**
      * Optional auth token for the collab server: an API key ("fb_...").
@@ -107,12 +114,21 @@ export interface FormBuilder {
      * `options` lets the caller supply the credentials that the login flow
      * produced (see useBuilderAuth): a bearer token for the websocket
      * (Keycloak access token or API key) and/or the authenticated user for
-     * presence/awareness.
+     * presence/awareness. `documentName` overrides the document name from
+     * the collab config — the resolved numeric form id when the config
+     * carried a form path.
      */
     connect(options?: {
         token?: string;
         user?: { id: string; name: string; color?: string };
+        documentName?: string;
     }): void;
+    /**
+     * Update the local user's display identity (e.g. after the backend
+     * returned the full name via `GET /users/me`). Re-broadcasts presence
+     * so remote clients see the updated name. No-op in local mode.
+     */
+    setCurrentUser(user: { id: string; name: string; color?: string }): void;
     /** Replace the whole form (plain definition object or instance). */
     loadDefinition(definition: object | FormDefinition): void;
     /** Import from a legacy {json, ui} schema pair (local mode only). */
@@ -309,6 +325,10 @@ function createLocalBuilder(): FormBuilder {
             // no provider in local mode
         },
 
+        setCurrentUser() {
+            // no presence in local mode
+        },
+
         dispose() {
             doc.destroy();
         },
@@ -346,16 +366,21 @@ function createCollabBuilder(
 
     /** Merge awareness users into the known list, flagging online/offline.
      *  Users that leave the awareness (disconnect) stay listed as offline.
+     *  Live awareness data (name/color) wins for connected users, so
+     *  re-broadcasts after e.g. `setCurrentUser` propagate to self and
+     *  remote clients alike.
      *  In the future, the backend should track which users were viewing the document when so we can easily show a history of every user when the document was edited.
      * */
     function refreshKnownUsers() {
         if (!provider?.awareness) return;
         const current = collab.getConnectedUsers(provider.awareness);
-        const currentIds = new Set(current.map((u: CollabUser) => u.id));
-        const merged = knownUsers.value.map((k) => ({
-            ...k,
-            online: currentIds.has(k.id),
-        }));
+        const currentById = new Map(current.map((u: CollabUser) => [u.id, u]));
+        const merged = knownUsers.value.map((k) => {
+            const live = currentById.get(k.id);
+            return live
+                ? { ...k, ...live, online: true }
+                : { ...k, online: false };
+        });
         for (const user of current) {
             if (!merged.some((k) => k.id === user.id)) {
                 merged.push({ ...user, online: true });
@@ -367,6 +392,12 @@ function createCollabBuilder(
     async function init(connectOptions?: {
         token?: string;
         user?: { id: string; name: string; color?: string };
+        /**
+         * Override the document name from the collab config — used when a
+         * form PATH was resolved to its numeric id before connecting (the
+         * collab server only accepts ids as document names).
+         */
+        documentName?: string;
     }): Promise<void> {
         if (disposed || started) return;
         started = true;
@@ -378,7 +409,7 @@ function createCollabBuilder(
 
         provider = new HocuspocusProvider({
             url: collabConfig.url,
-            name: collabConfig.documentName,
+            name: connectOptions?.documentName ?? collabConfig.documentName,
             token: connectOptions?.token ?? collabConfig.token,
             onAuthenticationFailed: ({ reason }: { reason: string }) => {
                 // The server rejected the handshake (see collab-server/auth.ts
@@ -499,8 +530,31 @@ function createCollabBuilder(
         connect(options?: {
             token?: string;
             user?: { id: string; name: string; color?: string };
+            documentName?: string;
         }) {
             void init(options);
+        },
+
+        setCurrentUser(user: { id: string; name: string; color?: string }) {
+            const collabUser = {
+                id: user.id,
+                name: user.name,
+                color: user.color ?? collab.colorForUser(user.id),
+            };
+            currentUser.value = collabUser;
+            // Update the local known-users entry right away (the awareness
+            // re-broadcast below also propagates the new name, but the
+            // local UI must not wait for a roundtrip).
+            const idx = knownUsers.value.findIndex((k) => k.id === user.id);
+            if (idx >= 0) {
+                knownUsers.value = knownUsers.value.map((k, i) =>
+                    i === idx ? { ...k, ...collabUser } : k
+                );
+            }
+            // Re-broadcast so remote clients see the updated name.
+            if (provider?.awareness) {
+                collab.setPresenceUser(provider.awareness, collabUser);
+            }
         },
 
         // The server (and thus the Y.Doc) is the source of truth in collab

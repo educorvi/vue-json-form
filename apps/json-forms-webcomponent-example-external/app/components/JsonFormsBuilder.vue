@@ -1,33 +1,11 @@
 <script setup lang="ts">
-/**
- * Client-only wrapper around the form-builder webcomponent
- * (`<vue-json-form-builder>`).
- *
- * The webcomponent is consumed the way it is meant to be consumed: as a
- * self-contained script, NOT through the bundler. The built dist files are
- * synced into `public/vendor/` by `yarn sync:webcomponent` (runs
- * automatically on `postinstall`). Re-bundling the ES output would break —
- * its internal chunks are not self-contained and collide when Rollup
- * re-processes them.
- *
- * The script is injected on mount (client only, never during SSR) and the
- * component waits for `customElements.whenDefined()` before rendering.
- */
 const props = defineProps<{
-    /**
-     * Keycloak (kc1) config for the webcomponent's keycloak-js login:
-     * PUBLIC client ("vueformbuilder-embed"), silent check-sso on mount,
-     * access token authenticates the collab websocket.
-     */
     kcUrl?: string;
     kcRealm?: string;
-    kcClientId?: string;
-    /** `kc_idp_hint` → external Keycloak (identity brokering). */
     kcIdpHint?: string;
-    /** WebSocket URL of the Hocuspocus collab server (form loading). */
     collabUrl?: string;
-    /** Document name = the form's numeric id in the backend. */
     collabDocumentName?: string;
+    backendUrl?: string;
 }>();
 
 const loaded = ref(false);
@@ -96,6 +74,7 @@ onMounted(async () => {
             :kc-idp-hint="props.kcIdpHint"
             :collab-url="props.collabUrl"
             :collab-document-name="props.collabDocumentName"
+            :backend-url="props.backendUrl"
         ></vue-json-form-builder>
     </div>
 </template>

@@ -34,10 +34,13 @@
         "prepack": "yarn run build"
     },
     "dependencies": {
+        "@educorvi/orpc-contract": "workspace:^",
         "@educorvi/vue-json-form": "workspace:^",
         "@educorvi/vue-json-form-ajv-validator": "workspace:^",
         "@educorvi/vue-json-form-builder-schemas": "workspace:^",
         "@hocuspocus/provider": "^4.6.0",
+        "@orpc/client": "^1.15.0",
+        "@orpc/openapi-client": "^1.15.0",
         "@phosphor-icons/vue": "^2.2.1",
         "@popperjs/core": "^2.11.8",
         "@vueuse/core": "^14.4.0",

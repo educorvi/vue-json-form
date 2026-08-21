@@ -16,7 +16,7 @@ import {
     zUser,
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
-import { mapAuthRolesToDbRole } from '../lib/auth';
+import { syncUser } from '../lib/user-sync';
 import {
     MAP_API_ORDER_BY_TO_DB,
     mapDbUserToApiUser,
@@ -35,11 +35,6 @@ type ApiListUserQuery = z.infer<typeof zListUsersQuery>;
 
 export type ApiUserOrderBy = ApiListUserQuery['order_by'];
 
-const userDataChanged = (existing: DbUser, newData: User): boolean =>
-    existing.name !== newData.username ||
-    existing.email !== newData.email ||
-    existing.role !== mapAuthRolesToDbRole(newData.roles);
-
 export class UserService {
     private readonly repo: Repository<DbUser>;
     private readonly dataSource: DataSource;
@@ -49,33 +44,24 @@ export class UserService {
         this.dataSource = dataSource;
     }
 
+    async getById(id: string): Promise<ApiUser | null> {
+        const user = await this.repo.findOne({ where: { id } });
+        return user ? mapDbUserToApiUser(user) : null;
+    }
+
     /**
      * Upsert: create if new, update name if it changed.
      */
     async upsert(data: User): Promise<ApiUser> {
-        const existing = await this.repo.findOne({
-            where: { email: data.email },
-        });
-
-        if (existing) {
-            if (userDataChanged(existing, data)) {
-                this.repo.merge(existing, {
-                    name: data.username,
-                    email: data.email,
-                    role: mapAuthRolesToDbRole(data.roles),
-                });
-                return mapDbUserToApiUser(await this.repo.save(existing));
-            }
-            return mapDbUserToApiUser(existing);
-        }
-
-        const user = this.repo.create({
+        const dbUser = await syncUser(this.repo, {
             id: data.id,
+            username: data.username,
             email: data.email,
-            name: data.username,
-            role: mapAuthRolesToDbRole(data.roles),
+            firstName: data.firstName,
+            lastName: data.lastName,
+            roles: data.roles,
         });
-        return mapDbUserToApiUser(await this.repo.save(user));
+        return mapDbUserToApiUser(dbUser);
     }
 
     /**

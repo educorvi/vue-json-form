@@ -17,13 +17,19 @@
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
+        "@educorvi/orpc-contract": "workspace:^",
         "@educorvi/vue-json-form-builder-schemas": "workspace:^",
         "@educorvi/vue-json-forms-builder-db-layer": "workspace:^",
         "@hocuspocus/provider": "^4.6.0",
         "@hocuspocus/server": "^4.6.0",
+        "@orpc/client": "^1.15.0",
+        "@orpc/contract": "^1.15.0",
+        "@orpc/openapi-client": "^1.15.0",
+        "dotenv": "^17.4.2",
         "pg": "^8.22.0",
         "reflect-metadata": "^0.2.2",
         "y-protocols": "^1.0.7",
-        "yjs": "^13.6.32"
+        "yjs": "^13.6.32",
+        "zod": "^4.4.3"
     }
 }

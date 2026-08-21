@@ -1,6 +1,6 @@
 # Authentication
 
-The application supports three ways to authenticate a request. The global auth middleware (`server/middleware/auth.ts`) resolves them in this order and attaches the user to `event.context.user`; protected oRPC procedures throw `UNAUTHORIZED` when no user was resolved. The same middleware also protects `GET /api/ws-auth`, which the collab server (separate process) calls to validate WebSocket handshakes.
+The application supports three ways to authenticate a request. The global auth middleware (`server/middleware/auth.ts`) resolves them in this order and attaches the user to `event.context.user`; protected oRPC procedures throw `UNAUTHORIZED` when no user was resolved. The same middleware also protects the routes the collab server (separate process) calls to validate WebSocket handshakes: `POST /api/v1/users` (authenticates and upserts the user) and `GET /api/v1/forms/{id}` (checks form existence and access, returns the caller's `effective_role`, which the collab server uses to enforce editor access).
 
 ## 1. Session cookie (OIDC login)
 
@@ -46,7 +46,7 @@ flowchart LR
     KC -- "JWT access token" --> WC
     WC -- "REST: Authorization: Bearer &lt;JWT&gt;" --> API
     WC -- "WebSocket handshake with JWT" --> WS
-    WS -- "GET /api/ws-auth (JWT validation)" --> API
+    WS -- "POST /api/v1/users + GET /api/v1/forms (forwarded JWT)" --> API
 
     style IDP fill:#f5f5f5,stroke:#999
 ```
@@ -103,9 +103,11 @@ sequenceDiagram
     participant API as Form Builder Backend API
 
     WC->>WS: WebSocket connection handshake with JWT
-    WS->>API: GET /api/ws-auth (forward JWT, API Key or nuxt session cookie)
-    API->>API: Validate JWT signature, map claims to user shape (or API Key / nuxt session cookie)
+    WS->>API: POST /api/v1/users (forward JWT, API Key or nuxt session cookie)
+    API->>API: Validate JWT signature, map claims to user shape (or API Key / nuxt session cookie), upsert user
     API-->>WS: Valid user
+    WS->>API: GET /api/v1/forms/{id} (same credentials)
+    API-->>WS: Form metadata + effective_role (collab server enforces editor access)
     WS-->>WC: WebSocket connection established
     Note over WC,WS: Real-time collaboration (presence, document sync)
 ```
@@ -113,3 +115,18 @@ sequenceDiagram
 # Permissions
 
 A Role based access control (RBAC) system is implemented in the backend. In the code the business logic for defining the roles and the classes containing all relevant permissions and capabilities of a role are defined [here](apps/json-forms-builder/server/lib/permissions). They are also reused in the frontend in order to show specific actions only to specific users. The backend validates these rule son api calls and the frontend only uses this logic for displaying the correct actions to the user. The backend is the single source of truth for permissions and capabilities.
+
+
+# Security
+
+All api endpoints are secured by the same auth middleware. There exists one public api endpoint which doesn't require authentication (/status). Since no public endpoints (except the simple status endpoint) exist, this strongly reduces the risk of unauthenticated users being able to access data. The ways to authenticate were described above and are implemented within [the auth middleware](apps/json-forms-builder/server/middleware/auth.ts), The auth code also include logic from the [jwt validation](apps/json-forms-builder/server/lib/jwt-auth.ts) and the [Api Key Service](apps/json-forms-builder/server/services/ApiKeyService.ts) and also less critical code like the [user mapper functions](apps/json-forms-builder/server/lib/auth.ts). This code is critical as it is the guard for all actions to read and modify data.
+
+A security test [auth-required](apps/json-forms-builder/tests/integration/tests/permissions/auth-required.integration.test.ts) exists which tests that all endpoints are protected and require authentication if not explicitly excluded within the test suite. This mitigates the risk of accidentally exposing endpoints to unauthenticated users. Test which validate an valid and invalid api key, session key and jwt.
+
+In order to securely sync the current keycloak roles and set properties for users to the backend, a nuxt middleware [session](apps/json-forms-builder/server/plugins/session.ts) exists which runs on every new session and validates on the server side that the user is available in the database and if roles in keycloak changed, are reflected here properly.
+
+The standalone vue form builder Vue and Webcomponent talk with the HocusPocus collaboration server over a websocket connection. The collab server is a separate process and is secured in the same way as the backend. The components have to either set a session token, a jwt or an api key and the collab server forwards this to the backend for validation. It first creates the user with the POST /users endpoint so we are sure the correct user information of the token is reflected in the backend and then calls the forms endpoint to validate the effective user role for this resource. This ensures that only users with the correct role can edit a form and the logic for calculation the roles is one done centrally in the backend.
+
+Role based access control (RBAC) is also implemented in the backend at a central place within [permissions](apps/json-forms-builder/server/lib/permissions). This is reused in the frontend so only actions a user can do are displayed in the frontend but these rules are always validated on every request on the server side.
+
+The RBAC system involves quite a bit of code as permissions can be inherited and overridden but only by more specific roles. Only specific users with specific roles can do certain actions. Admins can always do all actions. Additionally visible resources exist where users don't need explicit permission to have read-only access. In order to properly test the RBAC system, integration tests exist which extensively test these rules can be found within the [permissions tests directory](apps/json-forms-builder/tests/integration/tests/permissions).

@@ -159,6 +159,7 @@ playwright/.cache/
 
 # extern
 extern
+tmp
 
 # MacOS specific
 .DS_Store

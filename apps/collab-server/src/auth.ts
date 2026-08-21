@@ -1,46 +1,31 @@
 /**
  * Authentication for the Hocuspocus collab server.
  *
- * No custom session/token checking here: the WebSocket handshake is
- * forwarded to the Nuxt backend (`GET /api/ws-auth`) for validation —
+ * Clients need to set any authentication method supported by the backend and the collab server asks the Nuxt backend to authenticate the user and check form access.
  *
- *   1. Session auth: the browser sends its `nuxt-session` cookie with the
- *      WebSocket handshake (the handshake is a plain HTTP request, so the
- *      cookie is included). The collab server forwards that cookie to
- *      Nuxt, which resolves the sealed session via nuxt-auth-utils.
- *   2. API key auth: the client passes a raw `fb_…` key as the Hocuspocus
- *      `token` (sent as `Authorization: Bearer …`). The collab server
- *      forwards that header to Nuxt, where the global auth middleware
- *      validates it with the same ApiKeyService as every other API route.
+ *   1. `POST /api/v1/users` — authenticates the handshake credentials and upserts the user row in the database to create the user on first use and also update their keycloak claims
+ *   2. `GET /api/v1/forms/{documentName}` — checks the form exists and the user has access. The response carries `effective_role`, so the collab server enforces editor access itself here. Admins arrive as `owner`, so they can always connect.
  *
- * Either way Nuxt returns the same user shape as `event.context.user`
- * (mapDbUserToAuthUser / the #auth-utils session user), and only then is
- * the WebSocket connection accepted.
+ * Only after both succeed is the WebSocket connection accepted.
  */
 
-/** Same user shape as #auth-utils User (mirrored here — no Nuxt types). */
-export interface WsAuthUser {
-    id: string;
-    username: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    roles: string[];
-}
+import { createORPCClient, ORPCError } from '@orpc/client';
+import { OpenAPILink } from '@orpc/openapi-client/fetch';
+import type { JsonifiedClient } from '@orpc/openapi-client';
+import type { ContractRouterClient } from '@orpc/contract';
+import * as z from 'zod';
+import { appContract, zGetFormResponse, zUser } from '@educorvi/orpc-contract';
 
-/**
- * Base URL of the Nuxt backend, used to validate WS handshakes.
- */
+export type ApiUser = z.infer<typeof zUser>;
+type FormWithAccess = z.infer<typeof zGetFormResponse>;
+
 const NUXT_AUTH_URL =
     process.env.COLLAB_NUXT_URL ??
     process.env.NUXT_URL ??
     'http://localhost:3000';
 
 /**
- * Thrown when the backend rejects the handshake. The `reason` is sent to
- * the CLIENT by Hocuspocus (writePermissionDenied → the provider's
- * `authenticationFailed` event), so the form builder can show a specific
- * error message. Values match the Nuxt ws-auth status codes:
+ * Thrown when the backend rejects the handshake. The `reason` is sent to the CLIENT by Hocuspocus
  *
  *   unauthorized    — no session/API key, or invalid credentials (401)
  *   form-not-found  — the form id does not exist (404)
@@ -60,115 +45,120 @@ export class ConnectionAuthError extends Error {
     }
 }
 
-function isWsAuthUser(value: unknown): value is WsAuthUser {
-    if (!value || typeof value !== 'object') return false;
-    const u = value as Partial<WsAuthUser>;
-    return (
-        typeof u.id === 'string' &&
-        typeof u.username === 'string' &&
-        typeof u.email === 'string'
+/**
+ * Build the headers forwarded from the WebSocket handshake to the backend.
+ *
+ * - API key / Keycloak token path: forward the bearer token as-is (same header the Nuxt auth middleware expects).
+ * - Session path: forward the browser's cookie (contains the sealed `nuxt-session` value) so Nuxt can resolve the user.
+ */
+function buildForwardedHeaders(
+    token: string | null,
+    requestHeaders: Headers
+): Record<string, string> {
+    if (token) {
+        return { authorization: `Bearer ${token}` };
+    }
+    const cookie = requestHeaders.get('cookie');
+    if (!cookie) {
+        throw new ConnectionAuthError(
+            'Unauthorized: no session cookie and no API key',
+            'unauthorized'
+        );
+    }
+    return { cookie };
+}
+
+/**
+ * A typed oRPC client for one handshake, authenticated with the forwarded credentials. Talks REST to the backend's OpenAPI handler (`<backend>/api/v1`).
+ */
+function createBackendClient(
+    headers: Record<string, string>
+): JsonifiedClient<ContractRouterClient<typeof appContract>> {
+    const link = new OpenAPILink(appContract, {
+        url: `${NUXT_AUTH_URL}/api/v1`,
+        headers: () => headers,
+    });
+    return createORPCClient(link);
+}
+
+/**
+ * Map an oRPC call failure to a client-visible ConnectionAuthError reason, using the error codes declared in the contract:
+ *
+ *   unauthorized    — UNAUTHORIZED (no/invalid credentials)
+ *   form-not-found  — NOT_FOUND (unknown form)
+ *   forbidden       — FORBIDDEN (no access to the form)
+ *   permission-denied — backend unreachable or any other rejection
+ */
+function toConnectionAuthError(err: unknown, action: string): never {
+    if (err instanceof ORPCError) {
+        const reason =
+            err.code === 'UNAUTHORIZED'
+                ? 'unauthorized'
+                : err.code === 'NOT_FOUND'
+                  ? 'form-not-found'
+                  : err.code === 'FORBIDDEN'
+                    ? 'forbidden'
+                    : 'permission-denied';
+        throw new ConnectionAuthError(
+            `Unauthorized: Nuxt rejected ${action} (${err.status} ${err.code})`,
+            reason
+        );
+    }
+    throw new ConnectionAuthError(
+        `Unauthorized: Nuxt backend unreachable (${NUXT_AUTH_URL}) while calling ${action}: ${
+            err instanceof Error ? err.message : String(err)
+        }`,
+        'permission-denied'
     );
 }
 
 /**
- * Authenticate a WebSocket connection by asking the Nuxt backend to
- * validate the credentials the browser/client sent in the handshake
- * (session cookie or API key) — including the requested document (=
- * form id), so the backend can enforce form-level edit access. Throws a
- * ConnectionAuthError (with a client-visible `reason`) when the backend
- * rejects or is unreachable — Hocuspocus rejects the connection then.
+ * Authenticate a WebSocket connection by asking the Nuxt backend to validate the credentials the browser/client sent in the handshake — including the requested document (= form), so the backend can enforce form-level access.
+ * Throws a ConnectionAuthError (with a client-visible `reason`) when the backend rejects or is unreachable — Hocuspocus rejects the connection then.
  *
- * @param token         the Hocuspocus `token` option (an `fb_...` API key), if any
+ * @param token         the Hocuspocus `token` option (an `fb_...` API key or Keycloak access token), if any
  * @param requestHeaders the WebSocket handshake headers — carry the `Cookie`
- * @param documentName  the document the client wants to join (form id OR path)
- * @returns the authenticated user plus the RESOLVED numeric form id (the
- *          backend accepts paths like "educorvi/formular1" and returns the
- *          canonical id, which the collab server then uses for load/store)
+ * @param documentName  the document the client wants to join (numeric form id)
+ * @returns the authenticated user plus the RESOLVED numeric form id, which the collab server uses for load/store and as the Hocuspocus document key
  */
-// TODO: use orpc endpoint instead of raw fetch. Also adjust in backend
 export async function authenticateConnection(
     token: string | null,
     requestHeaders: Headers,
     documentName: string
-): Promise<{ user: WsAuthUser; formId: number }> {
-    const headers: Record<string, string> = {};
-
-    if (token) {
-        // API key path — forward the bearer token as-is (same header the
-        // Nuxt auth middleware expects).
-        headers.authorization = `Bearer ${token}`;
-    } else {
-        // Session path — forward the browser's cookie (contains the sealed
-        // `nuxt-session` value) so Nuxt can resolve the user.
-        const cookie = requestHeaders.get('cookie');
-        if (!cookie) {
-            throw new ConnectionAuthError(
-                'Unauthorized: no session cookie and no API key',
-                'unauthorized'
-            );
-        }
-        headers.cookie = cookie;
+): Promise<{ user: ApiUser; formId: number }> {
+    // clients need to connect with the form id
+    if (!/^\d+$/.test(documentName)) {
+        throw new ConnectionAuthError(
+            `Invalid document name "${documentName}": the collab server only accepts numeric form ids — resolve the form path to its id before connecting`,
+            'permission-denied'
+        );
     }
 
-    // The backend checks form existence + edit access for this document.
-    const url = new URL(`${NUXT_AUTH_URL}/api/ws-auth`);
-    url.searchParams.set('documentName', documentName);
+    const client = createBackendClient(
+        buildForwardedHeaders(token, requestHeaders)
+    );
 
-    let res: Response;
+    // 1. Auth + user upsert — POST /api/v1/users. Authenticates the forwarded credentials and upserts the DB user
+    let user: ApiUser;
     try {
-        res = await fetch(url, { headers });
+        user = await client.users.create({});
     } catch (err) {
-        throw new ConnectionAuthError(
-            `Unauthorized: Nuxt auth backend unreachable (${NUXT_AUTH_URL}): ${
-                err instanceof Error ? err.message : err
-            }`,
-            'permission-denied'
-        );
+        toConnectionAuthError(err, 'POST /api/v1/users');
     }
 
-    if (!res.ok) {
-        // Map the backend's status codes to client-visible reasons (see
-        // server/api/ws-auth.get.ts).
-        throw new ConnectionAuthError(
-            `Unauthorized: Nuxt auth rejected the handshake (${res.status})`,
-            res.status === 401
-                ? 'unauthorized'
-                : res.status === 404
-                  ? 'form-not-found'
-                  : res.status === 403
-                    ? 'forbidden'
-                    : 'permission-denied'
-        );
-    }
-
-    let body: unknown;
+    // 2. Form existence + access — GET /api/v1/forms/{documentName}. The form endpoint only enforces VIEW access, so the editor check happens here via `effective_role`
+    let form: FormWithAccess;
     try {
-        body = await res.json();
-    } catch {
+        form = await client.forms.get({ params: { id: documentName } });
+    } catch (err) {
+        toConnectionAuthError(err, `GET /api/v1/forms/${documentName}`);
+    }
+    if (form.effective_role !== 'owner' && form.effective_role !== 'editor') {
         throw new ConnectionAuthError(
-            'Unauthorized: invalid response from Nuxt auth backend',
-            'permission-denied'
+            `Forbidden: need at least editor access on form ${form.id}`,
+            'forbidden'
         );
     }
 
-    const user = (body as { user?: unknown })?.user;
-    if (!isWsAuthUser(user)) {
-        throw new ConnectionAuthError(
-            'Unauthorized: no user in Nuxt auth response',
-            'permission-denied'
-        );
-    }
-    // The backend always resolves paths → numeric id and returns it.
-    const formId = (body as { form_id?: unknown })?.form_id;
-    if (
-        typeof formId !== 'number' ||
-        !Number.isInteger(formId) ||
-        formId <= 0
-    ) {
-        throw new ConnectionAuthError(
-            'Unauthorized: no valid form id in Nuxt auth response',
-            'permission-denied'
-        );
-    }
-    return { user, formId };
+    return { user, formId: form.id };
 }

@@ -98,8 +98,8 @@ function doReset() {
             {{ isPreviewInline ? 'Edit' : 'Preview' }}
         </b-button>
 
-        <!-- Realtime status -->
-        <OnlineState />
+        <!-- Realtime status (collab mode only — nothing to show locally) -->
+        <OnlineState v-if="builder.isCollab" />
 
         <div class="vr" />
 

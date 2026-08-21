@@ -11,6 +11,8 @@ export const mapDbUserToApiUser = (u: DbUser): ApiUser => ({
     id: u.id,
     name: u.name,
     email: u.email,
+    firstName: u.firstName ?? undefined,
+    lastName: u.lastName ?? undefined,
     role: u.role,
     created: u.created.toISOString(),
     updated: u.updated.toISOString(),

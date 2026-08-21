@@ -1,4 +1,4 @@
-import { os, authMiddleware } from '../init';
+import { os, authMiddleware, getUserFromContext } from '../init';
 import { AppDataSource } from '@educorvi/vue-json-forms-builder-db-layer';
 import { UserService } from '~~/server/services/UserService';
 import { zListUsersQuery } from '../generated/zod.gen';
@@ -28,6 +28,18 @@ export const usersRouter = {
             const service = new UserService(AppDataSource);
             return service.upsert(context.user);
         }),
+
+    me: os.users.me.use(authMiddleware).handler(async ({ context, errors }) => {
+        const sessionUser = getUserFromContext(context);
+        const service = new UserService(AppDataSource);
+        const user = await service.getById(sessionUser.id);
+        if (!user) {
+            throw errors.NOT_FOUND({
+                message: 'User not found in database.',
+            });
+        }
+        return user;
+    }),
     list: os.users.list.use(authMiddleware).handler(async ({ input }) => {
         const service = new UserService(AppDataSource);
         const q = input?.query ?? zListUsersQuery.parse({});

@@ -57,6 +57,7 @@ export default defineNuxtConfig({
             // `yarn dev:collab`). The builder loads the form over this
             // websocket — document name = the form's numeric id.
             collabUrl: process.env.NUXT_PUBLIC_COLLAB_URL ?? '',
+            backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL ?? '',
         },
     },
 

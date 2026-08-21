@@ -149,6 +149,23 @@ paths:
                         items:
                           $ref: '#/components/schemas/User'
 
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get current user
+      description: |
+        Returns the user row of the currently authenticated user
+      operationId: getUserMe
+      responses:
+        '200':
+          description: The current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   # ── GROUPS ───────────────────────────────────────────────────────────────
 
   /groups-hierarchy:
@@ -1510,6 +1527,18 @@ components:
           properties:
             role:
               $ref: '#/components/schemas/GlobalRole'
+            firstName:
+              type: string
+              readOnly: true
+              description: |
+                First name as synced from the identity provider (Keycloak).
+                Only present when the user logged in through an OIDC flow —
+                API-key users created via `POST /users` have no profile
+                name unless the collab server forwarded one.
+            lastName:
+              type: string
+              readOnly: true
+              description: Last name as synced from the identity provider (Keycloak).
             # last_activity:
             #   type: string
             #   format: date-time

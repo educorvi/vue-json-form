@@ -102,8 +102,8 @@ const builderExpanded = ref(false);
 //
 // The WebSocket only accepts authenticated connections: the browser sends
 // its `nuxt-session` cookie with the handshake and the collab server asks
-// the Nuxt backend (GET /api/ws-auth) to validate it — no token minting
-// needed on the frontend.
+// the Nuxt backend (POST /api/v1/users + GET /api/v1/forms) to validate
+// it — no token minting needed on the frontend.
 const collab = computed<CollabConfig | null>(() => {
     const url = runtimeConfig.public.collabUrl as string | undefined;
     if (!url || !form.value?.id) return null;
@@ -112,6 +112,13 @@ const collab = computed<CollabConfig | null>(() => {
         documentName: String(form.value.id),
     };
 });
+
+// Same-origin backend URL for the builder's session auth + user fetch
+// (GET /api/v1/users/me after the collab websocket connected — shows the
+// full name in the presence UI). Client-only: this page runs ssr:false.
+const backendUrl = computed(() =>
+    import.meta.client ? window.location.origin : undefined
+);
 
 // Debounced save of builder changes. The canonical FormDefinition
 // representation (root/elements/dependencies) is the persisted format — the
@@ -215,6 +222,7 @@ async function onDefinitionChange(definition: object) {
                     :jsonSchema="collab ? undefined : jsonSchemaString"
                     :uiSchema="collab ? undefined : uiSchemaString"
                     :collab="collab"
+                    :backend-url="backendUrl"
                     hideHeader
                     @vjfb-definition-change="onDefinitionChange"
                 />
@@ -252,6 +260,7 @@ async function onDefinitionChange(definition: object) {
                     :jsonSchema="collab ? undefined : jsonSchemaString"
                     :uiSchema="collab ? undefined : uiSchemaString"
                     :collab="collab"
+                    :backend-url="backendUrl"
                     hideHeader
                     @vjfb-definition-change="onDefinitionChange"
                 />

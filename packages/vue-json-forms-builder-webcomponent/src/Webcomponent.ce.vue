@@ -11,11 +11,11 @@ import {
  */
 const props = defineProps<{
     hideHeader?: boolean;
+    openInBuilder?: boolean;
     jsonSchema?: string;
     uiSchema?: string;
     /** Enable realtime collaboration: ws(s)://host:port of the Hocuspocus server */
     collabUrl?: string;
-    /** Document name (= form id or name in the backend). Defaults to "default-form". */
     collabDocumentName: string;
     /**
      * Auth token for the websocket: a Keycloak access token or an API key
@@ -91,6 +91,7 @@ function handleVJFBDefinitionChange(definition: object) {
 <template>
     <VueJsonFormBuilder
         :hide-header="hideHeader"
+        :open-in-builder="openInBuilder"
         :json-schema="jsonSchema"
         :ui-schema="uiSchema"
         :collab="collab"
