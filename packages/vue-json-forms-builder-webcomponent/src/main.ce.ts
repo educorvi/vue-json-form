@@ -1,6 +1,6 @@
 import { defineCustomElement } from 'vue';
 import Webcomponent from '@/Webcomponent.ce.vue';
-import vjfb from '@educorvi/vue-json-form-builder/dist/vue-json-form-builder.css?inline';
+import vjfb from '@educorvi/vue-json-forms-builder/dist/vue-json-form-builder.css?inline';
 import bootstrapStyles from './shadowDomBootstrap.scss?inline';
 import bootstrapIconsWoff from 'bootstrap-icons/font/fonts/bootstrap-icons.woff?url';
 import bootstrapIconsWoff2 from 'bootstrap-icons/font/fonts/bootstrap-icons.woff2?url';

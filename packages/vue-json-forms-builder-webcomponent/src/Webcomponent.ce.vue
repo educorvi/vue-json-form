@@ -4,7 +4,7 @@ import {
     VueJsonFormBuilder,
     type CollabConfig,
     type KeycloakAuthConfig,
-} from '@educorvi/vue-json-form-builder';
+} from '@educorvi/vue-json-forms-builder';
 
 /**
  * Thin webcomponent wrapper around VueJsonFormBuilder.

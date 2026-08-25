@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { VueJsonFormBuilder } from '@educorvi/vue-json-form-builder';
-import '@educorvi/vue-json-form-builder/dist/vue-json-form-builder.css';
+import { VueJsonFormBuilder } from '@educorvi/vue-json-forms-builder';
+import '@educorvi/vue-json-forms-builder/dist/vue-json-form-builder.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 

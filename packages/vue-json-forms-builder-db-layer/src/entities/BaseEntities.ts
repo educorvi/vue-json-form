@@ -29,13 +29,15 @@ export abstract class BaseUuidEntity {
  * Base class for entities that track when they were created/updated/deleted,
  */
 export abstract class BaseTimestampedEntity extends BaseEntity {
-    @CreateDateColumn({ type: 'timestamp' })
+    // timestamptz (not naive `timestamp`) so the stored instant is
+    // unambiguous regardless of the client/server timezone.
+    @CreateDateColumn({ type: 'timestamptz' })
     created!: Date;
 
-    @UpdateDateColumn({ type: 'timestamp' })
+    @UpdateDateColumn({ type: 'timestamptz' })
     updated!: Date;
 
-    @DeleteDateColumn({ type: 'timestamp', nullable: true })
+    @DeleteDateColumn({ type: 'timestamptz', nullable: true })
     deleted!: Date | null;
 }
 
@@ -62,7 +64,7 @@ export enum Visibility {
 }
 
 export abstract class BaseCreatedEntity extends BaseEntity {
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn({ type: 'timestamptz' })
     created!: Date;
 
     @ManyToOne(() => User, { nullable: true })
@@ -74,7 +76,7 @@ export abstract class BaseCreatedEntity extends BaseEntity {
  * Base class for entities that track when they were created (UUID variant).
  */
 export abstract class BaseUuidCreatedEntity extends BaseUuidEntity {
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn({ type: 'timestamptz' })
     created!: Date;
 
     @ManyToOne(() => User, { nullable: true })

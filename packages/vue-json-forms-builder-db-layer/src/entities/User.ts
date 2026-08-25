@@ -44,10 +44,10 @@ export class User {
     })
     role!: 'admin' | 'user';
 
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn({ type: 'timestamptz' })
     created!: Date;
 
-    @UpdateDateColumn({ type: 'timestamp' })
+    @UpdateDateColumn({ type: 'timestamptz' })
     updated!: Date;
 
     @OneToMany(() => ApiKey, (apiKey) => apiKey.user)

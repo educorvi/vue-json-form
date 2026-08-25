@@ -1,6 +1,6 @@
 # vue-json-forms-builder-webcomponent
 
-The `@educorvi/vue-json-forms-builder-webcomponent` package wraps the [Vue JSON Form Builder](../vue-json-form-builder) in a framework-agnostic [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (`<vue-json-form-builder>`), which includes all necessary styles, scripts etc., so it can be embedded in any website — it doesn't matter if plain HTMLor a web framework like React, Angular, Nuxt, or others are used.
+The `@educorvi/vue-json-forms-builder-webcomponent` package wraps the [Vue JSON Form Builder](../vue-json-forms-builder) in a framework-agnostic [web component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) (`<vue-json-form-builder>`), which includes all necessary styles, scripts etc., so it can be embedded in any website — it doesn't matter if plain HTMLor a web framework like React, Angular, Nuxt, or others are used.
 
 ## Usage
 

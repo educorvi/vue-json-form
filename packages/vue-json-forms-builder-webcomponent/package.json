@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@educorvi/vue-json-form": "workspace:^",
-        "@educorvi/vue-json-form-builder": "workspace:^",
+        "@educorvi/vue-json-forms-builder": "workspace:^",
         "bootstrap": "^5.3.8",
         "bootstrap-icons": "^1.13.1",
         "vue": "^3.5.38"

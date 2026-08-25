@@ -1,4 +1,4 @@
-# The build context is the monorepo root (see apps/json-forms-builder/Dockerfile).
+# The build context is the monorepo root (see apps/vue-json-forms-builder/Dockerfile).
 # Keep it small: `turbo prune` only needs manifests + sources. Note: nested
 # .dockerignore files are ignored by Docker, only this root one applies.
 node_modules
@@ -11,16 +11,16 @@ node_modules
 **/playwright-report
 **/test-results
 tmp
-docs
+/docs
 extern
 apps/demo
-apps/json-forms-builder/data
-apps/json-forms-builder/keycloak
-apps/json-forms-builder/docker
+apps/vue-json-forms-builder/data
+apps/vue-json-forms-builder/keycloak
+apps/vue-json-forms-builder/docker
 # Local env/secret files - change constantly, never needed in the image
 # (the compose env_file values are injected at runtime, not baked in)
 .env*
-apps/json-forms-builder/.env.docker.*
+apps/vue-json-forms-builder/.env.docker.*
 # Editor configs
 **/.vscode
 # Regenerated code (ajv-validator writes src/generated/*, turbo regenerates it)
@@ -28,5 +28,5 @@ apps/json-forms-builder/.env.docker.*
 # Docs & tests are not needed to build or run the app, but they change on
 # nearly every commit - excluding them keeps the Docker cache warm.
 # (If you later add `check-types` to the Docker build, un-ignore tests.)
-apps/json-forms-builder/docs
-apps/json-forms-builder/tests
+apps/vue-json-forms-builder/docs
+apps/vue-json-forms-builder/tests

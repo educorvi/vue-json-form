@@ -1,0 +1,39 @@
+{
+    "name": "vue-json-forms-builder-external-example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "turbo build:internal check-types",
+        "build:internal": "nuxt build",
+        "check-types": "npx nuxt typecheck",
+        "dev": "turbo watch dev:internal",
+        "dev:internal": "nuxt dev",
+        "postinstall": "nuxt prepare",
+        "preview": "nuxt preview",
+        "generate": "nuxt generate",
+        "lint": "yarn run -T eslint .",
+        "lint:fix": "yarn run -T eslint . --fix",
+        "sync:webcomponent": "rm -rf public/vendor && mkdir -p public/vendor && cp ../../packages/vue-json-forms-builder-webcomponent/dist/vue-json-form-builder.js ../../packages/vue-json-forms-builder-webcomponent/dist/vue-json-form-builder.css ../../packages/vue-json-forms-builder-webcomponent/dist/*.js public/vendor/ && cp ../../packages/vue-json-forms-builder-webcomponent/public/silent-check-sso.html public/"
+    },
+    "dependencies": {
+        "@bootstrap-vue-next/nuxt": "^0.45.7",
+        "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^",
+        "bootstrap": "^5.3.8",
+        "bootstrap-icons": "^1.13.1",
+        "bootstrap-vue-next": "^0.45.7",
+        "nuxt": "^4.4.8",
+        "nuxt-auth-utils": "^0.5.29",
+        "vue": "^3.5.38",
+        "vue-router": "^5.1.0"
+    },
+    "devDependencies": {
+        "@nuxt/eslint": "^1.16.0",
+        "@types/bootstrap": "^5",
+        "turbo": "^2.10.8",
+        "typescript": "~6.0.3",
+        "vue-tsc": "^3.3.5"
+    },
+    "engines": {
+        "node": "^22.18.0 || >=24.12.0"
+    }
+}

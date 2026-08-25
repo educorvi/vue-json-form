@@ -30,6 +30,6 @@ export class ApiKey extends BaseUuidCreatedEntity {
     @Column({ type: 'date', nullable: true })
     expires_at!: Date | null;
 
-    @UpdateDateColumn({ type: 'timestamp' })
+    @UpdateDateColumn({ type: 'timestamptz' })
     updated!: Date;
 }

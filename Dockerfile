@@ -19,12 +19,12 @@ RUN TURBO_VERSION=$(yarn info turbo -A --json | jq ".children.Version") \
 COPY . .
 
 # ----------------------------------------------------------------------------
-# Form Builder: Prune the monorepo to just what json-forms-builder needs
+# Form Builder: Prune the monorepo to just what vue-json-forms-builder needs
 # ----------------------------------------------------------------------------
 
 FROM prepare AS prepare-form-builder
 
-RUN turbo prune json-forms-builder --docker
+RUN turbo prune vue-json-forms-builder --docker
 # see: https://turborepo.dev/docs/guides/tools/docker
 
 # ----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ RUN --mount=type=cache,target=/root/.yarn \
 COPY --from=prepare-form-builder /app/out/full/ ./
 
 RUN --mount=type=cache,target=/app/.turbo \
-    yarn turbo run build:internal --filter=json-forms-builder
+    yarn turbo run build:internal --filter=vue-json-forms-builder
 
 # ----------------------------------------------------------------------------
 # Form Builder Runtime image
@@ -52,18 +52,18 @@ ENV HOST=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://127.0.0.1:3000/api/v1/status || exit 1
 EXPOSE 3000
-COPY --from=build-form-builder /app/apps/json-forms-builder/.output ./
+COPY --from=build-form-builder /app/apps/vue-json-forms-builder/.output ./
 CMD ["node", "server/index.mjs"]
 
 
 # ----------------------------------------------------------------------------
-# Collab Server: Prune the monorepo to just what collab-server needs
+# Collab Server: Prune the monorepo to just what vue-json-forms-builder-collab-server needs
 # ----------------------------------------------------------------------------
 
 # Collab Server
 FROM prepare AS prepare-collab-server
 
-RUN turbo prune collab-server --docker
+RUN turbo prune vue-json-forms-builder-collab-server --docker
 # see: https://turborepo.dev/docs/guides/tools/docker
 
 # ----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ RUN --mount=type=cache,target=/root/.yarn \
 COPY --from=prepare-collab-server /app/out/full/ ./
 
 RUN --mount=type=cache,target=/app/.turbo \
-    yarn turbo run build:internal --filter=collab-server
+    yarn turbo run build:internal --filter=vue-json-forms-builder-collab-server
 
 # ----------------------------------------------------------------------------
 # Collab Server Runtime image
@@ -90,14 +90,15 @@ ENV COLLAB_PORT=1234
 ENV HOST=0.0.0.0
 COPY --from=prepare-collab-server /app/out/json/ ./
 RUN --mount=type=cache,target=/root/.yarn \
-    yarn workspaces focus collab-server --production
-COPY --from=build-collab-server /app/apps/collab-server/dist ./apps/collab-server/dist
-COPY --from=build-collab-server /app/packages/vue-json-form-builder-schemas/dist ./packages/vue-json-form-builder-schemas/dist
+    yarn workspaces focus vue-json-forms-builder-collab-server --production
+COPY --from=build-collab-server /app/apps/vue-json-forms-builder-collab-server/dist ./apps/vue-json-forms-builder-collab-server/dist
+COPY --from=build-collab-server /app/packages/vue-json-forms-builder-schemas/dist ./packages/vue-json-forms-builder-schemas/dist
 COPY --from=build-collab-server /app/packages/vue-json-forms-builder-db-layer/dist ./packages/vue-json-forms-builder-db-layer/dist
+COPY --from=build-collab-server /app/packages/vue-json-forms-builder-orpc-contract/dist ./packages/vue-json-forms-builder-orpc-contract/dist
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD node -e "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)"
 EXPOSE 1234
-CMD ["node", "apps/collab-server/dist/src/index.js"]
+CMD ["node", "apps/vue-json-forms-builder-collab-server/dist/src/index.js"]
 
 
 # ----------------------------------------------------------------------------
@@ -106,7 +107,7 @@ CMD ["node", "apps/collab-server/dist/src/index.js"]
 
 FROM prepare AS prepare-external-demo
 
-RUN turbo prune json-forms-webcomponent-example-external --docker
+RUN turbo prune vue-json-forms-builder-external-example --docker
 
 # ----------------------------------------------------------------------------
 # External Example App: Build image
@@ -122,8 +123,8 @@ COPY --from=prepare-external-demo /app/out/full/ ./
 
 RUN --mount=type=cache,target=/app/.turbo \
     yarn turbo run build:internal --filter=@educorvi/vue-json-forms-builder-webcomponent && \
-    cd apps/json-forms-webcomponent-example-external && yarn sync:webcomponent && \
-    yarn turbo run build:internal --filter=json-forms-webcomponent-example-external
+    cd apps/vue-json-forms-builder-external-example && yarn sync:webcomponent && \
+    yarn turbo run build:internal --filter=vue-json-forms-builder-external-example
 
 # ----------------------------------------------------------------------------
 # External Example App: Runtime image
@@ -135,5 +136,5 @@ ENV HOST=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://127.0.0.1:3000/ || exit 1
 EXPOSE 3000
-COPY --from=build-external-demo /app/apps/json-forms-webcomponent-example-external/.output ./
+COPY --from=build-external-demo /app/apps/vue-json-forms-builder-external-example/.output ./
 CMD ["node", "server/index.mjs"]

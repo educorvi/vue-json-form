@@ -9,13 +9,13 @@
             "name": "client: firefox",
             "url": "http://localhost:3000",
             // this should point to your Nuxt `srcDir`, which is `app` by default
-            "webRoot": "${workspaceFolder}/apps/json-forms-builder/app"
+            "webRoot": "${workspaceFolder}/apps/vue-json-forms-builder/app"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "server: nuxt",
-            "cwd": "${workspaceFolder}/apps/json-forms-builder",
+            "cwd": "${workspaceFolder}/apps/vue-json-forms-builder",
             "program": "${workspaceFolder}/node_modules/.bin/nuxt",
             "args": [
                 "dev"
@@ -35,7 +35,7 @@
             "type": "node",
             "request": "launch",
             "name": "server: nuxt (test DB)",
-            "cwd": "${workspaceFolder}/apps/json-forms-builder",
+            "cwd": "${workspaceFolder}/apps/vue-json-forms-builder",
             "program": "${workspaceFolder}/node_modules/.bin/nuxt",
             "args": [
                 "dev"

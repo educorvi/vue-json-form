@@ -37,8 +37,8 @@ jobs:
                   target: run-form-builder
                   push: true
                   tags: |
-                      ghcr.io/educorvi/vue-json-form/json-forms-builder:sha-${{ steps.sha.outputs.short }}
-                      ghcr.io/educorvi/vue-json-form/json-forms-builder:latest
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder:sha-${{ steps.sha.outputs.short }}
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder:latest
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 
@@ -50,7 +50,7 @@ jobs:
                   target: run-collab-server
                   push: true
                   tags: |
-                      ghcr.io/educorvi/vue-json-form/collab-server:sha-${{ steps.sha.outputs.short }}
-                      ghcr.io/educorvi/vue-json-form/collab-server:latest
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder-collab-server:sha-${{ steps.sha.outputs.short }}
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder-collab-server:latest
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
