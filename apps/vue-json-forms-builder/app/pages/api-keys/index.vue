@@ -9,8 +9,6 @@
  */
 import type { z } from 'zod';
 import type { zApiKey } from '~~/server/orpc/generated/zod.gen';
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import ApiKeyDataTable from './ApiKeyDataTable.vue';
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 import ApiKeyCreateModal from '~/components/api-key/ApiKeyCreateModal.vue';
@@ -23,7 +21,7 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
 const { notify } = useNotify();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 useAppBreadcrumb().set('apiKeys');
 

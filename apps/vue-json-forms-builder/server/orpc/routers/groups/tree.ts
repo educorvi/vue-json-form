@@ -1,11 +1,15 @@
+import { z } from 'zod';
 import { os, authMiddleware, getUserFromContext } from '../../init';
 import {
     AppDataSource,
     type Form,
 } from '@educorvi/vue-json-forms-builder-db-layer';
-import { GroupService } from '~~/server/services/GroupService';
-import { FormService } from '~~/server/services/FormService';
-import { zListGroupChildrenQuery } from '../../generated/zod.gen';
+import { GroupService, type ApiGroup } from '~~/server/services/GroupService';
+import { FormService, type ApiForm } from '~~/server/services/FormService';
+import {
+    zListGroupChildrenQuery,
+    zGroupElement,
+} from '../../generated/zod.gen';
 import {
     requireGroupAccess,
     resolveAccessibleGroupIds,
@@ -19,18 +23,10 @@ const FORM_ORDER_BY: Record<string, keyof Form> = {
     updated: 'updated',
 };
 
-type GroupListOrderBy =
-    | 'title'
-    | 'created'
-    | 'updated'
-    | 'id'
-    | 'parent_path'
-    | 'member_count'
-    | 'form_count'
-    | 'group_count';
+type GroupChildElement = z.infer<typeof zGroupElement>;
 
-function toGroupListOrderBy(orderBy: string | undefined): GroupListOrderBy {
-    const valid: GroupListOrderBy[] = [
+const zGroupListOrderBy = z
+    .enum([
         'title',
         'created',
         'updated',
@@ -39,10 +35,12 @@ function toGroupListOrderBy(orderBy: string | undefined): GroupListOrderBy {
         'member_count',
         'form_count',
         'group_count',
-    ];
-    return valid.includes(orderBy as GroupListOrderBy)
-        ? (orderBy as GroupListOrderBy)
-        : 'title';
+    ])
+    .catch('title');
+type GroupListOrderBy = z.infer<typeof zGroupListOrderBy>;
+
+function toGroupListOrderBy(orderBy: string | undefined): GroupListOrderBy {
+    return zGroupListOrderBy.parse(orderBy);
 }
 
 export const groupTreeProcedures = {
@@ -100,15 +98,19 @@ export const groupTreeProcedures = {
                 ),
             ]);
 
-            const combined = [
-                ...groupsResult.data.map((g: any) => ({
-                    ...g,
-                    type: 'group' as const,
-                })),
-                ...formsResult.data.map((f: any) => ({
-                    ...f,
-                    type: 'form' as const,
-                })),
+            const combined: GroupChildElement[] = [
+                ...groupsResult.data.map(
+                    (g: ApiGroup): GroupChildElement => ({
+                        ...g,
+                        type: 'group' as const,
+                    })
+                ),
+                ...formsResult.data.map(
+                    (f: ApiForm): GroupChildElement => ({
+                        ...f,
+                        type: 'form' as const,
+                    })
+                ),
             ];
 
             const sortKey =
@@ -117,7 +119,7 @@ export const groupTreeProcedures = {
                     : orderBy === 'updated'
                       ? 'updated_by.timestamp'
                       : 'title';
-            combined.sort((a: any, b: any) => {
+            combined.sort((a: GroupChildElement, b: GroupChildElement) => {
                 const av = sortKey.includes('.') ? a.title : (a.title ?? '');
                 const bv = sortKey.includes('.') ? b.title : (b.title ?? '');
                 const cmp = String(av).localeCompare(String(bv));

@@ -23,7 +23,11 @@ import {
 } from '../orpc/generated/zod.gen';
 import z from 'zod';
 import { toApiGroup, toHierarchyNode } from '../orpc/mapping/group';
-import { mapApiSortOrderToDbSortOrder } from '../orpc/mapping/shared';
+import {
+    mapApiSortOrderToDbSortOrder,
+    mapVisibilityToDb,
+    type ApiVisibility,
+} from '../orpc/mapping/shared';
 
 export type ApiGroup = z.infer<typeof zGroup>;
 type ApiListGroupQuery = z.infer<typeof zListGroupsQuery>;
@@ -151,7 +155,7 @@ export class GroupService {
         for (const segment of segments) {
             const where: FindOptionsWhere<Group> = {
                 name: segment,
-                parent_id: parentId == null ? (IsNull() as any) : parentId,
+                parent_id: parentId == null ? IsNull() : parentId,
             };
             const group = await this.treeRepo.findOne({
                 where,
@@ -245,13 +249,12 @@ export class GroupService {
         return result;
     }
 
-    // TODO: use other data type
     async create(
         data: {
             title: string;
             name: string;
             description?: string | null;
-            visibility?: string | null;
+            visibility?: ApiVisibility | null;
             parent_id?: number | null;
         },
         createdById?: string
@@ -266,7 +269,7 @@ export class GroupService {
                     title: data.title,
                     name: data.name,
                     description: data.description ?? null,
-                    visibility: (data.visibility as any) ?? 'visible',
+                    visibility: mapVisibilityToDb(data.visibility ?? 'visible'),
                     parent: parent ?? undefined,
                     created_by: createdById ? { id: createdById } : null,
                     updated_by: createdById ? { id: createdById } : null,
@@ -306,7 +309,7 @@ export class GroupService {
             title: string;
             name: string;
             description?: string | null;
-            visibility?: string | null;
+            visibility?: ApiVisibility | null;
             parent_id?: number | null;
         },
         updatedById?: string
@@ -325,10 +328,12 @@ export class GroupService {
             title: data.title,
             name: data.name,
             description: data.description ?? null,
-            visibility: data.visibility ?? existing.visibility,
+            visibility: data.visibility
+                ? mapVisibilityToDb(data.visibility)
+                : existing.visibility,
             parent: parent ?? undefined,
             updated_by: updatedById ? { id: updatedById } : undefined,
-        } as any);
+        });
         return this.getByIdOrSlug(id.toString());
     }
 
@@ -338,7 +343,7 @@ export class GroupService {
             title?: string;
             name?: string;
             description?: string | null;
-            visibility?: string | null;
+            visibility?: ApiVisibility;
             parent_id?: number | null;
         },
         updatedById?: string
@@ -352,13 +357,16 @@ export class GroupService {
                       })
                     : null
                 : existing.parent;
-        const { parent_id: _unused, ...cleanData } = data;
+        const { parent_id: _unused, visibility, ...cleanData } = data;
         await this.treeRepo.save({
             id,
             ...cleanData,
+            ...(visibility !== undefined
+                ? { visibility: mapVisibilityToDb(visibility) }
+                : {}),
             parent: parent ?? undefined,
             updated_by: updatedById ? { id: updatedById } : undefined,
-        } as any);
+        });
         return this.getByIdOrSlug(id.toString());
     }
 

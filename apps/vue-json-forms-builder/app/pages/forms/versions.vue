@@ -8,8 +8,6 @@
  * preview). The current latest state can be previewed too, and new versions
  * can be created (version number + comment + optional schema overrides).
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import VersionDataTable from './VersionDataTable.vue';
 import { VueJsonForm, bootstrapComponents } from '@educorvi/vue-json-form';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
@@ -25,13 +23,11 @@ const { notify } = useNotify();
 const { copyToClipboard } = useClipboard();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const { set: setBreadcrumb } = useAppBreadcrumb();
 
-const formPath = computed(() =>
-    decodeURIComponent((route.query.path as string) ?? '')
-);
+const formPath = computed(() => decodedPathQuery(route.query));
 
 // ── Form metadata (title, access) ──────────────────────────────────────────
 
@@ -406,13 +402,8 @@ function downloadArtifact() {
                     JSON.stringify(previewState.json) +
                     JSON.stringify(previewState.ui)
                 "
-                :json-schema="
-                    (previewState.json as Record<string, unknown>) ?? {}
-                "
-                :ui-schema="
-                    (previewState.ui as Record<string, unknown>) ??
-                    DEFAULT_UI_SCHEMA
-                "
+                :json-schema="previewState.json ?? {}"
+                :ui-schema="previewState.ui ?? DEFAULT_UI_SCHEMA"
                 :on-submit-form="handlePreviewSubmit"
                 :render-interface="bootstrapComponents"
                 :validator="AjvValidator"

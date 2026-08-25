@@ -61,10 +61,11 @@ const isDragOverThisZone = computed(
 
 const canAccept = computed(() => {
     if (!isDragging.value) return false;
-    if (props.allowedTypes === '*') return true;
+    const allowed = props.allowedTypes;
+    if (allowed === '*') return true;
     const src = dragSourceType.value;
     if (!src) return true;
-    return (props.allowedTypes as string[]).includes(src);
+    return allowed.includes(src);
 });
 
 // Highlight only the currently hovered container while dragging.
@@ -74,9 +75,10 @@ const dropZoneActive = computed(
 
 const showBadDrop = computed(() => {
     if (!isDragOverThisZone.value) return false;
-    if (props.allowedTypes === '*') return false;
+    const allowed = props.allowedTypes;
+    if (allowed === '*') return false;
     const src = dragSourceType.value;
-    return src !== null && !(props.allowedTypes as string[]).includes(src);
+    return src !== null && !allowed.includes(src);
 });
 
 const group = computed(() => ({
@@ -88,10 +90,11 @@ const group = computed(() => ({
         ) {
             return false;
         }
-        if (props.allowedTypes === '*') return true;
+        const allowed = props.allowedTypes;
+        if (allowed === '*') return true;
         const domType = dragEl.dataset?.elementType ?? dragSourceType.value;
         if (!domType) return true;
-        return (props.allowedTypes as string[]).includes(domType);
+        return allowed.includes(domType);
     },
 }));
 
@@ -248,7 +251,7 @@ const emptyClass = computed(() => {
                     {{
                         allowedTypes === '*'
                             ? 'Any element'
-                            : (allowedTypes as string[]).join(', ') + ' only'
+                            : allowedTypes.join(', ') + ' only'
                     }}
                 </span>
             </div>

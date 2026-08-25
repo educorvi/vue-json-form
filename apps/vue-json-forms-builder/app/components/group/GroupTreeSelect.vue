@@ -8,17 +8,12 @@
  * Shows the full ancestor path as a breadcrumb below the selector
  * and a read-only computed URL path of the selected group.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
+import type { z } from 'zod';
 import type { TreeNode } from '~/components/custom/TreeSelect.vue';
+import type { zGroupHierarchyNode } from '~~/server/orpc/generated/zod.gen';
 import TreeSelect from '~/components/custom/TreeSelect.vue';
 
-interface HierarchyNode {
-    id: number;
-    name: string;
-    title: string;
-    children?: HierarchyNode[] | null;
-}
+type HierarchyNode = z.infer<typeof zGroupHierarchyNode>;
 
 const props = defineProps<{
     modelValue: number | null;
@@ -32,7 +27,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 // ── Hierarchy data ────────────────────────────────────────────────────────
 
@@ -51,7 +46,7 @@ function toTreeNodes(nodes: HierarchyNode[]): TreeNode<HierarchyNode>[] {
 }
 
 const treeNodes = computed<TreeNode<HierarchyNode>[]>(() =>
-    hierarchy.value ? toTreeNodes(hierarchy.value as HierarchyNode[]) : []
+    hierarchy.value ? toTreeNodes(hierarchy.value) : []
 );
 
 // ── Ancestor chain / breadcrumb ───────────────────────────────────────────

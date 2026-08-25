@@ -138,7 +138,7 @@ function onTriggerKeydown(e: KeyboardEvent) {
 function filterNodes(nodes: TreeNode<T>[]): TreeNode<T>[] {
     if (!search.value) return nodes;
     return nodes
-        .map((n) => {
+        .map((n): TreeNode<T> | null => {
             const childMatch = n.children?.length
                 ? filterNodes(n.children)
                 : [];
@@ -150,7 +150,7 @@ function filterNodes(nodes: TreeNode<T>[]): TreeNode<T>[] {
             }
             return null;
         })
-        .filter(Boolean) as TreeNode<T>[];
+        .filter((n): n is TreeNode<T> => n !== null);
 }
 
 const filteredNodes = computed(() => filterNodes(props.nodes));

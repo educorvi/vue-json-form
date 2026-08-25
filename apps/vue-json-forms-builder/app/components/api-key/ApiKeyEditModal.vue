@@ -7,8 +7,6 @@
 <script setup lang="ts">
 import type { z } from 'zod';
 import type { zApiKey } from '~~/server/orpc/generated/zod.gen';
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 
 type ApiKeyRow = z.infer<typeof zApiKey>;
 
@@ -24,7 +22,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const { notify } = useNotify();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const name = ref('');
 const description = ref('');

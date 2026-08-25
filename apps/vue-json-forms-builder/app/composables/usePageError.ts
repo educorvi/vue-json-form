@@ -9,7 +9,7 @@ export function usePageError(
     const resolvedError = computed(() => {
         const err = toValue(error);
         if (!err) return null;
-        return err as Record<string, any>;
+        return err;
     });
 
     const resolvedStatus = computed(() => toValue(status));

@@ -10,8 +10,6 @@
  */
 import type { z } from 'zod';
 import type { zListFormsQuery, zForm } from '~~/server/orpc/generated/zod.gen';
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import TimestampStats from '~/components/utils/TimestampStats.vue';
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 type FormsQuery = z.infer<typeof zListFormsQuery>;
@@ -23,7 +21,7 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 const { t } = useI18n();
 const { notify } = useNotify();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 const permissions = usePermissionsStore();
 
 useAppBreadcrumb().set('forms');

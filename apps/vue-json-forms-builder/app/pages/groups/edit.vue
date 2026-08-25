@@ -3,8 +3,6 @@
  * /groups/edit?path=<path> — Edit a group.
  * Path is the URL-encoded group path.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import type { Visibility } from '@/utils/api-types';
 
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
@@ -15,13 +13,11 @@ const { t } = useI18n();
 const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const { set: setBreadcrumb } = useAppBreadcrumb();
 
-const groupPath = computed(() =>
-    decodeURIComponent((route.query.path as string) ?? '')
-);
+const groupPath = computed(() => decodedPathQuery(route.query));
 
 const {
     data: group,
@@ -32,7 +28,7 @@ const {
     () => orpc.groups.get({ params: { id: groupPath.value } }),
     {
         watch: [groupPath],
-        transform: (raw: any) => {
+        transform: (raw) => {
             if (raw) setBreadcrumb('groups', raw, t('groups.edit.title'));
             return raw;
         },
@@ -64,7 +60,7 @@ watch(
         if (g) {
             editTitle.value = g.title ?? '';
             editDescription.value = g.description ?? '';
-            editVisibility.value = (g.visibility as Visibility) ?? 'visible';
+            editVisibility.value = g.visibility ?? 'visible';
         }
     },
     { immediate: true }

@@ -50,6 +50,11 @@ function onSearchKeydown(e: KeyboardEvent) {
 function toggleSortOrder() {
     emit('update:sortOrder', props.sortOrder === 'asc' ? 'desc' : 'asc');
 }
+
+function onOrderByChange(v: unknown) {
+    const option = props.sortOptions.find((o) => o.value === v);
+    if (option) emit('update:orderBy', option.value);
+}
 </script>
 
 <template>
@@ -79,7 +84,7 @@ function toggleSortOrder() {
                     :options="sortOptions"
                     text-field="label"
                     value-field="value"
-                    @update:model-value="(v) => emit('update:orderBy', v as T)"
+                    @update:model-value="onOrderByChange"
                 />
 
                 <BButton

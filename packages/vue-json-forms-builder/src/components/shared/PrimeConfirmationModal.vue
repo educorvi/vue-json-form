@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { BModal } from 'bootstrap-vue-next';
+import { BModal, type ButtonVariant } from 'bootstrap-vue-next';
 
 const props = defineProps<{
     title: string;
     confirmButtonText?: string;
     cancelButtonText?: string;
     hideCancelButton?: boolean;
-    confirmButtonVariant?: string;
-    cancelButtonVariant?: string;
+    confirmButtonVariant?: ButtonVariant;
+    cancelButtonVariant?: ButtonVariant;
 }>();
 
 const emit = defineEmits<{
@@ -34,7 +34,7 @@ defineExpose({ show });
         :ok-title="confirmButtonText ?? 'Confirm'"
         :cancel-title="cancelButtonText ?? 'Cancel'"
         :hide-footer="hideCancelButton"
-        :ok-variant="(confirmButtonVariant ?? 'primary') as any"
+        :ok-variant="confirmButtonVariant ?? 'primary'"
         @ok="emit('confirm')"
         @cancel="emit('cancel')"
     >

@@ -3,8 +3,6 @@
  * /forms/edit?path=<path> — Edit a form.
  * Path is the URL-encoded form path.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import type { Visibility } from '@/utils/api-types';
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
@@ -13,13 +11,11 @@ const { t } = useI18n();
 const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const { set: setBreadcrumb } = useAppBreadcrumb();
 
-const formPath = computed(() =>
-    decodeURIComponent((route.query.path as string) ?? '')
-);
+const formPath = computed(() => decodedPathQuery(route.query));
 
 const {
     data: form,
@@ -30,7 +26,7 @@ const {
     () => orpc.forms.get({ params: { id: formPath.value } }),
     {
         watch: [formPath],
-        transform: (raw: any) => {
+        transform: (raw) => {
             if (raw) setBreadcrumb('forms', raw, t('forms.edit.title'));
             return raw;
         },
@@ -64,7 +60,7 @@ watch(
             editTitle.value = f.title ?? '';
             editDescription.value = f.description ?? '';
             editSlug.value = f.name ?? '';
-            editVisibility.value = (f.visibility as Visibility) ?? 'visible';
+            editVisibility.value = f.visibility ?? 'visible';
         }
     },
     { immediate: true }

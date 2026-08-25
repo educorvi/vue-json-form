@@ -13,7 +13,7 @@ const props = defineProps<{
     modelValue: boolean;
     permission: PermissionEntry | null;
     /** The inherited role for this user (if any) – used to restrict role downgrades */
-    inheritedRole: string | null;
+    inheritedRole: ElementRole | null;
     /**
      * True when this is the user's OWN owner permission and they are the
      * only owner of the resource — the role may not be lowered at all.
@@ -70,7 +70,7 @@ watch(
     () => props.modelValue,
     (open) => {
         if (open && props.permission) {
-            editRole.value = (props.permission.role as ElementRole) ?? 'editor';
+            editRole.value = props.permission.role ?? 'editor';
             editExpire.value = props.permission.expire
                 ? props.permission.expire.slice(0, 10)
                 : '';

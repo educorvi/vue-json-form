@@ -25,7 +25,7 @@ const error = computed(() => validateJsonText(props.modelValue));
             :state="error ? false : null"
             spellcheck="false"
             autocomplete="off"
-            @update:model-value="emit('update:modelValue', $event as string)"
+            @update:model-value="emit('update:modelValue', String($event ?? ''))"
         />
         <div v-if="error" class="text-danger text-xs">{{ error }}</div>
     </div>

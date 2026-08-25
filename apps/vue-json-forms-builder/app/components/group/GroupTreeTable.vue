@@ -6,8 +6,6 @@
  * Groups are expandable to show their children; forms link to their detail page.
  * Children are lazily fetched when expanding a group.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import TimestampStats from '~/components/utils/TimestampStats.vue';
 import type { zGroupElement } from '~~/server/orpc/generated/zod.gen';
 import type z from 'zod';
@@ -40,7 +38,7 @@ const emit = defineEmits<{
 }>();
 
 const { t, locale } = useI18n();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 const router = useRouter();
 
 const INDENT_PX = 24;
@@ -82,7 +80,7 @@ async function fetchChildren(group: ChildItem) {
                 sort_order: 'asc',
             },
         });
-        st.items = (result.data as ChildItem[]) ?? [];
+        st.items = result.data ?? [];
         st.totalCount = result.total_count ?? st.items.length;
         st.totalPages = result.total_pages ?? 1;
         st.loaded = true;

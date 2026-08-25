@@ -18,7 +18,7 @@ const props = withDefaults(
 );
 
 // --- Stale-while-revalidate ---
-const displayItems = ref<T[]>([]) as Ref<T[]>;
+const displayItems = ref<T[]>([]);
 const hasEverLoaded = ref(false);
 
 // --- Delayed skeleton ---

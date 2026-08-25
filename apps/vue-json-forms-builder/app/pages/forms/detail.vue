@@ -3,8 +3,6 @@
  * /forms/detail?path=<path> — Form detail view with integrated form builder.
  * Path is the URL-encoded form path (e.g. "bug-report%2Fexample-bug-report").
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import VueJsonFormBuilder, {
     type CollabConfig,
 } from '@educorvi/vue-json-forms-builder';
@@ -14,7 +12,7 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 const runtimeConfig = useRuntimeConfig();
 
 // The form builder handles its own internal scrolling, so prevent the
@@ -38,9 +36,7 @@ onUnmounted(() => {
 
 const { set: setBreadcrumb } = useAppBreadcrumb();
 
-const formPath = computed(() =>
-    decodeURIComponent((route.query.path as string) ?? '')
-);
+const formPath = computed(() => decodedPathQuery(route.query));
 
 // Fetch form metadata (for header title/breadcrumb)
 const {
@@ -105,7 +101,7 @@ const builderExpanded = ref(false);
 // the Nuxt backend (POST /api/v1/users + GET /api/v1/forms) to validate
 // it — no token minting needed on the frontend.
 const collab = computed<CollabConfig | null>(() => {
-    const url = runtimeConfig.public.collabUrl as string | undefined;
+    const url = runtimeConfig.public.collabUrl;
     if (!url || !form.value?.id) return null;
     return {
         url,

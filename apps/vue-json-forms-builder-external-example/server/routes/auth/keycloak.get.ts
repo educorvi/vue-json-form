@@ -10,11 +10,11 @@ export default defineOAuthKeycloakEventHandler({
     async onSuccess(event, { user }) {
         await setUserSession(event, {
             user: {
-                id: user.sub as string,
-                username: (user.name ?? user.preferred_username) as string,
-                email: user.email as string,
-                firstName: (user.given_name as string) ?? undefined,
-                lastName: (user.family_name as string) ?? undefined,
+                id: user.sub,
+                username: user.name ?? user.preferred_username,
+                email: user.email,
+                firstName: user.given_name ?? undefined,
+                lastName: user.family_name ?? undefined,
             },
         });
         const redirect = getQuery(event).redirect;

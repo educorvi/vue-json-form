@@ -3,6 +3,7 @@
 -->
 <script setup lang="ts">
 import type { Visibility } from '@/utils/api-types';
+import { zVisibility } from '~~/server/orpc/generated/zod.gen';
 
 defineProps<{
     modelValue: string;
@@ -128,7 +129,7 @@ const emit = defineEmits<{
                 @update:model-value="
                     emit(
                         'update:visibility',
-                        String($event ?? 'visible') as Visibility
+                        zVisibility.catch('visible').parse($event)
                     )
                 "
             >

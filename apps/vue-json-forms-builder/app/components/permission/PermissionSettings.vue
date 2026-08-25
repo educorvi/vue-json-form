@@ -8,8 +8,6 @@
     This is designed to be used inside a SettingsSection card on edit pages.
 -->
 <script setup lang="ts">
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import type {
     PermissionEntry,
     PermissionSortBy,
@@ -33,7 +31,7 @@ const props = defineProps<{
 const { t } = useI18n();
 const { notify } = useNotify();
 
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 const { user: sessionUser } = useUserSession();
 const currentUserId = computed(() => sessionUser.value?.id ?? null);
 
@@ -129,7 +127,7 @@ watch(
 
 const showEditModal = ref(false);
 const editingPermission = ref<PermissionEntry | null>(null);
-const inheritedRoleForEdit = ref<string | null>(null);
+const inheritedRoleForEdit = ref<ElementRole | null>(null);
 
 function onEdit(perm: PermissionEntry) {
     editingPermission.value = perm;
@@ -160,7 +158,7 @@ async function handleEdit(
         isOwnRow(perm) &&
         data.role &&
         data.role !== perm.role &&
-        ROLE_HIERARCHY[data.role] < ROLE_HIERARCHY[perm.role as ElementRole]
+        ROLE_HIERARCHY[data.role] < ROLE_HIERARCHY[perm.role ?? 'guest']
     ) {
         openTypedConfirm({
             kind: 'demote-self',

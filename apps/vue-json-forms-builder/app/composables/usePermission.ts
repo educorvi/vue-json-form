@@ -75,8 +75,8 @@ export function isRoleAssignable(
 export function getHighestInheritedRole(
     entries: PermissionEntry[],
     userId: number | string
-): string | null {
-    let highest: string | null = null;
+): ElementRole | null {
+    let highest: ElementRole | null = null;
     let highestLevel = -1;
     for (const entry of entries) {
         if (

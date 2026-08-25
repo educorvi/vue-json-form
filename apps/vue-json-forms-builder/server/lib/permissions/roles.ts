@@ -1,10 +1,16 @@
+import { zElementRole } from '~~/server/orpc/generated/zod.gen';
+
 /**
  * Role definitions and hierarchy for resource-level permissions.
  *
  * Roles are ordered by privilege: guest < editor < owner.
  * A user with a higher role implicitly has all permissions of lower roles.
+ *
+ * `Role` is the same type the API contract validates against (`zElementRole`)
+ * — kept as one source of truth so DTOs and domain values never need casting
+ * between them.
  */
-export const ROLES = ['owner', 'editor', 'guest'] as const;
+export const ROLES = zElementRole.options;
 export type Role = (typeof ROLES)[number];
 
 /**
@@ -57,8 +63,8 @@ export function roleLabel(role: Role): string {
  * Returns the highest non-expired role found, or null if no access.
  */
 export function computeEffectiveRole(
-    directPermissions: { role: string; expire?: Date | null }[],
-    inheritedPermissions: { role: string; expire?: Date | null }[],
+    directPermissions: { role: Role; expire?: Date | null }[],
+    inheritedPermissions: { role: Role; expire?: Date | null }[],
     resourceVisibility: string,
     implicitVisibleRole: Role | null = 'guest'
 ): Role | null {
@@ -68,9 +74,11 @@ export function computeEffectiveRole(
 
     for (const perm of [...directPermissions, ...inheritedPermissions]) {
         if (perm.expire && perm.expire < now) continue;
-        const role = perm.role as Role;
-        if (!effective || ROLE_HIERARCHY[role] > ROLE_HIERARCHY[effective]) {
-            effective = role;
+        if (
+            !effective ||
+            ROLE_HIERARCHY[perm.role] > ROLE_HIERARCHY[effective]
+        ) {
+            effective = perm.role;
         }
     }
 

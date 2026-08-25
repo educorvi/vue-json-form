@@ -3,8 +3,6 @@
  * /groups/detail?path=<path> — Group detail (stats + children tree).
  * Path is the URL-encoded group path (e.g. "educorvi%2Fonboarding").
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 
@@ -14,11 +12,9 @@ const { t } = useI18n();
 const { notify } = useNotify();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
-const groupPath = computed(() =>
-    decodeURIComponent((route.query.path as string) ?? '')
-);
+const groupPath = computed(() => decodedPathQuery(route.query));
 
 const { set: setBreadcrumb } = useAppBreadcrumb();
 

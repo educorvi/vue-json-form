@@ -3,6 +3,7 @@
 -->
 <script setup lang="ts">
 import type { Visibility } from '@/utils/api-types';
+import { zVisibility } from '~~/server/orpc/generated/zod.gen';
 
 defineProps<{
     modelValue: string;
@@ -94,7 +95,7 @@ const emit = defineEmits<{
                 :placeholder="$t('forms.edit.fields.titlePlaceholder')"
                 :state="titleState"
                 @update:model-value="
-                    emit('update:modelValue', $event as string)
+                    emit('update:modelValue', String($event ?? ''))
                 "
             />
             <BFormInvalidFeedback :force-show="titleState === false">
@@ -111,7 +112,7 @@ const emit = defineEmits<{
                 :placeholder="$t('forms.edit.fields.descriptionPlaceholder')"
                 rows="2"
                 @update:model-value="
-                    emit('update:description', $event as string)
+                    emit('update:description', String($event ?? ''))
                 "
             />
         </BFormGroup>
@@ -128,7 +129,7 @@ const emit = defineEmits<{
                 @update:model-value="
                     emit(
                         'update:visibility',
-                        String($event ?? 'visible') as Visibility
+                        zVisibility.catch('visible').parse($event)
                     )
                 "
             >

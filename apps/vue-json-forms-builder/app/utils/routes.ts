@@ -17,6 +17,16 @@
  * All path parameters are URI-encoded automatically.
  */
 
+/**
+ * Decode the `?path=` query param used by detail/edit pages
+ * (`route.query.path`). Vue Router types a query value as
+ * `string | null | (string | null)[]`, so this validates rather than
+ * blindly asserting `string` — an absent/array value decodes to `''`.
+ */
+export function decodedPathQuery(query: { path?: unknown }): string {
+    return typeof query.path === 'string' ? decodeURIComponent(query.path) : '';
+}
+
 // ── Entity-like interface for high-level helpers ────────────────────────────
 
 interface EntityLike {

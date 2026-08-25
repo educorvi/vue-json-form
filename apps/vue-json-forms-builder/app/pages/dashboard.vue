@@ -2,12 +2,9 @@
 /**
  * /dashboard — Home / Start page for authenticated users.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
-
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const { user } = useUserSession();
 const userName = computed(() => user.value?.username ?? 'User');

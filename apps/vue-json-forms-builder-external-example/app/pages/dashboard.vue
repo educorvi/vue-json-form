@@ -4,12 +4,12 @@ definePageMeta({ middleware: 'authenticated' });
 const { user } = useUserSession();
 const config = useRuntimeConfig();
 
-const kcUrl = computed(() => config.public.kcUrl as string);
-const kcRealm = computed(() => config.public.kcRealm as string);
-const kcClientId = computed(() => config.public.kcClientId as string);
-const kcIdpHint = computed(() => config.public.kcIdpHint as string);
-const collabUrl = computed(() => config.public.collabUrl as string);
-const backendUrl = computed(() => config.public.backendUrl as string);
+const kcUrl = computed(() => config.public.kcUrl);
+const kcRealm = computed(() => config.public.kcRealm);
+const kcClientId = computed(() => config.public.kcClientId);
+const kcIdpHint = computed(() => config.public.kcIdpHint);
+const collabUrl = computed(() => config.public.collabUrl);
+const backendUrl = computed(() => config.public.backendUrl);
 
 const greeting = computed(
     () =>

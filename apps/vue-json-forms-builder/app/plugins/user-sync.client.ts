@@ -5,6 +5,11 @@ import type { AppRouter } from '~~/server/orpc/routers';
  * Syncs the current Keycloak user into the database exactly once per browser
  * session (tracked via sessionStorage). Re-syncs if the user identity changes
  * (e.g. a different account logs in on the same tab).
+ *
+ * The cast below is a real exception (unlike every other `$orpc` use site in
+ * this app): a plugin can't rely on Nuxt's auto-generated `$orpc` typing for
+ * itself, since that type is built FROM the set of plugin files including
+ * this one — a self-reference `nuxt typecheck` can't resolve.
  */
 export default defineNuxtPlugin((nuxtApp) => {
     const { loggedIn, user } = useUserSession();

@@ -282,7 +282,7 @@ const fallbackUi = new DefaultElementUi();
 
 /** UI metadata for any element — keyed by its class, no instanceof cascades. */
 export function uiFor(el: FormElement | Form): ElementUi<FormElement | Form> {
-    return registry.get(el.constructor as Function) ?? fallbackUi;
+    return registry.get(el.constructor) ?? fallbackUi;
 }
 
 export { ElementUi };

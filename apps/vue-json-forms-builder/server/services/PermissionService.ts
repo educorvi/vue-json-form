@@ -198,7 +198,7 @@ export class PermissionService {
                 message: 'Permission has no user',
             });
 
-        const targetRole = (perm.role as Role) ?? null;
+        const targetRole = perm.role ?? null;
         const newRole = dto.role ?? null;
 
         // Editors may only adjust editor/guest permissions and may never
@@ -255,7 +255,7 @@ export class PermissionService {
                 message: 'Permission not found',
             });
 
-        const targetRole = (perm.role as Role) ?? null;
+        const targetRole = perm.role ?? null;
 
         // Editors may only delete editor/guest permissions.
         await this._assertActorCanManage(

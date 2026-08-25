@@ -7,8 +7,6 @@
     - Optional expiration date
 -->
 <script setup lang="ts">
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import type { PermissionEntry } from '@/composables/usePermission';
 import type { ElementRole } from '@/utils/api-types';
 import {
@@ -27,7 +25,7 @@ const props = defineProps<{
     resourceId: string;
 }>();
 
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 const emit = defineEmits<{
     'update:modelValue': [value: boolean];
@@ -124,7 +122,7 @@ watch(selectedUser, (userId) => {
 
 const ROLES = ['owner', 'editor', 'guest'] as const;
 const selectedRole = ref<ElementRole>('editor');
-const suggestedMinRole = ref<string | null>(null);
+const suggestedMinRole = ref<ElementRole | null>(null);
 
 const roleOptions = computed(() => {
     return ROLES.map((role) => {

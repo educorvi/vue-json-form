@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import type { H3Event } from 'h3';
 
 /**
  * Decodes the payload of a JWT (access token) without dependencies.
@@ -13,7 +14,7 @@ function decodeTokenPayload(token: string): {
         const payload = token.split('.')[1];
         if (!payload) return null;
         const json = Buffer.from(payload, 'base64url').toString('utf8');
-        return JSON.parse(json) as { realm_access?: { roles?: string[] } };
+        return JSON.parse(json);
     } catch {
         return null;
     }
@@ -28,18 +29,15 @@ function decodeTokenPayload(token: string): {
  * Allowed origins come from `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS`
  * (comma-separated), e.g. `http://external-example-app.localhost:3001`.
  */
-function safeRedirect(event: any, candidate: unknown): string {
+function safeRedirect(event: H3Event, candidate: unknown): string {
     if (typeof candidate !== 'string' || candidate.length === 0) {
         return '/dashboard';
     }
     if (candidate.startsWith('/') && !candidate.startsWith('//')) {
         return candidate;
     }
-    const allowed = (
-        (useRuntimeConfig(event).auth?.allowedRedirectOrigins as
-            string | undefined) ?? ''
-    )
-        .split(',')
+    const allowed = useRuntimeConfig(event)
+        .auth.allowedRedirectOrigins.split(',')
         .map((origin) => origin.trim())
         .filter(Boolean);
     if (
@@ -116,10 +114,10 @@ export default eventHandler(async (event) => {
     }
 
     // --- Callback: exchange the code, create the session, redirect back ---
-    const saved = parseJSONCookie(event, REDIRECT_COOKIE) as {
-        target?: string;
-        state?: string;
-    } | null;
+    const saved = parseJSONCookie<{ target?: string; state?: string }>(
+        event,
+        REDIRECT_COOKIE
+    );
     deleteCookie(event, REDIRECT_COOKIE, { path: '/' });
 
     if (
@@ -149,7 +147,7 @@ export default eventHandler(async (event) => {
             }
         );
 
-        const user = await $fetch<Record<string, unknown>>(
+        const user = await $fetch<KeycloakUserInfo>(
             `${realmURL}/protocol/openid-connect/userinfo`,
             {
                 headers: {
@@ -164,11 +162,11 @@ export default eventHandler(async (event) => {
 
         await setUserSession(event, {
             user: {
-                id: user.sub as string,
-                username: (user.name ?? user.preferred_username) as string,
-                email: user.email as string,
-                firstName: (user.given_name as string) ?? undefined,
-                lastName: (user.family_name as string) ?? undefined,
+                id: user.sub,
+                username: user.name ?? user.preferred_username ?? user.sub,
+                email: user.email ?? '',
+                firstName: user.given_name,
+                lastName: user.family_name,
                 roles,
             },
         });
@@ -183,7 +181,7 @@ export default eventHandler(async (event) => {
 /**
  * Reads and JSON-parses a cookie, returning null when missing/invalid.
  */
-function parseJSONCookie(event: any, name: string): unknown {
+function parseJSONCookie<T>(event: H3Event, name: string): T | null {
     const raw = getCookie(event, name);
     if (!raw) return null;
     try {
@@ -191,4 +189,14 @@ function parseJSONCookie(event: any, name: string): unknown {
     } catch {
         return null;
     }
+}
+
+/** The subset of the Keycloak `/userinfo` response this route relies on. */
+interface KeycloakUserInfo {
+    sub: string;
+    name?: string;
+    preferred_username?: string;
+    email?: string;
+    given_name?: string;
+    family_name?: string;
 }

@@ -106,17 +106,17 @@ const fields = computed(() => [
                 >
                     <template #cell(user)="data">
                         <UserPreviewCell
-                            :name="(data.item as UserRow).name"
-                            :email="(data.item as UserRow).email"
+                            :name="data.item.name"
+                            :email="data.item.email"
                         />
                     </template>
                     <template #cell(role)="data">
-                        <UserRoleCell :role="(data.item as UserRow).role" />
+                        <UserRoleCell :role="data.item.role" />
                     </template>
                     <template #cell(activity)="data">
                         <TimestampStats
-                            :created="(data.item as UserRow).created"
-                            :updated="(data.item as UserRow).updated"
+                            :created="data.item.created"
+                            :updated="data.item.updated"
                         />
                     </template>
                 </BTable>

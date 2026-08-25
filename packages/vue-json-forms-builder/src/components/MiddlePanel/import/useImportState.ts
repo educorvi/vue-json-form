@@ -63,7 +63,7 @@ export function validateJsonText(text: string): string | null {
         JSON.parse(text);
         return null;
     } catch (e: any) {
-        return e.message as string;
+        return e.message;
     }
 }
 

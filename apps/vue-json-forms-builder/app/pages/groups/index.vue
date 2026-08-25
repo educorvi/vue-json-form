@@ -11,8 +11,6 @@
  */
 import type { z } from 'zod';
 import type { zListGroupsQuery } from '~~/server/orpc/generated/zod.gen';
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import ConfirmTypingDelete from '@/components/utils/ConfirmTypingDelete.vue';
 type GroupsQuery = z.infer<typeof zListGroupsQuery>;
 type OrderBy = GroupsQuery['order_by'];
@@ -22,7 +20,7 @@ definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 const { t } = useI18n();
 const { notify } = useNotify();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 const permissions = usePermissionsStore();
 
 // ── Breadcrumb ──────────────────────────────────────────────────────────────

@@ -58,6 +58,5 @@ export function getUserFromContext(
             message:
                 'User context is missing. Authentication went wrong in auth middleware',
         });
-    // context.user is the augmented #auth-utils User; cast to our local shape
-    return user as SessionUser;
+    return user;
 }

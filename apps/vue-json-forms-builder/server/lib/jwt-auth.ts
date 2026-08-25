@@ -20,17 +20,13 @@ import type { User } from '#auth-utils';
  * (existing deployments keep working without the new env var).
  */
 
-/** nuxt-auth-utils OIDC client config (env NUXT_OAUTH_KEYCLOAK_*). */
-interface KeycloakOidcConfig {
-    serverUrl?: string;
-    realm?: string;
-    clientId?: string;
-    clientSecret?: string;
-}
-
-function getOidcConfig(event: H3Event): KeycloakOidcConfig {
-    return (useRuntimeConfig(event).oauth?.keycloak ??
-        {}) as KeycloakOidcConfig;
+/**
+ * nuxt-auth-utils OIDC client config (env NUXT_OAUTH_KEYCLOAK_*) — typed by
+ * Nuxt's generated `RuntimeConfig` (see `.nuxt/types/runtime-config.d.ts`),
+ * no local shape/cast needed.
+ */
+function getOidcConfig(event: H3Event) {
+    return useRuntimeConfig(event).oauth.keycloak;
 }
 
 /**
@@ -38,11 +34,8 @@ function getOidcConfig(event: H3Event): KeycloakOidcConfig {
  * `NUXT_AUTH_ALLOWED_CLIENT_IDS` (comma-separated).
  */
 function getAcceptedClientIds(event: H3Event): string[] {
-    const raw =
-        (useRuntimeConfig(event).auth?.allowedClientIds as
-            string | undefined) ?? '';
-    return raw
-        .split(',')
+    return useRuntimeConfig(event)
+        .auth.allowedClientIds.split(',')
         .map((id) => id.trim())
         .filter(Boolean);
 }

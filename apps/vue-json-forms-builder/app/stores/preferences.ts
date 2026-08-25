@@ -99,29 +99,35 @@ export const usePreferencesStore = defineStore('preferences', () => {
     const i18n = useI18n();
 
     /** Current locale code ('en' | 'de'), reactive. */
-    const locale = computed(() => i18n.locale.value as string);
+    const locale = computed(() => i18n.locale.value);
 
     /** Locales configured in nuxt.config (i18n.locales) + display flags. */
     const locales = computed(() =>
-        (
-            (i18n.locales?.value ?? []) as Array<{
-                code: string;
-                name?: string;
-            }>
-        ).map((l) => ({
+        (i18n.locales.value ?? []).map((l) => ({
             code: l.code,
             flag: LOCALE_FLAGS[l.code] ?? '',
             name: l.name ?? l.code,
         }))
     );
 
+    type SupportedLocale = Parameters<typeof i18n.setLocale>[0];
+
+    function isSupportedLocale(
+        code: string,
+        codes: readonly string[]
+    ): code is SupportedLocale {
+        return codes.includes(code);
+    }
+
     /**
      * Switch the app language. @nuxtjs/i18n persists the choice in its own
      * cookie and updates the composer — nothing else needed.
      */
     function changeLocale(code: string) {
-        // The composer's setLocale is typed to the configured locale codes.
-        void i18n.setLocale(code as 'en' | 'de');
+        const codes = locales.value.map((l) => l.code);
+        if (isSupportedLocale(code, codes)) {
+            void i18n.setLocale(code);
+        }
     }
 
     return {

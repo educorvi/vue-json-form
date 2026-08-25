@@ -5,15 +5,13 @@
  * Field order: Title → Parent Group → URL Slug → Description
  * Query param `?parent=<encoded-path>` pre-selects the parent.
  */
-import type { RouterClient } from '@orpc/server';
-import type { AppRouter } from '~~/server/orpc/routers';
 import type { Visibility } from '@/utils/api-types';
 definePageMeta({ middleware: ['authenticated'], layout: 'base-layout' });
 
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const orpc = useNuxtApp().$orpc as RouterClient<AppRouter>;
+const orpc = useNuxtApp().$orpc;
 
 // ── Parent group — fetch for breadcrumb ────────────────────────────────
 const parentPath = ref<string | null>(
