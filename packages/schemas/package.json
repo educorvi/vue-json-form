@@ -34,10 +34,12 @@
         },
         "./dist/ui.schema.json": "./dist/ui.schema.json",
         "./dist/json-2019.schema.json": "./dist/json-2019.schema.json",
-        "./package.json": "./package.json"
+        "./package.json": "./package.json",
+        "./src/ui/*": "./src/ui/*"
     },
     "files": [
         "dist",
+        "src/ui",
         "README.md"
     ],
     "main": "./dist/vue-json-form-schemas.cjs",
