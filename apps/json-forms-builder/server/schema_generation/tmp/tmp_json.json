@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "properties": {
+        "myString": { "title": "My String", "type": "string" },
+        "myColor": { "title": "My Color", "type": "string" },
+        "myBoolean": {
+            "title": "My Boolean",
+            "type": "boolean",
+            "const": true
+        },
+        "myObject": {
+            "title": "My Object",
+            "type": "object",
+            "properties": {
+                "myNumber": { "title": "My Number", "type": "integer" },
+                "myFileUpload": {
+                    "title": "My File Upload",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": ["myNumber"]
+        },
+        "myArray": {
+            "title": "My Array",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "myCheckboxGroup": {
+                        "title": "My Checkbox Group",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": ["Option 1", "Option 2", "Option 3"]
+                        }
+                    },
+                    "myObjectInArray": {
+                        "title": "My Object in Array",
+                        "type": "object",
+                        "properties": {
+                            "myTime": {
+                                "title": "My Time",
+                                "type": "string",
+                                "format": "time"
+                            },
+                            "myEnum": {
+                                "title": "My Enum",
+                                "type": "string",
+                                "enum": ["Option A", "Option B", "Option C"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": ["myBoolean", "myObject"]
+}

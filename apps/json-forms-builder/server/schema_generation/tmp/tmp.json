@@ -1,0 +1,96 @@
+{
+    "version": "2.2",
+    "layout": {
+        "type": "VerticalLayout",
+        "elements": [
+            {
+                "type": "Control",
+                "scope": "/properties/myString",
+                "options": { "format": "text" }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/myColor",
+                "options": { "format": "color" }
+            },
+            { "type": "Control", "scope": "/properties/myBoolean" },
+            {
+                "type": "Control",
+                "scope": "/properties/myObject",
+                "options": {
+                    "uiSchema": {
+                        "type": "VerticalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "/properties/myObject/properties/myNumber"
+                            },
+                            { "type": "Divider" },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/myObject/properties/myFileUpload",
+                                "options": { "acceptedFileType": "*" }
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/myArray",
+                "options": {
+                    "uiSchema": {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "HTML",
+                                "htmlData": "<p>This is a paragraph.</p>"
+                            },
+                            {
+                                "type": "Modal",
+                                "modal": {
+                                    "title": "My Modal",
+                                    "content": "Hier steht Zeug im Modal",
+                                    "size": "large"
+                                },
+                                "button": {
+                                    "text": "Open Modal",
+                                    "variant": "primary"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/myArray/items/properties/myCheckboxGroup",
+                                "options": { "stacked": true }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "/properties/myArray/items/properties/myObjectInArray",
+                                "options": {
+                                    "uiSchema": {
+                                        "type": "VerticalLayout",
+                                        "elements": [
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/myArray/items/properties/myObjectInArray/properties/myTime",
+                                                "options": { "format": "time" }
+                                            },
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/myArray/items/properties/myObjectInArray/properties/myEnum",
+                                                "options": {
+                                                    "stacked": true,
+                                                    "displayAs": "select"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

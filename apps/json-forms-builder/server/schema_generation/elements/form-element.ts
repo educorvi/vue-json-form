@@ -229,7 +229,10 @@ export abstract class SimpleElement extends BaseDataElement {
         return this.data.default;
     }
 
-    get usesEmptyStringDefaultWhenSourceOfDependency(): boolean {
+    /**
+     * returns true for any element but NumberElement
+     */
+    get isStringLike(): boolean {
         // to avoid circular imports
         return true;
     }

@@ -221,12 +221,20 @@ export class FormDefinition {
    *       Pass this.root to insert at the top level.
    */
   insertElement(
-    formElement: FormElement,
-    containerElement: ContainerElement | Form,
+    formElement: FormElement,// | Form,
+    containerElement: ContainerElement | Form,// | ButtonGroupElement | Wizard,
     newIndex: number,
   ): void {
-    const children = containerElement.children;
-    children.splice(newIndex, 0, formElement.uid);
+    // if (containerElement instanceof ButtonGroupElement && !(formElement instanceof ButtonElement)) {
+    //   throw new Error(`Cannot insert non-Button element into ButtonGroup`);
+    // } else if ((containerElement instanceof Wizard && !(formElement instanceof Form))
+    //   || (formElement instanceof Form && !(containerElement instanceof Wizard))
+    // ) {
+    //   throw new Error(`Cannot insert non-Form element into Wizard`);
+    // }
+
+    // TODO (multiple functions??)
+    containerElement.children.splice(newIndex, 0, formElement.uid);
 
     // Index the inserted element itself
     this.nodesIndex.set(formElement.uid, formElement);

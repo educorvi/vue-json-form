@@ -83,7 +83,7 @@ export class NumberElement extends SimpleElement {
         return this.data.placeholder;
     }
 
-    get usesEmptyStringDefaultWhenSourceOfDependency(): boolean {
+    get isStringLike(): boolean {
         return false;
     }
 

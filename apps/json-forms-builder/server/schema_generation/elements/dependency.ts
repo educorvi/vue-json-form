@@ -148,7 +148,7 @@ export class Dependency extends Entity{
      * @param elementUid uid of the leaf element
      * @returns a schema that can be used as an if or then statement
      */
-    private createSubJsonSchema(generator: SchemaGenerator, path: string[], elementUid: string): JSONSchema {
+    private createSubJsonSchema(generator: SchemaGenerator, path: string[], elementUid: string, isSourceStatement: boolean): JSONSchema {
         const element = assertDefined(generator.document.getElementById(elementUid), `Element with uid ${elementUid} not found`);
         const leafStatement = assertDefined(element.getAllOfLeafStatement(), `Element with uid ${elementUid} and id ${element.id} does not have an allOf leaf statement`);
 
@@ -157,10 +157,12 @@ export class Dependency extends Entity{
         // TODO only use this.value if subjsonschema is for source element
         if (this.dependencyType === DependencyType.minLength || this.dependencyType === DependencyType.maxLength) {
             if (typeof this.value !== "number") throw new Error(`Dependency value must be a number for dependencyType ${this.dependencyType}`);
-            leafStatement.minLength = this.value;
+            leafStatement.minLength = isSourceStatement ? this.value : 1;
         } else if (this.dependencyType === DependencyType.equal) {
             leafStatement.const = this.value;
-        } // TODO all other dependencytypes. put this logic in a separate function (also useful for unit tests)
+        } else {// TODO all other dependencytypes. put this logic in a separate function (also useful for unit tests)
+            if (element.isStringLike())
+        }
 
         let currentSubSchema: Record<string, any> = {};
         const finalSubSchema = currentSubSchema;
@@ -195,9 +197,11 @@ export class Dependency extends Entity{
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
         const targetElementUid = assertDefined(scope[scope.length - 1], `Last path segment is undefined for scope: ${scope}`);
         const allOfSchema: JSONSchema = {
-            if: this.createSubJsonSchema(generator, generator.getPath(this.sourceId), this.sourceId),
-            then: this.createSubJsonSchema(generator, generator.getPath(targetElementUid), targetElementUid)
-        }
+            // source
+            if: this.createSubJsonSchema(generator, generator.getPath(this.sourceId), this.sourceId, true),
+            // target
+            then: this.createSubJsonSchema(generator, generator.getPath(targetElementUid), targetElementUid, false)
+        };
 
         return allOfSchema;
     }
@@ -235,7 +239,7 @@ export class Dependency extends Entity{
             firstArgument = {
                 type: "atom",
                 path: sourcePath,
-                default: sourceElement.usesEmptyStringDefaultWhenSourceOfDependency ? "" : undefined,
+                default: sourceElement.isStringLike ? "" : undefined,
             };
         }
 
