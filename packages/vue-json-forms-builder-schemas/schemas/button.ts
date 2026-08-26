@@ -292,8 +292,10 @@ export class SubmitButton extends ButtonElement {
                 }
                 // test that at least one of the submitUrl entries isnt an empty string
                 if (
-                    data.submitUrl &&
-                    data.submitUrl.every((url) => url.trim() === '')
+                    (typeof data.submitUrl === 'string' &&
+                        data.submitUrl.trim() === '') ||
+                    (Array.isArray(data.submitUrl) &&
+                        data.submitUrl.every((url) => url.trim() === ''))
                 ) {
                     ctx.addIssue({
                         code: 'custom',
