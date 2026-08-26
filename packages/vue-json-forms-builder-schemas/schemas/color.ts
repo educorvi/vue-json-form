@@ -7,7 +7,7 @@ import { cleanUiSchema } from './utils';
 
 type ColorElementData = z.infer<typeof ColorElement.schema>;
 const colorElementDefaults = {
-    type: 'color' as const,
+    type: 'string' as const,
     format: 'color' as const,
 };
 type ColorElementOptionalKeys =
@@ -16,7 +16,7 @@ export class ColorElement extends SimpleElement {
     data: ColorElementData;
 
     static schema = SimpleElement.schema.extend({
-        type: z.literal('color'),
+        type: z.literal('string'),
         format: z.literal('color'),
     });
 
@@ -61,25 +61,28 @@ export class ColorElement extends SimpleElement {
             ...super.toJsonSchema(_generator, _scope),
             type: 'string',
         };
+
         return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        _uiSchema: any,
+        uiSchema: any,
         required: boolean = false
     ): ColorElement {
-        if (jsonSchema.type !== 'string') {
+        if (!(jsonSchema.type === 'string')) {
             throw new Error(
-                'Invalid type for ColorElement: ' + jsonSchema.type
+                'Invalid type for StringElement: ' + jsonSchema.type
             );
         }
-        return new ColorElement({
+        const stringElement = new ColorElement({
             title: jsonSchema.title ? jsonSchema.title : '',
             description: jsonSchema.description,
             id: id,
-            required: required,
         });
+        // TODO
+
+        return stringElement;
     }
 }

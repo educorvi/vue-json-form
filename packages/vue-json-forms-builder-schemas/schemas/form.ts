@@ -1,13 +1,15 @@
 import { Entity } from './base';
-import { z } from 'zod';
-import type { PartialBy, EntityOptionalKeys } from './base';
+import { FormElement } from './form-element';
+import { readonly, z } from 'zod';
+import type { PartialBy } from './base';
 import type {
     JSONSchema,
     UISchema,
     Layout as LayoutUiSchema,
 } from '@educorvi/vue-json-form-schemas';
-import { Layout, UI_SCHEMA_VERSION } from './utils';
+import { Layout } from './utils';
 import type { SchemaGenerator } from './schema-generator';
+import type { EntityOptionalKeys } from './base';
 
 type FormData = z.infer<typeof Form.schema>;
 const formDefaults = {
@@ -21,16 +23,13 @@ export class Form extends Entity {
 
     static schema = super.schema.extend({
         type: z.literal('form'),
-        title: z.string(),
-        description: z.string().optional(),
+        // title: z.string(),
+        // description: z.string().optional(),
         layout: z.enum(Layout),
         children: z.array(z.string()),
     });
 
-    constructor(
-        // "children" is optional in the constructor
-        data: PartialBy<FormData, FormOptionalKeys>
-    ) {
+    constructor(data: PartialBy<FormData, FormOptionalKeys>) {
         super(data);
         this.data = Form.setDefaults(data);
     }
@@ -41,8 +40,7 @@ export class Form extends Entity {
         return {
             ...super.setDefaults(data),
             ...formDefaults,
-            // children must never be a shared array — every form gets its own
-            children: data.children ? [...data.children] : [],
+            children: [...formDefaults.children], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -51,18 +49,19 @@ export class Form extends Entity {
         return this.data.children;
     }
 
-    get title(): string {
-        return this.data.title;
-    }
+    // get title(): string {
+    //     return this.data.title;
+    // }
 
     getScopePart(): string[] {
         return ['properties'];
     }
 
-    toUiSchema(generator: SchemaGenerator, _scope: string[] = []): UISchema {
+    toUiSchema(generator: SchemaGenerator, scope: string[] = []): UISchema {
         const uiSchema: UISchema = {
-            version: UI_SCHEMA_VERSION,
-            layout: this.toLayoutUiSchema(generator, _scope),
+            // "$schema": "TODO",
+            version: '2.2',
+            layout: this.toLayoutUiSchema(generator, scope),
         };
         return uiSchema;
     }
@@ -80,10 +79,7 @@ export class Form extends Entity {
         };
     }
 
-    toJsonSchema(
-        generator: SchemaGenerator,
-        _scope: string[] = ['properties']
-    ): JSONSchema {
+    toJsonSchema(generator: SchemaGenerator): JSONSchema {
         const { childrenJsonSchema, requiredList } =
             generator.generateJsonSchemaForElements(this.data.children, [
                 'properties',
@@ -91,6 +87,7 @@ export class Form extends Entity {
 
         const allOf = generator.generatorHelperAttributes.allOf;
         const jsonSchema: JSONSchema = {
+            // "$schema": "https://json-schema.org/draft/2019-09/schema#",
             type: 'object',
             properties: childrenJsonSchema,
             required: requiredList,

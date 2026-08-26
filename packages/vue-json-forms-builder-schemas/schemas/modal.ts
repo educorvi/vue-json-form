@@ -1,38 +1,31 @@
 import { z } from 'zod';
-import type {
-    JSONSchema,
-    Modal as UiModal,
-} from '@educorvi/vue-json-form-schemas';
+import type { Modal, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { FormElement, FormElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
-import { ButtonVariantFormat, ButtonVariantFormatEnum } from './utils';
+import { ButtonVariantFormatEnum, ButtonVariantFormat } from './utils';
+import modalSchema from '@educorvi/vue-json-form-schemas/src/ui/modal.schema.json';
 
-/**
- * Modal sizes. Values mirror the `modal` size enum of
- * modal.schema.json in @educorvi/vue-json-form-schemas.
- */
-export enum ModalSize {
-    Small = 'small',
-    Medium = 'medium',
-    Large = 'large',
-    XLarge = 'x-large',
-}
-
-const ModalSizeEnum = z.enum(ModalSize);
+type ModalSizeValue = NonNullable<Modal['modal']['size']>;
+const ModalSizeEnum = z.enum(
+    modalSchema.properties.modal.properties.size.enum as [
+        ModalSizeValue,
+        ...ModalSizeValue[],
+    ]
+);
+export type ModalSize = z.infer<typeof ModalSizeEnum>;
 
 type ModalElementData = z.infer<typeof ModalElement.schema>;
 const modalElementDefaults = {
     type: 'modal' as const,
-    size: ModalSize.Large,
+    size: 'large' as const,
     buttonVariant: 'primary' as const,
     asLink: false as const,
 };
 type ModalElementOptionalKeys =
     keyof typeof modalElementDefaults | FormElementOptionalKeys;
 
-/** A button that opens a modal with informational content. */
 export class ModalElement extends FormElement {
     data: ModalElementData;
 
@@ -90,8 +83,8 @@ export class ModalElement extends FormElement {
         return this.data.asLink;
     }
 
-    toUiSchema(_generator: SchemaGenerator, scope: string[]): UiModal {
-        const uiSchema: UiModal = {
+    toUiSchema(_generator: SchemaGenerator, scope: string[]): Modal {
+        const uiSchema: Modal = {
             type: 'Modal',
             modal: {
                 title: this.title,
@@ -117,27 +110,21 @@ export class ModalElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        // modals have no data of their own
+    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        uiSchema: UiModal
+        jsonSchema: JSONSchema = {},
+        uiSchema: Modal
     ): ModalElement {
+        // TODO
         return new ModalElement({
             id: id,
-            title: uiSchema.modal?.title ?? '',
-            content: uiSchema.modal?.content ?? '',
-            size:
-                (uiSchema.modal?.size as ModalSize | undefined) ??
-                ModalSize.Large,
-            buttonLabel: uiSchema.button?.text ?? 'Open',
-            buttonVariant:
-                (uiSchema.button?.variant as ButtonVariantFormat | undefined) ??
-                'primary',
+            title: uiSchema.modal.title,
+            content: uiSchema.modal.content,
+            buttonLabel: uiSchema.button.text,
         });
     }
 }

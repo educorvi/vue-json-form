@@ -3,24 +3,20 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import type { InputOptions } from '@educorvi/vue-json-form-schemas';
 import { cleanUiSchema } from './utils';
 
-/**
- * Formats for time-like elements. Values mirror the `inputOptions.format`
- * enum of control.schema.json in @educorvi/vue-json-form-schemas.
- */
 export enum TimeFormat {
     Time = 'time',
     Date = 'date',
     DateTimeLocal = 'datetime-local',
 }
 
-const TimeFormatEnum = z.enum(TimeFormat);
-
 type TimeElementData = z.infer<typeof TimeElement.schema>;
 const timeElementDefaults = {
-    type: 'time' as const,
-    format: TimeFormat.Time,
+    type: 'string' as const,
+    format: TimeFormat.Time as const,
 };
 type TimeElementOptionalKeys =
     keyof typeof timeElementDefaults | SimpleElementOptionalKeys;
@@ -29,8 +25,8 @@ export class TimeElement extends SimpleElement {
     data: TimeElementData;
 
     static schema = SimpleElement.schema.extend({
-        type: z.literal('time'),
-        format: TimeFormatEnum,
+        type: z.literal('string'),
+        format: z.enum(TimeFormat),
     });
 
     constructor(
@@ -65,7 +61,7 @@ export class TimeElement extends SimpleElement {
     }
 
     toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        const jsonSchemaFormatMap: Record<TimeFormat, string> = {
+        const jsonSchemaFormatMap = {
             [TimeFormat.Time]: 'time',
             [TimeFormat.Date]: 'date',
             [TimeFormat.DateTimeLocal]: 'date-time',
@@ -75,37 +71,24 @@ export class TimeElement extends SimpleElement {
             type: 'string',
             format: jsonSchemaFormatMap[this.format],
         };
+
         return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        _uiSchema: any,
-        required: boolean = false
+        uiSchema: any
     ): TimeElement {
-        if (jsonSchema.type !== 'string') {
+        if (!(jsonSchema.type === 'string')) {
             throw new Error('Invalid type for TimeElement: ' + jsonSchema.type);
         }
         const timeElement = new TimeElement({
             title: jsonSchema.title ? jsonSchema.title : '',
             description: jsonSchema.description,
             id: id,
-            required: required,
         });
-        // map the JSON schema format back to the ui format
-        const jsonToTimeFormat: Record<string, TimeFormat> = {
-            time: TimeFormat.Time,
-            date: TimeFormat.Date,
-            'date-time': TimeFormat.DateTimeLocal,
-        };
-        if (jsonSchema.format && jsonToTimeFormat[jsonSchema.format]) {
-            timeElement.data.format = jsonToTimeFormat[jsonSchema.format];
-        } else {
-            throw new Error(
-                'Invalid format for TimeElement: ' + jsonSchema.format
-            );
-        }
+        //TODO
         return timeElement;
     }
 }

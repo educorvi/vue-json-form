@@ -1,20 +1,23 @@
 import type {
+    JSONSchema,
+    Control,
+    HTMLRenderer,
+    Divider,
     Button,
     Buttongroup,
-    Control,
-    Divider,
-    HTMLRenderer,
     Modal,
-    JSONSchema,
+    Formula,
+    Operator,
+    Comparison,
 } from '@educorvi/vue-json-form-schemas';
 import { z } from 'zod';
-
-/**
- * UI Schema version emitted by the element model. Must stay compatible with
- * the renderer's supported version (see `SUPPORTED_UISCHEMA_VERSION` in
- * @educorvi/vue-json-form) — older minor versions are accepted.
- */
-export const UI_SCHEMA_VERSION = '2.2' as const;
+import variantsSchema from '@educorvi/vue-json-form-schemas/src/ui/variants.schema.json';
+import type {
+    OutlineVariants,
+    BaseVariants,
+} from '@educorvi/vue-json-form-schemas';
+import comparisonSchema from '@educorvi/rita/src/schema/comparison.json';
+import operatorSchema from '@educorvi/rita/src/schema/operator.json';
 
 export function createId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '_');
@@ -26,55 +29,99 @@ export enum Layout {
     Group = 'Group', // with line to the right of the elements
 }
 
-/** Every UI schema fragment a FormElement can emit. */
 export type CombinedUiSchemaType =
     Control | HTMLRenderer | Divider | Button | Buttongroup | Modal;
 
-/**
- * Button / modal variants. Values mirror
- * `variants.schema.json` in @educorvi/vue-json-form-schemas
- * (baseVariants + outlineVariants).
- */
-const BUTTON_VARIANT_VALUES = [
-    'primary',
-    'secondary',
-    'success',
-    'warning',
-    'danger',
-    'info',
-    'light',
-    'dark',
-    'outline-primary',
-    'outline-secondary',
-    'outline-success',
-    'outline-warning',
-    'outline-danger',
-    'outline-info',
-    'outline-light',
-    'outline-dark',
-] as const;
-
-export const ButtonVariantFormatEnum = z.enum(BUTTON_VARIANT_VALUES);
+type ButtonVariantFormatValue = NonNullable<BaseVariants | OutlineVariants>;
+export const ButtonVariantFormatEnum = z.enum([
+    ...variantsSchema.definitions.baseVariants.enum,
+    ...variantsSchema.definitions.outlineVariants.enum,
+] as [ButtonVariantFormatValue, ...ButtonVariantFormatValue[]]);
 export type ButtonVariantFormat = z.infer<typeof ButtonVariantFormatEnum>;
 
-/** Removes empty `options` objects from a UI schema Control. */
 export function cleanUiSchema(uiSchema: Control): void {
     if (uiSchema.options && Object.keys(uiSchema.options).length === 0) {
         delete uiSchema.options;
     }
 }
 
-export function getBaseJsonSchema(
-    type: 'array' | 'object',
-    title: string,
-    description?: string
-): JSONSchema {
-    const schema: JSONSchema = {
-        type: type,
-        title: title,
-    };
-    if (description !== undefined) {
-        schema.description = description;
+export function getRequiredMinItems(minItems: number | undefined): number {
+    return Math.max(1, minItems ?? 0);
+}
+
+export function minTwoItems<T>(array: T[]): array is [T, T, ...T[]] {
+    return array.length >= 2;
+}
+
+export function transform_scope_to_object_writing_form(
+    scope: string[]
+): string {
+    const filtered_scope = scope.filter((item) => item !== 'properties');
+    return filtered_scope.join('.');
+}
+
+export function assertDefined<T>(
+    value: T | undefined,
+    message = 'Value is undefined'
+): T {
+    if (value === undefined) {
+        throw new Error(message);
     }
-    return schema;
+    return value;
+}
+
+//---------------------------Dependency Types and Relations---------------------------------
+export type DependencyTypeValue = NonNullable<Comparison['operation']>;
+
+const ritaOperations = comparisonSchema.properties.operation
+    .enum as DependencyTypeValue[];
+
+export const DependencyType = {
+    ...(Object.fromEntries(ritaOperations.map((v) => [v, v])) as {
+        [K in DependencyTypeValue]: K;
+    }),
+    minLength: 'minLength',
+    maxLength: 'maxLength',
+} as const;
+
+export type DependencyType =
+    (typeof DependencyType)[keyof typeof DependencyType];
+
+export const DependencyTypeEnumExtended = z.enum(
+    Object.values(DependencyType) as [DependencyType, ...DependencyType[]]
+);
+
+type DependencyRelationValue = NonNullable<Operator['type']>;
+const ritaOperators = operatorSchema.oneOf.flatMap(
+    (o) => o.properties.type.enum
+) as DependencyRelationValue[];
+
+export const DependencyRelation = {
+    ...(Object.fromEntries(ritaOperators.map((v) => [v, v])) as {
+        [K in DependencyRelationValue]: K;
+    }),
+} as const;
+
+export type DependencyRelation =
+    (typeof DependencyRelation)[keyof typeof DependencyRelation];
+
+export const DependencyRelationEnum = z.enum(
+    ritaOperators as [DependencyRelationValue, ...DependencyRelationValue[]]
+);
+
+//--------------------------- End of Dependency Types and Relations---------------------------------
+
+export function splitScopeAt(scope: string[], splitAt: string): string[][] {
+    const paths: string[][] = [];
+    let current: string[] = [];
+    for (const segment of scope) {
+        if (segment === splitAt) {
+            paths.push(current);
+            current = [];
+        } else {
+            current.push(segment);
+        }
+    }
+    paths.push(current); // remainder after the last "items"
+    return paths;
 }

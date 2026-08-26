@@ -3,10 +3,9 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
-import { cleanUiSchema } from './utils';
+import { cleanUiSchema, getRequiredMinItems } from './utils';
 
-/** Accepted file types (extension list, same as the renderer). */
-export enum FileType {
+enum FileType {
     pdf = 'pdf', // "application/pdf"
     jpeg = 'jpeg', // "image/jpeg"
     png = 'png', // "image/png"
@@ -35,8 +34,6 @@ export enum FileType {
     keynote = 'keynote', // "application/vnd.apple.keynote"
 }
 
-const FileTypeEnum = z.enum(FileType);
-
 type FileuploadElementData = z.infer<typeof FileuploadElement.schema>;
 const fileuploadElementDefaults = {
     type: 'file-upload' as const,
@@ -45,8 +42,6 @@ const fileuploadElementDefaults = {
 };
 type FileuploadElementOptionalKeys =
     keyof typeof fileuploadElementDefaults | SimpleElementOptionalKeys;
-
-/** File upload — the form data value is a file URL/array of file URLs. */
 export class FileuploadElement extends SimpleElement {
     data: FileuploadElementData;
 
@@ -56,7 +51,7 @@ export class FileuploadElement extends SimpleElement {
             multiUpload: z.boolean(),
             minItems: z.number().int().nonnegative().optional(),
             maxItems: z.number().int().nonnegative().optional(),
-            acceptedFileType: z.array(FileTypeEnum).optional(),
+            acceptedFileType: z.array(z.enum(FileType)).optional(),
             maxFileSizeInMB: z.number().int().nonnegative().optional(),
             displayAsSingleUploadField: z
                 .boolean()
@@ -118,7 +113,7 @@ export class FileuploadElement extends SimpleElement {
         return this.data.multiUpload;
     }
 
-    get displayAsSingleUploadField(): boolean {
+    get displayAsSingleUploadField(): boolean | undefined {
         return this.data.displayAsSingleUploadField;
     }
 
@@ -136,6 +131,13 @@ export class FileuploadElement extends SimpleElement {
 
     get maxFileSizeInMB(): number | undefined {
         return this.data.maxFileSizeInMB;
+    }
+
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems),
+        };
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
@@ -164,7 +166,7 @@ export class FileuploadElement extends SimpleElement {
         };
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         if (!this.multiUpload) {
@@ -184,18 +186,12 @@ export class FileuploadElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        _uiSchema: Control,
-        required: boolean = false
+        uiSchema: Control
     ): FileuploadElement {
-        const isArray = jsonSchema.type === 'array';
+        // TODO
         return new FileuploadElement({
-            title: jsonSchema.title ? String(jsonSchema.title) : '',
-            description: jsonSchema.description,
             id: id,
-            required: required,
-            multiUpload: isArray,
-            minItems: jsonSchema.minItems,
-            maxItems: jsonSchema.maxItems,
+            title: jsonSchema.title ? jsonSchema.title : '',
         });
     }
 }

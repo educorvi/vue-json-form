@@ -4,79 +4,36 @@ import { FormElement, FormElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 
-type ReferenceElementData = z.infer<typeof ReferenceElement.schema>;
-const referenceElementDefaults = { type: 'reference' as const };
-type ReferenceElementOptionalKeys =
-    keyof typeof referenceElementDefaults | FormElementOptionalKeys;
-
-/**
- * A reference to another element of the form (by uid). The referenced
- * element keeps its own position in the tree; the reference renders it
- * again at this position.
- */
+// TODO
 export class ReferenceElement extends FormElement {
-    data: ReferenceElementData;
+    // id of the referenced element (of type )
+    referenceId!: string;
 
-    static schema = FormElement.schema.extend({
-        type: z.literal('reference'),
-        referenceId: z.string(), // uid of the referenced FormElement
+    schema = FormElement.schema.extend({
+        referenceId: z.string(),
     });
 
-    constructor(
-        data: Omit<
-            PartialBy<ReferenceElementData, ReferenceElementOptionalKeys>,
-            'type'
-        >
-    ) {
-        super(data);
-        this.data = ReferenceElement.setDefaults(data);
-    }
-
-    protected static setDefaults(
-        data: PartialBy<ReferenceElementData, ReferenceElementOptionalKeys>
-    ): ReferenceElementData {
-        return {
-            ...super.setDefaults(data),
-            ...referenceElementDefaults,
-            ...data,
-        };
-    }
-
-    get referenceId(): string {
-        return this.data.referenceId;
-    }
-
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
-        const referenced = generator.document.getElementById(
-            this.data.referenceId
-        );
-        if (referenced) {
-            const uiSchema = referenced.toUiSchema(generator, scope);
-            if (uiSchema && uiSchema.type === 'Control') {
-                return uiSchema as Control;
-            }
-        }
+        // TODO
         return {
             type: 'Control',
-            scope: '/' + scope.join('/') + '/' + this.id,
+            scope: `#/properties/${this.referenceId}`,
         };
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const referenced = generator.document.getElementById(
-            this.data.referenceId
-        );
-        if (referenced) {
-            return referenced.toJsonSchema(generator, scope);
-        }
+        // TODO
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        _uiSchema: Control
+        jsonSchema: JSONSchema = {},
+        uiSchema: JSONSchema
     ): ReferenceElement {
-        return new ReferenceElement({ id: id, referenceId: '' });
+        // TODO
+        return new ReferenceElement({
+            id: id,
+        });
     }
 }

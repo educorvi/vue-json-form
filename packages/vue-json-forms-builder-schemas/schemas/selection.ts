@@ -3,24 +3,14 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import type { EnumOptions } from '@educorvi/vue-json-form-schemas';
 import {
-    ButtonVariantFormat,
     ButtonVariantFormatEnum,
+    ButtonVariantFormat,
     cleanUiSchema,
+    getRequiredMinItems,
 } from './utils';
-
-/**
- * How an enum is displayed. Values mirror the `enumOptions.displayAs` enum
- * of control.schema.json in @educorvi/vue-json-form-schemas.
- */
-export enum EnumFormat {
-    Select = 'select',
-    Radiobuttons = 'radiobuttons',
-    Switches = 'switches',
-    Buttons = 'buttons',
-}
-
-const EnumFormatEnum = z.enum(EnumFormat);
 
 type SelectionElementData = z.infer<typeof SelectionElement.schema>;
 const selectionElementDefaults = {
@@ -31,17 +21,11 @@ const selectionElementDefaults = {
 type SelectionElementOptionalKeys =
     keyof typeof selectionElementDefaults | SimpleElementOptionalKeys;
 
-/**
- * Base class for all elements that let the user pick from a fixed set of
- * options (select, radio, checkbox-group).
- */
 export abstract class SelectionElement extends SimpleElement {
     data: SelectionElementData;
 
     static schema = SimpleElement.schema.extend({
-        // for select and radio, the options are the possible values; for
-        // checkbox group, the options are the labels of the checkboxes
-        values: z.array(z.string()),
+        values: z.array(z.string()), // for select and radio, the options are the possible values; for checkbox group, the options are the labels of the checkboxes
         stacked: z.boolean(),
         enumTitles: z.boolean(), // TODO not a boolean
         optionFilters: z.object({}).optional(), // TODO change, adapt in ui schema
@@ -60,10 +44,7 @@ export abstract class SelectionElement extends SimpleElement {
         return {
             ...super.setDefaults(data),
             ...selectionElementDefaults,
-            // values must never be a shared array — every element gets its own
-            values: data.values
-                ? [...data.values]
-                : [...selectionElementDefaults.values],
+            values: [...selectionElementDefaults.values], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -92,37 +73,29 @@ export abstract class SelectionElement extends SimpleElement {
             // enumTitles: this.enumTitles, // TODO enumTitles = {id: title, id: title, ...}
             // optionFilters: this.optionFilters, // TODO
         };
-        cleanUiSchema(uiSchema);
+
         return uiSchema;
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
         return super.toJsonSchema(generator, scope);
     }
-
-    /** Common JSON Schema shape (string + enum). */
-    protected toEnumJsonSchema(): JSONSchema {
-        const schema: JSONSchema = {
-            type: 'string',
-            title: this.title,
-            enum: this.values,
-        };
-        if (this.description !== undefined) {
-            schema.description = this.description;
-        }
-        return schema;
-    }
 }
+
+type FormatValue = NonNullable<EnumOptions['displayAs']>;
+const EnumFormatEnum = z.enum(
+    controlSchema.definitions.enumOptions.allOf[0]!.properties.displayAs
+        .enum as [FormatValue, ...FormatValue[]]
+);
+export type EnumFormat = z.infer<typeof EnumFormatEnum>;
 
 type EnumElementData = z.infer<typeof EnumElement.schema>;
 const enumElementDefaults = {
     type: 'enum' as const,
-    format: EnumFormat.Select,
+    format: 'select' as const,
 };
 type EnumElementOptionalKeys =
     keyof typeof enumElementDefaults | SelectionElementOptionalKeys;
-
-/** Single-value selection rendered as dropdown / radio / switch / buttons. */
 export class EnumElement extends SelectionElement {
     data: EnumElementData;
 
@@ -191,27 +164,14 @@ export class EnumElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control,
-        required: boolean = false
+        uiSchema: Control
     ): EnumElement {
-        const enumElement = new EnumElement({
-            title: jsonSchema.title ? String(jsonSchema.title) : '',
-            description: jsonSchema.description,
+        // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
+        // TODO
+        return new EnumElement({
             id: id,
-            required: required,
-            values: Array.isArray(jsonSchema.enum)
-                ? jsonSchema.enum.map(String)
-                : [],
+            title: '',
         });
-        if (
-            uiSchema.options?.displayAs &&
-            Object.values(EnumFormat as unknown as string[]).includes(
-                uiSchema.options.displayAs
-            )
-        ) {
-            enumElement.data.format = uiSchema.options.displayAs as EnumFormat;
-        }
-        return enumElement;
     }
 }
 
@@ -219,8 +179,6 @@ type CheckboxGroupElementData = z.infer<typeof CheckboxGroupElement.schema>;
 const checkboxGroupElementDefaults = { type: 'checkbox-group' as const };
 type CheckboxGroupElementOptionalKeys =
     keyof typeof checkboxGroupElementDefaults | SelectionElementOptionalKeys;
-
-/** Multi-value selection — an array of strings, one checkbox per option. */
 export class CheckboxGroupElement extends SelectionElement {
     data: CheckboxGroupElementData;
 
@@ -265,6 +223,10 @@ export class CheckboxGroupElement extends SelectionElement {
         return this.data.maxItems;
     }
 
+    get isCheckboxGroup(): boolean {
+        return true;
+    }
+
     protected static setDefaults(
         data: PartialBy<
             CheckboxGroupElementData,
@@ -275,6 +237,13 @@ export class CheckboxGroupElement extends SelectionElement {
             ...super.setDefaults(data),
             ...checkboxGroupElementDefaults,
             ...data,
+        };
+    }
+
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems),
         };
     }
 
@@ -292,13 +261,12 @@ export class CheckboxGroupElement extends SelectionElement {
                 type: 'string',
                 enum: this.values,
             },
-            uniqueItems: true,
             ...(this.minItems !== undefined && { minItems: this.minItems }),
             ...(this.maxItems !== undefined && { maxItems: this.maxItems }),
         };
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         return jsonSchema;
@@ -307,18 +275,13 @@ export class CheckboxGroupElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        _uiSchema: Control,
-        required: boolean = false
+        uiSchema: Control
     ): CheckboxGroupElement {
-        const items = jsonSchema.items as { enum?: unknown } | undefined;
+        // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
+        // TODO
         return new CheckboxGroupElement({
-            title: jsonSchema.title ? String(jsonSchema.title) : '',
-            description: jsonSchema.description,
             id: id,
-            required: required,
-            values: Array.isArray(items?.enum) ? items.enum.map(String) : [],
-            minItems: jsonSchema.minItems,
-            maxItems: jsonSchema.maxItems,
+            title: '',
         });
     }
 }

@@ -12,7 +12,6 @@ flowchart TD
     F & G -->|fromJsonAndUiSchema| C
 ```
 
-
 ```
 //// Example
 

@@ -56,7 +56,7 @@ export class HTMLElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {};
     }
 
@@ -65,8 +65,11 @@ export class HTMLElement extends FormElement {
         jsonSchema: JSONSchema = {},
         uiSchema: HTMLRenderer
     ): HTMLElement {
-        void jsonSchema;
-        return new HTMLElement({ id: id, htmlData: uiSchema.htmlData ?? '' });
+        const htmlElement = new HTMLElement({
+            id: id,
+            htmlData: uiSchema.htmlData,
+        });
         // TODO handle dependencyGroup if needed
+        return htmlElement;
     }
 }

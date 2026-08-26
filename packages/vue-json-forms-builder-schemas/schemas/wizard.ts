@@ -1,22 +1,18 @@
 import { z } from 'zod';
 import type {
+    Control,
     JSONSchema,
-    Layout as UiLayout,
-    Wizard as UiWizard,
+    Wizard as WizardUiSchema,
 } from '@educorvi/vue-json-form-schemas';
-import { Entity, EntityOptionalKeys, PartialBy } from './base';
+import { Layout as LayoutUiSchema } from '@educorvi/vue-json-form-schemas';
 import type { SchemaGenerator } from './schema-generator';
+import { Entity, EntityOptionalKeys, PartialBy } from './base';
 import { Form } from './form';
 
 type WizardPageData = z.infer<typeof WizardPage.schema>;
 const wizardPageDefaults = { type: 'wizard-page' as const };
 type WizardPageOptionalKeys =
     keyof typeof wizardPageDefaults | EntityOptionalKeys;
-
-/**
- * One wizard step. `wizardPageForm` is the uid of a Form entity (in the
- * flat elements set) whose children are rendered on this page.
- */
 export class WizardPage extends Entity {
     data: WizardPageData;
 
@@ -51,7 +47,7 @@ export class WizardPage extends Entity {
         return this.data.pageTitle;
     }
 
-    toUiSchema(generator: SchemaGenerator, _scope: string[]): UiLayout {
+    toUiSchema(generator: SchemaGenerator, scope: string[]): LayoutUiSchema {
         const wizardPageForm = generator.document.getElementById(
             this.wizardPageForm
         );
@@ -60,12 +56,10 @@ export class WizardPage extends Entity {
                 `Wizard page with id ${this.wizardPageForm} not found or is not a Form`
             );
         }
-        const formLayoutUiSchema: UiLayout = wizardPageForm.toLayoutUiSchema(
-            generator,
-            ['properties']
-        );
+        const formLayoutUiSchema: LayoutUiSchema =
+            wizardPageForm.toLayoutUiSchema(generator, ['properties']);
 
-        const uiSchema: UiLayout = {
+        const uiSchema: LayoutUiSchema = {
             type: formLayoutUiSchema.type,
             elements: formLayoutUiSchema.elements,
         };
@@ -86,30 +80,31 @@ export class WizardPage extends Entity {
         return jsonSchema;
     }
 
-    static fromJsonSchemaAndUiSchema(
+    fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        _uiSchema: UiLayout
+        jsonSchema: JSONSchema = {},
+        uiSchema: Control
     ): WizardPage {
+        // TODO
         return new WizardPage({
             id: id,
-            wizardPageForm: '',
             pageTitle: '',
+            wizardPageForm: '',
         });
     }
 }
 
 type WizardData = z.infer<typeof Wizard.schema>;
-const wizardDefaults = { type: 'wizard' as const, wizardPages: [] as string[] };
+const wizardDefaults = { type: 'wizard' as const, wizardPages: [] };
 type WizardOptionalKeys = keyof typeof wizardDefaults | EntityOptionalKeys;
-
-/** A wizard — the root UI element that renders its pages as steps. */
 export class Wizard extends Entity {
     data: WizardData;
 
     static schema = super.schema.extend({
         type: z.literal('wizard'),
-        wizardPages: z.array(z.string()), // uids of WizardPage entities
+        wizardPages: z.array(z.string()),
+        // title: z.string(),
+        // description: z.string().optional(),
     });
 
     constructor(data: Omit<PartialBy<WizardData, WizardOptionalKeys>, 'type'>) {
@@ -123,8 +118,7 @@ export class Wizard extends Entity {
         return {
             ...super.setDefaults(data),
             ...wizardDefaults,
-            // wizardPages must never be a shared array
-            wizardPages: data.wizardPages ? [...data.wizardPages] : [],
+            wizardPages: [...wizardDefaults.wizardPages], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -133,8 +127,8 @@ export class Wizard extends Entity {
         return this.data.wizardPages;
     }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): UiWizard {
-        const uiSchema: UiWizard = {
+    toUiSchema(generator: SchemaGenerator, scope: string[]): WizardUiSchema {
+        const uiSchema: WizardUiSchema = {
             type: 'Wizard',
             pages: this.wizardPages.map((pageId) => {
                 const page = generator.document.getElementById(pageId);
@@ -143,7 +137,7 @@ export class Wizard extends Entity {
                         `Wizard page with id ${pageId} not found or is not a WizardPage`
                     );
                 }
-                return page.toUiSchema(generator, scope) as unknown as UiLayout;
+                return (page as WizardPage).toUiSchema(generator, scope);
             }),
         };
         return uiSchema;

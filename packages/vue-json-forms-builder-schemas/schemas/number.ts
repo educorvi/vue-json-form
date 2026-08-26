@@ -5,12 +5,10 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { cleanUiSchema } from './utils';
 
-export enum NumberFormat {
+enum NumberFormat {
     Integer = 'integer',
     Number = 'number', // float
 }
-
-const NumberFormatEnum = z.enum(NumberFormat);
 
 type NumberElementData = z.infer<typeof NumberElement.schema>;
 const numberElementDefaults = {
@@ -20,13 +18,14 @@ const numberElementDefaults = {
 };
 type NumberElementOptionalKeys =
     keyof typeof numberElementDefaults | SimpleElementOptionalKeys;
+
 export class NumberElement extends SimpleElement {
     data: NumberElementData;
 
     static schema = SimpleElement.schema
         .extend({
             type: z.literal('number'),
-            format: NumberFormatEnum,
+            format: z.enum(NumberFormat),
             minimum: z.number().optional(),
             maximum: z.number().optional(),
             multipleOf: z.number().optional(),
@@ -104,6 +103,10 @@ export class NumberElement extends SimpleElement {
         return this.data.placeholder;
     }
 
+    get isStringLike(): boolean {
+        return false;
+    }
+
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         const uiSchema = super.toUiSchema(_generator, _scope);
         uiSchema.options = {
@@ -133,16 +136,12 @@ export class NumberElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        _uiSchema: any,
-        required: boolean = false
+        uiSchema: Control
     ): NumberElement {
         const numberElement = new NumberElement({
+            title: jsonSchema.title ? jsonSchema.title : '',
+            description: jsonSchema.description,
             id: id,
-            title: jsonSchema.title ? String(jsonSchema.title) : '',
-            description: jsonSchema.description
-                ? String(jsonSchema.description)
-                : undefined,
-            required: required,
         });
         if (
             (jsonSchema.type === 'number' || jsonSchema.type === 'integer') &&

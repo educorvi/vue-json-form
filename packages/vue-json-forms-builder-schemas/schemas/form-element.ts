@@ -5,28 +5,23 @@ import type {
     UISchema,
     Options,
 } from '@educorvi/vue-json-form-schemas';
+import { cleanUiSchema, Layout } from './utils';
+import type { CombinedUiSchemaType } from './utils';
 import type { EntityOptionalKeys, PartialBy } from './base';
 import type { SchemaGenerator } from './schema-generator';
 import { Entity } from './base';
 import { createShowOnProperty } from './children-schema-utils';
-import {
-    cleanUiSchema,
-    CombinedUiSchemaType,
-    Layout,
-    UI_SCHEMA_VERSION,
-} from './utils';
 
 const formElementDefaults = {};
 export type FormElementOptionalKeys =
     keyof typeof formElementDefaults | EntityOptionalKeys;
 type FormElementData = z.infer<typeof FormElement.schema>;
+
 export abstract class FormElement extends Entity {
     data: FormElementData;
 
     static schema = super.schema.extend({
-        // uid reference to a DependencyGroup entity (see dependency.ts) — the
-        // group lives in the flat "dependencies" set, exactly like elements
-        // live in the flat "elements" set.
+        // dependencyGroup: z.lazy((): typeof DependencyGroup.schema => DependencyGroup.schema).optional()
         dependencyGroup: z.string().optional(),
     });
 
@@ -50,8 +45,7 @@ export abstract class FormElement extends Entity {
     ): JSONSchema;
 
     /**
-     * creates a preview ui schema in which all attributes regarding the
-     * visibility are adapted to a single view (e.g. showOn deleted)
+     * creates a preview ui schema in which all attributes regarding the visibility are adapted to a single view (e.g. showOn deleted)
      */
     protected toPreviewUi(
         generator: SchemaGenerator,
@@ -59,19 +53,18 @@ export abstract class FormElement extends Entity {
     ): CombinedUiSchemaType {
         const uiSchema = this.toUiSchema(generator, scope);
         if (this.dependencyGroup) {
-            delete (uiSchema as Control).showOn;
+            delete uiSchema.showOn;
         }
         return uiSchema;
     }
 
     /**
-     * creates a wrapped ui schema where the actual FormElement is wrapped in
-     * a vertical layout — used in the frontend to render each FormElement
-     * separately in the FormBuilder
+     * creates a wrapped ui schema where the actual FormElement is wrapped in a vertical layout
+     * used in the frontend to render each FormElement separately in the FormBuilder
      */
     toWrappedUiSchema(generator: SchemaGenerator, scope: string[]): UISchema {
         return {
-            version: UI_SCHEMA_VERSION,
+            version: '2.2',
             layout: {
                 type: Layout.Vertical,
                 elements: [this.toPreviewUi(generator, scope)],
@@ -80,8 +73,7 @@ export abstract class FormElement extends Entity {
     }
 
     /**
-     * creates a preview json schema in which all attributes regarding the
-     * visibility are adapted to a single view
+     * creates a preview json schema in which all attributes regarding the visibility are adapted to a single view
      */
     protected toPreviewJson(
         generator: SchemaGenerator,
@@ -91,9 +83,8 @@ export abstract class FormElement extends Entity {
     }
 
     /**
-     * creates a wrapped json schema where the actual FormElement is wrapped
-     * in an object — used in the frontend to render each FormElement
-     * separately in the FormBuilder
+     * creates a wrapped json schema where the actual FormElement is wrapped in an object
+     * used in the frontend to render each FormElement separately in the FormBuilder
      */
     toWrappedJsonSchema(generator: SchemaGenerator): JSONSchema {
         return {
@@ -104,10 +95,14 @@ export abstract class FormElement extends Entity {
         };
     }
 
+    getAllOfLeafStatement(): JSONSchema | undefined {
+        return undefined;
+    }
+
     static fromJsonSchemaAndUiSchema(
-        _id: string,
-        _jsonSchema: JSONSchema,
-        _uiSchema: CombinedUiSchemaType
+        id: string,
+        jsonSchema: JSONSchema,
+        uiSchema: CombinedUiSchemaType
     ): FormElement {
         throw new Error(
             'fromJsonSchemaAndUiSchema must be implemented in subclasses'
@@ -119,6 +114,7 @@ type BaseDataElementData = z.infer<typeof BaseDataElement.schema>;
 const baseDataElementDefaults = { hidden: false };
 export type BaseDataElementOptionalKeys =
     keyof typeof baseDataElementDefaults | FormElementOptionalKeys;
+
 export abstract class BaseDataElement extends FormElement {
     data: BaseDataElementData;
 
@@ -185,6 +181,7 @@ export abstract class BaseDataElement extends FormElement {
             title: this.title,
             ...(this.description && { description: this.description }),
         };
+
         return schema;
     }
 
@@ -205,7 +202,7 @@ export abstract class BaseDataElement extends FormElement {
         const uiSchema: Control = {
             type: 'Control',
             scope: this.getScope(_scope),
-            ...(Object.keys(options).length > 0 && { options: options }),
+            ...(options && { options: options }),
             ...(showOn && { showOn: showOn }),
         };
         return uiSchema;
@@ -228,6 +225,7 @@ type SimpleElementData = z.infer<typeof SimpleElement.schema>;
 const simpleElementDefaults = { required: false };
 export type SimpleElementOptionalKeys =
     keyof typeof simpleElementDefaults | BaseDataElementOptionalKeys;
+
 export abstract class SimpleElement extends BaseDataElement {
     data: SimpleElementData;
 
@@ -260,6 +258,19 @@ export abstract class SimpleElement extends BaseDataElement {
         return this.data.default;
     }
 
+    /**
+     * returns true for any element but NumberElement
+     */
+    get isStringLike(): boolean {
+        // to avoid circular imports
+        return true;
+    }
+
+    get isCheckboxGroup(): boolean {
+        // to avoid circular imports
+        return false;
+    }
+
     protected static setDefaults(
         data: PartialBy<SimpleElementData, SimpleElementOptionalKeys>
     ): SimpleElementData {
@@ -268,6 +279,10 @@ export abstract class SimpleElement extends BaseDataElement {
             ...simpleElementDefaults,
             ...data,
         };
+    }
+
+    getAllOfLeafStatement(): JSONSchema {
+        return {};
     }
 
     toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
@@ -279,7 +294,6 @@ export abstract class SimpleElement extends BaseDataElement {
             ...(this.prependValue && { prependValue: this.prependValue }),
         };
 
-        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 

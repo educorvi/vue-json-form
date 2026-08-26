@@ -3,30 +3,30 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import type { InputOptions } from '@educorvi/vue-json-form-schemas';
 import { cleanUiSchema } from './utils';
 
-/**
- * Formats for string elements. Values mirror the `inputOptions.format` enum
- * of control.schema.json in @educorvi/vue-json-form-schemas — minus the
- * formats that have their own element class (color → ColorElement,
- * time/date/datetime-local → TimeElement).
- */
-export enum StringFormat {
-    Text = 'text',
-    Email = 'email',
-    Password = 'password',
-    Search = 'search',
-    Uri = 'url',
-    Tel = 'tel',
-    Hidden = 'hidden',
-}
+const excludedFormats = ['color', 'time', 'date', 'datetime-local'] as const;
+type ExcludedFormat = (typeof excludedFormats)[number];
+type StringFormatValue = Exclude<FormatValue, ExcludedFormat>;
 
-const StringFormatEnum = z.enum(StringFormat);
+type FormatValue = NonNullable<InputOptions['format']>;
+const StringFormatEnum = z.enum(
+    (
+        controlSchema.definitions.inputOptions.properties.format
+            .enum as FormatValue[]
+    ).filter(
+        (f): f is StringFormatValue =>
+            !excludedFormats.includes(f as ExcludedFormat)
+    ) as [StringFormatValue, ...StringFormatValue[]]
+);
+export type StringFormat = z.infer<typeof StringFormatEnum>;
 
 type StringElementData = z.infer<typeof StringElement.schema>;
 const stringElementDefaults = {
     type: 'string' as const,
-    format: StringFormat.Text,
+    format: 'text' as const,
 };
 type StringElementOptionalKeys =
     keyof typeof stringElementDefaults | SimpleElementOptionalKeys;
@@ -127,30 +127,28 @@ export class StringElement extends SimpleElement {
                 ? { format: jsonSchemaFormatMap[this.format] }
                 : undefined),
         };
+
         return jsonSchema;
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: any,
-        required: boolean = false
+        uiSchema: any
     ): StringElement {
         if (jsonSchema.type === 'string') {
             const stringElement = new StringElement({
                 title: jsonSchema.title ? jsonSchema.title : '',
                 description: jsonSchema.description,
                 id: id,
-                required: required,
             });
-            if (jsonSchema.format === undefined) {
-                stringElement.data.format = StringFormat.Text; // most schemas have no format
-            } else if (
+            if (
+                jsonSchema.format &&
                 Object.values(StringFormat as unknown as string[]).includes(
                     jsonSchema.format
                 )
             ) {
-                stringElement.data.format = jsonSchema.format as StringFormat;
+                stringElement.data.format = jsonSchema.format;
             } else {
                 throw new Error(
                     'Invalid format for StringElement: ' + jsonSchema.format
@@ -158,7 +156,6 @@ export class StringElement extends SimpleElement {
             }
             stringElement.data.minLength = jsonSchema.minLength;
             stringElement.data.maxLength = jsonSchema.maxLength;
-            stringElement.data.pattern = jsonSchema.pattern;
             stringElement.data.placeholder = uiSchema.options?.placeholder;
             return stringElement;
         } else {

@@ -53,7 +53,7 @@ export class DividerElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {};
     }
 
@@ -62,9 +62,10 @@ export class DividerElement extends FormElement {
         jsonSchema: JSONSchema = {},
         uiSchema: Divider
     ): DividerElement {
-        void jsonSchema;
-        void uiSchema;
-        return new DividerElement({ id: id });
+        const dividerElement = new DividerElement({
+            id: id,
+        });
         // TODO handle dependencyGroup if needed
+        return dividerElement;
     }
 }

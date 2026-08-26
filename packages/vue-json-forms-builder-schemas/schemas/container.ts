@@ -1,12 +1,8 @@
 import { z } from 'zod';
-import type {
-    Control,
-    JSONSchema,
-    Layout as UiLayout,
-} from '@educorvi/vue-json-form-schemas';
+import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { BaseDataElement, BaseDataElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
-import { cleanUiSchema, Layout } from './utils';
+import { cleanUiSchema, getRequiredMinItems, Layout } from './utils';
 import { PartialBy } from './base';
 
 type ContainerElementData = z.infer<typeof ContainerElement.schema>;
@@ -21,7 +17,6 @@ export abstract class ContainerElement extends BaseDataElement {
     data: ContainerElementData;
 
     static schema = BaseDataElement.schema.extend({
-        // ordered uids — the tree structure
         children: z.array(z.string()),
         layout: z.enum(Layout),
         showTitle: z.boolean(),
@@ -40,8 +35,7 @@ export abstract class ContainerElement extends BaseDataElement {
         return {
             ...super.setDefaults(data),
             ...containerElementDefaults,
-            // children must never be a shared array — every container gets its own
-            children: data.children ? [...data.children] : [],
+            children: [...containerElementDefaults.children], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -76,7 +70,7 @@ export abstract class ContainerElement extends BaseDataElement {
             uiSchema.options = {
                 ...uiSchema.options,
                 uiSchema: {
-                    type: this.layout as UiLayout['type'],
+                    type: this.layout,
                     elements: generator.generateUiSchemaForElements(
                         this.children,
                         newScope
@@ -85,12 +79,11 @@ export abstract class ContainerElement extends BaseDataElement {
             };
         }
 
-        cleanUiSchema(uiSchema);
         return uiSchema;
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema: JSONSchema = {
+        const jsonSchema = {
             ...super.toJsonSchema(generator, scope),
             type: this.type,
         };
@@ -178,6 +171,13 @@ export class ArrayElement extends ContainerElement {
         return ['items', 'properties'];
     }
 
+    getAllOfLeafStatement(): JSONSchema {
+        return {
+            ...super.getAllOfLeafStatement(),
+            minItems: getRequiredMinItems(this.minItems),
+        };
+    }
+
     toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
         const uiSchema = super.toUiSchema(generator, scope);
         uiSchema.options = {
@@ -189,8 +189,9 @@ export class ArrayElement extends ContainerElement {
     }
 
     toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
-        const jsonSchema: any = {
+        const jsonSchema = {
             ...super.toJsonSchema(generator, scope),
+            type: this.type,
             ...(this.minItems !== undefined && { minItems: this.minItems }),
             ...(this.maxItems !== undefined && { maxItems: this.maxItems }),
         };
@@ -202,7 +203,7 @@ export class ArrayElement extends ContainerElement {
         jsonSchema.type = 'array';
 
         if (this.required) {
-            jsonSchema.minItems = Math.max(1, this.minItems ?? 0);
+            jsonSchema.minItems = getRequiredMinItems(this.minItems);
         }
 
         return jsonSchema;

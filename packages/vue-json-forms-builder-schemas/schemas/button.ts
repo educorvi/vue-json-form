@@ -1,46 +1,32 @@
 import { z } from 'zod';
 import type {
+    Button,
+    Buttongroup,
     JSONSchema,
-    Button as UiButton,
-    Buttongroup as UiButtongroup,
-    SubmitOptions,
-    SubmitRequestOptions,
 } from '@educorvi/vue-json-form-schemas';
 import { FormElement, FormElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
-import {
-    ButtonVariantFormat,
-    ButtonVariantFormatEnum,
-    CombinedUiSchemaType,
-} from './utils';
+import { ButtonVariantFormat, ButtonVariantFormatEnum } from './utils';
+import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json';
 
-export enum ButtonSubmitAction {
+enum ButtonSubmitAction {
     Request = 'request',
     Save = 'save',
     Print = 'print',
 }
 
-/**
- * HTTP methods for the submit request. Values mirror the `method` enum of
- * button.schema.json in @educorvi/vue-json-form-schemas.
- */
-export enum HttpsMethod {
-    Get = 'GET',
-    Post = 'POST',
-    Put = 'PUT',
-    Delete = 'DELETE',
-}
-
-const HttpsMethodEnum = z.enum(HttpsMethod);
-
-/** Any UI schema fragment that may be passed to fromJsonSchemaAndUiSchema. */
-type AnyUiSchema = CombinedUiSchemaType;
-
-function isUiButton(ui: AnyUiSchema): ui is UiButton {
-    return 'type' in ui && ui.type === 'Button';
-}
+type HttpsMethodValue = NonNullable<
+    NonNullable<
+        NonNullable<NonNullable<Button['options']>['submitOptions']>['request']
+    >['method']
+>;
+const HttpsMethodEnum = z.enum(
+    buttonSchema.properties.options.properties.submitOptions.properties.request
+        .properties.method.enum as [HttpsMethodValue, ...HttpsMethodValue[]]
+);
+export type HttpsMethod = z.infer<typeof HttpsMethodEnum>;
 
 type ButtonGroupElementData = z.infer<typeof ButtonGroupElement.schema>;
 const buttonGroupElementDefaults = {
@@ -51,10 +37,6 @@ const buttonGroupElementDefaults = {
 type ButtonGroupElementOptionalKeys =
     keyof typeof buttonGroupElementDefaults | FormElementOptionalKeys;
 
-/**
- * A group of action buttons. `buttons` holds the uids of the Button
- * elements (ResetButton / SubmitButton) in the flat elements set.
- */
 export class ButtonGroupElement extends FormElement {
     data: ButtonGroupElementData;
 
@@ -80,8 +62,7 @@ export class ButtonGroupElement extends FormElement {
         return {
             ...super.setDefaults(data),
             ...buttonGroupElementDefaults,
-            // buttons must never be a shared array
-            buttons: data.buttons ? [...data.buttons] : [],
+            buttons: [...buttonGroupElementDefaults.buttons], // clone so that each instance has its own array
             ...data,
         };
     }
@@ -94,10 +75,7 @@ export class ButtonGroupElement extends FormElement {
         return this.data.vertical;
     }
 
-    toUiSchema(
-        _generator: SchemaGenerator,
-        scope: string[] = []
-    ): UiButtongroup {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Buttongroup {
         const buttons = this.buttons.map((buttonId) => {
             const buttonElement = _generator.document.getElementById(buttonId);
             if (!buttonElement) {
@@ -116,10 +94,10 @@ export class ButtonGroupElement extends FormElement {
             );
         }
 
-        const uiSchema: UiButtongroup = {
+        const uiSchema: Buttongroup = {
             type: 'Buttongroup',
             options: { vertical: this.vertical },
-            buttons: buttons as [UiButton, ...UiButton[]], // TODO better handling?
+            buttons: buttons as [Button, ...Button[]], // TODO better handling?
         };
 
         const showOn = createShowOnProperty(
@@ -134,29 +112,28 @@ export class ButtonGroupElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        // buttons have no data of their own
+    toJsonSchema(
+        _generator: SchemaGenerator,
+        scope: string[] = []
+    ): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        _uiSchema: AnyUiSchema
+        jsonSchema: JSONSchema = {},
+        uiSchema: Button
     ): ButtonGroupElement {
+        // TODO
         return new ButtonGroupElement({ id: id });
     }
 }
 
 type ButtonElementData = z.infer<typeof ButtonElement.schema>;
-const buttonElementDefaults = {
-    disabled: false,
-    variant: 'primary' as const,
-};
+const buttonElementDefaults = { disabled: false, variant: 'primary' as const };
 type ButtonElementOptionalKeys =
     keyof typeof buttonElementDefaults | FormElementOptionalKeys;
 
-/** Base class for action buttons (submit / reset). */
 export abstract class ButtonElement extends FormElement {
     data: ButtonElementData;
 
@@ -193,13 +170,10 @@ export abstract class ButtonElement extends FormElement {
         return this.data.variant;
     }
 
-    abstract getButtonType():
-        'submit' | 'reset' | 'nextWizardPage' | 'previousWizardPage';
-
-    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): UiButton {
-        const uiSchema: UiButton = {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
+        const uiSchema: Button = {
             type: 'Button',
-            buttonType: this.getButtonType(),
+            buttonType: 'submit', // is replaced in subclass
             text: this.label,
             options: {
                 disabled: this.disabled,
@@ -219,23 +193,20 @@ export abstract class ButtonElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
-        // buttons have no data of their own
+    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
-        _id: string,
-        _jsonSchema: JSONSchema = {},
-        uiSchema: AnyUiSchema
+        id: string,
+        jsonSchema: JSONSchema = {},
+        uiSchema: Button
     ): ButtonElement {
+        // TODO
         // base class fallback — subclasses (Reset/Submit) override this
         return new ResetButton({
-            id: _id,
-            label: isUiButton(uiSchema) ? (uiSchema.text ?? 'Reset') : 'Reset',
-            disabled: isUiButton(uiSchema)
-                ? (uiSchema.options?.disabled ?? false)
-                : false,
+            id: id,
+            label: '',
         });
     }
 }
@@ -269,11 +240,7 @@ export class ResetButton extends ButtonElement {
         };
     }
 
-    getButtonType(): 'reset' {
-        return 'reset';
-    }
-
-    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): UiButton {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
         const uiSchema = super.toUiSchema(_generator, scope);
         uiSchema.buttonType = 'reset';
         return uiSchema;
@@ -281,20 +248,13 @@ export class ResetButton extends ButtonElement {
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        uiSchema: AnyUiSchema
+        jsonSchema: JSONSchema = {},
+        uiSchema: Button
     ): ResetButton {
+        // TODO
         return new ResetButton({
             id: id,
-            label: isUiButton(uiSchema) ? (uiSchema.text ?? 'Reset') : 'Reset',
-            disabled: isUiButton(uiSchema)
-                ? (uiSchema.options?.disabled ?? false)
-                : false,
-            variant:
-                ((isUiButton(uiSchema)
-                    ? uiSchema.options?.variant
-                    : undefined) as ButtonVariantFormat | undefined) ??
-                'primary',
+            label: '',
         });
     }
 }
@@ -302,11 +262,7 @@ export class ResetButton extends ButtonElement {
 type SubmitButtonData = z.infer<typeof SubmitButton.schema>;
 const submitButtonDefaults = {
     type: 'submit-button' as const,
-    // a fresh button must be valid without a URL — "save"/"print" need none,
-    // "request" requires submitUrl + submitMethod (enforced in superRefine)
-    submitAction: ButtonSubmitAction.Save,
-    submitUrl: undefined as string | string[] | undefined,
-    submitMethod: undefined as HttpsMethod | undefined,
+    submitUrl: [''] as [string, ...string[]],
 };
 type SubmitButtonOptionalKeys =
     keyof typeof submitButtonDefaults | ButtonElementOptionalKeys;
@@ -318,7 +274,7 @@ export class SubmitButton extends ButtonElement {
         .extend({
             type: z.literal('submit-button'),
             submitAction: z.enum(ButtonSubmitAction),
-            submitUrl: z.array(z.url()).or(z.url()).optional(),
+            submitUrl: z.array(z.url()).or(z.url()),
             submitMethod: HttpsMethodEnum.optional(),
             requestHeaders: z.record(z.string(), z.string()).optional(), // JSON string of key-value pairs
             onSuccessRedirectUrl: z.url().optional(),
@@ -335,12 +291,10 @@ export class SubmitButton extends ButtonElement {
                     });
                 }
                 // test that at least one of the submitUrl entries isnt an empty string
-                const urls = Array.isArray(data.submitUrl)
-                    ? data.submitUrl
-                    : data.submitUrl
-                      ? [data.submitUrl]
-                      : [];
-                if (data.submitUrl && urls.every((url) => url.trim() === '')) {
+                if (
+                    data.submitUrl &&
+                    data.submitUrl.every((url) => url.trim() === '')
+                ) {
                     ctx.addIssue({
                         code: 'custom',
                         message:
@@ -384,7 +338,7 @@ export class SubmitButton extends ButtonElement {
     }
 
     get submitUrl(): string | string[] {
-        return this.data.submitUrl ?? '';
+        return this.data.submitUrl;
     }
 
     get submitMethod(): HttpsMethod | undefined {
@@ -399,61 +353,42 @@ export class SubmitButton extends ButtonElement {
         return this.data.onSuccessRedirectUrl;
     }
 
-    getButtonType(): 'submit' {
-        return 'submit';
-    }
-
-    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): UiButton {
+    toUiSchema(_generator: SchemaGenerator, scope: string[] = []): Button {
         const uiSchema = super.toUiSchema(_generator, scope);
         uiSchema.buttonType = 'submit';
 
-        // submitUrl is url | url[] — normalize to a non-empty tuple for the UI schema
-        const submitUrls: [string, ...string[]] = Array.isArray(this.submitUrl)
-            ? this.submitUrl.length > 0
-                ? (this.submitUrl as [string, ...string[]])
-                : ['']
-            : [this.submitUrl ?? ''];
-        const requestOptions: SubmitRequestOptions = {
-            url: submitUrls,
-            ...(this.submitMethod && { method: this.submitMethod }),
+        const requestOptions = {
+            url: this.submitUrl as [string, ...string[]], // TODO better handling?
+            method: this.submitMethod,
             ...(this.requestHeaders && { headers: this.requestHeaders }),
             ...(this.onSuccessRedirectUrl && {
                 onSuccessRedirect: this.onSuccessRedirectUrl,
             }),
         };
 
-        const submitOptions: SubmitOptions = {
-            action: this.submitAction,
-            ...(this.submitAction === ButtonSubmitAction.Request && {
-                request: requestOptions,
-            }),
-        };
-
         uiSchema.options = {
             ...(uiSchema.options && { ...uiSchema.options }),
-            submitOptions,
+            submitOptions: {
+                action: this.submitAction,
+                ...(this.submitAction === ButtonSubmitAction.Request && {
+                    request: requestOptions,
+                }),
+            },
         };
         return uiSchema;
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        _jsonSchema: JSONSchema = {},
-        uiSchema: AnyUiSchema
+        jsonSchema: JSONSchema = {},
+        uiSchema: Button
     ): SubmitButton {
+        // TODO
         return new SubmitButton({
             id: id,
-            label: isUiButton(uiSchema)
-                ? (uiSchema.text ?? 'Submit')
-                : 'Submit',
-            disabled: isUiButton(uiSchema)
-                ? (uiSchema.options?.disabled ?? false)
-                : false,
-            variant:
-                ((isUiButton(uiSchema)
-                    ? uiSchema.options?.variant
-                    : undefined) as ButtonVariantFormat | undefined) ??
-                'primary',
+            label: '',
+            submitUrl: '',
+            submitAction: ButtonSubmitAction.Request,
         });
     }
 }

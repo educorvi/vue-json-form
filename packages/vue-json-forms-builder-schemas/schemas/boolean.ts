@@ -76,6 +76,7 @@ export class BooleanElement extends SimpleElement {
         uiSchema: Control,
         required: boolean = false
     ): BooleanElement {
+        // TODO
         void uiSchema;
         return new BooleanElement({
             title: jsonSchema.title ? String(jsonSchema.title) : '',

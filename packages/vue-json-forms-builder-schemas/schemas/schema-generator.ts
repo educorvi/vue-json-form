@@ -1,12 +1,9 @@
 import type { FormDefinition } from './form-definition';
-import type {
-    JSONSchema,
-    LayoutElement,
-    UISchema,
-} from '@educorvi/vue-json-form-schemas';
-import { DependencyGroup } from './dependency';
-import { FormElement } from './form-element';
-import { ObjectElement } from './container';
+import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import { Dependency, DependencyGroup } from './dependency';
+import { BaseDataElement, FormElement, SimpleElement } from './form-element';
+import { assertDefined, CombinedUiSchemaType } from './utils';
+import { ArrayElement, ContainerElement, ObjectElement } from './container';
 
 /**
  * SchemaGenerator turns a FormDefinition into JSON Schema + UI Schema pairs.
@@ -71,30 +68,6 @@ export class SchemaGenerator {
     // ─── Public API ──────────────────────────────────────────────────────────────
 
     /**
-     * Generate the JSON Schema fragment for the element with the given uid.
-     * If path is omitted, it is derived from the parentIndex.
-     */
-    generateJsonSchema(elementId: string, path?: string[]): object {
-        const element = this.document.nodesIndex.get(elementId);
-        if (!element)
-            throw new Error(`Element "${elementId}" not found in nodesIndex`);
-        const resolvedPath = path ?? this.getPath(elementId);
-        return element.toJsonSchema(this, resolvedPath);
-    }
-
-    /**
-     * Generate the UI Schema fragment for the element with the given uid.
-     * If path is omitted, it is derived from the parentIndex.
-     */
-    generateUiSchema(elementId: string, path?: string[]): object {
-        const element = this.document.nodesIndex.get(elementId);
-        if (!element)
-            throw new Error(`Element "${elementId}" not found in nodesIndex`);
-        const resolvedPath = path ?? this.getPath(elementId);
-        return element.toUiSchema(this, resolvedPath);
-    }
-
-    /**
      * Convenience method called by ContainerElement.toJsonSchema for its children.
      * generates the JSON Schema properties and required list for the given children.
      * adds the allofs to the generatorHelperAttributes.allOf array.
@@ -111,11 +84,10 @@ export class SchemaGenerator {
         const allOf = [];
 
         for (const childId of childrenIds) {
-            const child = this.document.getElementById(childId);
-            if (!child)
-                throw new Error(
-                    `Child element "${childId}" not found in nodesIndex`
-                );
+            const child = assertDefined(
+                this.document.getElementById(childId),
+                `Child element "${childId}" not found in nodesIndex`
+            );
             const childSchema = child.toJsonSchema(this, scope);
             if (
                 childSchema === undefined ||
@@ -126,30 +98,70 @@ export class SchemaGenerator {
             }
             schema[child.id] = childSchema;
 
-            // check if child has the attribute required and if it is true
-            if ((child as any).required === true) {
-                requiredList.push(child.id);
-            } else if (child instanceof ObjectElement) {
-                // set object as required if it has required properties
-                if (childSchema.required && childSchema.required.length > 0) {
-                    requiredList.push(child.id);
-                }
-            }
-
-            // dependencyGroup is a uid reference — resolve the group entity
             if (child.dependencyGroup) {
                 this.addLastDependencyGroupId(child.dependencyGroup);
             }
+
             const lastDependencyGroup = this.getLastDependencyGroup();
-            if (lastDependencyGroup !== undefined) {
-                const allOfItem: JSONSchema = {
-                    [child.id]: lastDependencyGroup.toJsonSchema(this, [
-                        ...scope,
-                        child.id,
-                    ]),
-                };
-                allOf.push(allOfItem);
+            if (lastDependencyGroup === undefined) {
+                // check if child has the attribute required and if it is true and has no dependencyGroup, then add it to the required list
+                if ((child as any).required === true) {
+                    requiredList.push(child.id);
+                } else if (child instanceof ObjectElement) {
+                    // set object as required if it has required properties
+                    if (
+                        childSchema.required &&
+                        childSchema.required.length > 0
+                    ) {
+                        requiredList.push(child.id);
+                    }
+                }
+            } else {
+                // only generate allOf if child can be required and IS required
+                if (child instanceof BaseDataElement) {
+                    if (
+                        child instanceof SimpleElement ||
+                        child instanceof ArrayElement
+                    ) {
+                        if (!child.required) {
+                            continue;
+                        }
+                    } else if (child instanceof ObjectElement) {
+                        if (
+                            !childSchema.required ||
+                            childSchema.required.length === 0
+                        ) {
+                            continue;
+                        }
+                    } else {
+                        // TODO log? this case should not happen
+                        continue;
+                    }
+
+                    // generate an allOf statement for all dependencyGroups in the list
+                    for (const dependencyGroupId of this
+                        .generatorHelperAttributes.lastDependencyGroupsIds) {
+                        const dependencyGroup =
+                            this.document.getDependency_Group(
+                                dependencyGroupId
+                            );
+                        if (!(
+                            dependencyGroup instanceof DependencyGroup ||
+                            dependencyGroup instanceof Dependency
+                        )) {
+                            throw new Error(
+                                `Dependency/Group "${dependencyGroupId}" not found in dependencyIndex`
+                            );
+                        }
+                        const allOfItem = dependencyGroup.toJsonSchema(this, [
+                            ...scope,
+                            child.uid,
+                        ]);
+                        allOf.push(allOfItem);
+                    }
+                }
             }
+
             if (child.dependencyGroup) {
                 this.removeLastDependencyGroupId();
             }
@@ -165,14 +177,14 @@ export class SchemaGenerator {
     generateUiSchemaForElements(
         childrenIds: string[],
         scope: string[]
-    ): LayoutElement[] {
+    ): CombinedUiSchemaType[] {
         return childrenIds.map((childId) => {
             const child = this.document.getElementById(childId);
             if (!child)
                 throw new Error(
                     `Child element "${childId}" not found in nodesIndex`
                 );
-            return child.toUiSchema(this, scope) as LayoutElement;
+            return child.toUiSchema(this, scope);
         });
     }
 
@@ -180,24 +192,51 @@ export class SchemaGenerator {
 
     /**
      * Build the path from the form root (exclusive) down to elementId (inclusive).
-     * Returns an ordered array of element ids, e.g. ['containerA', 'containerB', 'leafId'].
-     *
-     * NOTE: These are raw element ids.  Callers that need a JSON Schema pointer
-     * (e.g. "#/properties/containerA/properties/leafId") must convert the path
-     * themselves, taking into account whether each ancestor is an ObjectElement
-     * or ArrayElement (items.properties vs. properties).
+     * Returns an ordered array of element ids, e.g. ['uid1', 'uid2', 'elementUid'].
      */
-    getPath(elementId: string): string[] {
+    getUidPath(elementUid: string): string[] {
         const path: string[] = [];
-        let currentId: string | undefined = elementId;
+        let currentUid: string | undefined = elementUid;
+
+        while (
+            currentUid !== undefined &&
+            currentUid !== this.document.root.uid
+        ) {
+            path.unshift(currentUid);
+            const parentUid = this.document.getParentId(currentUid);
+            currentUid = parentUid;
+        }
+        return path;
+    }
+
+    /**
+     *
+     * @param elementUid of the element the path of is returned
+     * @returns a path like ["properties", "containerA", "properties", "containerB", "items", "properties", "leafId"] for an element with id leafId (and uid elementUid) that is a child of containerB which is a child of containerA which is a child of the form root
+     */
+    getPath(elementUid: string): string[] {
+        const path: string[] = [];
+        let currentId: string | undefined =
+            this.document.getElementById(elementUid)?.id;
+        let currentUid: string | undefined = elementUid;
 
         while (
             currentId !== undefined &&
-            currentId !== this.document.root.uid
+            currentId !== this.document.root.id &&
+            currentUid !== undefined
         ) {
             path.unshift(currentId);
-            currentId = this.document.parentIndex.get(currentId);
+            const parent = this.document.getParent(currentUid);
+            if (parent instanceof ContainerElement) {
+                path.unshift('properties');
+            }
+            if (parent instanceof ArrayElement) {
+                path.unshift('items');
+            }
+            currentId = parent?.id;
+            currentUid = parent?.uid;
         }
+        path.unshift('properties');
 
         return path;
     }
@@ -219,8 +258,7 @@ export class SchemaGenerator {
 
     /**
      * Generate a conditional rule object for the given element based on its
-     * registered dependency group.  curPath is the schema path of the element
-     * itself.
+     * registered dependency.  curPath is the schema path of the element itself.
      *
      * Returns an empty object when the element has no dependency.
      *
@@ -230,14 +268,12 @@ export class SchemaGenerator {
      *       conditions; this draft assumes a single Dependency per element.
      */
     generateRules(element: FormElement, curPath: string[]): object {
-        const dependencyGroupId = element.dependencyGroup;
-        if (!dependencyGroupId) return {};
+        const dependency = this.document.dependencyGraph.get(element.id);
+        if (!dependency) return {};
 
-        const dependencyGroup =
-            this.document.getDependency_Group(dependencyGroupId);
-        if (!(dependencyGroup instanceof DependencyGroup)) return {};
+        const depPath = this.getPath(dependency.source);
 
-        // TODO: convert the group's dependencies into a rule/condition expression.
+        // TODO: convert depPath + dependency.value into a rule/condition expression.
         // Example jsonforms shape (fill in once format is confirmed):
         // return {
         //   rule: {
@@ -250,6 +286,7 @@ export class SchemaGenerator {
         // };
 
         void curPath; // suppress unused warning until implemented
+        void depPath;
 
         return {};
     }
@@ -259,18 +296,31 @@ export class SchemaGenerator {
     /**
      * Generate a combined { jsonSchema, uiSchema } pair for the entire form.
      *
-     * Canonical export entry point: both artifacts are derived from the root
-     * Form element, so the exported schemas always match what the builder
-     * renders and what the backend derives for persisted form versions.
+     * TODO: decide the top-level JSON Schema wrapper structure (e.g. whether
+     *       the form title maps to the root schema title, and whether the root
+     *       is always type:"object" with one property per top-level child).
      */
-    generateFullSchema(): { jsonSchema: JSONSchema; uiSchema: UISchema } {
-        const root = this.document.root;
-        return {
-            jsonSchema: {
-                ...root.toJsonSchema(this),
-                title: root.title,
-            },
-            uiSchema: root.toUiSchema(this),
+    generateFullSchema(): { jsonSchema: object; uiSchema: object } {
+        const properties: Record<string, object> = {};
+        const uiElements: object[] = [];
+
+        for (const child of this.document.root.children) {
+            properties[child.id] = this.generate(child);
+            uiElements.push(this.generateUiSchemaForElement(child));
+        }
+
+        const jsonSchema = {
+            type: 'object',
+            title: this.document.root.title,
+            properties,
         };
+
+        // TODO: specify top-level UI schema container type
+        const uiSchema = {
+            type: 'VerticalLayout',
+            elements: uiElements,
+        };
+
+        return { jsonSchema, uiSchema };
     }
 }
