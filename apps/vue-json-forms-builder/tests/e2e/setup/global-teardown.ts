@@ -1,15 +1,13 @@
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { loadEnv } from 'vite';
-import { buildProvisionBundle, PROVISION_BUNDLE_PATH } from './build-provision';
 
 /**
- * Cleanup the database after all e2e tests have run
- *
- * Note: The shared provisioning module (tests/support/provision.ts) uses TypeORM entities with legacy decorators, so it is loaded through the compiled bundle — see build-provision.ts.
+ * Playwright `globalTeardown` — wipes the database after all e2e tests have run. Test runs try to clean up the state after each run but if something goes wrong, this script ensures the database is clean after the runs
  */
 
-// 1. Load the app's .env BEFORE any server module is imported (needed for database connection) (Playwright does not load .env itself)
+// 1. Load the app's .env BEFORE the provisioning module is imported
+//    (Playwright does not load .env itself); the db-layer package builds
+//    its DataSource from `process.env.DB_*` at module-eval time.
 const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
 const dotEnv = loadEnv(process.env.NODE_ENV ?? 'development', rootDir, '');
 for (const [key, value] of Object.entries(dotEnv)) {
@@ -18,18 +16,13 @@ for (const [key, value] of Object.entries(dotEnv)) {
     }
 }
 
-// 2. (Re)compile + load the shared provisioning module — rebuilt on every run so the artifact can never go stale, even if the global-setup did not get to build it (see build-provision.ts).
-buildProvisionBundle();
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const require = createRequire(import.meta.url);
-const { getTestDataSource, closeTestDataSource, resetDatabase } = require(
-    PROVISION_BUNDLE_PATH
-);
+// 2. Import the provisioning helpers only now that the env is in place.
+const { getTestDataSource, closeTestDataSource, resetDatabase } =
+    await import('../../support/provision');
 
 export default async function globalTeardown(): Promise<void> {
     const dataSource = await getTestDataSource();
     try {
-        // Reset database
         await resetDatabase(dataSource);
     } finally {
         await closeTestDataSource();

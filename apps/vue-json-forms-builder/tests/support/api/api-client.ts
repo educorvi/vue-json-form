@@ -1,6 +1,6 @@
 import { createORPCClient } from '@orpc/client';
-import { RPCLink } from '@orpc/client/fetch';
 import type { RouterClient } from '@orpc/server';
+import { buildRpcLink } from '@educorvi/vue-json-forms-builder-test-support/api-client';
 import type { AppRouter } from '../../../server/orpc/routers';
 
 /**
@@ -27,22 +27,17 @@ export const TEST_BASE_URL =
  *    call — never a pre-provisioned, possibly stale token
  */
 export function createApiClient(token: string): RouterClient<AppRouter> {
-    const link = new RPCLink({
-        url: `${TEST_BASE_URL}/rpc`,
-        headers: { authorization: `Bearer ${token}` },
-    });
+    const link = buildRpcLink({ backendUrl: TEST_BASE_URL, token });
     return createORPCClient(link);
 }
 
 /**
- * Builds an UNauthenticated oRPC client — no Bearer token. Used by the
+ * Builds an Unauthenticated oRPC client — no Bearer token. Used by the
  * auth-required integration tests to verify that every protected
  * endpoint rejects requests without credentials.
  */
 export function createUnauthenticatedClient(): RouterClient<AppRouter> {
-    const link = new RPCLink({
-        url: `${TEST_BASE_URL}/rpc`,
-    });
+    const link = buildRpcLink({ backendUrl: TEST_BASE_URL });
     return createORPCClient(link);
 }
 

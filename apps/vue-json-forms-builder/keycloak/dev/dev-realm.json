@@ -548,6 +548,29 @@
             "realmRoles": ["default-roles-dev"],
             "notBefore": 0,
             "groups": []
+        },
+        {
+            "id": "94c51589-67e2-4d34-b873-944069e678d0",
+            "username": "broker-test",
+            "firstName": "Broker",
+            "lastName": "Test",
+            "email": "broker-test@educorvi.de",
+            "emailVerified": false,
+            "enabled": true,
+            "createdTimestamp": 1786612716981,
+            "totp": false,
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-dev"],
+            "notBefore": 0,
+            "groups": [],
+            "federatedIdentities": [
+                {
+                    "identityProvider": "external-oidc-example",
+                    "userId": "30920509-15b1-402e-9dba-713a04028e4b",
+                    "userName": "broker-test"
+                }
+            ]
         }
     ],
     "scopeMappings": [
@@ -949,7 +972,7 @@
                 "http://external-example-app.localhost:3001/*"
             ],
             "webOrigins": [
-                "http://localhost:5173/*",
+                "http://localhost:5173",
                 "http://external-example-app.localhost:3001"
             ],
             "notBefore": 0,

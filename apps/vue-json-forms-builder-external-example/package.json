@@ -4,15 +4,16 @@
     "private": true,
     "scripts": {
         "build": "turbo build:internal check-types",
-        "build:internal": "nuxt build",
+        "build:internal": "yarn sync:webcomponent && nuxt build",
         "check-types": "npx nuxt typecheck",
         "dev": "turbo watch dev:internal",
-        "dev:internal": "nuxt dev",
+        "dev:internal": "yarn sync:webcomponent && nuxt dev",
         "postinstall": "nuxt prepare",
         "preview": "nuxt preview",
         "generate": "nuxt generate",
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix",
+        "test:e2e": "playwright test",
         "sync:webcomponent": "rm -rf public/vendor && mkdir -p public/vendor && cp ../../packages/vue-json-forms-builder-webcomponent/dist/vue-json-form-builder.js ../../packages/vue-json-forms-builder-webcomponent/dist/vue-json-form-builder.css ../../packages/vue-json-forms-builder-webcomponent/dist/*.js public/vendor/ && cp ../../packages/vue-json-forms-builder-webcomponent/public/silent-check-sso.html public/"
     },
     "dependencies": {
@@ -27,7 +28,9 @@
         "vue-router": "^5.1.0"
     },
     "devDependencies": {
+        "@educorvi/vue-json-forms-builder-test-support": "workspace:^",
         "@nuxt/eslint": "^1.16.0",
+        "@playwright/test": "^1.61.0",
         "@types/bootstrap": "^5",
         "turbo": "^2.10.8",
         "typescript": "~6.0.3",

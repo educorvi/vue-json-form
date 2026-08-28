@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { apiClientFor } from '../../setup/login-helper';
-import { randomSuffix } from '../../../support/unique';
+import { randomSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
 import { clickUntil } from '../../helpers/click-until';
 import en from '../../../../i18n/locales/en.json' with { type: 'json' };
 import { E2E_USERS } from '../../../../server/seed/users-constants';

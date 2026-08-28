@@ -3,10 +3,11 @@
  *
  * Clients need to set any authentication method supported by the backend and the collab server asks the Nuxt backend to authenticate the user and check form access.
  *
+ *   0. Origin check — the handshake's `Origin` header must be allowlisted (COLLAB_ALLOWED_ORIGINS). See `assertAllowedOrigin` below for why this exists: WebSocket handshakes bypass the Same-Origin Policy/CORS entirely, so this server has to do that check itself.
  *   1. `POST /api/v1/users` — authenticates the handshake credentials and upserts the user row in the database to create the user on first use and also update their keycloak claims
  *   2. `GET /api/v1/forms/{documentName}` — checks the form exists and the user has access. The response carries `effective_role`, so the collab server enforces editor access itself here. Admins arrive as `owner`, so they can always connect.
  *
- * Only after both succeed is the WebSocket connection accepted.
+ * Only after all three succeed is the WebSocket connection accepted.
  */
 
 import { createORPCClient, ORPCError } from '@orpc/client';
@@ -14,7 +15,11 @@ import { OpenAPILink } from '@orpc/openapi-client/fetch';
 import type { JsonifiedClient } from '@orpc/openapi-client';
 import type { ContractRouterClient } from '@orpc/contract';
 import * as z from 'zod';
-import { appContract, zGetFormResponse, zUser } from '@educorvi/vue-json-forms-builder-orpc-contract';
+import {
+    appContract,
+    zGetFormResponse,
+    zUser,
+} from '@educorvi/vue-json-forms-builder-orpc-contract';
 
 export type ApiUser = z.infer<typeof zUser>;
 type FormWithAccess = z.infer<typeof zGetFormResponse>;
@@ -23,6 +28,44 @@ const NUXT_AUTH_URL =
     process.env.COLLAB_NUXT_URL ??
     process.env.NUXT_URL ??
     'http://localhost:3000';
+
+/**
+ * Browser origins allowed to open a collab WebSocket connection
+ * (comma-separated exact origins). unlike `fetch`/XHR, a WebSocket handshake is not covered by the Same-Origin Policy or CORS — any page, from any origin,
+ * can open `new WebSocket(...)` to this server and the browser will complete the handshake and attach cookies scoped to this host automatically (cookie-sending is based on the TARGET host, not which
+ * page initiated the request). Without this check, a malicious page a logged-in user happens to have open in another tab could silently open an authenticated collab session as that user — a Cross-Site WebSocket
+ * Hijacking (CSWSH) attack. `Origin` is browser-set and cannot be forged by page JavaScript (fetch/XHR/WebSocket all forbid scripts from setting
+ * it), so checking it here is a reliable server-side replacement for the
+ * CORS check the browser would normally do for us.
+ */
+function parseAllowedOrigins(raw: string | undefined): Set<string> {
+    const origins = (raw ?? '')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+    if (origins.length === 0) {
+        throw new Error(
+            'COLLAB_ALLOWED_ORIGINS is required (comma-separated list of browser origins allowed to open a collab WebSocket connection) — see the WHY comment on parseAllowedOrigins in auth.ts. Refusing to start without it rather than silently falling back to something permissive.'
+        );
+    }
+    return new Set(origins);
+}
+
+const ALLOWED_ORIGINS = parseAllowedOrigins(process.env.COLLAB_ALLOWED_ORIGINS);
+
+/**
+ * Reject the handshake unless it came from an allowlisted browser origin.
+ * Checked BEFORE any credential/backend work
+ */
+function assertAllowedOrigin(requestHeaders: Headers): void {
+    const origin = requestHeaders.get('origin');
+    if (!origin || !ALLOWED_ORIGINS.has(origin)) {
+        throw new ConnectionAuthError(
+            `Unauthorized: origin "${origin ?? '(none)'}" is not allowed to connect (see COLLAB_ALLOWED_ORIGINS)`,
+            'unauthorized'
+        );
+    }
+}
 
 /**
  * Thrown when the backend rejects the handshake. The `reason` is sent to the CLIENT by Hocuspocus
@@ -126,6 +169,8 @@ export async function authenticateConnection(
     requestHeaders: Headers,
     documentName: string
 ): Promise<{ user: ApiUser; formId: number }> {
+    assertAllowedOrigin(requestHeaders);
+
     // clients need to connect with the form id
     if (!/^\d+$/.test(documentName)) {
         throw new ConnectionAuthError(

@@ -134,21 +134,24 @@ export class StringElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: any
+        uiSchema: any,
+        required: boolean = false
     ): StringElement {
         if (jsonSchema.type === 'string') {
             const stringElement = new StringElement({
                 title: jsonSchema.title ? jsonSchema.title : '',
                 description: jsonSchema.description,
                 id: id,
+                required: required,
             });
-            if (
-                jsonSchema.format &&
-                Object.values(StringFormat as unknown as string[]).includes(
+            if (jsonSchema.format === undefined) {
+                stringElement.data.format = 'text'; // most schemas have no format
+            } else if (
+                (StringFormatEnum.options as string[]).includes(
                     jsonSchema.format
                 )
             ) {
-                stringElement.data.format = jsonSchema.format;
+                stringElement.data.format = jsonSchema.format as StringFormat;
             } else {
                 throw new Error(
                     'Invalid format for StringElement: ' + jsonSchema.format

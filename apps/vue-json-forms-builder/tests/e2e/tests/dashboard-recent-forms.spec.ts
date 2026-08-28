@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { apiClientFor } from '../setup/login-helper';
-import { hashSuffix } from '../../support/unique';
+import { hashSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
 import { clickUntil } from '../helpers/click-until';
 import { RECENT_FORMS_TESTID } from '../helpers/dashboard';
 import en from '../../../i18n/locales/en.json' with { type: 'json' };

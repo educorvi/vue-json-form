@@ -1,7 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import { apiClientFor } from '../../setup/login-helper';
-import { randomSuffix } from '../../../support/unique';
+import { randomSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
 import { clickUntil } from '../../helpers/click-until';
+import { openDropdownMenu } from '../../helpers/open-dropdown-menu';
 import en from '../../../../i18n/locales/en.json' with { type: 'json' };
 
 /**
@@ -123,11 +124,9 @@ test.describe('API Keys', () => {
 
         // ── Edit ────────────────────────────────────────────────────────────
         // When they open the row's actions and edit the key
-        await clickUntil(row.getByRole('button').first(), () =>
-            page
-                .getByRole('menuitem', { name: /edit/i })
-                .isVisible()
-                .catch(() => false)
+        await openDropdownMenu(
+            row.getByRole('button').first(),
+            page.getByRole('menuitem', { name: /edit/i })
         );
         await page.getByRole('menuitem', { name: /edit/i }).click();
 
@@ -142,11 +141,9 @@ test.describe('API Keys', () => {
 
         // ── Delete ──────────────────────────────────────────────────────────
         // When they open the row's actions and delete the key
-        await clickUntil(renamedRow.getByRole('button').first(), () =>
-            page
-                .getByRole('menuitem', { name: /delete/i })
-                .isVisible()
-                .catch(() => false)
+        await openDropdownMenu(
+            renamedRow.getByRole('button').first(),
+            page.getByRole('menuitem', { name: /delete/i })
         );
         await page.getByRole('menuitem', { name: /delete/i }).click();
 

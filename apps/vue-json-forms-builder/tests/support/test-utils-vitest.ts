@@ -1,5 +1,8 @@
 import { expect } from 'vitest';
-import { hashSuffix, randomSuffix } from './unique';
+import {
+    hashSuffix,
+    randomSuffix,
+} from '@educorvi/vue-json-forms-builder-test-support/unique';
 
 /**
  * Unique suffix derived from the CURRENT Vitest test name — deterministic (stable across retries) AND unique per test, so resources created by different tests never collide, regardless of run order or parallelism.

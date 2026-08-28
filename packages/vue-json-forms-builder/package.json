@@ -58,8 +58,12 @@
         "yjs": "^13.6.27"
     },
     "devDependencies": {
+        "@hocuspocus/server": "^4.6.0",
         "@semantic-release/exec": "^7.1.0",
+        "@types/ws": "^8.18.1",
         "@vitejs/plugin-vue": "^6.0.8",
+        "@vue/test-utils": "^2.4.11",
+        "happy-dom": "^19.0.2",
         "prettier": "^3.8.3",
         "sass-embedded": "^1.100.0",
         "semantic-release": "^25.0.5",
@@ -71,6 +75,7 @@
         "vite-plugin-dts": "^5.0.3",
         "vite-plugin-externalize-deps": "^0.10.0",
         "vitest": "^4.1.10",
-        "vue-tsc": "^3.3.5"
+        "vue-tsc": "^3.3.5",
+        "ws": "^8.18.3"
     }
 }

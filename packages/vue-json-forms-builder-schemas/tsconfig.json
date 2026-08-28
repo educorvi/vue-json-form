@@ -1,6 +1,10 @@
 {
     // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
     "include": ["schemas/**/*"],
+    // `*.new.ts` = a teammate's in-progress rewrite, parked next to the file
+    // it will eventually replace. Not wired into the barrel or any import, and
+    // deliberately kept out of type-checking / the build until it's finished.
+    "exclude": ["schemas/**/*.new.ts"],
     "compilerOptions": {
         "module": "es2022",
         "importHelpers": true,

@@ -1,25 +1,18 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, request } from '@playwright/test';
+import { E2EUserTypes, E2E_USERS } from '../../../server/seed/users-constants';
 import {
-    E2EUserTypes,
-    E2E_USERS,
-} from '../../../server/seed/users-constants';
+    HOSTS,
+    loginViaKeycloak,
+} from '@educorvi/vue-json-forms-builder-test-support';
 import type { Page } from '@playwright/test';
 // ── Session cookies (storage states) ─────────────────────────────────────────
 
 /**
- * Playwright storage-state file for the given user's session cookie, created by tests/e2e/setup/auth.setup.ts. Use with:
+ * Playwright storage-state file for the given user's session cookie, created by tests/e2e/setup/auth.setup.ts.
  *
- *     test.describe('...', () => {
- *         test.use({ storageState: storageStateFor('user1') });
- *         test('...', async ({ page }) => { ... });
- *     });
- *
- * The default user's file is `.auth/test.json` (the `admin` user, Keycloak
- * username `test`) — that's also the storageState the `chromium` project
- * uses in playwright.config.ts.
- * The files live in tests/e2e/.auth/
+ * Usage: test.use({ storageState: storageStateFor('user1') });
  */
 export function storageStateFor(user: E2EUserTypes) {
     const file = E2E_USERS[user].username;
@@ -29,8 +22,7 @@ export function storageStateFor(user: E2EUserTypes) {
 // ── Session reuse (local-dev speed-up) ───────────────────────────────────────
 
 /**
- * True if the stored session cookie for `user` is still valid — checked by sending the saved `nuxt-session` cookie to the app's own session
- * endpoint (`GET /api/_auth/session`).
+ * True if the stored session cookie for `user` is still valid — checked by sending the saved `nuxt-session` cookie to the app's own session endpoint (`GET /api/_auth/session`).
  */
 export async function isStoredSessionValid(
     user: E2EUserTypes
@@ -72,47 +64,29 @@ export async function isStoredSessionValid(
 
 // ── API keys (for seeding scenario data) ────────────────────────────────────
 
-// 2. Precompile the shared provisioning modules (TypeORM + legacy decorators) to plain CJS — see build-provision.ts.
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
-const compiledOutfile = new URL(
-    '../../../.nuxt/e2e/provision.cjs',
-    import.meta.url
-).pathname;
-
 /**
- * Typed oRPC client acting as the given REAL Keycloak e2e user (admin, user1, user3) — the same users the UI logs in as. Used to seed
- * scenario data at the API level
+ * Typed oRPC client acting as the given REAL Keycloak e2e user (admin, user2, user3) — the same users the UI logs in as. Used to seed scenario data at the API level.
  *
- * Requires the global-setup to have run (it builds the compiled bundle).
+ * Imported lazily so worker processes only touch the DataSource (built from `process.env.DB_*`) when a spec actually seeds data.
  */
 export async function apiClientFor(user: E2EUserTypes) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const e2eProvision = require(compiledOutfile);
-    return e2eProvision.apiClientFor(user);
+    const { apiClientFor: provision } = await import('../../support/provision');
+    return provision(user);
 }
 
 // ── Real Keycloak login flow ─────────────────────────────────────────────────
 
 /**
- * Shared Keycloak login flow used.
+ * Shared Keycloak login flow used, wrapping the generic `loginViaKeycloak` from the shared test-support package with this app's own start page / landing assertion.
  */
 export async function loginAs(page: Page, user: E2EUserTypes): Promise<void> {
-    // Given a logged-out browser on the login page
-    await page.goto('/login');
-
-    // When they choose to sign in with Keycloak
-    await page.getByRole('link', { name: /sign in with keycloak/i }).click();
-    await expect(page).toHaveURL(/\/realms\/dev\//);
-
-    // And provide their dev-realm credentials
     const e2eUser = E2E_USERS[user];
-    await page.getByLabel(/username or email/i).fill(e2eUser.username);
-    await page.getByLabel('Password', { exact: true }).fill(e2eUser.password);
-    await page.getByRole('button', { name: /^sign in$/i }).click();
-
-    // Then they land on the authenticated dashboard
-    await page.waitForURL(/\/dashboard/);
+    await loginViaKeycloak(page, {
+        keycloakBaseUrl: HOSTS.kc1,
+        username: e2eUser.username,
+        password: e2eUser.password,
+        startUrl: '/login',
+        landedUrlPattern: /\/dashboard/,
+    });
     await expect(page.getByText(/welcome/i)).toBeVisible();
 }

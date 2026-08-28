@@ -1,8 +1,6 @@
 import type { DataSource } from 'typeorm';
 import { Group, Form, User } from '@educorvi/vue-json-forms-builder-db-layer';
 import { artifactsToYjsState } from '../lib/form-content';
-import jsonSchema from '../seed-data/json-schema.json';
-import uiSchema from '../seed-data/ui-schema.json';
 import { groupSeedToDb, DEV_GROUPS_ALL } from './dev-data';
 import { E2E_USERS } from './users-constants';
 import { ensureTestUsers } from './users';
@@ -46,7 +44,7 @@ export async function seed(dataSource: DataSource): Promise<void> {
 }
 
 /**
- * Assigns the demo JSON/UI schemas (entities/seed-data/*.json) to a few
+ * Assigns the demo JSON/UI schemas (seed-data/*.json) to a few
  * well-known forms so the dev app has working form renderers out of the box.
  *
  * The schemas are converted into the canonical FormDefinition representation
@@ -61,6 +59,10 @@ export async function assignDemoSchemas(dataSource: DataSource): Promise<void> {
         'onboarding01',
         'example-bug-report',
     ];
+    const [{ default: jsonSchema }, { default: uiSchema }] = await Promise.all([
+        import('../seed-data/json-schema.json', { with: { type: 'json' } }),
+        import('../seed-data/ui-schema.json', { with: { type: 'json' } }),
+    ]);
     if (jsonSchema && uiSchema) {
         const state = artifactsToYjsState(
             { json: jsonSchema, ui: uiSchema },

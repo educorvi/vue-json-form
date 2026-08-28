@@ -6,7 +6,8 @@
         "@types/node": "^26.2.0",
         "tsx": "^4.22.4",
         "turbo": "^2.10.10",
-        "typescript": "6"
+        "typescript": "6",
+        "vitest": "^4.1.10"
     },
     "scripts": {
         "dev": "turbo watch dev:internal",
@@ -14,7 +15,8 @@
         "start": "tsx --tsconfig tsconfig.json src/index.ts",
         "build": "turbo build:internal",
         "build:internal": "tsc",
-        "check-types": "tsc --noEmit"
+        "check-types": "tsc --noEmit",
+        "test:unit": "vitest --run"
     },
     "dependencies": {
         "@educorvi/vue-json-forms-builder-db-layer": "workspace:^",

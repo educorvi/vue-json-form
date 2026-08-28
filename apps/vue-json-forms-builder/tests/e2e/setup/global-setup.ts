@@ -1,19 +1,17 @@
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { loadEnv } from 'vite';
-import { buildProvisionBundle, PROVISION_BUNDLE_PATH } from './build-provision';
 
 /**
- * Playwright `globalSetup` — runs ONCE per `playwright test` invocation,
- * before the `setup` project (Keycloak login) and all test projects.
+ * Playwright `globalSetup` — runs ONCE per `playwright test` invocation, before the `setup` project (Keycloak login) and all test projects.
  *
  * 1. Wipes the database
  * 2. (Re)creates the Keycloak test users
  *
- * Note: Because of experimental decorators used by TypeORM, the shared provisioning module (tests/support/provision.ts) is precompiled to plain CJS and loaded here — see build-provision.ts.
  */
 
-// 1. Load the app's .env BEFORE any server module is imported (needed for database connection) (Playwright does not load .env itself)
+// 1. Load the app's .env BEFORE the provisioning module is imported: `@educorvi/vue-json-forms-builder-db-layer` builds its DataSource
+//    from `process.env.DB_*` at module-eval time. (Playwright does not load .env itself.)
+// TODO investigate better method for this, e.g loading the e,vf vars in the module which uses it
 const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
 const dotEnv = loadEnv(process.env.NODE_ENV ?? 'development', rootDir, '');
 for (const [key, value] of Object.entries(dotEnv)) {
@@ -22,18 +20,13 @@ for (const [key, value] of Object.entries(dotEnv)) {
     }
 }
 
-// 2. Precompile the shared provisioning modules (TypeORM + legacy decorators) to plain CJS — see build-provision.ts.
-buildProvisionBundle();
-
-// 3. Load the compiled module and do the DB work — the same functions the integration tests call directly (tests/support/provision.ts).
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const require = createRequire(import.meta.url);
+// 2. Import the provisioning helpers only now that the env is in place.
 const {
     getTestDataSource,
     closeTestDataSource,
     resetDatabase,
     ensureTestUsers,
-} = require(PROVISION_BUNDLE_PATH);
+} = await import('../../support/provision');
 
 export default async function globalSetup(): Promise<void> {
     const dataSource = await getTestDataSource();

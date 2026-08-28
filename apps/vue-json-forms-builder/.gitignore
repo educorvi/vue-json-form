@@ -23,6 +23,10 @@ logs
 .env.*
 !.env.example
 
+!.env.docker.backend
+!.env.docker.collab
+!.env.docker.external
+
 data/
 
 # Test artifacts

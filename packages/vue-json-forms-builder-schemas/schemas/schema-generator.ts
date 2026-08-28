@@ -267,6 +267,7 @@ export class SchemaGenerator {
      *       The dependencyType ('and' | 'or') is relevant when combining multiple
      *       conditions; this draft assumes a single Dependency per element.
      */
+    /*
     generateRules(element: FormElement, curPath: string[]): object {
         const dependency = this.document.dependencyGraph.get(element.id);
         if (!dependency) return {};
@@ -290,6 +291,7 @@ export class SchemaGenerator {
 
         return {};
     }
+    */
 
     // ─── Full-form generation ─────────────────────────────────────────────────────
 
@@ -300,6 +302,7 @@ export class SchemaGenerator {
      *       the form title maps to the root schema title, and whether the root
      *       is always type:"object" with one property per top-level child).
      */
+    /*
     generateFullSchema(): { jsonSchema: object; uiSchema: object } {
         const properties: Record<string, object> = {};
         const uiElements: object[] = [];
@@ -323,4 +326,5 @@ export class SchemaGenerator {
 
         return { jsonSchema, uiSchema };
     }
+    */
 }

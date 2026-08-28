@@ -106,6 +106,10 @@ services:
                 condition: service_healthy
             app:
                 condition: service_healthy
+        networks:
+            default:
+                aliases:
+                    - ws.localhost
 
     external-example-app:
         profiles: ["ci"]

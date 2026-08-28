@@ -1,0 +1,159 @@
+name: Form Builder Tests
+
+on:
+    push:
+        branches:
+            - 'feat/vue-json-forms-builder'
+    pull_request:
+        branches:
+            - 'main'
+            - 'release/*'
+    merge_group:
+        types:
+            - checks_requested
+    workflow_dispatch:
+
+concurrency:
+    group: form-builder-tests-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    FORM_BUILDER_FILTERS: >-
+        --filter=@educorvi/vue-json-forms-builder
+        --filter=@educorvi/vue-json-forms-builder-webcomponent
+        --filter=vue-json-forms-builder
+        --filter=vue-json-forms-builder-external-example
+        --filter=vue-json-forms-builder-collab-server
+
+jobs:
+    mocked:
+        name: Mocked unit/component (no backend)
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: lts/*
+                  cache: yarn
+            - run: yarn install --immutable
+            - run: npx turbo run build:internal --affected ${{ env.FORM_BUILDER_FILTERS }}
+            - run: npx turbo run test:unit --affected ${{ env.FORM_BUILDER_FILTERS }}
+            - name: Install Playwright Chromium
+              run: yarn playwright install --with-deps chromium
+              working-directory: packages/vue-json-forms-builder-webcomponent
+            - name: Webcomponent mocked browser tests (self-hosted, no backend)
+              run: npx turbo run test:e2e --affected --filter=@educorvi/vue-json-forms-builder-webcomponent
+
+    stack-e2e:
+        name: Backend-gated integration/e2e (docker-compose ci profile)
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: lts/*
+                  cache: yarn
+            - run: yarn install --immutable
+
+            - name: Determine whether the affected set needs the real stack
+              id: affected
+              run: |
+                  COUNT=$(npx turbo run test:integration test:e2e --affected ${{ env.FORM_BUILDER_FILTERS }} --dry=json \
+                    | jq '[.tasks[]] | length')
+                  echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+                  echo "Affected test:integration/test:e2e tasks: $COUNT"
+
+            - name: Build the affected packages/apps
+              if: steps.affected.outputs.count != '0'
+              run: npx turbo run build:internal --affected ${{ env.FORM_BUILDER_FILTERS }}
+
+            - name: Start the docker-compose ci profile stack
+              if: steps.affected.outputs.count != '0'
+              working-directory: apps/vue-json-forms-builder
+              run: docker compose -p formbuilder-e2e-${{ github.run_id }} --profile ci up -d --build --wait
+
+            - name: Install Playwright browsers
+              if: steps.affected.outputs.count != '0'
+              run: yarn playwright install --with-deps chromium
+
+            - name: Run integration + e2e tests against the real stack
+              if: steps.affected.outputs.count != '0'
+              env:
+                  PLAYWRIGHT_BASE_URL: http://localhost:3000
+                  NUXT_TEST_BASE_URL: http://localhost:3000
+              run: >-
+                  npx turbo run test:integration test:e2e --affected
+                  --filter=vue-json-forms-builder
+                  --filter=vue-json-forms-builder-external-example
+
+            - name: Webcomponent e2e against the real stack (backend-gated spec only)
+              if: steps.affected.outputs.count != '0'
+              env:
+                  E2E_BACKEND_URL: http://localhost:3000
+              run: yarn playwright test -g webcomponent-collab
+              working-directory: packages/vue-json-forms-builder-webcomponent
+
+            - name: Tear down the docker-compose ci profile stack
+              if: always() && steps.affected.outputs.count != '0'
+              working-directory: apps/vue-json-forms-builder
+              run: docker compose -p formbuilder-e2e-${{ github.run_id }} --profile ci down -v
+
+    docker:
+        name: Build & push Form Builder images
+        needs: [mocked, stack-e2e]
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feat/vue-json-forms-builder'
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Compute short commit SHA
+              id: sha
+              run: echo "short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+            - name: Build and push Form Builder image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile
+                  target: run-form-builder
+                  push: true
+                  tags: |
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder:sha-${{ steps.sha.outputs.short }}
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder:latest
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Build and push Collab Server image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile
+                  target: run-collab-server
+                  push: true
+                  tags: |
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder-collab-server:sha-${{ steps.sha.outputs.short }}
+                      ghcr.io/educorvi/vue-json-form/vue-json-forms-builder-collab-server:latest
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max

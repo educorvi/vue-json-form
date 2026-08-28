@@ -1188,12 +1188,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@educorvi/vue-json-forms-builder-test-support@workspace:^, @educorvi/vue-json-forms-builder-test-support@workspace:packages/vue-json-forms-builder-test-support":
+  version: 0.0.0-use.local
+  resolution: "@educorvi/vue-json-forms-builder-test-support@workspace:packages/vue-json-forms-builder-test-support"
+  dependencies:
+    "@educorvi/vue-json-forms-builder-orpc-contract": "workspace:^"
+    "@orpc/client": "npm:^1.15.0"
+    "@orpc/contract": "npm:^1.15.0"
+    "@playwright/test": "npm:^1.61.0"
+    typescript: "npm:~6.0.3"
+  peerDependencies:
+    "@playwright/test": ^1.61.0
+  languageName: unknown
+  linkType: soft
+
 "@educorvi/vue-json-forms-builder-webcomponent@workspace:^, @educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-forms-builder-webcomponent@workspace:packages/vue-json-forms-builder-webcomponent"
   dependencies:
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-forms-builder": "workspace:^"
+    "@educorvi/vue-json-forms-builder-test-support": "workspace:^"
     "@playwright/test": "npm:^1.61.0"
     "@semantic-release/exec": "npm:^7.1.0"
     "@tsconfig/node24": "npm:^24.0.4"
@@ -1225,16 +1240,20 @@ __metadata:
     "@educorvi/vue-json-forms-builder-orpc-contract": "workspace:^"
     "@educorvi/vue-json-forms-builder-schemas": "workspace:^"
     "@hocuspocus/provider": "npm:^4.6.0"
+    "@hocuspocus/server": "npm:^4.6.0"
     "@orpc/client": "npm:^1.15.0"
     "@orpc/openapi-client": "npm:^1.15.0"
     "@phosphor-icons/vue": "npm:^2.2.1"
     "@popperjs/core": "npm:^2.11.8"
     "@semantic-release/exec": "npm:^7.1.0"
+    "@types/ws": "npm:^8.18.1"
     "@vitejs/plugin-vue": "npm:^6.0.8"
+    "@vue/test-utils": "npm:^2.4.11"
     "@vueuse/core": "npm:^14.4.0"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:^0.45.7"
+    happy-dom: "npm:^19.0.2"
     keycloak-js: "npm:^26"
     pinia: "npm:^3.0.4"
     pinia-plugin-persistedstate: "npm:^4.7.1"
@@ -1254,6 +1273,7 @@ __metadata:
     vue-draggable-plus: "npm:^0.6.1"
     vue-router: "npm:^5.1.0"
     vue-tsc: "npm:^3.3.5"
+    ws: "npm:^8.18.3"
     y-protocols: "npm:^1.0.7"
     yjs: "npm:^13.6.27"
   languageName: unknown
@@ -6038,6 +6058,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~8.3.0"
   checksum: 10/2dd6d75b80c006deab4e381acc8cb2e3d634f10141f05fd6cadaabddd80a95f04aef7b00a574bd8fd5e08e940b899c23b91dd09a70b11a34a2762203b5eea25e
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.0.0":
+  version: 20.19.43
+  resolution: "@types/node@npm:20.19.43"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10/cb060ea17ef9f1fc9d47cfb00098175b25fc6f6bae3c08a89ec7ba1be3353445ccf8af62d88c591e6413c09713f7705a71684a27ef01d2bccac4be96b00cacac
   languageName: node
   linkType: hard
 
@@ -11929,6 +11958,17 @@ __metadata:
   bin:
     handlebars: bin/handlebars
   checksum: 10/e755433d652e8a15fc02f83d7478e652359e7a4d354c4328818853ed4f8a39d4a09e1d22dad3c7213c5240864a65b3c840970b8b181745575dd957dd258f2b8d
+  languageName: node
+  linkType: hard
+
+"happy-dom@npm:^19.0.2":
+  version: 19.0.2
+  resolution: "happy-dom@npm:19.0.2"
+  dependencies:
+    "@types/node": "npm:^20.0.0"
+    "@types/whatwg-mimetype": "npm:^3.0.2"
+    whatwg-mimetype: "npm:^3.0.0"
+  checksum: 10/cca23fa7c12ed73307be93a312b389d2c9e5497a647d884ab2c8684833824e369137ee8a3496a9abdaf08a1ed02b1af925c6f661cf29ef6a90c675c0bc11ce5f
   languageName: node
   linkType: hard
 
@@ -20307,6 +20347,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
+  languageName: node
+  linkType: hard
+
 "undici-types@npm:~8.3.0":
   version: 8.3.0
   resolution: "undici-types@npm:8.3.0"
@@ -21526,6 +21573,7 @@ __metadata:
     tsx: "npm:^4.22.4"
     turbo: "npm:^2.10.10"
     typescript: "npm:6"
+    vitest: "npm:^4.1.10"
     y-protocols: "npm:^1.0.7"
     yjs: "npm:^13.6.32"
     zod: "npm:^4.4.3"
@@ -21537,8 +21585,10 @@ __metadata:
   resolution: "vue-json-forms-builder-external-example@workspace:apps/vue-json-forms-builder-external-example"
   dependencies:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
+    "@educorvi/vue-json-forms-builder-test-support": "workspace:^"
     "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^"
     "@nuxt/eslint": "npm:^1.16.0"
+    "@playwright/test": "npm:^1.61.0"
     "@types/bootstrap": "npm:^5"
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
@@ -21564,6 +21614,7 @@ __metadata:
     "@educorvi/vue-json-forms-builder-db-layer": "workspace:^"
     "@educorvi/vue-json-forms-builder-orpc-contract": "workspace:^"
     "@educorvi/vue-json-forms-builder-schemas": "workspace:^"
+    "@educorvi/vue-json-forms-builder-test-support": "workspace:^"
     "@hocuspocus/server": "npm:^4.6.0"
     "@iconify-json/ph": "npm:^1.2.2"
     "@nuxt/eslint": "npm:^1.16.0"

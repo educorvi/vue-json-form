@@ -33,16 +33,6 @@ export default defineConfig({
                     // testTimeout: 20_000,
                     // hookTimeout: 20_000,
                 },
-                // needed for TypeORM's legacy decorators (see nuxt.config.ts)
-                oxc: false,
-                esbuild: {
-                    tsconfigRaw: {
-                        compilerOptions: {
-                            experimentalDecorators: true,
-                            useDefineForClassFields: false,
-                        },
-                    },
-                },
                 resolve: {
                     alias: {
                         '~~': rootDir,

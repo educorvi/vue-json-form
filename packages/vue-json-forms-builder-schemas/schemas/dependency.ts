@@ -160,8 +160,10 @@ export class Dependency extends Entity{
             leafStatement.minLength = isSourceStatement ? this.value : 1;
         } else if (this.dependencyType === DependencyType.equal) {
             leafStatement.const = this.value;
-        } else {// TODO all other dependencytypes. put this logic in a separate function (also useful for unit tests)
-            if (element.isStringLike())
+        } else {
+            // if (element.isStringLike())
+            // TODO all other dependencytypes. put this logic in a separate
+            // function (also useful for unit tests).
         }
 
         let currentSubSchema: Record<string, any> = {};

@@ -515,6 +515,29 @@
             "realmRoles": ["default-roles-dev"],
             "notBefore": 0,
             "groups": []
+        },
+        {
+            "id": "30920509-15b1-402e-9dba-713a04028e4b",
+            "username": "broker-test",
+            "firstName": "Broker",
+            "lastName": "Test",
+            "email": "broker-test@customer.de",
+            "emailVerified": false,
+            "enabled": true,
+            "createdTimestamp": 1786612716981,
+            "totp": false,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "test",
+                    "temporary": false
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-dev"],
+            "notBefore": 0,
+            "groups": []
         }
     ],
     "scopeMappings": [

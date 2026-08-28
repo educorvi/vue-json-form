@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { apiClientFor, storageStateFor } from '../../setup/login-helper';
-import { hashSuffix } from '../../../support/unique';
+import { hashSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
 import { E2E_USERS } from '../../../../server/seed/users-constants';
 
 /**
