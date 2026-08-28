@@ -113,6 +113,12 @@ jobs:
               if: steps.affected.outputs.count != '0'
               run: npx turbo run build:internal --affected ${{ env.FORM_BUILDER_FILTERS }}
 
+            - name: Map *.localhost hostnames to loopback
+              if: steps.affected.outputs.count != '0'
+              run: |
+                  echo "127.0.0.1 kc1.localhost ws.localhost external-keycloak.localhost external-example-app.localhost" \
+                      | sudo tee -a /etc/hosts
+
             - name: Start the docker-compose ci profile stack
               if: steps.affected.outputs.count != '0'
               working-directory: apps/vue-json-forms-builder
@@ -134,6 +140,7 @@ jobs:
                   npx turbo run test:integration test:e2e --affected
                   --filter=vue-json-forms-builder
                   --filter=vue-json-forms-builder-external-example
+                  --output-logs=full --continue
 
             - name: Webcomponent e2e against the real stack (backend-gated spec only)
               if: steps.affected.outputs.count != '0'
@@ -154,6 +161,14 @@ jobs:
                   for svc in postgres keycloak external-keycloak app collab external-example-app; do
                       docker compose -p "$P" --profile ci logs --no-color --timestamps "$svc" \
                           > "$GITHUB_WORKSPACE/stack-logs/$svc.log" 2>&1 || true
+                  done
+                  # also surface the container states + the two services most
+                  # likely to explain an e2e failure, inline in the job log
+                  cat "$GITHUB_WORKSPACE/stack-logs/_containers.txt" || true
+                  for svc in app collab; do
+                      echo "::group::last 100 lines — $svc"
+                      tail -n 100 "$GITHUB_WORKSPACE/stack-logs/$svc.log" || true
+                      echo "::endgroup::"
                   done
 
             - name: Upload docker-compose logs
