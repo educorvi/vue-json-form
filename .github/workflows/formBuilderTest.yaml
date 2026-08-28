@@ -138,16 +138,27 @@ jobs:
               working-directory: apps/vue-json-forms-builder
               run: yarn playwright install --with-deps chromium
 
-            - name: Run integration + e2e tests against the real stack
+            # TODO: when integration test dont clean up whole db, they can run in parallel
+            - name: Run integration tests against the real stack
               if: steps.affected.outputs.count != '0'
               env:
                   PLAYWRIGHT_BASE_URL: http://localhost:3000
                   NUXT_TEST_BASE_URL: http://localhost:3000
               run: >-
-                  npx turbo run test:integration test:e2e --affected
+                  npx turbo run test:integration --affected
+                  --filter=vue-json-forms-builder
+                  --output-logs=full
+
+            - name: Run e2e tests against the real stack
+              if: ${{ !cancelled() && steps.affected.outputs.count != '0' }}
+              env:
+                  PLAYWRIGHT_BASE_URL: http://localhost:3000
+                  NUXT_TEST_BASE_URL: http://localhost:3000
+              run: >-
+                  npx turbo run test:e2e --affected
                   --filter=vue-json-forms-builder
                   --filter=vue-json-forms-builder-external-example
-                  --output-logs=full --continue
+                  --output-logs=full
 
             - name: Webcomponent e2e against the real stack (backend-gated spec only)
               if: steps.affected.outputs.count != '0'

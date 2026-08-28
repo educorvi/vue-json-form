@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { apiClientFor } from '../setup/login-helper';
-import { hashSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
+import { randomSuffix } from '@educorvi/vue-json-forms-builder-test-support/unique';
 import { clickUntil } from '../helpers/click-until';
 import { RECENT_FORMS_TESTID } from '../helpers/dashboard';
 import en from '../../../i18n/locales/en.json' with { type: 'json' };
@@ -28,7 +28,7 @@ test.describe('Dashboard recent forms', () => {
      * display titles plus the cleanup handles. Group/form URL slugs are
      * prefixed so cleanup can find exactly the items this test created.
      */
-    async function seedGroupWithForm(testName: string): Promise<{
+    async function seedGroupWithForm(): Promise<{
         groupTitle: string;
         formTitle: string;
         groupId: number;
@@ -36,7 +36,9 @@ test.describe('Dashboard recent forms', () => {
         cleanup: () => Promise<void>;
     }> {
         const client = await apiClientFor('admin');
-        const suffix = hashSuffix(testName);
+        // Random (not test-name-derived): a retry must not collide with the
+        // group the previous attempt created but did not clean up.
+        const suffix = randomSuffix();
 
         const groupTitle = `E2E Dashboard Group ${suffix}`;
         const formTitle = `E2E Dashboard Form ${suffix}`;
@@ -77,9 +79,7 @@ test.describe('Dashboard recent forms', () => {
 
     test('shows the most recently created form', async ({ page }) => {
         // Given a group with a form was just created (newest first)
-        const { formTitle, cleanup } = await seedGroupWithForm(
-            'shows the most recently created form'
-        );
+        const { formTitle, cleanup } = await seedGroupWithForm();
 
         // When they open the dashboard
         await page.goto('/dashboard');
@@ -95,9 +95,7 @@ test.describe('Dashboard recent forms', () => {
         page,
     }) => {
         // Given a group with a form was just created
-        const { formTitle, cleanup } = await seedGroupWithForm(
-            'opens the form detail page when clicking a recent form'
-        );
+        const { formTitle, cleanup } = await seedGroupWithForm();
         await page.goto('/dashboard');
 
         // The card content (title) only exists once the recent-forms
@@ -136,9 +134,7 @@ test.describe('Dashboard recent forms', () => {
         page,
     }) => {
         // Given a group with a form was just created
-        const { groupTitle, cleanup } = await seedGroupWithForm(
-            'opens the parent group when clicking the path on a recent form'
-        );
+        const { groupTitle, cleanup } = await seedGroupWithForm();
         await page.goto('/dashboard');
 
         // The group path is a REAL NuxtLink (<a href>) inside the card —
@@ -168,9 +164,7 @@ test.describe('Dashboard recent forms', () => {
 
     test('the all forms link opens the forms list', async ({ page }) => {
         // Given a group with a form was just created
-        const { cleanup } = await seedGroupWithForm(
-            'the all forms link opens the forms list'
-        );
+        const { cleanup } = await seedGroupWithForm();
         await page.goto('/dashboard');
 
         // When they click the "All Forms" link
