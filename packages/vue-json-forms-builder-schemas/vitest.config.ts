@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+devimport { fileURLToPath } from 'node:url';
 import { defineConfig, configDefaults, type TestUserConfig } from 'vitest/config';
 
 let reporters: TestUserConfig['reporters'];

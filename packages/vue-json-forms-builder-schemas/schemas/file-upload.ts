@@ -5,7 +5,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { cleanUiSchema, getRequiredMinItems } from './utils';
 
-enum FileType {
+export enum FileType {
     pdf = 'pdf', // "application/pdf"
     jpeg = 'jpeg', // "image/jpeg"
     png = 'png', // "image/png"

@@ -83,10 +83,9 @@ export abstract class SelectionElement extends SimpleElement {
 }
 
 type FormatValue = NonNullable<EnumOptions['displayAs']>;
-const EnumFormatEnum = z.enum(
-    controlSchema.definitions.enumOptions.allOf[0]!.properties.displayAs
-        .enum as [FormatValue, ...FormatValue[]]
-);
+export const EnumFormatOptions = controlSchema.definitions.enumOptions.allOf[0]!
+    .properties.displayAs.enum as [FormatValue, ...FormatValue[]];
+const EnumFormatEnum = z.enum(EnumFormatOptions);
 export type EnumFormat = z.infer<typeof EnumFormatEnum>;
 
 type EnumElementData = z.infer<typeof EnumElement.schema>;

@@ -202,12 +202,12 @@ export default defineNuxtConfig({
             // Vite must bundle (not externalize) them for SSR to process
             // their imports and SFC compilation correctly.
             noExternal: [
-                '@educorvi/vue-json-forms-builder',
-                '@educorvi/vue-json-form',
-                '@educorvi/rita',
+                // '@educorvi/vue-json-forms-builder',
+                // '@educorvi/vue-json-form',
+                // '@educorvi/rita',
                 // 'pinia',
-                '@vueuse/core',
-                'vue-draggable-plus',
+                // '@vueuse/core',
+                // 'vue-draggable-plus',
             ],
         },
     },
