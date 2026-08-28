@@ -2,15 +2,13 @@
     "name": "@educorvi/vue-json-forms-builder-db-layer",
     "devDependencies": {
         "@types/node": "^26.2.0",
+        "tsdown": "^0.22.14",
         "turbo": "^2.10.8",
-        "typescript": "^6.0.0",
-        "vite": "^8.2.1",
-        "vite-plugin-dts": "^5.0.3",
-        "vite-plugin-externalize-deps": "^0.10.0"
+        "typescript": "^6.0.0"
     },
     "scripts": {
         "build": "turbo build:internal check-types",
-        "build:internal": "vite build",
+        "build:internal": "tsdown --config tsdown.config.mts",
         "check-types": "tsc --noEmit",
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix",
@@ -19,9 +17,8 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "import": "./dist/json-form-build-db-layer.mjs",
-            "require": "./dist/json-form-build-db-layer.js",
-            "default": "./dist/json-form-build-db-layer.mjs"
+            "import": "./dist/index.mjs",
+            "default": "./dist/index.mjs"
         }
     },
     "dependencies": {

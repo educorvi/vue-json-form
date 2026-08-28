@@ -14,24 +14,20 @@
         "semantic-release": "^25.0.5",
         "semantic-release-monorepo": "^8.0.2",
         "semantic-release-yarn": "^3.0.2",
+        "tsdown": "^0.22.14",
         "turbo": "^2.10.8",
         "typescript": "~6.0.3",
-        "vite": "^8.0.16",
-        "vite-plugin-dts": "^5.0.3",
-        "vite-plugin-externalize-deps": "^0.10.0",
         "vitest": "^4.1.10"
     },
     "exports": {
         ".": {
             "types": "./dist/vue-json-forms-builder-schemas.d.ts",
             "import": "./dist/vue-json-forms-builder-schemas.js",
-            "require": "./dist/vue-json-forms-builder-schemas.cjs",
             "default": "./dist/vue-json-forms-builder-schemas.js"
         },
         "./collab": {
             "types": "./dist/collab.d.ts",
             "import": "./dist/collab.js",
-            "require": "./dist/collab.cjs",
             "default": "./dist/collab.js"
         },
         "./package.json": "./package.json"
@@ -40,7 +36,6 @@
         "dist",
         "README.md"
     ],
-    "main": "./dist/vue-json-forms-builder-schemas.cjs",
     "module": "./dist/vue-json-forms-builder-schemas.js",
     "packageManager": "yarn@4.4.0",
     "publishConfig": {
@@ -53,7 +48,7 @@
     },
     "scripts": {
         "build": "turbo build:internal check-types",
-        "build:internal": "vite build",
+        "build:internal": "tsdown",
         "check-types": "tsc --noEmit",
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix",

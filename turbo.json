@@ -1,6 +1,6 @@
 {
     "$schema": "https://v2-10-8.turborepo.dev/schema.json",
-    "ui": "stream",
+    "ui": "tui",
     "concurrency": "100%",
     "tasks": {
         "build:internal": {
