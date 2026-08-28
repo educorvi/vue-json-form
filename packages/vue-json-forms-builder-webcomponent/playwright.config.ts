@@ -12,7 +12,14 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    reporter: process.env.CI ? [['list'], ['github']] : 'html',
+    reporter: process.env.CI
+        ? [
+              ['list'],
+              ['github'],
+              ['junit', { outputFile: 'test-results/junit.xml' }],
+              ['html', { open: 'never' }],
+          ]
+        : 'html',
 
     use: {
         baseURL,
