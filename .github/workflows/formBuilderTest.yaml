@@ -119,6 +119,13 @@ jobs:
                   echo "127.0.0.1 kc1.localhost ws.localhost external-keycloak.localhost external-example-app.localhost" \
                       | sudo tee -a /etc/hosts
 
+            # The host-run integration/e2e suites read `.env` (gitignored) via
+            # Vite's loadEnv — provide the CI variant (host-published ports,
+            # test DB). Without it DB_PORT defaults to 5432 → ECONNREFUSED.
+            - name: Provide CI env for the host-run test suites
+              if: steps.affected.outputs.count != '0'
+              run: cp apps/vue-json-forms-builder/.env.ci apps/vue-json-forms-builder/.env
+
             - name: Start the docker-compose ci profile stack
               if: steps.affected.outputs.count != '0'
               working-directory: apps/vue-json-forms-builder
