@@ -26,6 +26,8 @@ export default defineConfig({
             insertTypesEntry: true,
             copyDtsFiles: true,
         }),
-        externalizeDeps(),
+        externalizeDeps({
+            except: [/^@educorvi\/vue-json-form-schemas\/src\//],
+        }),
     ],
 });
