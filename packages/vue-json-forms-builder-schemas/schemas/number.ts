@@ -136,7 +136,7 @@ export class NumberElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: Control
+        _uiSchema: Control
     ): NumberElement {
         const numberElement = new NumberElement({
             title: jsonSchema.title ? jsonSchema.title : '',

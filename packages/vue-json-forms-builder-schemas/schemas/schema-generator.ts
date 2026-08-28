@@ -1,7 +1,7 @@
 import type { FormDefinition } from './form-definition';
 import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { Dependency, DependencyGroup } from './dependency';
-import { BaseDataElement, FormElement, SimpleElement } from './form-element';
+import { BaseDataElement, SimpleElement } from './form-element';
 import { assertDefined, CombinedUiSchemaType } from './utils';
 import { ArrayElement, ContainerElement, ObjectElement } from './container';
 

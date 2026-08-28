@@ -9,7 +9,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
 import { ButtonVariantFormat, ButtonVariantFormatEnum } from './utils';
-import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json';
+import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json' with { type: 'json' };
 
 enum ButtonSubmitAction {
     Request = 'request',
@@ -114,15 +114,15 @@ export class ButtonGroupElement extends FormElement {
 
     toJsonSchema(
         _generator: SchemaGenerator,
-        scope: string[] = []
+        _scope: string[] = []
     ): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Button
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Button
     ): ButtonGroupElement {
         // TODO
         return new ButtonGroupElement({ id: id });
@@ -193,14 +193,14 @@ export abstract class ButtonElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Button
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Button
     ): ButtonElement {
         // TODO
         // base class fallback — subclasses (Reset/Submit) override this
@@ -248,8 +248,8 @@ export class ResetButton extends ButtonElement {
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Button
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Button
     ): ResetButton {
         // TODO
         return new ResetButton({
@@ -382,8 +382,8 @@ export class SubmitButton extends ButtonElement {
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Button
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Button
     ): SubmitButton {
         // TODO
         return new SubmitButton({

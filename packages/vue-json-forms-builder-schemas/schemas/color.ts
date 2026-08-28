@@ -68,8 +68,8 @@ export class ColorElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: any,
-        required: boolean = false
+        _uiSchema: any,
+        _required: boolean = false
     ): ColorElement {
         if (!(jsonSchema.type === 'string')) {
             throw new Error(

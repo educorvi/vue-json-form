@@ -1,6 +1,5 @@
 import { Entity } from './base';
-import { FormElement } from './form-element';
-import { readonly, z } from 'zod';
+import { z } from 'zod';
 import type { PartialBy } from './base';
 import type {
     JSONSchema,

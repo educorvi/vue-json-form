@@ -47,7 +47,7 @@ export class WizardPage extends Entity {
         return this.data.pageTitle;
     }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): LayoutUiSchema {
+    toUiSchema(generator: SchemaGenerator, _scope: string[]): LayoutUiSchema {
         const wizardPageForm = generator.document.getElementById(
             this.wizardPageForm
         );
@@ -82,8 +82,8 @@ export class WizardPage extends Entity {
 
     fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Control
     ): WizardPage {
         // TODO
         return new WizardPage({

@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
-import { FormElement, FormElementOptionalKeys } from './form-element';
+import { FormElement } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
-import { PartialBy } from './base';
 
 // TODO
 export class ReferenceElement extends FormElement {
@@ -13,7 +12,7 @@ export class ReferenceElement extends FormElement {
         referenceId: z.string(),
     });
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): Control {
+    toUiSchema(_generator: SchemaGenerator, _scope: string[]): Control {
         // TODO
         return {
             type: 'Control',
@@ -21,15 +20,15 @@ export class ReferenceElement extends FormElement {
         };
     }
 
-    toJsonSchema(generator: SchemaGenerator, scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         // TODO
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: JSONSchema
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: JSONSchema
     ): ReferenceElement {
         // TODO
         return new ReferenceElement({

@@ -3,7 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
-import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json' with { type: 'json' };
 import type { EnumOptions } from '@educorvi/vue-json-form-schemas';
 import {
     ButtonVariantFormatEnum,
@@ -163,8 +163,8 @@ export class EnumElement extends SelectionElement {
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Control
     ): EnumElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO
@@ -274,8 +274,8 @@ export class CheckboxGroupElement extends SelectionElement {
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        _jsonSchema: JSONSchema = {},
+        _uiSchema: Control
     ): CheckboxGroupElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO

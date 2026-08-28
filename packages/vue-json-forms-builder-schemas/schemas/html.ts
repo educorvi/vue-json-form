@@ -56,13 +56,13 @@ export class HTMLElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
+        _jsonSchema: JSONSchema = {},
         uiSchema: HTMLRenderer
     ): HTMLElement {
         const htmlElement = new HTMLElement({

@@ -100,9 +100,9 @@ export abstract class FormElement extends Entity {
     }
 
     static fromJsonSchemaAndUiSchema(
-        id: string,
-        jsonSchema: JSONSchema,
-        uiSchema: CombinedUiSchemaType
+        _id: string,
+        _jsonSchema: JSONSchema,
+        _uiSchema: CombinedUiSchemaType
     ): FormElement {
         throw new Error(
             'fromJsonSchemaAndUiSchema must be implemented in subclasses'

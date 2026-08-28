@@ -16,7 +16,6 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
     let currentPathList: string[] = [];
     let currentDotJoinedArrayPath = "";
 
-    let current_rule: Quantifier = {} as Quantifier;
     let current_subrule: Operator = {} as Operator;
     let counter = 1;
     // iterate through all paths except the last one, which is the actual element
@@ -61,7 +60,6 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
         // compute path of current array (dot-joined path since last outer array, or if outermost array, dot-joined path from root)
         if (currentDotJoinedArrayPath !== "") {
             // all inner arrays: path is $array_itemX + dot-joined path since last outer (not outermost!) array
-            const index = path.lastIndexOf("properties");
             currentDotJoinedArrayPath = `$array_item${counter - 1}.${transform_scope_to_object_writing_form(path)}`;
         } else {
             // outermost array
@@ -79,12 +77,10 @@ function putFormulaWithinArrayRule(scope: string[], formula: Formula): Quantifie
 
         if (Object.keys(array_rule).length === 0) {
             array_rule = rule;
-            current_rule = rule;
             current_subrule = subRule;
         } else {
             // replace the placeholder argument in the current rule with the new rule
             current_subrule.arguments[1] = rule;
-            current_rule = rule;
             current_subrule = subRule;
         }
 
@@ -208,7 +204,7 @@ export class Dependency extends Entity{
         return allOfSchema;
     }
 
-    toUiSchema(generator: SchemaGenerator, scope: string[]): Rule {
+    toUiSchema(generator: SchemaGenerator, _scope: string[]): Rule {
         const sourceElement = generator.document.getElementById(this.sourceId);
         if (!sourceElement) {
             throw new Error(`Source element with id ${this.sourceId} not found`);

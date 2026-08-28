@@ -5,7 +5,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
 import { ButtonVariantFormatEnum, ButtonVariantFormat } from './utils';
-import modalSchema from '@educorvi/vue-json-form-schemas/src/ui/modal.schema.json';
+import modalSchema from '@educorvi/vue-json-form-schemas/src/ui/modal.schema.json' with { type: 'json' };
 
 type ModalSizeValue = NonNullable<Modal['modal']['size']>;
 const ModalSizeEnum = z.enum(
@@ -110,13 +110,13 @@ export class ModalElement extends FormElement {
         return uiSchema;
     }
 
-    toJsonSchema(_generator: SchemaGenerator, scope: string[]): JSONSchema {
+    toJsonSchema(_generator: SchemaGenerator, _scope: string[]): JSONSchema {
         return {};
     }
 
     static fromJsonSchemaAndUiSchema(
         id: string,
-        jsonSchema: JSONSchema = {},
+        _jsonSchema: JSONSchema = {},
         uiSchema: Modal
     ): ModalElement {
         // TODO

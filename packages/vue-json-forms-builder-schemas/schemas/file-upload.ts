@@ -186,7 +186,7 @@ export class FileuploadElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        _uiSchema: Control
     ): FileuploadElement {
         // TODO
         return new FileuploadElement({

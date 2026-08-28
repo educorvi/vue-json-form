@@ -8,6 +8,7 @@ import {
     ManyToOne,
     JoinColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import {
     Layouts,
     StringFormats,
@@ -41,7 +42,7 @@ export class Dependency extends DatabaseEntity {
         () => SimpleElement,
         (simpleElement) => simpleElement.partOfDependency
     )
-    source!: SimpleElement; // on which element the target depends
+    source!: Relation<SimpleElement>; // on which element the target depends
 
     @Column()
     dependencyType!: DependencyTypes;
@@ -53,7 +54,7 @@ export class Dependency extends DatabaseEntity {
         () => DependencyGroup,
         (dependencyGroup) => dependencyGroup.dependencies
     )
-    dependencyGroup!: DependencyGroup;
+    dependencyGroup!: Relation<DependencyGroup>;
 }
 
 @Entity()
@@ -73,11 +74,11 @@ export abstract class FormElement extends DatabaseEntity {
         () => ContainerElement,
         (containerElement) => containerElement.children
     )
-    parent!: ContainerElement;
+    parent!: Relation<ContainerElement>;
 
     @OneToOne(() => DependencyGroup)
     @JoinColumn()
-    dependencyGroup!: DependencyGroup;
+    dependencyGroup!: Relation<DependencyGroup>;
 }
 
 export abstract class BaseDataElement extends FormElement {
@@ -155,7 +156,7 @@ export class ArrayElement extends ContainerElement {
 @Entity()
 export class ObjectElement extends ContainerElement {
     @ManyToOne(() => Wizard, (wizard) => wizard.forms, { nullable: true })
-    wizard?: Wizard; // if object is a form that is used in a wizard
+    wizard?: Relation<Wizard>; // if object is a form that is used in a wizard
 }
 
 @Entity()
@@ -286,7 +287,7 @@ export abstract class Button extends FormElement {
     @ManyToOne(() => ButtonGroup, (buttonGroup) => buttonGroup.buttons, {
         nullable: true,
     })
-    buttonGroup?: ButtonGroup;
+    buttonGroup?: Relation<ButtonGroup>;
 }
 
 @Entity()

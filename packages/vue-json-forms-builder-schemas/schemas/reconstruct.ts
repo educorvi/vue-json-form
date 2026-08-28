@@ -147,8 +147,7 @@ function buildElementTree(
             const el = TimeElement.fromJsonSchemaAndUiSchema(
                 key,
                 jsonSchema,
-                ui,
-                required
+                ui
             );
             elements.push(el);
             return el;
@@ -158,8 +157,7 @@ function buildElementTree(
             const el = FileuploadElement.fromJsonSchemaAndUiSchema(
                 key,
                 jsonSchema,
-                ui,
-                required
+                ui
             );
             elements.push(el);
             return el;
@@ -169,8 +167,7 @@ function buildElementTree(
             const el = EnumElement.fromJsonSchemaAndUiSchema(
                 key,
                 jsonSchema,
-                ui,
-                required
+                ui
             );
             elements.push(el);
             return el;
@@ -198,12 +195,7 @@ function buildElementTree(
     }
 
     if (type === 'number' || type === 'integer') {
-        const el = NumberElement.fromJsonSchemaAndUiSchema(
-            key,
-            jsonSchema,
-            ui,
-            required
-        );
+        const el = NumberElement.fromJsonSchemaAndUiSchema(key, jsonSchema, ui);
         elements.push(el);
         return el;
     }
@@ -241,8 +233,7 @@ function buildElementTree(
             const el = CheckboxGroupElement.fromJsonSchemaAndUiSchema(
                 key,
                 jsonSchema,
-                ui,
-                required
+                ui
             );
             elements.push(el);
             return el;
@@ -252,8 +243,7 @@ function buildElementTree(
             const el = FileuploadElement.fromJsonSchemaAndUiSchema(
                 key,
                 jsonSchema,
-                ui,
-                required
+                ui
             );
             elements.push(el);
             return el;
