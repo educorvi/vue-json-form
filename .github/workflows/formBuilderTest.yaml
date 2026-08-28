@@ -45,8 +45,7 @@ jobs:
                   node-version: lts/*
                   cache: yarn
             - run: yarn install --immutable
-            # No `--affected` here: this tier is meant to run on every commit
-            # to the form-builder packages (see `#0 packages` skips otherwise).
+            # Could use --affected flag to only run tests for affected packages
             - run: npx turbo run build:internal ${{ env.FORM_BUILDER_FILTERS }}
             - run: npx turbo run test:unit ${{ env.FORM_BUILDER_FILTERS }}
             - name: Install Playwright Chromium
@@ -121,6 +120,9 @@ jobs:
 
             - name: Install Playwright browsers
               if: steps.affected.outputs.count != '0'
+              # run from a workspace that has @playwright/test — `yarn playwright`
+              # only resolves the binary where the dep is declared
+              working-directory: apps/vue-json-forms-builder
               run: yarn playwright install --with-deps chromium
 
             - name: Run integration + e2e tests against the real stack
