@@ -16,6 +16,8 @@ const ModalSizeEnum = z.enum(
 );
 export type ModalSize = z.infer<typeof ModalSizeEnum>;
 
+export const ModalSize = ModalSizeEnum.enum;
+
 type ModalElementData = z.infer<typeof ModalElement.schema>;
 const modalElementDefaults = {
     type: 'modal' as const,

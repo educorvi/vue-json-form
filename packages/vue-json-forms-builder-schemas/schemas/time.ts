@@ -78,7 +78,8 @@ export class TimeElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: any
+        uiSchema: any,
+        required: boolean = false
     ): TimeElement {
         if (!(jsonSchema.type === 'string')) {
             throw new Error('Invalid type for TimeElement: ' + jsonSchema.type);

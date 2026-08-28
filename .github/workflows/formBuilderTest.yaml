@@ -3,7 +3,7 @@ name: Form Builder Tests
 on:
     push:
         branches:
-            - 'feat/vue-json-forms-builder'
+            - '*'
     pull_request:
         branches:
             - 'main'

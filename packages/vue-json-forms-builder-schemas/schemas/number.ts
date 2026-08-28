@@ -5,7 +5,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { cleanUiSchema } from './utils';
 
-enum NumberFormat {
+export enum NumberFormat {
     Integer = 'integer',
     Number = 'number', // float
 }
@@ -136,12 +136,14 @@ export class NumberElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): NumberElement {
         const numberElement = new NumberElement({
             title: jsonSchema.title ? jsonSchema.title : '',
             description: jsonSchema.description,
             id: id,
+            required: required,
         });
         if (
             (jsonSchema.type === 'number' || jsonSchema.type === 'integer') &&

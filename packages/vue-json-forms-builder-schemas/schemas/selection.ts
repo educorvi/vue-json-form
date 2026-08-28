@@ -89,6 +89,8 @@ const EnumFormatEnum = z.enum(
 );
 export type EnumFormat = z.infer<typeof EnumFormatEnum>;
 
+export const EnumFormat = EnumFormatEnum.enum;
+
 type EnumElementData = z.infer<typeof EnumElement.schema>;
 const enumElementDefaults = {
     type: 'enum' as const,
@@ -164,7 +166,8 @@ export class EnumElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): EnumElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO
@@ -275,7 +278,8 @@ export class CheckboxGroupElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): CheckboxGroupElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO

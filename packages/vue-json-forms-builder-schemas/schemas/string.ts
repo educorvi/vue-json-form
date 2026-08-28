@@ -23,6 +23,8 @@ const StringFormatEnum = z.enum(
 );
 export type StringFormat = z.infer<typeof StringFormatEnum>;
 
+export const StringFormat = StringFormatEnum.enum;
+
 type StringElementData = z.infer<typeof StringElement.schema>;
 const stringElementDefaults = {
     type: 'string' as const,
