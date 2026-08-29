@@ -36,8 +36,6 @@ test.describe('Dashboard recent forms', () => {
         cleanup: () => Promise<void>;
     }> {
         const client = await apiClientFor('admin');
-        // Random (not test-name-derived): a retry must not collide with the
-        // group the previous attempt created but did not clean up.
         const suffix = randomSuffix();
 
         const groupTitle = `E2E Dashboard Group ${suffix}`;
@@ -112,12 +110,8 @@ test.describe('Dashboard recent forms', () => {
         // link (navigating to the group instead of the form).
         const title = card.getByText(formTitle, { exact: true });
 
-        // The card navigates via a JS click handler — a click before
-        // Vue hydrated would be silently dropped. `clickUntil` keeps
-        // clicking until the navigation actually happened (outcome
-        // check, no explicit hydration wait needed).
         await clickUntil(
-            title,
+            () => title.click({ force: true }),
             () => /\/forms\/detail\?path=/.test(page.url()),
             { timeout: 15000 }
         );
