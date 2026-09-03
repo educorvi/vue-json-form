@@ -13,7 +13,9 @@ import { loadEnv } from 'vite';
 //    from `process.env.DB_*` at module-eval time. (Playwright does not load .env itself.)
 // TODO investigate better method for this, e.g loading the e,vf vars in the module which uses it
 const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
-const dotEnv = loadEnv(process.env.NODE_ENV ?? 'development', rootDir, '');
+// `.env.ci` contains the host-side test connection (Postgres is published as
+// localhost:5433). Explicit process variables still take precedence below.
+const dotEnv = loadEnv('ci', rootDir, '');
 for (const [key, value] of Object.entries(dotEnv)) {
     if (process.env[key] === undefined) {
         process.env[key] = value;

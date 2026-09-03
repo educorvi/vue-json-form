@@ -9,7 +9,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
 import { ButtonVariantFormat, ButtonVariantFormatEnum } from './utils';
-import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json';
+import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json' with { type: 'json' };
 
 export enum ButtonSubmitAction {
     Request = 'request',
