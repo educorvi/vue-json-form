@@ -1,11 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import {
-    mergeConfig,
-    defineConfig,
-    configDefaults,
-    type TestUserConfig,
-} from 'vitest/config';
-import viteConfig from './vite.config';
+import { defineConfig, configDefaults, type TestUserConfig } from 'vitest/config';
 
 let reporters: TestUserConfig['reporters'];
 if (process.env.CI) {
@@ -17,17 +11,14 @@ if (process.env.CI) {
     reporters = ['default'];
 }
 
-export default mergeConfig(
-    viteConfig,
-    defineConfig({
-        test: {
-            environment: 'node',
-            exclude: [...configDefaults.exclude],
-            root: fileURLToPath(new URL('./', import.meta.url)),
-            reporters,
-            outputFile: {
-                junit: 'test-results/junit-report-unit.xml',
-            },
+export default defineConfig({
+    test: {
+        environment: 'node',
+        exclude: [...configDefaults.exclude],
+        root: fileURLToPath(new URL('./', import.meta.url)),
+        reporters,
+        outputFile: {
+            junit: 'test-results/junit-report-unit.xml',
         },
-    })
-);
+    },
+});
