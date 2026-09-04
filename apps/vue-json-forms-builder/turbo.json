@@ -1,0 +1,9 @@
+{
+    "extends": ["//"],
+    "tasks": {
+        "dev:internal": {
+            "dependsOn": ["^build:internal"],
+            "with": ["vue-json-forms-builder-collab-server#dev:internal"]
+        }
+    }
+}
