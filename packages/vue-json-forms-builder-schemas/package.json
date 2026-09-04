@@ -5,17 +5,17 @@
     "type": "module",
     "dependencies": {
         "@educorvi/vue-json-form-schemas": "workspace:^",
-        "yjs": "^13.6.27",
+        "yjs": "^13.6.32",
         "zod": "^4.4.3"
     },
     "devDependencies": {
         "@semantic-release/exec": "^7.1.0",
-        "@types/node": "^25.9.2",
+        "@types/node": "^26.2.0",
         "semantic-release": "^25.0.5",
         "semantic-release-monorepo": "^8.0.2",
         "semantic-release-yarn": "^3.0.2",
         "tsdown": "^0.22.14",
-        "turbo": "^2.10.8",
+        "turbo": "^2.10.10",
         "typescript": "~6.0.3",
         "vitest": "^4.1.10"
     },
