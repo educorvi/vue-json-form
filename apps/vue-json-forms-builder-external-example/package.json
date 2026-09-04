@@ -32,7 +32,7 @@
         "@nuxt/eslint": "^1.16.0",
         "@playwright/test": "^1.61.0",
         "@types/bootstrap": "^5",
-        "turbo": "^2.10.10",
+        "turbo": "^2.10.12",
         "typescript": "~6.0.3",
         "vue-tsc": "^3.3.5"
     },
