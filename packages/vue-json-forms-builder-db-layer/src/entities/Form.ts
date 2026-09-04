@@ -1,5 +1,6 @@
 // import 'reflect-metadata';
 import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 import { Group } from './Group';
 import { Visibility } from './BaseEntities';
@@ -16,7 +17,7 @@ export class Form extends BaseAuditedEntity {
 
     @ManyToOne(() => Group, (group) => group.forms, { nullable: true })
     @JoinColumn({ name: 'group_id' })
-    group!: Group | null;
+    group!: Relation<Group | null>;
 
     @Column({ type: 'text' })
     name!: string;
@@ -43,8 +44,8 @@ export class Form extends BaseAuditedEntity {
     visibility!: Visibility;
 
     @OneToMany(() => Permission, (permission) => permission.form)
-    permissions!: Permission[];
+    permissions!: Relation<Permission[]>;
 
     @OneToMany(() => FormRevision, (revision) => revision.form)
-    revisions!: FormRevision[];
+    revisions!: Relation<FormRevision[]>;
 }

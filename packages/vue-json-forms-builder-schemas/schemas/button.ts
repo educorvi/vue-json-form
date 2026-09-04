@@ -9,9 +9,9 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { createShowOnProperty } from './children-schema-utils';
 import { ButtonVariantFormat, ButtonVariantFormatEnum } from './utils';
-import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json';
+import buttonSchema from '@educorvi/vue-json-form-schemas/src/ui/button.schema.json' with { type: 'json' };
 
-enum ButtonSubmitAction {
+export enum ButtonSubmitAction {
     Request = 'request',
     Save = 'save',
     Print = 'print',
@@ -27,6 +27,8 @@ const HttpsMethodEnum = z.enum(
         .properties.method.enum as [HttpsMethodValue, ...HttpsMethodValue[]]
 );
 export type HttpsMethod = z.infer<typeof HttpsMethodEnum>;
+
+export const HttpsMethod = HttpsMethodEnum.enum;
 
 type ButtonGroupElementData = z.infer<typeof ButtonGroupElement.schema>;
 const buttonGroupElementDefaults = {

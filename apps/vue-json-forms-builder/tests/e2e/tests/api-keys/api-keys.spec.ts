@@ -133,6 +133,8 @@ test.describe('API Keys', () => {
         await page.getByTestId('api-key-edit-name-input').fill(renamed);
         await page.getByTestId('api-key-edit-submit').click();
 
+        await expect(page.getByTestId('api-key-edit-name-input')).toBeHidden();
+
         // Then the row shows the updated name
         const renamedRow = page.getByTestId('api-key-row').filter({
             hasText: renamed,

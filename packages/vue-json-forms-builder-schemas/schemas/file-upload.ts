@@ -5,7 +5,7 @@ import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
 import { cleanUiSchema, getRequiredMinItems } from './utils';
 
-enum FileType {
+export enum FileType {
     pdf = 'pdf', // "application/pdf"
     jpeg = 'jpeg', // "image/jpeg"
     png = 'png', // "image/png"
@@ -186,7 +186,8 @@ export class FileuploadElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): FileuploadElement {
         // TODO
         return new FileuploadElement({

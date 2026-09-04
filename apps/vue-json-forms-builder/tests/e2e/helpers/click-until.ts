@@ -19,14 +19,17 @@ import type { Locator } from '@playwright/test';
  * @param clickTarget The element to click, or a function that performs
  *   the click itself (called repeatedly).
  * @param isDone Predicate that observes the outcome of the click.
- * @param options `timeout` in ms (default 5000), `message` for failures.
+ * @param options `timeout` in ms (default 10000), `message` for failures.
  */
 export async function clickUntil(
     clickTarget: Locator | (() => void | Promise<void>),
     isDone: () => boolean | Promise<boolean>,
     options: { timeout?: number; message?: string } = {}
 ): Promise<void> {
-    const { timeout = 5000, message } = options;
+    // 10s default: on CI the "click → hydrate → handler runs → outcome"
+    // round-trip is comfortably slower than the old 5s (see versions.spec
+    // flakiness).
+    const { timeout = 10000, message } = options;
     const click =
         typeof clickTarget === 'function'
             ? clickTarget

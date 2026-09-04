@@ -15,7 +15,7 @@ const { element, setField, enumField, optionalString } = useElementSettings();
 
 const submitAction = enumField('submitAction', ButtonSubmitAction.Save);
 const actionOptions = Object.values(ButtonSubmitAction);
-const submitMethod = enumField<HttpsMethod>('submitMethod', HttpsMethod.Post);
+const submitMethod = enumField<HttpsMethod>('submitMethod', HttpsMethod.POST);
 const methodOptions = Object.values(HttpsMethod);
 const onSuccessRedirectUrl = optionalString('onSuccessRedirectUrl');
 

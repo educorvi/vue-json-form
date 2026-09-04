@@ -11,13 +11,13 @@ import type {
     Comparison,
 } from '@educorvi/vue-json-form-schemas';
 import { z } from 'zod';
-import variantsSchema from '@educorvi/vue-json-form-schemas/src/ui/variants.schema.json';
+import variantsSchema from '@educorvi/vue-json-form-schemas/src/ui/variants.schema.json' with { type: 'json' };
 import type {
     OutlineVariants,
     BaseVariants,
 } from '@educorvi/vue-json-form-schemas';
-import comparisonSchema from '@educorvi/rita/src/schema/comparison.json';
-import operatorSchema from '@educorvi/rita/src/schema/operator.json';
+import comparisonSchema from '@educorvi/rita/src/schema/comparison.json' with { type: 'json' };
+import operatorSchema from '@educorvi/rita/src/schema/operator.json' with { type: 'json' };
 
 export function createId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '_');

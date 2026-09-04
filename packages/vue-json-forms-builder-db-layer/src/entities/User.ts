@@ -7,6 +7,7 @@ import {
     UpdateDateColumn,
     OneToMany,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { ApiKey } from './ApiKey';
 // import { UserGroupUser } from './UserGroup';
 
@@ -51,7 +52,7 @@ export class User {
     updated!: Date;
 
     @OneToMany(() => ApiKey, (apiKey) => apiKey.user)
-    api_keys!: ApiKey[];
+    api_keys!: Relation<ApiKey[]>;
 
     // @OneToMany(() => UserGroupUser, (userGroupUser) => userGroupUser.user)
     // userGroupUsers!: UserGroupUser[];

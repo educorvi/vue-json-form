@@ -1,5 +1,5 @@
 import type { FormDefinition } from './form-definition';
-import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
+import type { JSONSchema, UISchema } from '@educorvi/vue-json-form-schemas';
 import { Dependency, DependencyGroup } from './dependency';
 import { BaseDataElement, FormElement, SimpleElement } from './form-element';
 import { assertDefined, CombinedUiSchemaType } from './utils';
@@ -327,4 +327,11 @@ export class SchemaGenerator {
         return { jsonSchema, uiSchema };
     }
     */
+
+    generateFullSchema(): { jsonSchema: JSONSchema; uiSchema: UISchema } {
+        return {
+            jsonSchema: this.document.root.toJsonSchema(this),
+            uiSchema: this.document.root.toUiSchema(this),
+        };
+    }
 }

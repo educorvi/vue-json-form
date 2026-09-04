@@ -9,7 +9,10 @@ import { loadEnv } from 'vite';
 //    (Playwright does not load .env itself); the db-layer package builds
 //    its DataSource from `process.env.DB_*` at module-eval time.
 const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
-const dotEnv = loadEnv(process.env.NODE_ENV ?? 'development', rootDir, '');
+// Keep this in sync with global-setup: the Playwright process runs on the host,
+// so its default DB connection comes from `.env.ci`, not the Docker-internal
+// env files (which use the `postgres:5432` Compose service address).
+const dotEnv = loadEnv('ci', rootDir, '');
 for (const [key, value] of Object.entries(dotEnv)) {
     if (process.env[key] === undefined) {
         process.env[key] = value;

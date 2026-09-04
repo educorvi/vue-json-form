@@ -13,8 +13,14 @@ for (const [key, value] of Object.entries(dotEnv)) {
     }
 }
 
+const ci = !!process.env.CI;
+
 export default defineConfig({
     test: {
+        reporters: ci
+            ? ['default', ['junit', { suiteName: 'vue-json-forms-builder' }]]
+            : ['default'],
+        outputFile: { junit: 'test-results/junit-vitest.xml' },
         projects: [
             {
                 test: {
