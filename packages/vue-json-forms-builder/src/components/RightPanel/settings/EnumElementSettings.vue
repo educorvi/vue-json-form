@@ -7,7 +7,7 @@ import SelectionElementSettings from './SelectionElementSettings.vue';
 
 const { enumField } = useElementSettings();
 
-const format = enumField('format', EnumFormat.Select);
+const format = enumField('format', EnumFormat.select);
 const formatOptions = Object.values(EnumFormat);
 </script>
 

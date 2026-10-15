@@ -3,8 +3,6 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
-import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
-import type { InputOptions } from '@educorvi/vue-json-form-schemas';
 import { cleanUiSchema } from './utils';
 
 export enum TimeFormat {
@@ -78,7 +76,8 @@ export class TimeElement extends SimpleElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema,
-        uiSchema: any
+        uiSchema: any,
+        required: boolean = false
     ): TimeElement {
         if (!(jsonSchema.type === 'string')) {
             throw new Error('Invalid type for TimeElement: ' + jsonSchema.type);

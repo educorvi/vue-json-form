@@ -26,6 +26,7 @@ logs
 !.env.docker.backend
 !.env.docker.collab
 !.env.docker.external
+!.env.ci
 
 data/
 

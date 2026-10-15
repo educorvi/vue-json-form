@@ -48,5 +48,5 @@
     // tsx resolves the nearest tsconfig per-file; the TypeORM entities live
     // in the sibling vue-json-forms-builder app, so they must be included here
     // too or tsx falls back to that app's (decorator-incompatible) tsconfig.
-    "include": ["./src/**/*.ts"]
+    "include": ["./src/**/*.ts", "./tsdown.config.ts"]
 }

@@ -3,7 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
-import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json' with { type: 'json' };
 import type { InputOptions } from '@educorvi/vue-json-form-schemas';
 import { cleanUiSchema } from './utils';
 
@@ -22,6 +22,8 @@ const StringFormatEnum = z.enum(
     ) as [StringFormatValue, ...StringFormatValue[]]
 );
 export type StringFormat = z.infer<typeof StringFormatEnum>;
+
+export const StringFormat = StringFormatEnum.enum;
 
 type StringElementData = z.infer<typeof StringElement.schema>;
 const stringElementDefaults = {

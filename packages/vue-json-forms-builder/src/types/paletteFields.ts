@@ -12,6 +12,7 @@ import {
     ModalElement,
     ResetButton,
     SubmitButton,
+    ButtonSubmitAction,
     ButtonGroupElement,
     ArrayElement,
     ObjectElement,
@@ -141,7 +142,7 @@ function stringField(
 }
 
 const inputFields: PaletteField[] = [
-    stringField('text', 'Text', 'bi bi-pencil', StringFormat.Text),
+    stringField('text', 'Text', 'bi bi-pencil', StringFormat.text),
     {
         id: 'textarea',
         label: 'Textarea',
@@ -153,12 +154,12 @@ const inputFields: PaletteField[] = [
                 id: uniqueId('textarea', takenIds),
                 title: 'Textarea',
                 required: false,
-                format: StringFormat.Text,
+                format: StringFormat.text,
                 multi: true,
             }),
     },
-    stringField('email', 'Email', 'bi bi-envelope', StringFormat.Email),
-    stringField('password', 'Password', 'bi bi-lock', StringFormat.Password),
+    stringField('email', 'Email', 'bi bi-envelope', StringFormat.email),
+    stringField('password', 'Password', 'bi bi-lock', StringFormat.password),
     {
         id: 'date',
         label: 'Date',
@@ -201,8 +202,8 @@ const inputFields: PaletteField[] = [
                 format: TimeFormat.Time,
             }),
     },
-    stringField('uri', 'URL', 'bi bi-link', StringFormat.Uri),
-    stringField('phone', 'Phone', 'bi bi-phone', StringFormat.Tel),
+    stringField('uri', 'URL', 'bi bi-link', StringFormat.url),
+    stringField('phone', 'Phone', 'bi bi-phone', StringFormat.tel),
     {
         id: 'color',
         label: 'Color',
@@ -216,8 +217,8 @@ const inputFields: PaletteField[] = [
                 required: false,
             }),
     },
-    stringField('search', 'Search', 'bi bi-search', StringFormat.Search),
-    stringField('hidden', 'Hidden', 'bi bi-eye-slash', StringFormat.Hidden),
+    stringField('search', 'Search', 'bi bi-search', StringFormat.search),
+    stringField('hidden', 'Hidden', 'bi bi-eye-slash', StringFormat.hidden),
 ];
 
 // ── Data: Numeric ────────────────────────────────────────────────────────────
@@ -285,7 +286,7 @@ const enumFields: PaletteField[] = [
                 id: uniqueId('select', takenIds),
                 title: 'Select',
                 required: false,
-                format: EnumFormat.Select,
+                format: EnumFormat.select,
                 values: ['option1', 'option2', 'option3'],
             }),
     },
@@ -300,7 +301,7 @@ const enumFields: PaletteField[] = [
                 id: uniqueId('radio', takenIds),
                 title: 'Radio Group',
                 required: false,
-                format: EnumFormat.Radiobuttons,
+                format: EnumFormat.radiobuttons,
                 values: ['option1', 'option2'],
             }),
     },
@@ -315,7 +316,7 @@ const enumFields: PaletteField[] = [
                 id: uniqueId('switches', takenIds),
                 title: 'Switches',
                 required: false,
-                format: EnumFormat.Switches,
+                format: EnumFormat.switches,
                 values: ['option1', 'option2'],
             }),
     },
@@ -330,7 +331,7 @@ const enumFields: PaletteField[] = [
                 id: uniqueId('buttons', takenIds),
                 title: 'Button Select',
                 required: false,
-                format: EnumFormat.Buttons,
+                format: EnumFormat.buttons,
                 values: ['option1', 'option2'],
             }),
     },
@@ -395,7 +396,7 @@ const miscFields: PaletteField[] = [
                 title: 'Modal Title',
                 content: '<p>Modal content</p>',
                 buttonLabel: 'Open',
-                size: ModalSize.Medium,
+                size: ModalSize.medium,
                 buttonVariant: 'primary',
             }),
     },
@@ -420,6 +421,7 @@ const miscFields: PaletteField[] = [
             new SubmitButton({
                 id: uniqueId('submit', takenIds),
                 label: 'Submit',
+                submitAction: ButtonSubmitAction.Save,
             }),
     },
     {
@@ -451,6 +453,7 @@ const miscFields: PaletteField[] = [
             const submit = new SubmitButton({
                 id: uniqueId('submit', takenIds),
                 label: 'Submit',
+                submitAction: ButtonSubmitAction.Save,
             });
             group.data.buttons = [reset.uid, submit.uid];
             return [group, reset, submit];
@@ -462,11 +465,13 @@ const miscFields: PaletteField[] = [
         icon: 'bi bi-link-45deg',
         description: 'Reference another element of the form',
         elementType: 'reference',
-        createElement: (takenIds) =>
-            new ReferenceElement({
+        createElement: (takenIds) => {
+            const el = new ReferenceElement({
                 id: uniqueId('reference', takenIds),
-                referenceId: '',
-            }),
+            });
+            el.referenceId = '';
+            return el;
+        },
     },
 ];
 

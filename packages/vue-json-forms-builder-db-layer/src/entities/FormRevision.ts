@@ -1,5 +1,6 @@
 // import 'reflect-metadata';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 import { Form } from './Form';
 
@@ -20,7 +21,7 @@ export class FormRevision extends BaseAuditedEntity {
 
     @ManyToOne(() => Form, (form) => form.revisions)
     @JoinColumn({ name: 'form_id' })
-    form!: Form;
+    form!: Relation<Form>;
 
     @Column({ type: 'int' })
     order!: number;

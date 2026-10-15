@@ -16,7 +16,7 @@ const { stringField, enumField } = useElementSettings();
 const buttonLabel = stringField('buttonLabel');
 const title = stringField('title');
 const content = stringField('content');
-const size = enumField('size', ModalSize.Large);
+const size = enumField('size', ModalSize.large);
 const sizeOptions = Object.values(ModalSize);
 const buttonVariant = enumField<ButtonVariantFormat>(
     'buttonVariant',

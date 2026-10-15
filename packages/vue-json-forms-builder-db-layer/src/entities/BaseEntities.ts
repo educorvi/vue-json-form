@@ -6,6 +6,7 @@ import {
     ManyToOne,
     JoinColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { User } from './User';
 
 /**
@@ -48,11 +49,11 @@ export abstract class BaseTimestampedEntity extends BaseEntity {
 export abstract class BaseAuditedEntity extends BaseTimestampedEntity {
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'created_by' })
-    created_by!: User | null;
+    created_by!: Relation<User | null>;
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'updated_by' })
-    updated_by!: User | null;
+    updated_by!: Relation<User | null>;
 }
 
 /**
@@ -69,7 +70,7 @@ export abstract class BaseCreatedEntity extends BaseEntity {
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'created_by' })
-    created_by!: User | null;
+    created_by!: Relation<User | null>;
 }
 
 /**
@@ -81,5 +82,5 @@ export abstract class BaseUuidCreatedEntity extends BaseUuidEntity {
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'created_by' })
-    created_by!: User | null;
+    created_by!: Relation<User | null>;
 }

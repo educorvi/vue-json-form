@@ -16,6 +16,17 @@ test.describe('API docs', () => {
         expect(spec.info.title).toBe('Form Builder API');
     });
 
+    test('legacy OpenAPI 3.0 specification is served', async ({ request }) => {
+        const response = await request.get('/api/v1/spec-3.0.json');
+
+        expect(response.ok()).toBeTruthy();
+        const spec = await response.json();
+        expect(spec.openapi).toBe('3.0.3');
+        expect(spec.info.title).toBe('Form Builder API');
+        expect(spec.jsonSchemaDialect).toBeUndefined();
+        expect(JSON.stringify(spec)).not.toContain('"anyOf"');
+    });
+
     test('scalar docs are served', async ({ page }) => {
         // When: The user opens the scalar docs url
         await page.goto('/api/v1/scalar');

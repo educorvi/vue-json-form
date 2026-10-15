@@ -5,12 +5,12 @@
  * The OpenAPI spec (JSON + YAML) is served from dedicated Nitro routes:
  *   - /api/v1/spec.json
  *   - /api/v1/spec.yaml
+ *   - /api/v1/spec-3.0.json (legacy OpenAPI 3.0-compatible output)
  */
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { onError } from '@orpc/server';
 import { appRouter } from '~~/server/orpc/routers';
 import { SmartCoercionPlugin } from '@orpc/json-schema';
-import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
 import {
     schemaConverters,

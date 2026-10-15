@@ -39,5 +39,9 @@ In order to debug the the frontend as well as the backend, a VsCode Debug config
 More documentation is available in the `docs/` folder:
 
 - [API](../../packages/orpc-contract/docs/README.md): Includes the openapi spec and general documentation of the API.
+
+The current OpenAPI 3.1 specification is available at `/api/v1/spec.json`. For
+clients that do not support JSON Schema unions, the OpenAPI 3.0-compatible
+specification is available at `/api/v1/spec-3.0.json`.
 - [Database](../../packages/vue-json-forms-builder-db-layer/docs/README.md): Includes the database schema in different formats and more details about the database internal structure.
 - [Testing](./docs/testing/README.md): More information on the available automated tests and how to run them.

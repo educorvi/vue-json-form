@@ -12,7 +12,7 @@ import SimpleElementSettings from './SimpleElementSettings.vue';
 const { element, setField, enumField, optionalString, optionalNumber } =
     useElementSettings();
 
-const format = enumField('format', StringFormat.Text);
+const format = enumField('format', StringFormat.text);
 const formatOptions = Object.values(StringFormat);
 const placeholder = optionalString('placeholder');
 const minLength = optionalNumber('minLength');

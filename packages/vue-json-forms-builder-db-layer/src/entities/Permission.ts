@@ -1,5 +1,6 @@
 // import 'reflect-metadata';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseAuditedEntity } from './BaseEntities';
 import { User } from './User';
 import { Group } from './Group';
@@ -19,13 +20,13 @@ export class Permission extends BaseAuditedEntity {
 
     @ManyToOne(() => User, { nullable: true })
     @JoinColumn({ name: 'user_id' })
-    user!: User | null;
+    user!: Relation<User | null>;
 
     @ManyToOne(() => Group, (group) => group.permissions, { nullable: true })
     @JoinColumn({ name: 'group_id' })
-    group!: Group | null;
+    group!: Relation<Group | null>;
 
     @ManyToOne(() => Form, (form) => form.permissions, { nullable: true })
     @JoinColumn({ name: 'form_id' })
-    form!: Form | null;
+    form!: Relation<Form | null>;
 }

@@ -8,6 +8,7 @@ import {
     JoinColumn,
     OneToMany,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { Permission } from './Permission';
 import { Form } from './Form';
 import { BaseAuditedEntity } from './BaseEntities';
@@ -27,10 +28,10 @@ export class Group extends BaseAuditedEntity {
 
     @TreeParent()
     @JoinColumn({ name: 'parent' })
-    parent!: Group | null;
+    parent!: Relation<Group | null>;
 
     @TreeChildren()
-    children!: Group[];
+    children!: Relation<Group[]>;
 
     @Column({ type: 'text' })
     name!: string;
@@ -44,8 +45,8 @@ export class Group extends BaseAuditedEntity {
     visibility!: Visibility;
 
     @OneToMany(() => Permission, (permission) => permission.group)
-    permissions!: Permission[];
+    permissions!: Relation<Permission[]>;
 
     @OneToMany(() => Form, (form) => form.group)
-    forms!: Form[];
+    forms!: Relation<Form[]>;
 }

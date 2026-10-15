@@ -3,7 +3,7 @@ import type { Control, JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { SimpleElement, SimpleElementOptionalKeys } from './form-element';
 import type { SchemaGenerator } from './schema-generator';
 import { PartialBy } from './base';
-import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json';
+import controlSchema from '@educorvi/vue-json-form-schemas/src/ui/control.schema.json' with { type: 'json' };
 import type { EnumOptions } from '@educorvi/vue-json-form-schemas';
 import {
     ButtonVariantFormatEnum,
@@ -89,6 +89,8 @@ const EnumFormatEnum = z.enum(
 );
 export type EnumFormat = z.infer<typeof EnumFormatEnum>;
 
+export const EnumFormat = EnumFormatEnum.enum;
+
 type EnumElementData = z.infer<typeof EnumElement.schema>;
 const enumElementDefaults = {
     type: 'enum' as const,
@@ -164,7 +166,8 @@ export class EnumElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): EnumElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO
@@ -275,7 +278,8 @@ export class CheckboxGroupElement extends SelectionElement {
     static fromJsonSchemaAndUiSchema(
         id: string,
         jsonSchema: JSONSchema = {},
-        uiSchema: Control
+        uiSchema: Control,
+        required: boolean = false
     ): CheckboxGroupElement {
         // super.fromJsonSchemaAndUiSchema(id, jsonSchema, uiSchema); ???
         // TODO

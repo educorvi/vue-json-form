@@ -25,7 +25,7 @@
               <option name="generatedName" value="New Schema" />
               <option name="name" value="Rita Rule" />
               <option name="relativePathToSchema" value="https://github.com/educorvi/rita/raw/develop/rita-core/src/schema/rule.json" />
-              <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="schemaVersion" value="JSON Schema 2019.09" />
               <option name="patterns">
                 <list>
                   <Item>
@@ -45,11 +45,27 @@
               <option name="generatedName" value="New Schema" />
               <option name="name" value="Rita Ruleset" />
               <option name="relativePathToSchema" value="https://github.com/educorvi/rita/raw/develop/rita-core/src/schema/schema.json" />
-              <option name="schemaVersion" value="JSON Schema 201,909" />
+              <option name="schemaVersion" value="JSON Schema 2019.09" />
               <option name="patterns">
                 <list>
                   <Item>
                     <option name="path" value="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="Turborepo">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="Turborepo" />
+              <option name="relativePathToSchema" value="https://turborepo.org/schema.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="apps/vue-json-forms-builder/turbo.json" />
                   </Item>
                 </list>
               </option>
@@ -62,7 +78,7 @@
               <option name="generatedName" value="New Schema" />
               <option name="name" value="UI Schema" />
               <option name="relativePathToSchema" value="packages/schemas/src/generated/ui-merged.schema.json" />
-              <option name="schemaVersion" value="JSON Schema 202,012" />
+              <option name="schemaVersion" value="JSON Schema 2020.12" />
               <option name="patterns">
                 <list>
                   <Item>

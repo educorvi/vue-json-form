@@ -1,10 +1,11 @@
 {
     // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-    "include": ["schemas/**/*"],
-    // `*.new.ts` = a teammate's in-progress rewrite, parked next to the file
-    // it will eventually replace. Not wired into the barrel or any import, and
-    // deliberately kept out of type-checking / the build until it's finished.
-    "exclude": ["schemas/**/*.new.ts"],
+    "include": [
+        "schemas/**/*"
+    ],
+    "exclude": [
+        "schemas/form-definition.new.ts"
+    ],
     "compilerOptions": {
         "module": "esnext",
         "importHelpers": true,
@@ -19,11 +20,10 @@
         // linter checks for common issues
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        // use bundler-oriented module resolution (compatible with Vite)
         "moduleResolution": "bundler",
-        "types": ["node"],
+        "types": [
+            "node"
+        ],
         // interop between ESM and CJS modules. Recommended by TS
         "esModuleInterop": true,
         // significant perf increase by skipping checking .d.ts files, particularly those in node_modules. Recommended by TS

@@ -6,6 +6,7 @@ import {
     JoinColumn,
     UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { BaseUuidCreatedEntity } from './BaseEntities';
 import { User } from './User';
 
@@ -13,7 +14,7 @@ import { User } from './User';
 export class ApiKey extends BaseUuidCreatedEntity {
     @ManyToOne(() => User, (user) => user.api_keys, { nullable: false })
     @JoinColumn({ name: 'user_id' })
-    user!: User;
+    user!: Relation<User>;
 
     @Column({ type: 'varchar', length: 255 })
     name!: string;

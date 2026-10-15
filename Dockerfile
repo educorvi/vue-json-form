@@ -95,10 +95,14 @@ COPY --from=build-collab-server /app/apps/vue-json-forms-builder-collab-server/d
 COPY --from=build-collab-server /app/packages/vue-json-forms-builder-schemas/dist ./packages/vue-json-forms-builder-schemas/dist
 COPY --from=build-collab-server /app/packages/vue-json-forms-builder-db-layer/dist ./packages/vue-json-forms-builder-db-layer/dist
 COPY --from=build-collab-server /app/packages/vue-json-forms-builder-orpc-contract/dist ./packages/vue-json-forms-builder-orpc-contract/dist
+# The builder-schemas bundle keeps JSON schema imports external. The schemas
+# package publishes src/ui as runtime assets, so reproduce that package layout
+# for the workspace symlink created by `yarn workspaces focus`.
+COPY --from=build-collab-server /app/packages/schemas/src/ui ./packages/schemas/src/ui
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD node -e "const s=require('net').connect(1234,'127.0.0.1');s.on('connect',()=>process.exit(0));s.on('error',()=>process.exit(1));setTimeout(()=>process.exit(1),5000)"
 EXPOSE 1234
-CMD ["node", "apps/vue-json-forms-builder-collab-server/dist/src/index.js"]
+CMD ["node", "apps/vue-json-forms-builder-collab-server/dist/index.mjs"]
 
 
 # ----------------------------------------------------------------------------

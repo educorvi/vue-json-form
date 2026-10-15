@@ -79,7 +79,10 @@ export class Form extends Entity {
         };
     }
 
-    toJsonSchema(generator: SchemaGenerator): JSONSchema {
+    toJsonSchema(
+        generator: SchemaGenerator,
+        _scope: string[] = ['properties']
+    ): JSONSchema {
         const { childrenJsonSchema, requiredList } =
             generator.generateJsonSchemaForElements(this.data.children, [
                 'properties',
