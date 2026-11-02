@@ -1,12 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const webcomponentDist = dirname(
+const webcomponentPackageRoot = dirname(
     fileURLToPath(
-        import.meta.resolve('@educorvi/vue-json-forms-builder-webcomponent')
+        import.meta
+            .resolve('@educorvi/vue-json-forms-builder-webcomponent/package.json')
     )
 );
+const webcomponentDist = join(webcomponentPackageRoot, 'dist');
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',

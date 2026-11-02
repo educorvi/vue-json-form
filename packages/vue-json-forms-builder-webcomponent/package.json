@@ -23,6 +23,7 @@
         "vue": "^3.5.41"
     },
     "exports": {
+        "./package.json": "./package.json",
         ".": {
             "types": "./types.d.ts",
             "import": "./dist/vue-json-form-builder.js",
