@@ -6,8 +6,8 @@
         "build": "turbo build:internal check-types",
         "build:internal": "nuxt build",
         "check-types": "npx nuxt typecheck",
-        "dev:internal": "nuxt dev",
-        "dev": "turbo watch dev:internal",
+        "dev:nuxt": "nuxt dev",
+        "dev": "turbo watch dev:nuxt",
         "dev:collab": "tsx watch --tsconfig ../vue-json-forms-builder-collab-server/tsconfig.json ../vue-json-forms-builder-collab-server/src/index.ts",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
@@ -62,6 +62,7 @@
     },
     "devDependencies": {
         "@educorvi/vue-json-forms-builder-test-support": "workspace:^",
+        "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^",
         "@nuxt/eslint": "^1.16.0",
         "@nuxt/test-utils": "^4.1.0",
         "@playwright/test": "^1.61.0",

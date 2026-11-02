@@ -8,6 +8,7 @@
  *     (`GET /api/v1/users/me`)
  *   - the user upsert during the websocket handshake is done by the collab
  *     server (server-to-server, no CORS needed)
+ *   - the remotely hosted webcomponent module and its relative build assets
  *
  * Browsers require CORS headers (with an exact origin, since credentials
  * are used) plus OPTIONS preflight handling for that.

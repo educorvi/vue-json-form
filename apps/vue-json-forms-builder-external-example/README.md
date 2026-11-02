@@ -29,7 +29,7 @@ flowchart LR
 
 1. Docker services running: `cd ../vue-json-forms-builder && docker compose up -d` (postgres, kc1, external-keycloak). (__Note:__ The federation between kc1 and the external Keycloak is already configured in the imported realm files (`keycloak/dev/dev-realm.json`, `keycloak/external/dev-realm.json`)).
 2. The main app running: `cd ../vue-json-forms-builder && yarn dev` (port 3000). Its env must include `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS=http://external-example-app.localhost:3001` and `NUXT_AUTH_ALLOWED_CLIENT_IDS=vueformbuilder,vueformbuilder-embed` so the kc1 access token of the public embed client is accepted for the collab websocket (already set in its `example.env`).
-1. The webcomponent built once (its `dist/` is gitignored): `yarn workspace @educorvi/vue-json-forms-builder-webcomponent build`. TODO: turbo should be able to do this automatically when the repo is integrated successfully.
+3. The backend build serves the webcomponent at `http://localhost:3000/webcomponent/vue-json-form-builder.js`. Add this app's origin to `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS`; the backend uses that allowlist for CORS on the module bundle as well as auth redirects.
 
 ## Domains
 
@@ -48,7 +48,7 @@ __Note:__ Cookies are per-host: this app's session (`external-app-session` on `e
 1. Open **http://external-example-app.localhost:3001** — landing page with a *Login* button.
 1. Click *Login* → you are taken to the external Keycloak and logged in (create a test user there first if none exists).
 1. You land on the dashboard: *Hello, \<user\>!*
-2. Type the **numeric id** of a form of the builder backend into the input field (as shown in the main app's form list) and press Enter. The webcomponent mounts and runs keycloak-js against kc1 (`http://kc1.localhost:8080`, realm `dev`, public client `vueformbuilder-embed`:
+2. Type a **numeric ID or form path** of a form in the builder backend and press Enter. The webcomponent bundle loads from the backend's `/webcomponent/vue-json-form-builder.js` URL. The shared builder resolves paths to the canonical numeric form ID before connecting. It runs keycloak-js against kc1 (`http://kc1.localhost:8080`, realm `dev`, public client `vueformbuilder-embed`:
    - silent `check-sso` (hidden iframe) → a kc1 session exists → the access token is obtained **without any navigation** and the builder connects straight away.
    - no kc1 session → the builder shows a **Sign in** button; clicking it navigates to kc1, which — thanks to `kc_idp_hint=external-oidc-example` and the existing external SSO session — authenticates the user **without a credential prompt** and redirects back to this page.
    - the silent check-sso iframe is limited in browsers with strict tracking protection (Safari/Firefox): the Sign in button appears even for logged-in users there — the click then does the top-level redirect.

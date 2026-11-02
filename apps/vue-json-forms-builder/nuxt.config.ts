@@ -1,4 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const webcomponentDist = dirname(
+    fileURLToPath(
+        import.meta.resolve('@educorvi/vue-json-forms-builder-webcomponent')
+    )
+);
 
 export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
@@ -53,6 +61,11 @@ export default defineNuxtConfig({
     // Render it entirely on the client (SPA mode for these routes).
     routeRules: {
         '/forms/detail': { ssr: false },
+        '/webcomponent/**': {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
+        },
     },
 
     // Realtime collaboration (Hocuspocus) — the builder connects to this
@@ -122,6 +135,13 @@ export default defineNuxtConfig({
         },
     },
     nitro: {
+        publicAssets: [
+            {
+                dir: webcomponentDist,
+                baseURL: '/webcomponent',
+                maxAge: 60,
+            },
+        ],
         // experimental: {
         //     openAPI: true,
         // },

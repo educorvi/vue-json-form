@@ -12,6 +12,29 @@ Load the bundle as a module script, then use the custom element:
 <vue-json-form-builder></vue-json-form-builder>
 ```
 
+### Load from the form-builder backend
+
+The form-builder backend serves the production bundle assets from `/webcomponent/`.
+
+```html
+<script
+  type="module"
+  crossorigin="anonymous"
+  src="https://forms.example.com/webcomponent/vue-json-form-builder.js"
+></script>
+
+<vue-json-form-builder
+  collab-url="wss://forms.example.com/collab"
+  collab-document-name="groups/my-form"
+  backend-url="https://forms.example.com"
+  kc-url="https://sso.example.com/"
+  kc-realm="dev"
+  kc-client-id="vueformbuilder-embed"
+></vue-json-form-builder>
+```
+
+For path references, provide `backend-url`; the shared Vue builder resolves the path to the stable numeric form ID before connecting.
+
 ### Attributes
 
 | Attribute               | Description                                                                                                                                   |
@@ -19,7 +42,7 @@ Load the bundle as a module script, then use the custom element:
 | `json-schema`           | Optional initial JSON Schema (JSON string). Imported once; ignored when `collab-url` is set.                                                  |
 | `ui-schema`             | Optional initial UI Schema (JSON string, VJF format). Imported once; ignored when `collab-url` is set.                                        |
 | `collab-url`            | WebSocket URL of a Hocuspocus collab server to enable realtime collaboration.                                                                 |
-| `collab-document-name`  | Document name (= form id in the backend). Defaults to `default-form`.                                                                         |
+| `collab-document-name`  | Form ID or form path. Paths are resolved to the form ID before connecting and require `backend-url`; without it, provide an ID. Defaults to `default-form`. |
 | `collab-token`          | Auth token for the collab websocket: a Keycloak access token or an API key (`fb_...`). Fallback when `kc-*` auth is configured.                |
 | `backend-url`           | Base URL of a hosting Nuxt backend (`nuxt-auth-utils`). Session-cookie auth for the collab websocket. See [Authentication](#authentication).   |
 | `keycloak-idp-hint`     | `kc_idp_hint` appended to the backend's login URL (session mode only).                                                                        |

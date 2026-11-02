@@ -16,6 +16,7 @@ const props = defineProps<{
     uiSchema?: string;
     /** Enable realtime collaboration: ws(s)://host:port of the Hocuspocus server */
     collabUrl?: string;
+    /** Backend form ID, or a form path resolved through backendUrl before connecting. */
     collabDocumentName: string;
     /**
      * Auth token for the websocket: a Keycloak access token or an API key

@@ -30,7 +30,7 @@ test.describe('Real-time collaboration', () => {
             body: { user_id: E2E_USERS.user2.sub, role: 'editor' },
         });
 
-        // When both admin and user2 open the same form's detail page
+        // When admin opens by numeric ID and user2 opens by path
         const adminContext = await browser.newContext({
             storageState: storageStateFor('admin'),
         });
@@ -41,7 +41,7 @@ test.describe('Real-time collaboration', () => {
         const user2Page = await user2Context.newPage();
 
         await adminPage.goto(
-            `/forms/detail?path=${encodeURIComponent(form.name ?? '')}`
+            `/forms/detail?path=${encodeURIComponent(String(form.id))}`
         );
         await user2Page.goto(
             `/forms/detail?path=${encodeURIComponent(form.name ?? '')}`

@@ -126,8 +126,6 @@ RUN --mount=type=cache,target=/root/.yarn \
 COPY --from=prepare-external-demo /app/out/full/ ./
 
 RUN --mount=type=cache,target=/app/.turbo \
-    yarn turbo run build:internal --filter=@educorvi/vue-json-forms-builder-webcomponent && \
-    cd apps/vue-json-forms-builder-external-example && yarn sync:webcomponent && \
     yarn turbo run build:internal --filter=vue-json-forms-builder-external-example
 
 # ----------------------------------------------------------------------------

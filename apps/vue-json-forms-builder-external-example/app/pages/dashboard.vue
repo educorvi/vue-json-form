@@ -10,6 +10,9 @@ const kcClientId = computed(() => config.public.kcClientId);
 const kcIdpHint = computed(() => config.public.kcIdpHint);
 const collabUrl = computed(() => config.public.collabUrl);
 const backendUrl = computed(() => config.public.backendUrl);
+const webcomponentUrl = computed(() =>
+    `${backendUrl.value.replace(/\/+$/, '')}/webcomponent/vue-json-form-builder.js`
+);
 
 const greeting = computed(
     () =>
@@ -142,6 +145,7 @@ async function loadForm() {
             <JsonFormsBuilder
                 v-if="confirmedFormId"
                 :key="confirmedFormId"
+                :bundle-url="webcomponentUrl"
                 class="flex-grow-1 d-flex flex-column"
                 style="min-height: 0"
                 :kc-url="kcUrl"

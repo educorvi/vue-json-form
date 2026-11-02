@@ -15,6 +15,13 @@
             "cache": false,
             "dependsOn": ["^build:internal"]
         },
+        "dev:nuxt": {
+            "persistent": true,
+            "cache": false,
+            "dependsOn": [
+                "^build:internal"
+            ]
+        },
         "lint": {
             "cache": false
         },

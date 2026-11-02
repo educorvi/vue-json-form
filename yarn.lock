@@ -21561,6 +21561,7 @@ __metadata:
     "@educorvi/vue-json-forms-builder-orpc-contract": "workspace:^"
     "@educorvi/vue-json-forms-builder-schemas": "workspace:^"
     "@educorvi/vue-json-forms-builder-test-support": "workspace:^"
+    "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^"
     "@hocuspocus/server": "npm:^4.6.0"
     "@iconify-json/ph": "npm:^1.2.2"
     "@nuxt/eslint": "npm:^1.16.0"

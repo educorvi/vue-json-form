@@ -41,12 +41,10 @@ export interface CollabConfig {
     /** Hocuspocus server URL, e.g. "ws://localhost:1234" */
     url: string;
     /**
-     * Document name — the NUMERIC form id. The collab server only accepts
-     * ids as document names (the session key is the form id, which cannot
-     * change). When the host app only knows the form PATH, resolve it to
-     * the id via the backend API before connecting — e.g. with
-     * `resolveCollabDocumentId` from `./api/client` — and pass the
-     * resolved id via `connect({ documentName })`.
+        * Backend form ID or form path. When backendUrl is configured, the
+        * builder resolves paths to the stable numeric ID before connecting;
+        * the collab server only receives that ID as its session key. Without
+        * backendUrl, provide a numeric ID.
      */
     documentName: string;
     /**

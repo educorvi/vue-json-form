@@ -37,7 +37,7 @@ function onDefinitionChange(def: object) {
 | ---------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `jsonSchema`     | `string`                                | Optional initial JSON Schema (JSON string). Imported once; ignored when `collab` is set.                                                 |
 | `uiSchema`       | `string`                                | Optional initial UI Schema (JSON string, VJF format). Imported once; ignored when `collab` is set.                                       |
-| `collab`         | `CollabConfig \| null`                  | Enable realtime collaboration: `{ url, documentName?, token?, user? }` (see below).                                                      |
+| `collab`         | `CollabConfig \| null`                  | Enable realtime collaboration: `{ url, documentName?, token?, user? }` (see below). `documentName` accepts an ID or path when `backendUrl` is set. |
 | `keycloak`       | `KeycloakAuthConfig \| null`            | Keycloak login via keycloak-js (public client, PKCE) for third-party hosts (see below).                                                  |
 | `backendUrl`     | `string`                                | Base URL of a hosting Nuxt backend (`nuxt-auth-utils` session) — session-cookie auth for the collab websocket.                            |
 | `keycloakIdpHint`| `string`                                | `kc_idp_hint` appended to the backend's login URL (session mode only, e.g. `"external-oidc-example"`).                                   |
@@ -62,11 +62,13 @@ The builder has three auth modes, selected by which props are present:
 
 The `CollabConfig` prop:
 
+`documentName` accepts a numeric form ID or a form path. Paths are resolved through the backend API before the websocket connects, so they require `backendUrl`; without it, provide the numeric ID. The collab server always receives the ID, regardless of which reference the host supplied.
+
 ```ts
 interface CollabConfig {
     /** Hocuspocus WebSocket URL, e.g. "ws://localhost:1234" */
     url: string;
-    /** Document name (= form id in the backend). Defaults to "default-form". */
+    /** Form ID or path (path requires backendUrl). Defaults to "default-form". */
     documentName: string;
     /**
      * Optional auth token: an API key ("fb_...") or a Keycloak access
@@ -124,6 +126,8 @@ function onDefinitionChange(definition: object) {
     />
 </template>
 ```
+
+The form-builder backend also hosts the production webcomponent bundle for cross-origin embedding. See the [webcomponent hosting guide](../vue-json-forms-builder-webcomponent/README.md#load-from-the-form-builder-backend).
 
 ## Example 2 — external host, Keycloak credentials set directly
 

@@ -9,6 +9,14 @@ import { resolve } from 'path';
 export default defineConfig({
     base: './',
     plugins: [vue(), vueDevTools()],
+    server: {
+        proxy: {
+            '/api': {
+                target: process.env.E2E_BACKEND_URL ?? 'http://localhost:3000',
+                changeOrigin: true,
+            },
+        },
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),

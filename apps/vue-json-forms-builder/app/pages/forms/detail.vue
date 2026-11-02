@@ -102,10 +102,10 @@ const builderExpanded = ref(false);
 // it — no token minting needed on the frontend.
 const collab = computed<CollabConfig | null>(() => {
     const url = runtimeConfig.public.collabUrl;
-    if (!url || !form.value?.id) return null;
+    if (!url || !form.value?.id || !formPath.value) return null;
     return {
         url,
-        documentName: String(form.value.id),
+        documentName: formPath.value,
     };
 });
 

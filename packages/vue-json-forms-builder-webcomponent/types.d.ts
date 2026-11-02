@@ -23,7 +23,7 @@ export interface VueJsonFormBuilderElement extends HTMLElement {
     uiSchema?: string;
     /** WebSocket URL of a Hocuspocus collab server. */
     collabUrl?: string;
-    /** Document name (= form id in the backend). */
+    /** Form ID, or a form path resolved through backendUrl before connecting. */
     collabDocumentName?: string;
     /** Auth token for the collab websocket. */
     collabToken?: string;

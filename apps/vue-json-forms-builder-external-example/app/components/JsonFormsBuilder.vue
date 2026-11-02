@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+    bundleUrl: string;
     kcUrl?: string;
     kcRealm?: string;
     kcClientId?: string;
@@ -18,14 +19,13 @@ onMounted(async () => {
             await new Promise<void>((resolve, reject) => {
                 const script = document.createElement('script');
                 script.type = 'module';
-                script.src = '/vendor/vue-json-form-builder.js';
+                script.crossOrigin = 'anonymous';
+                script.src = props.bundleUrl;
                 script.onload = () => resolve();
                 script.onerror = () =>
                     reject(
                         new Error(
-                            'Failed to load /vendor/vue-json-form-builder.js. ' +
-                                'Run `yarn sync:webcomponent` (after building the ' +
-                                'webcomponent package) and restart the dev server.'
+                            `Failed to load the form-builder webcomponent from ${props.bundleUrl}.`
                         )
                     );
                 document.head.appendChild(script);
