@@ -26,8 +26,8 @@ import {
     zChildGroup,
     zChildGroupWritable,
     zElementRole,
-    zErrorResponse,
     zForm,
+    zFormDefinitionPayload,
     zFormPatch,
     zFormPatchWritable,
     zFormSchemaPayload,
@@ -35,6 +35,7 @@ import {
     zFormSchemaPayloadArtifactsCreate,
     zFormSchemaPayloadArtifactsJson,
     zFormSchemaPayloadArtifactsUi,
+    zFormWithAccess,
     zFormVersion,
     zFormVersionRef,
     zFormVersionRefWritable,
@@ -46,6 +47,7 @@ import {
     zGroupElementWritable,
     zGroupHierarchyNode,
     zGroupHierarchyNodeWritable,
+    zGroupWithAccess,
     zGroupPatch,
     zGroupPatchWritable,
     zGroupRef,
@@ -81,17 +83,37 @@ import {
     zVisibility,
 } from './generated/zod.gen';
 
-// Side-effect import — registers examples on schemas before spec generation
-import './openapi-schemas';
-
 export const schemaConverters = [new ZodToJsonSchemaConverter()];
 
 export const specGenerateOptions = {
     info: {
         title: 'Form Builder API',
-        description: 'API for the Form Builder application.',
+        description: `API for the vue_form_builder tool. All elements are organized within groups. Groups can contain groups again or forms. Both groups and forms support permissions for users and other groups.
+
+## List endpoints
+- Pagination: List endpoints support offset pagination with page and page_size. They return page metadata (page, page_size, total_count, and total_pages) together with the resource data.
+- Sorting: sort_order selects ascending or descending order; the default is descending.
+- Search: search performs full-text search across relevant resource fields.
+- Ordering: order_by selects a resource-specific field, such as created, updated, title, or member_count.
+- Filters: Available filters depend on the endpoint. Multiple filters are combined using logical AND unless otherwise documented.
+
+## Group hierarchy
+Groups form a tree. GET /groups and GET /groups/{id} return group summaries without children. Use GET /groups/{id}/children for a paginated, filterable list of direct child groups and forms. Group and form id path parameters accept either an integer ID or a URL-encoded full path.
+
+## Permissions
+Permissions have direct and inherited scopes. A child group can extend permissions inherited from its parent, but cannot revoke them. For example, a user with editor access on a parent group retains at least editor access on its descendants.`,
         version: '1.0.0',
     },
+    tags: [
+        { name: 'Status', description: 'Health and readiness checks' },
+        { name: 'Users', description: 'User management' },
+        { name: 'Groups', description: 'Group hierarchy management' },
+        { name: 'Forms', description: 'Form management' },
+        {
+            name: 'API Keys',
+            description: 'API key management for programmatic access',
+        },
+    ],
     commonSchemas: {
         // ── Enums ───────────────────────────────────────────────────────
         GlobalRole: { schema: zGlobalRole },
@@ -106,12 +128,11 @@ export const specGenerateOptions = {
             schema: zResourceModificationWritable,
         },
         PaginatedMeta: { schema: zPaginatedMeta },
-        Error: { schema: zErrorResponse },
         ParentPath: { schema: zParentPath },
         ParentPathEntry: { schema: zParentPathEntry },
 
         // ── Status ──────────────────────────────────────────────────────
-        Status: { schema: zStatusResponse },
+        StatusResponse: { schema: zStatusResponse },
 
         // ── User ────────────────────────────────────────────────────────
         UserShared: { schema: zUserShared },
@@ -124,6 +145,7 @@ export const specGenerateOptions = {
         GroupRef: { schema: zGroupRef },
         GroupPatch: { schema: zGroupPatch },
         Group: { schema: zGroup },
+        GroupWithAccess: { schema: zGroupWithAccess },
         GroupWritable: { schema: zGroupWritable },
         GroupPatchWritable: { schema: zGroupPatchWritable },
         GroupSharedWritable: { schema: zGroupSharedWritable },
@@ -138,6 +160,7 @@ export const specGenerateOptions = {
         // ── Form ────────────────────────────────────────────────────────
         FormPatch: { schema: zFormPatch },
         Form: { schema: zForm },
+        FormWithAccess: { schema: zFormWithAccess },
         FormWritable: { schema: zFormWritable },
         FormPatchWritable: { schema: zFormPatchWritable },
         ChildForm: { schema: zChildForm },
@@ -151,6 +174,7 @@ export const specGenerateOptions = {
         FormSchemaPayloadArtifactsCreate: {
             schema: zFormSchemaPayloadArtifactsCreate,
         },
+        FormDefinitionPayload: { schema: zFormDefinitionPayload },
 
         // ── Form version ────────────────────────────────────────────────
         FormVersionRef: { schema: zFormVersionRef },
@@ -207,42 +231,6 @@ export const specGenerateOptions = {
                 bearerFormat: 'API Key (fb_...)',
                 description:
                     'API key token generated via POST /api-keys. Prefix: `fb_`.',
-            },
-        },
-        responses: {
-            BadRequest: {
-                description: 'The request body or query parameters are invalid',
-                content: {
-                    'application/json': {
-                        schema: { $ref: '#/components/schemas/Error' },
-                    },
-                },
-            },
-            NotFound: {
-                description: 'The requested resource does not exist',
-                content: {
-                    'application/json': {
-                        schema: { $ref: '#/components/schemas/Error' },
-                    },
-                },
-            },
-            Conflict: {
-                description:
-                    'A conflicting resource already exists (e.g. duplicate permission)',
-                content: {
-                    'application/json': {
-                        schema: { $ref: '#/components/schemas/Error' },
-                    },
-                },
-            },
-            UnprocessableEntity: {
-                description:
-                    'Semantic validation failed (e.g. referential integrity)',
-                content: {
-                    'application/json': {
-                        schema: { $ref: '#/components/schemas/Error' },
-                    },
-                },
             },
         },
     },

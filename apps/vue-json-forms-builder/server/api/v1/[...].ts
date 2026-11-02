@@ -4,28 +4,17 @@
  *
  * The OpenAPI spec (JSON + YAML) is served from dedicated Nitro routes:
  *   - /api/v1/spec.json
- *   - /api/v1/spec.yaml
- *   - /api/v1/spec-3.0.json (legacy OpenAPI 3.0-compatible output)
+ *   - /api/v1/spec-3.0.json
  */
+import { SmartCoercionPlugin } from '@orpc/json-schema';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { onError } from '@orpc/server';
-import { appRouter } from '~~/server/orpc/routers';
-import { SmartCoercionPlugin } from '@orpc/json-schema';
-import { OpenAPIReferencePlugin } from '@orpc/openapi/plugins';
 import {
-    schemaConverters,
-    specGenerateOptions,
-} from '~~/server/orpc/openapi-spec';
-
-const docsConfig = {
-    authentication: {
-        securitySchemes: {
-            BearerAuth: {
-                token: 'default-token',
-            },
-        },
-    },
-};
+    createScalarReferencePlugin,
+    createSwaggerReferencePlugin,
+} from '~~/server/orpc/openapi-reference';
+import { appRouter } from '~~/server/orpc/routers';
+import { schemaConverters } from '~~/server/orpc/openapi-spec';
 
 const handler = new OpenAPIHandler(appRouter, {
     interceptors: [
@@ -35,21 +24,10 @@ const handler = new OpenAPIHandler(appRouter, {
     ],
     plugins: [
         new SmartCoercionPlugin({ schemaConverters }),
-        new OpenAPIReferencePlugin({
-            docsProvider: 'scalar',
-            docsPath: '/scalar',
-            specPath: '/spec.json',
-            schemaConverters,
-            specGenerateOptions,
-            docsConfig: docsConfig,
-        }),
-        new OpenAPIReferencePlugin({
-            docsProvider: 'swagger',
-            docsPath: '/swagger',
-            schemaConverters,
-            specGenerateOptions,
-            docsConfig: docsConfig,
-        }),
+        createScalarReferencePlugin('/scalar', '/spec.json'),
+        createSwaggerReferencePlugin('/swagger', '/spec.json'),
+        createScalarReferencePlugin('/scalar-3.0', '/spec-3.0.json'),
+        createSwaggerReferencePlugin('/swagger-3.0', '/spec-3.0.json'),
     ],
 });
 

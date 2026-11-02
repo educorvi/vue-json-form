@@ -3511,6 +3511,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openapi-spec/downgrader@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@openapi-spec/downgrader@npm:0.6.0"
+  dependencies:
+    "@openapi-spec/types": "npm:^0.6.0"
+  checksum: 10/655a78ccdae5b1522b7c6c2a7807dd8eebe23f811ad9a5fdfe9b1b0dd4fdb38ae4217bda2b5c83af4cf7de9b2352ca5fbd361535dc43c2255f9a642921b38360
+  languageName: node
+  linkType: hard
+
+"@openapi-spec/types@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@openapi-spec/types@npm:0.6.0"
+  checksum: 10/21ee0cebc785e10079b0fd99984f87d0fe754f76e04c5a5cdd529ab6dffe59e07778f0af3587f170ee972288c49cbe2b6f4903fb0dab86071fa7b69d2669bd36
+  languageName: node
+  linkType: hard
+
 "@orpc/client@npm:1.15.0, @orpc/client@npm:^1.15.0":
   version: 1.15.0
   resolution: "@orpc/client@npm:1.15.0"
@@ -21568,6 +21584,7 @@ __metadata:
     "@nuxt/icon": "npm:^2.4.1"
     "@nuxt/test-utils": "npm:^4.1.0"
     "@nuxtjs/i18n": "npm:^10.4.0"
+    "@openapi-spec/downgrader": "npm:^0.6.0"
     "@orpc/client": "npm:^1.15.0"
     "@orpc/json-schema": "npm:^1.15.0"
     "@orpc/openapi": "npm:^1.15.0"

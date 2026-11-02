@@ -36,6 +36,7 @@
         "@iconify-json/ph": "^1.2.2",
         "@nuxt/icon": "^2.4.1",
         "@nuxtjs/i18n": "^10.4.0",
+        "@openapi-spec/downgrader": "^0.6.0",
         "@orpc/client": "^1.15.0",
         "@orpc/json-schema": "^1.15.0",
         "@orpc/openapi": "^1.15.0",

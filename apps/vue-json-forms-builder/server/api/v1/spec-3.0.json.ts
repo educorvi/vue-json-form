@@ -1,6 +1,6 @@
-import { getLegacyOpenApiSpec } from '~~/server/orpc/openapi-legacy';
+import { getOpenApi30Spec } from '~~/server/orpc/openapi-legacy';
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler((event) => {
     setResponseHeader(event, 'content-type', 'application/json');
-    return getLegacyOpenApiSpec();
+    return getOpenApi30Spec();
 });

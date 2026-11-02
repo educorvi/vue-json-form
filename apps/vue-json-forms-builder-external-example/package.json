@@ -14,7 +14,7 @@
         "lint": "yarn run -T eslint .",
         "lint:fix": "yarn run -T eslint . --fix",
         "test:e2e": "playwright test",
-        "sync:silent-check-sso": "cp ../../packages/vue-json-forms-builder-webcomponent/public/silent-check-sso.html public/"
+        "sync:silent-check-sso": "mkdir -p public && cp ../../packages/vue-json-forms-builder-webcomponent/public/silent-check-sso.html public/"
     },
     "dependencies": {
         "@bootstrap-vue-next/nuxt": "^0.45.7",

@@ -1,323 +1,205 @@
-/**
- * Registers example values on zod schemas via the JSON_SCHEMA_REGISTRY.
- * These examples appear in the generated OpenAPI spec.
- *
- * Import this file as a side-effect from the API handler to ensure
- * examples are registered before spec generation.
- */
-import { JSON_SCHEMA_REGISTRY } from '@orpc/zod/zod4';
-import {
-    zStatusResponse,
-    zPaginatedMeta,
-    zFormVersionRef,
-    zUser,
-    zUserRef,
-    zGroup,
-    zGroupPatch,
-    zGroupShared,
-    zForm,
-    zFormPatch,
-    zParentPath,
-    zParentPathEntry,
-    zFormSchemaPayload,
-    zApiKey,
-    zApiKeyCreated,
-} from './generated/zod.gen';
+const userRef = {
+    id: 'user-1',
+    name: 'Jane Doe',
+    email: 'jane@example.com',
+};
 
-JSON_SCHEMA_REGISTRY.add(zStatusResponse, {
-    examples: [
+const modification = {
+    created_by: { ...userRef, timestamp: '2025-01-15T10:00:00Z' },
+    updated_by: { ...userRef, timestamp: '2025-01-15T10:00:00Z' },
+};
+
+const group = {
+    id: 1,
+    name: 'marketing',
+    title: 'Marketing',
+    visibility: 'visible',
+    member_count: 2,
+    description: 'Marketing group',
+    group_count: 0,
+    form_count: 1,
+    parent_path: [],
+    parent_id: null,
+    ...modification,
+};
+
+const form = {
+    id: 10,
+    name: 'contact',
+    title: 'Contact form',
+    description: 'Contact details',
+    visibility: 'visible',
+    parent_path: [],
+    parent_id: 1,
+    ...modification,
+};
+
+const jsonSchema = {
+    type: 'object',
+    properties: { name: { type: 'string' } },
+};
+const uiSchema = { type: 'VerticalLayout', elements: [] };
+const apiKey = {
+    id: '3f2b9c1e-8a6d-4f5e-9b2c-1d4e5f6a7b8c',
+    name: 'CI key',
+    description: 'Build automation',
+    identifier: 'fb_example',
+    expires_at: '2027-12-31',
+    created: '2025-01-15T10:00:00Z',
+    updated: '2025-01-15T10:00:00Z',
+};
+const paginated = { page: 1, page_size: 20, total_count: 0, total_pages: 0 };
+const versionRef = {
+    version: '1.0.0',
+    comment: 'Initial version',
+    ...modification,
+};
+const permission = {
+    id: 1,
+    scope: 'direct',
+    expired: false,
+    expire: null,
+    ...modification,
+    user: userRef,
+};
+const permissionMeta = {
+    id: 1,
+    scope: 'direct',
+    expired: false,
+    expire: null,
+    ...modification,
+};
+
+export const openApiSchemaExamples: Record<string, unknown[]> = {
+    GlobalRole: ['admin', 'user'],
+    ElementRole: ['owner', 'editor', 'guest'],
+    PermissionScope: ['direct', 'inherited'],
+    Visibility: ['visible', 'private'],
+    Timestamps: [
+        { created: '2025-01-15T10:00:00Z', updated: '2025-01-15T10:00:00Z' },
+    ],
+    ResourceModification: [modification],
+    ResourceModificationWritable: [
         {
-            status: 'ok' as const,
+            created_by: { id: userRef.id, timestamp: '2025-01-15T10:00:00Z' },
+            updated_by: { id: userRef.id, timestamp: '2025-01-15T10:00:00Z' },
+        },
+    ],
+    PaginatedMeta: [paginated],
+    ParentPath: [[{ name: 'Marketing', path_segment: 'marketing', id: 1 }]],
+    ParentPathEntry: [{ name: 'Marketing', path_segment: 'marketing', id: 1 }],
+    StatusResponse: [
+        { status: 'ok', version: '1.0.0', timestamp: '2025-01-15T10:00:00Z' },
+        {
+            status: 'degraded',
             version: '1.0.0',
-            timestamp: '2025-01-15T10:30:00Z',
+            timestamp: '2025-01-15T10:00:00Z',
+        },
+        {
+            status: 'error',
+            version: '1.0.0',
+            timestamp: '2025-01-15T10:00:00Z',
         },
     ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zPaginatedMeta, {
-    examples: [
+    UserShared: [userRef],
+    User: [
         {
-            page: 1,
-            page_size: 20,
-            total_count: 42,
-            total_pages: 3,
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zFormVersionRef, {
-    examples: [
-        {
-            version: '2.0.0',
-            comment: 'Added new fields for contact info',
-            json: { type: 'object', properties: { name: { type: 'string' } } },
-            ui: { elements: [{ type: 'Control', scope: '#/properties/name' }] },
-            created_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
-        },
-        {
-            version: '1.2.0',
-            comment: 'Initial schema',
-            json: { type: 'object', properties: { title: { type: 'string' } } },
-            ui: {
-                elements: [{ type: 'Control', scope: '#/properties/title' }],
-            },
-            created_by: {
-                id: 'user-uuid-456',
-                name: 'John Smith',
-                email: 'john@example.com',
-                timestamp: '2024-12-01T08:00:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-456',
-                name: 'John Smith',
-                email: 'john@example.com',
-                timestamp: '2024-12-01T08:00:00Z',
+            ...userRef,
+            role: 'user',
+            ...{
+                created: '2025-01-15T10:00:00Z',
+                updated: '2025-01-15T10:00:00Z',
             },
         },
     ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zUser, {
-    examples: [
+    UserRef: [userRef],
+    UserWritable: [{ id: userRef.id, role: 'user' }],
+    GroupShared: [
         {
-            id: 'user-uuid-123',
-            name: 'Jane Doe',
-            email: 'jane@example.com',
-            role: 'admin' as const,
-            created: '2024-06-01T10:00:00Z',
-            updated: '2025-01-15T10:30:00Z',
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zUserRef, {
-    examples: [
-        {
-            id: 'user-uuid-123',
-            name: 'Jane Doe',
-            email: 'jane@example.com',
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zParentPathEntry, {
-    examples: [
-        { name: 'Projects', path_segment: 'projects', id: 1 },
-        { name: 'Marketing', path_segment: 'marketing', id: 5 },
-        { name: 'Campaigns', path_segment: 'campaigns', id: 12 },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zParentPath, {
-    examples: [
-        [
-            { name: 'Projects', path_segment: 'projects', id: 1 },
-            { name: 'Marketing', path_segment: 'marketing', id: 5 },
-        ],
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zGroupShared, {
-    examples: [
-        {
-            id: 5,
+            id: 1,
             name: 'marketing',
             title: 'Marketing',
-            visibility: 'visible' as const,
-            member_count: 12,
+            visibility: 'visible',
+            member_count: 2,
         },
     ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zGroupPatch, {
-    examples: [
+    GroupRef: [
         {
-            id: 5,
+            id: 1,
             name: 'marketing',
             title: 'Marketing',
-            visibility: 'visible' as const,
-            description: 'Marketing department forms and templates',
-            member_count: 12,
-            group_count: 3,
-            form_count: 8,
-            parent_path: [
-                { name: 'Projects', path_segment: 'projects', id: 1 },
-            ],
-            parent_id: 1,
-            created_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2024-06-01T10:00:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
+            visibility: 'visible',
+            member_count: 2,
         },
     ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zGroup, {
-    examples: [
+    GroupPatch: [group],
+    Group: [group],
+    GroupWithAccess: [
+        { ...group, effective_role: 'editor', is_only_owner: false },
+    ],
+    GroupWritable: [{ name: 'marketing', title: 'Marketing' }],
+    GroupPatchWritable: [{ name: 'marketing', title: 'Marketing' }],
+    GroupSharedWritable: [{ name: 'marketing', title: 'Marketing' }],
+    GroupRefWritable: [{ name: 'marketing', title: 'Marketing' }],
+    GroupHierarchyNode: [
+        { id: 1, name: 'marketing', title: 'Marketing', children: [] },
+    ],
+    GroupHierarchyNodeWritable: [
+        { name: 'marketing', title: 'Marketing', children: [] },
+    ],
+    ChildGroup: [{ type: 'group', ...group }],
+    ChildGroupWritable: [
+        { type: 'group', name: 'marketing', title: 'Marketing' },
+    ],
+    GroupElement: [{ type: 'form', ...form }],
+    GroupElementWritable: [
+        { type: 'form', name: 'contact', title: 'Contact form' },
+    ],
+    FormPatch: [form],
+    Form: [form],
+    FormWithAccess: [{ ...form, effective_role: 'owner', is_only_owner: true }],
+    FormWritable: [{ name: 'contact', title: 'Contact form' }],
+    FormPatchWritable: [{ name: 'contact', title: 'Contact form' }],
+    ChildForm: [{ type: 'form', ...form }],
+    ChildFormWritable: [
+        { type: 'form', name: 'contact', title: 'Contact form' },
+    ],
+    FormSchemaPayload: [{ json: jsonSchema, ui: uiSchema }],
+    FormSchemaPayloadArtifacts: [{ json: jsonSchema, ui: uiSchema }],
+    FormSchemaPayloadArtifactsJson: [jsonSchema],
+    FormSchemaPayloadArtifactsUi: [uiSchema],
+    FormSchemaPayloadArtifactsCreate: [{ json: jsonSchema, ui: uiSchema }],
+    FormDefinitionPayload: [{ definition: {} }],
+    FormVersionRef: [{ ...versionRef }],
+    FormVersion: [{ ...versionRef, json: jsonSchema, ui: uiSchema }],
+    FormVersionRefWritable: [{ version: '1.0.0', comment: 'Initial version' }],
+    FormVersionWritable: [
         {
-            id: 5,
-            name: 'marketing',
-            title: 'Marketing',
-            visibility: 'visible' as const,
-            description: 'Marketing department forms and templates',
-            member_count: 12,
-            group_count: 3,
-            form_count: 8,
-            parent_path: [
-                { name: 'Projects', path_segment: 'projects', id: 1 },
-            ],
-            parent_id: 1,
-            created_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2024-06-01T10:00:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
+            version: '1.0.0',
+            comment: 'Initial version',
+            json: jsonSchema,
+            ui: uiSchema,
         },
     ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zFormPatch, {
-    examples: [
-        {
-            id: 42,
-            title: 'Customer Feedback',
-            name: 'customer-feedback',
-            description: 'Monthly customer satisfaction survey',
-            visibility: 'visible' as const,
-            parent_path: [
-                { name: 'Projects', path_segment: 'projects', id: 1 },
-                { name: 'Marketing', path_segment: 'marketing', id: 5 },
-            ],
-            parent_id: 5,
-            created_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2024-06-01T10:00:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zForm, {
-    examples: [
-        {
-            id: 42,
-            title: 'Customer Feedback',
-            name: 'customer-feedback',
-            description: 'Monthly customer satisfaction survey',
-            visibility: 'visible' as const,
-            parent_path: [
-                { name: 'Projects', path_segment: 'projects', id: 1 },
-                { name: 'Marketing', path_segment: 'marketing', id: 5 },
-            ],
-            parent_id: 5,
-            created_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2024-06-01T10:00:00Z',
-            },
-            updated_by: {
-                id: 'user-uuid-123',
-                name: 'Jane Doe',
-                email: 'jane@example.com',
-                timestamp: '2025-01-15T10:30:00Z',
-            },
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zFormSchemaPayload, {
-    examples: [
-        {
-            json: {
-                type: 'object',
-                properties: {
-                    name: { type: 'string', title: 'Full Name' },
-                    email: {
-                        type: 'string',
-                        format: 'email',
-                        title: 'Email Address',
-                    },
-                    rating: {
-                        type: 'integer',
-                        minimum: 1,
-                        maximum: 5,
-                        title: 'Rating',
-                    },
-                },
-                required: ['name', 'email'],
-            },
-            ui: {
-                type: 'VerticalLayout',
-                elements: [
-                    { type: 'Control', scope: '#/properties/name' },
-                    { type: 'Control', scope: '#/properties/email' },
-                    { type: 'Control', scope: '#/properties/rating' },
-                ],
-            },
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zApiKey, {
-    examples: [
-        {
-            id: '3f2b9c1e-8a6d-4f5e-9b2c-1d4e5f6a7b8c',
-            name: 'CI Pipeline Key',
-            description: 'Used for automated CI/CD deployments',
-            identifier: 'fb_a4…f7',
-            expires_at: '2025-12-31',
-            created: '2025-01-15T09:30:00.000Z',
-            updated: '2025-02-01T14:00:00.000Z',
-        },
-    ],
-});
-
-JSON_SCHEMA_REGISTRY.add(zApiKeyCreated, {
-    examples: [
-        {
-            id: '3f2b9c1e-8a6d-4f5e-9b2c-1d4e5f6a7b8c',
-            name: 'CI Pipeline Key',
-            description: 'Used for automated CI/CD deployments',
-            identifier: 'fb_a4…f7',
-            expires_at: '2025-12-31',
-            created: '2025-01-15T09:30:00.000Z',
-            updated: '2025-02-01T14:00:00.000Z',
-            token: 'fb_a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3',
-        },
-    ],
-});
+    PermissionMeta: [permissionMeta],
+    PermissionMetaWritable: [{ role: 'editor' }],
+    Permission: [permission],
+    PermissionWritable: [{ role: 'editor', user_id: userRef.id }],
+    ApiKeyShared: [apiKey],
+    ApiKey: [apiKey],
+    ApiKeyCreate: [{ name: 'CI key' }],
+    ApiKeyCreated: [{ ...apiKey, token: 'fb_example_token' }],
+    ApiKeyPatch: [{ name: 'Updated CI key' }],
+    ApiKeyWritable: [{ name: 'CI key' }],
+    ApiKeySharedWritable: [{ name: 'CI key' }],
+    ApiKeyCreatedWritable: [{ name: 'CI key', token: 'fb_example_token' }],
+    ListUsersResponse: [{ ...paginated, data: [] }],
+    ListGroupsResponse: [{ ...paginated, data: [] }],
+    ListGroupChildrenResponse: [{ ...paginated, data: [] }],
+    ListGroupHierarchyResponse: [[]],
+    ListApiKeysResponse: [[]],
+    ListGroupPermissionsResponse: [{ ...paginated, data: [] }],
+    ListFormsResponse: [{ ...paginated, data: [] }],
+    ListFormPermissionsResponse: [{ ...paginated, data: [] }],
+    ListFormVersionsResponse: [{ ...paginated, data: [] }],
+};
