@@ -15,8 +15,6 @@ import type { Page } from '@playwright/test';
  * real <vue-json-form-builder> custom element talking to the real backend/Keycloak/collab-server stack (see apps/vue-json-forms-builder/docker-compose.yaml).
  */
 const backendUrl = process.env.E2E_BACKEND_URL;
-const playgroundUrl =
-    process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:5173';
 const collabUrl = process.env.E2E_COLLAB_URL ?? HOSTS.collabWs;
 const kcUrl = process.env.E2E_KC_URL ?? HOSTS.kc1;
 
@@ -36,23 +34,16 @@ async function signInToWebcomponent(
     const params = new URLSearchParams({
         collabUrl,
         collabDocumentName: documentName,
-        backendUrl: playgroundUrl,
+        backendUrl: backendUrl!,
+        collabToken: token,
     });
     await page.goto(`/?${params.toString()}`);
-    await page.locator('vue-json-form-builder').evaluate((element, value) => {
-        element.setAttribute('collab-token', value);
-    }, token);
     await expect(builderLocators(page).header()).toBeVisible({
         timeout: 15_000,
     });
 }
 
 test.describe('<vue-json-form-builder> custom element — real backend + collab', () => {
-    test.skip(
-        !backendUrl,
-        'set E2E_BACKEND_URL to run this against the docker-compose ci stack'
-    );
-
     test('authenticates via a real Keycloak login and connects over the real collab websocket', async ({
         page,
         browser,
@@ -85,6 +76,7 @@ test.describe('<vue-json-form-builder> custom element — real backend + collab'
         const params = new URLSearchParams({
             collabUrl,
             collabDocumentName: String(form.id),
+            backendUrl: backendUrl!,
             kcUrl,
             kcRealm: 'dev',
             kcClientId: 'vueformbuilder-embed',
@@ -148,9 +140,10 @@ test.describe('<vue-json-form-builder> custom element — real backend + collab'
 
         const user2SeedContext = await browser.newContext();
         const user2SeedPage = await user2SeedContext.newPage();
-        let user2Client: Awaited<ReturnType<typeof createTestApiClient>> | undefined;
+        let user2Client:
+            Awaited<ReturnType<typeof createTestApiClient>> | undefined;
         let user2KeyId: string | undefined;
-        let user2Token = '';
+        let user2Token: string;
         try {
             await loginViaKeycloak(user2SeedPage, {
                 keycloakBaseUrl: kcUrl,
@@ -192,9 +185,13 @@ test.describe('<vue-json-form-builder> custom element — real backend + collab'
 
                 await expect(
                     builderLocators(idPage).onlineState()
-                ).toHaveAttribute('title', new RegExp(SEEDED_USERS.user2.name), {
-                    timeout: 10_000,
-                });
+                ).toHaveAttribute(
+                    'title',
+                    new RegExp(SEEDED_USERS.user2.name),
+                    {
+                        timeout: 10_000,
+                    }
+                );
                 await expect(
                     builderLocators(pathPage).onlineState()
                 ).toHaveAttribute('title', new RegExp(SEEDED_USERS.admin.name));

@@ -13,7 +13,7 @@ import exampleUI from '@educorvi/vue-json-form/src/exampleSchemas/showcase/ui.js
  *   ?hideHeader=1
  *   ?jsonSchema=<url-encoded JSON>&uiSchema=<url-encoded JSON>
  *   ?collabUrl=ws://ws.localhost:1234&collabDocumentName=<formId>&backendUrl=...
- *     &kcUrl=...&kcRealm=...&kcClientId=...&kcIdpHint=...
+ *     &collabToken=<api-key>&kcUrl=...&kcRealm=...&kcClientId=...&kcIdpHint=...
  */
 const params = new URLSearchParams(window.location.search);
 
@@ -30,6 +30,9 @@ const collabDocumentName = computed(
     () => params.get('collabDocumentName') ?? undefined
 );
 const backendUrl = computed(() => params.get('backendUrl') ?? undefined);
+const collabToken = computed(
+    () => params.get('collabToken') ?? undefined
+);
 const kcUrl = computed(() => params.get('kcUrl') ?? undefined);
 const kcRealm = computed(() => params.get('kcRealm') ?? undefined);
 const kcClientId = computed(() => params.get('kcClientId') ?? undefined);
@@ -44,6 +47,7 @@ const kcIdpHint = computed(() => params.get('kcIdpHint') ?? undefined);
         :collab-url="collabUrl"
         :collab-document-name="collabDocumentName"
         :backend-url="backendUrl"
+        :collab-token="collabToken"
         :kc-url="kcUrl"
         :kc-realm="kcRealm"
         :kc-client-id="kcClientId"

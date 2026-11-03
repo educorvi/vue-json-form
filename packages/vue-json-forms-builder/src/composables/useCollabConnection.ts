@@ -48,12 +48,15 @@ export function useCollabConnection(
 
     async function connectCollab({ token, user }: AuthResult): Promise<void> {
         authToken.value = token ?? collab.value?.token;
+        const displayName =
+            [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
+            user?.username;
         builder.connect({
             token: authToken.value,
             documentName: await resolveDocumentId(),
             user:
-                user?.id && user.username
-                    ? { id: user.id, name: user.username }
+                user?.id && displayName
+                    ? { id: user.id, name: displayName }
                     : undefined,
         });
     }
