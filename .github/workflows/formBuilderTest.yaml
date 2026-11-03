@@ -51,8 +51,8 @@ jobs:
             - name: Install Playwright Chromium
               run: yarn playwright install --with-deps chromium
               working-directory: packages/vue-json-forms-builder-webcomponent
-            - name: Webcomponent mocked browser tests (self-hosted, no backend)
-              run: npx turbo run test:e2e --filter=@educorvi/vue-json-forms-builder-webcomponent
+            - name: Webcomponent browser tests without a backend (test:e2e:mocked)
+              run: npx turbo run test:e2e:mocked --filter=@educorvi/vue-json-forms-builder-webcomponent
 
             # ── Reports ─────────────────────────────────────────────────────
             - name: Upload JUnit results
@@ -140,7 +140,7 @@ jobs:
 
             # TODO: when integration test dont clean up whole db, they can run in parallel
             - name: Run integration tests against the real stack
-              if: steps.affected.outputs.count != '0'
+              if: ${{ !cancelled() && steps.affected.outputs.count != '0' }}
               env:
                   PLAYWRIGHT_BASE_URL: http://localhost:3000
                   NUXT_TEST_BASE_URL: http://localhost:3000
@@ -160,11 +160,11 @@ jobs:
                   --filter=vue-json-forms-builder-external-example
                   --output-logs=full
 
-            - name: Webcomponent e2e against the real stack (backend-gated spec only)
-              if: steps.affected.outputs.count != '0'
+            - name: Webcomponent e2e against the real stack (test:e2e)
+              if: ${{ !cancelled() && steps.affected.outputs.count != '0' }}
               env:
                   E2E_BACKEND_URL: http://localhost:3000
-              run: yarn playwright test -g webcomponent-collab
+              run: yarn run test:e2e
               working-directory: packages/vue-json-forms-builder-webcomponent
 
             # ── Logs & reports ──────────────────────────────────────────────

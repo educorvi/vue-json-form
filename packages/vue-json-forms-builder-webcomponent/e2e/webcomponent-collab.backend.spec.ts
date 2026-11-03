@@ -130,10 +130,6 @@ test.describe('<vue-json-form-builder> custom element — real backend + collab'
             title: `E2E Webcomponent ID and Path ${suffix}`,
             name: `e2e-wc-id-path-${suffix}`,
         });
-        await client.forms.permissions.create({
-            params: { id: String(form.id) },
-            body: { user_id: SEEDED_USERS.user2.sub, role: 'editor' },
-        });
         const adminKey = await client.apiKeys.create({
             body: { name: `E2E webcomponent admin ${suffix}` },
         });
@@ -151,6 +147,10 @@ test.describe('<vue-json-form-builder> custom element — real backend + collab'
                 password: E2E_USERS.user2.password,
                 startUrl: `${backendUrl}/login`,
                 landedUrlPattern: /\/dashboard/,
+            });
+            await client.forms.permissions.create({
+                params: { id: String(form.id) },
+                body: { user_id: SEEDED_USERS.user2.sub, role: 'editor' },
             });
             user2Client = await createTestApiClient({
                 backendUrl: backendUrl!,

@@ -3,12 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 const port = Number(process.env.PLAYWRIGHT_PORT ?? 5173);
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${port}`;
 
-/**
- * Mocked browser tests. Test the real <vue-json-form-builder> custom element against the dev playground (src/App.vue + src/main.dev.ts, which registers it exactly
- * like the production build does — see main.dev.ts).
- */
 export default defineConfig({
     testDir: './e2e',
+    testIgnore: '**/*.backend.spec.ts',
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
@@ -16,7 +13,7 @@ export default defineConfig({
         ? [
               ['list'],
               ['github'],
-              ['junit', { outputFile: 'test-results/junit.xml' }],
+              ['junit', { outputFile: 'test-results/junit-mocked.xml' }],
               ['html', { open: 'never' }],
           ]
         : 'html',

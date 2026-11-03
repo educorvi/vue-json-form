@@ -17,6 +17,17 @@ All tests live under `tests/`, split by how much of the stack they need. Everyth
 
 `Unit`, `component`, and `nuxt` tests can be run in watch mode or headless via Vitest. They do not require a running backend or database. For the `integration` and `e2e` tests, a backend server must be running and pointed at a database. See the following sections for details.
 
+### Test types across the monorepo
+
+| Script             | Runner     | Needs                                                                                   | CI job                        |
+| ------------------ | ---------- | --------------------------------------------------------------------------------------- | ----------------------------- |
+| `test:unit`        | Vitest     | nothing (unit/component/nuxt projects)                                                  | mocked (no backend)           |
+| `test:integration` | Vitest     | a running backend + DB (`NUXT_TEST_BASE_URL`, `DB_*`)                                   | stack-e2e (docker compose ci) |
+| `test:e2e`         | Playwright | the **real infrastructure**: backend, Keycloak, collab, DB                              | stack-e2e (docker compose ci) |
+| `test:e2e:mocked`  | Playwright | nothing but the package's own dev server — backend calls are answered by `page.route()` | mocked (no backend)           |
+
+`turbo run test:all` aggregates all four tiers of a package (so it needs the stack, exactly like `test:e2e` does).
+
 ### Prerequisites
 
 1. Postgres + Keycloak running:

@@ -103,3 +103,19 @@ The user is already logged in at the hosting Nuxt app (`nuxt-auth-utils`). The b
   ui-schema='{ "version": "2.2", "layout": { "type": "VerticalLayout", "elements": [] } }'
 ></vue-json-form-builder>
 ```
+
+## Tests
+
+Browser tests for the custom element live in `e2e/` and are split by real service tests and only needing mock data.
+
+| Script                 | Config                         | Specs                                     | Needs                                                                                   |
+| ---------------------- | ------------------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| `yarn test:e2e:mocked` | `playwright.mocked.config.ts`  | `e2e/*.spec.ts` (not `*.backend.spec.ts`) | nothing but the playground dev server; every backend call is answered by `page.route()` |
+| `yarn test:e2e`        | `playwright.backend.config.ts` | `e2e/*.backend.spec.ts`                   | real backend (`E2E_BACKEND_URL`), Keycloak login, collab server, DB                     |
+
+```bash
+yarn test:e2e:mocked
+
+# against a locally running stack (apps/vue-json-forms-builder/docker-compose.yaml --profile ci)
+E2E_BACKEND_URL=http://localhost:3000 yarn test:e2e
+```

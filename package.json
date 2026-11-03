@@ -56,7 +56,9 @@
         "size": "size-limit",
         "test": "turbo run test:all",
         "test:unit": "turbo run test:unit",
-        "test:e2e": "turbo run test:e2e"
+        "test:integration": "turbo run test:integration",
+        "test:e2e": "turbo run test:e2e",
+        "test:e2e:mocked": "turbo run test:e2e:mocked"
     },
     "workspaces": [
         "apps/*",

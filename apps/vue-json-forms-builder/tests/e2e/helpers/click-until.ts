@@ -19,21 +19,48 @@ import type { Locator } from '@playwright/test';
  * @param clickTarget The element to click, or a function that performs
  *   the click itself (called repeatedly).
  * @param isDone Predicate that observes the outcome of the click.
- * @param options `timeout` in ms (default 10000), `message` for failures.
+ * @param options `timeout` in ms (default 10000), `clickTimeout` in ms per
+ *   click attempt (default 3000), `message` for failures.
  */
 export async function clickUntil(
     clickTarget: Locator | (() => void | Promise<void>),
     isDone: () => boolean | Promise<boolean>,
-    options: { timeout?: number; message?: string } = {}
+    options: {
+        timeout?: number;
+        clickTimeout?: number;
+        message?: string;
+    } = {}
 ): Promise<void> {
     // 10s default: on CI the "click → hydrate → handler runs → outcome"
     // round-trip is comfortably slower than the old 5s (see versions.spec
     // flakiness).
-    const { timeout = 10000, message } = options;
-    const click =
+    const { timeout = 10000, clickTimeout = 3000, message } = options;
+    const click = () =>
         typeof clickTarget === 'function'
-            ? clickTarget
-            : () => clickTarget.click();
+            ? clickTarget()
+            : clickTarget.click({ timeout: clickTimeout });
+
+    let pendingAttempt: Promise<void> | undefined;
+
+    const clickOnce = async (): Promise<void> => {
+        if (pendingAttempt) return;
+
+        const attempt = (async () => {
+            try {
+                await click();
+            } catch {
+                // Not clickable yet / already gone (pre-hydration, detached, own deadline hit) — the poll simply tries again.
+            }
+        })();
+        pendingAttempt = attempt;
+        void attempt.finally(() => {
+            if (pendingAttempt === attempt) pendingAttempt = undefined;
+        });
+
+        await Promise.race([attempt, sleep(clickTimeout)]);
+    };
+
+    const intervals = [25, 50, 100, 250, 500];
 
     await expect
         .poll(
@@ -41,12 +68,14 @@ export async function clickUntil(
                 if (await isDone()) {
                     return true;
                 }
-                // The click target may be detached mid-poll (e.g. after a
-                // navigation) — a failed click is fine, we just retry.
-                await click().catch(() => {});
+                await clickOnce();
                 return false;
             },
-            { timeout, message }
+            { timeout, intervals, message }
         )
         .toBe(true);
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
