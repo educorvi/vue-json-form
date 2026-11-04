@@ -4,6 +4,13 @@
  * Wraps each auto-generated route definition with `.errors()` to add OpenAPI-compatible error response types (BadRequest, NotFound, etc.). Import this instead of `./contract` to get typed errors in the spec.
  */
 import * as gen from './generated/orpc.gen';
+import {
+    isScalarArrayCoercedSchema,
+    unwrapScalarArrayCoercedSchema,
+    withScalarArrayQueryCoercion,
+} from './scalar-array-query-coercion';
+
+export { isScalarArrayCoercedSchema, unwrapScalarArrayCoercedSchema };
 
 // ── Reusable error definitions ────────────────────────────────────────────
 
@@ -198,12 +205,18 @@ const importFormSchema = gen.importFormSchema.errors({
     ...unprocessableContent,
 });
 
-const getFormLatestArtifacts = gen.getFormLatestArtifacts.errors({
+const getFormLatestArtifacts = withScalarArrayQueryCoercion(
+    gen.getFormLatestArtifacts,
+    ['artifacts']
+).errors({
     ...baseErrors,
     ...notFound,
 });
 
-const importFormArtifacts = gen.importFormArtifacts.errors({
+const importFormArtifacts = withScalarArrayQueryCoercion(
+    gen.importFormArtifacts,
+    ['artifacts']
+).errors({
     ...baseErrors,
     ...badRequest,
     ...notFound,
@@ -232,7 +245,10 @@ const getFormSchemaByVersion = gen.getFormSchemaByVersion.errors({
     ...unprocessableContent,
 });
 
-const getFormSchemaVersionArtifacts = gen.getFormSchemaVersionArtifacts.errors({
+const getFormSchemaVersionArtifacts = withScalarArrayQueryCoercion(
+    gen.getFormSchemaVersionArtifacts,
+    ['artifacts']
+).errors({
     ...baseErrors,
     ...notFound,
     ...unprocessableContent,

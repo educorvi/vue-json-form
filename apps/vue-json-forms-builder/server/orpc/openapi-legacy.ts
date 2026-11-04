@@ -10,7 +10,15 @@ const openApi30Version = '3.0.3';
 let cachedSpec30: Promise<Record<string, unknown>> | undefined;
 
 export function getOpenApi30Spec(): Promise<Record<string, unknown>> {
-    cachedSpec30 ??= getOpenApiSpec().then((spec) => {
+    if (import.meta.dev) {
+        return buildSpec30();
+    }
+    cachedSpec30 ??= buildSpec30();
+    return cachedSpec30;
+}
+
+function buildSpec30(): Promise<Record<string, unknown>> {
+    return getOpenApiSpec().then((spec) => {
         const document = {
             ...downgradeSpecV31ToV30(
                 spec as unknown as Parameters<typeof downgradeSpecV31ToV30>[0]
@@ -21,8 +29,6 @@ export function getOpenApi30Spec(): Promise<Record<string, unknown>> {
         replaceDiscriminatedUnionsWithOneOf(document);
         return deduplicateOpenApiDocument(document);
     });
-
-    return cachedSpec30;
 }
 
 function replaceDiscriminatedUnionsWithOneOf(document: OpenApiObject): void {

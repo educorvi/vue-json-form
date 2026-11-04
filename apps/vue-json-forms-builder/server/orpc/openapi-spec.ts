@@ -12,6 +12,7 @@
 // import { OpenAPIGenerator } from '@orpc/openapi';
 // import { appRouter } from '~~/server/orpc/routers';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
+import { scalarArrayQueryConverter } from './scalar-array-query-converter'; // REMOVE-WITH-HACK (scalar-array query coercion)
 import {
     zApiKey,
     zApiKeyCreate,
@@ -83,7 +84,9 @@ import {
     zVisibility,
 } from './generated/zod.gen';
 
-export const schemaConverters = [new ZodToJsonSchemaConverter()];
+const zodSchemaConverter = new ZodToJsonSchemaConverter();
+
+export const schemaConverters = [scalarArrayQueryConverter, zodSchemaConverter];
 
 export const specGenerateOptions = {
     info: {
@@ -104,6 +107,7 @@ Groups form a tree. GET /groups and GET /groups/{id} return group summaries with
 Permissions have direct and inherited scopes. A child group can extend permissions inherited from its parent, but cannot revoke them. For example, a user with editor access on a parent group retains at least editor access on its descendants.`,
         version: '1.0.0',
     },
+    servers: [{ url: '/api/v1', description: 'This deployment' }],
     tags: [
         { name: 'Status', description: 'Health and readiness checks' },
         { name: 'Users', description: 'User management' },
@@ -150,7 +154,7 @@ Permissions have direct and inherited scopes. A child group can extend permissio
         GroupPatchWritable: { schema: zGroupPatchWritable },
         GroupSharedWritable: { schema: zGroupSharedWritable },
         GroupRefWritable: { schema: zGroupRefWritable },
-        GroupHierarchyNode: { schema: zGroupHierarchyNode },
+        GroupHierarchyNode: { schema: zGroupHierarchyNode, strategy: 'output' },
         GroupHierarchyNodeWritable: { schema: zGroupHierarchyNodeWritable },
         ChildGroup: { schema: zChildGroup },
         ChildGroupWritable: { schema: zChildGroupWritable },
@@ -207,6 +211,7 @@ Permissions have direct and inherited scopes. A child group can extend permissio
         ListGroupChildrenResponse: { schema: zListGroupChildrenResponse },
         ListGroupHierarchyResponse: {
             schema: zListGroupHierarchyResponse,
+            strategy: 'output',
         },
         ListApiKeysResponse: { schema: zListApiKeysResponse },
         ListGroupPermissionsResponse: {
@@ -235,311 +240,3 @@ Permissions have direct and inherited scopes. A child group can extend permissio
         },
     },
 };
-
-// const generator = new OpenAPIGenerator({ schemaConverters });
-// let cachedNormalizedSpec: Record<string, any> | null = null;
-
-// /**
-//  * Generate the normalized OpenAPI spec once and cache it.
-//  * Normalization extracts duplicated parameters and ORPC error responses into
-//  * reusable $ref entries in components.
-//  */
-// export async function getNormalizedSpec(): Promise<Record<string, any>> {
-//     if (!cachedNormalizedSpec) {
-//         const spec = await generator.generate(appRouter, specGenerateOptions);
-//         normalizeSpec(spec);
-//         cachedNormalizedSpec = spec;
-//     }
-//     return cachedNormalizedSpec;
-// }
-
-// /**
-//  * Invalidate the cached spec so it is regenerated on next access.
-//  */
-// export function invalidateSpecCache(): void {
-//     cachedNormalizedSpec = null;
-// }
-
-// // ── Normalization helpers ──────────────────────────────────────────────────
-
-// function normalizeSpec(spec: Record<string, any>): void {
-//     if (!spec.components) spec.components = {};
-//     if (!spec.components.parameters) spec.components.parameters = {};
-//     if (!spec.components.responses) spec.components.responses = {};
-
-//     const pathEntries = Object.entries(spec.paths ?? {}) as [
-//         string,
-//         Record<string, any>,
-//     ][];
-
-//     type ParamKey = string; // `${in}:${name}`
-//     const paramFirst = new Map<ParamKey, { def: any; refName: string }>();
-//     const paramCount = new Map<ParamKey, number>();
-
-//     type ErrKey = string; // statusCode like "401"
-//     const errFirst = new Map<ErrKey, { def: any; refName: string }>();
-//     const errCount = new Map<ErrKey, number>();
-
-//     // ── Scan all paths ──────────────────────────────────────────────────
-//     for (const [, methods] of pathEntries) {
-//         for (const operation of Object.values(methods) as any[]) {
-//             // Collect parameters
-//             for (const param of operation?.parameters ?? []) {
-//                 if (param.$ref) continue;
-//                 const key = `${param.in}:${param.name}`;
-//                 paramCount.set(key, (paramCount.get(key) ?? 0) + 1);
-//                 if (!paramFirst.has(key)) {
-//                     paramFirst.set(key, {
-//                         def: structuredClone(param),
-//                         refName: toParamRefName(param.name, param.in),
-//                     });
-//                 }
-//             }
-//             // Collect ORPC error responses
-//             if (!operation?.responses) continue;
-//             for (const [statusCode, response] of Object.entries(
-//                 operation.responses
-//             ) as any) {
-//                 if (response.$ref) continue;
-//                 if (!isOrpcError(response)) continue;
-//                 errCount.set(statusCode, (errCount.get(statusCode) ?? 0) + 1);
-//                 if (!errFirst.has(statusCode)) {
-//                     errFirst.set(statusCode, {
-//                         def: structuredClone(response),
-//                         refName: toErrorRefName(statusCode, response),
-//                     });
-//                 }
-//             }
-//         }
-//     }
-
-//     // ── Populate components (only when used more than once) ────────────
-//     for (const [key, { def, refName }] of paramFirst) {
-//         if ((paramCount.get(key) ?? 0) > 1) {
-//             spec.components.parameters[refName] = def;
-//         }
-//     }
-//     for (const [key, { def, refName }] of errFirst) {
-//         if ((errCount.get(key) ?? 0) > 1) {
-//             spec.components.responses[refName] = def;
-//         }
-//     }
-
-//     // ── Replace inline duplicates with $ref ────────────────────────────
-//     for (const [, methods] of pathEntries) {
-//         for (const operation of Object.values(methods) as any[]) {
-//             if (operation?.parameters) {
-//                 operation.parameters = operation.parameters.map(
-//                     (param: any) => {
-//                         if (param.$ref) return param;
-//                         const key = `${param.in}:${param.name}`;
-//                         const first = paramFirst.get(key);
-//                         if (first && (paramCount.get(key) ?? 0) > 1) {
-//                             return {
-//                                 $ref: `#/components/parameters/${first.refName}`,
-//                             };
-//                         }
-//                         return param;
-//                     }
-//                 );
-//             }
-//             if (!operation?.responses) continue;
-
-//             // ── Replace ORPC error responses with $ref ────────────────
-//             for (const [statusCode, response] of Object.entries(
-//                 operation.responses
-//             ) as any) {
-//                 if (response.$ref) continue;
-//                 if (isOrpcError(response)) {
-//                     const first = errFirst.get(statusCode);
-//                     if (first && (errCount.get(statusCode) ?? 0) > 1) {
-//                         operation.responses[statusCode] = {
-//                             $ref: `#/components/responses/${first.refName}`,
-//                         };
-//                     }
-//                 }
-//             }
-
-//             // ── Replace inline response schemas with $ref ─────────────
-//             // The generator already creates all component schemas via
-//             // commonSchemas, but sometimes (recursive/lazy schemas) it
-//             // inlines the response body instead of using $ref.
-//             // We auto-detect these by fingerprint-matching the inline
-//             // schema against the generated component schemas.
-//             for (const schemaMatch of matchInlineSchemas(
-//                 operation,
-//                 spec.components?.schemas ?? {}
-//             )) {
-//                 operation.responses[schemaMatch.statusCode] = {
-//                     description:
-//                         operation.responses[schemaMatch.statusCode]
-//                             ?.description ?? 'OK',
-//                     content: {
-//                         'application/json': {
-//                             schema: {
-//                                 $ref: `#/components/schemas/${schemaMatch.componentName}`,
-//                             },
-//                         },
-//                     },
-//                 };
-//             }
-//         }
-//     }
-// }
-
-// /**
-//  * For a given operation, find any success responses whose body schema
-//  * matches a registered component schema, returning the match info.
-//  * Uses stable JSON fingerprinting for exact matches, then falls back to
-//  * structural matching (same top-level type) for recursive schemas.
-//  */
-// function* matchInlineSchemas(
-//     operation: any,
-//     componentSchemas: Record<string, any>
-// ): Generator<{ statusCode: string; componentName: string }> {
-//     if (!operation?.responses) return;
-
-//     // Pre-compute fingerprints for all component schemas
-//     const componentFingerprints = new Map<string, string>();
-//     for (const [name, schema] of Object.entries(componentSchemas)) {
-//         const fp = stableFingerprint(schema);
-//         if (fp) componentFingerprints.set(fp, name);
-//     }
-
-//     // Also build a set of type-level signatures for fallback matching
-//     // Key = `type:${type}` for simple types, or `type:array:itemsRef` for arrays
-//     const componentTypeSignatures = new Map<string, string>();
-//     for (const [name, schema] of Object.entries(componentSchemas)) {
-//         const sig = typeSignature(schema);
-//         if (sig) componentTypeSignatures.set(sig, name);
-//     }
-
-//     const statusCodes = Object.keys(operation.responses).filter((code) =>
-//         /^2\\d{2}$/.test(code)
-//     );
-
-//     for (const statusCode of statusCodes) {
-//         const response = operation.responses[statusCode];
-//         if (response?.$ref) continue;
-//         const bodySchema = response?.content?.['application/json']?.schema;
-//         if (!bodySchema || bodySchema.$ref) continue;
-
-//         // 1. Try exact fingerprint match
-//         const inlineFp = stableFingerprint(bodySchema);
-//         if (inlineFp) {
-//             const match = componentFingerprints.get(inlineFp);
-//             if (match) {
-//                 yield { statusCode, componentName: match };
-//                 continue;
-//             }
-//         }
-
-//         // 2. Fallback: structural match by type signature
-//         const inlineSig = typeSignature(bodySchema);
-//         if (inlineSig) {
-//             const match = componentTypeSignatures.get(inlineSig);
-//             if (match) {
-//                 yield { statusCode, componentName: match };
-//             }
-//         }
-//     }
-// }
-
-// /**
-//  * Produce a stable, sorted-key JSON fingerprint for a schema object.
-//  * Replaces $ref URIs with a normalized token so that the same schema
-//  * expressed as inline vs \$ref both produce the same fingerprint.
-//  */
-// function stableFingerprint(obj: any): string | null {
-//     if (!obj || typeof obj !== 'object') return null;
-//     try {
-//         return JSON.stringify(obj, stableSortKeys);
-//     } catch {
-//         return null;
-//     }
-// }
-
-// function stableSortKeys(_key: string, value: any): any {
-//     if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-//         return Object.keys(value)
-//             .sort()
-//             .reduce((sorted: Record<string, any>, k: string) => {
-//                 sorted[k] = value[k];
-//                 return sorted;
-//             }, {});
-//     }
-//     if (Array.isArray(value)) {
-//         return value.map((v: any) =>
-//             typeof v === 'object' && v !== null
-//                 ? JSON.parse(JSON.stringify(v, stableSortKeys))
-//                 : v
-//         );
-//     }
-//     return value;
-// }
-
-// /**
-//  * Produce a lightweight type-level signature for a schema.
-//  * Examples:
-//  *   - { type: 'array', items: { \$ref: '...' } }  →  'array:#/...'
-//  *   - { type: 'object' }                          →  'object'
-//  *   - { allOf: [...] }                            →  'allOf'
-//  * This captures enough structure to avoid false matches.
-//  */
-// function typeSignature(schema: any): string | null {
-//     if (!schema || typeof schema !== 'object') return null;
-//     if (schema.type) {
-//         if (schema.type === 'array' && schema.items?.$ref) {
-//             return `array:${schema.items.$ref}`;
-//         }
-//         return schema.type as string;
-//     }
-//     if (schema.allOf) return 'allOf';
-//     if (schema.oneOf) return 'oneOf';
-//     if (schema.anyOf) return 'anyOf';
-//     return null;
-// }
-
-// function isOrpcError(response: any): boolean {
-//     const schema = response?.content?.['application/json']?.schema;
-//     if (!schema?.oneOf?.length) return false;
-//     return (
-//         schema.oneOf.some(
-//             (v: any) =>
-//                 v?.properties?.defined?.const === true &&
-//                 v?.properties?.code?.const
-//         ) &&
-//         schema.oneOf.some((v: any) => v?.properties?.defined?.const === false)
-//     );
-// }
-
-// function getOrpcErrorCode(response: any): string | null {
-//     const defined = response?.content?.[
-//         'application/json'
-//     ]?.schema?.oneOf?.find((v: any) => v?.properties?.defined?.const === true);
-//     return defined?.properties?.code?.const ?? null;
-// }
-
-// function toParamRefName(name: string, dir: string): string {
-//     const pascal = name
-//         .split(/[-_]/)
-//         .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-//         .join('');
-//     const dirSuffix =
-//         dir === 'path'
-//             ? 'Path'
-//             : dir === 'query'
-//               ? 'Query'
-//               : dir.charAt(0).toUpperCase() + dir.slice(1);
-//     return pascal + dirSuffix;
-// }
-
-// function toErrorRefName(statusCode: string, response: any): string {
-//     const code = getOrpcErrorCode(response) ?? `Http${statusCode}`;
-//     return code
-//         .split('_')
-//         .map(
-//             (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
-//         )
-//         .join('');
-// }

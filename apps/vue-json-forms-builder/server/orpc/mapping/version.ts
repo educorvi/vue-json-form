@@ -49,17 +49,18 @@ export function mapDbRevisionToApiVersion(rev: FormRevision): ApiFormVersion {
 /**
  * Pick JSON/UI artifacts from a derived artifacts object.
  *
- * - Restricts the result to the requested `artifacts` subset when provided.
- *   Accepts a single value (`?artifacts=json`) or an array
- *   (`?artifacts=json&artifacts=ui`) — the OpenAPI schema is a union.
+ * - Restricts the result to the requested `artifacts` kinds when provided
+ *   (the `?artifacts=` query parameter, a list of enum values; the wire
+ *   form `?artifacts=json` is normalized to a list during validation).
+ *   An empty/omitted list means "all artifacts".
  * - Omits null artifacts so the result matches the `FormSchemaPayloadArtifacts`
  *   shape (both keys are optional records).
  */
 export function pickArtifacts(
     artifacts: FormArtifacts | null,
-    which?: ArtifactKey | readonly ArtifactKey[] | null
+    which?: readonly ArtifactKey[] | null
 ): ArtifactMap {
-    const requested = Array.isArray(which) ? which : which ? [which] : [];
+    const requested = which ?? [];
     const keys: readonly ArtifactKey[] =
         requested.length > 0 ? requested : ALL_ARTIFACTS;
     const result: ArtifactMap = {};

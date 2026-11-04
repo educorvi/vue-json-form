@@ -490,15 +490,10 @@ export const zSemanticVersion = z.string().regex(/^\d+\.\d+\.\d+$/);
 
 /**
  * Which artifacts to include in the response. By default all are
- * included. Provide one value (`artifacts=json`) or repeat the
- * parameter (`artifacts=json&artifacts=ui`).
+ * included.
  *
  */
-export const zFormArtifactsQuery = z.union([
-    z.literal('json'),
-    z.literal('ui'),
-    z.array(z.enum(['json', 'ui']))
-]);
+export const zFormArtifactsQuery = z.array(z.enum(['json', 'ui']));
 
 /**
  * Service is healthy
@@ -817,11 +812,7 @@ export const zGetFormLatestArtifactsPath = z.object({
 });
 
 export const zGetFormLatestArtifactsQuery = z.object({
-    artifacts: z.union([
-        z.literal('json'),
-        z.literal('ui'),
-        z.array(z.enum(['json', 'ui']))
-    ]).optional()
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**
@@ -836,11 +827,7 @@ export const zImportFormArtifactsPath = z.object({
 });
 
 export const zImportFormArtifactsQuery = z.object({
-    artifacts: z.union([
-        z.literal('json'),
-        z.literal('ui'),
-        z.array(z.enum(['json', 'ui']))
-    ]).optional()
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**
@@ -892,11 +879,7 @@ export const zGetFormSchemaVersionArtifactsPath = z.object({
 });
 
 export const zGetFormSchemaVersionArtifactsQuery = z.object({
-    artifacts: z.union([
-        z.literal('json'),
-        z.literal('ui'),
-        z.array(z.enum(['json', 'ui']))
-    ]).optional()
+    artifacts: z.array(z.enum(['json', 'ui'])).optional()
 });
 
 /**

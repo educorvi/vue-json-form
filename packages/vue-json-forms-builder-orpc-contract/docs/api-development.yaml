@@ -1280,25 +1280,20 @@ components:
         pattern: '^\d+\.\d+\.\d+$'
         description: Semantic version string (e.g., "1.0.0")
 
-    # Form artifacts query parameters. Accepts a single value
-    # (?artifacts=json) or repeated values (?artifacts=json&artifacts=ui).
+    # Form artifacts
     FormArtifactsQuery:
       name: artifacts
       in: query
       description: |
         Which artifacts to include in the response. By default all are
-        included. Provide one value (`artifacts=json`) or repeat the
-        parameter (`artifacts=json&artifacts=ui`).
+        included.
       style: form
       explode: true
       schema:
-        oneOf:
-          - type: string
-            enum: [json, ui]
-          - type: array
-            items:
-              type: string
-              enum: [json, ui]
+        type: array
+        items:
+          type: string
+          enum: [json, ui]
 
   # ── RESPONSES ─────────────────────────────────────────────────────────────
   responses:

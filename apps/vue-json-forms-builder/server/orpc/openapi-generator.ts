@@ -11,31 +11,35 @@ import { schemaConverters, specGenerateOptions } from './openapi-spec';
 const generator = new OpenAPIGenerator({ schemaConverters });
 let cachedSpec: Promise<Record<string, unknown>> | undefined;
 
-export function getOpenApiSpec(): Promise<Record<string, unknown>> {
-    cachedSpec ??= generator
-        .generate(appRouter, specGenerateOptions)
-        .then((spec) => {
-            const document = spec as unknown as OpenApiObject;
-            const components = document.components;
-            const schemas = isOpenApiObject(components)
-                ? components.schemas
-                : undefined;
+function buildSpec(): Promise<Record<string, unknown>> {
+    return generator.generate(appRouter, specGenerateOptions).then((spec) => {
+        const document = spec as unknown as OpenApiObject;
+        const components = document.components;
+        const schemas = isOpenApiObject(components)
+            ? components.schemas
+            : undefined;
 
-            if (isOpenApiObject(schemas)) {
-                for (const [name, examples] of Object.entries(
-                    openApiSchemaExamples
-                )) {
-                    const schema = schemas[name];
+        if (isOpenApiObject(schemas)) {
+            for (const [name, examples] of Object.entries(
+                openApiSchemaExamples
+            )) {
+                const schema = schemas[name];
 
-                    if (examples && isOpenApiObject(schema)) {
-                        schema.examples = examples as OpenApiValue[];
-                    }
+                if (examples && isOpenApiObject(schema)) {
+                    schema.examples = examples as OpenApiValue[];
                 }
             }
+        }
 
-            return deduplicateOpenApiDocument(document);
-        });
+        return deduplicateOpenApiDocument(document);
+    });
+}
 
+export function getOpenApiSpec(): Promise<Record<string, unknown>> {
+    if (import.meta.dev) {
+        return buildSpec();
+    }
+    cachedSpec ??= buildSpec();
     return cachedSpec;
 }
 
