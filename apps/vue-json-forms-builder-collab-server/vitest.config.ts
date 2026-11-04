@@ -5,9 +5,5 @@ export default defineConfig({
         globals: true,
         environment: 'node',
         include: ['test/unit/**/*.{test,spec}.ts'],
-
-        env: {
-            COLLAB_ALLOWED_ORIGINS: 'http://localhost:3000',
-        },
     },
 });
