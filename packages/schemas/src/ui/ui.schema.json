@@ -4,6 +4,11 @@
     "title": "UI Schema",
     "description": "Schema for the UI Schema",
     "type": "object",
+    "$defs": {
+        "ritaRule": {
+            "$ref": "rita_rule.schema.json"
+        }
+    },
     "properties": {
         "version": {
             "type": "string",
