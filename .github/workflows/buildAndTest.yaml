@@ -78,6 +78,10 @@ jobs:
     test-e2e:
         needs: build
         runs-on: ubuntu-latest
+        container:
+            # Keep this version in sync with Playwright in yarn.lock.
+            image: mcr.microsoft.com/playwright:v1.62.1-noble
+            options: --init --ipc=host
         name: e2e Tests
         timeout-minutes: 60
         strategy:
@@ -101,23 +105,8 @@ jobs:
               with:
                   cache: yarn
                   node-version: lts/*
-            - name: Store Playwright's Version
-              run: |
-                  PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
-                  echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-                  echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-
-            - name: Cache Playwright Browsers for Playwright's Version
-              id: cache-playwright-browsers
-              uses: actions/cache@v6
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
             - run: yarn install --immutable
             - run: yarn run build
-            - name: Install Playwright Browsers
-              run: yarn playwright install --with-deps
-              working-directory: ./packages/vue-json-form
             - name: Run Playwright tests
               run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
               working-directory: ./packages/vue-json-form
@@ -131,6 +120,10 @@ jobs:
     test-e2e-webcomponent:
         needs: build
         runs-on: ubuntu-latest
+        container:
+            # Keep this version in sync with Playwright in yarn.lock.
+            image: mcr.microsoft.com/playwright:v1.62.1-noble
+            options: --init --ipc=host
         name: e2e Tests Webcomponent
         timeout-minutes: 60
         strategy:
@@ -154,23 +147,8 @@ jobs:
               with:
                   cache: yarn
                   node-version: lts/*
-            - name: Store Playwright's Version
-              run: |
-                  PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//' | head -1)
-                  echo "Playwright's Version: $PLAYWRIGHT_VERSION"
-                  echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
-
-            - name: Cache Playwright Browsers for Playwright's Version
-              id: cache-playwright-browsers
-              uses: actions/cache@v6
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
             - run: yarn install --immutable
             - run: yarn run build
-            - name: Install Playwright Browsers
-              run: yarn playwright install --with-deps
-              working-directory: ./packages/webcomponent
             - name: Run Playwright tests
               run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
               working-directory: ./packages/webcomponent
