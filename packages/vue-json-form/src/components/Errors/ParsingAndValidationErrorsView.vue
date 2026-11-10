@@ -27,7 +27,7 @@
             :error="error"
         />
     </div>
-    <h5 class="mt-4" v-if="uiError">UI Schema</h5>
+    <h5 v-if="uiError" class="mt-4">UI Schema</h5>
     <div v-if="validationErrors.uiSchema.parsing.length > 0">
         <h6>Parsing errors</h6>
         <ParsingError

@@ -1,1 +1,1 @@
-export * from "./AjvValidator"
+export * from './AjvValidator';

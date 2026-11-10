@@ -20,7 +20,7 @@ export const allSchemas = [
     showOnSchema,
     uiSchema,
     variantsSchema,
-    wizard
+    wizard,
 ];
 
 export const allSchemasWithIncludedRita = [
@@ -33,5 +33,5 @@ export const allSchemasWithIncludedRita = [
     RefParser.dereference(showOnSchema),
     uiSchema,
     variantsSchema,
-    wizard
+    wizard,
 ];

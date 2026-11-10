@@ -26,7 +26,9 @@ const html = computed(() => {
 </script>
 
 <template>
-    <span v-html="html" class="vjf_htmlRenderer"></span>
+    <!--    HTML is sanitized    -->
+    <!-- eslint-disable-next-line vue/no-v-html  -->
+    <span class="vjf_htmlRenderer" v-html="html"></span>
 </template>
 
 <style scoped></style>

@@ -1,77 +1,36 @@
 <script setup lang="ts">
-import { BFormRadioGroup, type CheckboxOptionRaw } from 'bootstrap-vue-next';
+import { BFormRadioGroup } from 'bootstrap-vue-next';
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData';
 import { controlID } from '@/computedProperties/misc';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
+import { getStores, injectJsonData } from '@/computedProperties/json.ts';
 import {
-    hasOption,
-    hasProperty,
-    isEnumButtonsConfig,
-} from '@/typings/typeValidators';
-import { computed, type ComputedRef, watch } from 'vue';
-import { getOption } from '@/utilities';
-import { injectJsonData } from '@/computedProperties/json.ts';
+    createInvalidValueWatch,
+    getOptions,
+} from '@/renderings/renderHelpers/SelectControl.ts';
 
-const { formData } = storeToRefs(useFormDataStore());
+const { formDataStore } = getStores();
+
+const { formData } = storeToRefs(formDataStore);
+
 const { jsonElement, layoutElement, savePath } = injectJsonData();
+
 const id = controlID(savePath);
-const options: ComputedRef<CheckboxOptionRaw[]> = computed(() => {
-    if (
-        !hasProperty(jsonElement.value, 'enum') ||
-        !Array.isArray(jsonElement.value.enum)
-    ) {
-        return [];
-    }
-    return (
-        jsonElement.value.enum.map((key: any) => {
-            const textVals =
-                (hasOption(layoutElement.value, 'enumTitles') &&
-                    layoutElement.value.options.enumTitles) ||
-                {};
-            const text = textVals[key] || key;
-            return { value: key, text };
-        }) || []
-    );
-});
 
-const displaySettings = computed(() => {
-    let stacked: boolean = getOption(layoutElement.value, 'stacked', false);
-    if (isEnumButtonsConfig(layoutElement.value.options)) {
-        return {
-            displayAs: 'buttons',
-            buttonVariant: getOption(
-                layoutElement.value,
-                'buttonVariant',
-                'primary'
-            ),
-            stacked,
-        };
-    }
-    return { stacked };
-});
+const options = getOptions(jsonElement, layoutElement);
 
-watch(
-    () => jsonElement.value.enum,
-    () => {
-        if (
-            jsonElement.value.enum &&
-            !jsonElement.value.enum.includes(formData.value[savePath])
-        ) {
-            formData.value[savePath] = undefined;
-        }
-    }
-);
+createInvalidValueWatch(jsonElement, formData, savePath);
 </script>
 
 <template>
     <BFormRadioGroup
+        :id="id"
         v-model="formData[savePath]"
         :options="options"
         class="vjf_radioGroup w-100"
-        :id="id"
-        :buttons="displaySettings.displayAs === 'buttons'"
-        :button-variant="displaySettings.buttonVariant || 'primary'"
-        :stacked="displaySettings.stacked"
+        :buttons="getOption(layoutElement, 'displayAs') === 'buttons'"
+        :button-variant="getOption(layoutElement, 'buttonVariant') || 'primary'"
+        :stacked="getOption(layoutElement, 'stacked')"
     />
 </template>
 

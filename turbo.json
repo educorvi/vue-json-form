@@ -1,27 +1,47 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
-  "ui": "tui",
-  "tasks": {
-    "build:internal": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:internal"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types", "^build:internal"]
-    },
-    "dev": {
-      "persistent": true,
-      "cache": false
-    },
-    "test": {
-      "cache": false
-    },
-    "doc": {
-      "outputs": ["docs-dist"],
-      "dependsOn": ["build:internal"]
-    },
-    "//#doc:root": {
-      "dependsOn": ["demo#build:internal", "@educorvi/vue-json-form-schemas#doc"]
+    "$schema": "https://v2-10-2.turborepo.dev/schema.json",
+    "ui": "tui",
+    "concurrency": "100%",
+    "tasks": {
+        "build:internal": {
+            "outputs": ["dist/**"],
+            "dependsOn": ["^build:internal"]
+        },
+        "check-types": {
+            "dependsOn": ["^check-types", "^build:internal"]
+        },
+        "dev:internal": {
+            "persistent": true,
+            "cache": false,
+            "dependsOn": ["^build:internal"]
+        },
+        "lint": {
+            "cache": false
+        },
+        "lint:fix": {
+            "cache": false
+        },
+        "test:all": {
+            "cache": false,
+            "dependsOn": ["test:unit", "test:e2e"]
+        },
+        "test:unit": {
+            "cache": false,
+            "dependsOn": ["^build:internal"]
+        },
+        "test:e2e": {
+            "cache": false,
+            "dependsOn": ["^build:internal"]
+        },
+        "doc": {
+            "outputs": ["docs-dist"],
+            "dependsOn": ["build:internal"]
+        },
+        "//#doc:root": {
+            "dependsOn": [
+                "demo#build:internal",
+                "@educorvi/vue-json-form-schemas#doc"
+            ]
+        }
     }
-  }
 }

@@ -1,11 +1,11 @@
-import { defineStore, type StoreDefinition, storeToRefs } from 'pinia';
+import { defineStore } from 'pinia';
 import type {
     Layout,
     JSONSchema,
     Wizard,
 } from '@educorvi/vue-json-form-schemas';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import type { MapperClass } from '@/typings/customTypes.ts';
+import type { MapperClass, FormData } from '@/typings/customTypes.ts';
 
 import { flattenArray } from '@/stores/helpers/flattenData.ts';
 import { defaultComponents } from '@/renderings/default/DefaultComponents.ts';
@@ -13,22 +13,22 @@ import { defaultComponents } from '@/renderings/default/DefaultComponents.ts';
 function getDefaultData(
     schema: JSONSchema,
     basePath = '/properties/'
-): Record<string, any> {
-    let data: Record<string, any> = {};
+): FormData {
+    let data: FormData = {};
     for (const [key, value] of Object.entries(schema.properties || {})) {
-        if (typeof value === 'boolean') {
-            continue;
-        } else if (value.type === 'object') {
-            data = {
-                ...data,
-                ...getDefaultData(value, basePath + key + '/properties/'),
-            };
-        } else if (value.default !== undefined) {
-            let parsedDefault = value.default;
-            if (parsedDefault === '$now') {
-                parsedDefault = new Date().toISOString();
+        if (typeof value !== 'boolean') {
+            if (value.type === 'object') {
+                data = {
+                    ...data,
+                    ...getDefaultData(value, basePath + key + '/properties/'),
+                };
+            } else if (value.default !== undefined) {
+                let parsedDefault = value.default;
+                if (parsedDefault === '$now') {
+                    parsedDefault = new Date().toISOString();
+                }
+                data[basePath + key] = parsedDefault;
             }
-            data[basePath + key] = parsedDefault;
         }
     }
 
@@ -46,16 +46,8 @@ type FormStructureStoreState = {
     formStateWasValidated: boolean;
 };
 
-type FormStructureStore = StoreDefinition<
-    'formStructure',
-    FormStructureStoreState,
-    { defaultData: Record<string, any> },
-    {}
->;
-
-export const useFormStructureStore: FormStructureStore = defineStore(
-    'formStructure',
-    {
+export function createUseFormStructureStore(formId: string) {
+    return defineStore('structure-' + formId, {
         state: () =>
             ({
                 jsonSchema: undefined,
@@ -86,29 +78,45 @@ export const useFormStructureStore: FormStructureStore = defineStore(
                 return data;
             },
         },
+        actions: {
+            /**
+             * This function is used to retrieve a component from the provided components object or fall back to the plain components if the component is not found.
+             *
+             * @param {keyof RenderInterface} componentName - The name of the component to retrieve.
+             * @returns The retrieved component.
+             */
+            getComponent<E extends keyof RenderInterface>(
+                componentName: E
+            ): NonNullable<RenderInterface[E]> {
+                const components = this.components;
+                if (!components) {
+                    throw new Error('Components not initialized yet');
+                }
+                let component: RenderInterface[E] | undefined =
+                    components[componentName];
+                if (!component) {
+                    component = (defaultComponents as Partial<RenderInterface>)[
+                        componentName
+                    ];
+                }
+                if (!component) {
+                    throw new Error(`Component ${componentName} not found`);
+                }
+                return component;
+            },
+        },
+    });
+}
+
+export type UseFormStructureStore = ReturnType<
+    typeof createUseFormStructureStore
+>;
+const storeUseMap = new Map<string, UseFormStructureStore>();
+export function useFormStructureStore(
+    id: string
+): ReturnType<UseFormStructureStore> {
+    if (!storeUseMap.has(id)) {
+        storeUseMap.set(id, createUseFormStructureStore(id));
     }
-);
-/**
- * This function is used to retrieve a component from the provided components object or fall back to the plain components if the component is not found.
- *
- * @param {keyof RenderInterface} componentName - The name of the component to retrieve.
- * @returns The retrieved component.
- */
-export function getComponent<E extends keyof RenderInterface>(
-    componentName: E
-): NonNullable<RenderInterface[E]> {
-    const components = useFormStructureStore().components;
-    if (!components) {
-        throw new Error('Components not initialized yet');
-    }
-    let component: RenderInterface[E] | undefined = components[componentName];
-    if (!component) {
-        component = (defaultComponents as Partial<RenderInterface>)[
-            componentName
-        ];
-    }
-    if (!component) {
-        throw new Error(`Component ${componentName} not found`);
-    }
-    return component;
+    return (storeUseMap.get(id) as UseFormStructureStore)();
 }

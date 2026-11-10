@@ -1,4 +1,9 @@
-import { JSONSchema, UISchema, ValidationError, Validator } from '@educorvi/vue-json-form-schemas';
+import {
+    JSONSchema,
+    UISchema,
+    ValidationError,
+    Validator,
+} from '@educorvi/vue-json-form-schemas';
 import { ErrorObject, type ValidateFunction } from 'ajv';
 
 export class AjvValidator extends Validator<ErrorObject> {
@@ -14,7 +19,7 @@ export class AjvValidator extends Validator<ErrorObject> {
     }
 
     private mapErrors(errors: ErrorObject[]): ValidationError<ErrorObject>[] {
-        return errors.map(error => {
+        return errors.map((error) => {
             return {
                 title: error.keyword,
                 path: error.instancePath,
@@ -33,9 +38,9 @@ export class AjvValidator extends Validator<ErrorObject> {
     }
 
     protected async initializeInternal(): Promise<void> {
-        const { JsonSchema, UiSchema } = await import('./generated/validatorCode');
+        const { JsonSchema, UiSchema } =
+            await import('./generated/validatorCode');
         this.jsonValidationFunc = JsonSchema;
         this.uiValidationFunc = UiSchema;
     }
-
 }

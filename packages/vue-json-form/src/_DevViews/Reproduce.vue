@@ -5,7 +5,7 @@
         :on-submit-form="onSubmitForm"
         :render-interface="bootstrapComponents"
         :ui-schema="ui"
-        :presetData="presetData"
+        :preset-data="presetData"
         :validator="AjvValidator"
         :mappers="[
             IfThenElseMapper,
@@ -17,46 +17,33 @@
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>
-    <pre id="result-container" v-if="formData">{{
+    <pre v-if="formData" id="result-container">{{
         JSON.stringify(formData, null, 2)
     }}</pre>
 </template>
 
 <script setup lang="ts">
 import {
-    EnglishLanguageProvider,
     RitaDependentOptionsMapper,
+    type FormData,
     type SubmitOptions,
     VueJsonForm,
 } from '../main';
+import { presetData } from './presetDataForReproduce.ts';
 
 import json from '../exampleSchemas/reproduce/schema.json';
 import ui from '../exampleSchemas/reproduce/ui.json';
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 
-import { markRaw, nextTick, ref, type Ref, watch } from 'vue';
+import { ref, type Ref } from 'vue';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
 import { DependentRequiredMapper } from '@/Mappers/dependentRequiredMapper.ts';
 
-const presetData: Ref<Record<string, any> | undefined> = ref({
-    'jso-39-multiselect': ['option 2', 'option 3'],
-    'jso-39-string': 'Test',
-    'jso-39-array': ['Hello', 'World'],
-    'jso-39-object': {
-        test: 'ABC',
-        number: 14,
-    },
-    arrInArrPres: [
-        ['item1', 'item2'],
-        ['item3', 'item4'],
-    ],
-});
+const formData: Ref<undefined | FormData> = ref(undefined);
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
-
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
     switch (options.action) {
         case 'console':

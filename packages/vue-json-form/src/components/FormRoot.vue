@@ -1,18 +1,21 @@
 <template>
+    <!-- Autocomplete is disabled at the form level because it led to bugs when navigating back to a form. Text and number inputs enable it again at the control level. -->
     <form
+        v-if="storedUiSchema && storedJsonSchema"
+        :id="id"
+        :class="formClass"
+        autocomplete="off"
         @submit="onSubmitFormLocal"
         @reset="resetForm"
         @invalid.capture="formStateWasValidated = true"
-        v-if="storedUiSchema && storedJsonSchema"
-        :class="formClass"
     >
         <FormWrap
             v-if="isLayout(storedUiSchema)"
-            :layoutElement="storedUiSchema"
+            :layout-element="storedUiSchema"
         />
         <Wizard
             v-else-if="isWizard(storedUiSchema)"
-            :wizardElement="storedUiSchema"
+            :wizard-element="storedUiSchema"
         />
         <slot />
     </form>
@@ -25,7 +28,7 @@
                 validationErrors.general.length >
             0
         "
-        :validationErrors="validationErrors"
+        :validation-errors="validationErrors"
     />
 </template>
 
@@ -38,7 +41,6 @@ import {
     setActivePinia,
     storeToRefs,
 } from 'pinia';
-import { useFormStructureStore } from '@/stores/formStructure';
 import {
     type JSONSchema,
     EmptyValidator,
@@ -50,18 +52,24 @@ import {
 } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import type { RenderInterface } from '@/renderings/RenderInterface.ts';
-import { useFormDataStore } from '@/stores/formData';
 import {
     descendantControlOverridesProviderKey,
+    formIdProviderKey,
     languageProviderKey,
     requiredProviderKey,
 } from '@/components/ProviderKeys';
 import {
     checkUiSchemaVersion,
     generateUISchema,
+    generateUUID,
     SUPPORTED_UISCHEMA_VERSION,
 } from '@/Commons';
-import type { GenerationOptions, MapperClass } from '@/typings/customTypes';
+import type {
+    GenerationOptions,
+    MapperClass,
+    ParsedAndUnvalidatedJson,
+    FormData,
+} from '@/typings/customTypes';
 import ParsingAndValidationErrorsView from '@/components/Errors/ParsingAndValidationErrorsView.vue';
 import {
     AutoLanguageProvider,
@@ -70,7 +78,7 @@ import {
 import { isLayout, isWizard } from '@/typings/typeValidators';
 import Wizard from '@/components/LayoutElements/Wizard/Wizard.vue';
 import { flattenData } from '@/stores/helpers/flattenData.ts';
-import { addFilesToFormdata } from '@/stores/helpers/fileData.ts';
+import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     /**
@@ -78,7 +86,7 @@ const props = defineProps<{
      * @param data The data of the form
      */
     onSubmitForm: (
-        data: Record<string, any>,
+        data: FormData,
         customSubmitOptions: SubmitOptions,
         evt: SubmitEvent
     ) => Promise<void>;
@@ -86,12 +94,12 @@ const props = defineProps<{
     /**
      * The JSON Schema of the form
      */
-    jsonSchema: Record<string, any>;
+    jsonSchema: ParsedAndUnvalidatedJson;
 
     /**
      * The UI Schema of the form
      */
-    uiSchema?: Record<string, any>;
+    uiSchema?: ParsedAndUnvalidatedJson;
 
     /**
      * The Render Interface
@@ -102,7 +110,7 @@ const props = defineProps<{
     /**
      * Data that should be loaded into the form.
      */
-    presetData?: Record<string, any>;
+    presetData?: FormData;
 
     /**
      * Options for the generation of the UI-Schema if no UI-Schema is provided
@@ -135,7 +143,16 @@ const props = defineProps<{
      * Provides internationalized string, for example for validation errors
      */
     languageProvider?: LanguageProvider;
+
+    /**
+     * Optional stable identifier for this form instance.
+     * If not provided, a UUID will be generated.
+     */
+    formId?: string;
 }>();
+
+const id = props.formId ?? generateUUID();
+provide(formIdProviderKey, id);
 
 setActivePinia(getActivePinia() || createPinia());
 
@@ -145,18 +162,20 @@ provide(
     props.languageProvider || new AutoLanguageProvider()
 );
 
+const { formStructureStore, formDataStore } = getStores(id);
+
 const {
     jsonSchema: storedJsonSchema,
     uiSchema: storedUiSchema,
-    mappers,
+    mappers: storeMappers,
     components,
     defaultData,
     buttonWaiting,
     formStateWasValidated,
-} = storeToRefs(useFormStructureStore());
+} = storeToRefs(formStructureStore);
 
 const { formData, defaultFormData, cleanedFormData } =
-    storeToRefs(useFormDataStore());
+    storeToRefs(formDataStore);
 
 const validationErrors: Ref<ValidationErrors<unknown>> = ref({
     general: [],
@@ -196,18 +215,23 @@ async function onSubmitFormLocal(evt: Event) {
     } else {
         submitData = toRaw(cleanedFormData.value.json);
     }
-    submitData = await addFilesToFormdata(submitData);
     const customSubmitOptions =
         JSON.parse(
             decodeURIComponent(
-                submitEvt.submitter?.attributes?.getNamedItem('submitOptions')
+                submitEvt.submitter?.attributes?.getNamedItem('submit-options')
                     ?.value || 'false'
             )
         ) || {};
 
     buttonWaiting.value[customSubmitOptions['id']] = true;
-    await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
-    buttonWaiting.value[customSubmitOptions['id']] = false;
+    try {
+        await props.onSubmitForm(submitData, customSubmitOptions, submitEvt);
+    } catch (e: unknown) {
+        console.error('Failed to submit form');
+        console.error(e);
+    } finally {
+        buttonWaiting.value[customSubmitOptions['id']] = false;
+    }
 }
 
 function initDefaultFormData() {
@@ -230,7 +254,7 @@ function resetForm(evt: Event) {
 }
 
 async function parseJsonSchema(
-    jsonSchema: Record<string, any>
+    jsonSchema: ParsedAndUnvalidatedJson
 ): Promise<JSONSchema | null> {
     if (validator.value.validateJsonSchema(jsonSchema)) {
         return jsonSchema;
@@ -242,7 +266,7 @@ async function parseJsonSchema(
 }
 
 async function parseUiSchema(
-    uiSchema: Record<string, any> | undefined,
+    uiSchema: ParsedAndUnvalidatedJson | undefined,
     jsonSchema: JSONSchema
 ): Promise<UISchema | null> {
     if (uiSchema) {
@@ -268,18 +292,20 @@ async function parseUiSchema(
     }
 }
 
-async function assignStoreData(
-    obj: {
-        jsonSchema: Record<string, any>;
-        uiSchema: Record<string, any> | undefined;
-        renderInterface: RenderInterface | undefined;
-    } & Record<string, any>
-) {
-    components.value = obj.renderInterface
-        ? markRaw(obj.renderInterface)
-        : undefined;
+function assignRenderInterface(renderInterface: RenderInterface) {
+    components.value = renderInterface ? markRaw(renderInterface) : undefined;
+}
 
-    mappers.value = props.mappers || [];
+async function assignStoreData(obj: {
+    jsonSchema: ParsedAndUnvalidatedJson;
+    uiSchema: ParsedAndUnvalidatedJson | undefined;
+    renderInterface: RenderInterface | undefined;
+}) {
+    if (obj.renderInterface) {
+        assignRenderInterface(obj.renderInterface);
+    }
+
+    storeMappers.value = props.mappers || [];
 
     const json = await parseJsonSchema(obj.jsonSchema).catch((err) => {
         validationErrors.value.jsonSchema.parsing.push(err);
@@ -298,14 +324,19 @@ async function assignStoreData(
 
 provide(requiredProviderKey, true);
 
-onBeforeMount(async () => {
+async function initValidator() {
     try {
         await validator.value.initialize();
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('Failed to initialize validator');
         console.error(e);
-        validationErrors.value.general = [e];
+        if (e instanceof Error) {
+            validationErrors.value.general = [e];
+        }
     }
+}
+async function init() {
+    await initValidator();
     await assignStoreData({
         jsonSchema: props.jsonSchema,
         uiSchema: props.uiSchema,
@@ -313,13 +344,17 @@ onBeforeMount(async () => {
     });
     initDefaultFormData();
     setDefaultFormData();
-});
+}
 
-watch(props, (newVal) => {
-    assignStoreData({
-        jsonSchema: newVal.jsonSchema,
-        uiSchema: newVal.uiSchema,
-        renderInterface: newVal.renderInterface,
-    });
-});
+onBeforeMount(init);
+
+watch([() => props.jsonSchema, () => props.uiSchema], init);
+watch(validator, initValidator);
+
+watch(
+    () => props.renderInterface,
+    (newVal) => {
+        assignRenderInterface(newVal);
+    }
+);
 </script>

@@ -49,9 +49,8 @@
                 "type": "Control",
                 "scope": "/properties/group_selector",
                 "options": {
-                    "displayAs": "buttons",
-                    "buttonVariant": "outline-primary",
-                    "label": false
+                    "displayAs": "radiobuttons",
+                    "buttonVariant": "outline-primary"
                 }
             },
             {
@@ -143,6 +142,9 @@
             },
             {
                 "type": "Group",
+                "options": {
+                    "label": "Group 2"
+                },
                 "showOn": {
                     "type": "EQUALS",
                     "path": "group_selector",
@@ -197,7 +199,7 @@
             },
             {
                 "type": "HTML",
-                "htmlData": "<p>Ich bin ein <strong class='text-primary'>HTML</strong> Text</p>"
+                "htmlData": "<p>I am a <strong class='text-primary'>HTML</strong> Text with a <a href='https://educorvi.de'>link</a></p>"
             },
             {
                 "type": "Divider"
@@ -241,6 +243,18 @@
                         "options": {
                             "variant": "warning",
                             "formnovalidate": true
+                        }
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit with options",
+                        "options": {
+                            "variant": "secondary",
+                            "submitOptions": {
+                                "action": "myAction",
+                                "customData": "testValue"
+                            }
                         }
                     },
                     {

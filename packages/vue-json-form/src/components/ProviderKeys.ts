@@ -1,10 +1,4 @@
-import {
-    type ComputedRef,
-    inject,
-    type InjectionKey,
-    provide,
-    type Ref,
-} from 'vue';
+import { inject, type InjectionKey, provide, type Ref } from 'vue';
 import type {
     Control,
     DescendantControlOverride,
@@ -14,8 +8,8 @@ import type { JSONSchema } from '@educorvi/vue-json-form-schemas';
 import { cleanScope } from '@/computedProperties/json';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
-// export const layoutProviderKey = Symbol() as InjectionKey<Control>;
-// export const jsonElementProviderKey = Symbol() as InjectionKey<JSONSchema>;
+export const formIdProviderKey = Symbol() as InjectionKey<string>;
+
 export const formStructureProviderKey = Symbol() as InjectionKey<
     Ref<{
         jsonElement: JSONSchema;
@@ -23,10 +17,6 @@ export const formStructureProviderKey = Symbol() as InjectionKey<
     }>
 >;
 export const requiredProviderKey = Symbol() as InjectionKey<boolean>;
-
-export const savePathOverrideProviderKey = Symbol() as InjectionKey<
-    string | undefined
->;
 
 export const savePathProviderKey = Symbol() as InjectionKey<string>;
 

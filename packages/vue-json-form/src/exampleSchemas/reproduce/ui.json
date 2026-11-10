@@ -1,9 +1,231 @@
 {
-    "$schema": "../../../../schemas/dist/ui.schema.json",
+    "$schema": "../../../../schemas/src/generated/ui-merged.schema.json",
     "version": "2.1",
     "layout": {
         "type": "VerticalLayout",
         "elements": [
+            {
+                "type": "Group",
+                "options": { "label": "JSO-172" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithAddressObject",
+                        "options": {
+                            "uiSchema": {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                    {
+                                        "type": "HorizontalLayout",
+                                        "elements": [
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/arrayWithAddressObject/items/properties/name"
+                                            },
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/arrayWithAddressObject/items/properties/surname"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Control",
+                                        "scope": "/properties/arrayWithAddressObject/items/properties/address",
+                                        "options": {
+                                            "multi": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/objectWithUiSchema",
+                        "options": {
+                            "uiSchema": {
+                                "type": "VerticalLayout",
+                                "elements": [
+                                    {
+                                        "type": "HorizontalLayout",
+                                        "elements": [
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/objectWithUiSchema/properties/name"
+                                            },
+                                            {
+                                                "type": "Control",
+                                                "scope": "/properties/objectWithUiSchema/properties/surname"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Control",
+                                        "scope": "/properties/objectWithUiSchema/properties/address",
+                                        "options": {
+                                            "multi": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": { "label": "JSO-140" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/numberWithMultiple"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/numberWithMultipleSmallerOne"
+                    },
+                    {
+                        "type": "Button",
+                        "buttonType": "submit",
+                        "text": "Submit"
+                    }
+                ]
+            },
+            {
+                "type": "Control",
+                "scope": "/properties/objectWithInfo",
+                "options": {
+                    "help": {
+                        "text": "This is a test help text for the objectWithInfo field"
+                    }
+                }
+            },
+            {
+                "type": "Group",
+                "options": { "label": "JSO-151" },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/arrayWithObjectWithPreset"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/checkboxesWithPreset"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/fileUploadWithPreset",
+                        "options": {
+                            "help": {
+                                "text": "This is a test help text for the fileUploadWithPreset field"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-146"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-146/properties/feld"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-146/properties/objekt",
+                        "showOn": {
+                            "id": "ritaRule-objekt",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "greater",
+                                "arguments": [
+                                    {
+                                        "type": "macro",
+                                        "macro": {
+                                            "type": "length",
+                                            "array": {
+                                                "type": "atom",
+                                                "path": "jso-146.feld",
+                                                "default": ""
+                                            }
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        },
+                        "options": {
+                            "descendantControlOverrides": {
+                                "/properties/jso-146/properties/objekt/properties/abhaengiges-pflichtfeld-in-objekt": {
+                                    "showOn": {
+                                        "id": "ritaRule-abhaengiges-pflichtfeld-in-objekt",
+                                        "rule": {
+                                            "type": "comparison",
+                                            "operation": "greater",
+                                            "arguments": [
+                                                {
+                                                    "type": "macro",
+                                                    "macro": {
+                                                        "type": "length",
+                                                        "array": {
+                                                            "type": "atom",
+                                                            "path": "jso-146.objekt.unabhaengiges-feld-in-objekt",
+                                                            "default": ""
+                                                        }
+                                                    }
+                                                },
+                                                0
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Group",
+                "options": {
+                    "label": "JSO-116"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/test"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/dependent",
+                        "showOn": {
+                            "id": "ritaRule-dependent",
+                            "rule": {
+                                "type": "comparison",
+                                "operation": "equal",
+                                "arguments": [
+                                    {
+                                        "type": "atom",
+                                        "path": "jso-116.test",
+                                        "default": false
+                                    },
+                                    true
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/number"
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "/properties/jso-116/properties/number-dependent"
+                    }
+                ]
+            },
             {
                 "type": "Group",
                 "options": {
@@ -229,7 +451,21 @@
                     {
                         "type": "Modal",
                         "button": {
-                            "text": "Show additional information in Modal"
+                            "text": "Show additional information in Modal",
+                            "variant": "outline-primary"
+                        },
+                        "modal": {
+                            "title": "Additional information",
+                            "content": "This is some additional information that can be shown in a modal. It supports <strong class=\"text-success\">HTML</strong>.",
+                            "size": "medium"
+                        }
+                    },
+                    {
+                        "type": "Modal",
+                        "button": {
+                            "text": "Show additional information in Modal",
+                            "asLink": true,
+                            "variant": "info"
                         },
                         "modal": {
                             "title": "Additional information",

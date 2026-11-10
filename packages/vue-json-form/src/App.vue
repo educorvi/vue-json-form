@@ -1,9 +1,9 @@
 <template>
     <header v-if="useRoute().query.nonav !== 'true'">
         <BNavbar
+            v-b-color-mode="'dark'"
             variant="primary"
             toggleable="sm"
-            v-b-color-mode="'dark'"
             sticky="top"
         >
             <BNavbarBrand href="/">VueJsonForm</BNavbarBrand>
@@ -13,10 +13,13 @@
                     <BNavItem :to="{ name: 'showcase' }">Showcase</BNavItem>
                     <BNavItem :to="{ name: 'reproduce' }">Reproduce</BNavItem>
                     <BNavItem :to="{ name: 'wizard' }">Wizard</BNavItem>
+                    <BNavItem :to="{ name: 'custom-schema' }"
+                        >Custom Schema</BNavItem
+                    >
                     <BNavForm v-b-color-mode="theme" class="ms-auto">
                         <BFormSelect
-                            :options="themeOptions"
                             v-model="theme"
+                            :options="themeOptions"
                             aria-label="Theme selection"
                         />
                     </BNavForm>

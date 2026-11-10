@@ -6,7 +6,6 @@ import { externalizeDeps } from 'vite-plugin-externalize-deps';
 export default defineConfig({
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             entry: './src/index.ts',
             name: 'vue-json-form-schemas',
@@ -26,10 +25,18 @@ export default defineConfig({
         }),
         viteStaticCopy({
             targets: [
-                { src: 'src/generated/ui-merged.schema.json', dest: '.', rename: 'ui.schema.json' },
-                { src: 'src/generated/json-merged.schema.json', dest: '.', rename: 'json-2019.schema.json' }
+                {
+                    src: 'src/generated/ui-merged.schema.json',
+                    dest: '.',
+                    rename: '../../ui.schema.json',
+                },
+                {
+                    src: 'src/generated/json-merged.schema.json',
+                    dest: '.',
+                    rename: '../../json-2019.schema.json',
+                },
             ],
         }),
-        externalizeDeps()
+        externalizeDeps(),
     ],
 });

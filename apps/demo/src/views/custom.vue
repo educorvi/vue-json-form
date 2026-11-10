@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
-import { bootstrapComponents, type SubmitOptions, VueJsonForm } from '@educorvi/vue-json-form';
+import {
+    bootstrapComponents,
+    type ParsedAndUnvalidatedJson,
+    VueJsonForm,
+    type FormData,
+} from '@educorvi/vue-json-form';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper, OneOfToEnumMapper } from '@educorvi/vue-json-form';
 
 const emit = defineEmits<{
-    viewCode: [title: string, object: Record<any, any>];
+    viewCode: [title: string, object: ParsedAndUnvalidatedJson];
 }>();
 
-async function submitMethod(data: Record<string, any>, customSubmitOptions: SubmitOptions, evt: SubmitEvent) {
+async function submitMethod(data: FormData) {
     emit('viewCode', 'Form Results', data);
 }
 
@@ -54,8 +59,8 @@ const rawUiSchema = ref(undefined as File | undefined);
 const rawJsonSchemaInput = ref(undefined as string | undefined);
 const rawUiSchemaInput = ref(undefined as string | undefined);
 
-const jsonSchema = ref(undefined as Record<string, any> | undefined);
-const uiSchema = ref(undefined as Record<string, any> | undefined);
+const jsonSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
+const uiSchema = ref(undefined as ParsedAndUnvalidatedJson | undefined);
 
 function clear() {
     rawJsonSchema.value = undefined;
@@ -73,20 +78,37 @@ function clear() {
     <h1>Custom form</h1>
     Upload and display your own form here.
     <div class="mt-3 mb-3">
-        <b-form-checkbox v-model="submitAsScopes">Submit as scopes</b-form-checkbox>
-        <b-form-checkbox v-model="submitButton">Add submit button</b-form-checkbox>
+        <b-form-checkbox v-model="submitAsScopes"
+            >Submit as scopes</b-form-checkbox
+        >
+        <b-form-checkbox v-model="submitButton"
+            >Add submit button</b-form-checkbox
+        >
     </div>
     <BCard no-body>
         <BTabs card>
             <BTab title="Input">
                 <b-form @submit="loadSchemasFromInput">
                     <label for="json-schema">JSON Schema</label>
-                    <b-form-textarea id="json-schema" v-model="rawJsonSchemaInput" required rows="12"></b-form-textarea>
-                    <label for="json-schema" class="mt-2">UI Schema (Optional)</label>
-                    <b-form-textarea id="json-schema" v-model="rawUiSchemaInput" rows="12"></b-form-textarea>
+                    <b-form-textarea
+                        id="json-schema"
+                        v-model="rawJsonSchemaInput"
+                        required
+                        rows="12"
+                    ></b-form-textarea>
+                    <label for="json-schema" class="mt-2"
+                        >UI Schema (Optional)</label
+                    >
+                    <b-form-textarea
+                        id="json-schema"
+                        v-model="rawUiSchemaInput"
+                        rows="12"
+                    ></b-form-textarea>
 
                     <b-button-group class="mt-3 w-100">
-                        <b-button type="submit" variant="primary">Load Schemas</b-button>
+                        <b-button type="submit" variant="primary"
+                            >Load Schemas</b-button
+                        >
                         <b-button type="reset" @click="clear">Clear</b-button>
                     </b-button-group>
                 </b-form>
@@ -94,30 +116,51 @@ function clear() {
             <BTab title="Upload">
                 <b-form @submit="loadSchemas">
                     <label for="json-schema">Upload JSON Schema</label>
-                    <b-form-file id="json-schema" v-model="rawJsonSchema" required></b-form-file>
-                    <label for="json-schema" class="mt-2">Upload UI Schema (Optional)</label>
-                    <b-form-file id="json-schema" v-model="rawUiSchema"></b-form-file>
+                    <b-form-file
+                        id="json-schema"
+                        v-model="rawJsonSchema"
+                        required
+                    ></b-form-file>
+                    <label for="json-schema" class="mt-2"
+                        >Upload UI Schema (Optional)</label
+                    >
+                    <b-form-file
+                        id="json-schema"
+                        v-model="rawUiSchema"
+                    ></b-form-file>
 
                     <b-button-group class="mt-3 w-100">
-                        <b-button type="submit" variant="primary">Load Schemas</b-button>
+                        <b-button type="submit" variant="primary"
+                            >Load Schemas</b-button
+                        >
                         <b-button type="reset" @click="clear">Clear</b-button>
                     </b-button-group>
                 </b-form>
             </BTab>
         </BTabs>
     </BCard>
-    <hr>
-    <vue-json-form v-if="jsonSchema" :jsonSchema="jsonSchema" :uiSchema="uiSchema"
-                   :returnDataAsScopes="submitAsScopes" :onSubmitForm="submitMethod"
-                   :mappers="[OneOfToEnumMapper, IfThenElseMapper]" :validator="AjvValidator"
-                   :render-interface="bootstrapComponents">
-        <b-button v-if="submitButton" type="submit" class="mt-3 w-100" variant="primary">Submit</b-button>
+    <hr />
+    <vue-json-form
+        v-if="jsonSchema"
+        :json-schema="jsonSchema"
+        :ui-schema="uiSchema"
+        :return-data-as-scopes="submitAsScopes"
+        :on-submit-form="submitMethod"
+        :mappers="[OneOfToEnumMapper, IfThenElseMapper]"
+        :validator="AjvValidator"
+        :render-interface="bootstrapComponents"
+    >
+        <b-button
+            v-if="submitButton"
+            type="submit"
+            class="mt-3 w-100"
+            variant="primary"
+            >Submit</b-button
+        >
     </vue-json-form>
     <div v-else>
         <p class="text-muted">Load at least a JSON Schema to display a form</p>
     </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

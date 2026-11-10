@@ -2,17 +2,20 @@ import type { ComputedRef } from 'vue';
 import type { LanguageProvider } from '@/intl/LanguageProvider.ts';
 
 export function validateFileInput(
-    data: any,
+    data: File | File[] | undefined,
     required: boolean,
     maxFileSize: number | undefined,
     isMultipleUpload: ComputedRef<boolean>,
     minNumberOfFiles: ComputedRef<number>,
     maxNumberOfFiles: ComputedRef<number>,
     languageProvider: LanguageProvider | undefined,
-    el: HTMLInputElement
+    el: HTMLInputElement | null
 ): boolean {
+    if (!el) {
+        return true;
+    }
     // Validate number of files
-    if (isMultipleUpload.value) {
+    if (isMultipleUpload.value && Array.isArray(data)) {
         if (
             maxNumberOfFiles.value &&
             (data?.length || 0) > maxNumberOfFiles.value

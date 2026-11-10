@@ -1,7 +1,7 @@
 // @ts-check
 
 /** @type {import('@yarnpkg/types')} */
-const {defineConfig} = require(`@yarnpkg/types`);
+const { defineConfig } = require(`@yarnpkg/types`);
 
 /**
  * @typedef {import('@yarnpkg/types').Yarn.Constraints.Context} Context
@@ -13,14 +13,14 @@ const {defineConfig} = require(`@yarnpkg/types`);
  *
  * @param {Context} context
  */
-function enforceConsistentDependenciesAcrossTheProject({Yarn}) {
+function enforceConsistentDependenciesAcrossTheProject({ Yarn }) {
     for (const dependency of Yarn.dependencies()) {
-        if (dependency.type === `peerDependencies`)
-            continue;
+        if (dependency.type === `peerDependencies`) continue;
 
-        for (const otherDependency of Yarn.dependencies({ident: dependency.ident})) {
-            if (otherDependency.type === `peerDependencies`)
-                continue;
+        for (const otherDependency of Yarn.dependencies({
+            ident: dependency.ident,
+        })) {
+            if (otherDependency.type === `peerDependencies`) continue;
 
             dependency.update(otherDependency.range);
         }
@@ -28,7 +28,7 @@ function enforceConsistentDependenciesAcrossTheProject({Yarn}) {
 }
 
 module.exports = defineConfig({
-    constraints: async ctx => {
+    constraints: async (ctx) => {
         enforceConsistentDependenciesAcrossTheProject(ctx);
     },
 });

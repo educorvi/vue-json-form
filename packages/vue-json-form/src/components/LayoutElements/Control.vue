@@ -1,5 +1,5 @@
 <template>
-    <div :class="cssClass" v-if="!invalidJsonPointer">
+    <div v-if="!invalidJsonPointer" :class="cssClass">
         <html-renderer
             v-if="htmlMessages.pre"
             :layout-element="htmlMessages.pre"
@@ -9,28 +9,22 @@
             :label="label"
             :label-for="control_id_string"
         >
-            <template #prepend v-if="$slots.prepend">
+            <template v-if="$slots.prepend" #prepend>
                 <slot name="prepend" />
             </template>
             <component
                 :is="controlType"
                 :name="formStructureMapped.uiElement.scope"
-                :disabled="formStructureMapped.uiElement.options?.disabled"
+                :disabled="getOption(formStructureMapped.uiElement, 'disabled')"
                 :placeholder="
-                    formStructureMapped.uiElement.options?.placeholder
-                "
-                :autocomplete="
-                    getOption(
-                        formStructureMapped.uiElement,
-                        'autocomplete',
-                        'on'
-                    )
+                    getOption(formStructureMapped.uiElement, 'placeholder')
                 "
                 :required="required || inArrayItem"
                 :style="style"
                 :aria-label="inArrayItem ? 'List item' : undefined"
+                :class="{ inArrayControl: inArrayItem }"
             />
-            <template #append v-if="$slots.append">
+            <template v-if="$slots.append" #append>
                 <slot name="append" />
             </template>
         </component>
@@ -50,10 +44,13 @@
 import type {
     Control,
     DescendantControlOverrides,
+    JSONSchema,
 } from '@educorvi/vue-json-form-schemas';
 import { storeToRefs } from 'pinia';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure';
-import { getOption } from '@/utilities';
+import {
+    getHtmlMessages,
+    getOption,
+} from '@/renderings/renderHelpers/utilities.ts';
 import {
     computed,
     inject,
@@ -66,22 +63,22 @@ import {
 } from 'vue';
 import {
     savePathProviderKey,
-    savePathOverrideProviderKey,
     mergeDescendantControlOptionsOverrides,
     setDescendantControlOverrides,
     formStructureProviderKey,
     descendantControlOverridesProviderKey,
     inArrayItemProviderKey,
+    formIdProviderKey,
 } from '@/components/ProviderKeys';
 import {
     cleanScope,
     computedLabel,
     getComputedJsonElement,
     getComputedRequired,
+    getStores,
 } from '@/computedProperties/json';
 import { controlID } from '@/computedProperties/misc';
 import { computedCssClass } from '@/computedProperties/css';
-import type { HTMLRenderer } from '@educorvi/vue-json-form-schemas';
 
 import {
     hasItems,
@@ -89,33 +86,31 @@ import {
     isMapperWithData,
     isMapperWithoutData,
 } from '@/typings/typeValidators';
-import { useFormDataStore } from '@/stores/formData';
 import HtmlRenderer from '@/components/LayoutElements/htmlRenderer.vue';
 import { watchDebounced } from '@vueuse/core';
 import ArrayControl from '@/components/Array/ArrayControl.vue';
 import { Mapper } from '@/Mappers';
 
+const { formStructureStore, formDataStore } = getStores();
+
 const {
     jsonSchema,
     mappers: mapperClasses,
     uiSchema,
-} = storeToRefs(useFormStructureStore());
+} = storeToRefs(formStructureStore);
 
-const FormFieldWrapper = getComponent('FormFieldWrapper');
-const ErrorViewer = getComponent('ErrorViewer');
+const FormFieldWrapper = formStructureStore.getComponent('FormFieldWrapper');
+const ErrorViewer = formStructureStore.getComponent('ErrorViewer');
 
 const props = defineProps<{
     /** The UI Schema of this Element */
     layoutElement: Control;
-
-    /** Is this control in an array item */
-    inArrayItem?: boolean;
 }>();
 
 const jsonElement = getComputedJsonElement(props.layoutElement.scope);
 
 const { formData, defaultFormData, cleanedFormData } =
-    storeToRefs(useFormDataStore());
+    storeToRefs(formDataStore);
 
 const invalidJsonPointer = ref(false as false | string);
 
@@ -127,13 +122,17 @@ const overridesMap: DescendantControlOverrides | undefined = inject(
     descendantControlOverridesProviderKey
 );
 
-const savePath =
-    inject(savePathOverrideProviderKey, undefined) || props.layoutElement.scope;
+const savePath = props.layoutElement.scope;
+
+const inArrayItem = inject(inArrayItemProviderKey, false);
 
 const mappers: Ref<Mapper[]> = ref([]);
 
-const formStructureMapped = ref({
-    jsonElement: jsonElement.value || ({} as Record<string, any>),
+const formStructureMapped: Ref<{
+    jsonElement: JSONSchema;
+    uiElement: Control;
+}> = ref({
+    jsonElement: jsonElement.value || ({} as JSONSchema),
     uiElement: props.layoutElement,
 });
 
@@ -173,6 +172,9 @@ watch([() => jsonElement.value, () => props.layoutElement], mapFormStructure, {
     immediate: true,
 });
 
+const formId = inject(formIdProviderKey);
+if (!formId) throw new Error('formId is not provided');
+
 onMounted(() => {
     if (
         !jsonElement.value ||
@@ -197,7 +199,8 @@ onMounted(() => {
                 mergeDescendantControlOptionsOverrides(
                     props.layoutElement,
                     overridesMap
-                )
+                ),
+                formId
             );
             for (const dependency of mapper.getDependencies()) {
                 if (registeredDependencies.has(dependency)) {
@@ -217,24 +220,9 @@ onMounted(() => {
     mapFormStructure();
 });
 
-const htmlMessages = computed(() => {
-    const messages: { pre?: HTMLRenderer; post?: HTMLRenderer } = {};
-    const layoutElement = formStructureMapped.value.uiElement;
-    if (layoutElement.options?.preHtml) {
-        messages.pre = {
-            type: 'HTML',
-            htmlData: layoutElement.options.preHtml,
-        };
-    }
-    if (layoutElement.options?.postHtml) {
-        messages.post = {
-            type: 'HTML',
-            htmlData: layoutElement.options.postHtml,
-        };
-    }
-
-    return messages;
-});
+const htmlMessages = computed(() =>
+    getHtmlMessages(formStructureMapped.value.uiElement)
+);
 
 const mappedUiElement = computed(() => formStructureMapped.value.uiElement);
 const required = getComputedRequired(mappedUiElement);
@@ -256,14 +244,12 @@ const style = computed(() => {
 
 const cssClass = computedCssClass(
     formStructureMapped.value.uiElement,
-    'vjf_control mb-3',
+    'vjf_control mb-2',
     additionalHiddenClass
 );
 
 provide(formStructureProviderKey, formStructureMapped);
 provide(savePathProviderKey, savePath);
-provide(savePathOverrideProviderKey, undefined);
-provide(inArrayItemProviderKey, props.inArrayItem ?? false);
 
 const control_id_string = controlID(savePath);
 
@@ -286,9 +272,9 @@ const controlType = computed(() => {
             getOption(formStructureMapped.value.uiElement, 'displayAs') ===
                 'buttons'
         ) {
-            return getComponent('RadiobuttonControl');
+            return formStructureStore.getComponent('RadiobuttonControl');
         } else {
-            return getComponent('SelectControl');
+            return formStructureStore.getComponent('SelectControl');
         }
     }
 
@@ -300,7 +286,7 @@ const controlType = computed(() => {
         'enum' in formStructureMapped.value.jsonElement.items &&
         formStructureMapped.value.jsonElement.type === 'array'
     ) {
-        return getComponent('CheckboxGroupControl');
+        return formStructureStore.getComponent('CheckboxGroupControl');
     }
 
     /**
@@ -311,7 +297,7 @@ const controlType = computed(() => {
         hasOption(formStructureMapped.value.uiElement, 'tags') &&
         formStructureMapped.value.uiElement.options?.tags?.enabled
     ) {
-        return getComponent('TagsControl');
+        return formStructureStore.getComponent('TagsControl');
     }
 
     /**
@@ -321,7 +307,7 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement?.type === 'string' &&
         formStructureMapped.value.jsonElement.format === 'uri'
     ) {
-        return getComponent('FileControl');
+        return formStructureStore.getComponent('FileControl');
     }
 
     /**
@@ -334,23 +320,23 @@ const controlType = computed(() => {
         formStructureMapped.value.jsonElement.items.format === 'uri' &&
         formStructureMapped.value.uiElement.options?.displayAsSingleUploadField
     ) {
-        return getComponent('FileControl');
+        return formStructureStore.getComponent('FileControl');
     }
 
     switch (formStructureMapped.value.jsonElement?.type) {
         case 'boolean':
-            return getComponent('CheckboxControl');
+            return formStructureStore.getComponent('CheckboxControl');
         case 'number':
         case 'integer':
-            return getComponent('NumberControl');
+            return formStructureStore.getComponent('NumberControl');
         case 'object':
-            return getComponent('ObjectControl');
+            return formStructureStore.getComponent('ObjectControl');
         case 'string':
-            return getComponent('StringControl');
+            return formStructureStore.getComponent('StringControl');
         case 'array':
             return ArrayControl;
         default:
-            return getComponent('DefaultControl');
+            return formStructureStore.getComponent('DefaultControl');
     }
 });
 
@@ -376,6 +362,16 @@ onBeforeUnmount(() => {
     display: block;
     &.hiddenControl {
         display: none;
+    }
+}
+
+.inArrayControl {
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+    flex-grow: 1;
+    &.vjf_object {
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
     }
 }
 </style>

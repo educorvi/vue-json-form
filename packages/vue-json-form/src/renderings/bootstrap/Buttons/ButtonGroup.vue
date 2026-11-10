@@ -11,7 +11,7 @@ defineProps<ButtonGroupProps>();
         <VJFButton
             v-for="button in layoutElement.buttons"
             :key="button.text"
-            :layoutElement="button"
+            :layout-element="button"
         />
     </BButtonGroup>
 </template>

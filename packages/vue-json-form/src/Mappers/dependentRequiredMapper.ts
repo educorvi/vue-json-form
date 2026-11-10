@@ -7,6 +7,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { sliceScope } from '@/Commons.ts';
 import { getJsonPointerSafe } from '@/computedProperties/json.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 /**
  * DependentRequiredMapper
@@ -67,7 +68,7 @@ export class DependentRequiredMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        data: Readonly<Record<string, any>>
+        data: Readonly<FormData>
     ): Promise<{
         jsonElement: JSONSchema;
         uiElement: Control;

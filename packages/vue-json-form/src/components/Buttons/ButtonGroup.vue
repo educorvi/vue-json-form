@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Buttongroup } from '@educorvi/vue-json-form-schemas';
-import { getComponent } from '@/stores/formStructure';
+import { getStores } from '@/computedProperties/json.ts';
 
 defineProps<{
     /**
@@ -9,11 +9,12 @@ defineProps<{
     layoutElement: Buttongroup;
 }>();
 
-const buttongroupComponent = getComponent('Buttongroup');
+const buttongroupComponent =
+    getStores().formStructureStore.getComponent('Buttongroup');
 </script>
 
 <template>
-    <component :is="buttongroupComponent" :layoutElement="layoutElement" />
+    <component :is="buttongroupComponent" :layout-element="layoutElement" />
 </template>
 
 <style scoped></style>

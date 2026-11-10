@@ -1,11 +1,202 @@
 {
     "$schema": "https://json-schema.org/draft/2019-09/schema#",
     "type": "object",
-    "required": [],
+    "required": ["arrayWithAddressObject"],
     "dependentRequired": {
         "string-dep-required": ["string-dep-required-2"]
     },
     "properties": {
+        "arrayWithAddressObject": {
+            "type": "array",
+            "title": "Array with UI Schema",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "surname": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    }
+                }
+            },
+            "minItems": 1
+        },
+        "objectWithUiSchema": {
+            "type": "object",
+            "title": "Object with UI Schema",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "numberWithMultiple": {
+            "type": "number",
+            "multipleOf": 4,
+            "title": "Number with Multiple of 4",
+            "minimum": 8,
+            "maximum": 20
+        },
+        "numberWithMultipleSmallerOne": {
+            "type": "number",
+            "multipleOf": 0.02,
+            "title": "Number with Multiple of 0.02"
+        },
+        "objectWithInfo": {
+            "type": "object",
+            "title": "JSO-141",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "fileUploadWithPreset": {
+            "type": "string",
+            "format": "uri"
+        },
+        "checkboxesWithPreset": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["a", "b", "c"]
+            }
+        },
+        "arrayWithObjectWithPreset": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "jso-146": {
+            "title": "Fragebogen Test für Julian",
+            "description": "abhängiges pflichtfeld in abhängigem objekt",
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "objekt": {
+                                "properties": {
+                                    "unabhaengiges-feld-in-objekt": {
+                                        "minLength": 1
+                                    }
+                                },
+                                "required": ["unabhaengiges-feld-in-objekt"]
+                            }
+                        },
+                        "required": ["objekt"]
+                    },
+                    "then": {
+                        "properties": {
+                            "objekt": {
+                                "properties": {
+                                    "abhaengiges-pflichtfeld-in-objekt": {
+                                        "minLength": 1
+                                    }
+                                },
+                                "required": [
+                                    "abhaengiges-pflichtfeld-in-objekt"
+                                ]
+                            }
+                        },
+                        "required": ["objekt"]
+                    }
+                }
+            ],
+            "properties": {
+                "feld": {
+                    "title": "feld",
+                    "type": "string"
+                },
+                "objekt": {
+                    "title": "objekt",
+                    "type": "object",
+                    "properties": {
+                        "unabhaengiges-feld-in-objekt": {
+                            "title": "unabhängiges feld in objekt",
+                            "type": "string"
+                        },
+                        "abhaengiges-pflichtfeld-in-objekt": {
+                            "title": "abhängiges pflichtfeld in objekt",
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            }
+        },
+        "jso-116": {
+            "type": "object",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "test": {
+                                "const": true
+                            }
+                        },
+                        "required": ["test"]
+                    },
+                    "then": {
+                        "properties": {
+                            "dependent": {
+                                "minLength": 1
+                            }
+                        },
+                        "required": ["dependent"]
+                    }
+                },
+                {
+                    "if": {
+                        "required": ["number"]
+                    },
+                    "then": {
+                        "properties": {
+                            "number-dependent": {
+                                "minLength": 1
+                            }
+                        },
+                        "required": ["number-dependent"]
+                    }
+                }
+            ],
+            "properties": {
+                "test": {
+                    "title": "Test",
+                    "type": "boolean"
+                },
+                "dependent": {
+                    "title": "Dependent",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "number": {
+                    "title": "Number",
+                    "type": "integer"
+                },
+                "number-dependent": {
+                    "title": "Number Dependent",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
         "jso-135": {
             "type": "object",
             "properties": {

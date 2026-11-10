@@ -1,17 +1,24 @@
 {
-  "extends": ["//"],
-  "tasks": {
-    "build:internal": {
-      "dependsOn": ["^build:internal", "generateTypings", "mergeSchema"]
-    },
-    "generateTypings": {
-      "outputs": ["src/generated/*.d.ts"]
-    },
-    "check-types": {
-      "dependsOn": ["generateTypings","mergeSchema", "^check-types"]
-    },
-    "mergeSchema": {
-      "outputs": ["src/generated/*.schema.json"]
+    "extends": ["//"],
+    "tasks": {
+        "build:internal": {
+            "dependsOn": ["^build:internal", "generateTypings", "mergeSchema"]
+        },
+        "generateTypings": {
+            "outputs": ["src/generated/*.d.ts"],
+            "inputs": ["src/ui/*.schema.json"]
+        },
+        "check-types": {
+            "dependsOn": ["generateTypings", "mergeSchema", "^check-types"]
+        },
+        "mergeSchema": {
+            "outputs": ["src/generated/*.schema.json"],
+            "inputs": ["src/ui/*.schema.json"]
+        },
+        "doc": {
+            "outputs": ["docs-dist/*"],
+            "inputs": ["src/generated/ui-merged.schema.json"],
+            "dependsOn": ["mergeSchema"]
+        }
     }
-  }
 }

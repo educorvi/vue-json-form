@@ -1,49 +1,61 @@
-@import "bootstrap-vue-next/src/styles/styles.scss";
+@import 'bootstrap-vue-next/src/styles/styles.scss';
 
-.vjf_fieldset-content {
-  border-left: 3px solid gray !important;
-  padding-left: 10px !important;
-  margin-left: 5px !important;
+.vjf_indented {
+    border-left: 3px solid gray !important;
+    padding-left: 10px !important;
+    margin-left: 5px !important;
 }
 
 .vjf_group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 // special styling for objects/arrays in arrays
 .vjf_arrayItem > * > * > * {
-  & > .vjf_object, .vjf_array {
-    flex: 1 1 auto;
-    border-top: var(--bs-border-width) solid var(--bs-border-color);
-    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
-  }
+    & > .vjf_object,
+    .vjf_array {
+        flex: 1 1 auto;
+        border-top: var(--bs-border-width) solid var(--bs-border-color);
+        border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+    }
 }
 
-.vjf_arrayItem > * > * > .input-group> *:nth-child(2) {
-  flex-grow: 1;
-  &>.vjf_array {
-    padding: 0 5px 5px;
+.vjf_arrayItem > * > * > .input-group > *:nth-child(2) {
+    flex-grow: 1;
 
-    // reduce spacing between array items in 2d array
-    & > * > * > * > * {
-      margin-bottom: 4px !important;
+    & > .vjf_array {
+        padding: 5px;
+
+        // reduce spacing between array items in 2d array
+        & > * > * > * {
+            margin-bottom: 4px !important;
+        }
     }
-  }
 }
 
-.vjf_arrayItem > * > * > * > * > fieldset.vjf_group {
-  margin-top: 4px;
-  margin-bottom: 2px;
-  width: 100%;
-  height: min-content;
+.vjf_arrayItem > .vjf_control {
+    margin-bottom: 4px !important;
+}
 
-  & > .vjf_fieldset-content {
-    border: none !important;
-    margin-right: 5px;
-    padding-right: 10px;
+.draggable-array-item:last-child > .vjf_arrayItem > .vjf_control {
+    margin-bottom: 12px !important;
+}
 
-    & > *:last-child .vjf_control {
-      margin-bottom: 8px !important;
+.vjf_arrayItem > * > * > * > fieldset {
+    width: 70%;
+    height: min-content;
+
+    & > legend {
+        display: none;
     }
-  }
+
+    & > .vjf_indented {
+        border: none !important;
+        margin-right: 5px;
+        padding-right: 10px;
+
+        & > *:last-child .vjf_control {
+            margin-bottom: 8px !important;
+        }
+    }
 }

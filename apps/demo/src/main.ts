@@ -3,7 +3,6 @@ import '@educorvi/vue-json-form/dist/vue-json-form.css';
 import './assets/main.scss';
 import 'vue-json-pretty/lib/styles.css';
 
-
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';

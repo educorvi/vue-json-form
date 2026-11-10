@@ -3,14 +3,15 @@ import { RouterView } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import { ref } from 'vue';
 import VueJsonPretty from 'vue-json-pretty';
+import type { ParsedAndUnvalidatedJson } from '@educorvi/vue-json-form';
 
 const show = ref(false);
 const modalData = ref({
     title: '',
-    json: null as Record<any, any> | null,
+    json: null as ParsedAndUnvalidatedJson | null,
 });
 
-function viewCode(title: string, code: Record<string, any>) {
+function viewCode(title: string, code: ParsedAndUnvalidatedJson) {
     modalData.value = {
         title: title,
         json: code,
@@ -27,7 +28,7 @@ function viewCode(title: string, code: Record<string, any>) {
 
         <div id="content">
             <main>
-                <RouterView @viewCode="viewCode" />
+                <RouterView @view-code="viewCode" />
             </main>
         </div>
 
@@ -38,7 +39,8 @@ function viewCode(title: string, code: Record<string, any>) {
             scrollable
             centered
             no-footer
-            size="lg">
+            size="lg"
+        >
             <vue-json-pretty :data="modalData.json" />
         </BModal>
     </BApp>

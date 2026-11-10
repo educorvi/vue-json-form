@@ -2,9 +2,9 @@
 import type { Layout } from '@educorvi/vue-json-form-schemas';
 import FormWrap from '@/components/FormWrap.vue';
 import { getRandomId } from '@/computedProperties/misc.ts';
-import { useFormStructureStore } from '@/stores/formStructure.ts';
 import { onUnmounted } from 'vue';
 import { isValidateableElement } from '@/typings/typeValidators.ts';
+import { getStores } from '@/computedProperties/json.ts';
 
 const props = defineProps<{
     page: Layout;
@@ -25,11 +25,12 @@ function validate() {
     return elsWithStates.every((el) => el.valid);
 }
 
-const store = useFormStructureStore();
-store.wizardValidateFunctions[props.index] = validate;
+const { formStructureStore } = getStores();
+
+formStructureStore.wizardValidateFunctions[props.index] = validate;
 
 onUnmounted(() => {
-    delete store.wizardValidateFunctions[props.index];
+    delete formStructureStore.wizardValidateFunctions[props.index];
 });
 </script>
 

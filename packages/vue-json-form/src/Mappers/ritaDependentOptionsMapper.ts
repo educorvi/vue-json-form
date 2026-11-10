@@ -7,8 +7,9 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import { type IndexType } from '@/typings/typeValidators.ts';
 import { getAtoms, Parser, Rule as ParsedRule } from '@educorvi/rita';
-import { getOption } from '@/utilities.ts';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import { getArrayItemIndices } from '@/components/ShowOnLogic.ts';
+import type { FormData } from '@/typings/customTypes.ts';
 
 /**
  * A mapper that filters enum options based on RITA rules defined in the UI schema.
@@ -32,8 +33,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
     async map(
         jsonElement: Readonly<JSONSchema>,
         uiElement: Readonly<Control>,
-        _: Readonly<Record<string, any>>,
-        cleanedFormData: Readonly<Record<string, any>>
+        _: Readonly<FormData>,
+        cleanedFormData: Readonly<FormData>
     ): Promise<null | {
         jsonElement: JSONSchema;
         uiElement: Control;
@@ -43,7 +44,7 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         }
         const newJsonElement: JSONSchema = this.cloneJsonElement(jsonElement);
         const cleanedData = {
-            $selfIndices: getArrayItemIndices(uiElement),
+            $selfIndices: getArrayItemIndices(uiElement, this.formId as string),
             ...cleanedFormData,
         };
         let hasChanges = false;
@@ -66,23 +67,14 @@ export class RitaDependentOptionsMapper extends MapperWithData {
         };
     }
 
-    /**
-     * Registers the schema and processes option filters to determine dependencies.
-     *
-     * @param jsonSchema - The root JSON schema.
-     * @param uiSchema - The root UI schema.
-     * @param scope - The scope of the current element.
-     * @param savePath - The save path of the current element.
-     * @param jsonElement - The JSON schema of the current element.
-     * @param uiElement - The UI control of the current element.
-     */
     registerSchemata(
         jsonSchema: Readonly<JSONSchema>,
         uiSchema: Readonly<Layout | Wizard>,
         scope: Readonly<string>,
         savePath: Readonly<string>,
         jsonElement: Readonly<JSONSchema>,
-        uiElement: Readonly<Control>
+        uiElement: Readonly<Control>,
+        formId: Readonly<string>
     ): void {
         super.registerSchemata(
             jsonSchema,
@@ -90,7 +82,8 @@ export class RitaDependentOptionsMapper extends MapperWithData {
             scope,
             savePath,
             jsonElement,
-            uiElement
+            uiElement,
+            formId
         );
         const depsSet = new Set<string>();
         this.depsRuleMap = this.getOptionFilterDependencies(
@@ -106,13 +99,13 @@ export class RitaDependentOptionsMapper extends MapperWithData {
      *
      * @param uiElement - The UI control element containing option filters.
      * @param depsSet - A set to collect dependency paths.
-     * @param savePath - The save path (unused in current implementation but available).
+     * @param _savePath - The save path (unused in current implementation but available).
      * @returns A map of rule IDs to parsed RITA rules.
      */
     private getOptionFilterDependencies(
         uiElement: Control,
         depsSet: Set<string>,
-        savePath: string
+        _savePath: string
     ) {
         const depsRuleMap: Record<IndexType, ParsedRule> = {};
         const optionFilters = getOption(uiElement, 'optionFilters');
@@ -132,7 +125,10 @@ export class RitaDependentOptionsMapper extends MapperWithData {
                         depsSet.add(mappedPath);
                     }
                 } catch (e) {
-                    console.warn(`Invalid rule ${rule.id} for option ${key}`);
+                    console.warn(
+                        `Invalid rule ${rule.id} for option ${key}:`,
+                        e
+                    );
                 }
             }
         }

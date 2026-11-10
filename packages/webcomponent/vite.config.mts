@@ -1,5 +1,7 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import Icons from 'unplugin-icons/vite';
 
 const buildTargets = {
     default: {
@@ -20,22 +22,32 @@ const target = process.env.BUILD_TARGET || 'default';
 const config = buildTargets[target as keyof typeof buildTargets];
 
 if (!config) {
-    throw new Error(`Unknown build target: ${target}. Available targets: ${Object.keys(buildTargets).join(', ')}`);
+    throw new Error(
+        `Unknown build target: ${target}. Available targets: ${Object.keys(buildTargets).join(', ')}`
+    );
 }
 
 export default defineConfig({
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url)),
+        },
+    },
     plugins: [
         vue({
             template: {
                 compilerOptions: {
-                    isCustomElement: (tag: any) => tag.includes('vue-json-form'),
+                    isCustomElement: (tag: string) =>
+                        tag.includes('vue-json-form'),
                 },
             },
+        }),
+        Icons({
+            compiler: 'vue3',
         }),
     ],
     build: {
         sourcemap: true,
-        minify: 'esbuild',
         lib: {
             entry: config.entry,
             name: 'vue-json-form',

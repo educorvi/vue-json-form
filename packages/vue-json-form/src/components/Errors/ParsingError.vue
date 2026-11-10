@@ -4,11 +4,11 @@
     </component>
 </template>
 <script setup lang="ts">
-import { getComponent } from '@/stores/formStructure';
+import { getStores } from '@/computedProperties/json.ts';
 
 defineProps<{
     error: Error;
 }>();
 
-const errorViewer = getComponent('ErrorViewer');
+const errorViewer = getStores().formStructureStore.getComponent('ErrorViewer');
 </script>

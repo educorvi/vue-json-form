@@ -10,7 +10,9 @@ const packageJson = JSON.parse(readFileSync('package.json', 'utf-8'));
 const name = packageJson.name;
 
 // Get all tags matching the package
-const tagsOutput = execSync(`git tag --list "${name}-v*.*.*"`, { encoding: 'utf-8' });
+const tagsOutput = execSync(`git tag --list "${name}-v*.*.*"`, {
+    encoding: 'utf-8',
+});
 const tags = tagsOutput.trim().split('\n').filter(Boolean);
 
 if (tags.length === 0) {
@@ -20,8 +22,8 @@ if (tags.length === 0) {
 
 // Extract versions from tags
 let versions = tags
-    .map(tag => tag.replace(`${name}-v`, ''))
-    .filter(version => valid(version));
+    .map((tag) => tag.replace(`${name}-v`, ''))
+    .filter((version) => valid(version));
 
 versions = rsort(versions);
 

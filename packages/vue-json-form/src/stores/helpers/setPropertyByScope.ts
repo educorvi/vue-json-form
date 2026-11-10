@@ -1,3 +1,5 @@
+import type { FormData } from '@/typings/customTypes.ts';
+
 /**
  * Sets a property on an object based on a scoped key.
  *
@@ -10,9 +12,9 @@
  * @param value - The value to set at the specified path.
  **/
 export function setPropertyByScope(
-    object: Record<any, any>,
+    object: FormData,
     key: string,
-    value: any
+    value: unknown
 ): void {
     const TEMP_INDEX_ESCAPE = '!#index#!';
     const indexRegex = new RegExp(

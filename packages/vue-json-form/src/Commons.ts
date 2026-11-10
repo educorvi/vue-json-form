@@ -5,6 +5,7 @@ import type {
 } from '@educorvi/vue-json-form-schemas';
 import type { GenerationOptions } from '@/typings/customTypes';
 import { v4 as uuidv4 } from 'uuid';
+import type { Control } from '@educorvi/vue-json-form-schemas';
 
 /**
  * Prefix for array item keys.
@@ -14,7 +15,7 @@ export const VJF_ARRAY_ITEM_PREFIX: string = 'vjf_array-item_';
 /**
  * Supported UI Schema Version
  */
-export const SUPPORTED_UISCHEMA_VERSION = '2.1';
+export const SUPPORTED_UISCHEMA_VERSION = '2.2';
 
 export function checkUiSchemaVersion(uiSchema: UISchema): boolean {
     if (uiSchema.version?.split?.('.')?.length !== 2) return false;
@@ -36,7 +37,8 @@ export function generateUUID(): string {
     let id: string;
     try {
         id = crypto.randomUUID();
-    } catch (e) {
+    } catch {
+        console.warn('crypto.randomUUID() not available, using uuidv4 instead');
         id = uuidv4();
     }
     return id;
@@ -46,7 +48,7 @@ export function generateUUID(): string {
  * Checks if the given key has the format of an array item key.
  * @param key
  */
-export function isArrayItemKey(key: any): boolean {
+export function isArrayItemKey(key: unknown): key is string {
     if (typeof key !== 'string') {
         return false;
     }
@@ -127,7 +129,7 @@ export function generateUISchema(
     };
 
     for (const key in json.properties) {
-        const element: any = {
+        const element: Control = {
             type: 'Control',
             scope: `${generationOptions.scopeBase ?? ''}/properties/${key}`,
         };
@@ -144,23 +146,58 @@ export function generateUISchema(
  * @param separator separator
  * @param defaultVal default value to return if path is not found
  */
-export function getPropertyByString(
-    object: any,
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export function getPropertyByString<ReturnValueType extends {} | null>(
+    object: Record<string, unknown> | undefined,
+    path: string,
+    separator?: string
+): ReturnValueType;
+export function getPropertyByString<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ReturnValueType extends {} | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    DefaultValueType extends {} | null = ReturnValueType,
+>(
+    object: Record<string, unknown> | undefined,
+    path: string,
+    separator: string | undefined,
+    defaultVal: DefaultValueType
+): ReturnValueType | DefaultValueType;
+export function getPropertyByString<
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    ReturnValueType extends {} | null,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    DefaultValueType extends {} | null = ReturnValueType,
+>(
+    object: Record<string, unknown> | undefined,
     path: string,
     separator: string = '.',
-    defaultVal?: any
-): any {
+    defaultVal?: DefaultValueType
+): ReturnValueType | DefaultValueType {
+    if (object === undefined) {
+        if (defaultVal !== undefined) {
+            return defaultVal;
+        } else {
+            throw new Error('Undefined path in data: ' + path);
+        }
+    }
+
     const escapePCRE = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     path = path.replace(/\[(\w+)]/g, `${separator}$1`); // convert indexes to properties
     path = path.replace(new RegExp(`^${escapePCRE(separator)}`), ''); // strip a leading separator
     const a = path.split(separator);
+    let current: unknown = object;
     for (let i = 0, n = a.length; i < n; ++i) {
         const k = a[i];
         if (k === undefined) {
-            return defaultVal;
+            if (defaultVal !== undefined) {
+                return defaultVal;
+            } else {
+                throw new Error('Undefined path in data: ' + path);
+            }
         }
-        if (typeof object !== 'object') {
+        if (current === null || typeof current !== 'object') {
             if (defaultVal !== undefined) {
                 return defaultVal;
             } else {
@@ -168,19 +205,19 @@ export function getPropertyByString(
                     'Invalid path in data: ' +
                         path +
                         ' is of invalid type ' +
-                        typeof object +
+                        typeof current +
                         ' with value ' +
-                        object
+                        current
                 );
             }
         }
-        if (k in object) {
-            object = object[k];
+        if (k in current) {
+            current = (current as Record<string, unknown>)[k];
         } else if (defaultVal !== undefined) {
             return defaultVal;
         } else {
             throw new Error('Undefined path in data: ' + path);
         }
     }
-    return object;
+    return current as ReturnValueType;
 }

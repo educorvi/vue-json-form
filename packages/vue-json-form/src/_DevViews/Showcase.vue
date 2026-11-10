@@ -2,18 +2,20 @@
 import { bootstrapComponents } from '@/renderings/bootstrap/BootstrapComponents.ts';
 import { AjvValidator } from '@educorvi/vue-json-form-ajv-validator';
 import { IfThenElseMapper } from '@/Mappers';
-import { VueJsonForm } from '@/main.ts';
+import { type FormData, VueJsonForm } from '@/main.ts';
 
 import json from '../exampleSchemas/showcase/schema.json';
 import ui from '../exampleSchemas/showcase/ui.json';
 
-import { nextTick, ref, type Ref, watch } from 'vue';
+import { ref, type Ref } from 'vue';
 import type { SubmitOptions } from '@educorvi/vue-json-form-schemas';
 
-const formData: Ref<undefined | Record<string, any>> = ref(undefined);
+const formData: Ref<undefined | FormData> = ref(undefined);
+const submitOptionsData: Ref<undefined | SubmitOptions> = ref(undefined);
 
-async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
+async function onSubmitForm(data: FormData, options: SubmitOptions) {
     formData.value = data;
+    submitOptionsData.value = options;
     switch (options.action) {
         case 'console':
             console.log(data);
@@ -41,8 +43,11 @@ async function onSubmitForm(data: Record<string, any>, options: SubmitOptions) {
     <hr />
     <h2>Results</h2>
     <p class="text-muted">Press submit to update</p>
-    <pre id="result-container" v-if="formData">{{
+    <pre v-if="formData" id="result-container">{{
         JSON.stringify(formData, null, 2)
+    }}</pre>
+    <pre v-if="submitOptionsData" id="submit-options-container">{{
+        JSON.stringify(submitOptionsData, null, 2)
     }}</pre>
 </template>
 

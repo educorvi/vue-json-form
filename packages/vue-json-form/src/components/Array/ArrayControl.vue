@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useFormDataStore } from '@/stores/formData.ts';
 import {
     arrayContainsValue,
     computedLabel,
     getComputedRequired,
+    getStores,
     injectJsonData,
 } from '@/computedProperties/json.ts';
 import { controlID } from '@/computedProperties/misc.ts';
@@ -14,8 +14,7 @@ import {
     isArrayItemKey,
     VJF_ARRAY_ITEM_PREFIX,
 } from '@/Commons.ts';
-import { getComponent, useFormStructureStore } from '@/stores/formStructure.ts';
-import draggable from 'vuedraggable/src/vuedraggable';
+import { VueDraggable } from 'vue-draggable-plus';
 import {
     ref,
     nextTick,
@@ -27,7 +26,7 @@ import {
 } from 'vue';
 import ArrayItem from '@/components/Array/ArrayItem.vue';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
-import { getOption } from '@/utilities.ts';
+import { getOption } from '@/renderings/renderHelpers/utilities.ts';
 import {
     languageProviderKey,
     setDescendantControlOverride,
@@ -35,24 +34,26 @@ import {
 import { isDefined } from '@/typings/typeValidators.ts';
 import { type ComponentExposed } from 'vue-component-type-helpers';
 
-const ErrorViewer = getComponent('ErrorViewer');
-const HelpPopover = getComponent('HelpPopover');
-const ArrayButton = getComponent('ArrayButton');
-const ConfirmationModal = getComponent('ConfirmationModal');
+const { formStructureStore, formDataStore } = getStores();
+
+const ErrorViewer = formStructureStore.getComponent('ErrorViewer');
+const HelpPopover = formStructureStore.getComponent('HelpPopover');
+const ArrayButton = formStructureStore.getComponent('ArrayButton');
+const ConfirmationModal = formStructureStore.getComponent('ConfirmationModal');
 
 const deleteItemsModal = useTemplateRef<
     ComponentExposed<typeof ConfirmationModal>
 >('delete-remaining-items-modal');
 
-const { formData, arrays } = storeToRefs(useFormDataStore());
-const { jsonSchema } = storeToRefs(useFormStructureStore());
+const { formData, arrays } = storeToRefs(formDataStore);
+const { jsonSchema } = storeToRefs(formStructureStore);
 
 const { jsonElement, layoutElement, savePath } = injectJsonData();
 const languageProvider = inject(languageProviderKey);
 const id = controlID(savePath);
 const required = getComputedRequired(layoutElement);
 
-function addField(skipFocus = false, value?: any) {
+function addField(skipFocus = false, value?: unknown) {
     const genId = VJF_ARRAY_ITEM_PREFIX + generateUUID();
     if (!jsonSchema.value) {
         throw new Error('jsonSchema is unexpectedly undefined');
@@ -219,9 +220,9 @@ onBeforeMount(initArray);
     <div>
         <div class="vjf_label_wrapper">
             <label
-                :for="id"
                 v-if="!isArrayItem"
                 v-show="getOption(layoutElement, 'label', true)"
+                :for="id"
             >
                 <span class="large-label">{{ label }}</span>
             </label>
@@ -233,48 +234,45 @@ onBeforeMount(initArray);
             {{ jsonElement.description }}
         </p>
         <div
-            class="vjf_array"
             v-if="
                 typeof jsonElement.items === 'object' &&
                 'type' in jsonElement.items
             "
             :id="id"
+            class="vjf_array"
         >
-            <draggable
-                class="list-group"
-                v-model="formData[savePath]"
-                handle=".handle"
-                :itemKey="(elemId: string) => elemId"
+            <VueDraggable
                 key="draggable"
+                v-model="formData[savePath]"
+                class="list-group"
+                handle=".handle"
+                v-bind="dragOptions"
                 @start="drag = true"
                 @end="drag = false"
-                v-bind="dragOptions"
-                :componentData="{
-                    tag: 'div',
-                    type: 'transition-group',
-                    name: !drag ? 'flip-list' : null,
-                }"
             >
-                <template #item="{ element, index }">
-                    <div :key="element">
-                        <ArrayItem
-                            :scope="layoutElement.scope"
-                            :baseSavePath="savePath"
-                            :index="index"
-                            :itemID="element"
-                            @delete="deleteItemWithID"
-                            :allowRemove="allowRemoveField"
-                        />
-                    </div>
-                </template>
-            </draggable>
+                <div
+                    v-for="(element, index) in formData[savePath]"
+                    :key="element"
+                    class="draggable-array-item"
+                >
+                    <ArrayItem
+                        :scope="layoutElement.scope"
+                        :base-save-path="savePath"
+                        :index="index as number"
+                        :item-i-d="element"
+                        :allow-remove="allowRemoveField"
+                        :ui-schema="getOption(layoutElement, 'uiSchema')"
+                        @delete="deleteItemWithID"
+                    />
+                </div>
+            </VueDraggable>
 
             <array-button
                 variant="outline-primary"
                 class="w-100"
-                @click="onAddFieldButton"
                 :disabled="!allowAddField"
                 aria-label="Add Item"
+                @click="onAddFieldButton"
             >
                 <span v-if="getOption(layoutElement, 'addButtonText')">
                     {{ getOption(layoutElement, 'addButtonText') }}
@@ -282,7 +280,7 @@ onBeforeMount(initArray);
                 <PlusIcon v-else />
             </array-button>
         </div>
-        <error-viewer v-else header="Error" :id="id">
+        <error-viewer v-else :id="id" header="Error">
             The type of the array's items is missing in the schema
         </error-viewer>
 
@@ -293,18 +291,18 @@ onBeforeMount(initArray);
                     'modals.delete-remaining-items.title'
                 ) || ''
             "
-            :confirmButtonText="
+            :confirm-button-text="
                 languageProvider?.getString(
                     'modals.delete-remaining-items.confirm'
                 )
             "
-            confirmButtonVariant="danger"
-            @confirm="deleteAllItems"
-            :cancelButtonText="
+            confirm-button-variant="danger"
+            :cancel-button-text="
                 languageProvider?.getString(
                     'modals.delete-remaining-items.cancel'
                 )
             "
+            @confirm="deleteAllItems"
         >
             {{
                 languageProvider?.getStringTemplate(
@@ -328,14 +326,7 @@ onBeforeMount(initArray);
 .vjf_label_wrapper {
     display: flex;
     align-items: center;
-}
-
-.flip-list-move {
-    transition: transform 0.5s;
-}
-
-.no-move {
-    transition: transform 0s;
+    margin-bottom: 0.5rem;
 }
 
 .ghost {
