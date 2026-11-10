@@ -10,6 +10,7 @@ import {
     HasNoLengthError,
     Parser,
     RitaError,
+    Rule,
     UndefinedPathError,
 } from '@educorvi/rita';
 import type { DependentElement } from '@/typings/customTypes';
@@ -112,7 +113,7 @@ function checkDependentElement(
     } else {
         const show = ref(false);
         const parser = new Parser();
-        let rule;
+        let rule: Rule;
         try {
             rule = parser.parseRule(dependentElement.showOn);
         } catch (e) {
@@ -122,19 +123,18 @@ function checkDependentElement(
             );
             return show;
         }
-        formDataStore.$subscribe(() => {
+        function evaluateRule() {
             const arrayItemIndices = getArrayItemIndices(
                 dependentElement,
                 formId
             );
-            // if (Object.keys(arrayItemIndices).length > 0) {
-            //     console.log(arrayItemIndices);
-            // }
             const evalData = {
                 $selfIndices: arrayItemIndices,
                 ...formDataStore.cleanedFormData.json,
             };
-            // console.log(evalData);
+            // if (process.env.NODE_ENV === 'development') {
+            //     console.debug('evaluate', rule.id, evalData);
+            // }
             rule.evaluate(evalData)
                 .then((result) => {
                     show.value = result;
@@ -159,7 +159,9 @@ function checkDependentElement(
                         );
                     }
                 });
-        });
+        }
+        formDataStore.$subscribe(evaluateRule);
+        evaluateRule();
         return show;
     }
 }

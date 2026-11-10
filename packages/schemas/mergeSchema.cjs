@@ -48,11 +48,30 @@ const vjfResolver = {
     },
 };
 
+const ritaSchemaUrl =
+    'https://raw.githubusercontent.com/educorvi/rita/main/rita-core/src/schema/';
+const ritaResolver = {
+    name: 'ritaResolver',
+    order: 1,
+    canRead: (file) => file.url?.startsWith(ritaSchemaUrl),
+    read(file) {
+        return fs.readFileSync(
+            join(
+                __dirname,
+                '../../node_modules/@educorvi/rita/src/schema',
+                file.url.slice(ritaSchemaUrl.length)
+            ),
+            'utf8'
+        );
+    },
+};
+
 async function merge() {
     const resolveOptions = {
         resolve: {
             nodeModules: nodeModulesResolver,
             vjf: vjfResolver,
+            rita: ritaResolver,
             http: false,
         },
     };
