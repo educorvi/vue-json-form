@@ -272,6 +272,46 @@ describe('AjvValidator', () => {
             expect(result).toBe(true);
         });
 
+        it.each([
+            { atom: { type: 'atom', path: 'age' }, valid: true },
+            { atom: { type: 'atom' }, valid: false },
+        ])(
+            'validates nested RITA option filters ($valid)',
+            ({ atom, valid }) => {
+                const uiSchema = {
+                    version: '2.0',
+                    layout: {
+                        type: 'VerticalLayout',
+                        elements: [
+                            {
+                                type: 'Control',
+                                scope: '/properties/status',
+                                options: {
+                                    optionFilters: {
+                                        active: {
+                                            id: 'adult',
+                                            rule: {
+                                                type: 'not',
+                                                arguments: [
+                                                    {
+                                                        type: 'comparison',
+                                                        operation: 'smaller',
+                                                        arguments: [atom, 18],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                };
+
+                expect(validator.validateUiSchema(uiSchema)).toBe(valid);
+            }
+        );
+
         it('validates a valid UI schema with Buttongroup', () => {
             const validUiSchema: UISchema = {
                 version: '2.0',
