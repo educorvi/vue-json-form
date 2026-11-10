@@ -122,7 +122,7 @@ jobs:
         container:
             # Keep this version in sync with Playwright in yarn.lock.
             image: mcr.microsoft.com/playwright:v1.62.1-noble
-            options: --init --ipc=host
+            options: --init --ipc=host --user 1001
         name: e2e Tests Webcomponent
         timeout-minutes: 60
         steps:
