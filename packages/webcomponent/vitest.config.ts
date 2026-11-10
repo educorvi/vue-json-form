@@ -5,7 +5,7 @@ import {
     configDefaults,
     TestUserConfig,
 } from 'vitest/config';
-import viteConfig from './vite.config';
+import viteConfig from './vite.config.mts';
 
 let reporters: TestUserConfig['reporters'];
 if (process.env.CI) {
