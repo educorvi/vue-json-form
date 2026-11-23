@@ -70,6 +70,13 @@ All bundles register the same custom element tag: `<vue-json-form>`.
                 })
             );
 
+            form.setAttribute(
+                'preset-data',
+                JSON.stringify({
+                    name: 'John Doe'
+                })
+            );
+
             form.addEventListener('submit', (event) => {
                 const [data, options] = event.detail;
                 console.log(data, options);
