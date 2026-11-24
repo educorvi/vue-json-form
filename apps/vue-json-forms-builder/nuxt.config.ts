@@ -9,11 +9,12 @@ const webcomponentPackageRoot = dirname(
     )
 );
 const webcomponentDist = join(webcomponentPackageRoot, 'dist');
-const vueJsonFormWebcomponentEntry = fileURLToPath(
-    import.meta.resolve('@educorvi/vue-json-form-webcomponent')
-);
 const vueJsonFormWebcomponentPackageRoot = dirname(
-    dirname(dirname(vueJsonFormWebcomponentEntry))
+    fileURLToPath(
+        import.meta.resolve(
+            '@educorvi/vue-json-form-webcomponent/package.json'
+        )
+    )
 );
 const vueJsonFormWebcomponentDist = join(
     vueJsonFormWebcomponentPackageRoot,

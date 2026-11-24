@@ -43,6 +43,7 @@
         "vue-tsc": "^3.3.5"
     },
     "exports": {
+        "./package.json": "./package.json",
         ".": {
             "import": "./dist/default/vue-json-form.mjs",
             "require": "./dist/default/vue-json-form.umd.js"
