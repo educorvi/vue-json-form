@@ -62,6 +62,7 @@
         "zod-openapi": "^6.0.0"
     },
     "devDependencies": {
+        "@educorvi/vue-json-form-webcomponent": "workspace:^",
         "@educorvi/vue-json-forms-builder-test-support": "workspace:^",
         "@educorvi/vue-json-forms-builder-webcomponent": "workspace:^",
         "@nuxt/eslint": "^1.16.0",

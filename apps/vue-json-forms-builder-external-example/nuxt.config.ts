@@ -68,7 +68,9 @@ export default defineNuxtConfig({
                     // The form-builder webcomponent (defined by
                     // @educorvi/vue-json-forms-builder-webcomponent) is a
                     // native custom element, not a Vue component.
-                    isCustomElement: (tag) => tag === 'vue-json-form-builder',
+                    isCustomElement: (tag) =>
+                        tag === 'vue-json-form-builder' ||
+                        tag === 'vue-json-form',
                 },
             },
         },

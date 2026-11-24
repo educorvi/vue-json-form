@@ -10,8 +10,23 @@ const kcClientId = computed(() => config.public.kcClientId);
 const kcIdpHint = computed(() => config.public.kcIdpHint);
 const collabUrl = computed(() => config.public.collabUrl);
 const backendUrl = computed(() => config.public.backendUrl);
-const webcomponentUrl = computed(() =>
-    `${backendUrl.value.replace(/\/+$/, '')}/webcomponent/vue-json-form-builder.js`
+const route = useRoute();
+const router = useRouter();
+const activeView = computed<'builder' | 'forms'>({
+    get: () => (route.query.view === 'forms' ? 'forms' : 'builder'),
+    set: (view) => {
+        const query = { ...route.query };
+        if (view === 'forms') {
+            query.view = 'forms';
+        } else {
+            delete query.view;
+        }
+        void router.replace({ query });
+    },
+});
+const webcomponentUrl = computed(
+    () =>
+        `${backendUrl.value.replace(/\/+$/, '')}/webcomponent/vue-json-form-builder.js`
 );
 
 const greeting = computed(
@@ -21,9 +36,6 @@ const greeting = computed(
         user.value?.email ||
         'User'
 );
-
-const route = useRoute();
-const router = useRouter();
 
 /**
  * True when the input is a numeric form id ("5") or a form path
@@ -109,7 +121,10 @@ async function loadForm() {
         <div
             class="d-flex align-items-center gap-2 px-3 py-2 bg-white border-bottom flex-shrink-0 flex-wrap"
         >
-            <h1 class="h6 mb-0">Hello, {{ greeting }}!</h1>
+            <h1 v-if="activeView === 'builder'" class="h6 mb-0">
+                Hello, {{ greeting }}!
+            </h1>
+            <h1 v-else class="h6 mb-0">Vue JSON Form webcomponents</h1>
             <BFormInput
                 v-model="formId"
                 placeholder="Form id or path, e.g. 5 or educorvi/formular1"
@@ -128,41 +143,85 @@ async function loadForm() {
             <span v-if="formIdError" class="text-danger small">
                 {{ formIdError }}
             </span>
-            <span class="text-secondary small">
-                The form is loaded over the collab websocket only after you
-                confirm — the builder authenticates against kc1 with keycloak-js
-                (silent check-sso) and
-                <code>kc_idp_hint</code> pointing back to the external Keycloak.
-                The connection is rejected (with an inline error) when the form
-                does not exist or you have no edit access.
-            </span>
+            <template v-if="activeView === 'builder'">
+                <span class="text-secondary small">
+                    The form is loaded over the collab websocket only after you
+                    confirm — the builder authenticates against kc1 with
+                    keycloak-js (silent check-sso) and
+                    <code>kc_idp_hint</code> pointing back to the external
+                    Keycloak. The connection is rejected (with an inline error)
+                    when the form does not exist or you have no edit access.
+                </span>
+            </template>
+            <template v-else>
+                <span class="text-secondary small">
+                    Both forms load the selected form's JSON and UI schema from
+                    the authenticated artifact API.
+                </span>
+            </template>
+            <div
+                class="ms-auto btn-group"
+                role="group"
+                aria-label="Example view"
+            >
+                <BButton
+                    size="sm"
+                    :variant="
+                        activeView === 'builder' ? 'primary' : 'outline-primary'
+                    "
+                    @click="activeView = 'builder'"
+                >
+                    Form builder
+                </BButton>
+                <BButton
+                    size="sm"
+                    :variant="
+                        activeView === 'forms' ? 'primary' : 'outline-primary'
+                    "
+                    @click="activeView = 'forms'"
+                >
+                    Vue JSON Form
+                </BButton>
+            </div>
         </div>
 
         <main
             class="d-flex flex-column flex-grow-1 overflow-hidden"
             style="min-height: 0"
         >
-            <JsonFormsBuilder
-                v-if="confirmedFormId"
-                :key="confirmedFormId"
-                :bundle-url="webcomponentUrl"
-                class="flex-grow-1 d-flex flex-column"
-                style="min-height: 0"
+            <template v-if="activeView === 'builder'">
+                <JsonFormsBuilder
+                    v-if="confirmedFormId"
+                    :key="confirmedFormId"
+                    :bundle-url="webcomponentUrl"
+                    class="flex-grow-1 d-flex flex-column"
+                    style="min-height: 0"
+                    :kc-url="kcUrl"
+                    :kc-realm="kcRealm"
+                    :kc-client-id="kcClientId"
+                    :kc-idp-hint="kcIdpHint"
+                    :collab-url="collabUrl"
+                    :collab-document-name="confirmedFormId"
+                    :backend-url="backendUrl"
+                />
+                <p
+                    v-else
+                    class="text-secondary border rounded bg-white p-4 text-center m-3"
+                >
+                    Enter a form id and press <strong>Load form</strong> to open
+                    it in the form builder.
+                </p>
+            </template>
+            <JsonFormWebcomponents
+                v-else
+                class="flex-grow-1"
+                :form-id="confirmedFormId"
+                :backend-url="backendUrl"
                 :kc-url="kcUrl"
                 :kc-realm="kcRealm"
                 :kc-client-id="kcClientId"
                 :kc-idp-hint="kcIdpHint"
-                :collab-url="collabUrl"
-                :collab-document-name="confirmedFormId"
-                :backend-url="backendUrl"
             />
-            <p
-                v-else
-                class="text-secondary border rounded bg-white p-4 text-center m-3"
-            >
-                Enter a form id and press <strong>Load form</strong> to open it
-                in the form builder.
-            </p>
         </main>
     </div>
 </template>

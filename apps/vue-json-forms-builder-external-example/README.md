@@ -6,8 +6,9 @@ apps can be tested in one browser (unlike `localhost` ports, cookies are not sha
 For an overview of the concepts before going into details, see [docs/auth/README.md](../../apps/vue-json-forms-builder/docs/auth/README.md#auth-integration-with-external-oidc-provider).
 
 - The app logs in against an **external Keycloak** (`external-keycloak`, service `external-keycloak` in `../vue-json-forms-builder/docker-compose.yaml`) with a **confidential client** (`external-example-app`, client secret).
-- After login there is a very basic dashboard ("Hello, \<user\>!") with an input field for the **numeric form id** of the form-builder backend.
-- The form renders in the [`<vue-json-form-builder>`](../../packages/vue-json-forms-builder-webcomponent) webcomponent below. The form itself is **not fetched over REST** — it is loaded over the **collab websocket** (Hocuspocus, `ws://localhost:1234`, document name = form id), exactly like in the main builder app. The webcomponent logs in directly against the **main app's Keycloak** (`kc1`, `vue-json-forms-builder` on port 3000) with **keycloak-js** using the PUBLIC client `vueformbuilder-embed` (PKCE): a *silent* `check-sso` runs in a hidden iframe on mount — no navigation, no popup. With `kc_idp_hint=external-oidc-example` the login (only needed when no kc1 session exists) runs straight through the external Keycloak, so the user is authenticated **without any further input**. The kc1 **access token** authenticates the collab websocket (`Authorization: Bearer`, forwarded by the collab server to the backend's `/api/ws-auth` for validation via JWKS).
+- After login there is a basic dashboard with a shared input field for a **numeric form ID or form path**.
+- The [`<vue-json-form-builder>`](../../packages/vue-json-forms-builder-webcomponent) loads the selected form over the collaboration websocket (Hocuspocus). The **Vue JSON Form** tab fetches the same form's JSON and UI schemas from `GET /api/v1/forms/{id}/schema/artifacts` and passes both artifacts to editable and read-only form examples.
+- Both cross-origin API calls use the main app's Keycloak (`kc1`) public client `vueformbuilder-embed` and a bearer token. The artifact endpoint is **not public**: it requires authentication and form view permission. Bearer-authenticated `/api/v1` requests allow cross-origin access without cookies (development backend; production reverse proxy); session-cookie API requests remain restricted to `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS`.
 
 ```mermaid
 flowchart LR
@@ -27,31 +28,31 @@ flowchart LR
 
 ## Prerequisites
 
-1. Docker services running: `cd ../vue-json-forms-builder && docker compose up -d` (postgres, kc1, external-keycloak). (__Note:__ The federation between kc1 and the external Keycloak is already configured in the imported realm files (`keycloak/dev/dev-realm.json`, `keycloak/external/dev-realm.json`)).
-2. The main app running: `cd ../vue-json-forms-builder && yarn dev` (port 3000). Its env must include `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS=http://external-example-app.localhost:3001` and `NUXT_AUTH_ALLOWED_CLIENT_IDS=vueformbuilder,vueformbuilder-embed` so the kc1 access token of the public embed client is accepted for the collab websocket (already set in its `example.env`).
-3. The backend build serves the webcomponent at `http://localhost:3000/webcomponent/vue-json-form-builder.js`. Add this app's origin to `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS`; the backend uses that allowlist for CORS on the module bundle as well as auth redirects.
+1. Docker services running: `cd ../vue-json-forms-builder && docker compose up -d` (postgres, kc1, external-keycloak). (**Note:** The federation between kc1 and the external Keycloak is already configured in the imported realm files (`keycloak/dev/dev-realm.json`, `keycloak/external/dev-realm.json`)).
+2. Start the main app with `cd ../vue-json-forms-builder && yarn dev` (port 3000). Before startup, set `NUXT_AUTH_ALLOWED_CLIENT_IDS=vueformbuilder,vueformbuilder-embed` in its active `.env` or process environment so the API and collaboration server accept the embed client's kc1 bearer token. `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS` is still used for session-cookie API calls and login redirects, but is not needed for this example's bearer-authenticated API requests. Values in `example.env` are only a template and are not loaded automatically.
+3. The backend serves both webcomponents' assets directly under `http://localhost:3000/webcomponent/`: the builder script is `/webcomponent/vue-json-form-builder.js`, while Vue JSON Form uses `/webcomponent/vue-json-form.mjs` and `/webcomponent/vue-json-form.css`. The public bundles are served with wildcard CORS. In development, bearer-authenticated API requests use wildcard CORS without credentialed cookies; production relies on the reverse proxy for those headers to avoid duplicates. Session-based API requests still require an exact origin allowlist. This CORS policy does not make the artifact endpoint anonymous or public.
 
 ## Domains
 
 All apps use `.localhost` domains (which browsers resolve to `127.0.0.1` without hosts-file entries):
 
-| App | URL |
-| --- | --- |
-| Main builder backend | `http://localhost:3000` (kc1, port 8080) |
+| App                    | URL                                          |
+| ---------------------- | -------------------------------------------- |
+| Main builder backend   | `http://localhost:3000` (kc1, port 8080)     |
 | This external demo app | `http://external-example-app.localhost:3001` |
-| External Keycloak | `http://external-keycloak.localhost:8081` |
+| External Keycloak      | `http://external-keycloak.localhost:8081`    |
 
-__Note:__ Cookies are per-host: this app's session (`external-app-session` on `external-example-app.localhost`), the external Keycloak's SSO cookie and the main backend's session (`nuxt-session` on `localhost`) never collide, even in the same browser.
+**Note:** Cookies are per-host: this app's session (`external-app-session` on `external-example-app.localhost`), the external Keycloak's SSO cookie and the main backend's session (`nuxt-session` on `localhost`) never collide, even in the same browser.
 
 ## What to expect
 
-1. Open **http://external-example-app.localhost:3001** — landing page with a *Login* button.
-1. Click *Login* → you are taken to the external Keycloak and logged in (create a test user there first if none exists).
-1. You land on the dashboard: *Hello, \<user\>!*
-2. Type a **numeric ID or form path** of a form in the builder backend and press Enter. The webcomponent bundle loads from the backend's `/webcomponent/vue-json-form-builder.js` URL. The shared builder resolves paths to the canonical numeric form ID before connecting. It runs keycloak-js against kc1 (`http://kc1.localhost:8080`, realm `dev`, public client `vueformbuilder-embed`:
-   - silent `check-sso` (hidden iframe) → a kc1 session exists → the access token is obtained **without any navigation** and the builder connects straight away.
-   - no kc1 session → the builder shows a **Sign in** button; clicking it navigates to kc1, which — thanks to `kc_idp_hint=external-oidc-example` and the existing external SSO session — authenticates the user **without a credential prompt** and redirects back to this page.
-   - the silent check-sso iframe is limited in browsers with strict tracking protection (Safari/Firefox): the Sign in button appears even for logged-in users there — the click then does the top-level redirect.
-3. The builder connects to the collab websocket (`ws://localhost:1234`, document name = form id) with the kc1 access token as `Authorization: Bearer` (validated by the backend via JWKS, `NUXT_AUTH_ALLOWED_CLIENT_IDS`) and Hocuspocus hydrates the form from its stored definition.
-4. Loading another form id re-mounts the builder with the new document.
-5. *Logout* clears the local external session (the kc1/external Keycloak sessions stay intact).
+1. Open **http://external-example-app.localhost:3001** — landing page with a _Login_ button.
+1. Click _Login_ → you are taken to the external Keycloak and logged in (create a test user there first if none exists).
+1. You land on the dashboard: _Hello, \<user\>!_
+1. Enter a **numeric ID or form path** and press **Load form**. Both tabs use this selection. The builder connects to the collaboration document; the Vue JSON Form tab fetches `GET /api/v1/forms/{id}/schema/artifacts` using the kc1 bearer token and renders the returned JSON and UI schemas in editable and disabled-fieldset examples. The artifact API requires the user to have view permission. The shared builder resolves paths to the canonical numeric form ID before connecting. It runs keycloak-js against kc1 (`http://kc1.localhost:8080`, realm `dev`, public client `vueformbuilder-embed`):
+    - silent `check-sso` (hidden iframe) → a kc1 session exists → the access token is obtained **without any navigation** and the builder connects straight away.
+    - no kc1 session → the builder shows a **Sign in** button; clicking it navigates to kc1, which — thanks to `kc_idp_hint=external-oidc-example` and the existing external SSO session — authenticates the user **without a credential prompt** and redirects back to this page.
+    - the silent check-sso iframe is limited in browsers with strict tracking protection (Safari/Firefox): the Sign in button appears even for logged-in users there — the click then does the top-level redirect.
+1. The builder connects to the collab websocket (`ws://localhost:1234`, document name = form id) with the kc1 access token as `Authorization: Bearer` (validated by the backend via JWKS, `NUXT_AUTH_ALLOWED_CLIENT_IDS`) and Hocuspocus hydrates the form from its stored definition.
+1. Loading another form id re-mounts the builder with the new document.
+1. _Logout_ clears the local external session (the kc1/external Keycloak sessions stay intact).

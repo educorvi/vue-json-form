@@ -1023,7 +1023,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@educorvi/vue-json-form-webcomponent@workspace:packages/webcomponent":
+"@educorvi/vue-json-form-webcomponent@workspace:^, @educorvi/vue-json-form-webcomponent@workspace:packages/webcomponent":
   version: 0.0.0-use.local
   resolution: "@educorvi/vue-json-form-webcomponent@workspace:packages/webcomponent"
   dependencies:
@@ -21555,6 +21555,7 @@ __metadata:
     bootstrap: "npm:^5.3.8"
     bootstrap-icons: "npm:^1.13.1"
     bootstrap-vue-next: "npm:^0.45.7"
+    keycloak-js: "npm:^26"
     nuxt: "npm:^4.5.2"
     nuxt-auth-utils: "npm:^0.5.30"
     turbo: "npm:^2.10.12"
@@ -21572,6 +21573,7 @@ __metadata:
     "@bootstrap-vue-next/nuxt": "npm:^0.45.7"
     "@educorvi/vue-json-form": "workspace:^"
     "@educorvi/vue-json-form-ajv-validator": "workspace:^"
+    "@educorvi/vue-json-form-webcomponent": "workspace:^"
     "@educorvi/vue-json-forms-builder": "workspace:*"
     "@educorvi/vue-json-forms-builder-db-layer": "workspace:^"
     "@educorvi/vue-json-forms-builder-orpc-contract": "workspace:^"
