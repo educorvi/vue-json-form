@@ -71,7 +71,7 @@ export function useCollabConnection(
                 backendUrl: backendUrl.value,
                 token: authToken.value,
             });
-            await client.users.create({});
+            await client.users.create();
             return await resolveCollabDocumentId(client, documentName);
         } catch (err) {
             console.error(
