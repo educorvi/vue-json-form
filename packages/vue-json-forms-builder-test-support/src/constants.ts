@@ -3,7 +3,7 @@
  */
 export const HOSTS = {
     /** Main form-builder app + backend API (Keycloak realm `dev`). */
-    backend: 'http://localhost:3000',
+    backend: process.env.E2E_BACKEND_URL ?? 'http://localhost:3000',
     /** Third-party host app embedding the webcomponent. */
     externalExampleApp: 'http://external-example-app.localhost:3001',
     /** Primary Keycloak (realm `dev`) — the builder app's own IdP. */

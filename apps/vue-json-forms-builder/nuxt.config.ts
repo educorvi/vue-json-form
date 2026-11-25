@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { eventHandler } from 'h3';
+import { applyEmbedAssetCors } from './server/utils/embed-cors';
 
 const webcomponentPackageRoot = dirname(
     fileURLToPath(
@@ -11,9 +13,7 @@ const webcomponentPackageRoot = dirname(
 const webcomponentDist = join(webcomponentPackageRoot, 'dist');
 const vueJsonFormWebcomponentPackageRoot = dirname(
     fileURLToPath(
-        import.meta.resolve(
-            '@educorvi/vue-json-form-webcomponent/package.json'
-        )
+        import.meta.resolve('@educorvi/vue-json-form-webcomponent/package.json')
     )
 );
 const vueJsonFormWebcomponentDist = join(
@@ -28,15 +28,39 @@ export default defineNuxtConfig({
 
     modules: [
         (_options, nuxt) => {
-            if (nuxt.options.dev) {
-                nuxt.options.routeRules ??= {};
-                const webcomponentCorsRouteRule = {
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                    },
+            nuxt.hooks.hook('listen', () => {
+                const nitroServer = nuxt.server;
+                if (!nitroServer || !('upgrade' in nitroServer)) return;
+
+                const upgrade = nitroServer.upgrade.bind(nitroServer);
+                nitroServer.upgrade = async (
+                    ...args: Parameters<typeof upgrade>
+                ) => {
+                    try {
+                        return await upgrade(...args);
+                    } catch (error) {
+                        if (
+                            (error as NodeJS.ErrnoException).code !==
+                            'ECONNRESET'
+                        ) {
+                            throw error;
+                        }
+                    }
                 };
-                nuxt.options.routeRules['/webcomponent/**'] =
-                    webcomponentCorsRouteRule;
+            });
+        },
+        (_options, nuxt) => {
+            // Nitro's dev server serves public assets before the app's request
+            // hooks. This pass-through handler applies the same CORS policy
+            // before the normal static asset handler serves the files.
+            if (nuxt.options.dev) {
+                nuxt.hook('nitro:config', (config) => {
+                    config.devHandlers ??= [];
+                    config.devHandlers.push({
+                        route: '/webcomponent',
+                        handler: eventHandler(applyEmbedAssetCors),
+                    });
+                });
             }
         },
         '@pinia/nuxt',
@@ -165,6 +189,7 @@ export default defineNuxtConfig({
             {
                 dir: join(vueJsonFormWebcomponentDist, 'default'),
                 baseURL: '/webcomponent',
+                fallthrough: true,
                 maxAge: 60,
             },
         ],

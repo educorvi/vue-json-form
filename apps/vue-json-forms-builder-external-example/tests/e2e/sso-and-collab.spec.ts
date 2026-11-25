@@ -1,4 +1,4 @@
-import { test, expect, type Browser } from '@playwright/test';
+import { test, expect, type Browser, type Page } from '@playwright/test';
 import {
     HOSTS,
     E2E_USERS,
@@ -12,6 +12,20 @@ import {
     builderLocators,
     randomSuffix,
 } from '@educorvi/vue-json-forms-builder-test-support';
+
+// The dashboard is server-rendered. A fill before Vue hydration can be
+// discarded, leaving the reactive Load button disabled.
+async function loadForm(page: Page, formId: string): Promise<void> {
+    const input = page.getByPlaceholder(/form id or path/i);
+    const button = page.getByRole('button', { name: /load form/i });
+    await expect
+        .poll(async () => {
+            await input.fill(formId);
+            return button.isEnabled();
+        })
+        .toBe(true);
+    await button.click();
+}
 
 async function seedFormAsAdmin(
     browser: Browser,
@@ -69,8 +83,7 @@ async function warmUpBrokeredUser(browser: Browser): Promise<void> {
         signInControlName: /login/i,
         landedUrlPattern: /\/dashboard/,
     });
-    await page.getByPlaceholder(/form id or path/i).fill('1');
-    await page.getByRole('button', { name: /load form/i }).click();
+    await loadForm(page, '1');
     await page
         .getByRole('button', { name: 'Sign in' })
         .click({ timeout: 15_000 });
@@ -117,8 +130,7 @@ test.describe('External example app — silent SSO + cross-app collaboration', (
             landedUrlPattern: /\/dashboard/,
         });
 
-        await page.getByPlaceholder(/form id or path/i).fill(String(form.id));
-        await page.getByRole('button', { name: /load form/i }).click();
+        await loadForm(page, String(form.id));
 
         // The fully-silent check-sso path doesn't broker (keycloak-js's
         // onLoad:"check-sso" never forwards idpHint — see
@@ -174,10 +186,7 @@ test.describe('External example app — silent SSO + cross-app collaboration', (
             signInControlName: /login/i,
             landedUrlPattern: /\/dashboard/,
         });
-        await externalPage
-            .getByPlaceholder(/form id or path/i)
-            .fill(String(form.id));
-        await externalPage.getByRole('button', { name: /load form/i }).click();
+        await loadForm(externalPage, String(form.id));
         await expect(builderLocators(externalPage).header()).toBeVisible({
             timeout: 15_000,
         });

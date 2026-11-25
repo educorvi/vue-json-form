@@ -81,7 +81,12 @@ External embed that logs in against its own Keycloak (public client with PKCE; s
 > The hosting backend must accept access tokens from this client
 > (`azp = clientId`, see `NUXT_AUTH_ALLOWED_CLIENT_IDS` in the backend) and
 > the client's `redirectUris` must include the silent check-sso page and the
-> embedding origin.
+> embedding origin. The silent check-sso page additionally has to be served by
+> the **same origin as the embedding page**: keycloak-js ignores the iframe's
+> relay message unless `event.origin === window.location.origin` and the silent
+> check never resolves without it, so a copy hosted by another origin (e.g. the
+> Form Builder backend or a CDN) makes `onLoad: "check-sso"` hang instead of
+> falling back to a login.
 
 ## Example 2 — Nuxt app (first-party, session auth)
 

@@ -1,79 +1,63 @@
+import {
+    applyEmbedAssetCors,
+    embedCorsOrigin,
+} from '../utils/embed-cors';
+
 /**
- * CORS for embedded clients (e.g. the form-builder webcomponent embedded in
- * external apps, see apps/vue-json-forms-builder-external-example).
- *
- * The webcomponent talks to this backend cross-origin:
- *   - session check (`GET /api/_auth/session`, `credentials: 'include'`)
- *   - the collab user read after the websocket connected
- *     (`GET /api/v1/users/me`)
- *   - the user upsert during the websocket handshake is done by the collab
- *     server (server-to-server, no CORS needed)
- *
- * The public webcomponent bundles use wildcard CORS separately: Nuxt in
- * development and the reverse proxy in production. Bearer-authenticated
- * /api/v1 requests use wildcard CORS without credentials in development;
- * production leaves the header to the reverse proxy to avoid duplicates.
- * Cookie/session requests use an exact allowlisted origin.
- *
- * `NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS` (comma-separated) is still required
- * for credentialed API requests and the `?redirect=` param after login.
+ * Apply env-configured CORS before Nitro handles bundle and API requests.
+ * Cookie-based session checks use a separate exact-origin policy because
+ * credentialed requests cannot use wildcard origins.
  */
 export default defineNitroPlugin((nitroApp) => {
-    const allowedOrigins = (
-        process.env.NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS ?? ''
-    )
-        .split(',')
-        .map((origin) => origin.trim())
-        .filter(Boolean);
-
     nitroApp.hooks.hook('request', (event) => {
         const path = getRequestURL(event).pathname;
-        if (path.startsWith('/webcomponent/')) {
+        if (path === '/webcomponent' || path.startsWith('/webcomponent/')) {
+            applyEmbedAssetCors(event);
             return;
         }
 
-        const origin = getRequestHeader(event, 'origin');
-        if (!origin) return;
+        if (path === '/api/_auth/session') {
+            const allowedOrigins = (
+                process.env.NUXT_AUTH_ALLOWED_REDIRECT_ORIGINS ?? ''
+            )
+                .split(',')
+                .map((origin) => origin.trim())
+                .filter(Boolean);
+            const origin = getRequestHeader(event, 'origin');
+            appendResponseHeader(event, 'Vary', 'Origin');
+            if (!origin || !allowedOrigins.includes(origin)) return;
 
-        const isPreflight = event.method === 'OPTIONS';
-        const requestedHeaders = getRequestHeader(
-            event,
-            'access-control-request-headers'
-        )
-            ?.split(',')
-            .map((header) => header.trim().toLowerCase());
-        const usesBearerAuth =
-            Boolean(getRequestHeader(event, 'authorization')) ||
-            (isPreflight && requestedHeaders?.includes('authorization'));
-        const isVersionedApi =
-            path === '/api/v1' || path.startsWith('/api/v1/');
-        const useWildcardCors = isVersionedApi && usesBearerAuth;
-
-        if (useWildcardCors && process.env.NODE_ENV === 'production') {
-            // The production reverse proxy adds the wildcard CORS headers.
-            // Still answer preflights here, but don't duplicate its headers.
-            if (isPreflight) {
+            setResponseHeaders(event, {
+                'Access-Control-Allow-Origin': origin,
+                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            });
+            if (event.method === 'OPTIONS') {
                 event.node.res.statusCode = 204;
                 event.node.res.end();
             }
             return;
         }
 
-        if (!useWildcardCors && !allowedOrigins.includes(origin)) return;
+        if (path !== '/api/v1' && !path.startsWith('/api/v1/')) return;
 
-        setResponseHeaders(event, {
-            'Access-Control-Allow-Origin': useWildcardCors ? '*' : origin,
-            ...(useWildcardCors
-                ? {}
-                : { 'Access-Control-Allow-Credentials': 'true' }),
-            'Access-Control-Allow-Methods':
-                'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Max-Age': '86400',
-        });
+        appendResponseHeader(event, 'Vary', 'Origin');
+        const origin = embedCorsOrigin(getRequestHeader(event, 'origin'));
+        if (origin) {
+            setResponseHeader(event, 'Access-Control-Allow-Origin', origin);
+        }
 
-        // Answer preflight requests directly; bearer requests do not rely on cookies.
-        if (isPreflight) {
+        if (event.method === 'OPTIONS') {
+            if (origin) {
+                setResponseHeaders(event, {
+                    'Access-Control-Allow-Methods':
+                        'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS',
+                    'Access-Control-Allow-Headers':
+                        'Authorization, Content-Type',
+                    'Access-Control-Max-Age': '86400',
+                });
+            }
             event.node.res.statusCode = 204;
             event.node.res.end();
         }

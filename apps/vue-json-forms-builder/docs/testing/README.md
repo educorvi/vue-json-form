@@ -9,7 +9,7 @@ All tests live under `tests/`, split by how much of the stack they need. Everyth
 | `tests/unit/`         | Vitest     | Plain Node                              | No                           | No                       | Pure functions / server utilities, no Vue, no Nuxt                  |
 | `tests/component/`    | Vitest     | happy-dom + plain `@vue/test-utils`     | No                           | No                       | Standalone components with no composables/auto-imports of their own |
 | `tests/nuxt/`         | Vitest     | Virtual Nuxt runtime (`@nuxt/test-utils`)| No                          | No                       | Components/composables that rely on Nuxt auto-imports (`useState`, `useI18n`, `useUserSession`, ...) |
-| `tests/integration/`  | Vitest     | Node, real HTTP + DB                    | **Yes**                      | **Yes**                  | API-level tests against an already-running Nuxt server, via the typed oRPC client — see [tests/integration/README.md](./integration/README.md) |
+| `tests/integration/`  | Vitest     | Node, real HTTP + DB                    | **Yes**                      | **Yes**                  | API-level tests against an already-running Nuxt server, via the typed oRPC client — see [tests/integration/README.md](../../tests/integration/README.md) |
 | `tests/e2e/`          | Playwright | Real browser                            | **Yes**                      | **Yes** (global-setup wipes + reseeds) | Full user flows (real Keycloak login, real UI) against an already-running Nuxt server |
 
 
@@ -27,6 +27,8 @@ All tests live under `tests/`, split by how much of the stack they need. Everyth
 | `test:e2e:mocked`  | Playwright | nothing but the package's own dev server — backend calls are answered by `page.route()` | mocked (no backend)           |
 
 `turbo run test:all` aggregates all four tiers of a package (so it needs the stack, exactly like `test:e2e` does).
+
+For complete Playwright setup and commands for all three full-stack suites, see [the E2E README](../../tests/e2e/README.md).
 
 ### Prerequisites
 
@@ -72,7 +74,7 @@ TODO: could be problematic to run the test code locally and the application with
 ```bash
 yarn test:unit          # unit + component + nuxt Vitest projects (fast, no server/DB needed)
 yarn test:watch         # any Vitest project, in watch mode
-yarn test:integration   # requires a running server — see tests/integration/README.md
+yarn test:integration   # requires a running server — see ../../tests/integration/README.md
 yarn test:coverage      # unit/component/nuxt/integration with coverage
 yarn test:e2e           # requires a running server — Playwright
 yarn test:e2e:ui        # Playwright UI mode

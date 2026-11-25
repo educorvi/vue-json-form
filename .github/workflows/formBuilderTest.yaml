@@ -149,7 +149,7 @@ jobs:
                   --filter=vue-json-forms-builder
                   --output-logs=full
 
-            - name: Run e2e tests against the real stack
+            - name: Run builder e2e tests against the real stack
               if: ${{ !cancelled() && steps.affected.outputs.count != '0' }}
               env:
                   PLAYWRIGHT_BASE_URL: http://localhost:3000
@@ -157,6 +157,12 @@ jobs:
               run: >-
                   npx turbo run test:e2e --affected
                   --filter=vue-json-forms-builder
+                  --output-logs=full
+
+            - name: Run external example e2e tests against the real stack
+              if: ${{ !cancelled() && steps.affected.outputs.count != '0' }}
+              run: >-
+                  npx turbo run test:e2e --affected
                   --filter=vue-json-forms-builder-external-example
                   --output-logs=full
 
